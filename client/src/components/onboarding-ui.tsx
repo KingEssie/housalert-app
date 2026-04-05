@@ -3,31 +3,31 @@ import { useHashSearch } from "@/lib/hash-search";
 export const ONBOARDING_TOTAL_STEPS = 3;
 
 export const OB = {
-  gradient: "linear-gradient(180deg, #111111 0%, #0a0a0a 100%)",
-  headerBg: "rgba(17,17,17,0.95)",
-  headerBorder: "rgba(255,255,255,0.08)",
-  card: "rgba(255,255,255,0.06)",
-  cardBorder: "rgba(255,255,255,0.10)",
-  inputBg: "rgba(255,255,255,0.08)",
-  inputBorder: "rgba(255,255,255,0.12)",
-  text: "#ffffff",
-  textSecondary: "rgba(255,255,255,0.7)",
-  textMuted: "rgba(255,255,255,0.45)",
+  gradient: "#ffffff",
+  headerBg: "#ffffff",
+  headerBorder: "#E5E7EB",
+  card: "#F7F7F7",
+  cardBorder: "#E5E7EB",
+  inputBg: "#ffffff",
+  inputBorder: "#E5E7EB",
+  text: "#111111",
+  textSecondary: "#6B7280",
+  textMuted: "#9CA3AF",
   pink: "rgb(var(--ha-primary))",
   pinkHover: "rgb(var(--ha-primary-hover))",
   pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #D70466 100%)",
   pinkShadow: "0 4px 15px rgba(255,56,92,0.3)",
-  surface: "rgba(255,255,255,0.05)",
-  divider: "rgba(255,255,255,0.08)",
-  progressInactive: "rgba(255,255,255,0.15)",
-  backBtnBg: "rgba(255,255,255,0.1)",
-  selectedBg: "rgba(255,56,92,0.12)",
+  surface: "#F7F7F7",
+  divider: "#E5E7EB",
+  progressInactive: "#E5E7EB",
+  backBtnBg: "#F7F7F7",
+  selectedBg: "rgba(255,56,92,0.08)",
   selectedBorder: "rgb(var(--ha-primary))",
-  accentBg: "rgba(255,56,92,0.08)",
-  greenBg: "rgb(var(--ha-success) / 0.12)",
-  greenBorder: "rgb(var(--ha-success) / 0.25)",
-  redBg: "rgba(220,38,38,0.12)",
-  redBorder: "rgba(220,38,38,0.25)",
+  accentBg: "rgba(255,56,92,0.06)",
+  greenBg: "rgb(var(--ha-success) / 0.08)",
+  greenBorder: "rgb(var(--ha-success) / 0.2)",
+  redBg: "rgba(220,38,38,0.08)",
+  redBorder: "rgba(220,38,38,0.2)",
 } as const;
 
 export const OBW = {
@@ -257,10 +257,8 @@ export function OBFooter({
     <div
       className="fixed bottom-0 left-0 right-0 z-30"
       style={{
-        borderTop: `1px solid ${w ? OBW.footerBorder : "rgba(255,255,255,0.08)"}`,
-        backgroundColor: w ? OBW.footerBg : "rgba(10,10,30,0.4)",
-        backdropFilter: w ? undefined : "blur(10px)",
-        WebkitBackdropFilter: w ? undefined : "blur(10px)",
+        borderTop: `1px solid ${OBW.footerBorder}`,
+        backgroundColor: OBW.footerBg,
         paddingBottom: "max(8px, env(safe-area-inset-bottom, 8px))",
       }}
     >
@@ -271,12 +269,12 @@ export function OBFooter({
             onClick={onBack}
             className="w-[56px] h-[56px] rounded-[6px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
             style={{
-              border: `1.5px solid ${w ? OBW.backBtnBorder : "rgba(255,255,255,0.25)"}`,
-              backgroundColor: w ? OBW.backBtnBg : "transparent",
+              border: `1.5px solid ${OBW.backBtnBorder}`,
+              backgroundColor: OBW.backBtnBg,
             }}
             data-testid={backTestId || "button-back"}
           >
-            <ChevronLeft className="w-[18px] h-[18px]" style={{ color: w ? OBW.backBtnColor : "#ffffff" }} />
+            <ChevronLeft className="w-[18px] h-[18px]" style={{ color: OBW.backBtnColor }} />
           </button>
           <button
             onClick={onNext}

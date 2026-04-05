@@ -1,0 +1,88 @@
+Fix and extend the language selector in the Profile screen.
+
+IMPORTANT:
+- Do NOT open a separate page anymore
+- Use inline dropdown / popover only
+- Keep HousAlert styling
+
+==================================================
+1. ADD GERMAN LANGUAGE OPTION
+==================================================
+
+Update language options to:
+
+- 🇳🇱 Nederlands (nl)
+- 🇬🇧 Engels (en)
+- 🇩🇪 Duits (de)
+
+Each option must include:
+- flag icon
+- language label
+- language code internally
+
+==================================================
+2. DROPDOWN BEHAVIOR
+==================================================
+
+When user taps "Taal":
+
+- open dropdown anchored to the row
+- show all 3 options
+- highlight selected language
+- clicking an option:
+  → updates language
+  → closes dropdown immediately
+
+==================================================
+3. STATE MANAGEMENT
+==================================================
+
+Ensure:
+
+- selected language is stored (user profile / local storage / backend)
+- persists after refresh
+- updates UI immediately
+
+==================================================
+4. UI REQUIREMENTS
+==================================================
+
+- dropdown clean, minimal, white card style
+- subtle shadow
+- no overflow issues
+- not clipped by parent container
+- correct z-index (always visible)
+
+- selected row shows:
+  flag + language name
+
+==================================================
+5. REMOVE OLD FLOW
+==================================================
+
+- remove navigation to separate language page
+- ensure no route is triggered on click
+- everything handled inline
+
+==================================================
+6. VALIDATION
+==================================================
+
+After implementing:
+
+- click "Taal"
+- dropdown opens
+- shows 3 options
+- select "Duits"
+- UI updates instantly
+- refresh page → still Duits
+
+==================================================
+7. OUTPUT
+==================================================
+
+Show:
+1. updated dropdown UI
+2. where language state is stored
+3. confirmation German is fully working
+4. files changed

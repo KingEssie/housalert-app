@@ -16,7 +16,7 @@ export default function OnboardingIntro() {
   const { t } = useTranslation();
 
   return (
-    <div className="min-h-[100dvh] flex flex-col ob-dark" style={{ background: OB.gradient }} data-testid="screen-onboarding-intro">
+    <div className="min-h-[100dvh] flex flex-col" style={{ background: OB.gradient }} data-testid="screen-onboarding-intro">
       <header className="w-full pt-[max(16px,env(safe-area-inset-top))] px-5">
         <div className="max-w-[480px] mx-auto flex items-center justify-between h-[56px]">
           <HousAlertLogo size={28} />
@@ -46,7 +46,7 @@ export default function OnboardingIntro() {
                 <p className="text-[16px] font-bold leading-[1.25]" style={{ color: "#16A34A" }}>
                   {t(step.titleKey)}
                 </p>
-                <p className="text-[15px] mt-1 leading-[1.45]" style={{ color: "rgba(255,255,255,0.88)" }}>
+                <p className="text-[15px] mt-1 leading-[1.45]" style={{ color: "#6B7280" }}>
                   {t(step.descKey)}
                 </p>
               </div>
@@ -58,8 +58,8 @@ export default function OnboardingIntro() {
       <div
         className="fixed bottom-0 left-0 right-0 z-30"
         style={{
-          borderTop: "1px solid rgba(255,255,255,0.08)",
-          backgroundColor: "rgba(10,10,30,0.4)",
+          borderTop: "1px solid #E5E7EB",
+          backgroundColor: "rgba(255,255,255,0.9)",
           backdropFilter: "blur(10px)",
           WebkitBackdropFilter: "blur(10px)",
           paddingBottom: "max(8px, env(safe-area-inset-bottom, 8px))",
@@ -71,12 +71,12 @@ export default function OnboardingIntro() {
               onClick={() => navigate("/")}
               className="w-[56px] h-[56px] rounded-[6px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
               style={{
-                border: "1.5px solid rgba(255,255,255,0.25)",
-                backgroundColor: "transparent",
+                border: "1.5px solid #E5E7EB",
+                backgroundColor: "#F7F7F7",
               }}
               data-testid="button-intro-back"
             >
-              <ChevronLeft className="w-[18px] h-[18px]" style={{ color: OB.text }} />
+              <ChevronLeft className="w-[18px] h-[18px]" style={{ color: "#111111" }} />
             </button>
             <button
               onClick={() => navigate("/onboarding/city")}
@@ -89,7 +89,7 @@ export default function OnboardingIntro() {
             </button>
           </div>
           <div className="flex items-center justify-center gap-1 mt-2.5 pb-0.5">
-            <span className="text-[14px]" style={{ color: "rgba(255,255,255,0.7)" }}>
+            <span className="text-[14px]" style={{ color: "#6B7280" }}>
               {t("onboarding.intro.alreadyAccount")}
             </span>
             <button

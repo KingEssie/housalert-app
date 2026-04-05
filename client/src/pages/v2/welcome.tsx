@@ -11,7 +11,7 @@ import { Eye, EyeOff, ChevronDown, ArrowRight, Loader2, Star } from "lucide-reac
 import { HousAlertLogo } from "@/components/housalert-logo";
 
 const ACCENT = "rgb(var(--ha-primary))";
-const BG = "#111111";
+const BG = "#ffffff";
 
 export default function V2WelcomePage() {
   const [, navigate] = useLocation();
@@ -108,20 +108,20 @@ export default function V2WelcomePage() {
       <header className="w-full px-6 h-[52px] flex items-center justify-between relative z-50">
         <HousAlertLogo
           size={30}
-          textClassName="font-semibold text-white text-[18px] tracking-[-0.01em]"
+          textClassName="font-semibold text-[#111111] text-[18px] tracking-[-0.01em]"
         />
 
         <div className="relative">
           <button
             onClick={() => setShowLangPicker(!showLangPicker)}
-            className="flex items-center gap-1 text-[13px] font-medium text-white/50 hover:text-white/70 transition-colors px-2.5 py-1.5 rounded-[6px] hover:bg-white/5"
+            className="flex items-center gap-1 text-[13px] font-medium text-[#9CA3AF] hover:text-[#6B7280] transition-colors px-2.5 py-1.5 rounded-[6px] hover:bg-[#F7F7F7]"
             data-testid="button-v2-language"
           >
             {currentLang.short}
             <ChevronDown className="w-3.5 h-3.5" />
           </button>
           {showLangPicker && (
-            <div className="absolute right-0 top-full mt-1.5 bg-[#111111] border border-white/10 rounded-[6px] shadow-2xl py-1 z-50 min-w-[150px]">
+            <div className="absolute right-0 top-full mt-1.5 bg-white border border-[#E5E7EB] rounded-[6px] shadow-[0_4px_16px_rgba(0,0,0,0.08)] py-1 z-50 min-w-[150px]">
               {languages.map((l) => (
                 <button
                   key={l.code}
@@ -130,15 +130,15 @@ export default function V2WelcomePage() {
                     updateOnboarding({ language: l.code });
                     setShowLangPicker(false);
                   }}
-                  className={`w-full px-4 py-2.5 text-left text-[14px] flex items-center justify-between hover:bg-white/5 transition-colors ${
+                  className={`w-full px-4 py-2.5 text-left text-[14px] flex items-center justify-between hover:bg-[#F9FAFB] transition-colors ${
                     locale === l.code
                       ? "text-ha-primary font-medium"
-                      : "text-white/70"
+                      : "text-[#6B7280]"
                   }`}
                   data-testid={`lang-${l.code}`}
                 >
                   <span>{l.label}</span>
-                  <span className="text-[12px] text-white/30">{l.short}</span>
+                  <span className="text-[12px] text-[#9CA3AF]">{l.short}</span>
                 </button>
               ))}
             </div>
@@ -149,7 +149,7 @@ export default function V2WelcomePage() {
       <main className="flex-1 flex flex-col px-6 max-w-[420px] w-full mx-auto">
         <div className="pt-10 pb-8">
           <h1
-            className="text-[30px] font-bold leading-[1.12] tracking-[-0.025em] text-white"
+            className="text-[30px] font-bold leading-[1.12] tracking-[-0.025em] text-[#111111]"
             data-testid="text-v2-welcome-title"
           >
             {t("v2.welcome.title")}
@@ -158,7 +158,7 @@ export default function V2WelcomePage() {
 
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-2.5">
-            <label className="text-[13px] font-semibold text-white/55 tracking-wide">
+            <label className="text-[13px] font-semibold text-[#6B7280] tracking-wide">
               {t("v2.welcome.emailLabel")}
             </label>
             <input
@@ -167,13 +167,13 @@ export default function V2WelcomePage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("v2.welcome.emailPlaceholder")}
               autoComplete="email"
-              className="w-full h-[56px] rounded-[6px] bg-white px-5 text-[16px] text-[#111111] placeholder-[#9CA3AF] outline-none border-2 border-transparent focus:border-ha-primary transition-colors"
+              className="w-full h-[56px] rounded-[6px] bg-white px-5 text-[16px] text-[#111111] placeholder-[#9CA3AF] outline-none border-2 border-[#E5E7EB] focus:border-ha-primary transition-colors"
               data-testid="input-v2-email"
             />
           </div>
 
           <div className="flex flex-col gap-2.5">
-            <label className="text-[13px] font-semibold text-white/55 tracking-wide">
+            <label className="text-[13px] font-semibold text-[#6B7280] tracking-wide">
               {t("v2.welcome.passwordLabel")}
             </label>
             <div className="relative">
@@ -183,7 +183,7 @@ export default function V2WelcomePage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t("v2.welcome.passwordPlaceholder")}
                 autoComplete="current-password"
-                className="w-full h-[56px] rounded-[6px] bg-white px-5 pr-14 text-[16px] text-[#111111] placeholder-[#9CA3AF] outline-none border-2 border-transparent focus:border-ha-primary transition-colors"
+                className="w-full h-[56px] rounded-[6px] bg-white px-5 pr-14 text-[16px] text-[#111111] placeholder-[#9CA3AF] outline-none border-2 border-[#E5E7EB] focus:border-ha-primary transition-colors"
                 data-testid="input-v2-password"
               />
               <button
@@ -233,11 +233,11 @@ export default function V2WelcomePage() {
         </button>
 
         <div className="flex items-center gap-4 my-7">
-          <div className="flex-1 h-px bg-white/10" />
-          <span className="text-[12px] text-white/25 font-semibold tracking-wider">
+          <div className="flex-1 h-px bg-[#E5E7EB]" />
+          <span className="text-[12px] text-[#9CA3AF] font-semibold tracking-wider">
             {t("v2.welcome.or")}
           </span>
-          <div className="flex-1 h-px bg-white/10" />
+          <div className="flex-1 h-px bg-[#E5E7EB]" />
         </div>
 
         <button
@@ -262,13 +262,13 @@ export default function V2WelcomePage() {
                 key={i}
                 className="w-[14px] h-[14px]"
                 fill={i <= 4 ? "#16A34A" : "none"}
-                stroke={i <= 4 ? "#16A34A" : "rgba(255,255,255,0.2)"}
+                stroke={i <= 4 ? "#16A34A" : "#E5E7EB"}
               />
             ))}
           </div>
-          <span className="text-[13px] font-semibold text-white/50">4.8</span>
-          <span className="text-[12px] text-white/30">•</span>
-          <span className="text-[12px] text-white/30">{t("v2.welcome.trustLine")}</span>
+          <span className="text-[13px] font-semibold text-[#6B7280]">4.8</span>
+          <span className="text-[12px] text-[#9CA3AF]">•</span>
+          <span className="text-[12px] text-[#9CA3AF]">{t("v2.welcome.trustLine")}</span>
         </div>
       </main>
 

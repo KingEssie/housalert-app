@@ -114,7 +114,7 @@ function SegmentedControl({
   return (
     <div
       className="flex p-1 rounded-full"
-      style={{ backgroundColor: isLight ? OBW.tabBg : "rgba(99,102,241,0.12)" }}
+      style={{ backgroundColor: OBW.tabBg }}
       data-testid={testId}
     >
       {options.map((opt) => (
@@ -123,8 +123,8 @@ function SegmentedControl({
           onClick={() => onChange(opt.value)}
           className="flex-1 h-[40px] rounded-full text-[13px] font-semibold transition-all"
           style={{
-            backgroundColor: value === opt.value ? (isLight ? OBW.tabActiveBg : "rgba(99,102,241,0.35)") : "transparent",
-            color: value === opt.value ? (isLight ? OBW.tabActiveColor : "#fff") : t.textSecondary,
+            backgroundColor: value === opt.value ? OBW.tabActiveBg : "transparent",
+            color: value === opt.value ? OBW.tabActiveColor : t.textSecondary,
           }}
           data-testid={`${testId}-${opt.value}`}
         >
@@ -154,7 +154,7 @@ function Toggle({
     <label className="flex items-center gap-3 cursor-pointer" data-testid={testId}>
       <div
         className="w-[44px] h-[24px] rounded-full p-[2px] transition-colors shrink-0"
-        style={{ backgroundColor: checked ? OB.pink : (isLight ? "#E5E7EB" : "rgba(255,255,255,0.15)") }}
+        style={{ backgroundColor: checked ? OB.pink : "#E5E7EB" }}
         onClick={() => onChange(!checked)}
       >
         <div
@@ -188,7 +188,7 @@ function RangeSlider({
 }) {
   const t = theme || OB;
   const isLight = theme === OBW;
-  const trackInactive = isLight ? "#E5E7EB" : "rgba(255,255,255,0.1)";
+  const trackInactive = "#E5E7EB";
   const pct = ((value - min) / (max - min)) * 100;
   return (
     <div data-testid={testId}>
@@ -238,7 +238,7 @@ function DualRangeSlider({
 }) {
   const t = theme || OB;
   const isLight = theme === OBW;
-  const trackInactive = isLight ? "#E5E7EB" : "rgba(255,255,255,0.1)";
+  const trackInactive = "#E5E7EB";
   const pctLow = ((valueLow - min) / (max - min)) * 100;
   const pctHigh = ((valueHigh - min) / (max - min)) * 100;
   const trackBg = `linear-gradient(to right, ${trackInactive} 0%, ${trackInactive} ${pctLow}%, ${OB.pink} ${pctLow}%, ${OB.pink} ${pctHigh}%, ${trackInactive} ${pctHigh}%, ${trackInactive} 100%)`;
@@ -575,7 +575,7 @@ export default function OnboardingFilters() {
         </label>
         <div
           className="flex p-1 rounded-full"
-          style={{ backgroundColor: "rgba(99,102,241,0.12)" }}
+          style={{ backgroundColor: "#F3F4F6" }}
           data-testid="rooms-selector"
         >
           {ROOM_OPTIONS.map((opt) => (
@@ -584,7 +584,7 @@ export default function OnboardingFilters() {
               onClick={() => update({ minRooms: opt.value })}
               className="flex-1 h-[40px] rounded-full text-[13px] font-semibold transition-all"
               style={{
-                backgroundColor: f.minRooms === opt.value ? "rgba(99,102,241,0.35)" : "transparent",
+                backgroundColor: f.minRooms === opt.value ? "rgb(var(--ha-primary))" : "transparent",
                 color: f.minRooms === opt.value ? "#fff" : T.textSecondary,
               }}
               data-testid={`rooms-${opt.value}`}
@@ -814,7 +814,7 @@ export default function OnboardingFilters() {
 
   return (
     <div
-      className="min-h-[100dvh] flex flex-col ob-dark"
+      className="min-h-[100dvh] flex flex-col"
       style={{ background: T.gradient }}
       data-testid="screen-onboarding-filters"
     >
@@ -843,7 +843,7 @@ export default function OnboardingFilters() {
           <button
             onClick={handleClose}
             className="w-8 h-8 rounded-full flex items-center justify-center active:scale-95 transition-transform"
-            style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
+            style={{ backgroundColor: "#F7F7F7" }}
             data-testid="button-filters-close"
           >
             <X className="w-4 h-4" style={{ color: T.textSecondary }} />

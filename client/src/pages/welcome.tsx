@@ -11,12 +11,12 @@ import { apiFetch } from "@/lib/api-base";
 import { useToast } from "@/hooks/use-toast";
 
 const OB = {
-  gradient: "linear-gradient(180deg, #111111 0%, #0a0a0a 100%)",
+  gradient: "#ffffff",
   pink: "rgb(var(--ha-primary))",
   pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #D70466 100%)",
   pinkShadow: "0 4px 15px rgba(255,56,92,0.3)",
-  text: "#ffffff",
-  textSecondary: "rgba(255,255,255,0.65)",
+  text: "#111111",
+  textSecondary: "#6B7280",
 };
 
 const LANGUAGES: { code: Locale; label: string; flag: string }[] = [
@@ -56,20 +56,20 @@ function LanguageDropdown() {
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label="Select language"
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] bg-white/10 backdrop-blur-md hover:bg-white/15 transition-colors active:scale-[0.96]"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] bg-[#F7F7F7] hover:bg-[#F0F0F0] transition-colors active:scale-[0.96]"
         data-testid="button-language-selector"
       >
         <span className="text-[14px]">{current.flag}</span>
-        <span className="text-[12px] font-semibold text-white">{current.label}</span>
-        <ChevronDown className={`w-3.5 h-3.5 text-white/80 transition-transform ${open ? "rotate-180" : ""}`} />
+        <span className="text-[12px] font-semibold text-[#111111]">{current.label}</span>
+        <ChevronDown className={`w-3.5 h-3.5 text-[#9CA3AF] transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
         <div
           role="listbox"
           aria-label="Languages"
-          className="absolute top-full right-0 mt-1.5 w-[180px] rounded-[6px] border overflow-hidden z-50 shadow-[0_8px_30px_rgba(0,0,0,0.3)]"
-          style={{ backgroundColor: "rgba(21,18,38,0.95)", borderColor: "rgba(255,255,255,0.1)" }}
+          className="absolute top-full right-0 mt-1.5 w-[180px] rounded-[6px] border overflow-hidden z-50 shadow-[0_4px_16px_rgba(0,0,0,0.08)]"
+          style={{ backgroundColor: "#ffffff", borderColor: "#E5E7EB" }}
         >
           {LANGUAGES.map((lang) => {
             const isActive = locale === lang.code;
@@ -79,11 +79,11 @@ function LanguageDropdown() {
                 role="option"
                 aria-selected={isActive}
                 onClick={() => { setLocale(lang.code); setOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-3 transition-colors ${isActive ? "bg-white/10" : "hover:bg-white/5"}`}
+                className={`w-full flex items-center gap-3 px-4 py-3 transition-colors ${isActive ? "bg-[#F9FAFB]" : "hover:bg-[#F9FAFB]"}`}
                 data-testid={`button-lang-${lang.code}`}
               >
                 <span className="text-[16px]">{lang.flag}</span>
-                <span className={`text-[14px] font-semibold ${isActive ? "text-ha-primary" : "text-white"}`}>
+                <span className={`text-[14px] font-semibold ${isActive ? "text-ha-primary" : "text-[#111111]"}`}>
                   {lang.label}
                 </span>
                 {isActive && (
@@ -172,7 +172,7 @@ export default function WelcomePage() {
 
   return (
     <div
-      className="h-[100dvh] flex flex-col overflow-auto ob-dark"
+      className="h-[100dvh] flex flex-col overflow-auto"
       style={{ background: OB.gradient }}
       data-testid="welcome-page"
     >
@@ -180,14 +180,14 @@ export default function WelcomePage() {
         <HousAlertLogo
           size={28}
           showText={true}
-          textClassName="font-bold text-white text-[17px] tracking-[-0.01em]"
+          textClassName="font-bold text-[#111111] text-[17px] tracking-[-0.01em]"
         />
         <LanguageDropdown />
       </header>
 
       <main className="flex-1 flex flex-col w-full px-4 pt-6 pb-[max(env(safe-area-inset-bottom),12px)]">
         <h1
-          className="text-[26px] font-extrabold text-white leading-[1.15] tracking-[-0.02em] mb-8 whitespace-nowrap"
+          className="text-[26px] font-extrabold text-[#111111] leading-[1.15] tracking-[-0.02em] mb-8 whitespace-nowrap"
           data-testid="text-auth-title"
         >
           {t("v2.welcome.title")}
@@ -195,7 +195,7 @@ export default function WelcomePage() {
 
         <form onSubmit={handleLogin} className="flex flex-col gap-6">
           <div className="flex flex-col gap-1.5">
-            <label className="text-[14px] font-bold text-white" htmlFor="welcome-email">
+            <label className="text-[14px] font-bold text-[#111111]" htmlFor="welcome-email">
               {t("v2.welcome.emailLabel")}
             </label>
             <input
@@ -205,13 +205,14 @@ export default function WelcomePage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("v2.welcome.emailPlaceholder")}
               required
-              className="w-full ha-field ha-field-light"
+              className="w-full ha-field"
+              style={{ backgroundColor: "#ffffff", borderColor: "#E5E7EB" }}
               data-testid="input-email"
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-[14px] font-bold text-white" htmlFor="welcome-password">
+            <label className="text-[14px] font-bold text-[#111111]" htmlFor="welcome-password">
               {t("v2.welcome.passwordLabel")}
             </label>
             <div className="relative">
@@ -222,7 +223,8 @@ export default function WelcomePage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={t("v2.welcome.passwordPlaceholder")}
                 required
-                className="w-full ha-field ha-field-light pr-12"
+                className="w-full ha-field pr-12"
+                style={{ backgroundColor: "#ffffff", borderColor: "#E5E7EB" }}
                 data-testid="input-password"
               />
               <button
@@ -272,11 +274,11 @@ export default function WelcomePage() {
         </form>
 
         <div className="flex items-center gap-3 my-6">
-          <div className="flex-1 h-px" style={{ backgroundColor: "rgba(255,255,255,0.15)" }} />
-          <span className="text-[13px] font-semibold tracking-wide" style={{ color: "rgba(255,255,255,0.5)" }}>
+          <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
+          <span className="text-[13px] font-semibold tracking-wide" style={{ color: "#9CA3AF" }}>
             {t("v2.welcome.or") || "OF"}
           </span>
-          <div className="flex-1 h-px" style={{ backgroundColor: "rgba(255,255,255,0.15)" }} />
+          <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
         </div>
 
         <button
@@ -299,7 +301,7 @@ export default function WelcomePage() {
         <div className="flex-1" />
 
         <div className="flex items-center justify-center gap-2.5 pt-6 pb-2">
-          <span className="text-[13px] font-semibold" style={{ color: "rgba(255,255,255,0.55)" }}>
+          <span className="text-[13px] font-semibold" style={{ color: "#9CA3AF" }}>
             Trustpilot
           </span>
           <div className="flex items-center gap-[3px]">
@@ -317,7 +319,7 @@ export default function WelcomePage() {
               </div>
             ))}
           </div>
-          <span className="text-[14px] font-bold" style={{ color: "rgba(255,255,255,0.7)" }}>
+          <span className="text-[14px] font-bold" style={{ color: "#6B7280" }}>
             4.8
           </span>
         </div>

@@ -288,7 +288,7 @@ export default function OnboardingCity() {
 
   return (
     <div
-      className="min-h-[100dvh] flex flex-col ob-dark"
+      className="min-h-[100dvh] flex flex-col"
       style={{ background: T.gradient }}
       data-testid="screen-onboarding-city"
     >
@@ -317,10 +317,10 @@ export default function OnboardingCity() {
           <button
             onClick={handleClose}
             className="w-[36px] h-[36px] rounded-full flex items-center justify-center active:scale-95 transition-transform"
-            style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
+            style={{ backgroundColor: "#F7F7F7" }}
             data-testid="button-city-close"
           >
-            <X className="w-4 h-4" style={{ color: "rgba(255,255,255,0.7)" }} />
+            <X className="w-4 h-4" style={{ color: "#6B7280" }} />
           </button>
         </div>
       </header>
@@ -343,7 +343,7 @@ export default function OnboardingCity() {
               if (selectedCity) setSelectedCity(null);
             }}
             placeholder="Zoek stad..."
-            className="w-full pr-12 ha-field ha-field-dark"
+            className="w-full pr-12 ha-field"
             autoFocus
             data-testid="input-city-search"
           />
@@ -360,7 +360,7 @@ export default function OnboardingCity() {
               <button
                 key={city.name}
                 onClick={() => selectPresetCity(city)}
-                className="w-full flex items-center gap-3 text-left transition-colors hover:bg-white/5"
+                className="w-full flex items-center gap-3 text-left transition-colors hover:bg-[#F9FAFB]"
                 style={{
                   padding: "14px 0",
                   borderBottom: i < presetMatches.length - 1 ? `1px solid ${T.divider}` : "none",
@@ -376,7 +376,7 @@ export default function OnboardingCity() {
                 <button
                   key={r.placeId || i}
                   onClick={() => selectGeocoderCity(r)}
-                  className="w-full flex items-center gap-3 text-left transition-colors hover:bg-white/5"
+                  className="w-full flex items-center gap-3 text-left transition-colors hover:bg-[#F9FAFB]"
                   style={{
                     padding: "14px 0",
                     borderBottom: `1px solid ${T.divider}`,
@@ -411,7 +411,7 @@ export default function OnboardingCity() {
             <span className="text-[16px] font-medium flex-1" style={{ color: T.text }}>{selectedCity.name}</span>
             <button
               onClick={() => { setSelectedCity(null); setSearch(""); }}
-              className="text-[13px] font-medium px-3 py-1.5 rounded-[6px] transition-colors hover:bg-white/5"
+              className="text-[13px] font-medium px-3 py-1.5 rounded-[6px] transition-colors hover:bg-[#F9FAFB]"
               style={{ color: T.textSecondary }}
               data-testid="button-city-change"
             >

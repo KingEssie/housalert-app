@@ -39,7 +39,7 @@ export default function OnboardingEmail() {
 
   return (
     <div
-      className={`min-h-[100dvh] flex flex-col ${w ? "" : "ob-dark"}`}
+      className="min-h-[100dvh] flex flex-col"
       style={{ background: T.gradient }}
       data-testid="screen-onboarding-email"
     >

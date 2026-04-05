@@ -1598,13 +1598,13 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           {/* 1. Account */}
           <div>
             <SectionTitle>{t("settings.sectionAccount")}</SectionTitle>
-            <div className="rounded-[14px] bg-white border border-[#F0F0F0] overflow-hidden">
+            <div className="rounded-[14px] bg-white border border-[#F0F0F0]">
               <CardRow label="E-mail" value={user.email} testId="row-account-email" />
               <div className="h-px bg-[#F3F4F6] mx-4" />
               <div className="relative" ref={langRef}>
                 <button
                   onClick={() => setShowLangDropdown(!showLangDropdown)}
-                  className="w-full flex items-center justify-between h-[50px] px-4 text-left active:bg-[#F9FAFB] transition-colors"
+                  className="w-full flex items-center justify-between h-[50px] px-4 text-left active:bg-[#F9FAFB] transition-colors rounded-b-[14px]"
                   data-testid="row-account-language"
                 >
                   <span className="text-[15px] font-medium text-[#111111]">{t("profile.language")}</span>
@@ -1614,7 +1614,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   </div>
                 </button>
                 {showLangDropdown && (
-                  <div className="absolute right-3 top-[52px] z-30 w-[200px] bg-white rounded-[12px] border border-[#E5E7EB] shadow-[0_4px_16px_rgba(0,0,0,0.08)] overflow-hidden animate-in fade-in-0 zoom-in-95 duration-150">
+                  <div className="absolute right-3 top-[52px] z-50 w-[200px] bg-white rounded-[12px] border border-[#E5E7EB] shadow-[0_4px_16px_rgba(0,0,0,0.08)] overflow-hidden animate-in fade-in-0 zoom-in-95 duration-150">
                     {LANG_OPTIONS.map((lang, i) => (
                       <button
                         key={lang.code}

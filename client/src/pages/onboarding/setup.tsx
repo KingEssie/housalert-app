@@ -97,17 +97,17 @@ function SetupShell({
   showBack?: boolean;
 }) {
   return (
-    <div className="min-h-[100dvh] flex flex-col ob-dark" style={{ background: "linear-gradient(180deg, #111111 0%, #0a0a0a 100%)" }} data-testid={`setup-step-${step}`}>
-      <header className="sticky top-0 z-20 backdrop-blur-md border-b" style={{ backgroundColor: "rgba(21,18,38,0.95)", borderColor: "rgba(255,255,255,0.08)" }}>
+    <div className="min-h-[100dvh] flex flex-col" style={{ background: "#ffffff" }} data-testid={`setup-step-${step}`}>
+      <header className="sticky top-0 z-20 backdrop-blur-md border-b" style={{ backgroundColor: "#ffffff", borderColor: "#E5E7EB" }}>
         <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
           {showBack && onBack ? (
             <button
               onClick={onBack}
               className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-transform"
-              style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
+              style={{ backgroundColor: "#F7F7F7" }}
               data-testid="button-setup-back"
             >
-              <ChevronLeft className="w-5 h-5" style={{ color: "rgba(255,255,255,0.7)" }} />
+              <ChevronLeft className="w-5 h-5" style={{ color: "#6B7280" }} />
             </button>
           ) : (
             <div className="w-10" />
@@ -225,8 +225,8 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
               onClick={() => setSelectedPlan(plan.id)}
               className="w-full rounded-[--ha-card-radius] border-2 transition-all text-left relative overflow-hidden"
               style={{
-                borderColor: isSelected ? BRAND : "rgba(255,255,255,0.12)",
-                backgroundColor: isSelected ? "rgba(255,56,92,0.08)" : "rgba(255,255,255,0.04)",
+                borderColor: isSelected ? BRAND : "#E5E7EB",
+                backgroundColor: isSelected ? "rgba(255,56,92,0.08)" : "#ffffff",
               }}
               data-testid={`card-plan-${plan.id}`}
             >
@@ -240,7 +240,7 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
                   <div
                     className="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors"
                     style={{
-                      borderColor: isSelected ? BRAND : "rgba(255,255,255,0.25)",
+                      borderColor: isSelected ? BRAND : "#D1D5DB",
                       backgroundColor: isSelected ? BRAND : "transparent",
                     }}
                   >
@@ -311,11 +311,11 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
         <HousAlertLogo size={24} />
         <div className="text-right">
           <p className="text-[13px] font-bold" style={{ color: "#00b67a" }}>★ 4,6 uit 5</p>
-          <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.5)" }}>Trustpilot</p>
+          <p className="text-[11px]" style={{ color: "#9CA3AF" }}>Trustpilot</p>
         </div>
       </div>
 
-      <h1 className="text-[28px] font-extrabold tracking-[-0.02em] mb-6" style={{ color: "#ffffff" }} data-testid="text-limited-title">
+      <h1 className="text-[28px] font-extrabold tracking-[-0.02em] mb-6" style={{ color: "#111111" }} data-testid="text-limited-title">
         {t("onboardingFlow.limitedAccess.title")}
       </h1>
 
@@ -327,7 +327,7 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
             </div>
             <div>
               <p className="text-[15px] font-bold text-ha-danger mb-0.5">{block.title}</p>
-              <p className="text-[13px] leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>{block.desc}</p>
+              <p className="text-[13px] leading-relaxed" style={{ color: "#6B7280" }}>{block.desc}</p>
             </div>
           </div>
         ))}
@@ -341,9 +341,9 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
           onClick={onContinue}
           className="w-full h-[56px] rounded-[6px] text-[15px] font-semibold transition-all active:scale-[0.97]"
           style={{
-            border: "1.5px solid rgba(255,255,255,0.2)",
+            border: "1.5px solid #E5E7EB",
             backgroundColor: "transparent",
-            color: "rgba(255,255,255,0.7)",
+            color: "#6B7280",
           }}
           data-testid="button-limited-continue"
         >
@@ -351,11 +351,11 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
         </button>
       </div>
 
-      <div className="mt-4 rounded-[6px] p-4" style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
-        <p className="text-[14px] font-bold mb-1" style={{ color: "#ffffff" }}>
+      <div className="mt-4 rounded-[6px] p-4" style={{ backgroundColor: "#F7F7F7", border: "1px solid #E5E7EB" }}>
+        <p className="text-[14px] font-bold mb-1" style={{ color: "#111111" }}>
           {t("onboardingFlow.limitedAccess.infoTitle")}
         </p>
-        <p className="text-[13px] leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
+        <p className="text-[13px] leading-relaxed" style={{ color: "#9CA3AF" }}>
           {t("onboardingFlow.limitedAccess.infoDesc")}
         </p>
       </div>
@@ -378,16 +378,16 @@ function LightShell({
 }) {
   return (
     <div className="min-h-[100dvh] flex flex-col" style={{ backgroundColor: "#F7F7F7" }} data-testid={`setup-step-${step}`}>
-      <header className="sticky top-0 z-20 border-b" style={{ backgroundColor: "rgba(21,18,38,0.98)", borderColor: "rgba(255,255,255,0.08)" }}>
+      <header className="sticky top-0 z-20 border-b" style={{ backgroundColor: "#ffffff", borderColor: "#E5E7EB" }}>
         <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
           {showBack && onBack ? (
             <button
               onClick={onBack}
               className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-transform"
-              style={{ backgroundColor: "rgba(255,255,255,0.15)" }}
+              style={{ backgroundColor: "#E5E7EB" }}
               data-testid="button-setup-back"
             >
-              <ChevronLeft className="w-5 h-5 text-white/70" />
+              <ChevronLeft className="w-5 h-5 text-[#6B7280]" />
             </button>
           ) : (
             <div className="w-10" />
@@ -510,15 +510,15 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
 
         <div className="flex items-center justify-center py-8">
           <div className="relative">
-            <div className="w-[240px] h-[140px] rounded-[--ha-card-radius] overflow-hidden" style={{ background: "linear-gradient(135deg, #111111 0%, #1a1a1a 100%)" }}>
+            <div className="w-[240px] h-[140px] rounded-[--ha-card-radius] overflow-hidden" style={{ background: "#F7F7F7", border: "1px solid #E5E7EB" }}>
               <div className="absolute top-3 left-3 flex items-center gap-1.5">
                 <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: BRAND }} />
-                <div className="h-2 w-14 rounded-full bg-white/20" />
+                <div className="h-2 w-14 rounded-full bg-[#E5E7EB]" />
               </div>
               <div className="absolute top-9 left-3 right-3 space-y-2">
-                <div className="h-2 w-full rounded-full bg-white/10" />
-                <div className="h-2 w-3/4 rounded-full bg-white/10" />
-                <div className="h-2 w-5/6 rounded-full bg-white/10" />
+                <div className="h-2 w-full rounded-full bg-[#E5E7EB]" />
+                <div className="h-2 w-3/4 rounded-full bg-[#E5E7EB]" />
+                <div className="h-2 w-5/6 rounded-full bg-[#E5E7EB]" />
               </div>
             </div>
             <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[200px] rounded-[8px] bg-white px-3 py-2.5 flex items-center gap-2.5" style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.15)" }}>
@@ -1350,7 +1350,7 @@ export default function OnboardingSetup() {
 
   if (!profileLoaded) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center ob-dark" style={{ background: "linear-gradient(180deg, #111111 0%, #0a0a0a 100%)" }}>
+      <div className="min-h-[100dvh] flex items-center justify-center" style={{ background: "#ffffff" }}>
         <Loader2 className="w-8 h-8 animate-spin" style={{ color: BRAND }} />
       </div>
     );

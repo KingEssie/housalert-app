@@ -99,10 +99,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col ob-dark" style={{ background: OB.gradient }}>
+    <div className="min-h-screen flex flex-col" style={{ background: OB.gradient }}>
       <header className="w-full pt-3 px-4">
         <div className="max-w-[480px] mx-auto flex items-center justify-between">
-          <HousAlertLogo size={32} textClassName="font-bold text-white text-[18px]" />
+          <HousAlertLogo size={32} textClassName="font-bold text-[#111111] text-[18px]" />
           <LanguageSwitcher />
         </div>
       </header>
@@ -129,8 +129,8 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full ha-field ha-field-dark"
-                style={{ backgroundColor: "#111111", borderColor: "rgba(255,255,255,0.12)" }}
+                className="w-full ha-field"
+                style={{ backgroundColor: "#ffffff", borderColor: "#E5E7EB" }}
                 data-testid="input-login-email"
               />
             </div>
@@ -147,15 +147,15 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full ha-field ha-field-dark pr-12"
-                  style={{ backgroundColor: "#111111", borderColor: "rgba(255,255,255,0.12)" }}
+                  className="w-full ha-field pr-12"
+                  style={{ backgroundColor: "#ffffff", borderColor: "#E5E7EB" }}
                   data-testid="input-login-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 p-0"
-                  style={{ color: "rgba(255,255,255,0.5)" }}
+                  style={{ color: "#9CA3AF" }}
                   data-testid="button-toggle-password"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -190,11 +190,11 @@ export default function LoginPage() {
           </form>
 
           <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px" style={{ backgroundColor: "rgba(255,255,255,0.15)" }} />
-            <span className="text-[13px] font-semibold tracking-wide" style={{ color: "rgba(255,255,255,0.5)" }}>
+            <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
+            <span className="text-[13px] font-semibold tracking-wide" style={{ color: "#9CA3AF" }}>
               {t("auth.login.or") || "OF"}
             </span>
-            <div className="flex-1 h-px" style={{ backgroundColor: "rgba(255,255,255,0.15)" }} />
+            <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
           </div>
 
           <button
@@ -214,7 +214,7 @@ export default function LoginPage() {
           <div className="flex-1" />
 
           <div className="flex items-center justify-center gap-2 pt-8 pb-2">
-            <span className="text-[13px] font-semibold" style={{ color: "rgba(255,255,255,0.6)" }}>
+            <span className="text-[13px] font-semibold" style={{ color: "#9CA3AF" }}>
               Trustpilot
             </span>
             <div className="flex items-center gap-0.5">
@@ -232,7 +232,7 @@ export default function LoginPage() {
                 </div>
               ))}
             </div>
-            <span className="text-[14px] font-bold" style={{ color: "rgba(255,255,255,0.7)" }}>
+            <span className="text-[14px] font-bold" style={{ color: "#6B7280" }}>
               4.8
             </span>
           </div>

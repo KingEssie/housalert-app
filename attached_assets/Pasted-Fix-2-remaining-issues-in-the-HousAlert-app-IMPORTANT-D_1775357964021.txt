@@ -1,0 +1,84 @@
+Fix 2 remaining issues in the HousAlert app.
+
+IMPORTANT:
+Do NOT redesign unrelated screens.
+This is a focused bugfix + UI consistency task.
+
+==================================================
+1. ONBOARDING / SIGNUP FLOW STILL USES DARK THEME
+==================================================
+
+Problem:
+After signing up, the onboarding flow still shows the old dark theme.
+I want the onboarding/signup/auth flow to use the SAME default light theme as the rest of the app.
+
+Requirements:
+- audit the full onboarding flow starting from signup/login through all onboarding steps
+- find every auth/onboarding layout, wrapper, page, and shared component still using dark theme styles
+- remove all dark-theme backgrounds, dark cards, dark text styles, and dark wrappers
+- make onboarding use the same light theme system as the main app
+
+Specifically fix:
+- page background
+- card background
+- text colors
+- buttons
+- inputs
+- progress UI
+- onboarding step screens
+- auth/signup/login wrappers if they still force dark mode
+
+Important:
+- onboarding should look visually consistent with the current HousAlert light theme
+- no dark screens should remain anywhere in the signup/onboarding flow
+- if there is a theme toggle/default in onboarding, set default to light
+- if there are separate onboarding layout files, update those too
+
+==================================================
+2. LANGUAGE ROW IN ACCOUNT/PROFILE DOES NOT OPEN A WORKING DROPDOWN
+==================================================
+
+Problem:
+When clicking the language row in the account/profile section, no usable dropdown appears to choose a language.
+
+I want:
+- tapping the "Taal" row opens an inline dropdown/popover directly from that row
+- user can choose language there immediately
+- no separate language page should be used
+
+Requirements:
+- options:
+  - 🇳🇱 Nederlands
+  - 🇬🇧 Engels
+- selected language must be visible in the row
+- dropdown must open reliably on tap/click
+- dropdown must be positioned correctly and remain visible
+- dropdown must not render behind other elements
+- dropdown must close after selecting a language
+- keep existing language switching logic intact
+
+Debug and fix all possible causes:
+- click handler not firing
+- wrong route still being used
+- dropdown state not connected
+- z-index issue
+- overflow clipping
+- popover mounted in wrong place
+- old separate language page still intercepting the action
+
+If the row still links to a separate page anywhere, remove that behavior and replace it with the inline dropdown.
+
+==================================================
+3. OUTPUT
+==================================================
+
+After finishing, show:
+1. which onboarding/auth files were still using dark theme
+2. which files were updated to light theme
+3. confirmation that onboarding now uses the light theme throughout
+4. which component/file controls the language row
+5. why the dropdown was not working before
+6. confirmation that the inline dropdown now works with:
+   - 🇳🇱 Nederlands
+   - 🇬🇧 Engels
+7. which files were changed

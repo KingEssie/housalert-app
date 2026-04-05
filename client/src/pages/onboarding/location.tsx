@@ -80,7 +80,7 @@ export default function OnboardingLocation() {
 
   return (
     <div
-      className={`min-h-[100dvh] flex flex-col ${w ? "" : "ob-dark"}`}
+      className="min-h-[100dvh] flex flex-col"
       style={{ background: T.gradient, borderRadius: w ? 0 : undefined }}
       data-testid="screen-onboarding-location"
     >
@@ -110,10 +110,10 @@ export default function OnboardingLocation() {
           <button
             onClick={handleClose}
             className="w-[36px] h-[36px] rounded-full flex items-center justify-center active:scale-95 transition-transform"
-            style={{ backgroundColor: w ? OBW.closeBtnBg : "rgba(255,255,255,0.08)" }}
+            style={{ backgroundColor: OBW.closeBtnBg }}
             data-testid="button-location-close"
           >
-            <X className="w-4 h-4" style={{ color: w ? OBW.closeBtnColor : "rgba(255,255,255,0.7)" }} />
+            <X className="w-4 h-4" style={{ color: OBW.closeBtnColor }} />
           </button>
         </div>
       </header>
@@ -127,7 +127,7 @@ export default function OnboardingLocation() {
         </p>
         <button
           onClick={() => navigate(appendWebsiteParams("/onboarding/city", searchString))}
-          className={`w-full flex items-center gap-3 mb-5 ${w ? "ha-field" : "ha-field ha-field-dark"}`}
+          className={`w-full flex items-center gap-3 mb-5 ${"ha-field"}`}
           style={w ? { backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text } : undefined}
           data-testid="field-city-display"
         >
@@ -144,7 +144,7 @@ export default function OnboardingLocation() {
         {!w && (
           <div
             className="flex p-1 rounded-full mb-5"
-            style={{ backgroundColor: w ? OBW.tabBg : "rgba(99,102,241,0.12)" }}
+            style={{ backgroundColor: OBW.tabBg }}
             data-testid="location-tabs"
           >
             {TAB_OPTIONS.map((tab) => (
@@ -153,12 +153,8 @@ export default function OnboardingLocation() {
                 onClick={() => setMode(tab.value)}
                 className="flex-1 h-[40px] rounded-full text-[13px] font-semibold transition-all"
                 style={{
-                  backgroundColor: mode === tab.value
-                    ? (w ? OBW.tabActiveBg : "rgba(99,102,241,0.35)")
-                    : "transparent",
-                  color: mode === tab.value
-                    ? (w ? OBW.tabActiveColor : "#fff")
-                    : (w ? OBW.tabInactiveColor : "rgba(255,255,255,0.5)"),
+                  backgroundColor: mode === tab.value ? OBW.tabActiveBg : "transparent",
+                  color: mode === tab.value ? OBW.tabActiveColor : OBW.tabInactiveColor,
                 }}
                 data-testid={`tab-${tab.value}`}
               >
@@ -178,7 +174,7 @@ export default function OnboardingLocation() {
             </p>
             <button
               onClick={() => setShowDistrictPicker(!showDistrictPicker)}
-              className={`w-full flex items-center justify-between shrink-0 ${w ? "ha-field" : "ha-field ha-field-dark"}`}
+              className={`w-full flex items-center justify-between shrink-0 ${"ha-field"}`}
               data-testid="dropdown-districts"
             >
               <span className="text-[15px] font-medium" style={{ color: T.text }}>
@@ -210,7 +206,7 @@ export default function OnboardingLocation() {
                     <button
                       key={d}
                       onClick={() => toggleDistrict(d)}
-                      className={`w-full flex items-center justify-between px-4 transition-colors ${w ? "hover:bg-[#F7F7F7]" : "hover:bg-white/5"}`}
+                      className={`w-full flex items-center justify-between px-4 transition-colors ${"hover:bg-[#F7F7F7]"}`}
                       style={{
                         padding: "12px 16px",
                         borderBottom: i < districtList.length - 1 ? `1px solid ${T.divider}` : "none",
@@ -259,9 +255,9 @@ export default function OnboardingLocation() {
                     style={{
                       border: active
                         ? "1.5px solid rgba(255,56,92,0.6)"
-                        : `1px solid ${w ? OBW.chipBorder : "rgba(255,255,255,0.2)"}`,
+                        : `1px solid ${OBW.chipBorder}`,
                       backgroundColor: active ? OB.selectedBg : "transparent",
-                      color: active ? OB.pink : (w ? OBW.text : "rgba(255,255,255,0.8)"),
+                      color: active ? OB.pink : (OBW.text),
                     }}
                     data-testid={`radius-${km}`}
                   >

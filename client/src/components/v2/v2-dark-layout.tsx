@@ -8,7 +8,7 @@ interface V2DarkScreenLayoutProps {
 export function V2DarkScreenLayout({ children, className = "" }: V2DarkScreenLayoutProps) {
   return (
     <div
-      className={`min-h-[100dvh] bg-[#111111] text-white flex flex-col ${className}`}
+      className={`min-h-[100dvh] bg-white text-[#111111] flex flex-col ${className}`}
       data-testid="v2-dark-layout"
     >
       {children}
@@ -23,7 +23,7 @@ interface V2DarkHeaderProps {
 
 export function V2DarkHeader({ logo, right }: V2DarkHeaderProps) {
   return (
-    <header className="w-full sticky top-0 z-20 bg-[#111111]/95 backdrop-blur-sm">
+    <header className="w-full sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-[#E5E7EB]">
       <div className="max-w-lg mx-auto px-5 h-[56px] flex items-center justify-between">
         <div className="flex items-center gap-2">{logo}</div>
         {right && <div>{right}</div>}

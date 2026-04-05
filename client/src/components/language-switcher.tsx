@@ -21,7 +21,7 @@ export function LanguageSwitcher() {
           className="text-[12px] font-semibold px-1.5 py-0.5 rounded transition-colors"
           style={{
             color: locale === l.code ? OB.text : OB.textMuted,
-            backgroundColor: locale === l.code ? "rgba(255,255,255,0.1)" : "transparent",
+            backgroundColor: locale === l.code ? "#F0F0F0" : "transparent",
           }}
           data-testid={`lang-${l.code}`}
         >

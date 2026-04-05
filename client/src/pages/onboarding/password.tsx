@@ -406,7 +406,7 @@ export default function OnboardingPassword() {
 
   return (
     <div
-      className="min-h-[100dvh] flex flex-col ob-dark"
+      className="min-h-[100dvh] flex flex-col"
       style={{ background: T.gradient }}
       data-testid="screen-onboarding-password"
     >
