@@ -1,0 +1,109 @@
+Create and test two controlled scenarios to verify buddy email delivery before enabling real email sending.
+
+IMPORTANT:
+- Use EMAIL_TEST_MODE = true (DO NOT send real emails)
+- Do NOT modify production users
+- Create temporary test users if needed
+- Clean up test data after if possible
+
+GOAL:
+Verify the two critical scenarios:
+1. Main user ON + Buddy ON → both receive
+2. Main user OFF + Buddy ON → only buddy receives
+
+==================================================
+1. CREATE TEST USERS
+==================================================
+
+Create (or reuse) 2 test users with:
+
+User A:
+- valid email
+- subscription_active = true
+- email_alerts_enabled = true
+
+User B:
+- valid email (different from user A)
+
+Link:
+- Set User B as search buddy for User A
+- Ensure:
+  - search_buddy_email = User B email
+  - search_buddy_status = "active"
+  - search_buddy_enabled = true
+
+==================================================
+2. SCENARIO 1 — MAIN ON + BUDDY ON
+==================================================
+
+Ensure:
+- User A email alerts = true
+- subscription = active
+- buddy = active
+
+Run:
+POST /api/admin/test-email-logic
+{ user_id: User A }
+
+Expected result:
+- main_user_should_receive = true
+- buddy_should_receive = true
+- final_recipients = [User A email, User B email]
+
+==================================================
+3. SCENARIO 2 — MAIN OFF + BUDDY ON
+==================================================
+
+Update:
+- User A email_alerts_enabled = false
+
+Run:
+POST /api/admin/test-email-logic
+{ user_id: User A }
+
+Expected result:
+- main_user_should_receive = false
+- buddy_should_receive = true
+- final_recipients = [User B email]
+
+==================================================
+4. VALIDATION
+==================================================
+
+For both scenarios, verify:
+- subscription_active = true
+- buddy_status = "active"
+- buddy_enabled = true
+- email_not_same = true
+
+Check that:
+- no duplicate emails appear
+- no unexpected recipients appear
+
+==================================================
+5. OUTPUT
+==================================================
+
+Return:
+
+For Scenario 1:
+- main_user_should_receive
+- buddy_should_receive
+- final_recipients
+- reasons
+
+For Scenario 2:
+- main_user_should_receive
+- buddy_should_receive
+- final_recipients
+- reasons
+
+==================================================
+6. CLEANUP (OPTIONAL)
+==================================================
+
+Optionally remove or disable test users after verification.
+
+==================================================
+END
+==================================================
