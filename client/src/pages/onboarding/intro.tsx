@@ -1,5 +1,8 @@
-import { useLocation } from "wouter";
+import { useState, useEffect } from "react";
+import { useLocation, Redirect } from "wouter";
 import { useTranslation } from "@/i18n";
+import { useAuth } from "@/lib/auth";
+import { apiFetch } from "@/lib/api-base";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ArrowRight, ChevronLeft } from "lucide-react";
@@ -14,6 +17,27 @@ const STEPS = [
 export default function OnboardingIntro() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
+  const { user, session } = useAuth();
+  const [redirectHome, setRedirectHome] = useState(false);
+
+  useEffect(() => {
+    if (!user || !session?.access_token) return;
+    let cancelled = false;
+    apiFetch("/api/onboarding-status", {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled && (data.onboarding_completed === true || data.post_paywall_onboarding_completed === true)) {
+          console.log("[INTRO] User already completed onboarding → redirect /home");
+          setRedirectHome(true);
+        }
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [user, session]);
+
+  if (redirectHome) return <Redirect to="/home" />;
 
   return (
     <div className="min-h-[100dvh] flex flex-col" style={{ background: OB.gradient }} data-testid="screen-onboarding-intro">

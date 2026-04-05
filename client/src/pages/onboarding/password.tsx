@@ -134,6 +134,21 @@ export default function OnboardingPassword() {
         }
       }
 
+      if (sessionData?.session?.access_token) {
+        try {
+          await apiFetch("/api/profile-data", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${sessionData.session.access_token}`,
+            },
+            body: JSON.stringify({ onboarding_completed: true }),
+          });
+        } catch (err) {
+          console.error("[signup] Failed to set onboarding_completed:", err);
+        }
+      }
+
       if (referralCode.trim() && sessionData?.session?.access_token) {
         try {
           await apiFetch("/api/referrals/apply", {

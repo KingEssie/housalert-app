@@ -2510,6 +2510,16 @@ export async function registerRoutes(
       }
 
       let completed = rows[0].onboarding_completed === true;
+      let postPaywallCompleted = rows[0].post_paywall_onboarding_completed === true;
+
+      if (!completed && postPaywallCompleted) {
+        log(`[onboarding-status] userId=${user.id.substring(0, 8)}... post_paywall=true but onboarding_completed=false → auto-healing`);
+        await pgPool.query(
+          "UPDATE user_profile_data SET onboarding_completed = true, updated_at = NOW() WHERE user_id = $1",
+          [user.id]
+        );
+        completed = true;
+      }
 
       if (!completed) {
         const { data: profiles } = await supabase
@@ -2526,11 +2536,6 @@ export async function registerRoutes(
           );
           completed = true;
         }
-      }
-
-      let postPaywallCompleted = false;
-      if (completed && rows.length > 0) {
-        postPaywallCompleted = rows[0].post_paywall_onboarding_completed === true;
       }
 
       log(`[onboarding-status] userId=${user.id.substring(0, 8)}... onboarding_completed=${completed} post_paywall=${postPaywallCompleted}`);

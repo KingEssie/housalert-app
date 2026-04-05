@@ -1339,6 +1339,7 @@ export default function OnboardingSetup() {
   async function handleSuccessFinish() {
     trackEvent("setup_complete");
     await saveProfileField({
+      onboarding_completed: true,
       post_paywall_onboarding_completed: true,
       onboarding_current_step: "done",
     });

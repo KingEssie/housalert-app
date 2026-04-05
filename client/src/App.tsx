@@ -79,8 +79,8 @@ function ProtectedRoute({ component: Component, skipOnboardingCheck }: { compone
       .then((res) => res.json())
       .then((data) => {
         if (!cancelled) {
-          const completed = data.onboarding_completed === true;
-          console.log(`[ONBOARDING CHECK] userId=${user.id?.substring(0, 8)}... completed=${completed}`);
+          const completed = data.onboarding_completed === true || data.post_paywall_onboarding_completed === true;
+          console.log(`[ONBOARDING CHECK] userId=${user.id?.substring(0, 8)}... completed=${completed} (onboarding=${data.onboarding_completed}, postPaywall=${data.post_paywall_onboarding_completed})`);
           setNeedsOnboarding(!completed);
           setChecking(false);
         }
@@ -121,8 +121,8 @@ function RootRoute() {
     })
       .then((res) => res.json())
       .then((data) => {
-        const completed = data.onboarding_completed === true;
-        console.log(`[ROOT] onboarding_completed=${completed}`);
+        const completed = data.onboarding_completed === true || data.post_paywall_onboarding_completed === true;
+        console.log(`[ROOT] onboarding_completed=${data.onboarding_completed} post_paywall=${data.post_paywall_onboarding_completed} → completed=${completed}`);
         if (completed) setDestination("/home");
         else setDestination("/onboarding/intro");
       })
