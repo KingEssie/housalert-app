@@ -66,7 +66,7 @@ function getPlans(t: (k: string) => string): Plan[] {
       perMonth: "€17,50 " + t("paywall.perMonth"),
       popular: true,
       discountLabel: "-30%",
-      discountColor: "#FF5A5F",
+      discountColor: "#FF385C",
     },
     {
       id: "monthly",
@@ -133,7 +133,7 @@ function PrimaryBtn({ onClick, children, loading, disabled, testId }: {
       onClick={onClick}
       disabled={disabled || loading}
       className="w-full h-[56px] rounded-[6px] text-[15px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50"
-      style={{ background: "linear-gradient(135deg, #FF5A5F 0%, #FF7E82 100%)", boxShadow: "0 4px 15px rgba(255,90,95,0.3)" }}
+      style={{ background: "#FF385C", boxShadow: "0 4px 15px rgba(255,56,92,0.3)" }}
       data-testid={testId}
     >
       {loading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : children}
@@ -226,7 +226,7 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
               className="w-full rounded-[--ha-card-radius] border-2 transition-all text-left relative overflow-hidden"
               style={{
                 borderColor: isSelected ? BRAND : "rgba(255,255,255,0.12)",
-                backgroundColor: isSelected ? "rgba(255,90,95,0.08)" : "rgba(255,255,255,0.04)",
+                backgroundColor: isSelected ? "rgba(255,56,92,0.08)" : "rgba(255,255,255,0.04)",
               }}
               data-testid={`card-plan-${plan.id}`}
             >
@@ -416,7 +416,7 @@ function LightPrimaryBtn({ onClick, children, loading, disabled, testId }: {
       onClick={onClick}
       disabled={disabled || loading}
       className="w-full h-[56px] rounded-[6px] text-[16px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
-      style={{ background: "linear-gradient(135deg, #FF5A5F 0%, #FF7E82 100%)", boxShadow: "0 4px 15px rgba(255,90,95,0.25)" }}
+      style={{ background: "#FF385C", boxShadow: "0 4px 15px rgba(255,56,92,0.25)" }}
       data-testid={testId}
     >
       {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>{children} <ArrowRight className="w-4 h-4" /></>}
@@ -572,7 +572,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
   onSkip: () => void;
   t: (k: string, p?: Record<string, any>) => string;
 }) {
-  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[rgba(255,90,95,0.2)]";
+  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[rgba(255,56,92,0.2)]";
   const [showForm, setShowForm] = useState(false);
 
   const genderOptions = [
@@ -754,7 +754,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
     { value: "other", label: t("onboardingFlow.letterLiving.moveOptions.other") },
   ];
 
-  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[rgba(255,90,95,0.2)]";
+  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[rgba(255,56,92,0.2)]";
 
   return (
     <LightShell step="letter-living" showBack onBack={onBack}>
@@ -951,7 +951,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
             value={buddyEmail}
             onChange={(e) => onBuddyEmailChange(e.target.value)}
             placeholder={t("onboardingFlow.searchBuddy.emailPlaceholder")}
-            className="w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[14px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[rgba(255,90,95,0.2)]"
+            className="w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[14px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[rgba(255,56,92,0.2)]"
             data-testid="input-buddy-email"
           />
         </div>
@@ -976,7 +976,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
               onClick={onInvite}
               disabled={!buddyEmail.includes("@") || loading}
               className="flex-1 h-[56px] rounded-[6px] text-[14px] font-bold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
-              style={{ background: "linear-gradient(135deg, #FF5A5F 0%, #FF7E82 100%)" }}
+              style={{ background: "#FF385C" }}
               data-testid="button-buddy-invite"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{t("onboardingFlow.searchBuddy.invite")} <Send className="w-4 h-4" /></>}

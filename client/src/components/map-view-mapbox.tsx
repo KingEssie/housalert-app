@@ -30,7 +30,7 @@ export default function MapViewMapbox({
       el.style.width = "16px";
       el.style.height = "16px";
       el.style.borderRadius = "50%";
-      el.style.backgroundColor = "#FF5A5F";
+      el.style.backgroundColor = "#FF385C";
       el.style.border = "2px solid #fff";
       el.style.boxShadow = "0 1px 4px rgba(0,0,0,0.3)";
       const marker = new mapboxgl.Marker({ element: el })
@@ -69,7 +69,7 @@ export default function MapViewMapbox({
         type: "fill",
         source: sourceId,
         paint: {
-          "fill-color": c.color ?? "#FF5A5F",
+          "fill-color": c.color ?? "#FF385C",
           "fill-opacity": c.fillOpacity ?? 0.15,
         },
       });
@@ -78,7 +78,7 @@ export default function MapViewMapbox({
         type: "line",
         source: sourceId,
         paint: {
-          "line-color": c.color ?? "#FF5A5F",
+          "line-color": c.color ?? "#FF385C",
           "line-width": 2,
         },
       });

@@ -34,12 +34,12 @@ interface CancellationStats {
 
 const FUNNEL_STEPS = [
   { key: "account_created", label: "Account Created", Icon: UserPlus, color: "#6B7280" },
-  { key: "profile_created", label: "Profile Created", Icon: Search, color: "#FF5A5F" },
+  { key: "profile_created", label: "Profile Created", Icon: Search, color: "#FF385C" },
   { key: "notifications_enabled", label: "Notifications Enabled", Icon: Bell, color: "#16A34A" },
-  { key: "match_received", label: "Match Received", Icon: Inbox, color: "#FF5A5F" },
-  { key: "first_match_viewed", label: "First Match Viewed", Icon: Eye, color: "#FF5A5F" },
-  { key: "listing_opened", label: "Listing Opened", Icon: ExternalLink, color: "#FF5A5F" },
-  { key: "first_reaction", label: "First Reaction", Icon: Send, color: "#FF5A5F" },
+  { key: "match_received", label: "Match Received", Icon: Inbox, color: "#FF385C" },
+  { key: "first_match_viewed", label: "First Match Viewed", Icon: Eye, color: "#FF385C" },
+  { key: "listing_opened", label: "Listing Opened", Icon: ExternalLink, color: "#FF385C" },
+  { key: "first_reaction", label: "First Reaction", Icon: Send, color: "#FF385C" },
   { key: "trial_started", label: "Trial Started", Icon: Crown, color: "#6B7280" },
   { key: "subscription_started", label: "Subscription Started", Icon: CreditCard, color: "#6B7280" },
 ];
@@ -169,10 +169,10 @@ export default function AdminActivationPage() {
             <div className="grid grid-cols-2 gap-3">
               {[
                 { label: "Auth Users", value: data.sourceOfTruth.totalAuthUsers, color: "#6B7280" },
-                { label: "With Profile", value: data.sourceOfTruth.withSearchProfile, color: "#FF5A5F" },
+                { label: "With Profile", value: data.sourceOfTruth.withSearchProfile, color: "#FF385C" },
                 { label: "Notifs Enabled", value: data.sourceOfTruth.withNotifications, color: "#16A34A" },
-                { label: "Viewed Match", value: data.sourceOfTruth.withMatchViewed, color: "#FF5A5F" },
-                { label: "Reacted", value: data.sourceOfTruth.withReaction, color: "#FF5A5F" },
+                { label: "Viewed Match", value: data.sourceOfTruth.withMatchViewed, color: "#FF385C" },
+                { label: "Reacted", value: data.sourceOfTruth.withReaction, color: "#FF385C" },
                 { label: "With Trial", value: data.sourceOfTruth.withTrial, color: "#6B7280" },
                 { label: "Active Sub", value: data.sourceOfTruth.withActiveSubscription, color: "#6B7280" },
               ].map(({ label, value, color }) => (

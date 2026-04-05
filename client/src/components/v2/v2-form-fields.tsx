@@ -2,7 +2,7 @@ import { type InputHTMLAttributes, type TextareaHTMLAttributes, type ReactNode, 
 import { Eye, EyeOff, ChevronDown, Check } from "lucide-react";
 
 const INPUT_BASE =
-  "w-full h-[56px] rounded-[6px] bg-white/10 border border-white/15 px-4 text-[16px] text-white placeholder-white/40 outline-none transition-all focus:border-[#FF5A5F] focus:ring-1 focus:ring-[#FF5A5F]/40";
+  "w-full h-[56px] rounded-[6px] bg-white/10 border border-white/15 px-4 text-[16px] text-white placeholder-white/40 outline-none transition-all focus:border-[#FF385C] focus:ring-1 focus:ring-[#FF385C]/40";
 
 interface V2TextInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -77,7 +77,7 @@ export function V2Textarea({ label, error, className = "", ...props }: V2Textare
         <label className="text-[13px] font-medium text-white/60">{label}</label>
       )}
       <textarea
-        className={`w-full rounded-[6px] bg-white/10 border border-white/15 px-4 py-3 text-[16px] text-white placeholder-white/40 outline-none transition-all focus:border-[#FF5A5F] focus:ring-1 focus:ring-[#FF5A5F]/40 resize-none ${error ? "border-red-400" : ""} ${className}`}
+        className={`w-full rounded-[6px] bg-white/10 border border-white/15 px-4 py-3 text-[16px] text-white placeholder-white/40 outline-none transition-all focus:border-[#FF385C] focus:ring-1 focus:ring-[#FF385C]/40 resize-none ${error ? "border-red-400" : ""} ${className}`}
         {...props}
       />
       {error && <span className="text-[12px] text-red-400">{error}</span>}
@@ -145,7 +145,7 @@ export function V2SegmentedControl({ options, value, onChange }: V2SegmentedCont
           onClick={() => onChange(opt.value)}
           className={`flex-1 h-[38px] rounded-[4px] text-[13px] font-semibold transition-all ${
             value === opt.value
-              ? "bg-[#FF5A5F] text-white shadow-sm"
+              ? "bg-[#FF385C] text-white shadow-sm"
               : "text-white/50 hover:text-white/70"
           }`}
           data-testid={`segment-${opt.value}`}
@@ -192,7 +192,7 @@ export function V2ChipGroup({ options, selected, onChange, multi = true }: V2Chi
             onClick={() => toggle(opt.value)}
             className={`h-[36px] px-4 rounded-[6px] text-[13px] font-medium border transition-all active:scale-95 flex items-center gap-1.5 ${
               active
-                ? "bg-[#FF5A5F]/20 border-[#FF5A5F] text-[#FF5A5F]"
+                ? "bg-[#FF385C]/20 border-[#FF385C] text-[#FF385C]"
                 : "bg-white/5 border-white/15 text-white/60 hover:border-white/30"
             }`}
             data-testid={`chip-${opt.value}`}
@@ -223,7 +223,7 @@ export function V2Slider({ label, value, onChange, min, max, step = 1, formatVal
       {label && (
         <div className="flex items-center justify-between">
           <label className="text-[13px] font-medium text-white/60">{label}</label>
-          <span className="text-[14px] font-semibold text-[#FF5A5F]">
+          <span className="text-[14px] font-semibold text-[#FF385C]">
             {formatValue ? formatValue(value) : value}
           </span>
         </div>
@@ -237,7 +237,7 @@ export function V2Slider({ label, value, onChange, min, max, step = 1, formatVal
         onChange={(e) => onChange(Number(e.target.value))}
         className="v2-slider w-full"
         style={{
-          background: `linear-gradient(to right, #FF5A5F 0%, #FF5A5F ${pct}%, rgba(255,255,255,0.15) ${pct}%, rgba(255,255,255,0.15) 100%)`,
+          background: `linear-gradient(to right, #FF385C 0%, #FF385C ${pct}%, rgba(255,255,255,0.15) ${pct}%, rgba(255,255,255,0.15) 100%)`,
         }}
         data-testid="v2-slider"
       />
@@ -267,7 +267,7 @@ export function V2Toggle({ label, description, checked, onChange }: V2ToggleProp
       </div>
       <div
         className={`w-[44px] h-[26px] rounded-full transition-colors relative ${
-          checked ? "bg-[#FF5A5F]" : "bg-white/20"
+          checked ? "bg-[#FF385C]" : "bg-white/20"
         }`}
       >
         <div

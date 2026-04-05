@@ -634,7 +634,7 @@ function ToggleSwitch({
     <label className="flex items-center gap-3 cursor-pointer" data-testid={testId}>
       <div
         className="w-[44px] h-[24px] rounded-full p-[2px] transition-colors shrink-0"
-        style={{ backgroundColor: checked ? "#FF5A5F" : "#E5E7EB" }}
+        style={{ backgroundColor: checked ? "#FF385C" : "#E5E7EB" }}
         onClick={() => onChange(!checked)}
       >
         <div

@@ -17,15 +17,15 @@
   --sidebar: 0 0% 98%;
   --sidebar-foreground: 0 0% 7%;
   --sidebar-border: 220 13% 91%;
-  --sidebar-primary: 358 100% 68%;
+  --sidebar-primary: 349 100% 61%;
   --sidebar-primary-foreground: 0 0% 100%;
   --sidebar-accent: 220 14% 96%;
   --sidebar-accent-foreground: 0 0% 7%;
-  --sidebar-ring: 358 100% 68%;
+  --sidebar-ring: 349 100% 61%;
   --popover: 0 0% 100%;
   --popover-foreground: 0 0% 7%;
   --popover-border: 220 13% 91%;
-  --primary: 358 100% 68%;
+  --primary: 349 100% 61%;
   --primary-foreground: 0 0% 100%;
   --secondary: 210 20% 98%;
   --secondary-foreground: 0 0% 7%;
@@ -36,8 +36,8 @@
   --destructive: 0 72% 51%;
   --destructive-foreground: 0 0% 100%;
   --input: 220 13% 91%;
-  --ring: 358 100% 68%;
-  --chart-1: 358 100% 68%;
+  --ring: 349 100% 61%;
+  --chart-1: 349 100% 61%;
   --chart-2: 142 71% 45%;
   --chart-3: 43 96% 56%;
   --chart-4: 0 72% 51%;
@@ -50,9 +50,9 @@
   --ha-text: 17 17 17;
   --ha-text-secondary: 107 114 128;
   --ha-text-muted: 156 163 175;
-  --ha-primary: 255 90 95;
-  --ha-primary-hover: 230 81 86;
-  --ha-primary-light: rgba(255, 90, 95, 0.08);
+  --ha-primary: 255 56 92;
+  --ha-primary-hover: 230 40 75;
+  --ha-primary-light: rgba(255, 56, 92, 0.08);
   --ha-input-bg: 255 255 255;
   --ha-input-border: 229 231 235;
   --ha-surface: 249 250 251;
@@ -66,7 +66,7 @@
   --ha-danger-light: rgba(220, 38, 38, 0.08);
   --ha-status-green: 22 163 74;
   --ha-status-red: 220 38 38;
-  --ha-avatar-purple: 255 90 95;
+  --ha-avatar-purple: 255 56 92;
   --ha-icon-secondary: 156 163 175;
   --ha-badge-bg: 249 250 251;
   --ha-surface-active: 249 250 251;
@@ -147,7 +147,7 @@
   [data-radix-select-trigger]:focus-visible {
     outline: none;
     border-color: var(--ha-primary) !important;
-    box-shadow: 0 0 0 2px rgba(255, 90, 95, 0.25) !important;
+    box-shadow: 0 0 0 2px rgba(255, 56, 92, 0.25) !important;
   }
 }
 
@@ -341,7 +341,7 @@
   }
   .app-input:focus {
     border-color: rgb(var(--ha-primary));
-    box-shadow: 0 0 0 3px rgba(255, 90, 95, 0.12);
+    box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.12);
   }
   .app-input:disabled {
     background: #F9FAFB;
@@ -364,7 +364,7 @@
   }
   .app-select:focus {
     border-color: rgb(var(--ha-primary));
-    box-shadow: 0 0 0 3px rgba(255, 90, 95, 0.12);
+    box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.12);
   }
 
   .app-textarea {
@@ -384,7 +384,7 @@
   }
   .app-textarea:focus {
     border-color: rgb(var(--ha-primary));
-    box-shadow: 0 0 0 3px rgba(255, 90, 95, 0.12);
+    box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.12);
   }
 
   .scrollbar-none {
@@ -493,7 +493,7 @@
   background: var(--ha-primary);
   border: 3px solid var(--ha-bg);
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(255,90,95,0.4);
+  box-shadow: 0 2px 6px rgba(255,56,92,0.4);
 }
 .v2-slider::-moz-range-thumb {
   width: 22px;
@@ -502,7 +502,7 @@
   background: var(--ha-primary);
   border: 3px solid var(--ha-bg);
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(255,90,95,0.4);
+  box-shadow: 0 2px 6px rgba(255,56,92,0.4);
 }
 
 input[type="range"] {
@@ -541,9 +541,9 @@ input[type="range"]::-moz-range-thumb {
   --ha-text: 255 255 255;
   --ha-text-secondary: 156 163 175;
   --ha-text-muted: 107 114 128;
-  --ha-primary: 255 90 95;
-  --ha-primary-hover: 230 81 86;
-  --ha-primary-light: rgba(255, 90, 95, 0.15);
+  --ha-primary: 255 56 92;
+  --ha-primary-hover: 230 40 75;
+  --ha-primary-light: rgba(255, 56, 92, 0.15);
   --ha-input-bg: 32 32 32;
   --ha-input-border: 50 50 50;
   --ha-surface: 25 25 25;
@@ -574,8 +574,8 @@ input[type="range"]::-moz-range-thumb {
   color: #9CA3AF;
 }
 .ha-field-light:focus {
-  border-color: #FF5A5F;
-  box-shadow: 0 0 0 3px rgba(255,90,95,0.1);
+  border-color: #FF385C;
+  box-shadow: 0 0 0 3px rgba(255,56,92,0.1);
 }
 .ha-field-light:disabled {
   background: #F9FAFB;
@@ -589,8 +589,8 @@ input[type="range"]::-moz-range-thumb {
   color: rgba(255,255,255,0.45);
 }
 .ha-field-dark:focus {
-  border-color: #FF5A5F;
-  box-shadow: 0 0 0 3px rgba(255,90,95,0.15);
+  border-color: #FF385C;
+  box-shadow: 0 0 0 3px rgba(255,56,92,0.15);
 }
 .ha-btn {
   height: 48px;
@@ -632,8 +632,8 @@ input[type="range"]::-moz-range-thumb {
   color: #9ca3af;
 }
 .ha-field-web:focus {
-  border-color: #FF5A5F;
-  box-shadow: 0 0 0 3px rgba(255,90,95,0.1);
+  border-color: #FF385C;
+  box-shadow: 0 0 0 3px rgba(255,56,92,0.1);
 }
 .ha-select-web {
   height: 48px;
@@ -655,8 +655,8 @@ input[type="range"]::-moz-range-thumb {
   cursor: pointer;
 }
 .ha-select-web:focus {
-  border-color: #FF5A5F;
-  box-shadow: 0 0 0 3px rgba(255,90,95,0.1);
+  border-color: #FF385C;
+  box-shadow: 0 0 0 3px rgba(255,56,92,0.1);
 }
 .ob-input {
   background: #ffffff;
@@ -670,8 +670,8 @@ input[type="range"]::-moz-range-thumb {
   color: #9CA3AF;
 }
 .ob-input:focus {
-  border-color: #FF5A5F !important;
-  box-shadow: 0 0 0 3px rgba(255,90,95,0.1) !important;
+  border-color: #FF385C !important;
+  box-shadow: 0 0 0 3px rgba(255,56,92,0.1) !important;
 }
 .ob-input:disabled {
   background: #F9FAFB;
@@ -683,11 +683,11 @@ input[type="range"]::-moz-range-thumb {
 }
 .ob-dark input[type="range"]::-webkit-slider-thumb {
   border-color: #111111;
-  box-shadow: 0 2px 8px rgba(255,90,95,0.3);
+  box-shadow: 0 2px 8px rgba(255,56,92,0.3);
 }
 .ob-dark input[type="range"]::-moz-range-thumb {
   border-color: #111111;
-  box-shadow: 0 2px 8px rgba(255,90,95,0.3);
+  box-shadow: 0 2px 8px rgba(255,56,92,0.3);
 }
 .dual-range-thumb {
   pointer-events: none;

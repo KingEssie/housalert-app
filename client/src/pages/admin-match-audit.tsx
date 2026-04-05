@@ -160,7 +160,7 @@ export default function AdminMatchAudit() {
           <StatCard icon={CheckCircle2} label="Viewed" value={stats.viewed} color="bg-[#16A34A]" />
           <StatCard icon={Send} label="Applied" value={stats.applied} color="bg-ha-primary" />
           <StatCard icon={Mail} label="Emails Sent" value={stats.email_sent} color="bg-ha-danger" />
-          <StatCard icon={Bell} label="Push Sent" value={stats.push_sent} color="bg-[#FF5A5F]" />
+          <StatCard icon={Bell} label="Push Sent" value={stats.push_sent} color="bg-[#FF385C]" />
         </div>
 
         <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-3" data-testid="card-timing">

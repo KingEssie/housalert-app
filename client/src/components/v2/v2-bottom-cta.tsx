@@ -13,7 +13,7 @@ interface V2BottomCTAProps {
   children?: ReactNode;
 }
 
-const BRAND = "#FF5A5F";
+const BRAND = "#FF385C";
 
 export function V2BottomCTA({
   primaryLabel,

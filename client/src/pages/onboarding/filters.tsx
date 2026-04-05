@@ -73,14 +73,14 @@ function WebToggle({
     <label
       className="flex items-start gap-3 cursor-pointer rounded-[8px] p-3 transition-colors"
       style={{
-        backgroundColor: checked ? "rgba(255,90,95,0.04)" : "transparent",
-        border: `1px solid ${checked ? "rgba(255,90,95,0.2)" : OBW.divider}`,
+        backgroundColor: checked ? "rgba(255,56,92,0.04)" : "transparent",
+        border: `1px solid ${checked ? "rgba(255,56,92,0.2)" : OBW.divider}`,
       }}
       data-testid={testId}
     >
       <div
         className="w-[38px] h-[22px] rounded-full p-[2px] transition-colors shrink-0 mt-[1px]"
-        style={{ backgroundColor: checked ? "#FF5A5F" : "#E5E7EB" }}
+        style={{ backgroundColor: checked ? "#FF385C" : "#E5E7EB" }}
         onClick={(e) => { e.preventDefault(); onChange(!checked); }}
       >
         <div
@@ -831,7 +831,7 @@ export default function OnboardingFilters() {
             className="text-[12px] font-bold px-2.5 py-1 rounded-[6px]"
             style={{
               backgroundColor: "rgba(56,189,248,0.15)",
-              color: "#FF5A5F",
+              color: "#FF385C",
             }}
             data-testid="badge-step"
           >

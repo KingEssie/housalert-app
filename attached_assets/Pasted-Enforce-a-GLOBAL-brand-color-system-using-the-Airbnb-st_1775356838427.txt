@@ -1,0 +1,126 @@
+Enforce a GLOBAL brand color system using the Airbnb-style red-purple gradient.
+
+CRITICAL:
+- This must override ALL existing colors
+- Apply across the entire app (all screens, all components)
+- No leftover red/pink/orange colors allowed
+- Do NOT partially apply — this is a full replacement
+
+==================================================
+1. PRIMARY BRAND COLORS (SOURCE OF TRUTH)
+==================================================
+
+Define these as the ONLY brand colors:
+
+primaryStart = #FF385C
+primaryEnd   = #D70466
+
+These must be stored in a central theme/config file.
+
+==================================================
+2. CREATE GLOBAL GRADIENT
+==================================================
+
+Define a reusable gradient:
+
+linear-gradient(135deg, #FF385C, #D70466)
+
+This will be the main brand gradient.
+
+==================================================
+3. REMOVE OLD COLORS (MANDATORY)
+==================================================
+
+Find and REMOVE all existing:
+- red
+- pink
+- orange
+- previous hex values
+- tailwind classes like red-500, pink-500, etc.
+
+Replace them with:
+- #FF385C (for solid usage)
+- or the gradient (where appropriate)
+
+NO EXCEPTIONS.
+
+==================================================
+4. WHERE TO USE SOLID COLOR
+==================================================
+
+Use ONLY #FF385C for:
+
+- Primary buttons (default state)
+- Toggle ON state
+- Active icons
+- Selected tabs
+- Links / highlights
+- Progress bars
+
+Do NOT use gradient here.
+
+==================================================
+5. WHERE TO USE GRADIENT
+==================================================
+
+Use the gradient ONLY for:
+
+- Hero sections
+- Top banners
+- Special cards (like subscription highlight)
+- Empty states / onboarding visuals
+
+DO NOT:
+- use gradient on small UI elements
+- use gradient inside buttons
+- overuse it
+
+==================================================
+6. UI CONSISTENCY RULES
+==================================================
+
+- Buttons:
+  solid #FF385C
+- Hover/pressed:
+  slightly darker version of #FF385C
+- Background accents:
+  very light tint of #FF385C (low opacity)
+
+- Icons:
+  default = grey
+  active = #FF385C
+
+==================================================
+7. CENTRALIZE EVERYTHING
+==================================================
+
+Create a single theme file:
+
+Example:
+- colors.primary = "#FF385C"
+- colors.gradient = "linear-gradient(135deg, #FF385C, #D70466)"
+
+All components MUST use this.
+
+No inline hardcoded colors allowed.
+
+==================================================
+8. VALIDATION (VERY IMPORTANT)
+==================================================
+
+Scan entire codebase and confirm:
+- no other red/pink/orange hex codes exist
+- no Tailwind red/pink classes remain
+
+==================================================
+9. OUTPUT
+==================================================
+
+Show:
+1. where the colors are defined globally
+2. which components were updated
+3. confirmation that ALL old colors are removed
+4. examples of:
+   - button (solid color)
+   - toggle (active state)
+   - one gradient usage (correct placement)

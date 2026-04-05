@@ -81,7 +81,7 @@ export default function OnboardingIntro() {
             <button
               onClick={() => navigate("/onboarding/city")}
               className="flex-1 ha-btn text-white font-semibold"
-              style={{ background: OB.pinkGradient, boxShadow: "0 8px 20px rgba(255,90,95,0.25)" }}
+              style={{ background: OB.pink, boxShadow: "0 8px 20px rgba(255,56,92,0.25)" }}
               data-testid="button-intro-start"
             >
               {t("onboarding.intro.cta")}
@@ -95,7 +95,7 @@ export default function OnboardingIntro() {
             <button
               onClick={() => navigate("/login")}
               className="text-[14px] font-semibold"
-              style={{ color: "#FF5A5F" }}
+              style={{ color: "#FF385C" }}
               data-testid="link-intro-login"
             >
               {t("onboarding.intro.login")}

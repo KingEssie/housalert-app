@@ -43,7 +43,7 @@ function getPlans(t: (k: string) => string): Plan[] {
       perMonth: "€17,50 " + t("paywall.perMonth"),
       popular: true,
       discountLabel: "-30%",
-      discountColor: "#FF5A5F",
+      discountColor: "#FF385C",
     },
     {
       id: "monthly",
@@ -120,7 +120,7 @@ function WebsitePaywall({
             className="rounded-[4px] p-3.5 mb-5 flex items-start gap-3"
             style={{
               backgroundColor: "#F9FAFB",
-              border: "1px solid rgba(255,90,95,0.15)",
+              border: "1px solid rgba(255,56,92,0.15)",
             }}
             data-testid="search-summary-card"
           >
@@ -172,7 +172,7 @@ function WebsitePaywall({
                   className="w-full text-left transition-colors"
                   style={{
                     borderBottom: !isLast ? `1px solid ${OBW.cardBorder}` : "none",
-                    backgroundColor: isSelected ? "rgba(255,90,95,0.04)" : "#ffffff",
+                    backgroundColor: isSelected ? "rgba(255,56,92,0.04)" : "#ffffff",
                     padding: plan.popular ? "20px 16px 16px 16px" : "16px 16px",
                   }}
                   data-testid={`card-plan-${plan.id}`}
@@ -201,7 +201,7 @@ function WebsitePaywall({
                       </span>
                       <span
                         className="text-[13px] font-bold"
-                        style={{ color: plan.discount === "0% korting" ? OBW.textSecondary : "#FF5A5F" }}
+                        style={{ color: plan.discount === "0% korting" ? OBW.textSecondary : "#FF385C" }}
                       >
                         {plan.discount}
                       </span>
@@ -218,8 +218,8 @@ function WebsitePaywall({
           disabled={loading}
           className="w-full h-[52px] rounded-[10px] text-[15px] font-bold text-white transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2.5 mb-6"
           style={{
-            background: OBW.pinkGradient,
-            boxShadow: "0 4px 14px rgba(255,90,95,0.25)",
+            background: OBW.pink,
+            boxShadow: "0 4px 14px rgba(255,56,92,0.25)",
           }}
           data-testid="button-select-payment"
         >

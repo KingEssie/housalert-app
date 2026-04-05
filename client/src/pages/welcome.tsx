@@ -12,9 +12,9 @@ import { useToast } from "@/hooks/use-toast";
 
 const OB = {
   gradient: "linear-gradient(180deg, #111111 0%, #0a0a0a 100%)",
-  pink: "#FF5A5F",
-  pinkGradient: "linear-gradient(135deg, #FF5A5F 0%, #FF7E82 100%)",
-  pinkShadow: "0 4px 15px rgba(255,90,95,0.3)",
+  pink: "#FF385C",
+  pinkGradient: "linear-gradient(135deg, #FF385C 0%, #D70466 100%)",
+  pinkShadow: "0 4px 15px rgba(255,56,92,0.3)",
   text: "#ffffff",
   textSecondary: "rgba(255,255,255,0.65)",
 };
@@ -83,7 +83,7 @@ function LanguageDropdown() {
                 data-testid={`button-lang-${lang.code}`}
               >
                 <span className="text-[16px]">{lang.flag}</span>
-                <span className={`text-[14px] font-semibold ${isActive ? "text-[#FF5A5F]" : "text-white"}`}>
+                <span className={`text-[14px] font-semibold ${isActive ? "text-[#FF385C]" : "text-white"}`}>
                   {lang.label}
                 </span>
                 {isActive && (
@@ -243,7 +243,7 @@ export default function WelcomePage() {
                 type="button"
                 onClick={handleForgotPassword}
                 className="text-[14px] font-medium transition-colors hover:underline"
-                style={{ color: "#FF5A5F" }}
+                style={{ color: "#FF385C" }}
                 data-testid="button-forgot-password"
               >
                 {t("v2.welcome.forgotPassword")}
@@ -255,7 +255,7 @@ export default function WelcomePage() {
             type="submit"
             disabled={loading}
             className="w-full ha-btn text-white font-bold"
-            style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
+            style={{ background: OB.pink, boxShadow: OB.pinkShadow }}
             data-testid="button-login"
           >
             {loading ? (

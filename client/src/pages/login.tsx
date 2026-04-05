@@ -166,7 +166,7 @@ export default function LoginPage() {
                 onClick={handleForgotPassword}
                 disabled={resetLoading}
                 className="self-end text-[14px] font-medium mt-0.5 transition-colors hover:underline"
-                style={{ color: "#FF5A5F" }}
+                style={{ color: "#FF385C" }}
                 data-testid="link-forgot-password"
               >
                 {resetLoading ? t("common.loading") : t("auth.login.forgotPassword")}
@@ -176,7 +176,7 @@ export default function LoginPage() {
             <button
               type="submit"
               className="w-full ha-btn text-white border-0 font-bold"
-              style={{ background: OB.pinkGradient, boxShadow: OB.pinkShadow }}
+              style={{ background: OB.pink, boxShadow: OB.pinkShadow }}
               disabled={loading}
               data-testid="button-login-submit"
             >
