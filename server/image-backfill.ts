@@ -13,9 +13,16 @@ function isPlaceholderOrMissing(url: string | null | undefined): boolean {
   return false;
 }
 
+interface ListingMeta {
+  url: string;
+  source_id?: string;
+  title?: string;
+  city?: string;
+}
+
 interface SourceHandler {
   name: string;
-  fetchImage: (listingUrl: string) => Promise<{ url: string; method: string } | null>;
+  fetchImage: (listingUrl: string, meta?: ListingMeta) => Promise<{ url: string; method: string } | null>;
 }
 
 const sourceHandlers: Record<string, () => Promise<SourceHandler>> = {
@@ -26,6 +33,15 @@ const sourceHandlers: Record<string, () => Promise<SourceHandler>> = {
   "rentola": async () => {
     const { fetchRentolaImage } = await import("./ingesters/rentola-image");
     return { name: "rentola", fetchImage: fetchRentolaImage };
+  },
+  "nestpick": async () => {
+    const { fetchNestpickImage, clearSearchCache } = await import("./ingesters/nestpick-image");
+    clearSearchCache();
+    return {
+      name: "nestpick",
+      fetchImage: (url: string, meta?: ListingMeta) =>
+        fetchNestpickImage(url, { city: meta?.city, sourceId: meta?.source_id, title: meta?.title }),
+    };
   },
 };
 
@@ -45,7 +61,7 @@ export interface BackfillRunResult {
 let _running = false;
 let _enabled = true;
 let _batchSize = 100;
-let _enabledSources: string[] = ["wg-gesucht", "rentola"];
+let _enabledSources: string[] = ["wg-gesucht", "rentola", "nestpick"];
 let _lastRun: BackfillRunResult | null = null;
 let _cumulativeUpdates = 0;
 
@@ -135,7 +151,7 @@ async function runBackfillForSource(sourceName: string): Promise<BackfillRunResu
 
     const { data: listings, error } = await supabase
       .from("listings")
-      .select("id, source_id, url, title, image_url")
+      .select("id, source_id, url, title, image_url, city")
       .eq("source", sourceName)
       .or("image_url.is.null,image_url.eq.")
       .order("created_at", { ascending: false })
@@ -157,7 +173,12 @@ async function runBackfillForSource(sourceName: string): Promise<BackfillRunResu
       result.processed_count++;
       try {
         await new Promise(r => setTimeout(r, 1200));
-        const imgResult = await handler.fetchImage(listing.url);
+        const imgResult = await handler.fetchImage(listing.url, {
+          url: listing.url,
+          source_id: listing.source_id,
+          title: listing.title,
+          city: listing.city,
+        });
         if (imgResult) {
           const { error: updateErr } = await supabase
             .from("listings")

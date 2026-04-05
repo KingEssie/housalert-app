@@ -1,0 +1,123 @@
+Improve image extraction for the Nestpick source and integrate it into the automatic image backfill pipeline.
+
+Context:
+The image audit shows:
+- nestpick = 358 total listings
+- 0% image coverage
+- 358 missing
+Nestpick is now the next priority after wg-gesucht and Rentola.
+
+Goal:
+Find where Nestpick images actually come from, implement reliable extraction, and add Nestpick to the automatic backfill pipeline.
+
+IMPORTANT:
+- Focus only on Nestpick in this task
+- Do NOT redesign UI
+- Do NOT change unrelated scrapers
+- Do NOT overwrite valid existing images
+
+==================================================
+1. AUDIT CURRENT NESTPICK EXTRACTION
+==================================================
+
+Inspect the current Nestpick ingester and determine:
+- how listings are fetched now
+- whether image_url is currently hardcoded null
+- whether any image selectors already exist
+- whether overview pages contain images
+- whether detail pages contain images
+- whether images are present in HTML, JSON-LD, script data, or meta tags
+
+Summarize the current extraction path before changing it.
+
+==================================================
+2. FIND THE TRUE IMAGE SOURCE
+==================================================
+
+Take 3–5 real Nestpick listings with missing images and inspect:
+- overview/search page
+- detail page
+- rendered DOM
+- page source
+- JSON-LD
+- NEXT_DATA or other embedded app state
+- og:image / twitter:image
+- API/XHR responses if applicable
+
+Determine where Nestpick images actually come from.
+
+==================================================
+3. IMPLEMENT SOURCE-SPECIFIC EXTRACTION
+==================================================
+
+Add Nestpick-specific image extraction using the true source of images.
+
+Support:
+- src
+- data-src
+- data-lazy
+- data-original
+- data-lazy-src
+- srcset
+
+If srcset exists:
+- parse correctly
+- choose the best usable image
+
+Fallback order:
+1. source-specific selectors
+2. detail/gallery selectors
+3. embedded JSON / app state
+4. og:image
+5. twitter:image
+6. generic content image fallback
+
+==================================================
+4. FILTER BAD IMAGES
+==================================================
+
+Reject:
+- placeholders
+- default/noimage assets
+- logos/icons/avatars
+- blank/spacer/1x1 images
+- malformed URLs
+
+Normalize:
+- protocol-relative URLs
+- relative URLs
+- fixable malformed URLs
+
+==================================================
+5. ADD NESTPICK TO PIPELINE
+==================================================
+
+Register Nestpick as a source handler in the automatic image backfill pipeline.
+
+Requirements:
+- same safe structure as wg-gesucht and Rentola
+- available in admin controls
+- supports manual trigger
+- supports automatic scheduled runs
+
+==================================================
+6. VALIDATION
+==================================================
+
+Test on 10 Nestpick listings:
+- report how many successfully extracted
+- show which method worked
+- provide sample extracted URLs
+
+==================================================
+7. OUTPUT
+==================================================
+
+After finishing, provide:
+1. what the old Nestpick extraction was doing
+2. where Nestpick images actually come from
+3. what new selectors/fallbacks were added
+4. whether JSON/app-state/meta tags were used
+5. whether Nestpick was added to the pipeline
+6. expected coverage improvement
+7. files changed
