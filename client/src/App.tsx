@@ -121,9 +121,33 @@ function RootRoute() {
 }
 
 function GuestRoute({ component: Component }: { component: React.ComponentType }) {
-  const { user, loading } = useAuth();
-  if (loading) return null;
-  if (user) return <Redirect to="/home" />;
+  const { user, session, loading } = useAuth();
+  const [checking, setChecking] = useState(true);
+  const [destination, setDestination] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (loading) return;
+    if (!user || !session?.access_token) {
+      setChecking(false);
+      return;
+    }
+    apiFetch("/api/onboarding-status", {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const completed = data.onboarding_completed === true || data.post_paywall_onboarding_completed === true;
+        setDestination(completed ? "/home" : "/onboarding/intro");
+        setChecking(false);
+      })
+      .catch(() => {
+        setDestination("/home");
+        setChecking(false);
+      });
+  }, [user, session, loading]);
+
+  if (loading || (user && checking)) return null;
+  if (user && destination) return <Redirect to={destination} />;
   return <Component />;
 }
 

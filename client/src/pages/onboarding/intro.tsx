@@ -17,7 +17,7 @@ const STEPS = [
 export default function OnboardingIntro() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
-  const { user, session } = useAuth();
+  const { user, session, signOut } = useAuth();
   const [redirectHome, setRedirectHome] = useState(false);
 
   useEffect(() => {
@@ -92,7 +92,10 @@ export default function OnboardingIntro() {
         <div className="max-w-[480px] mx-auto px-5 pt-3">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => navigate("/login")}
+              onClick={async () => {
+                try { if (user) await signOut(); } catch {}
+                window.location.href = "/login";
+              }}
               className="w-[56px] h-[56px] rounded-[6px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
               style={{
                 border: "1.5px solid #E5E7EB",
@@ -117,7 +120,10 @@ export default function OnboardingIntro() {
               {t("onboarding.intro.alreadyAccount")}
             </span>
             <button
-              onClick={() => navigate("/login")}
+              onClick={async () => {
+                try { if (user) await signOut(); } catch {}
+                window.location.href = "/login";
+              }}
               className="text-[14px] font-semibold"
               style={{ color: "rgb(var(--ha-primary))" }}
               data-testid="link-intro-login"
