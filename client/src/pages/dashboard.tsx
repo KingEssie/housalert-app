@@ -1514,7 +1514,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
 
   const LANG_OPTIONS: { code: "nl" | "de" | "en"; label: string; flag: string }[] = [
     { code: "nl", label: "Nederlands", flag: "🇳🇱" },
-    { code: "en", label: "English", flag: "🇬🇧" },
+    { code: "en", label: "Engels", flag: "🇬🇧" },
+    { code: "de", label: "Duits", flag: "🇩🇪" },
   ];
   const currentLangLabel = LANG_OPTIONS.find(o => o.code === locale)?.label || locale;
 
