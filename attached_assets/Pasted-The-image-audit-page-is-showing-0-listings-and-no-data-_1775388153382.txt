@@ -1,0 +1,113 @@
+The image audit page is showing 0 listings and no data, while the database definitely contains listings.
+
+We need to debug and fix the backend endpoint: GET /api/admin/portal/image-audit
+
+GOAL:
+Make sure the audit correctly reads real listing data and returns accurate metrics.
+
+==================================================
+1. VERIFY DATA SOURCE
+==================================================
+
+Check which table is used for listings.
+
+- Confirm the correct table name (e.g. listings)
+- Log total row count directly from the database
+
+Add temporary logging:
+- total listings count
+- sample 3 listings
+
+If result = 0 → wrong database or wrong table
+
+==================================================
+2. REMOVE ALL FILTERS TEMPORARILY
+==================================================
+
+Temporarily remove ALL filters:
+
+- city
+- date range
+- source
+- status
+
+Return full dataset.
+
+Log:
+- number of rows returned
+
+==================================================
+3. VERIFY IMAGE FIELD
+==================================================
+
+Check which field contains images:
+
+Possible fields:
+- image
+- image_url
+- images (array)
+- photos
+
+Log a sample listing object and inspect it.
+
+Then:
+
+Define:
+hasImage = 
+- image_url exists AND not empty
+OR
+- images array length > 0
+
+==================================================
+4. FIX COVERAGE CALCULATION
+==================================================
+
+Recalculate:
+
+totalListings = all listings
+withImage = listings where hasImage = true
+withoutImage = listings where hasImage = false
+
+coverage = (withImage / totalListings) * 100
+
+==================================================
+5. CHECK RLS / AUTH
+==================================================
+
+If using Supabase:
+
+- ensure admin endpoint bypasses RLS OR uses service role
+- verify that the query is not returning empty due to permissions
+
+==================================================
+6. RETURN DEBUG RESPONSE (TEMP)
+==================================================
+
+Return in API response:
+
+{
+  totalListings,
+  withImage,
+  withoutImage,
+  sampleListings: [3 items],
+  detectedImageField: "image_url" (or whatever is used)
+}
+
+==================================================
+7. AFTER FIX
+==================================================
+
+Once data shows correctly:
+
+- restore filters
+- remove debug logs
+
+==================================================
+OUTPUT
+==================================================
+
+Explain:
+1. what was wrong
+2. which field contains images
+3. how many listings are detected
+4. current image coverage %
