@@ -20,6 +20,20 @@ async function adminFetch(path: string) {
   return res.json();
 }
 
+async function adminPost(path: string, body?: any) {
+  const { data: { session } } = await supabase.auth.getSession();
+  const token = session?.access_token;
+  if (!token) throw new Error("Not authenticated");
+  const res = await apiFetch(path, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  if (res.status === 403) throw new Error("ACCESS_DENIED");
+  if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+  return res.json();
+}
+
 interface SourceCoverage {
   source: string;
   total: number;
@@ -79,6 +93,22 @@ export default function AdminImageAuditPage() {
   const [daysFilter, setDaysFilter] = useState(0);
   const [expandedSource, setExpandedSource] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [backfilling, setBackfilling] = useState(false);
+  const [backfillResult, setBackfillResult] = useState<{ updated: number; failed: number; total: number; methods?: Record<string, number> } | null>(null);
+
+  const runWgBackfill = async () => {
+    setBackfilling(true);
+    setBackfillResult(null);
+    try {
+      const result = await adminPost("/api/admin/portal/backfill-wg-gesucht-images", { limit: 50 });
+      setBackfillResult(result);
+      fetchAudit();
+    } catch (err: any) {
+      setBackfillResult({ updated: 0, failed: 0, total: 0 });
+    } finally {
+      setBackfilling(false);
+    }
+  };
 
   const fetchAudit = async () => {
     setLoading(true);
@@ -302,6 +332,38 @@ export default function AdminImageAuditPage() {
                     </div>
                   </div>
                 ))}
+              </div>
+            </Section>
+
+            <Section title="wg-gesucht image backfill">
+              <div className="px-4 py-4 space-y-3">
+                <p className="text-[13px] text-[#6B7280]">
+                  Fetch detail pages for wg-gesucht listings missing images and extract images using enhanced selectors.
+                  Processes up to 50 listings per run.
+                </p>
+                <button
+                  onClick={runWgBackfill}
+                  disabled={backfilling}
+                  className="h-[36px] px-4 rounded-[8px] bg-[#111111] text-white text-[13px] font-medium disabled:opacity-50 flex items-center gap-2"
+                  data-testid="button-wg-backfill"
+                >
+                  {backfilling ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+                  {backfilling ? "Running backfill…" : "Run wg-gesucht backfill"}
+                </button>
+                {backfillResult && (
+                  <div className="bg-[#F9FAFB] rounded-[8px] p-3 text-[13px] space-y-1" data-testid="section-backfill-result">
+                    <p className="font-semibold text-[#111111]">
+                      {backfillResult.updated} updated, {backfillResult.failed} failed (of {backfillResult.total})
+                    </p>
+                    {backfillResult.methods && Object.keys(backfillResult.methods).length > 0 && (
+                      <div className="text-[12px] text-[#6B7280]">
+                        {Object.entries(backfillResult.methods).map(([method, count]) => (
+                          <span key={method} className="mr-3">{method}: {count}</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </Section>
 

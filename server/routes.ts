@@ -3120,7 +3120,9 @@ export async function registerRoutes(
           } else if (listing.source === "wohnungsboerse") {
             imageUrl = extractImgFromEl($, "img[src*='wohnungsboerse.net/assets'], img[data-src*='wohnungsboerse.net/assets']");
           } else if (listing.source === "wg-gesucht") {
-            imageUrl = extractImgFromEl($, "img.sp-gallery__image, img[src*='img.wg-gesucht.de'], img[data-src*='img.wg-gesucht.de'], .gallery img, .detail-image img");
+            const { extractWgGesuchtImage } = await import("./ingesters/wg-gesucht");
+            const wgResult = extractWgGesuchtImage($);
+            if (wgResult) imageUrl = wgResult.url;
           } else if (listing.source === "immowelt") {
             imageUrl = extractImgFromEl($, "img[src*='mms.immowelt.de'], img[data-src*='mms.immowelt.de'], [data-testid='gallery'] img, .gallery img");
           }
@@ -3160,6 +3162,60 @@ export async function registerRoutes(
       return res.json({ updated, failed, total: listings.length });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/admin/portal/backfill-wg-gesucht-images", requireAdmin, async (req, res) => {
+    try {
+      const { fetchWgGesuchtImage } = await import("./ingesters/wg-gesucht");
+      const limit = Math.min(parseInt(req.body?.limit || "50"), 200);
+
+      const { data: listings, error } = await supabase
+        .from("listings")
+        .select("id, source_id, url, title, image_url")
+        .eq("source", "wg-gesucht")
+        .or("image_url.is.null,image_url.eq.")
+        .order("created_at", { ascending: false })
+        .limit(limit);
+
+      if (error) return res.status(500).json({ error: error.message });
+      if (!listings || listings.length === 0) return res.json({ updated: 0, failed: 0, total: 0, message: "No wg-gesucht listings need image backfill" });
+
+      log(`[admin] wg-gesucht image backfill: processing ${listings.length} listings`);
+
+      let updated = 0;
+      let failed = 0;
+      const methods: Record<string, number> = {};
+
+      for (const listing of listings) {
+        await new Promise(r => setTimeout(r, 1200));
+        try {
+          const result = await fetchWgGesuchtImage(listing.url);
+          if (result) {
+            const { error: updateErr } = await supabase
+              .from("listings")
+              .update({ image_url: result.url })
+              .eq("id", listing.id);
+            if (!updateErr) {
+              updated++;
+              methods[result.method] = (methods[result.method] || 0) + 1;
+              log(`[admin] wg-gesucht backfill: ${listing.id} → ${result.method}`);
+            } else {
+              failed++;
+            }
+          } else {
+            failed++;
+          }
+        } catch {
+          failed++;
+        }
+      }
+
+      log(`[admin] wg-gesucht image backfill done: ${updated}/${listings.length} updated`);
+      res.json({ updated, failed, total: listings.length, methods });
+    } catch (err: any) {
+      log(`[admin] wg-gesucht backfill error: ${err.message}`);
+      res.status(500).json({ error: err.message });
     }
   });
 

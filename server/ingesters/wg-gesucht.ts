@@ -1,9 +1,10 @@
 import { log } from "../log";
 import type { Ingester, IngestionResult } from "./types";
 import type { ParsedListing } from "./matching";
-import { insertAndMatchListings } from "./matching";
+import { insertAndMatchListings, supabase } from "./matching";
 import { getCitySlugs } from "./city-slugs";
 import { extractGarden, extractBath, extractRoofTerrace, extractParking, extractEnergyLabel, extractPropertyTypeFromText } from "./feature-extraction";
+import * as cheerio from "cheerio";
 
 const WG_GESUCHT_BASE = "https://www.wg-gesucht.de";
 const API_BASE = `${WG_GESUCHT_BASE}/api/asset/offers/`;
@@ -17,6 +18,139 @@ const PAGE_DELAY_MS = 2000;
 const REQUEST_TIMEOUT_MS = 15_000;
 const MAX_RETRIES = 2;
 const RETRY_BASE_MS = 2000;
+const IMAGE_FETCH_DELAY_MS = 1200;
+const IMAGE_FETCH_BATCH_SIZE = 15;
+
+const PLACEHOLDER_PATTERNS = /placeholder|default|noimage|no-image|blank|spacer|1x1|pixel\.gif|logo|icon|avatar|static\/img\/no_pic/i;
+
+function normalizeImageUrl(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  const trimmed = raw.trim();
+  if (!trimmed || trimmed.startsWith("data:")) return null;
+  if (PLACEHOLDER_PATTERNS.test(trimmed)) return null;
+  if (trimmed.startsWith("//")) return "https:" + trimmed;
+  if (trimmed.startsWith("http")) return trimmed;
+  if (trimmed.startsWith("/")) return WG_GESUCHT_BASE + trimmed;
+  return null;
+}
+
+function bestFromSrcset(srcset: string): string | null {
+  if (!srcset) return null;
+  const candidates = srcset.split(",").map(s => {
+    const parts = s.trim().split(/\s+/);
+    const url = parts[0] || "";
+    const descriptor = parts[1] || "1x";
+    let weight = 1;
+    if (descriptor.endsWith("w")) weight = parseInt(descriptor) || 1;
+    else if (descriptor.endsWith("x")) weight = (parseFloat(descriptor) || 1) * 1000;
+    return { url, weight };
+  }).filter(c => c.url);
+  candidates.sort((a, b) => b.weight - a.weight);
+  for (const c of candidates) {
+    const resolved = normalizeImageUrl(c.url);
+    if (resolved) return resolved;
+  }
+  return null;
+}
+
+function extractImageFromEl($: cheerio.CheerioAPI, selector: string): string | null {
+  const el = $(selector).first();
+  if (!el.length) return null;
+  for (const attr of ["src", "data-src", "data-lazy", "data-original", "data-lazy-src"]) {
+    const val = normalizeImageUrl(el.attr(attr));
+    if (val) return val;
+  }
+  const srcset = el.attr("srcset");
+  if (srcset) {
+    const val = bestFromSrcset(srcset);
+    if (val) return val;
+  }
+  return null;
+}
+
+export function extractWgGesuchtImage($: cheerio.CheerioAPI): { url: string; method: string } | null {
+  const selectors = [
+    "img.sp-gallery__image",
+    "img[src*='img.wg-gesucht.de']",
+    "img[data-src*='img.wg-gesucht.de']",
+    ".gallery img",
+    ".detail-image img",
+    ".sp-gallery img",
+    ".wgg_card img",
+    "#sliderTopImages img",
+    ".slider_image img",
+    ".image_container img",
+    ".card_image img",
+  ];
+  for (const sel of selectors) {
+    const val = extractImageFromEl($, sel);
+    if (val) return { url: val, method: "selector" };
+  }
+
+  const allImgs = $("img");
+  for (let i = 0; i < allImgs.length; i++) {
+    const img = $(allImgs[i]);
+    for (const attr of ["src", "data-src", "data-lazy", "data-original", "data-lazy-src"]) {
+      const raw = img.attr(attr) || "";
+      if (raw.includes("img.wg-gesucht.de")) {
+        const val = normalizeImageUrl(raw);
+        if (val) return { url: val, method: "img-domain-scan" };
+      }
+    }
+    const srcset = img.attr("srcset") || "";
+    if (srcset.includes("img.wg-gesucht.de")) {
+      const val = bestFromSrcset(srcset);
+      if (val) return { url: val, method: "srcset-domain-scan" };
+    }
+  }
+
+  const ogImage = normalizeImageUrl($('meta[property="og:image"]').attr("content"));
+  if (ogImage) return { url: ogImage, method: "og:image" };
+
+  const twitterImage = normalizeImageUrl(
+    $('meta[name="twitter:image"], meta[property="twitter:image"]').attr("content")
+  );
+  if (twitterImage) return { url: twitterImage, method: "twitter:image" };
+
+  const contentImg = $("article img, main img, .main-content img, .detail-content img, section img").first();
+  if (contentImg.length) {
+    for (const attr of ["src", "data-src", "data-lazy", "data-original"]) {
+      const val = normalizeImageUrl(contentImg.attr(attr));
+      if (val && !PLACEHOLDER_PATTERNS.test(val)) return { url: val, method: "generic-content" };
+    }
+    const srcset = contentImg.attr("srcset");
+    if (srcset) {
+      const val = bestFromSrcset(srcset);
+      if (val) return { url: val, method: "generic-srcset" };
+    }
+  }
+
+  return null;
+}
+
+export async function fetchWgGesuchtImage(listingUrl: string): Promise<{ url: string; method: string } | null> {
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    const resp = await fetch(listingUrl, {
+      headers: {
+        "User-Agent": BROWSER_UA,
+        Accept: "text/html",
+        "Accept-Language": "de-DE,de;q=0.9,en;q=0.5",
+        Referer: `${WG_GESUCHT_BASE}/`,
+      },
+      redirect: "follow",
+      signal: controller.signal,
+    });
+    clearTimeout(timer);
+    if (!resp.ok) return null;
+    const html = await resp.text();
+    const $ = cheerio.load(html);
+    return extractWgGesuchtImage($);
+  } catch {
+    return null;
+  }
+}
 
 const UNFURNISHED_PATTERNS = /unmöbliert|unfurnished|nicht\s*möbliert/i;
 const FURNISHED_PATTERNS = /möbliert|furnished|teilmöbliert|voll\s*möbliert/i;
@@ -288,6 +422,33 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
   return allListings;
 }
 
+async function backfillImagesForNewListings(listings: ParsedListing[]): Promise<{ fetched: number; found: number }> {
+  const toFetch = listings.filter(l => !l.image_url).slice(0, IMAGE_FETCH_BATCH_SIZE);
+  if (toFetch.length === 0) return { fetched: 0, found: 0 };
+
+  log(`[WG-GESUCHT] Backfilling images for ${toFetch.length} newly ingested listings`);
+  let found = 0;
+
+  for (const listing of toFetch) {
+    await delay(IMAGE_FETCH_DELAY_MS);
+    const result = await fetchWgGesuchtImage(listing.url);
+    if (result) {
+      const { error } = await supabase
+        .from("listings")
+        .update({ image_url: result.url })
+        .eq("source_id", listing.source_id)
+        .eq("source", "wg-gesucht");
+      if (!error) {
+        found++;
+        log(`[WG-GESUCHT] Image found via ${result.method} for ${listing.source_id}`);
+      }
+    }
+  }
+
+  log(`[WG-GESUCHT] Image backfill done: ${found}/${toFetch.length} resolved`);
+  return { fetched: toFetch.length, found };
+}
+
 export function createWgGesuchtIngester(city: string): Ingester {
   return {
     name: `wg-gesucht:${city}`,
@@ -298,6 +459,14 @@ export function createWgGesuchtIngester(city: string): Ingester {
       log(
         `[WG-GESUCHT] ${city} ingestion complete: found=${parsed.length}, inserted=${result.inserted}, duplicates=${result.duplicates}, matches=${result.matches}`,
       );
+
+      if (result.inserted > 0) {
+        try {
+          await backfillImagesForNewListings(parsed);
+        } catch (err: any) {
+          log(`[WG-GESUCHT] ${city} post-ingestion image backfill error (non-fatal): ${err.message}`);
+        }
+      }
 
       return {
         found: parsed.length,

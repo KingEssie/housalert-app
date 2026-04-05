@@ -1,0 +1,135 @@
+Improve image extraction specifically for the wg-gesucht source.
+
+Context:
+The image audit shows wg-gesucht is the biggest image coverage problem:
+- 5904 total listings
+- 48.8% covered
+- 3024 missing
+- 30 placeholder-only
+This is the highest-priority source to improve first.
+
+Goal:
+Increase wg-gesucht image coverage significantly by improving extraction logic and adding better fallback behavior.
+
+IMPORTANT:
+- Focus only on wg-gesucht in this task
+- Do NOT redesign UI
+- Do NOT change unrelated scrapers
+- Keep this source-specific and production-safe
+
+==================================================
+1. AUDIT CURRENT WG-GESUCHT EXTRACTION
+==================================================
+
+Inspect the current wg-gesucht ingester and identify:
+- which selectors are used now
+- whether extraction is done from overview page only or also detail page
+- whether lazy-loaded image attributes are checked
+- whether srcset is parsed
+- whether og:image or twitter:image are used
+- whether placeholder filtering exists
+
+Log or summarize the current extraction path before changing it.
+
+==================================================
+2. ADD DETAIL PAGE IMAGE FALLBACK
+==================================================
+
+If the overview/list page does not provide a valid image:
+
+- fetch the wg-gesucht detail/listing page
+- try to extract the main image/gallery image from the detail page
+
+Fallback order:
+1. main configured selectors
+2. gallery selectors
+3. lazy-load attrs
+4. srcset
+5. og:image
+6. twitter:image
+7. first valid image inside article/main/gallery container
+
+==================================================
+3. SUPPORT MORE IMAGE ATTRIBUTES
+==================================================
+
+For wg-gesucht specifically, check these attributes:
+- src
+- data-src
+- data-lazy
+- data-original
+- data-lazy-src
+- srcset
+
+If srcset exists:
+- parse it correctly
+- choose the best usable image URL, not the tiniest thumbnail
+
+==================================================
+4. FILTER OUT PLACEHOLDERS / BAD IMAGES
+==================================================
+
+Detect and reject:
+- placeholder images
+- default fallback images
+- blank/spacer images
+- obviously invalid image URLs
+
+If a placeholder is found:
+- treat it as missing
+- continue fallback extraction
+
+Also normalize:
+- protocol-relative URLs (//...)
+- relative URLs
+- malformed URLs if fixable
+
+==================================================
+5. SAVE RECOVERY SOURCE
+==================================================
+
+If possible, store or temporarily log where the image came from:
+- overview
+- detail
+- srcset
+- og:image
+- twitter:image
+- generic fallback
+
+This will help future audits.
+
+==================================================
+6. SAFE BACKFILL FOR WG-GESUCHT ONLY
+==================================================
+
+Add or use a safe admin-only backfill path for wg-gesucht listings that currently have:
+- no image
+- placeholder-only image
+
+Requirements:
+- only process wg-gesucht
+- update image_url if a valid image is found
+- do not overwrite a valid existing image
+- keep it admin-protected
+
+==================================================
+7. VALIDATION
+==================================================
+
+After implementation:
+- test on sample missing wg-gesucht listings
+- verify images are now extracted for some previously missing cases
+- rerun the image audit and compare wg-gesucht coverage before/after
+
+==================================================
+8. OUTPUT
+==================================================
+
+After finishing, provide:
+1. what the old wg-gesucht extraction was doing
+2. what new fallbacks were added
+3. whether detail page fallback was added
+4. whether placeholder filtering was added
+5. how to run the wg-gesucht backfill
+6. estimated improvement or new coverage after testing
+7. files changed
