@@ -176,11 +176,6 @@ function shouldSendBuddyEmail(params: ShouldSendBuddyEmailParams): { send: boole
   const { userId, mainUserEmail, mainUserEmailEnabled, buddyInfo, subStatus } = params;
   const uid = userId.substring(0, 8);
 
-  if (mainUserEmailEnabled === false) {
-    log(`[BUDDY EMAIL CHECK] userId=${uid}... emailNotifications=false → RESULT: SKIP (reason: notifications disabled)`);
-    return { send: false, reason: "notifications disabled" };
-  }
-
   if (!buddyInfo) {
     log(`[BUDDY EMAIL CHECK] userId=${uid}... buddyExists=false → RESULT: SKIP (reason: no buddy email)`);
     return { send: false, reason: "no buddy email" };
@@ -216,7 +211,7 @@ function shouldSendBuddyEmail(params: ShouldSendBuddyEmailParams): { send: boole
   }
 
   const entitlement = hasActiveTrial ? "trial" : hasActivePaid ? "paid" : "canceled-but-active";
-  log(`[BUDDY EMAIL CHECK] userId=${uid}... emailNotifications=true subscription=${entitlement} buddyStatus=active buddyEmail=${buddyInfo.email} → RESULT: SEND`);
+  log(`[BUDDY EMAIL CHECK] userId=${uid}... mainEmailToggle=${mainUserEmailEnabled} subscription=${entitlement} buddyStatus=active buddyEmail=${buddyInfo.email} → RESULT: SEND (buddy is independent of main user email toggle)`);
   return { send: true, reason: entitlement };
 }
 
@@ -229,11 +224,6 @@ async function canBuddyReceiveMatches(
   if (BUDDY_EMAILS_GLOBAL_KILL_SWITCH) {
     log(`[BUDDY EMAIL BLOCKED] userId=${userId.substring(0, 8)}... reason=GLOBAL_KILL_SWITCH — canBuddyReceiveMatches forced ineligible`);
     return { eligible: false, reason: "GLOBAL_KILL_SWITCH", buddyInfo: null };
-  }
-
-  if (mainUserEmailEnabled === false) {
-    log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy EXCLUDED: main user email notifications OFF`);
-    return { eligible: false, reason: "main user email notifications OFF", buddyInfo: null };
   }
 
   const buddyInfo = await getSearchBuddyInfo(userId);
@@ -312,11 +302,6 @@ async function sendBuddyEmail(
 
   if (BUDDY_EMAILS_GLOBAL_KILL_SWITCH) {
     log(`[BUDDY EMAIL BLOCKED] recipient=${buddyInfo.email} userId=${uid}... reason=GLOBAL_KILL_SWITCH path=${context} — ALL buddy emails disabled`);
-    return false;
-  }
-
-  if (mainUserEmailEnabled === false) {
-    log(`[BUDDY EMAIL BLOCKED] recipient=${buddyInfo.email} userId=${uid}... reason=main_user_notifications_OFF path=${context}`);
     return false;
   }
 
