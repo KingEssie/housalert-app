@@ -209,24 +209,22 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
                   {idx > 0 && <div className="h-px bg-[#F3F4F6] mx-4" />}
                   <button
                     onClick={() => navigate(guide.route)}
-                    className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left active:bg-[#F9FAFB] transition-colors"
+                    className="w-full flex items-center gap-[14px] px-5 py-4 text-left active:bg-[#F9FAFB] transition-colors"
                     data-testid={`row-guide-${guide.id}`}
                   >
-                    <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${isRead ? "bg-[#F3F4F6]" : "bg-[#FDF1F6]"}`}>
-                      <GuideIcon className={`w-[18px] h-[18px] ${isRead ? "text-[#9CA3AF]" : "text-ha-primary"}`} />
-                    </div>
+                    <GuideIcon className={`w-6 h-6 flex-shrink-0 ${isRead ? "text-[#9CA3AF]" : "text-[#111111]"}`} strokeWidth={1.6} />
                     <div className="flex-1 min-w-0">
                       <p className={`text-[15px] leading-snug truncate ${isRead ? "text-[#9CA3AF]" : "font-medium text-[#111111]"}`}>
                         {guide.title}
                       </p>
                       {guide.description && (
-                        <p className="text-[13px] text-[#9CA3AF] mt-0.5 truncate">{guide.description}</p>
+                        <p className="text-[13px] text-[#6B7280] mt-0.5 truncate">{guide.description}</p>
                       )}
                     </div>
                     {isRead ? (
                       <CheckCircle2 className="w-[20px] h-[20px] text-ha-success flex-shrink-0" />
                     ) : (
-                      <ChevronRight className="w-[20px] h-[20px] text-[#D1D5DB] flex-shrink-0" />
+                      <ChevronRight className="w-[18px] h-[18px] text-[#D1D5DB] flex-shrink-0" />
                     )}
                   </button>
                 </div>

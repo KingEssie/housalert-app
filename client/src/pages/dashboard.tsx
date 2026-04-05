@@ -1632,7 +1632,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
         <Wrapper
           {...(onClick ? { type: "button" as const } : {})}
           onClick={onClick}
-          className={`w-full flex items-center justify-between min-h-[54px] px-5 py-3 text-left ${onClick ? "active:bg-[#F9FAFB] transition-colors" : ""}`}
+          className={`w-full flex items-center justify-between min-h-[64px] px-5 py-4 text-left ${onClick ? "active:bg-[#F9FAFB] transition-colors" : ""}`}
           data-testid={testId}
         >
           <span className="text-[15px] font-medium text-[#111111]">{label}</span>
@@ -1649,7 +1649,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
 
   const ToggleRow = ({ label, subtitle, checked, onToggle, testId, last }: { label: string; subtitle?: string; checked: boolean; onToggle: (v: boolean) => void; testId?: string; last?: boolean }) => (
     <>
-      <div className="flex items-center justify-between min-h-[54px] px-5 py-3" data-testid={testId}>
+      <div className="flex items-center justify-between min-h-[64px] px-5 py-4" data-testid={testId}>
         <div className="flex-1 min-w-0">
           <span className="text-[15px] font-medium text-[#111111]">{label}</span>
           {subtitle && <p className="text-[13px] text-[#6B7280] mt-0.5 leading-tight">{subtitle}</p>}
@@ -1907,16 +1907,16 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             <SectionTitle>{t("profile.helpTitle")}</SectionTitle>
             <div className="rounded-[16px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
               {[
-                { label: t("profile.helpFeedback"), action: () => { window.location.href = "mailto:support@housalert.com?subject=Feedback"; }, icon: <Send className="w-[20px] h-[20px] text-[#6B7280]" />, testId: "button-help-feedback" },
-                { label: t("profile.helpFaq"), action: () => { window.location.href = "mailto:support@housalert.com"; }, icon: <HelpCircle className="w-[20px] h-[20px] text-[#6B7280]" />, testId: "button-help-faq" },
-                { label: t("profile.helpPrivacy"), action: () => navigate("/datenschutz"), icon: <Shield className="w-[20px] h-[20px] text-[#6B7280]" />, testId: "button-help-privacy" },
-                { label: t("settings.termsConditions"), action: () => navigate("/terms"), icon: <FileText className="w-[20px] h-[20px] text-[#6B7280]" />, testId: "button-help-terms" },
+                { label: t("profile.helpFeedback"), action: () => { window.location.href = "mailto:support@housalert.com?subject=Feedback"; }, icon: <Send className="w-6 h-6 text-[#111111]" strokeWidth={1.6} />, testId: "button-help-feedback" },
+                { label: t("profile.helpFaq"), action: () => { window.location.href = "mailto:support@housalert.com"; }, icon: <HelpCircle className="w-6 h-6 text-[#111111]" strokeWidth={1.6} />, testId: "button-help-faq" },
+                { label: t("profile.helpPrivacy"), action: () => navigate("/datenschutz"), icon: <Shield className="w-6 h-6 text-[#111111]" strokeWidth={1.6} />, testId: "button-help-privacy" },
+                { label: t("settings.termsConditions"), action: () => navigate("/terms"), icon: <FileText className="w-6 h-6 text-[#111111]" strokeWidth={1.6} />, testId: "button-help-terms" },
               ].map((row, ri, arr) => (
                 <div key={ri}>
                   {ri > 0 && <div className="h-px bg-[#F3F4F6] mx-5" />}
                   <button
                     onClick={row.action}
-                    className="w-full flex items-center gap-3.5 min-h-[54px] px-5 py-3 text-left active:bg-[#F9FAFB] transition-colors"
+                    className="w-full flex items-center gap-[14px] min-h-[64px] px-5 py-4 text-left active:bg-[#F9FAFB] transition-colors"
                     data-testid={row.testId}
                   >
                     {row.icon}
@@ -1934,10 +1934,10 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               <div className="rounded-[16px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
                 <button
                   onClick={() => navigate("/admin/image-audit")}
-                  className="w-full flex items-center gap-3.5 min-h-[54px] px-5 py-3 text-left active:bg-[#F9FAFB] transition-colors"
+                  className="w-full flex items-center gap-[14px] min-h-[64px] px-5 py-4 text-left active:bg-[#F9FAFB] transition-colors"
                   data-testid="button-admin-image-audit"
                 >
-                  <Image className="w-[20px] h-[20px] text-[#6B7280]" />
+                  <Image className="w-6 h-6 text-[#111111]" strokeWidth={1.6} />
                   <p className="text-[15px] font-medium text-[#111111] flex-1">Beeldkwaliteit listings</p>
                   <ChevronRight className="w-[18px] h-[18px] text-[#D1D5DB] flex-shrink-0" />
                 </button>

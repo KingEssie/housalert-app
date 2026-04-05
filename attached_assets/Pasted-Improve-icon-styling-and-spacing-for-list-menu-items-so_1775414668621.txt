@@ -1,0 +1,91 @@
+Improve icon styling and spacing for list/menu items so they feel calmer, cleaner, and more Airbnb-like.
+
+IMPORTANT:
+- Do NOT redesign the whole screens
+- Only improve icon treatment, row spacing, and list item balance
+- Keep existing structure and navigation
+- Apply especially to:
+  1. Profile screen menu items
+  2. Tips screen list items
+
+GOAL:
+Make all list/menu rows feel more premium, with stronger icon presence and more breathing room.
+
+==================================================
+1. PROFILE SCREEN MENU ITEMS
+==================================================
+
+For all menu/list rows on the Profile screen:
+- increase icon size to 24px
+- change icon color to #111111
+- remove overly light grey treatment for icons
+- use slightly stronger stroke weight if needed
+- increase spacing between icon and text
+- increase vertical row padding so rows feel less cramped
+
+Design targets:
+- row min height: 64px to 68px
+- icon/text gap: 14px
+- primary text: strong dark color
+- chevron can remain muted/light
+
+Apply this to sections like:
+- Meer info & hulp
+- Admin
+- other profile row menus
+
+==================================================
+2. TIPS SCREEN LIST ITEMS
+==================================================
+
+For all tip list rows:
+- remove the pink/red circular icon backgrounds
+- remove red/pink icon color styling
+- make all icons black (#111111)
+- set icon size to 24px
+- increase row vertical spacing
+- improve alignment between icon, title, subtitle, and chevron
+
+Design targets:
+- icon: 24px, black
+- row vertical padding: 16px
+- icon/text gap: 14px
+- subtitle remains muted but readable
+- keep the row calm and clean like Airbnb
+
+The result should feel editorial and premium, not playful or decorative.
+
+==================================================
+3. CONSISTENCY RULE
+==================================================
+
+Create a consistent list-row style system:
+- black icon
+- dark primary label
+- muted secondary text
+- light chevron
+- generous spacing
+- no decorative icon background unless functionally necessary
+
+Apply this style consistently across profile and tips list rows.
+
+==================================================
+4. DO NOT CHANGE
+==================================================
+
+- Do NOT change routing
+- Do NOT change app logic
+- Do NOT redesign the entire page layout
+- Do NOT change Matches screen tabs
+- Do NOT change bottom nav structure
+
+==================================================
+5. OUTPUT
+==================================================
+
+After finishing, provide:
+1. what changed for profile icons
+2. what changed for tips icons
+3. what spacing values were updated
+4. which shared row/list styles were adjusted
+5. files changed
