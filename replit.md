@@ -414,7 +414,8 @@ A mobile-first rental alert application for the German market. Users can sign up
 - `client/src/pages/viewing-tips.tsx` — Dedicated viewing tips page at `/tips/bezichtiging` (route slug stays Dutch for URL stability). Five German sections via i18n. CTA to mark as completed.
 - `client/src/pages/legal.tsx` — Legal pages: `/impressum`, `/datenschutz`, `/terms` (German placeholder content)
 - `client/src/pages/paywall.tsx` — Subscription paywall with Stripe checkout. Dynamic price validation at startup (validates env var price IDs, falls back to Stripe API lookup by nickname/interval). No static fallback messages — errors shown as toasts.
-- `client/src/pages/subscription-success.tsx` — Stripe payment success page at `/subscription-success?session_id=...`. Calls `POST /api/checkout/verify` to sync subscription from Stripe checkout session, then polls `/api/subscription/status` for up to ~16s until active. Shows spinner during sync, then success message. Auto-redirects to dashboard after activation. Invalidates subscription/stats/matches caches.
+- `client/src/pages/subscription-success.tsx` — Legacy Stripe payment success page at `/subscription-success?session_id=...`. Calls `POST /api/checkout/verify` (requires auth).
+- `client/src/pages/checkout-success.tsx` — New Stripe checkout success page at `/checkout/success?session_id=...`. Calls `POST /api/stripe/confirm-session` (no auth required — validates via Stripe session metadata). Falls back to `/api/checkout/verify` if user is logged in. Max 8 retries for 202 (processing) responses. Idempotent — won't fire duplicate analytics. Auto-redirects to `/home` on success.
 - `client/src/pages/subscription-detail.tsx` — Subscription detail page at `/account/subscription`. Shows plan type, status (green badge), price, start/renewal dates, billing frequency, auto-renew, payment method (mock). Actions: Ändern → /paywall, Zahlungsmethode → /account/payment-method, Kündigen → /account/subscription/cancel.
 - `client/src/pages/payment-method.tsx` — Payment method management at `/account/payment-method`. Shows current card (mock Visa ****4242), add/remove actions.
 - `client/src/pages/subscription-cancel.tsx` — Two-step cancel flow: `/account/subscription/cancel` (confirm with renewal date) and `/account/subscription/cancelled` (confirmation). Exports `SubscriptionCancelConfirmPage` and `SubscriptionCancelledPage`.
@@ -578,6 +579,7 @@ A mobile-first rental alert application for the German market. Users can sign up
 - `POST /api/checkout/session` — Creates Stripe checkout session with 14-day trial (requires auth, `{ plan: "monthly"|"two_month"|"three_month" }`)
 - `POST /api/checkout` — Legacy checkout endpoint (maps old plan IDs to new ones)
 - `POST /api/checkout/verify` — Verifies Stripe checkout session (handles both `trialing` and `paid` status) and syncs subscription to DB (requires auth, `{ session_id }`)
+- `POST /api/stripe/confirm-session` — Confirms Stripe checkout session without auth (validates via session metadata). Idempotent — skips duplicate analytics if already activated. Sets `paywall_completed` + `onboarding_completed`. Used by `/checkout/success` page.
 - `GET /api/stripe/publishable-key` — Returns Stripe publishable key
 - `POST /api/stripe/webhook` — Stripe webhook (handles checkout.session.completed, subscription created/updated/deleted)
 - `POST /api/subscription/ensure-trial` — Creates trial subscription row if none exists (auth required)

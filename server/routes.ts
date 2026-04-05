@@ -1736,11 +1736,14 @@ export async function registerRoutes(
         .update({ stripe_customer_id: customerId, updated_at: new Date().toISOString() })
         .eq("user_id", user.id);
 
+      const PROD_DOMAIN = "https://app.housalert.com";
       const host = req.headers.host || "localhost:5000";
       const protocol = req.headers["x-forwarded-proto"] || req.protocol;
-      const baseUrl = process.env.APP_PUBLIC_BASE_URL || `${protocol}://${host}`;
+      const baseUrl = process.env.NODE_ENV === "production"
+        ? (process.env.APP_PUBLIC_BASE_URL || PROD_DOMAIN)
+        : `${protocol}://${host}`;
 
-      log(`[checkout] Creating Stripe session: plan=${plan}, priceId=${stripePriceId}, customer=${customerId}, successUrl=${baseUrl}/subscription-success`);
+      log(`[checkout] Creating Stripe session: plan=${plan}, priceId=${stripePriceId}, customer=${customerId}, successUrl=${baseUrl}/checkout/success`);
 
       let referralCouponId: string | undefined;
       try {
@@ -1777,7 +1780,7 @@ export async function registerRoutes(
           trial_period_days: 14,
           metadata: { supabase_user_id: user.id, plan },
         },
-        success_url: `${baseUrl}/subscription-success?session_id={CHECKOUT_SESSION_ID}`,
+        success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${baseUrl}/onboarding/setup`,
         metadata: { supabase_user_id: user.id, plan },
       };
@@ -1982,9 +1985,12 @@ export async function registerRoutes(
         customerId = customer.id;
       }
 
-      const host = req.headers.host || "localhost:5000";
-      const protocol = req.headers["x-forwarded-proto"] || req.protocol;
-      const baseUrl = process.env.APP_PUBLIC_BASE_URL || `${protocol}://${host}`;
+      const PROD_DOMAIN2 = "https://app.housalert.com";
+      const host2 = req.headers.host || "localhost:5000";
+      const protocol2 = req.headers["x-forwarded-proto"] || req.protocol;
+      const baseUrl = process.env.NODE_ENV === "production"
+        ? (process.env.APP_PUBLIC_BASE_URL || PROD_DOMAIN2)
+        : `${protocol2}://${host2}`;
 
       const session = await stripe.checkout.sessions.create({
         customer: customerId,
@@ -1995,7 +2001,7 @@ export async function registerRoutes(
           trial_period_days: 14,
           metadata: { supabase_user_id: user.id, plan },
         },
-        success_url: `${baseUrl}/subscription-success?session_id={CHECKOUT_SESSION_ID}`,
+        success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${baseUrl}/onboarding/setup`,
         metadata: { supabase_user_id: user.id, plan },
       });
@@ -2073,6 +2079,80 @@ export async function registerRoutes(
       return res.json({ success: true, subscription: status });
     } catch (err: any) {
       log(`[checkout-verify] Error: ${err.message}`);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/stripe/confirm-session", async (req, res) => {
+    try {
+      const { session_id } = req.body;
+      if (!session_id) return res.status(400).json({ error: "session_id is required" });
+
+      if (!stripeAvailable) {
+        return res.status(503).json({ error: "Stripe not configured" });
+      }
+
+      const { getUncachableStripeClient } = await import("./stripe/stripeClient");
+      const stripe = await getUncachableStripeClient();
+      const session = await stripe.checkout.sessions.retrieve(session_id);
+
+      const stripeSubscriptionId = session.subscription as string;
+      if (!stripeSubscriptionId) {
+        return res.status(202).json({ success: false, message: "Payment still processing" });
+      }
+
+      const sub = await stripe.subscriptions.retrieve(stripeSubscriptionId);
+      const isTrialing = sub.status === "trialing";
+      const isPaid = session.payment_status === "paid";
+
+      if (!isPaid && !isTrialing) {
+        return res.status(400).json({ error: "Payment not completed" });
+      }
+
+      const userId = session.metadata?.supabase_user_id;
+      if (!userId) {
+        return res.status(400).json({ error: "No user linked to this session" });
+      }
+
+      const plan = session.metadata?.plan || sub.metadata?.plan || "monthly";
+      const stripeCustomerId = session.customer as string;
+
+      if (isTrialing) {
+        const trialEnd = (sub as any).trial_end;
+        const trialEndsAt = trialEnd && trialEnd > 0
+          ? new Date(trialEnd * 1000)
+          : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+        await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubscriptionId, plan, null, trialEndsAt);
+      } else {
+        const rawEnd = (sub as any).current_period_end;
+        const periodEnd = rawEnd && rawEnd > 0
+          ? new Date(rawEnd * 1000)
+          : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+        await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubscriptionId, plan, periodEnd, null);
+      }
+
+      const { rows: existingRows } = await pgPool.query(
+        "SELECT paywall_completed FROM user_profile_data WHERE user_id = $1",
+        [userId]
+      );
+      const alreadyActivated = existingRows.length > 0 && existingRows[0].paywall_completed === true;
+
+      if (!alreadyActivated) {
+        trackActivationEvent(userId, "subscription_started", { plan, source: "confirm-session" });
+      }
+
+      try {
+        await pgPool.query(
+          "UPDATE user_profile_data SET paywall_completed = true, onboarding_completed = true, updated_at = NOW() WHERE user_id = $1",
+          [userId]
+        );
+      } catch {}
+
+      log(`[confirm-session] Subscription confirmed for user=${userId} plan=${plan} alreadyActivated=${alreadyActivated}`);
+      const status = await getSubscriptionStatus(userId);
+      return res.json({ success: true, subscription: status });
+    } catch (err: any) {
+      log(`[confirm-session] Error: ${err.message}`);
       return res.status(500).json({ error: err.message });
     }
   });

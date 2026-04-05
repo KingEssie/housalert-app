@@ -1,0 +1,82 @@
+:::writing{variant=“standard” id=“66291”}
+Fix the Stripe checkout success flow so users are correctly redirected back into the app after payment.
+
+Current issue:
+After successful Stripe payment, the user is redirected to a URL that returns “Internal Server Error”, and onboarding does not complete.
+
+Goal:
+	•	After payment, user lands on a working success page
+	•	Subscription is confirmed
+	•	User is redirected into the app
+	•	Onboarding is completed
+
+==================================================
+	1.	FIX STRIPE SUCCESS URL
+==================================================
+
+Update Stripe checkout session creation:
+
+Replace any API-based success_url with a frontend route:
+
+success_url:
+${APP_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}
+
+cancel_url:
+${APP_URL}/checkout/cancel
+
+IMPORTANT:
+	•	Do NOT use backend endpoints in success_url
+	•	Must be a frontend page
+
+==================================================
+2. CREATE FRONTEND SUCCESS PAGE
+
+Create route:
+/checkout/success
+
+Behavior:
+	•	Show loading state
+	•	Extract session_id from URL
+	•	Call backend endpoint:
+
+POST /api/stripe/confirm-session
+
+Body:
+{ session_id }
+
+After success:
+	•	Redirect user to /app (or dashboard)
+	•	Ensure onboarding_completed = true
+
+Handle errors gracefully with retry option
+
+==================================================
+3. CREATE / FIX BACKEND CONFIRM ENDPOINT
+
+Endpoint:
+POST /api/stripe/confirm-session
+
+Logic:
+	•	Retrieve session from Stripe using session_id
+	•	Verify payment_status === “paid”
+	•	Get user (via metadata or customer id)
+	•	Update user:
+	•	subscription_active = true
+	•	onboarding_completed = true
+	•	Return success
+
+==================================================
+4. HANDLE EDGE CASES
+	•	If session_id missing → show error
+	•	If already processed → return success safely
+	•	If Stripe fails → show retry UI
+
+==================================================
+5. OUTPUT
+
+Return:
+	•	Updated success_url config
+	•	New frontend success page code
+	•	Backend confirm endpoint
+	•	Files changed
+:::
