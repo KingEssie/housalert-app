@@ -54,6 +54,22 @@ function useRelativeTime() {
   };
 }
 
+function usePostedTime() {
+  const { t } = useTranslation();
+  return (dateStr: string | null | undefined): string => {
+    if (!dateStr) return "";
+    const diff = Date.now() - new Date(dateStr).getTime();
+    if (diff < 0) return t("freshness.postedJustNow");
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return t("freshness.postedJustNow");
+    if (mins < 60) return t("freshness.postedMinutesAgo", { n: mins });
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return t("freshness.postedHoursAgo", { n: hours });
+    const days = Math.floor(hours / 24);
+    return days === 1 ? t("freshness.postedDayAgo", { n: days }) : t("freshness.postedDaysAgo", { n: days });
+  };
+}
+
 interface ProfileData {
   application_template: string | null;
   document_checklist?: Record<string, boolean> | null;
@@ -99,6 +115,7 @@ export default function ApplyPage() {
   const [showBlockModal, setShowBlockModal] = useState(false);
   const [blockLoading, setBlockLoading] = useState(false);
   const relativeTime = useRelativeTime();
+  const postedTime = usePostedTime();
 
   const accessToken = session?.access_token;
 
@@ -374,10 +391,8 @@ export default function ApplyPage() {
   if (listing.size_m2 && listing.size_m2 > 0) {
     detailParts.push(`${listing.size_m2} m²`);
   }
-  if (listing.first_seen_at) {
-    detailParts.push(relativeTime(listing.first_seen_at));
-  }
   const detailLine = detailParts.join(" · ");
+  const postedLabel = listing.first_seen_at ? postedTime(listing.first_seen_at) : "";
 
   return (
     <div className="min-h-screen flex flex-col relative bg-white">
@@ -447,19 +462,35 @@ export default function ApplyPage() {
       {/* Overlapping white content sheet */}
       <main className="flex-1 max-w-xl mx-auto w-full pb-[120px] -mt-6 relative z-10">
         <div className="bg-white rounded-t-[20px] px-5 pt-6">
-          {/* Title block */}
+          {/* Title */}
           <h1
-            className="text-[20px] font-semibold text-[#111111] leading-[1.3] tracking-[-0.01em] line-clamp-2"
+            className="text-[22px] font-semibold text-[#111111] leading-[1.3] tracking-[-0.01em] line-clamp-2 text-center"
             data-testid="text-apply-title"
           >
             {listing.title}
           </h1>
-          <p className="text-[15px] text-[#4B5563] mt-1.5 leading-[1.4]" data-testid="text-apply-subtitle">
+
+          {/* Subtitle + details — same size and color */}
+          <p className="text-[14px] text-[#4B5563] mt-2 leading-[1.5] text-center" data-testid="text-apply-subtitle">
             {subtitle}
           </p>
           {detailLine && (
-            <p className="text-[13px] text-[#6B7280] mt-1 leading-[1.4]" data-testid="text-apply-details">
+            <p className="text-[14px] text-[#4B5563] mt-0.5 leading-[1.5] text-center" data-testid="text-apply-details">
               {detailLine}
+            </p>
+          )}
+
+          {/* Price line */}
+          {listing.price > 0 && (
+            <p className="text-[18px] font-bold text-[#111111] mt-3 text-center leading-[1.2]" data-testid="text-apply-price">
+              €{listing.price}<span className="text-[13px] font-normal text-[#6B7280] ml-1">{t("common.perMonthShort")}</span>
+            </p>
+          )}
+
+          {/* Posted time */}
+          {postedLabel && (
+            <p className="text-[12px] font-normal text-[#9CA3AF] mt-1 text-center" data-testid="text-apply-posted">
+              {postedLabel}
             </p>
           )}
 

@@ -1,0 +1,100 @@
+Refine the detail screen typography and info layout for the "Reactie versturen" page.
+
+IMPORTANT:
+Do NOT redesign the whole page again.
+This is only a focused typography/layout refinement pass for the detail screen content block.
+
+GOAL:
+Make the detail info block feel cleaner, more premium, and more balanced.
+
+==================================================
+1. TITLE ALIGNMENT + SIZE
+==================================================
+
+Update the listing title inside the white overlapping content sheet:
+
+- center align the title
+- make it slightly larger than it is now
+- keep it elegant, not too bold
+- use semibold (around 600)
+- allow max 2 lines
+
+==================================================
+2. SUBTEXT LINES UNDER TITLE
+==================================================
+
+There are 2 text lines under the title.
+Both should:
+
+- be center aligned
+- use the SAME font size as the current bedroom/details line
+- use the SAME darker grey color as the current place/location line
+- feel readable and balanced, not too faded
+
+So:
+- both supporting lines should visually match each other
+- both should be darker than the current very light grey
+
+==================================================
+3. PRICE LINE
+==================================================
+
+Keep the monthly price visible, but ensure:
+
+- price and "/mnd" are on the SAME line
+- keep the "/mnd" styling exactly like it is now
+- the price line should sit neatly in the info block without feeling oversized
+
+==================================================
+4. POSTED-TIME TEXT
+==================================================
+
+Add a small, thin, grey line under the price line showing how long ago the listing was posted.
+
+Examples:
+- 4 uur geleden geplaatst
+- 2 dagen geleden geplaatst
+- 1 week geleden geplaatst
+
+Requirements:
+- small text
+- thin weight
+- subtle grey
+- visually secondary
+- should sit BELOW the price line
+
+==================================================
+5. REACTIEBRIEF TITLE
+==================================================
+
+Change the section heading:
+
+- do NOT use all caps anymore
+- "REACTIEBRIEF" should become normal title case:
+  "Reactiebrief"
+
+Keep it clean and premium.
+
+==================================================
+6. KEEP EVERYTHING ELSE INTACT
+==================================================
+
+Do NOT change:
+- hero image
+- floating back button
+- favorite/block action placement
+- CTA bottom bar
+- overall page structure
+
+This is only a typography/content alignment refinement pass.
+
+==================================================
+7. OUTPUT
+==================================================
+
+After finishing, show:
+1. updated title font size/alignment
+2. updated supporting text styling
+3. how the price line is rendered
+4. how the "geleden geplaatst" line is generated
+5. confirmation that "Reactiebrief" is no longer uppercase
