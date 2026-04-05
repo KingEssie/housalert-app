@@ -1,0 +1,131 @@
+Investigate and fix why a removed search buddy still received match emails, even when the main user's email alerts were turned off.
+
+CURRENT ISSUE:
+- A buddy email address (previously configured, later removed) still received match emails
+- This happened even when the main user's own email alerts were turned off
+- Resend has been disabled to stop further unwanted emails
+- Before turning Resend back on, we need to know the exact root cause and fix it properly
+
+GOAL:
+1. Find exactly why buddy emails were still being sent
+2. Fix the email sending logic so removed buddies never receive emails
+3. Ensure email alert settings are respected correctly
+4. Make the behavior safe before Resend is re-enabled
+
+IMPORTANT:
+- Diagnose first, then fix
+- Do NOT guess
+- Explain the exact root cause clearly
+- Check both UI state and backend/database state
+- Check whether old queued jobs or cached recipient lists are involved
+
+==================================================
+1. TRACE MATCH EMAIL LOGIC
+==================================================
+
+Find the exact code path where match emails are sent.
+
+Inspect:
+- where recipient lists are built
+- whether the main user and buddy are handled separately
+- whether buddy recipients are added just because an email exists
+- whether email alert toggles are checked before adding recipients
+
+Check for logic like:
+- send to user if email alerts enabled
+- send to buddy if buddy email exists
+
+We need the exact current logic.
+
+==================================================
+2. TRACE SEARCH BUDDY REMOVAL LOGIC
+==================================================
+
+Inspect what happens when a buddy is removed from the UI.
+
+Verify:
+- is the buddy email actually removed from the database?
+- is buddy status updated?
+- is there a removed_at / inactive flag?
+- is the UI only hiding the buddy while backend data remains?
+- are pending invites still active?
+- are cached jobs/recipient lists still using old buddy data?
+
+==================================================
+3. CHECK EMAIL PREFERENCE LOGIC
+==================================================
+
+Inspect the current meaning of:
+- user email alerts enabled/disabled
+- buddy email sending
+- whether buddy emails are treated independently from the main user email toggle
+
+Clarify the current logic in plain language.
+
+==================================================
+4. CHECK DATABASE STATE
+==================================================
+
+Inspect the relevant data for affected users:
+- user email settings
+- buddy email field
+- buddy status
+- subscription status
+- any notification preferences
+- any queued/pending email job data if present
+
+We need to verify whether the removed buddy still exists in stored state.
+
+==================================================
+5. FIX THE LOGIC
+==================================================
+
+Implement safe rules:
+
+Main user should only receive match emails if:
+- subscription is active
+- email alerts are enabled
+
+Buddy should only receive match emails if ALL of the following are true:
+- buddy email exists
+- buddy status is active/accepted
+- buddy has not been removed
+- the main user is eligible to receive match emails
+- no stale queued recipient list overrides this
+
+A removed buddy must NEVER receive future match emails.
+
+Do not allow buddy email sending based solely on a leftover email string.
+
+==================================================
+6. CLEAN UP STALE DATA
+==================================================
+
+If old/stale buddy data exists:
+- clean it up safely
+- null/remove outdated buddy email fields where appropriate
+- deactivate old invite state if needed
+
+==================================================
+7. ADD SAFETY LOGGING
+==================================================
+
+Add temporary logging around email recipient generation so we can clearly see:
+- why a recipient is included
+- whether they are main user or buddy
+- which checks passed
+
+This should help verify correctness before re-enabling Resend.
+
+==================================================
+8. OUTPUT
+==================================================
+
+After finishing, provide:
+1. the exact root cause
+2. the old email recipient logic
+3. what was wrong with buddy removal
+4. the new corrected sending rules
+5. whether stale buddy data was found and cleaned up
+6. which files were changed
+7. what should be tested before Resend is turned back on

@@ -141,7 +141,7 @@ console.log("BOOT: server init");
         console.log("BOOT: background jobs starting");
 
         try {
-          const { clearBuffer, getBufferSize } = await import("./notifications/buffer");
+          const { clearBuffer, getBufferSize, cleanupStaleBuddyData } = await import("./notifications/buffer");
           const bufSize = getBufferSize();
           if (bufSize.listings > 0) {
             console.log(`[SYSTEM] Clearing in-memory buffer: ${bufSize.listings} pending listings for ${bufSize.users} users — PURGED`);
@@ -149,8 +149,9 @@ console.log("BOOT: server init");
           } else {
             console.log("[SYSTEM] In-memory buffer empty — no stale sends pending");
           }
+          await cleanupStaleBuddyData();
         } catch (e: any) {
-          console.error("[SYSTEM] Buffer clear error:", e.message);
+          console.error("[SYSTEM] Buffer/buddy cleanup error:", e.message);
         }
 
         import("./migrations/apply").then(({ runStartupMigration }) =>

@@ -118,7 +118,7 @@ export async function registerRoutes(
       log(`[BUDDY UNSUB] POST token valid — ownerUserId=${ownerUserId.substring(0, 8)}... buddyEmail=${buddyEmail}`);
 
       const result = await pgPool.query(
-        `UPDATE user_profile_data SET search_buddy_enabled = false, search_buddy_status = 'revoked_by_buddy', search_buddy_removed_at = NOW() WHERE user_id = $1 AND lower(trim(search_buddy_email)) = $2 AND search_buddy_status = 'active'`,
+        `UPDATE user_profile_data SET search_buddy_enabled = false, search_buddy_status = 'revoked_by_buddy', search_buddy_removed_at = NOW(), search_buddy_email = NULL WHERE user_id = $1 AND lower(trim(search_buddy_email)) = $2 AND search_buddy_status = 'active'`,
         [ownerUserId, buddyEmail]
       );
 
@@ -2795,7 +2795,8 @@ export async function registerRoutes(
         if (updates.search_buddy_enabled === false) {
           updates.search_buddy_status = "removed";
           updates.search_buddy_removed_at = new Date().toISOString();
-          console.log(`[profile-data] Buddy DISABLED/REMOVED for user ${user.id.substring(0, 8)}...: search_buddy_enabled=false, status→removed`);
+          updates.search_buddy_email = null;
+          console.log(`[profile-data] Buddy DISABLED/REMOVED for user ${user.id.substring(0, 8)}...: search_buddy_enabled=false, email→null, status→removed`);
         } else {
           console.log(`[profile-data] Buddy toggle changed for user ${user.id.substring(0, 8)}...: search_buddy_enabled=${updates.search_buddy_enabled}`);
         }
