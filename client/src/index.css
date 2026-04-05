@@ -17,15 +17,15 @@
   --sidebar: 0 0% 98%;
   --sidebar-foreground: 0 0% 7%;
   --sidebar-border: 220 13% 91%;
-  --sidebar-primary: 350 100% 61%;
+  --sidebar-primary: 349 100% 61%;
   --sidebar-primary-foreground: 0 0% 100%;
   --sidebar-accent: 220 14% 96%;
   --sidebar-accent-foreground: 0 0% 7%;
-  --sidebar-ring: 350 100% 61%;
+  --sidebar-ring: 349 100% 61%;
   --popover: 0 0% 100%;
   --popover-foreground: 0 0% 7%;
   --popover-border: 220 13% 91%;
-  --primary: 350 100% 61%;
+  --primary: 349 100% 61%;
   --primary-foreground: 0 0% 100%;
   --secondary: 210 20% 98%;
   --secondary-foreground: 0 0% 7%;
@@ -36,7 +36,7 @@
   --destructive: 0 72% 51%;
   --destructive-foreground: 0 0% 100%;
   --input: 220 13% 91%;
-  --ring: 350 100% 61%;
+  --ring: 349 100% 61%;
   --chart-1: 350 100% 61%;
   --chart-2: 142 71% 45%;
   --chart-3: 43 96% 56%;
@@ -185,12 +185,10 @@
   }
 
   .text-row-section-title {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
     color: #9CA3AF;
     line-height: 1.4;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
   }
 
   .text-row-title {

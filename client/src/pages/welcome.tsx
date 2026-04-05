@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 const OB = {
   gradient: "linear-gradient(180deg, #111111 0%, #0a0a0a 100%)",
   pink: "#FF385C",
-  pinkGradient: "linear-gradient(135deg, #FF385C 0%, #FF6B81 100%)",
+  pinkGradient: "linear-gradient(135deg, #FF385C 0%, #FF5C78 100%)",
   pinkShadow: "0 4px 15px rgba(255,56,92,0.3)",
   text: "#ffffff",
   textSecondary: "rgba(255,255,255,0.65)",
@@ -273,7 +273,7 @@ export default function WelcomePage() {
 
         <div className="flex items-center gap-3 my-6">
           <div className="flex-1 h-px" style={{ backgroundColor: "rgba(255,255,255,0.15)" }} />
-          <span className="text-[13px] font-semibold uppercase tracking-wide" style={{ color: "rgba(255,255,255,0.5)" }}>
+          <span className="text-[13px] font-semibold tracking-wide" style={{ color: "rgba(255,255,255,0.5)" }}>
             {t("v2.welcome.or") || "OF"}
           </span>
           <div className="flex-1 h-px" style={{ backgroundColor: "rgba(255,255,255,0.15)" }} />

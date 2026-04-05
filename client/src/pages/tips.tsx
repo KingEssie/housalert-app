@@ -147,7 +147,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
                 <Gift className="w-5 h-5 text-ha-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[11px] font-bold text-[#9CA3AF] uppercase tracking-wider mb-0.5">
+                <p className="text-[11px] font-bold text-[#9CA3AF] tracking-wide mb-0.5">
                   {t("tips.referralOverline")}
                 </p>
                 <p className="text-[15px] font-semibold text-[#111111]">

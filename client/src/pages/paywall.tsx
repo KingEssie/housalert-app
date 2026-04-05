@@ -444,7 +444,7 @@ export default function PaywallPage() {
                 data-testid={`card-plan-${plan.id}`}
               >
                 {plan.popular && (
-                  <div className="w-full text-center py-1 text-[11px] font-bold tracking-wider uppercase" style={{ backgroundColor: BRAND, color: "#fff" }} data-testid="badge-popular">
+                  <div className="w-full text-center py-1 text-[11px] font-bold tracking-wider" style={{ backgroundColor: BRAND, color: "#fff" }} data-testid="badge-popular">
                     {t("paywall.mostChosen")}
                   </div>
                 )}

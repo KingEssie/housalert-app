@@ -167,7 +167,7 @@ function LetterPersonalStep({
   onSkip: () => void;
   t: (k: string, p?: Record<string, any>) => string;
 }) {
-  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-ha-card-border bg-ha-card text-[16px] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-pink-200";
+  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-ha-card-border bg-ha-card text-[16px] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-[rgba(255,56,92,0.2)]";
 
   const genderOptions = [
     { value: "male", label: t("onboardingFlow.letterPersonal.genderOptions.male") },
@@ -357,7 +357,7 @@ function LetterLivingStep({
     { value: "other", label: t("onboardingFlow.letterLiving.moveOptions.other") },
   ];
 
-  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-ha-card-border bg-ha-card text-[16px] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-pink-200";
+  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-ha-card-border bg-ha-card text-[16px] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-[rgba(255,56,92,0.2)]";
 
   return (
     <>
@@ -489,7 +489,7 @@ function LetterPreviewStep({
       <textarea
         value={letterText}
         onChange={(e) => onLetterChange(e.target.value)}
-        className="w-full flex-1 min-h-[280px] p-4 rounded-[6px] border border-ha-card-border bg-ha-card text-[14px] leading-[1.7] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-pink-200 resize-none"
+        className="w-full flex-1 min-h-[280px] p-4 rounded-[6px] border border-ha-card-border bg-ha-card text-[14px] leading-[1.7] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-[rgba(255,56,92,0.2)] resize-none"
         style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}
         data-testid="textarea-letter"
       />
@@ -581,7 +581,7 @@ function SearchBuddyStep({
             value={buddyEmail}
             onChange={(e) => onBuddyEmailChange(e.target.value)}
             placeholder={t("onboardingFlow.searchBuddy.emailPlaceholder")}
-            className="flex-1 h-[56px] px-4 rounded-[6px] border border-ha-card-border bg-ha-card text-[16px] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-pink-200"
+            className="flex-1 h-[56px] px-4 rounded-[6px] border border-ha-card-border bg-ha-card text-[16px] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-[rgba(255,56,92,0.2)]"
             data-testid="input-buddy-email"
           />
           <button

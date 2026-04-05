@@ -18,7 +18,7 @@ export function ReferralPromoCard({ onOpen }: ReferralPromoCardProps) {
         <Gift className="w-[22px] h-[22px] text-ha-primary" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-[11px] font-semibold text-ha-primary tracking-wider uppercase">
+        <p className="text-[11px] font-semibold text-ha-primary tracking-wide">
           {t("referral.promoLabel")}
         </p>
         <p className="text-[15px] font-medium text-ha-text mt-0.5">

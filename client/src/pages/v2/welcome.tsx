@@ -234,7 +234,7 @@ export default function V2WelcomePage() {
 
         <div className="flex items-center gap-4 my-7">
           <div className="flex-1 h-px bg-white/10" />
-          <span className="text-[12px] text-white/25 font-semibold uppercase tracking-wider">
+          <span className="text-[12px] text-white/25 font-semibold tracking-wider">
             {t("v2.welcome.or")}
           </span>
           <div className="flex-1 h-px bg-white/10" />

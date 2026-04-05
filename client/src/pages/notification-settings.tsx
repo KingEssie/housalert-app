@@ -261,7 +261,7 @@ export default function NotificationSettingsPage() {
             </ListSection>
 
             <div className="rounded-[6px] border border-dashed border-[#E5E7EB] bg-[#F9FAFB] p-4">
-              <p className="text-xs font-medium text-[#6B7280] mb-3 uppercase tracking-wide">Push Test</p>
+              <p className="text-xs font-medium text-[#6B7280] mb-3 tracking-wide">Push Test</p>
               <button
                 onClick={handleTestPush}
                 disabled={testPushLoading}

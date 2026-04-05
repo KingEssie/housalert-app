@@ -90,7 +90,7 @@ export default function TipDetailPage() {
             <Icon className="w-7 h-7 text-ha-primary" />
           </div>
           <div>
-            <p className="text-[12px] font-medium text-ha-primary uppercase tracking-wide">
+            <p className="text-[12px] font-medium text-ha-primary tracking-wide">
               {t("tips.tipLabel")} {currentIndex + 1}
             </p>
             <h2 className="text-[22px] font-medium text-[#111111] leading-tight" data-testid="text-tip-title">

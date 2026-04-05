@@ -191,7 +191,7 @@ export default function LoginPage() {
 
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px" style={{ backgroundColor: "rgba(255,255,255,0.15)" }} />
-            <span className="text-[13px] font-semibold uppercase tracking-wide" style={{ color: "rgba(255,255,255,0.5)" }}>
+            <span className="text-[13px] font-semibold tracking-wide" style={{ color: "rgba(255,255,255,0.5)" }}>
               {t("auth.login.or") || "OF"}
             </span>
             <div className="flex-1 h-px" style={{ backgroundColor: "rgba(255,255,255,0.15)" }} />

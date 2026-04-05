@@ -799,7 +799,7 @@ function HomeTab({
           data-testid="card-home-referral"
         >
           <div className="flex-1 min-w-0">
-            <p className="text-[11px] font-bold text-[#9CA3AF] tracking-wider uppercase mb-0.5" data-testid="text-referral-label">
+            <p className="text-[11px] font-bold text-[#9CA3AF] tracking-wide mb-0.5" data-testid="text-referral-label">
               {t("referral.promoLabel")}
             </p>
             <p className="text-[15px] font-semibold text-[#111111] leading-snug" data-testid="text-referral-body">
@@ -1540,7 +1540,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
   }
 
   const SectionTitle = ({ children }: { children: string }) => (
-    <p className="text-[13px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-1 mb-2">{children}</p>
+    <p className="text-[13px] font-semibold text-[#9CA3AF] px-1 mb-2">{children}</p>
   );
 
   const CardRow = ({ label, value, onClick, trailing, testId, last }: { label: string; value?: string; onClick?: () => void; trailing?: any; testId?: string; last?: boolean }) => {

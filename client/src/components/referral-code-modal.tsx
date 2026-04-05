@@ -61,7 +61,7 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
         </p>
 
         <div className="mt-6">
-          <p className="text-[12px] font-medium text-ha-text-secondary uppercase tracking-wider mb-2">
+          <p className="text-[12px] font-medium text-ha-text-secondary tracking-wide mb-2">
             {t("referral.codeLabel")}
           </p>
           <div className="bg-ha-surface rounded-[6px] px-5 py-4 flex items-center justify-center" data-testid="text-referral-code">

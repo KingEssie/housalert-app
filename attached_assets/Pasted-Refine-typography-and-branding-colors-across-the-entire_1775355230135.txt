@@ -1,0 +1,99 @@
+Refine typography and branding colors across the entire app (focus on Profile and Settings screens first).
+
+IMPORTANT:
+- Do NOT redesign layouts
+- Only fix text casing and color consistency
+- Apply changes globally where relevant
+- Keep HousAlert identity, but align red color with Airbnb
+
+==================================================
+1. REMOVE ALL-CAPS TEXT (VERY IMPORTANT)
+==================================================
+
+Current issue:
+- Section titles like:
+  - ACCOUNT
+  - NOTIFICATIE-INSTELLINGEN
+  - ZOEKBUDDY
+- These are fully uppercase and look outdated/unpolished
+
+Fix:
+
+- Replace ALL-CAPS text with normal sentence/title casing
+
+Examples:
+- ACCOUNT → Account
+- NOTIFICATIE-INSTELLINGEN → Notificatie-instellingen
+- ZOEKBUDDY → Zoekbuddy
+
+Rules:
+- No full uppercase words unless it's a real acronym
+- Use:
+  - Sentence case OR
+  - Light title case (preferred)
+
+This must be applied:
+- Profile screen
+- Settings / Preferences
+- Any similar section headers in the app
+
+==================================================
+2. AIRBNB RED BRAND COLOR
+==================================================
+
+Current issue:
+- The red/pink color is inconsistent and not aligned with a strong brand color
+
+Fix:
+
+Use the official Airbnb red color:
+
+HEX:
+#FF385C
+
+Apply this consistently to:
+- Primary buttons (e.g. "Toevoegen", "Opslaan")
+- Active states
+- Icons (accent usage)
+- CTA elements
+- Progress bars (where relevant)
+
+==================================================
+3. COLOR CONSISTENCY RULES
+==================================================
+
+- Remove multiple variations of red/pink
+- Use ONE primary brand color: #FF385C
+- Use lighter shades ONLY if derived from this color (opacity or subtle backgrounds)
+
+Examples:
+- Button background → #FF385C
+- Button hover/pressed → slightly darker shade
+- Light background → very soft tint of #FF385C
+
+Do NOT:
+- mix different reds
+- use random pinks/oranges
+
+==================================================
+4. UI POLISH DETAILS
+==================================================
+
+- Toggle switches:
+  - active state → #FF385C (not blue/grey)
+- Icons:
+  - use neutral grey by default
+  - use brand color only when active/emphasized
+- Buttons:
+  - primary = #FF385C
+  - secondary = neutral (grey/outline)
+
+==================================================
+5. OUTPUT
+==================================================
+
+After implementing, show:
+1. Before/after of section titles (ALL CAPS → fixed)
+2. Where #FF385C is now applied
+3. Confirmation that no other red/pink variants remain
+4. Which components/styles were updated

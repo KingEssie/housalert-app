@@ -15,7 +15,7 @@ export const OB = {
   textMuted: "rgba(255,255,255,0.45)",
   pink: "#FF385C",
   pinkHover: "#FF385C",
-  pinkGradient: "linear-gradient(135deg, #FF385C 0%, #FF6B81 100%)",
+  pinkGradient: "linear-gradient(135deg, #FF385C 0%, #FF5C78 100%)",
   pinkShadow: "0 4px 15px rgba(255,56,92,0.3)",
   surface: "rgba(255,255,255,0.05)",
   divider: "rgba(255,255,255,0.08)",
@@ -43,7 +43,7 @@ export const OBW = {
   textMuted: "#9CA3AF",
   pink: "#FF385C",
   pinkHover: "#FF385C",
-  pinkGradient: "linear-gradient(135deg, #FF385C 0%, #FF6B81 100%)",
+  pinkGradient: "linear-gradient(135deg, #FF385C 0%, #FF5C78 100%)",
   pinkShadow: "0 4px 15px rgba(255,56,92,0.3)",
   surface: "#F7F7F7",
   divider: "#E5E7EB",
@@ -168,7 +168,7 @@ export function OBWebFooter({
     >
       <div className="max-w-[480px] mx-auto px-5 py-2.5 flex items-center gap-3">
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.06em]" style={{ color: OBW.textMuted }}>
+          <p className="text-[10px] font-semibold tracking-[0.06em]" style={{ color: OBW.textMuted }}>
             Geschatte matches
           </p>
           <p className="text-[16px] font-bold flex items-center gap-1" style={{ color: OBW.text }}>
@@ -282,7 +282,7 @@ export function OBFooter({
             onClick={onNext}
             disabled={nextDisabled || saving}
             className="flex-1 ha-btn text-white font-bold disabled:opacity-40"
-            style={{ background: OB.pinkGradient, boxShadow: "0 8px 20px rgba(255,0,100,0.25)" }}
+            style={{ background: OB.pinkGradient, boxShadow: "0 8px 20px rgba(255,56,92,0.25)" }}
             data-testid={nextTestId || "button-next"}
           >
             {saving && <Loader2 className="w-4 h-4 animate-spin mr-1" />}
