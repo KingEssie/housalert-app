@@ -5455,5 +5455,175 @@ export async function registerRoutes(
     }
   });
 
+  // ─── Image Coverage Audit ───────────────────────────────────────
+  app.get("/api/admin/portal/image-audit", requireAdmin, async (req, res) => {
+    try {
+      const sourceFilter = (req.query.source as string) || "";
+      const cityFilter = (req.query.city as string) || "";
+      const daysBack = parseInt(req.query.days as string || "0");
+
+      let dateFilter = "";
+      const params: any[] = [];
+      if (daysBack > 0) {
+        params.push(new Date(Date.now() - daysBack * 24 * 60 * 60 * 1000).toISOString());
+        dateFilter = ` AND created_at >= $${params.length}`;
+      }
+      if (sourceFilter) {
+        params.push(sourceFilter);
+        dateFilter += ` AND source = $${params.length}`;
+      }
+      if (cityFilter) {
+        params.push(`%${cityFilter}%`);
+        dateFilter += ` AND city ILIKE $${params.length}`;
+      }
+
+      const coverageQuery = `
+        SELECT
+          source,
+          COUNT(*)::int AS total,
+          COUNT(*) FILTER (WHERE image_url IS NOT NULL AND image_url != '')::int AS with_image,
+          COUNT(*) FILTER (WHERE image_url IS NULL OR image_url = '')::int AS without_image,
+          ROUND(
+            100.0 * COUNT(*) FILTER (WHERE image_url IS NOT NULL AND image_url != '') / NULLIF(COUNT(*), 0),
+            1
+          ) AS coverage_pct,
+          COUNT(*) FILTER (WHERE image_url LIKE '%placeholder%' OR image_url LIKE '%default%' OR image_url LIKE '%noimage%' OR image_url LIKE '%no-image%' OR image_url LIKE '%blank%')::int AS placeholder_only,
+          COUNT(*) FILTER (WHERE image_url IS NOT NULL AND image_url != '' AND image_url NOT LIKE 'http%')::int AS relative_url,
+          COUNT(*) FILTER (WHERE image_url LIKE '//%')::int AS protocol_relative
+        FROM listings
+        WHERE 1=1 ${dateFilter}
+        GROUP BY source
+        ORDER BY total DESC
+      `;
+      const coverageRes = await pgPool.query(coverageQuery, params);
+      const sources = coverageRes.rows;
+
+      const totalAll = sources.reduce((s: number, r: any) => s + r.total, 0);
+      const withImageAll = sources.reduce((s: number, r: any) => s + r.with_image, 0);
+      const withoutImageAll = sources.reduce((s: number, r: any) => s + r.without_image, 0);
+
+      const topWorst = [...sources]
+        .filter((s: any) => s.total >= 5)
+        .sort((a: any, b: any) => (parseFloat(a.coverage_pct) || 0) - (parseFloat(b.coverage_pct) || 0))
+        .slice(0, 5);
+
+      const SOURCE_IMPORTANCE: Record<string, number> = {
+        immowelt: 10, kleinanzeigen: 9, "wg-gesucht": 8, immoscout: 8,
+        wohnungsboerse: 6, rentola: 5, nestpick: 4, immonet: 4,
+      };
+      const topPriority = [...sources]
+        .map((s: any) => ({
+          ...s,
+          importance: SOURCE_IMPORTANCE[s.source] || 3,
+          impact_score: ((SOURCE_IMPORTANCE[s.source] || 3) * s.without_image),
+        }))
+        .sort((a: any, b: any) => b.impact_score - a.impact_score)
+        .slice(0, 5);
+
+      const sampleParams = [...params];
+      const sampleQuery = `
+        SELECT id, title, source, url, image_url, city, created_at
+        FROM listings
+        WHERE (image_url IS NULL OR image_url = '') ${dateFilter.replace(/\$(\d+)/g, (_, n) => `$${n}`)}
+        ORDER BY created_at DESC
+        LIMIT 100
+      `;
+      const sampleRes = await pgPool.query(sampleQuery, sampleParams);
+
+      const samplesBySource: Record<string, any[]> = {};
+      for (const row of sampleRes.rows) {
+        if (!samplesBySource[row.source]) samplesBySource[row.source] = [];
+        if (samplesBySource[row.source].length < 5) {
+          let likelyReason = "unknown";
+          if (!row.image_url) likelyReason = "no_image_extracted";
+          samplesBySource[row.source].push({
+            id: row.id,
+            title: row.title,
+            source: row.source,
+            url: row.url,
+            image_url: row.image_url || null,
+            city: row.city,
+            created_at: row.created_at,
+            likely_reason: likelyReason,
+          });
+        }
+      }
+
+      const failureReasonSummary: Record<string, number> = {};
+      for (const s of sources) {
+        if (s.without_image > 0) {
+          const key = `no_image_extracted_${s.source}`;
+          failureReasonSummary[key] = s.without_image;
+        }
+        if (s.placeholder_only > 0) {
+          failureReasonSummary[`placeholder_only_${s.source}`] = s.placeholder_only;
+        }
+        if (s.relative_url > 0) {
+          failureReasonSummary[`relative_url_${s.source}`] = s.relative_url;
+        }
+        if (s.protocol_relative > 0) {
+          failureReasonSummary[`protocol_relative_${s.source}`] = s.protocol_relative;
+        }
+      }
+
+      const backfillCandidates = sources.map((s: any) => ({
+        source: s.source,
+        no_image: s.without_image,
+        placeholder: s.placeholder_only,
+        suspicious_url: s.relative_url + s.protocol_relative,
+        total_candidates: s.without_image + s.placeholder_only + s.relative_url + s.protocol_relative,
+      }));
+      const backfillTotal = backfillCandidates.reduce((sum: number, c: any) => sum + c.total_candidates, 0);
+
+      res.json({
+        summary: {
+          total_listings: totalAll,
+          with_image: withImageAll,
+          without_image: withoutImageAll,
+          overall_coverage_pct: totalAll > 0 ? Math.round(1000 * withImageAll / totalAll) / 10 : 0,
+        },
+        per_source: sources.map((s: any) => ({
+          source: s.source,
+          total: s.total,
+          with_image: s.with_image,
+          without_image: s.without_image,
+          coverage_pct: parseFloat(s.coverage_pct) || 0,
+          placeholder_only: s.placeholder_only,
+          relative_url: s.relative_url,
+          protocol_relative: s.protocol_relative,
+          priority: (SOURCE_IMPORTANCE[s.source] || 3) >= 7 ? "high" : (SOURCE_IMPORTANCE[s.source] || 3) >= 5 ? "medium" : "low",
+        })),
+        top_5_worst: topWorst.map((s: any) => ({
+          source: s.source,
+          coverage_pct: parseFloat(s.coverage_pct) || 0,
+          total: s.total,
+          without_image: s.without_image,
+        })),
+        top_5_priority: topPriority.map((s: any) => ({
+          source: s.source,
+          coverage_pct: parseFloat(s.coverage_pct) || 0,
+          total: s.total,
+          without_image: s.without_image,
+          importance: s.importance,
+          impact_score: s.impact_score,
+        })),
+        failure_reasons: failureReasonSummary,
+        samples: samplesBySource,
+        backfill: {
+          total_candidates: backfillTotal,
+          per_source: backfillCandidates,
+        },
+        filters: {
+          source: sourceFilter || null,
+          city: cityFilter || null,
+          days: daysBack || null,
+        },
+      });
+    } catch (err: any) {
+      log(`[admin-portal] Image audit error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   return httpServer;
 }

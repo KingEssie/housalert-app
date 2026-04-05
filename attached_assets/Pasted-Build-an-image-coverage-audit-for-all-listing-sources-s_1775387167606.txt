@@ -1,0 +1,145 @@
+Build an image coverage audit for all listing sources so we can understand why many listings have no photo.
+
+Goal:
+Measure image coverage per source, identify failure patterns, and generate a prioritized report for improving image extraction.
+
+IMPORTANT:
+- Do NOT redesign UI
+- Do NOT change user-facing listing cards yet
+- This task is analysis + reporting + basic tooling only
+- Keep it lightweight and safe
+- If needed, add an admin-only endpoint/page for this audit
+
+==================================================
+1. AUDIT METRICS TO CALCULATE
+==================================================
+
+For each source/platform, calculate:
+
+- total listings
+- listings with image
+- listings without image
+- image coverage percentage
+- listings with placeholder only
+- listings with broken/empty image URL
+- listings with relative image URL
+- listings with protocol-relative URL
+- listings where image was recovered from:
+  - overview page
+  - detail page
+  - og:image
+  - twitter:image
+  - srcset
+  - lazy-load attrs
+  - generic img fallback
+
+If this recovery-source data is not currently stored, add lightweight tracking for future ingests and backfills.
+
+==================================================
+2. FAILURE REASON CLASSIFICATION
+==================================================
+
+For listings without image, try to classify likely reason:
+
+- no image present in overview HTML
+- no image present in detail HTML
+- lazy-loaded image not extracted
+- srcset not parsed
+- og:image missing
+- twitter:image missing
+- selector mismatch
+- URL normalization failure
+- hotlink / blocked CDN issue
+- only placeholder image found
+- unknown
+
+This can be heuristic-based if exact cause is not always knowable.
+
+==================================================
+3. PRIORITIZED SOURCE REPORT
+==================================================
+
+Generate a report sorted by:
+
+1. highest business importance
+2. lowest image coverage
+
+For each source, include:
+- source name
+- coverage %
+- sample count
+- likely failure patterns
+- recommendation priority:
+  - high
+  - medium
+  - low
+
+Also highlight:
+- top 5 worst sources by image coverage
+- top 5 most impactful sources to improve first
+
+==================================================
+4. SAMPLE LISTING INSPECTION
+==================================================
+
+For each source, provide a small sample of listings without image:
+- listing id
+- title
+- source
+- source URL
+- stored image URL (if any)
+- likely reason for failure
+
+Limit to a reasonable number per source (for example 5).
+
+==================================================
+5. ADMIN-ONLY ACCESS
+==================================================
+
+Expose this safely via either:
+- an admin-only route/page
+OR
+- an admin-only API endpoint returning JSON
+
+Do NOT expose it publicly.
+
+==================================================
+6. BACKFILL CANDIDATE QUEUE
+==================================================
+
+Add a lightweight way to identify backfill candidates:
+- listings with no image
+- listings with suspicious image URLs
+- listings with placeholder-only image
+
+Return a count per source and overall total.
+
+Do NOT run expensive backfills automatically in this task.
+Only identify candidates.
+
+==================================================
+7. OUTPUT FORMAT
+==================================================
+
+At the end, provide:
+
+1. per-source image coverage table
+2. top 5 worst sources
+3. top 5 highest-priority sources to improve
+4. common failure reasons summary
+5. total number of backfill candidates
+6. files changed
+7. where to access the audit
+
+==================================================
+8. OPTIONAL BUT USEFUL
+==================================================
+
+If easy to add, also include:
+- date range filter
+- city filter
+- source filter
+
+But only if lightweight.
+
+Keep this task focused on visibility and diagnosis.

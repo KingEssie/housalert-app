@@ -50,6 +50,7 @@ import AdminIngestionPage from "@/pages/admin-ingestion";
 import AdminPortalPage from "@/pages/admin-portal";
 import AdminMatchAuditPage from "@/pages/admin-match-audit";
 import AdminActivationPage from "@/pages/admin-activation";
+import AdminImageAuditPage from "@/pages/admin-image-audit";
 import ApplyPage from "@/pages/apply";
 import TipDetailPage from "@/pages/tip-detail";
 import TipsFlowPage from "@/pages/tips-flow";
@@ -194,6 +195,7 @@ function Router() {
       <Route path="/admin/ingestion" component={AdminIngestionPage} />
       <Route path="/admin/match-audit" component={() => <ProtectedRoute component={AdminMatchAuditPage} />} />
       <Route path="/admin/activation" component={() => <ProtectedRoute component={AdminActivationPage} />} />
+      <Route path="/admin/image-audit" component={() => <ProtectedRoute component={AdminImageAuditPage} />} />
       <Route path="/impressum" component={ImpressumPage} />
       <Route path="/datenschutz" component={DatenschutzPage} />
       <Route path="/terms" component={TermsPage} />
