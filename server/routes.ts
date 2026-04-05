@@ -3430,6 +3430,51 @@ export async function registerRoutes(
     }
   });
 
+  app.post("/api/admin/test-email-logic", requireAdmin, async (req, res) => {
+    try {
+      const { user_id } = req.body;
+      if (!user_id || typeof user_id !== "string") {
+        return res.status(400).json({ error: "user_id is required" });
+      }
+      const { simulateEmailLogic } = await import("./notifications/buffer");
+      const result = await simulateEmailLogic(user_id, supabase);
+      res.json(result);
+    } catch (err: any) {
+      log(`[admin] test-email-logic error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/admin/test-email-logic/all", requireAdmin, async (req, res) => {
+    try {
+      const limit = Math.min(parseInt(req.body?.limit || "20"), 50);
+      const { rows } = await pgPool.query(
+        "SELECT user_id FROM user_profile_data ORDER BY updated_at DESC NULLS LAST LIMIT $1",
+        [limit]
+      );
+      if (rows.length === 0) {
+        return res.json({ results: [], count: 0 });
+      }
+      const { simulateEmailLogic } = await import("./notifications/buffer");
+      const results = [];
+      for (const row of rows) {
+        try {
+          const result = await simulateEmailLogic(row.user_id, supabase);
+          results.push(result);
+        } catch (err: any) {
+          results.push({
+            user_id: row.user_id,
+            error: err.message,
+          });
+        }
+      }
+      res.json({ results, count: results.length });
+    } catch (err: any) {
+      log(`[admin] test-email-logic/all error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   app.post("/api/ingest/run", async (req, res) => {
     const authHeader = req.headers.authorization;
     const expectedToken = process.env.INGEST_BEARER_TOKEN;

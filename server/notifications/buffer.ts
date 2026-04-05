@@ -287,6 +287,7 @@ export async function getUserLanguage(userId: string): Promise<import("../i18n")
 }
 
 export const BUDDY_EMAILS_GLOBAL_KILL_SWITCH = false;
+export const EMAIL_TEST_MODE = true;
 
 async function sendBuddyEmail(
   userId: string,
@@ -842,6 +843,117 @@ export function getBufferSize(): { users: number; listings: number } {
 
 export function clearBuffer(): void {
   buffer.clear();
+}
+
+export interface EmailTestResult {
+  user_id: string;
+  main_user_email: string | null;
+  buddy_email: string | null;
+  main_user_should_receive: boolean;
+  buddy_should_receive: boolean;
+  reasons: {
+    subscription_active: boolean;
+    subscription_status: string;
+    main_email_enabled: boolean;
+    buddy_exists: boolean;
+    buddy_enabled: boolean;
+    buddy_status: string | null;
+    email_not_same: boolean;
+  };
+  final_recipients: string[];
+  main_user_verdict: string;
+  buddy_verdict: string;
+}
+
+export async function simulateEmailLogic(userId: string, supabase: any): Promise<EmailTestResult> {
+  const uid = userId.substring(0, 8);
+  log(`[EMAIL TEST] ===== Simulating email logic for userId=${uid}... =====`);
+
+  const subStatus = await getSubscriptionStatus(userId);
+  const hasAccess = subStatus.isActive || subStatus.isTrial;
+
+  const { data: authUser } = await supabase.auth.admin.getUserById(userId);
+  const mainUserEmail = authUser?.user?.email || null;
+
+  const { data: settings } = await supabase
+    .from("user_notification_settings")
+    .select("email_enabled")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  const emailEnabled = settings?.email_enabled ?? true;
+
+  const buddyInfo = await getSearchBuddyInfo(userId);
+
+  const subscriptionActive = hasAccess;
+  const buddyExists = !!buddyInfo;
+  const buddyEnabled = buddyInfo?.enabled ?? false;
+  const buddyStatus = buddyInfo?.status ?? null;
+  const emailNotSame = buddyInfo && mainUserEmail
+    ? buddyInfo.email.toLowerCase() !== mainUserEmail.toLowerCase()
+    : true;
+
+  let mainShouldReceive = false;
+  let mainVerdict = "";
+  if (!subscriptionActive) {
+    mainVerdict = `SKIP — no active subscription (status=${subStatus.status})`;
+  } else if (!emailEnabled) {
+    mainVerdict = "SKIP — main user email alerts disabled";
+  } else if (!mainUserEmail) {
+    mainVerdict = "SKIP — no main user email address";
+  } else {
+    mainShouldReceive = true;
+    mainVerdict = "SEND — subscription active + email alerts enabled";
+  }
+
+  let buddyShouldReceive = false;
+  let buddyVerdict = "";
+  if (!subscriptionActive) {
+    buddyVerdict = `SKIP — no active subscription (status=${subStatus.status})`;
+  } else if (!buddyExists) {
+    buddyVerdict = "SKIP — no buddy configured (email null or status not active)";
+  } else if (!buddyEnabled) {
+    buddyVerdict = "SKIP — buddy feature disabled";
+  } else if (buddyStatus !== "active") {
+    buddyVerdict = `SKIP — buddy status is '${buddyStatus}', not 'active'`;
+  } else if (!emailNotSame) {
+    buddyVerdict = "SKIP — buddy email same as main user email";
+  } else {
+    buddyShouldReceive = true;
+    buddyVerdict = `SEND — subscription active + buddy active (independent of main user email toggle=${emailEnabled})`;
+  }
+
+  const finalRecipients: string[] = [];
+  if (mainShouldReceive && mainUserEmail) finalRecipients.push(mainUserEmail);
+  if (buddyShouldReceive && buddyInfo) finalRecipients.push(buddyInfo.email);
+
+  const result: EmailTestResult = {
+    user_id: userId,
+    main_user_email: mainUserEmail,
+    buddy_email: buddyInfo?.email || null,
+    main_user_should_receive: mainShouldReceive,
+    buddy_should_receive: buddyShouldReceive,
+    reasons: {
+      subscription_active: subscriptionActive,
+      subscription_status: subStatus.status || "unknown",
+      main_email_enabled: emailEnabled,
+      buddy_exists: buddyExists,
+      buddy_enabled: buddyEnabled,
+      buddy_status: buddyStatus,
+      email_not_same: emailNotSame,
+    },
+    final_recipients: finalRecipients,
+    main_user_verdict: mainVerdict,
+    buddy_verdict: buddyVerdict,
+  };
+
+  log(`[EMAIL TEST] User: ${uid}...`);
+  log(`[EMAIL TEST]   Main user: ${mainShouldReceive ? "YES" : "NO"} (${mainVerdict})`);
+  log(`[EMAIL TEST]   Buddy: ${buddyShouldReceive ? "YES" : "NO"} (${buddyVerdict})`);
+  log(`[EMAIL TEST]   Recipients: [${finalRecipients.join(", ")}]`);
+  log(`[EMAIL TEST] ===== End simulation for userId=${uid}... =====`);
+
+  return result;
 }
 
 export async function recoverUndeliveredMatches(supabase: any): Promise<{ recovered: number; sent: number; failed: number }> {

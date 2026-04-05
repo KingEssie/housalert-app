@@ -14,6 +14,17 @@ interface FinalSendParams {
 async function finalEmailDispatch(client: Resend, params: FinalSendParams, category: string = "unknown"): Promise<{ data: any; error: any }> {
   const recipient = params.to.toLowerCase();
 
+  let testMode = false;
+  try {
+    const { EMAIL_TEST_MODE } = await import("./notifications/buffer");
+    testMode = EMAIL_TEST_MODE;
+  } catch {}
+
+  if (testMode) {
+    log(`[EMAIL TEST MODE] INTERCEPTED — would send to=${recipient} category=${category} subject="${params.subject.substring(0, 60)}" — NOT sending (test mode)`);
+    return { data: { id: `test-mode-${Date.now()}` }, error: null };
+  }
+
   log(`[FINAL SEND DISPATCH] recipient=${recipient} category=${category} subject="${params.subject.substring(0, 60)}" result=SEND`);
 
   return client.emails.send({

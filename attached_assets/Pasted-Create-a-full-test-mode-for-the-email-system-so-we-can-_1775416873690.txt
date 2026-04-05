@@ -1,0 +1,157 @@
+Create a full test mode for the email system so we can safely verify ALL email logic (main user + buddy) without sending real emails (Resend is currently disabled).
+
+GOAL:
+- Simulate match email sending
+- Log exactly WHO would receive emails and WHY
+- Do NOT send real emails
+
+==================================================
+1. ADD EMAIL TEST MODE FLAG
+==================================================
+
+Add a global flag:
+
+const EMAIL_TEST_MODE = true;
+
+When EMAIL_TEST_MODE = true:
+- DO NOT call Resend
+- DO NOT send real emails
+- ONLY log and store results
+
+==================================================
+2. INTERCEPT EMAIL SENDING
+==================================================
+
+In all email sending functions (main user + buddy):
+
+Instead of sending:
+
+- Build a structured log object:
+
+{
+  user_id,
+  main_user_email,
+  buddy_email,
+  main_user_should_receive: boolean,
+  buddy_should_receive: boolean,
+  reasons: {
+    subscription_active: boolean,
+    main_email_enabled: boolean,
+    buddy_exists: boolean,
+    buddy_enabled: boolean,
+    buddy_status: string,
+    email_not_same: boolean
+  },
+  final_recipients: []
+}
+
+- Fill final_recipients array with:
+  - main user email if eligible
+  - buddy email if eligible
+
+- Log clearly:
+
+[EMAIL TEST]
+User: X
+Main user: YES/NO (reason)
+Buddy: YES/NO (reason)
+Recipients: [...]
+
+==================================================
+3. STORE TEST RESULTS (OPTIONAL BUT PREFERRED)
+==================================================
+
+Create a temporary table or in-memory store:
+
+email_test_logs
+
+Fields:
+- id
+- user_id
+- created_at
+- main_user_email
+- buddy_email
+- main_user_should_receive
+- buddy_should_receive
+- reasons (JSON)
+- recipients (JSON)
+
+==================================================
+4. ADD ADMIN TEST ENDPOINT
+==================================================
+
+Create endpoint:
+
+POST /api/test-email-logic
+
+Body:
+{
+  user_id: string
+}
+
+This endpoint should:
+- simulate a match event
+- run the full email logic
+- return the structured result (same as log object)
+
+==================================================
+5. ADD BULK TEST ENDPOINT
+==================================================
+
+POST /api/test-email-logic/all
+
+- Runs for last 20 users (or configurable)
+- Returns array of results
+
+==================================================
+6. REQUIRED TEST SCENARIOS
+==================================================
+
+Make sure logs clearly show outcomes for:
+
+1. Main ON + Buddy ON
+→ both receive
+
+2. Main OFF + Buddy ON
+→ only buddy receives
+
+3. Buddy removed
+→ only main (if enabled)
+
+4. Buddy self-unsubscribed
+→ buddy receives nothing
+
+5. Buddy disabled toggle
+→ buddy receives nothing
+
+6. Buddy email same as main user
+→ only one email sent
+
+==================================================
+7. OUTPUT FORMAT
+==================================================
+
+Return clean JSON + readable logs.
+
+Example:
+
+{
+  user_id: "123",
+  main_user: "SEND",
+  buddy: "SKIP",
+  reason: "main_email_disabled=false, buddy_status=removed",
+  recipients: ["user@email.com"]
+}
+
+==================================================
+IMPORTANT
+==================================================
+
+- Do NOT break existing production email flow
+- Wrap everything behind EMAIL_TEST_MODE
+- Keep logic identical to real sending logic
+- No shortcuts — this must reflect real behavior exactly
+
+==================================================
+END
+==================================================
