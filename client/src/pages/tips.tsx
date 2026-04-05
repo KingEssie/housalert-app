@@ -172,24 +172,22 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
           </h2>
           <button
             onClick={() => setReferralModalOpen(true)}
-            className="w-full rounded-[16px] bg-[#FDF8FA] border border-[#F3E1EA] p-5 text-left active:bg-[#FBF0F4] transition-colors"
+            className="w-full rounded-[16px] bg-[#F5F0EB] p-6 text-center active:bg-[#EDE7E1] transition-colors"
             data-testid="card-referral-promo"
           >
-            <div className="flex items-start gap-3.5">
-              <div className="w-11 h-11 rounded-full bg-ha-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Gift className="w-[22px] h-[22px] text-ha-primary" />
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 rounded-full bg-white/60 flex items-center justify-center mb-4">
+                <Gift className="w-[22px] h-[22px] text-[#111111]" />
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-semibold text-[#9CA3AF] mb-1">
-                  {t("tips.referralOverline")}
-                </p>
-                <p className="text-[16px] font-semibold text-[#111111] leading-snug">
-                  {t("tips.referralText")}
-                </p>
-              </div>
+              <p className="text-[13px] font-semibold text-[#9CA3AF] mb-1">
+                {t("tips.referralOverline")}
+              </p>
+              <p className="text-[16px] font-semibold text-[#111111] leading-snug max-w-[280px]">
+                {t("tips.referralText")}
+              </p>
             </div>
-            <div className="mt-4">
-              <span className="inline-flex h-[44px] px-6 rounded-[12px] bg-ha-primary text-white text-[14px] font-semibold items-center hover:bg-ha-primary-hover transition-colors">
+            <div className="mt-5">
+              <span className="inline-flex h-[48px] px-8 rounded-full bg-white text-[#111111] text-[14px] font-semibold items-center hover:bg-[#F9F9F9] transition-colors">
                 {t("tips.referralCta")}
               </span>
             </div>

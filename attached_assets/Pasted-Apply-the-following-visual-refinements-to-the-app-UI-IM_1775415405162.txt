@@ -1,0 +1,104 @@
+Apply the following visual refinements to the app UI.
+
+IMPORTANT:
+- Do NOT change routing or logic
+- Do NOT redesign layouts beyond the changes below
+- Keep the Matches top tabs exactly as they are
+- Focus only on bottom navigation and referral cards
+
+==================================================
+1. BOTTOM NAVIGATION BAR
+==================================================
+
+Update the bottom navigation bar styling:
+
+- Make the icon size larger
+  target: 24px to 26px
+
+- Make the label text slightly smaller
+  target: 11px to 12px
+
+- Increase visual contrast for inactive items:
+  - inactive icon color should be a darker grey
+  - inactive label color should be the same darker grey
+  - use something around #6B7280 or slightly darker if needed
+
+- Keep active items in the brand color
+- Keep current structure and spacing logic, but ensure the larger icon + smaller label still feels balanced
+
+Goal:
+The bottom nav should feel more premium and closer to Airbnb:
+- bigger icons
+- smaller labels
+- darker inactive state
+- cleaner visual hierarchy
+
+==================================================
+2. REFERRAL CARD BACKGROUND
+==================================================
+
+Update the referral card on:
+- Home screen
+- Tips screen
+
+Use the same soft warm neutral background tone as the Airbnb reference card.
+It should feel like a very light warm beige / off-white surface.
+
+Requirements:
+- remove the border completely
+- no visible outline
+- use a clean filled card surface only
+- keep the card premium and calm
+
+==================================================
+3. REFERRAL CARD LAYOUT
+==================================================
+
+Update the referral card content alignment:
+
+- center align everything
+- icon/image area centered
+- title centered
+- description centered
+- button centered
+
+This should apply to both the Home referral card and Tips referral card.
+
+==================================================
+4. REFERRAL CARD BUTTON
+==================================================
+
+Update the referral card CTA button:
+
+- background: white
+- text color: black
+- fully rounded
+- no border
+- premium button styling
+- centered inside the card
+
+Goal:
+The referral card should feel much closer to the Airbnb style in the reference:
+- warm neutral filled card
+- no border
+- centered content
+- white rounded CTA with black text
+
+==================================================
+5. DO NOT CHANGE
+==================================================
+
+- Do NOT change the referral copy/text content unless needed for alignment
+- Do NOT change the Matches top tabs
+- Do NOT change bottom nav destinations or behavior
+- Do NOT add extra decorative borders or shadows
+
+==================================================
+6. OUTPUT
+==================================================
+
+After finishing, provide:
+1. the final background color used for the referral card
+2. the final icon size + label size used in the bottom nav
+3. the inactive grey color used
+4. which files/components were changed

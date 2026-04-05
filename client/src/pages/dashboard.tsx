@@ -878,25 +878,23 @@ function HomeTab({
 
       <div className="flex flex-col gap-8 px-5 pt-2">
         <div
-          className="rounded-[16px] bg-[#FDF8FA] border border-[#F3E1EA] p-5 cursor-pointer active:bg-[#FBF0F4] transition-colors"
+          className="rounded-[16px] bg-[#F5F0EB] p-6 cursor-pointer active:bg-[#EDE7E1] transition-colors"
           onClick={handleReferralTap}
           data-testid="card-home-referral"
         >
-          <div className="flex items-start gap-3.5 mb-4">
-            <div className="w-10 h-10 rounded-full bg-ha-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-              <Send className="w-[18px] h-[18px] text-ha-primary" />
+          <div className="flex flex-col items-center text-center mb-5">
+            <div className="w-12 h-12 rounded-full bg-white/60 flex items-center justify-center mb-4">
+              <Send className="w-[20px] h-[20px] text-[#111111]" />
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[18px] font-semibold text-[#111111] leading-snug" data-testid="text-referral-body">
-                Geef een vriend 25% korting
-              </p>
-              <p className="text-[15px] text-[#6B7280] mt-1.5 leading-relaxed" data-testid="text-referral-label">
-                Deel je persoonlijke link. Jij en je vriend krijgen korting op de eerste betaling.
-              </p>
-            </div>
+            <p className="text-[18px] font-semibold text-[#111111] leading-snug" data-testid="text-referral-body">
+              Geef een vriend 25% korting
+            </p>
+            <p className="text-[15px] text-[#6B7280] mt-1.5 leading-relaxed max-w-[280px]" data-testid="text-referral-label">
+              Deel je persoonlijke link. Jij en je vriend krijgen korting op de eerste betaling.
+            </p>
           </div>
           <button
-            className="w-full h-[48px] rounded-[12px] bg-ha-primary text-white text-[15px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
+            className="w-full h-[48px] rounded-full bg-white text-[#111111] text-[15px] font-semibold hover:bg-[#F9F9F9] transition-colors active:scale-[0.98]"
             data-testid="button-home-referral-cta"
           >
             Deel je link
@@ -2194,9 +2192,9 @@ export default function DashboardPage() {
                     <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <Icon className={`w-[23px] h-[23px] transition-colors ${isActive ? "text-ha-primary" : "text-[#9CA3AF]"}`} strokeWidth={isActive ? 2.2 : 1.7} />
+                  <Icon className={`w-[26px] h-[26px] transition-colors ${isActive ? "text-ha-primary" : "text-[#6B7280]"}`} strokeWidth={isActive ? 2.2 : 1.6} />
                 )}
-                <span className={`text-[12px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-[#9CA3AF]"}`}>
+                <span className={`text-[11px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-[#6B7280]"}`}>
                   {t(labelKey)}
                 </span>
               </button>
