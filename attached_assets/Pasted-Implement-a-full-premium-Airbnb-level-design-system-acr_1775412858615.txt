@@ -1,0 +1,297 @@
+Implement a full premium Airbnb-level design system across the app, with strict consistency in typography, spacing, cards, buttons, and hierarchy.
+
+IMPORTANT:
+- Do NOT redesign core app structure or flows
+- Do NOT change routing or backend logic
+- Keep the existing Matches screen top tabs design exactly as it is
+- Focus on visual polish, consistency, hierarchy, and premium feel
+- Eliminate random sizing, random spacing, and inconsistent text styles
+
+GOAL:
+Make the app feel calm, high-end, clean, and trustworthy like Airbnb.
+
+==================================================
+1. GLOBAL DESIGN TOKENS
+==================================================
+
+Create and enforce a small design system with reusable tokens.
+
+Colors:
+- brand: #FF385C
+- text-primary: #111111
+- text-secondary: #6B7280
+- background: #FFFFFF
+- card-background: #FFFFFF
+- border: #E5E7EB
+- soft-surface: #F3F4F6
+- subtle-tint: #FFF5F8
+
+Typography:
+- h1: 32–34px, 700
+- h2 / section titles: 22–24px, 700
+- card title: 15–16px, 600
+- body: 14–15px, 400
+- small/meta: 13px, 400
+
+Spacing scale:
+- 8px
+- 12px
+- 16px
+- 20px
+- 24px
+- 32px
+
+Radius:
+- button radius: 12px
+- standard cards: 16px
+- hero cards: 20–24px
+
+Borders:
+- standard border: 1px solid #E5E7EB
+
+Shadows:
+- minimal / subtle only
+- no heavy shadows
+
+==================================================
+2. REMOVE DESIGN INCONSISTENCIES
+==================================================
+
+Audit the visible app UI and remove:
+- random grey text values
+- fonts smaller than 13px in main UI
+- inconsistent card paddings
+- inconsistent border radii
+- icon sizes that are too small
+- random spacing between sections/cards
+
+Rules:
+- nothing below 14px in normal UI content except small/meta labels
+- all cards should use shared card styles
+- all secondary text should use the same muted tone
+- all section spacing should come from the spacing scale
+
+==================================================
+3. HOME SCREEN REDESIGN
+==================================================
+
+Improve only the visual design, not the logic.
+
+Header:
+- HousAlert brand label smaller and more subtle
+- greeting large and dominant
+- subtitle darker and easier to read
+- more space below subtitle
+
+Referral hero card:
+- make this the most visually important card
+- use premium spacing and hierarchy
+- title should be short and strong
+- subtitle concise and benefit-driven
+- stronger visual CTA
+- allow a subtle tinted background if it improves hierarchy
+- improve icon treatment so it feels intentional, not decorative
+
+Progress cards:
+- more spacing between cards
+- larger padding
+- slightly thicker progress ring
+- stronger text hierarchy
+- clearer visual alignment
+
+Search profiles:
+- each profile should be a premium card
+- strong hierarchy:
+  1. title/location
+  2. price range
+  3. one extra filter detail
+- do NOT cram all details into one line
+- use multi-line structure where needed
+- examples:
+  - Woning in München
+  - €200 – €1200
+  - 2+ slaapkamers
+  or
+  - In de buurt van München
+  - €0 – €5000+
+  - Reistijd: 30 min
+
+Search profile add CTA:
+- remove disabled/dashed feeling
+- make it a proper secondary action
+- use a light filled surface
+- clearly tappable
+
+Recent matches:
+- improve listing hierarchy
+- make price the most important line
+- title/location smaller than price
+- improve spacing and scanability
+- if empty state appears, use premium empty state structure:
+  large icon → title → description
+
+==================================================
+4. BOTTOM NAVIGATION BAR
+==================================================
+
+Redesign the bottom navigation bar to feel more premium.
+
+Keep:
+- current navigation items
+- current structure
+
+Improve:
+- slightly larger icons (22–24px)
+- label size 12–13px
+- stronger spacing between icon and label
+- better vertical padding
+- subtle top border or floating feel if tasteful
+
+States:
+- active icon = #FF385C
+- active label = #FF385C
+- active label weight = 600
+- inactive icon = #9CA3AF
+- inactive label = #9CA3AF
+
+IMPORTANT:
+- Do NOT change the Matches top tab design
+- This only applies to the bottom navigation bar
+
+==================================================
+5. MATCHES SCREEN POLISH
+==================================================
+
+Do NOT redesign the top tabs.
+
+Improve only:
+- overall page spacing
+- empty state hierarchy
+- card/list spacing
+- text hierarchy in matches cards
+
+Empty state:
+- large icon
+- semibold title
+- readable description
+- more breathing room
+- CTA button if present should feel premium
+
+Listing cards:
+- stronger hierarchy
+- price more visually prominent
+- metadata more subtle but still readable
+
+==================================================
+6. TIPS SCREEN POLISH
+==================================================
+
+Make the Tips screen feel more editorial and less like a plain list.
+
+Improve:
+- section spacing
+- row padding
+- title hierarchy
+- divider subtlety
+- referral promo card treatment
+- chevrons/icons alignment
+
+Keep it clean and simple.
+
+==================================================
+7. SEARCH / ZOEK SCREEN POLISH
+==================================================
+
+Improve:
+- heading hierarchy
+- card spacing
+- search profile readability
+- add CTA styling
+- empty state consistency if applicable
+
+Use the same search profile card system as Home.
+
+==================================================
+8. PROFILE SCREEN POLISH
+==================================================
+
+Profile currently feels too grey and too flat.
+
+Improve:
+- section titles darker and cleaner
+- cards more premium
+- more padding inside each section card
+- better row spacing
+- better text hierarchy between label and value
+- toggles slightly larger and more aligned
+- support/links section should feel clean, structured, and easy to scan
+
+Avoid:
+- too much muted grey
+- tiny labels
+- flat low-contrast look
+
+==================================================
+9. EMPTY STATE SYSTEM
+==================================================
+
+Standardize ALL empty states in the app.
+
+Required structure:
+1. large icon
+2. title
+3. description
+4. optional CTA below
+
+Rules:
+- center aligned when appropriate
+- good vertical spacing
+- title semibold
+- description muted but readable
+- no broken or placeholder-feeling layouts
+
+==================================================
+10. BUTTON SYSTEM
+==================================================
+
+Standardize buttons:
+
+Primary button:
+- brand background
+- white text
+- 48px height minimum
+- radius 12px
+- semibold label
+
+Secondary button:
+- light filled surface
+- dark text
+- clearly tappable
+
+Text-only / tertiary:
+- minimal, understated
+
+Do NOT let important CTAs look disabled.
+
+==================================================
+11. ICON SYSTEM
+==================================================
+
+Standardize icons:
+- normal interactive icons: 22–24px
+- section/helper icons: consistent stroke weight
+- avoid icons that are too faint or too small
+- make sure icons align vertically with text
+
+==================================================
+12. OUTPUT
+==================================================
+
+After finishing, provide:
+1. what global design tokens were introduced
+2. which major screens were visually improved
+3. what was changed on Home
+4. what was changed on the bottom navigation bar
+5. what was changed in search profile cards
+6. what was changed in empty states
+7. which files/components were updated

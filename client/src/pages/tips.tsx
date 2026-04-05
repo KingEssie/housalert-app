@@ -156,40 +156,40 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="sticky top-0 z-10 bg-white px-5 pt-6 pb-4">
+      <div className="sticky top-0 z-10 bg-white px-5 pt-8 pb-5">
         <h1 className="text-page-title" data-testid="heading-tips">
           {t("tips.pageTitle")}
         </h1>
-        <p className="text-[14px] text-[#6B7280] mt-1 leading-relaxed" data-testid="text-tips-subtitle">
+        <p className="text-[15px] text-[#6B7280] mt-2 leading-relaxed" data-testid="text-tips-subtitle">
           {t("tips.pageSubtitle")}
         </p>
       </div>
 
-      <div className="px-4 flex flex-col gap-6 pt-2">
+      <div className="px-5 flex flex-col gap-8 pt-2">
         <div data-testid="section-recommended">
-          <h2 className="text-[16px] font-semibold text-[#111111] mb-3" data-testid="text-recommended-title">
+          <h2 className="text-[18px] font-semibold text-[#111111] mb-3" data-testid="text-recommended-title">
             {t("tips.recommendedTitle")}
           </h2>
           <button
             onClick={() => setReferralModalOpen(true)}
-            className="w-full rounded-[16px] bg-white border border-[#E5E7EB] p-4 text-left active:bg-[#F9FAFB] transition-colors"
+            className="w-full rounded-[16px] bg-[#FDF8FA] border border-[#F3E1EA] p-5 text-left active:bg-[#FBF0F4] transition-colors"
             data-testid="card-referral-promo"
           >
-            <div className="flex items-center gap-3.5">
-              <div className="w-10 h-10 rounded-full bg-[#FDF1F6] flex items-center justify-center flex-shrink-0">
-                <Gift className="w-5 h-5 text-[#111111]" />
+            <div className="flex items-start gap-3.5">
+              <div className="w-11 h-11 rounded-full bg-ha-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Gift className="w-[22px] h-[22px] text-ha-primary" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[11px] font-semibold text-[#9CA3AF] mb-0.5">
+                <p className="text-[13px] font-semibold text-[#9CA3AF] mb-1">
                   {t("tips.referralOverline")}
                 </p>
-                <p className="text-[15px] font-semibold text-[#111111]">
+                <p className="text-[16px] font-semibold text-[#111111] leading-snug">
                   {t("tips.referralText")}
                 </p>
               </div>
             </div>
-            <div className="mt-3">
-              <span className="inline-flex h-[36px] px-5 rounded-full bg-ha-primary text-white text-[13px] font-semibold items-center hover:bg-ha-primary-hover transition-colors">
+            <div className="mt-4">
+              <span className="inline-flex h-[44px] px-6 rounded-[12px] bg-ha-primary text-white text-[14px] font-semibold items-center hover:bg-ha-primary-hover transition-colors">
                 {t("tips.referralCta")}
               </span>
             </div>
@@ -197,27 +197,36 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
         </div>
 
         <div data-testid="section-guides">
-          <h2 className="text-[16px] font-semibold text-[#111111] mb-3" data-testid="text-guides-title">
+          <h2 className="text-[18px] font-semibold text-[#111111] mb-3" data-testid="text-guides-title">
             {t("tips.guidesTitle")}
           </h2>
           <div className="rounded-[16px] bg-white border border-[#E5E7EB] overflow-hidden">
             {guides.map((guide, idx) => {
               const isRead = isTipCompleted(guide.id, readSet);
+              const GuideIcon = guide.icon;
               return (
                 <div key={guide.id}>
-                  {idx > 0 && <div className="h-px bg-[#F0F0F0] mx-4" />}
+                  {idx > 0 && <div className="h-px bg-[#F3F4F6] mx-4" />}
                   <button
                     onClick={() => navigate(guide.route)}
-                    className="w-full flex items-center gap-3 px-4 h-[52px] text-left active:bg-[#F9FAFB] transition-colors"
+                    className="w-full flex items-center gap-3.5 px-4 py-3.5 text-left active:bg-[#F9FAFB] transition-colors"
                     data-testid={`row-guide-${guide.id}`}
                   >
-                    <p className={`flex-1 text-[15px] min-w-0 truncate ${isRead ? "text-[#9CA3AF]" : "font-medium text-[#111111]"}`}>
-                      {guide.title}
-                    </p>
+                    <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${isRead ? "bg-[#F3F4F6]" : "bg-[#FDF1F6]"}`}>
+                      <GuideIcon className={`w-[18px] h-[18px] ${isRead ? "text-[#9CA3AF]" : "text-ha-primary"}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className={`text-[15px] leading-snug truncate ${isRead ? "text-[#9CA3AF]" : "font-medium text-[#111111]"}`}>
+                        {guide.title}
+                      </p>
+                      {guide.description && (
+                        <p className="text-[13px] text-[#9CA3AF] mt-0.5 truncate">{guide.description}</p>
+                      )}
+                    </div>
                     {isRead ? (
-                      <CheckCircle2 className="w-[18px] h-[18px] text-[#111111] flex-shrink-0" />
+                      <CheckCircle2 className="w-[20px] h-[20px] text-ha-success flex-shrink-0" />
                     ) : (
-                      <ChevronRight className="w-[18px] h-[18px] text-[#C4C4C4] flex-shrink-0" />
+                      <ChevronRight className="w-[20px] h-[20px] text-[#D1D5DB] flex-shrink-0" />
                     )}
                   </button>
                 </div>

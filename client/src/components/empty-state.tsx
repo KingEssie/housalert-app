@@ -21,23 +21,23 @@ interface EmptyStateProps {
 
 export function EmptyState({ illustration, title, description, ctaLabel, onCtaClick, testId }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center text-center pt-12 pb-4" data-testid={testId}>
+    <div className="flex flex-col items-center text-center pt-16 pb-6" data-testid={testId}>
       <img
         src={illustration}
         alt=""
-        className="w-[200px] h-auto mb-6"
+        className="w-[220px] h-auto mb-8"
         draggable={false}
       />
-      <h2 className="text-[18px] font-semibold text-[#111111] leading-snug mb-2" data-testid="text-empty-title">
+      <h2 className="text-[20px] font-semibold text-[#111111] leading-snug mb-2.5" data-testid="text-empty-title">
         {title}
       </h2>
-      <p className="text-[14px] text-[#9CA3AF] leading-relaxed max-w-[260px] mb-7" data-testid="text-empty-description">
+      <p className="text-[15px] text-[#6B7280] leading-relaxed max-w-[280px] mb-8" data-testid="text-empty-description">
         {description}
       </p>
       {ctaLabel && onCtaClick && (
         <button
           onClick={onCtaClick}
-          className="h-[44px] px-8 rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold transition-colors active:scale-[0.97]"
+          className="h-[48px] px-8 rounded-[12px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold transition-colors active:scale-[0.97]"
           data-testid="button-empty-cta"
         >
           {ctaLabel}

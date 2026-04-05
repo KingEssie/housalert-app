@@ -75,7 +75,7 @@
   --ha-overlay: rgba(0, 0, 0, 0.05);
   --ha-card-radius: 16px;
   --ha-card-inner-radius: 12px;
-  --ha-btn-radius: 999px;
+  --ha-btn-radius: 12px;
   --ha-brand-dark: 17 17 17;
   --ha-brand-dark-hover: 34 34 34;
   --ha-brand-dark-border: 55 55 55;
@@ -169,8 +169,8 @@
   }
 
   .text-section-title {
-    font-size: 26px;
-    font-weight: 600;
+    font-size: 22px;
+    font-weight: 700;
     color: #111111;
     line-height: 1.25;
     letter-spacing: -0.01em;

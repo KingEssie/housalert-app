@@ -137,7 +137,7 @@ export function ListingCardFull({
         )}
       </div>
 
-      <div className="pt-2.5 pb-1 flex flex-col gap-[3px]">
+      <div className="pt-3 pb-1 flex flex-col gap-1">
         <h3
           className="text-[16px] font-semibold text-[#111111] leading-snug truncate"
           data-testid={`text-match-title-${match.listing_id}`}
@@ -155,10 +155,10 @@ export function ListingCardFull({
         )}
 
         {(hasBedrooms || hasSize) && (
-          <p className="text-[14px] text-[#6B7280] flex items-center gap-1 truncate" data-testid={`detail-meta-${match.listing_id}`}>
+          <p className="text-[14px] text-[#6B7280] flex items-center gap-1.5 truncate" data-testid={`detail-meta-${match.listing_id}`}>
             {hasBedrooms && (
               <span className="inline-flex items-center gap-1">
-                <BedDouble className="w-[14px] h-[14px] text-[#374151]" strokeWidth={1.8} />
+                <BedDouble className="w-[15px] h-[15px] text-[#6B7280]" strokeWidth={1.8} />
                 <span>
                   {match.bedrooms === 1
                     ? `${match.bedrooms} ${t("common.bedroom")}`
@@ -166,17 +166,17 @@ export function ListingCardFull({
                 </span>
               </span>
             )}
-            {hasBedrooms && hasSize && <span className="text-[#9CA3AF] mx-0.5">·</span>}
+            {hasBedrooms && hasSize && <span className="text-[#D1D5DB] mx-0.5">·</span>}
             {hasSize && (
               <span className="inline-flex items-center gap-1">
-                <Maximize2 className="w-[14px] h-[14px] text-[#374151]" strokeWidth={1.8} />
+                <Maximize2 className="w-[15px] h-[15px] text-[#6B7280]" strokeWidth={1.8} />
                 <span>{match.size_m2} m²</span>
               </span>
             )}
           </p>
         )}
 
-        <p className="text-[13px] text-[#9CA3AF]" data-testid={`detail-source-${match.listing_id}`}>
+        <p className="text-[13px] text-[#9CA3AF] mt-0.5" data-testid={`detail-source-${match.listing_id}`}>
           {sourceName}
         </p>
 
@@ -315,9 +315,9 @@ export function ListingCardMini({ match, onCardClick }: ListingCardMiniProps) {
           </div>
         )}
       </div>
-      <div className="pt-1.5 pb-0.5">
-        <p className="text-[12px] font-semibold text-[#111111] truncate" data-testid={`text-mini-title-${match.listing_id}`}>{match.title}</p>
-        <p className="text-[11px] text-[#6B7280] mt-[2px]" data-testid={`text-mini-meta-${match.listing_id}`}>
+      <div className="pt-2 pb-0.5">
+        <p className="text-[13px] font-semibold text-[#111111] truncate" data-testid={`text-mini-title-${match.listing_id}`}>{match.title}</p>
+        <p className="text-[12px] text-[#6B7280] mt-[2px]" data-testid={`text-mini-meta-${match.listing_id}`}>
           {match.price > 0 && <span className="font-semibold text-[#111111]">€{match.price}</span>}
           {match.price > 0 && match.size_m2 > 0 && <span> · </span>}
           {match.size_m2 > 0 && <span>{match.size_m2} m²</span>}
