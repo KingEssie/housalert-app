@@ -3165,6 +3165,74 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/admin/portal/image-backfill-status", requireAdmin, async (_req, res) => {
+    try {
+      const {
+        isBackfillEnabled, isBackfillRunning, getBackfillBatchSize,
+        getEnabledSources, getLastRun, getCumulativeUpdates,
+        getRecentRuns, getBackfillStats,
+      } = await import("./image-backfill");
+
+      const [recentRuns, stats] = await Promise.all([
+        getRecentRuns(15),
+        getBackfillStats(),
+      ]);
+
+      res.json({
+        enabled: isBackfillEnabled(),
+        running: isBackfillRunning(),
+        batchSize: getBackfillBatchSize(),
+        enabledSources: getEnabledSources(),
+        lastRun: getLastRun(),
+        cumulativeUpdates: getCumulativeUpdates(),
+        dbStats: stats,
+        recentRuns,
+      });
+    } catch (err: any) {
+      log(`[admin] image-backfill-status error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/admin/portal/image-backfill-config", requireAdmin, async (req, res) => {
+    try {
+      const {
+        setBackfillEnabled, setBackfillBatchSize, setEnabledSources,
+        isBackfillEnabled, getBackfillBatchSize, getEnabledSources,
+      } = await import("./image-backfill");
+
+      const { enabled, batchSize, sources } = req.body || {};
+      if (typeof enabled === "boolean") setBackfillEnabled(enabled);
+      if (typeof batchSize === "number") setBackfillBatchSize(batchSize);
+      if (Array.isArray(sources)) setEnabledSources(sources);
+
+      log(`[admin] image-backfill config updated: enabled=${isBackfillEnabled()}, batchSize=${getBackfillBatchSize()}, sources=${getEnabledSources().join(",")}`);
+
+      res.json({
+        enabled: isBackfillEnabled(),
+        batchSize: getBackfillBatchSize(),
+        enabledSources: getEnabledSources(),
+      });
+    } catch (err: any) {
+      log(`[admin] image-backfill-config error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/admin/portal/image-backfill-trigger", requireAdmin, async (_req, res) => {
+    try {
+      const { runImageBackfill, isBackfillRunning } = await import("./image-backfill");
+      if (isBackfillRunning()) {
+        return res.json({ message: "Backfill already running", results: [] });
+      }
+      const results = await runImageBackfill();
+      res.json({ results });
+    } catch (err: any) {
+      log(`[admin] image-backfill-trigger error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   app.post("/api/admin/portal/backfill-wg-gesucht-images", requireAdmin, async (req, res) => {
     try {
       const { fetchWgGesuchtImage } = await import("./ingesters/wg-gesucht");

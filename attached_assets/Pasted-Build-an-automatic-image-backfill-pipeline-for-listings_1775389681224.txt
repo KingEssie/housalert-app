@@ -1,0 +1,131 @@
+Build an automatic image backfill pipeline for listings missing images.
+
+Context:
+The manual wg-gesucht backfill is working and successfully updates missing images.
+We are not live yet, so we want to automate this now instead of doing manual runs.
+
+Goal:
+Create a safe, automatic background job that continuously improves image coverage for listings with missing or placeholder images.
+
+IMPORTANT:
+- Do NOT redesign UI
+- Do NOT change user-facing listing cards
+- Keep this production-safe
+- Do NOT overwrite valid existing images
+- Start with wg-gesucht support first, but design the system so additional sources can be added later
+
+==================================================
+1. CREATE AUTOMATIC BACKFILL JOB
+==================================================
+
+Create a background job / cron-style process for image backfills.
+
+Requirements:
+- runs automatically every 10–15 minutes
+- processes only listings that:
+  - have no image_url
+  - OR have placeholder-only image
+- starts with source = wg-gesucht
+- batch size configurable (default 100)
+- must be easy to expand later to rentola and nestpick
+
+==================================================
+2. SAFE PROCESSING RULES
+==================================================
+
+For each run:
+- select up to batch_size eligible listings
+- fetch detail page and apply existing enhanced image extraction logic
+- update image_url only if a valid image is found
+- never overwrite an already valid non-placeholder image
+
+Add protection:
+- do not run multiple overlapping backfill jobs at the same time
+- add a simple job lock / mutex
+- if one run is active, skip the next run
+
+==================================================
+3. STORE JOB METRICS
+==================================================
+
+Track metrics per run:
+- source
+- started_at
+- finished_at
+- processed_count
+- updated_count
+- failed_count
+- skipped_count
+- method breakdown:
+  - selector
+  - srcset
+  - og:image
+  - twitter:image
+  - generic fallback
+- status: success / partial / failed
+
+If needed, create a lightweight table for backfill job runs.
+
+==================================================
+4. ADMIN CONTROLS
+==================================================
+
+Add admin-only controls in the Image Audit page:
+
+- automatic backfill status: ON / OFF
+- source selection (for now at least wg-gesucht)
+- batch size selector (50 / 100 / 250)
+- last run summary
+- total cumulative updates
+- recent run history
+
+Admin must be able to:
+- enable automatic backfill
+- disable automatic backfill
+- see whether it is currently running
+
+==================================================
+5. BACKFILL CANDIDATE REDUCTION
+==================================================
+
+After each successful run, the audit should reflect fewer missing listings for that source.
+
+Make sure the image audit and backfill use the same eligibility logic for:
+- missing image
+- placeholder image
+
+==================================================
+6. DESIGN FOR FUTURE SOURCES
+==================================================
+
+Structure the pipeline so more sources can be added later, for example:
+- wg-gesucht
+- rentola
+- nestpick
+
+Use a source-based handler pattern if appropriate.
+
+==================================================
+7. FAILURE HANDLING
+==================================================
+
+For failed listings:
+- do not crash the whole run
+- continue processing next listing
+- record reason if possible
+
+Optional:
+- keep a retry count so permanently failing listings don’t get retried forever in the short term
+
+==================================================
+8. OUTPUT
+==================================================
+
+After implementation, provide:
+1. how the automatic backfill is triggered
+2. default interval
+3. default batch size
+4. how overlapping runs are prevented
+5. what metrics are stored
+6. what admin controls were added
+7. which files were changed

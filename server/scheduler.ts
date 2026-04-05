@@ -5,10 +5,12 @@ import { cleanupStaleFetchRuns } from "./user-matches";
 import { recoverUndeliveredMatches, BUDDY_EMAILS_GLOBAL_KILL_SWITCH } from "./notifications/buffer";
 import { checkExpoReceipts } from "./notifications/expo-push";
 import { updateStalenessStatuses } from "./listing-status";
+import { runImageBackfill, ensureBackfillRunsTable, isBackfillEnabled, isBackfillRunning } from "./image-backfill";
 
 const intervalMinutes = parseInt(process.env.INGEST_INTERVAL_MINUTES || "5", 10);
 const INTERVAL_MS = intervalMinutes * 60 * 1000;
 const RECOVERY_INTERVAL_MS = 5 * 60 * 1000;
+const BACKFILL_INTERVAL_MS = 12 * 60 * 1000;
 
 let nextRunAt: Date | null = null;
 let _recoveryRunning = false;
@@ -89,6 +91,15 @@ export async function startScheduler() {
     try { await checkExpoReceipts(); } catch (e: any) { log(`[EXPO-RECEIPTS] Error: ${e.message}`, "scheduler"); }
   }, RECEIPT_CHECK_MS);
   log(`Expo receipt checker started — runs every ${RECEIPT_CHECK_MS / 1000}s`, "scheduler");
+
+  await ensureBackfillRunsTable();
+  setTimeout(async () => {
+    try { if (isBackfillEnabled() && !isBackfillRunning()) await runImageBackfill(); } catch (e: any) { log(`[IMAGE-BACKFILL] Error: ${e.message}`, "scheduler"); }
+  }, 60_000);
+  setInterval(async () => {
+    try { if (isBackfillEnabled() && !isBackfillRunning()) await runImageBackfill(); } catch (e: any) { log(`[IMAGE-BACKFILL] Error: ${e.message}`, "scheduler"); }
+  }, BACKFILL_INTERVAL_MS);
+  log(`Image backfill scheduler started — runs every ${BACKFILL_INTERVAL_MS / 1000}s`, "scheduler");
 
   if (process.env.ENABLE_INGEST_SCHEDULER !== "true") {
     log("Ingestion scheduler disabled (ENABLE_INGEST_SCHEDULER != true)", "scheduler");

@@ -5,7 +5,7 @@ import { useLocation } from "wouter";
 import {
   ArrowLeft, Loader2, Image, ImageOff, AlertTriangle,
   ExternalLink, RefreshCw, Filter, ChevronDown, ChevronRight,
-  TrendingUp, BarChart3,
+  TrendingUp, BarChart3, Play, Pause, Clock, Zap,
 } from "lucide-react";
 
 async function adminFetch(path: string) {
@@ -93,21 +93,39 @@ export default function AdminImageAuditPage() {
   const [daysFilter, setDaysFilter] = useState(0);
   const [expandedSource, setExpandedSource] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
-  const [backfilling, setBackfilling] = useState(false);
-  const [backfillResult, setBackfillResult] = useState<{ updated: number; failed: number; total: number; methods?: Record<string, number> } | null>(null);
+  const [pipelineStatus, setPipelineStatus] = useState<any>(null);
+  const [pipelineLoading, setPipelineLoading] = useState(false);
+  const [triggering, setTriggering] = useState(false);
 
-  const runWgBackfill = async () => {
-    setBackfilling(true);
-    setBackfillResult(null);
+  const fetchPipelineStatus = async () => {
     try {
-      const result = await adminPost("/api/admin/portal/backfill-wg-gesucht-images", { limit: 50 });
-      setBackfillResult(result);
+      const status = await adminFetch("/api/admin/portal/image-backfill-status");
+      setPipelineStatus(status);
+    } catch {}
+  };
+
+  const togglePipeline = async (enabled: boolean) => {
+    setPipelineLoading(true);
+    try {
+      await adminPost("/api/admin/portal/image-backfill-config", { enabled });
+      await fetchPipelineStatus();
+    } catch {} finally { setPipelineLoading(false); }
+  };
+
+  const setBatchSize = async (batchSize: number) => {
+    try {
+      await adminPost("/api/admin/portal/image-backfill-config", { batchSize });
+      await fetchPipelineStatus();
+    } catch {}
+  };
+
+  const triggerManualRun = async () => {
+    setTriggering(true);
+    try {
+      await adminPost("/api/admin/portal/image-backfill-trigger");
+      await fetchPipelineStatus();
       fetchAudit();
-    } catch (err: any) {
-      setBackfillResult({ updated: 0, failed: 0, total: 0 });
-    } finally {
-      setBackfilling(false);
-    }
+    } catch {} finally { setTriggering(false); }
   };
 
   const fetchAudit = async () => {
@@ -127,7 +145,7 @@ export default function AdminImageAuditPage() {
     }
   };
 
-  useEffect(() => { fetchAudit(); }, []);
+  useEffect(() => { fetchAudit(); fetchPipelineStatus(); }, []);
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
@@ -335,36 +353,111 @@ export default function AdminImageAuditPage() {
               </div>
             </Section>
 
-            <Section title="wg-gesucht image backfill">
-              <div className="px-4 py-4 space-y-3">
-                <p className="text-[13px] text-[#6B7280]">
-                  Fetch detail pages for wg-gesucht listings missing images and extract images using enhanced selectors.
-                  Processes up to 50 listings per run.
-                </p>
-                <button
-                  onClick={runWgBackfill}
-                  disabled={backfilling}
-                  className="h-[36px] px-4 rounded-[8px] bg-[#111111] text-white text-[13px] font-medium disabled:opacity-50 flex items-center gap-2"
-                  data-testid="button-wg-backfill"
-                >
-                  {backfilling ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
-                  {backfilling ? "Running backfill…" : "Run wg-gesucht backfill"}
-                </button>
-                {backfillResult && (
-                  <div className="bg-[#F9FAFB] rounded-[8px] p-3 text-[13px] space-y-1" data-testid="section-backfill-result">
-                    <p className="font-semibold text-[#111111]">
-                      {backfillResult.updated} updated, {backfillResult.failed} failed (of {backfillResult.total})
-                    </p>
-                    {backfillResult.methods && Object.keys(backfillResult.methods).length > 0 && (
-                      <div className="text-[12px] text-[#6B7280]">
-                        {Object.entries(backfillResult.methods).map(([method, count]) => (
-                          <span key={method} className="mr-3">{method}: {count}</span>
+            <Section title="Automatic image backfill pipeline">
+              {pipelineStatus ? (
+                <div className="divide-y divide-[#E5E7EB]">
+                  <div className="px-4 py-3 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-2.5 h-2.5 rounded-full ${pipelineStatus.enabled ? (pipelineStatus.running ? "bg-amber-500 animate-pulse" : "bg-emerald-500") : "bg-[#D1D5DB]"}`} />
+                      <span className="text-[14px] font-semibold text-[#111111]">
+                        {pipelineStatus.running ? "Running" : pipelineStatus.enabled ? "Enabled" : "Disabled"}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => togglePipeline(!pipelineStatus.enabled)}
+                      disabled={pipelineLoading}
+                      className={`h-[32px] px-3 rounded-[8px] text-[12px] font-medium flex items-center gap-1.5 ${pipelineStatus.enabled ? "bg-[#F3F4F6] text-[#111111]" : "bg-[#111111] text-white"}`}
+                      data-testid="button-toggle-pipeline"
+                    >
+                      {pipelineStatus.enabled ? <><Pause className="w-3.5 h-3.5" /> Disable</> : <><Play className="w-3.5 h-3.5" /> Enable</>}
+                    </button>
+                  </div>
+
+                  <div className="px-4 py-3 flex items-center justify-between">
+                    <span className="text-[13px] text-[#6B7280]">Batch size</span>
+                    <select
+                      value={pipelineStatus.batchSize}
+                      onChange={e => setBatchSize(Number(e.target.value))}
+                      className="h-[30px] px-2 rounded-[6px] border border-[#E5E7EB] text-[12px]"
+                      data-testid="select-batch-size"
+                    >
+                      <option value={50}>50</option>
+                      <option value={100}>100</option>
+                      <option value={250}>250</option>
+                    </select>
+                  </div>
+
+                  <div className="px-4 py-3 flex items-center justify-between">
+                    <span className="text-[13px] text-[#6B7280]">Sources</span>
+                    <span className="text-[13px] font-medium text-[#111111]">{pipelineStatus.enabledSources?.join(", ") || "none"}</span>
+                  </div>
+
+                  <div className="px-4 py-3 flex items-center justify-between">
+                    <span className="text-[13px] text-[#6B7280]">Interval</span>
+                    <span className="text-[13px] font-medium text-[#111111]">Every 12 min</span>
+                  </div>
+
+                  <div className="px-4 py-3 grid grid-cols-3 gap-2">
+                    <MiniStat label="Cumulative updates" value={pipelineStatus.dbStats?.totalUpdated ?? pipelineStatus.cumulativeUpdates ?? 0} />
+                    <MiniStat label="Total runs" value={pipelineStatus.dbStats?.totalRuns ?? 0} />
+                    <MiniStat label="Total processed" value={pipelineStatus.dbStats?.totalProcessed ?? 0} />
+                  </div>
+
+                  <div className="px-4 py-3">
+                    <button
+                      onClick={triggerManualRun}
+                      disabled={triggering || pipelineStatus.running}
+                      className="h-[36px] px-4 rounded-[8px] bg-[#111111] text-white text-[13px] font-medium disabled:opacity-50 flex items-center gap-2"
+                      data-testid="button-trigger-backfill"
+                    >
+                      {triggering ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+                      {triggering ? "Running…" : "Trigger manual run"}
+                    </button>
+                  </div>
+
+                  {pipelineStatus.lastRun && (
+                    <div className="px-4 py-3 space-y-1" data-testid="section-last-run">
+                      <p className="text-[12px] font-semibold text-[#9CA3AF]">Last run</p>
+                      <p className="text-[13px] text-[#111111]">
+                        {pipelineStatus.lastRun.source}: {pipelineStatus.lastRun.updated_count} updated, {pipelineStatus.lastRun.failed_count} failed ({pipelineStatus.lastRun.duration_sec}s)
+                      </p>
+                      {pipelineStatus.lastRun.methods && Object.keys(pipelineStatus.lastRun.methods).length > 0 && (
+                        <div className="text-[11px] text-[#6B7280] flex flex-wrap gap-2">
+                          {Object.entries(pipelineStatus.lastRun.methods).map(([m, c]) => (
+                            <span key={m}>{m}: {c as number}</span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {pipelineStatus.recentRuns && pipelineStatus.recentRuns.length > 0 && (
+                    <div className="px-4 py-3 space-y-1.5" data-testid="section-recent-runs">
+                      <p className="text-[12px] font-semibold text-[#9CA3AF]">Recent runs</p>
+                      <div className="space-y-1 max-h-[200px] overflow-y-auto">
+                        {pipelineStatus.recentRuns.slice(0, 10).map((run: any, i: number) => (
+                          <div key={i} className="flex items-center justify-between text-[12px]">
+                            <div className="flex items-center gap-1.5">
+                              <Clock className="w-3 h-3 text-[#9CA3AF]" />
+                              <span className="text-[#6B7280]">{new Date(run.started_at).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-[#111111] font-medium">{run.updated_count}/{run.processed_count}</span>
+                              <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${run.status === "success" ? "bg-emerald-50 text-emerald-700" : run.status === "partial" ? "bg-amber-50 text-amber-700" : "bg-red-50 text-red-700"}`}>
+                                {run.status}
+                              </span>
+                            </div>
+                          </div>
                         ))}
                       </div>
-                    )}
-                  </div>
-                )}
-              </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="px-4 py-6 flex justify-center">
+                  <Loader2 className="w-5 h-5 animate-spin text-[#9CA3AF]" />
+                </div>
+              )}
             </Section>
 
             <Section title="Common failure reasons">
