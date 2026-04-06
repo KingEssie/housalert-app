@@ -47,8 +47,8 @@ function LanguageDropdown() {
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label="Select language"
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] transition-colors active:scale-[0.96]"
-        style={{ backgroundColor: "rgba(255,255,255,0.15)" }}
+        className="flex items-center gap-1 px-2.5 py-1 rounded-[5px] transition-colors active:scale-[0.96]"
+        style={{ backgroundColor: "rgba(255,255,255,0.12)" }}
         data-testid="button-language-selector"
       >
         <span className="text-[14px]">{current.flag}</span>
@@ -152,11 +152,11 @@ export default function WelcomePage() {
         className="relative w-full flex-shrink-0"
         style={{
           background: "#d91a68",
-          minHeight: "28vh",
-          paddingBottom: "44px",
+          minHeight: "24vh",
+          paddingBottom: "40px",
         }}
       >
-        <header className="flex items-center justify-between px-5 pt-[max(env(safe-area-inset-top),16px)] pb-2">
+        <header className="flex items-center justify-between px-5 pt-[max(env(safe-area-inset-top),14px)] pb-1">
           <div className="flex items-center gap-2.5">
             <img
               src={logoSrc}
@@ -189,7 +189,7 @@ export default function WelcomePage() {
 
       <main
         className="flex-1 flex flex-col w-full px-4 pb-[max(env(safe-area-inset-bottom),12px)]"
-        style={{ marginTop: "-36px" }}
+        style={{ marginTop: "-44px" }}
       >
         <div
           style={{
@@ -211,11 +211,11 @@ export default function WelcomePage() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={t("v2.welcome.emailPlaceholder")}
                 required
-                className="w-full outline-none transition-all"
+                className="w-full outline-none transition-all login-input"
                 style={{
                   height: "56px",
                   borderRadius: "12px",
-                  background: "#F3F4F6",
+                  background: "#EDEEF1",
                   border: "2px solid transparent",
                   padding: "0 16px",
                   fontSize: "16px",
@@ -245,11 +245,11 @@ export default function WelcomePage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={t("v2.welcome.passwordPlaceholder")}
                   required
-                  className="w-full outline-none transition-all"
+                  className="w-full outline-none transition-all login-input"
                   style={{
                     height: "56px",
                     borderRadius: "12px",
-                    background: "#F3F4F6",
+                    background: "#EDEEF1",
                     border: "2px solid transparent",
                     padding: "0 48px 0 16px",
                     fontSize: "16px",
@@ -345,9 +345,9 @@ export default function WelcomePage() {
           </button>
         </div>
 
-        <div className="flex-1" />
+        <div className="flex-1 min-h-[16px]" />
 
-        <div className="flex items-center justify-center gap-2.5 pt-6 pb-2">
+        <div className="flex items-center justify-center gap-2.5 pt-3 pb-2">
           <span className="text-[13px] font-semibold" style={{ color: "#6B7280" }}>
             Trustpilot
           </span>

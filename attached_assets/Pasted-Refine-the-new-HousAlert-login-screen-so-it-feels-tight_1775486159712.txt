@@ -1,0 +1,100 @@
+Refine the new HousAlert login screen so it feels tighter, more premium, and more intentional.
+
+IMPORTANT:
+- Keep the current solid pink hero
+- Keep the floating white card concept
+- Do NOT redesign the screen again
+- Only improve spacing, proportions, and visual balance
+
+GOAL:
+Turn the current login screen from “good” into “polished and premium”.
+
+--------------------------------------------------
+1. HERO HEIGHT
+--------------------------------------------------
+
+Reduce hero height slightly again.
+
+Current result is still a bit too tall.
+Make it feel more compact so users get to the login form faster.
+
+Adjust:
+- slightly reduce hero vertical space
+- tighten space between logo row and title
+- tighten space below title
+
+--------------------------------------------------
+2. CARD OVERLAP
+--------------------------------------------------
+
+Increase the connection between hero and floating card.
+
+The white card should overlap the hero a little more clearly so the layout feels like one designed composition.
+
+- move card slightly higher
+- keep rounded corners and shadow
+- make the overlap feel intentional and premium
+
+--------------------------------------------------
+3. INPUT VISUAL STRENGTH
+--------------------------------------------------
+
+Inputs currently feel slightly too flat.
+
+Improve them by using one of these:
+- slightly darker neutral background than current
+OR
+- a very subtle border
+
+Also:
+- placeholder text should be a little darker and easier to read
+- keep clean/minimal look
+
+--------------------------------------------------
+4. LANGUAGE SWITCHER
+--------------------------------------------------
+
+Reduce the visual weight of the language switcher.
+
+It should still be readable, but feel more secondary.
+
+Possible refinements:
+- slightly smaller height
+- slightly less padding
+- slightly lighter visual emphasis
+
+--------------------------------------------------
+5. TRUSTPILOT SECTION
+--------------------------------------------------
+
+Make the Trustpilot section feel more connected to the page.
+
+It currently feels slightly detached.
+
+Refine spacing so it sits more naturally below the card:
+- reduce excessive empty space
+- align it more intentionally with the rest of the layout
+
+--------------------------------------------------
+6. KEEP WHAT ALREADY WORKS
+--------------------------------------------------
+
+Keep:
+- solid brand pink hero
+- white title
+- white logo
+- floating white card
+- primary and secondary CTA styles
+- current logic and behavior
+
+--------------------------------------------------
+7. OUTPUT
+--------------------------------------------------
+
+Return:
+1. new hero height/spacing changes
+2. card overlap adjustment
+3. input refinements
+4. language switcher refinements
+5. Trustpilot spacing changes
+6. files changed

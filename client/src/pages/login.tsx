@@ -103,8 +103,8 @@ export default function LoginPage() {
         className="relative w-full flex-shrink-0"
         style={{
           background: "#d91a68",
-          minHeight: "28vh",
-          paddingBottom: "44px",
+          minHeight: "24vh",
+          paddingBottom: "40px",
         }}
       >
         <header className="w-full pt-4 px-5">
@@ -140,7 +140,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <main className="flex-1 flex flex-col px-4" style={{ marginTop: "-36px" }}>
+      <main className="flex-1 flex flex-col px-4" style={{ marginTop: "-44px" }}>
         <div
           className="w-full max-w-[480px] mx-auto flex flex-col"
           style={{
