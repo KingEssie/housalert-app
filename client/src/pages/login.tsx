@@ -6,9 +6,8 @@ import { clearAllUserData } from "@/lib/queryClient";
 import { apiFetch } from "@/lib/api-base";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
-import { HousAlertLogo } from "@/components/housalert-logo";
+import { logoSrc } from "@/components/housalert-logo";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { OB } from "@/components/onboarding-ui";
 import { Eye, EyeOff, ArrowRight, Star } from "lucide-react";
 
 export default function LoginPage() {
@@ -99,27 +98,61 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: OB.gradient }}>
-      <header className="w-full pt-3 px-4">
-        <div className="max-w-[480px] mx-auto flex items-center justify-between">
-          <HousAlertLogo size={32} textClassName="font-semibold text-[#111111] text-[18px]" />
-          <LanguageSwitcher />
-        </div>
-      </header>
+    <div className="min-h-screen flex flex-col" style={{ background: "#FFFFFF" }}>
+      <div
+        className="relative w-full flex-shrink-0"
+        style={{
+          background: "linear-gradient(145deg, #d91a68 0%, #9b1155 55%, #6d1a6e 100%)",
+          minHeight: "38vh",
+          paddingBottom: "48px",
+        }}
+      >
+        <header className="w-full pt-4 px-5">
+          <div className="max-w-[480px] mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <img
+                src={logoSrc}
+                alt="HousAlert"
+                width={30}
+                height={30}
+                className="object-contain"
+                style={{ width: 30, height: 30, filter: "brightness(0) invert(1)" }}
+                data-testid="img-housalert-logo"
+              />
+              <span
+                className="font-semibold text-[17px] text-white"
+                data-testid="text-logo"
+              >
+                HousAlert
+              </span>
+            </div>
+            <LanguageSwitcher variant="dark" />
+          </div>
+        </header>
 
-      <main className="flex-1 flex flex-col px-4 pt-8 pb-6">
-        <div className="w-full max-w-[480px] mx-auto flex flex-col flex-1">
+        <div className="max-w-[480px] mx-auto px-6 pt-8">
           <h1
-            className="text-[28px] font-semibold tracking-[-0.02em] leading-[1.15] mb-8 whitespace-pre-line"
-            style={{ color: OB.text }}
+            className="text-[30px] font-bold tracking-[-0.02em] leading-[1.15] text-white"
             data-testid="text-login-title"
           >
             {t("auth.login.title")}
           </h1>
+        </div>
+      </div>
 
+      <main className="flex-1 flex flex-col px-4" style={{ marginTop: "-40px" }}>
+        <div
+          className="w-full max-w-[480px] mx-auto flex flex-col"
+          style={{
+            background: "#FFFFFF",
+            borderRadius: "20px 20px 16px 16px",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.04)",
+            padding: "28px 24px 24px",
+          }}
+        >
           <form onSubmit={handleLogin} className="flex flex-col gap-5">
-            <div className="flex flex-col gap-2">
-              <label htmlFor="login-email" className="text-[14px] font-semibold" style={{ color: OB.text }}>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="login-email" className="text-[14px] font-medium" style={{ color: "#374151" }}>
                 {t("auth.login.email")}
               </label>
               <input
@@ -129,14 +162,30 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full ha-field"
-                style={{ backgroundColor: "#ffffff", borderColor: "#E5E7EB" }}
+                className="w-full outline-none transition-all"
+                style={{
+                  height: "56px",
+                  borderRadius: "12px",
+                  background: "#F3F4F6",
+                  border: "2px solid transparent",
+                  padding: "0 16px",
+                  fontSize: "16px",
+                  color: "#111827",
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = "rgb(217,26,104)";
+                  e.currentTarget.style.boxShadow = "0 0 0 3px rgba(217,26,104,0.1)";
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = "transparent";
+                  e.currentTarget.style.boxShadow = "none";
+                }}
                 data-testid="input-login-email"
               />
             </div>
 
-            <div className="flex flex-col gap-2">
-              <label htmlFor="login-password" className="text-[14px] font-semibold" style={{ color: OB.text }}>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="login-password" className="text-[14px] font-medium" style={{ color: "#374151" }}>
                 {t("auth.login.password")}
               </label>
               <div className="relative">
@@ -147,14 +196,30 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full ha-field pr-12"
-                  style={{ backgroundColor: "#ffffff", borderColor: "#E5E7EB" }}
+                  className="w-full outline-none transition-all"
+                  style={{
+                    height: "56px",
+                    borderRadius: "12px",
+                    background: "#F3F4F6",
+                    border: "2px solid transparent",
+                    padding: "0 48px 0 16px",
+                    fontSize: "16px",
+                    color: "#111827",
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = "rgb(217,26,104)";
+                    e.currentTarget.style.boxShadow = "0 0 0 3px rgba(217,26,104,0.1)";
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = "transparent";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
                   data-testid="input-login-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 p-0"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 p-0 bg-transparent border-0"
                   style={{ color: "#6B7280" }}
                   data-testid="button-toggle-password"
                 >
@@ -165,7 +230,7 @@ export default function LoginPage() {
                 type="button"
                 onClick={handleForgotPassword}
                 disabled={resetLoading}
-                className="self-end text-[14px] font-medium mt-0.5 transition-colors hover:underline"
+                className="self-end text-[14px] font-medium mt-0.5 transition-colors hover:underline bg-transparent border-0 cursor-pointer"
                 style={{ color: "rgb(var(--ha-primary))" }}
                 data-testid="link-forgot-password"
               >
@@ -175,8 +240,16 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              className="w-full ha-btn text-white border-0 font-semibold"
-              style={{ background: OB.pink, boxShadow: OB.pinkShadow }}
+              className="w-full border-0 font-semibold cursor-pointer flex items-center justify-center gap-2 transition-all active:scale-[0.97]"
+              style={{
+                height: "56px",
+                borderRadius: "14px",
+                background: "rgb(var(--ha-primary))",
+                color: "#FFFFFF",
+                fontSize: "16px",
+                fontWeight: 600,
+                boxShadow: "0 4px 15px rgba(217,26,104,0.25)",
+              }}
               disabled={loading}
               data-testid="button-login-submit"
             >
@@ -191,7 +264,7 @@ export default function LoginPage() {
 
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
-            <span className="text-[13px] font-semibold" style={{ color: "#6B7280" }}>
+            <span className="text-[13px] font-semibold" style={{ color: "#9CA3AF" }}>
               {t("auth.login.or") || "OF"}
             </span>
             <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
@@ -199,43 +272,45 @@ export default function LoginPage() {
 
           <button
             onClick={() => navigate("/onboarding/intro")}
-            className="w-full ha-btn font-semibold"
+            className="w-full font-semibold cursor-pointer flex items-center justify-center gap-2 transition-all active:scale-[0.97]"
             style={{
-              border: `1.5px solid ${OB.pink}`,
-              color: OB.pink,
+              height: "56px",
+              borderRadius: "14px",
+              border: "2px solid rgb(var(--ha-primary))",
+              color: "rgb(var(--ha-primary))",
               backgroundColor: "transparent",
+              fontSize: "16px",
+              fontWeight: 600,
             }}
             data-testid="link-signup"
           >
             {t("auth.login.newToHousAlert") || "Ik ben nieuw bij HousAlert"}
             <ArrowRight className="w-4 h-4" />
           </button>
+        </div>
 
-          <div className="flex-1" />
-
-          <div className="flex items-center justify-center gap-2 pt-8 pb-2">
-            <span className="text-[13px] font-semibold" style={{ color: "#6B7280" }}>
-              Trustpilot
-            </span>
-            <div className="flex items-center gap-0.5">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div
-                  key={i}
-                  className="w-[22px] h-[22px] flex items-center justify-center rounded-[3px]"
-                  style={{ backgroundColor: i <= 4 ? "#00b67a" : "#E5E7EB" }}
-                >
-                  <Star
-                    className="w-3 h-3"
-                    fill={i <= 4 ? "#ffffff" : "#00b67a"}
-                    stroke="none"
-                  />
-                </div>
-              ))}
-            </div>
-            <span className="text-[14px] font-semibold" style={{ color: "#6B7280" }}>
-              4.8
-            </span>
+        <div className="flex items-center justify-center gap-2 pt-8 pb-6">
+          <span className="text-[13px] font-semibold" style={{ color: "#6B7280" }}>
+            Trustpilot
+          </span>
+          <div className="flex items-center gap-0.5">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div
+                key={i}
+                className="w-[22px] h-[22px] flex items-center justify-center rounded-[3px]"
+                style={{ backgroundColor: i <= 4 ? "#00b67a" : "#E5E7EB" }}
+              >
+                <Star
+                  className="w-3 h-3"
+                  fill={i <= 4 ? "#ffffff" : "#00b67a"}
+                  stroke="none"
+                />
+              </div>
+            ))}
           </div>
+          <span className="text-[14px] font-semibold" style={{ color: "#6B7280" }}>
+            4.8
+          </span>
         </div>
       </main>
     </div>

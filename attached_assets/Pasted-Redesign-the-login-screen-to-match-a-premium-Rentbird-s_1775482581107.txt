@@ -1,0 +1,127 @@
+Redesign the login screen to match a premium "Rentbird-style" layout, but fully in HousAlert branding.
+
+GOAL:
+Create a strong visual hierarchy with a branded hero section, clear inputs, and a dominant CTA.
+
+--------------------------------
+1. HERO SECTION (TOP AREA)
+--------------------------------
+
+- Add a full-width top section (approx 35–40% of screen height)
+- Background: use a dark version of the HousAlert brand color OR a subtle gradient based on the primary color
+
+Example:
+background: linear-gradient(135deg, #C2185B 0%, #8E24AA 100%);
+
+- Inside the hero:
+  • Place the HousAlert logo (white version) at top-left
+  • Place language switch (NL) top-right
+  • Add title:
+
+    "Welkom bij HousAlert!"
+
+  • Title styling:
+    - font-size: 28–32px
+    - font-weight: 700
+    - color: white
+
+--------------------------------
+2. FORM CONTAINER (BOTTOM CARD)
+--------------------------------
+
+- Create a floating card overlapping the hero section
+
+Card styles:
+- background: white
+- border-radius: 20px (top corners more rounded)
+- padding: 24px
+- margin-top: -40px (to overlap hero)
+- box-shadow: subtle (premium feel)
+
+--------------------------------
+3. INPUT FIELDS
+--------------------------------
+
+- Style inputs like solid blocks (NOT thin borders)
+
+Input styles:
+- height: 56px
+- border-radius: 12px
+- background: #F3F4F6
+- border: none
+- padding: 0 16px
+- font-size: 16px
+- text color: #111827
+- placeholder: #9CA3AF
+
+- Labels:
+  - font-size: 14px
+  - font-weight: 500
+  - color: #374151
+  - margin-bottom: 6px
+
+--------------------------------
+4. CTA BUTTON
+--------------------------------
+
+Primary button (login):
+
+- height: 56px
+- border-radius: 14px
+- background: brand primary color (same as app buttons)
+- text: white
+- font-size: 16px
+- font-weight: 600
+
+- Add subtle shadow for depth
+
+--------------------------------
+5. SECONDARY ACTION
+--------------------------------
+
+"Ik ben nieuw bij HousAlert":
+
+- outline button
+- border: 2px solid brand color
+- background: transparent
+- text color: brand color
+- same height as primary button (56px)
+- border-radius: 14px
+
+--------------------------------
+6. DIVIDER
+--------------------------------
+
+- Add "OF" divider between buttons
+- Use thin line + centered text
+
+--------------------------------
+7. TYPOGRAPHY
+--------------------------------
+
+- Use Poppins everywhere
+- Ensure strong hierarchy:
+  • Title: bold
+  • Labels: medium
+  • Inputs: regular
+
+--------------------------------
+8. REMOVE OLD STYLING
+--------------------------------
+
+- Remove flat white layout feeling
+- Remove thin input borders
+- Remove weak contrast areas
+
+--------------------------------
+OUTPUT
+--------------------------------
+
+Return:
+- Updated login component
+- Styles used (Tailwind or CSS)
+- Confirmation that layout now includes:
+  ✓ hero section
+  ✓ floating card
+  ✓ improved hierarchy
+  ✓ strong CTA focus
