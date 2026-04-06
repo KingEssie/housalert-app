@@ -1,0 +1,80 @@
+Implement the new final HousAlert logo across the app.
+
+IMPORTANT:
+- I will upload the final logo asset into Replit
+- Use that uploaded file as the new source of truth
+- Do NOT redesign the logo
+- Do NOT change routing or business logic
+- Replace existing in-app branding with the new logo cleanly and consistently
+
+GOAL:
+Use the new final HousAlert logo throughout the app so branding is consistent.
+
+==================================================
+1. USE THE UPLOADED LOGO AS PRIMARY BRAND ASSET
+==================================================
+
+Take the uploaded final HousAlert logo file and set it up as the primary brand asset.
+
+Create proper reusable references if needed:
+- logo for light backgrounds
+- app icon version if needed
+- header/logo version if needed
+
+Keep proportions correct.
+Do NOT stretch, crop incorrectly, or recolor the logo.
+
+==================================================
+2. REPLACE OLD IN-APP LOGO USAGE
+==================================================
+
+Replace old logo / brand mark usage in the app UI, including where appropriate:
+- app headers
+- onboarding / welcome / login
+- profile
+- tips
+- home
+- admin header if the app currently shows branding there
+
+Use the new uploaded logo consistently.
+
+==================================================
+3. KEEP ICON/FAVICON/PWA CONSISTENT
+==================================================
+
+If favicon / manifest / install icon setup already exists, make sure it uses the same new logo asset or properly exported versions of it.
+
+Update where needed:
+- favicon
+- manifest icons
+- apple touch icon if configured
+
+==================================================
+4. KEEP THE UI CLEAN
+==================================================
+
+When placing the logo in the app:
+- maintain clean spacing around it
+- do not place it inside random extra shapes
+- use appropriate sizing for each screen
+- keep it visually balanced with surrounding text and controls
+
+==================================================
+5. DO NOT CHANGE ANYTHING ELSE
+==================================================
+
+- Do NOT redesign screens
+- Do NOT change layout structure unless needed only to fit the logo cleanly
+- Do NOT alter unrelated components
+- Only implement the new logo properly
+
+==================================================
+6. OUTPUT
+==================================================
+
+After finishing, provide:
+1. where the uploaded logo asset was placed
+2. which old logo references were replaced
+3. which screens/components now use the new logo
+4. whether favicon/PWA assets were updated too
+5. which files were changed

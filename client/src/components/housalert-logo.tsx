@@ -1,4 +1,4 @@
-import logoSrc from "@assets/06CC2246-251F-489D-9B2B-D22F45324AEE_1775477564051.png";
+import logoSrc from "@assets/Ontwerp_zonder_titel_1775478822000.png";
 
 interface HousAlertLogoProps {
   size?: number;
@@ -16,7 +16,7 @@ export function HousAlertLogo({ size = 28, className = "", showText = true, text
         width={size}
         height={size}
         className="object-contain"
-        style={{ width: size, height: size, borderRadius: size >= 32 ? 10 : 6 }}
+        style={{ width: size, height: size }}
         data-testid="img-housalert-logo"
       />
       {showText && (
