@@ -1,0 +1,183 @@
+You are improving the UI polish of the search wizard flow.
+
+IMPORTANT:
+- Do NOT change layout, logic, routing, or structure
+- Do NOT redesign components
+- ONLY improve visual quality, contrast, spacing, and interaction feedback
+- Keep everything consistent with existing design system
+
+--------------------------------------------------
+GOAL
+--------------------------------------------------
+
+Make the UI feel:
+- More premium
+- More readable
+- More "app-like" (Airbnb-level polish)
+
+--------------------------------------------------
+1. TEXT CONTRAST IMPROVEMENTS
+--------------------------------------------------
+
+Problem: too many light gray texts → low readability
+
+Apply globally in search wizard:
+
+- Primary text (titles, values):
+  color: #111111
+
+- Secondary text (descriptions, subtitles):
+  color: #6B7280
+
+- Labels (like "Locatie", "Huur"):
+  color: #4B5563
+  font-weight: 500
+
+- Remove overly light grays (#9CA3AF for main content should NOT be used anymore except tiny meta)
+
+--------------------------------------------------
+2. FORM FIELD (SELECT / INPUT) IMPROVEMENTS
+--------------------------------------------------
+
+Apply to ALL dropdown/select fields:
+
+- Height: 60px
+- Border radius: 16px
+- Border: 1px solid #DADDE3
+- Background: #FFFFFF
+
+- Value text:
+  font-size: 17px
+  font-weight: 600
+  color: #111111
+
+- Placeholder text:
+  color: #6B7280
+
+- Chevron icon:
+  color: #374151 (darker than before)
+
+- Padding:
+  padding-left: 16px
+  padding-right: 16px
+
+--------------------------------------------------
+3. SELECTION CARDS (STEP 3 & 4)
+--------------------------------------------------
+
+Apply to:
+- Extra kenmerken
+- Doelgroepen & categorieën
+
+Update rows:
+
+- Min height: 72px
+- Padding: 16px
+- Border radius: 16px
+- Border: 1px solid #E5E7EB
+- Background: #FFFFFF
+
+- Checkbox / radio:
+  size: 26px–28px
+  border: 2px solid #9CA3AF
+
+SELECTED STATE:
+- Border: 2px solid brand color (#E11D48 or your pink)
+- Background: very light pink tint (e.g. #FFF1F4)
+- Checkbox filled or active
+
+- Text:
+  font-size: 16px
+  font-weight: 500
+  color: #111111
+
+- Increase spacing between rows to 12–16px
+
+--------------------------------------------------
+4. SPACING & RHYTHM
+--------------------------------------------------
+
+Make spacing more consistent:
+
+- 32px below titles
+- 24px between input groups
+- 40px between major sections
+
+- Remove cramped stacking
+
+--------------------------------------------------
+5. STEP 5 (REVIEW SCREEN) POLISH
+--------------------------------------------------
+
+Keep layout, improve clarity:
+
+- Labels:
+  color: #6B7280
+  font-size: 14px
+
+- Values:
+  color: #111111
+  font-size: 17px
+  font-weight: 600
+
+- Edit buttons:
+  slightly darker icon (#374151)
+  background: #F3F4F6
+
+- Summary card (top):
+  slightly increase padding
+  icon slightly darker
+  keep soft pink background but improve contrast
+
+--------------------------------------------------
+6. FLOATING NEXT BUTTON (FAB)
+--------------------------------------------------
+
+Do NOT redesign, but improve positioning:
+
+- Ensure safe-area bottom spacing (min 24px from bottom)
+- Avoid overlapping content
+- Add subtle shadow:
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12)
+
+- Ensure consistent position across all steps
+
+--------------------------------------------------
+7. HEADER CLEANUP (IMPORTANT)
+--------------------------------------------------
+
+Fix visual clutter:
+
+- Ensure header height includes safe area
+- Add consistent top padding
+
+- Back button:
+  size: 44x44
+  background: #F3F4F6
+  positioned slightly LOWER (not against top edge)
+
+- Progress indicator:
+  centered better
+  spacing below: 16px
+
+--------------------------------------------------
+8. DO NOT CHANGE
+--------------------------------------------------
+
+- No logic changes
+- No API changes
+- No routing changes
+- No component rewrites
+- No redesign of tab system
+
+--------------------------------------------------
+RESULT
+--------------------------------------------------
+
+The UI should feel:
+- Cleaner
+- More readable
+- Stronger hierarchy
+- More “premium mobile app” instead of “web form”
+
+Only visual polish — nothing else.

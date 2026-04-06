@@ -374,10 +374,10 @@ export default function NewSearchPage() {
           <div className="max-w-lg mx-auto flex items-center justify-between h-[60px] px-5">
             <button
               onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=home")}
-              className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
+              className="w-11 h-11 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
               data-testid="button-wizard-header-back"
             >
-              <ArrowLeft className="w-5 h-5 text-[#111111]" />
+              <ArrowLeft className="w-5 h-5 text-[#374151]" />
             </button>
           </div>
         </header>
@@ -411,10 +411,10 @@ export default function NewSearchPage() {
         <div className="max-w-lg mx-auto flex items-center justify-between h-[60px] px-5">
           <button
             onClick={goBack}
-            className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
+            className="w-11 h-11 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
             data-testid="button-wizard-header-back"
           >
-            <ArrowLeft className="w-5 h-5 text-[#111111]" />
+            <ArrowLeft className="w-5 h-5 text-[#374151]" />
           </button>
           <div className="flex items-center gap-1.5">
             {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
@@ -423,12 +423,12 @@ export default function NewSearchPage() {
                 className="h-[3px] rounded-full transition-all duration-300"
                 style={{
                   width: i + 1 === step ? 24 : 8,
-                  backgroundColor: i + 1 <= step ? "rgb(var(--ha-primary))" : "#E5E7EB",
+                  backgroundColor: i + 1 <= step ? "rgb(var(--ha-primary))" : "#D1D5DB",
                 }}
               />
             ))}
           </div>
-          <span className="text-[14px] font-semibold text-[#9CA3AF] tabular-nums" data-testid="text-step-indicator">
+          <span className="text-[14px] font-semibold text-[#6B7280] tabular-nums" data-testid="text-step-indicator">
             {step}/{TOTAL_STEPS}
           </span>
         </div>
@@ -459,7 +459,7 @@ export default function NewSearchPage() {
           <button
             onClick={step < TOTAL_STEPS - 1 ? goNext : () => setStep(5)}
             disabled={!canProceed()}
-            className="w-[56px] h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white flex items-center justify-center shadow-[0_4px_20px_rgba(217,26,104,0.4)] disabled:opacity-30 disabled:shadow-none transition-all active:scale-95"
+            className="w-[56px] h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white flex items-center justify-center shadow-[0_8px_20px_rgba(0,0,0,0.12),0_4px_16px_rgba(217,26,104,0.35)] disabled:opacity-30 disabled:shadow-none transition-all active:scale-95"
             data-testid="button-wizard-next"
           >
             <ArrowRight className="w-6 h-6" />
@@ -501,7 +501,7 @@ function SelectField({
   const { t } = useTranslation();
   return (
     <div>
-      <label className="text-[15px] font-semibold text-[#111111] mb-2.5 flex items-center gap-2.5">
+      <label className="text-[15px] font-medium text-[#4B5563] mb-2.5 flex items-center gap-2.5">
         <span className="w-5 h-5 flex items-center justify-center text-[#6B7280]">{icon}</span>
         {label}
       </label>
@@ -509,14 +509,14 @@ function SelectField({
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full h-[56px] px-4 pr-11 rounded-[16px] border border-[#E5E7EB] bg-[#F9FAFB] text-[17px] font-semibold text-[#111111] appearance-none cursor-pointer focus:border-[rgb(var(--ha-primary))] focus:ring-2 focus:ring-[rgb(var(--ha-primary))]/15 focus:bg-white transition-colors outline-none"
+          className="w-full h-[60px] px-4 pr-11 rounded-[16px] border border-[#DADDE3] bg-white text-[17px] font-semibold text-[#111111] appearance-none cursor-pointer focus:border-[rgb(var(--ha-primary))] focus:ring-2 focus:ring-[rgb(var(--ha-primary))]/15 transition-colors outline-none"
           data-testid={testId}
         >
           {options.map(opt => (
             <option key={String(opt.value)} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
           ))}
         </select>
-        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#9CA3AF] pointer-events-none" />
+        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#374151] pointer-events-none" />
       </div>
     </div>
   );
@@ -556,7 +556,7 @@ function Step2Requirements({
     <div>
       <StepHeader title={t("newSearch.step2.title")} subtitle={t("newSearch.step2.subtitle")} />
 
-      <div className="space-y-6">
+      <div className="space-y-7">
         <SelectField
           icon={<Euro className="w-[18px] h-[18px]" />}
           label={t("newSearch.step2.minPrice")}
@@ -627,7 +627,7 @@ function ToggleSwitch({
   testId: string;
 }) {
   return (
-    <label className="flex items-center gap-3.5 cursor-pointer rounded-[16px] bg-[#F9FAFB] border border-[#E5E7EB] px-4 py-4" data-testid={testId}>
+    <label className="flex items-center gap-3.5 cursor-pointer rounded-[16px] bg-white border border-[#DADDE3] px-4 py-4" data-testid={testId}>
       <div
         className="w-[48px] h-[28px] rounded-full p-[2px] transition-colors shrink-0 cursor-pointer"
         style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "#D1D5DB" }}
@@ -660,20 +660,20 @@ function CheckboxRow({
     <button
       type="button"
       onClick={onToggle}
-      className={`w-full flex items-center gap-4 px-4 py-4 rounded-[16px] border-[1.5px] transition-all text-left ${
+      className={`w-full flex items-center gap-4 px-4 min-h-[72px] py-4 rounded-[16px] border-2 transition-all text-left ${
         selected
-          ? "border-[rgb(var(--ha-primary))] bg-[rgb(var(--ha-primary))]/[0.04]"
+          ? "border-[rgb(var(--ha-primary))] bg-[#FFF1F4]"
           : "border-[#E5E7EB] bg-white hover:bg-[#FAFAFA]"
       }`}
       data-testid={testId}
     >
-      <div className={`w-[24px] h-[24px] rounded-[8px] flex items-center justify-center flex-shrink-0 border-[1.5px] transition-colors ${
-        selected ? "bg-ha-primary border-ha-primary" : "border-[#D1D5DB] bg-white"
+      <div className={`w-[26px] h-[26px] rounded-[8px] flex items-center justify-center flex-shrink-0 border-2 transition-colors ${
+        selected ? "bg-ha-primary border-ha-primary" : "border-[#9CA3AF] bg-white"
       }`}>
         {selected && <Check className="w-4 h-4 text-white" strokeWidth={3} />}
       </div>
       <div className="flex-1 min-w-0">
-        <span className="text-[16px] font-semibold text-[#111111]">{label}</span>
+        <span className="text-[16px] font-medium text-[#111111]">{label}</span>
         {hint && selected && (
           <p className="text-[14px] text-[#6B7280] mt-1 leading-snug">{hint}</p>
         )}
@@ -699,7 +699,7 @@ function Step3ExtraFeatures({
     <div>
       <StepHeader title={t("newSearch.step3.title")} subtitle={t("newSearch.step3.subtitle")} />
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         {EXTRA_FEATURE_OPTIONS.map((opt) => (
           <CheckboxRow
             key={opt.value}
@@ -714,7 +714,7 @@ function Step3ExtraFeatures({
       <div className="mt-10">
         <h3 className="text-[16px] font-bold text-[#111111] mb-2">{t("newSearch.step3.preferencesTitle")}</h3>
         <p className="text-[15px] text-[#6B7280] mb-4 leading-relaxed">{t("newSearch.step3.preferencesSubtitle")}</p>
-        <div className="space-y-3">
+        <div className="space-y-4">
           {PREFERENCE_OPTIONS.map((opt) => (
             <CheckboxRow
               key={opt.value}
@@ -729,7 +729,7 @@ function Step3ExtraFeatures({
       </div>
 
       {filters.extraFeatures.length === 0 && (
-        <p className="text-[15px] text-[#9CA3AF] text-center mt-7">
+        <p className="text-[15px] text-[#6B7280] text-center mt-7">
           {t("newSearch.step3.noSelectionHint")}
         </p>
       )}
@@ -763,7 +763,7 @@ function Step4TargetCategories({
     <div>
       <StepHeader title={t("newSearch.step4.title")} subtitle={t("newSearch.step4.subtitle")} />
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         {TARGET_CATEGORY_OPTIONS.map((opt) => (
           <CheckboxRow
             key={opt.value}
@@ -776,7 +776,7 @@ function Step4TargetCategories({
       </div>
 
       {filters.targetCategories.length === 0 && (
-        <p className="text-[15px] text-[#9CA3AF] text-center mt-7">
+        <p className="text-[15px] text-[#6B7280] text-center mt-7">
           {t("newSearch.step4.noSelectionHint")}
         </p>
       )}
@@ -792,11 +792,11 @@ function ReviewRow({ label, value, onEdit }: { label: string; value: string; onE
       data-testid={`button-review-edit-${label.toLowerCase().replace(/\s/g, "-")}`}
     >
       <div className="flex-1 min-w-0 mr-3">
-        <p className="text-[13px] font-medium text-[#9CA3AF] mb-1">{label}</p>
+        <p className="text-[14px] font-medium text-[#6B7280] mb-1">{label}</p>
         <p className="text-[17px] font-semibold text-[#111111] leading-snug">{value}</p>
       </div>
       <div className="flex-shrink-0 w-9 h-9 rounded-full bg-[#F3F4F6] flex items-center justify-center group-hover:bg-[#E5E7EB] transition-colors">
-        <Pencil className="w-4 h-4 text-[#6B7280]" />
+        <Pencil className="w-4 h-4 text-[#374151]" />
       </div>
     </button>
   );
@@ -869,9 +869,9 @@ function StepReview({
 
       <div className="space-y-5">
         {!estimateLoading && (
-          <div className="rounded-[16px] bg-gradient-to-br from-[#FDF2F8] to-[#FCE7F3] border border-[#F9A8D4]/30 p-5 flex items-center gap-4" data-testid="card-review-estimate">
-            <div className="w-12 h-12 rounded-[14px] bg-white/80 flex items-center justify-center flex-shrink-0 shadow-sm">
-              <Sparkles className="w-6 h-6 text-ha-primary" />
+          <div className="rounded-[16px] bg-gradient-to-br from-[#FDF2F8] to-[#FCE7F3] border border-[#F9A8D4]/30 p-6 flex items-center gap-4" data-testid="card-review-estimate">
+            <div className="w-12 h-12 rounded-[14px] bg-white/90 flex items-center justify-center flex-shrink-0 shadow-sm">
+              <Sparkles className="w-6 h-6 text-[#BE185D]" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[17px] font-bold text-[#111111] leading-snug">
