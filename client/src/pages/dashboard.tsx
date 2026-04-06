@@ -42,6 +42,8 @@ import {
 } from "lucide-react";
 import { ExpandableCompletionCard, type CompletionStep } from "@/components/expandable-completion-card";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
+import { HighlightCard } from "@/components/highlight-card";
+import { useReferralShare } from "@/lib/referral-share";
 import TipsPage, { getTipConfig, getTipsReadSet } from "@/pages/tips";
 import { getFlowTipSteps } from "@/pages/tips-flow";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -798,56 +800,7 @@ function HomeTab({
   });
   const rawFirstName = profileDataQuery.data?.first_name || null;
   const firstName = rawFirstName ? rawFirstName.split(" ")[0] : null;
-  const { data: referralData } = useQuery<{
-    code: string;
-    totalInvited: number;
-    pending: number;
-    qualified: number;
-    rewarded: number;
-  }>({
-    queryKey: ["/api/referrals/me"],
-    queryFn: async () => {
-      if (!accessToken) throw new Error("No token");
-      const res = await apiFetch("/api/referrals/me", {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      if (!res.ok) throw new Error("Failed");
-      return res.json();
-    },
-    enabled: !!accessToken,
-  });
-
-  function getReferralUrl(): string {
-    const code = referralData?.code;
-    if (!code) return "";
-    const isProd = window.location.hostname === "app.housalert.com";
-    const base = isProd ? "https://app.housalert.com" : window.location.origin;
-    return `${base}/?ref=${code}`;
-  }
-
-  async function handleReferralTap() {
-    const url = getReferralUrl();
-    if (!url) return;
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "HousAlert — Vind sneller een woning",
-          text: "Gebruik mijn link en krijg 25% korting op je eerste betaling.",
-          url,
-        });
-        toast({ title: "Link klaar om te delen", description: "Je vriend krijgt 25% korting op de eerste betaling" });
-        return;
-      } catch {}
-    }
-
-    try {
-      await navigator.clipboard.writeText(url);
-      toast({ title: "Link gekopieerd", description: "Je vriend krijgt 25% korting op de eerste betaling" });
-    } catch {
-      toast({ title: "Kopiëren mislukt", description: "Probeer het opnieuw", variant: "destructive" });
-    }
-  }
+  const { handleReferralShare } = useReferralShare();
 
   return (
     <div className="flex flex-col pb-8">
@@ -871,27 +824,14 @@ function HomeTab({
       </div>
 
       <div className="flex flex-col gap-8 px-5 pt-2">
-        <div
-          className="rounded-[16px] bg-[#F5F0EB] p-6 cursor-pointer active:bg-[#EDE7E1] transition-colors"
-          onClick={handleReferralTap}
-          data-testid="card-home-referral"
-        >
-          <div className="flex flex-col items-center text-center mb-5">
-            <Send className="w-[22px] h-[22px] text-[#111111] mb-4" />
-            <p className="text-[18px] font-semibold text-[#111111] leading-snug" data-testid="text-referral-body">
-              Geef een vriend 25% korting
-            </p>
-            <p className="text-[15px] text-[#6B7280] mt-1.5 leading-relaxed max-w-[280px]" data-testid="text-referral-label">
-              Deel je persoonlijke link. Jij en je vriend krijgen korting op de eerste betaling.
-            </p>
-          </div>
-          <button
-            className="w-full h-[48px] rounded-full bg-white text-[#111111] text-[15px] font-semibold hover:bg-[#F9F9F9] transition-colors active:scale-[0.98]"
-            data-testid="button-home-referral-cta"
-          >
-            Deel je link
-          </button>
-        </div>
+        <HighlightCard
+          icon={Send}
+          title="Geef een vriend 25% korting"
+          subtitle="Deel je persoonlijke link. Jij en je vriend krijgen korting op de eerste betaling."
+          ctaLabel="Deel je link"
+          onClick={handleReferralShare}
+          testId="card-home-referral"
+        />
 
         <div data-testid="section-gamification">
           <h2 className="text-[18px] font-semibold text-[#111111] mb-4" data-testid="text-gamification-title">
@@ -899,7 +839,7 @@ function HomeTab({
           </h2>
           <div className="flex flex-col gap-3.5">
             <HomeAccountCompletionCard accessToken={accessToken} navigate={navigate} />
-            <HomePrepCompletionCard accessToken={accessToken} navigate={navigate} onTellFriends={handleReferralTap} />
+            <HomePrepCompletionCard accessToken={accessToken} navigate={navigate} onTellFriends={handleReferralShare} />
           </div>
         </div>
 
@@ -1840,17 +1780,15 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           {/* 6. Abonnementen — centered inline */}
           <div>
             <SectionTitle>{t("profile.subscription")}</SectionTitle>
-            <div className="rounded-[16px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
+            <div className="rounded-[16px] bg-[#F5F0EB] overflow-hidden">
               {!(subscription.isActive || subscription.isTrial) ? (
-                <div className="px-5 py-8 flex flex-col items-center text-center" data-testid="card-subscription-locked">
-                  <div className="w-14 h-14 rounded-full bg-[#F5F0EB] flex items-center justify-center mb-5">
-                    <Lock className="w-7 h-7 text-[#111111]" />
-                  </div>
+                <div className="p-6 flex flex-col items-center text-center" data-testid="card-subscription-locked">
+                  <Lock className="w-[32px] h-[32px] text-[#111111] mb-4" strokeWidth={1.6} />
                   <p className="text-[18px] font-semibold text-[#111111]" data-testid="text-sub-locked-title">{t("profile.subLocked.title")}</p>
                   <p className="text-[15px] text-[#6B7280] mt-2 leading-relaxed max-w-[280px]">{t("profile.subLocked.desc")}</p>
                   <button
                     onClick={() => navigate("/paywall")}
-                    className="mt-6 h-[48px] px-8 rounded-[12px] bg-ha-primary text-white text-[15px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
+                    className="mt-5 h-[48px] px-8 rounded-full bg-white text-[#111111] text-[15px] font-semibold hover:bg-[#F9F9F9] transition-colors active:scale-[0.97]"
                     data-testid="button-sub-locked-cta"
                   >
                     {t("profile.subLocked.cta")}
@@ -1858,10 +1796,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 </div>
               ) : (
                 <div className="flex flex-col items-center text-center" data-testid="card-subscription-active">
-                  <div className="px-5 pt-8 pb-6 flex flex-col items-center">
-                    <div className="w-14 h-14 rounded-full bg-[#F5F0EB] flex items-center justify-center mb-5">
-                      <Crown className="w-7 h-7 text-[#111111]" />
-                    </div>
+                  <div className="p-6 flex flex-col items-center">
+                    <Crown className="w-[32px] h-[32px] text-[#111111] mb-4" strokeWidth={1.6} />
                     <p className="text-[18px] font-semibold text-[#111111]" data-testid="text-plan-name">
                       {subscription.isTrial ? t("subscription.status.trial") : getPlanLabel(subscription.plan)}
                     </p>
@@ -1877,10 +1813,10 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                   </div>
                   {!isCanceled && subscription.isActive && !subscription.isTrial && (
                     <>
-                      <div className="h-px bg-[#F3F4F6] w-[calc(100%-32px)]" />
+                      <div className="h-px bg-[#E8E2DA] w-[calc(100%-32px)] mx-auto" />
                       <button
                         onClick={() => navigate("/account/subscription/cancel")}
-                        className="w-full py-3.5 flex items-center justify-center text-[14px] font-medium text-[#6B7280] active:bg-[#F9FAFB] transition-colors"
+                        className="w-full py-3.5 flex items-center justify-center text-[14px] font-medium text-[#6B7280] active:bg-[#EDE7E1] transition-colors rounded-b-[16px]"
                         data-testid="button-cancel-subscription"
                       >
                         {t("profile.subInline.cancelCta")}

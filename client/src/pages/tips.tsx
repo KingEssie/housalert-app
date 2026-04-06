@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   FileText,
   FolderOpen,
@@ -15,10 +14,8 @@ import {
   Send,
 } from "lucide-react";
 import { useTranslation } from "@/i18n";
-import { useQuery } from "@tanstack/react-query";
-import { useAuth } from "@/lib/auth";
-import { apiFetch } from "@/lib/api-base";
-import { ReferralCodeModal } from "@/components/referral-code-modal";
+import { HighlightCard } from "@/components/highlight-card";
+import { useReferralShare } from "@/lib/referral-share";
 
 export const TIP_IDS = [
   "dokumente",
@@ -129,30 +126,9 @@ function isTipCompleted(tipId: TipId, readSet: Set<string>): boolean {
 
 export default function TipsPage({ navigate }: { navigate: (path: string) => void }) {
   const { t } = useTranslation();
-  const { session } = useAuth();
   const guides = getTipConfig(t);
   const readSet = getTipsReadSet();
-  const [referralModalOpen, setReferralModalOpen] = useState(false);
-
-  const { data: referralData, isLoading: referralLoading } = useQuery<{
-    code: string;
-    totalInvited: number;
-    pending: number;
-    qualified: number;
-    rewarded: number;
-  }>({
-    queryKey: ["/api/referrals/me"],
-    queryFn: async () => {
-      const token = session?.access_token;
-      if (!token) throw new Error("No token");
-      const res = await apiFetch("/api/referrals/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) throw new Error("Failed");
-      return res.json();
-    },
-    enabled: !!session?.access_token,
-  });
+  const { handleReferralShare } = useReferralShare();
 
   return (
     <div className="flex flex-col pb-8">
@@ -170,26 +146,14 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
           <h2 className="text-[18px] font-semibold text-[#111111] mb-3" data-testid="text-recommended-title">
             {t("tips.recommendedTitle")}
           </h2>
-          <button
-            onClick={() => setReferralModalOpen(true)}
-            className="w-full rounded-[16px] bg-[#F5F0EB] p-6 text-center active:bg-[#EDE7E1] transition-colors"
-            data-testid="card-referral-promo"
-          >
-            <div className="flex flex-col items-center">
-              <Gift className="w-[22px] h-[22px] text-[#111111] mb-4" />
-              <p className="text-[13px] font-semibold text-[#6B7280] mb-1">
-                {t("tips.referralOverline")}
-              </p>
-              <p className="text-[16px] font-semibold text-[#111111] leading-snug max-w-[280px]">
-                {t("tips.referralText")}
-              </p>
-            </div>
-            <div className="mt-5">
-              <span className="inline-flex h-[48px] px-8 rounded-full bg-white text-[#111111] text-[14px] font-semibold items-center hover:bg-[#F9F9F9] transition-colors">
-                {t("tips.referralCta")}
-              </span>
-            </div>
-          </button>
+          <HighlightCard
+            icon={Gift}
+            overline={t("tips.referralOverline")}
+            title={t("tips.referralText")}
+            ctaLabel={t("tips.referralCta")}
+            onClick={handleReferralShare}
+            testId="card-referral-promo"
+          />
         </div>
 
         <div data-testid="section-guides">
@@ -229,13 +193,6 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
           </div>
         </div>
       </div>
-
-      <ReferralCodeModal
-        open={referralModalOpen}
-        onClose={() => setReferralModalOpen(false)}
-        code={referralData?.code || null}
-        loading={referralLoading}
-      />
     </div>
   );
 }

@@ -1,0 +1,109 @@
+You are improving visual consistency and interaction behavior across the app.
+
+IMPORTANT:
+	•	Do NOT change routing or core logic
+	•	Do NOT redesign layouts
+	•	ONLY improve consistency, component reuse, and UX behavior
+	•	Apply changes globally where possible
+
+⸻
+
+	1.	HIGHLIGHT CARDS (GLOBAL)
+
+⸻
+
+All highlight/featured cards (sand/beige background like #F3EFE8 or #F5F1EA):
+	•	Increase icon size:
+→ from ~20–24px to 32–36px
+	•	Icon color:
+→ always #111111 (pure black)
+→ no colored icons inside highlight cards
+	•	Remove small-looking icons → make them visually dominant
+	•	Ensure all highlight cards use:
+	•	same padding
+	•	same border radius
+	•	same background color
+	•	same spacing between icon and text
+
+Apply this to:
+	•	referral card (tips screen)
+	•	match expectation card
+	•	any promotional / featured blocks
+
+⸻
+
+	2.	SUBSCRIPTION CARD (PROFILE)
+
+⸻
+
+Update the subscription card to match highlight card style:
+	•	Background:
+→ use same sand/beige color (#F3EFE8 or similar)
+	•	Icon:
+→ increase size to 32–36px
+→ color: #111111
+→ remove weak/low-contrast icon styling
+	•	Improve hierarchy:
+	•	title: bold
+	•	subtitle: medium contrast (#6B7280)
+	•	Keep structure, but make it feel like a featured card
+
+⸻
+
+	3.	REFERRAL FLOW CONSISTENCY (CRITICAL UX FIX)
+
+⸻
+
+Unify referral behavior across the app.
+
+CURRENT ISSUE:
+	•	Home screen → direct share ✅
+	•	Tips screen → opens popup first ❌
+
+FIX:
+	•	Make BOTH flows identical
+
+NEW BEHAVIOR:
+	•	Clicking referral CTA (anywhere in app):
+→ immediately triggers native share (navigator.share or equivalent)
+	•	Remove intermediate popup step completely
+	•	Ensure same function is reused everywhere (single shared handler)
+
+⸻
+
+	4.	REMOVE POPUP STEP
+
+⸻
+
+	•	Remove referral modal/pop-up that shows the code first
+	•	If needed, the share text can include the code directly
+
+Example:
+“Gebruik mijn HousAlert code: XYZ123 en krijg korting”
+
+⸻
+
+	5.	COMPONENT REUSE
+
+⸻
+
+Ensure:
+	•	Highlight card = ONE reusable component
+	•	Referral action = ONE shared function
+	•	Icon sizing = consistent everywhere
+
+Do NOT duplicate logic per screen
+
+⸻
+
+	6.	OUTPUT
+
+⸻
+
+After implementation, provide:
+	1.	which highlight card styles were updated
+	2.	new icon size applied
+	3.	subscription card changes
+	4.	referral flow changes (before vs after)
+	5.	which components were unified
+	6.	which files were changed
