@@ -1,0 +1,94 @@
+Refine the login hero redesign so it matches HousAlert branding exactly.
+
+IMPORTANT:
+- Do NOT revert the hero + floating card structure
+- Keep the current redesigned layout
+- Only correct the colors, contrast, and spacing
+- Do NOT use any purple gradient
+
+GOAL:
+Make the login screen feel premium and branded, using the exact HousAlert button color as the hero background.
+
+--------------------------------------------------
+1. HERO BACKGROUND
+--------------------------------------------------
+
+Replace the current pink-to-purple gradient hero background with ONE solid color:
+
+- Use the exact same primary pink color used for the main CTA buttons in the app
+- No gradient
+- No purple
+- No glossy or decorative overlay
+- Keep the hero clean and flat
+
+--------------------------------------------------
+2. TEXT CONTRAST / LEGIBILITY
+--------------------------------------------------
+
+Improve readability inside the hero:
+
+- Keep the title white
+- Keep the logo/brand white
+- Ensure contrast is strong and clean
+- Remove any visual effect that makes the text fade into the background
+
+Title:
+- font-size: keep current size
+- font-weight: keep current weight
+- color: pure white
+
+--------------------------------------------------
+3. HERO HEIGHT / COMPOSITION
+--------------------------------------------------
+
+Reduce hero height slightly so it feels tighter and more intentional.
+
+- Current hero is too tall
+- Make it feel more compact and balanced
+- Keep enough room for:
+  - logo top-left
+  - language switcher top-right
+  - title below
+
+--------------------------------------------------
+4. LANGUAGE SWITCHER
+--------------------------------------------------
+
+Keep the language switcher inside the hero, but improve clarity:
+
+- Background: subtle translucent white or slightly darker pink overlay
+- Text: white
+- Border: optional subtle white/transparent border
+- It should remain readable without feeling heavy
+
+--------------------------------------------------
+5. FLOATING CARD POSITION
+--------------------------------------------------
+
+Keep the floating white card, but make sure:
+
+- it overlaps the hero cleanly
+- spacing between hero and card feels tighter
+- card starts slightly higher if needed
+- overall composition feels deliberate and premium
+
+--------------------------------------------------
+6. DO NOT CHANGE
+--------------------------------------------------
+
+- Do NOT change login logic
+- Do NOT change inputs/buttons structure
+- Do NOT remove floating card layout
+- Do NOT add a new gradient
+- Do NOT introduce purple tones
+
+--------------------------------------------------
+7. OUTPUT
+--------------------------------------------------
+
+Return:
+1. exact hero background color now used
+2. what was changed for contrast/readability
+3. whether hero height was reduced
+4. whether card overlap/position was adjusted
+5. which files were changed

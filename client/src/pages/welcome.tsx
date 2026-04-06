@@ -151,9 +151,9 @@ export default function WelcomePage() {
       <div
         className="relative w-full flex-shrink-0"
         style={{
-          background: "linear-gradient(145deg, #d91a68 0%, #9b1155 55%, #6d1a6e 100%)",
-          minHeight: "36vh",
-          paddingBottom: "48px",
+          background: "#d91a68",
+          minHeight: "28vh",
+          paddingBottom: "44px",
         }}
       >
         <header className="flex items-center justify-between px-5 pt-[max(env(safe-area-inset-top),16px)] pb-2">
@@ -177,7 +177,7 @@ export default function WelcomePage() {
           <LanguageDropdown />
         </header>
 
-        <div className="px-6 pt-6">
+        <div className="px-6 pt-4">
           <h1
             className="text-[30px] font-bold text-white leading-[1.15] tracking-[-0.02em]"
             data-testid="text-auth-title"
@@ -189,7 +189,7 @@ export default function WelcomePage() {
 
       <main
         className="flex-1 flex flex-col w-full px-4 pb-[max(env(safe-area-inset-bottom),12px)]"
-        style={{ marginTop: "-40px" }}
+        style={{ marginTop: "-36px" }}
       >
         <div
           style={{

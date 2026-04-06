@@ -102,9 +102,9 @@ export default function LoginPage() {
       <div
         className="relative w-full flex-shrink-0"
         style={{
-          background: "linear-gradient(145deg, #d91a68 0%, #9b1155 55%, #6d1a6e 100%)",
-          minHeight: "38vh",
-          paddingBottom: "48px",
+          background: "#d91a68",
+          minHeight: "28vh",
+          paddingBottom: "44px",
         }}
       >
         <header className="w-full pt-4 px-5">
@@ -130,7 +130,7 @@ export default function LoginPage() {
           </div>
         </header>
 
-        <div className="max-w-[480px] mx-auto px-6 pt-8">
+        <div className="max-w-[480px] mx-auto px-6 pt-4">
           <h1
             className="text-[30px] font-bold tracking-[-0.02em] leading-[1.15] text-white"
             data-testid="text-login-title"
@@ -140,7 +140,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <main className="flex-1 flex flex-col px-4" style={{ marginTop: "-40px" }}>
+      <main className="flex-1 flex flex-col px-4" style={{ marginTop: "-36px" }}>
         <div
           className="w-full max-w-[480px] mx-auto flex flex-col"
           style={{
