@@ -1,0 +1,79 @@
+Refine the HousAlert login screen again.
+
+IMPORTANT:
+- Do NOT change login logic
+- Do NOT change routing
+- Keep the improved clean card/form styling
+- Only adjust the visual layout at the top of the screen
+
+GOAL:
+Remove the large pink hero block and switch to a cleaner white layout with a larger logo and black title.
+
+--------------------------------------------------
+1. REMOVE THE PINK HERO BLOCK
+--------------------------------------------------
+
+- Remove the large solid pink top section entirely
+- Remove the hero-style background block
+- Return the page background to clean white
+
+--------------------------------------------------
+2. TOP BRAND AREA
+--------------------------------------------------
+
+At the top of the page:
+- Keep the HousAlert logo on the left
+- Make the logo approximately 2x larger than it is now
+- Keep the language switcher on the right
+- Ensure both elements align nicely on one horizontal row
+
+The logo should feel prominent and intentional, not tiny.
+
+--------------------------------------------------
+3. TITLE
+--------------------------------------------------
+
+Move the title below the top brand row and style it like this:
+
+Text:
+"Welkom bij HousAlert!"
+
+Style:
+- color: #111111
+- font-size: keep large and strong (around current size)
+- font-weight: 700
+- make sure it is fully visible and not clipped or fading into anything
+
+--------------------------------------------------
+4. SPACING / LAYOUT
+--------------------------------------------------
+
+- Tighten the top layout so it feels clean and premium
+- Keep enough spacing between:
+  - brand row
+  - title
+  - form card
+- Remove any excess empty hero space
+- Ensure no text is cut off or visually lost
+
+--------------------------------------------------
+5. KEEP THE GOOD PARTS
+--------------------------------------------------
+
+Keep:
+- current form/card styling
+- current input styling
+- current CTA buttons
+- current trustpilot area unless spacing needs slight adjustment
+- current login functionality
+
+--------------------------------------------------
+6. OUTPUT
+--------------------------------------------------
+
+Return:
+1. what was removed
+2. new logo size
+3. title styling used
+4. spacing/layout changes made
+5. which files were changed

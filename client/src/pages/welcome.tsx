@@ -48,12 +48,12 @@ function LanguageDropdown() {
         aria-expanded={open}
         aria-label="Select language"
         className="flex items-center gap-1 px-2.5 py-1 rounded-[5px] transition-colors active:scale-[0.96]"
-        style={{ backgroundColor: "rgba(255,255,255,0.12)" }}
+        style={{ backgroundColor: "#F3F4F6" }}
         data-testid="button-language-selector"
       >
         <span className="text-[14px]">{current.flag}</span>
-        <span className="text-[12px] font-semibold text-white">{current.label}</span>
-        <ChevronDown className={`w-3.5 h-3.5 text-white/60 transition-transform ${open ? "rotate-180" : ""}`} />
+        <span className="text-[12px] font-semibold text-[#111111]">{current.label}</span>
+        <ChevronDown className={`w-3.5 h-3.5 text-[#6B7280] transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
@@ -148,57 +148,40 @@ export default function WelcomePage() {
       style={{ background: "#FFFFFF" }}
       data-testid="welcome-page"
     >
-      <div
-        className="relative w-full flex-shrink-0"
-        style={{
-          background: "#d91a68",
-          minHeight: "24vh",
-          paddingBottom: "40px",
-        }}
-      >
-        <header className="flex items-center justify-between px-5 pt-[max(env(safe-area-inset-top),14px)] pb-1">
-          <div className="flex items-center gap-2.5">
-            <img
-              src={logoSrc}
-              alt="HousAlert"
-              width={30}
-              height={30}
-              className="object-contain"
-              style={{ width: 30, height: 30, filter: "brightness(0) invert(1)" }}
-              data-testid="img-housalert-logo"
-            />
-            <span
-              className="font-semibold text-[17px] text-white tracking-[-0.01em]"
-              data-testid="text-logo"
-            >
-              HousAlert
-            </span>
-          </div>
-          <LanguageDropdown />
-        </header>
-
-        <div className="px-6 pt-4">
-          <h1
-            className="text-[30px] font-bold text-white leading-[1.15] tracking-[-0.02em]"
-            data-testid="text-auth-title"
+      <header className="flex items-center justify-between px-5 pt-[max(env(safe-area-inset-top),16px)] pb-0">
+        <div className="flex items-center gap-3">
+          <img
+            src={logoSrc}
+            alt="HousAlert"
+            width={52}
+            height={52}
+            className="object-contain"
+            style={{ width: 52, height: 52 }}
+            data-testid="img-housalert-logo"
+          />
+          <span
+            className="font-semibold text-[20px] tracking-[-0.01em]"
+            style={{ color: "#111111" }}
+            data-testid="text-logo"
           >
-            {t("v2.welcome.title")}
-          </h1>
+            HousAlert
+          </span>
         </div>
-      </div>
+        <LanguageDropdown />
+      </header>
 
       <main
-        className="flex-1 flex flex-col w-full px-4 pb-[max(env(safe-area-inset-bottom),12px)]"
-        style={{ marginTop: "-44px" }}
+        className="flex-1 flex flex-col w-full px-5 pb-[max(env(safe-area-inset-bottom),12px)]"
       >
-        <div
-          style={{
-            background: "#FFFFFF",
-            borderRadius: "20px 20px 16px 16px",
-            boxShadow: "0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.04)",
-            padding: "28px 24px 24px",
-          }}
+        <h1
+          className="text-[28px] font-bold leading-[1.15] tracking-[-0.02em] pt-6 pb-6"
+          style={{ color: "#111111" }}
+          data-testid="text-auth-title"
         >
+          {t("v2.welcome.title")}
+        </h1>
+
+        <div>
           <form onSubmit={handleLogin} className="flex flex-col gap-5">
             <div className="flex flex-col gap-1.5">
               <label className="text-[14px] font-medium" style={{ color: "#374151" }} htmlFor="welcome-email">
