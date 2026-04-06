@@ -1,0 +1,71 @@
+The login redesign is NOT visible in the current app preview.
+
+PROBLEM:
+Your summary says the login screen now has:
+- a branded hero section
+- dark/gradient top area
+- white title inside the hero
+- overlapping floating white card
+
+But in the live preview, none of that is visible.
+The screen is still mostly the old white flat layout.
+
+GOAL:
+Find the exact reason why the redesign is not showing and fix it so the live login screen actually matches the described redesign.
+
+--------------------------------------------------
+1. DIAGNOSE FIRST
+--------------------------------------------------
+
+Inspect which component is actually rendering the current login screen in production/preview.
+
+Confirm:
+- exact file/component used for the login page
+- whether the redesigned version was applied to the correct component
+- whether another wrapper/layout is overriding the new styles
+- whether the preview is still using an old build
+
+--------------------------------------------------
+2. VERIFY THE ACTUAL RENDERED SCREEN
+--------------------------------------------------
+
+Compare the intended redesign with the live page.
+
+The live page should visibly have:
+- dark or gradient hero background at the top
+- white logo/text in the hero
+- floating white card overlapping the hero
+- stronger visual hierarchy like Rentbird
+
+If these are not visible, the redesign is not actually applied.
+
+--------------------------------------------------
+3. FIX THE ROOT CAUSE
+--------------------------------------------------
+
+Fix whichever issue is causing this:
+- wrong component edited
+- old component still mounted
+- layout wrapper overriding styles
+- build/deploy not refreshed
+- conditional rendering showing old version
+- CSS not applied
+
+--------------------------------------------------
+4. DO NOT JUST DESCRIBE
+--------------------------------------------------
+
+Do not give another summary without proof.
+
+Actually make the login page visibly match the intended redesign.
+
+--------------------------------------------------
+5. OUTPUT
+--------------------------------------------------
+
+Return:
+1. exact login component file actually used
+2. what was wrong
+3. what was changed
+4. why the redesign was not visible before
+5. confirmation that the hero section + floating card are now truly visible

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useLocation } from "wouter";
-import { HousAlertLogo } from "@/components/housalert-logo";
+import { logoSrc } from "@/components/housalert-logo";
 import { useTranslation, hasExplicitLocale, detectBrowserLocale } from "@/i18n";
 import type { Locale } from "@/i18n";
 import { ChevronDown, Eye, EyeOff, Loader2, ArrowRight, Star } from "lucide-react";
@@ -9,15 +9,6 @@ import { ensureTrialForCurrentUser } from "@/lib/auth";
 import { clearAllUserData } from "@/lib/queryClient";
 
 import { useToast } from "@/hooks/use-toast";
-
-const OB = {
-  gradient: "#ffffff",
-  pink: "rgb(var(--ha-primary))",
-  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #b31556 100%)",
-  pinkShadow: "0 4px 15px rgba(217,26,104,0.2)",
-  text: "#111111",
-  textSecondary: "#6B7280",
-};
 
 const LANGUAGES: { code: Locale; label: string; flag: string }[] = [
   { code: "de", label: "Deutsch", flag: "\u{1F1E9}\u{1F1EA}" },
@@ -56,12 +47,13 @@ function LanguageDropdown() {
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label="Select language"
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] bg-[#F7F7F7] hover:bg-[#F0F0F0] transition-colors active:scale-[0.96]"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-[6px] transition-colors active:scale-[0.96]"
+        style={{ backgroundColor: "rgba(255,255,255,0.15)" }}
         data-testid="button-language-selector"
       >
         <span className="text-[14px]">{current.flag}</span>
-        <span className="text-[12px] font-semibold text-[#111111]">{current.label}</span>
-        <ChevronDown className={`w-3.5 h-3.5 text-[#6B7280] transition-transform ${open ? "rotate-180" : ""}`} />
+        <span className="text-[12px] font-semibold text-white">{current.label}</span>
+        <ChevronDown className={`w-3.5 h-3.5 text-white/60 transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
@@ -87,7 +79,7 @@ function LanguageDropdown() {
                   {lang.label}
                 </span>
                 {isActive && (
-                  <div className="ml-auto w-[18px] h-[18px] rounded-full flex items-center justify-center" style={{ backgroundColor: OB.pink }}>
+                  <div className="ml-auto w-[18px] h-[18px] rounded-full flex items-center justify-center" style={{ backgroundColor: "rgb(var(--ha-primary))" }}>
                     <svg width="9" height="9" viewBox="0 0 12 12" fill="none">
                       <path d="M2.5 6L5 8.5L9.5 3.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
@@ -153,130 +145,205 @@ export default function WelcomePage() {
   return (
     <div
       className="h-[100dvh] flex flex-col overflow-auto"
-      style={{ background: OB.gradient }}
+      style={{ background: "#FFFFFF" }}
       data-testid="welcome-page"
     >
-      <header className="flex items-center justify-between px-4 pt-[max(env(safe-area-inset-top),12px)] pb-2">
-        <HousAlertLogo
-          size={28}
-          showText={true}
-          textClassName="font-semibold text-[#111111] text-[17px] tracking-[-0.01em]"
-        />
-        <LanguageDropdown />
-      </header>
-
-      <main className="flex-1 flex flex-col w-full px-4 pt-6 pb-[max(env(safe-area-inset-bottom),12px)]">
-        <h1
-          className="text-[26px] font-semibold text-[#111111] leading-[1.15] tracking-[-0.02em] mb-8 whitespace-nowrap"
-          data-testid="text-auth-title"
-        >
-          {t("v2.welcome.title")}
-        </h1>
-
-        <form onSubmit={handleLogin} className="flex flex-col gap-6">
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[14px] font-semibold text-[#111111]" htmlFor="welcome-email">
-              {t("v2.welcome.emailLabel")}
-            </label>
-            <input
-              id="welcome-email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={t("v2.welcome.emailPlaceholder")}
-              required
-              className="w-full ha-field"
-              style={{ backgroundColor: "#ffffff", borderColor: "#E5E7EB" }}
-              data-testid="input-email"
+      <div
+        className="relative w-full flex-shrink-0"
+        style={{
+          background: "linear-gradient(145deg, #d91a68 0%, #9b1155 55%, #6d1a6e 100%)",
+          minHeight: "36vh",
+          paddingBottom: "48px",
+        }}
+      >
+        <header className="flex items-center justify-between px-5 pt-[max(env(safe-area-inset-top),16px)] pb-2">
+          <div className="flex items-center gap-2.5">
+            <img
+              src={logoSrc}
+              alt="HousAlert"
+              width={30}
+              height={30}
+              className="object-contain"
+              style={{ width: 30, height: 30, filter: "brightness(0) invert(1)" }}
+              data-testid="img-housalert-logo"
             />
+            <span
+              className="font-semibold text-[17px] text-white tracking-[-0.01em]"
+              data-testid="text-logo"
+            >
+              HousAlert
+            </span>
           </div>
+          <LanguageDropdown />
+        </header>
 
-          <div className="flex flex-col gap-1.5">
-            <label className="text-[14px] font-semibold text-[#111111]" htmlFor="welcome-password">
-              {t("v2.welcome.passwordLabel")}
-            </label>
-            <div className="relative">
+        <div className="px-6 pt-6">
+          <h1
+            className="text-[30px] font-bold text-white leading-[1.15] tracking-[-0.02em]"
+            data-testid="text-auth-title"
+          >
+            {t("v2.welcome.title")}
+          </h1>
+        </div>
+      </div>
+
+      <main
+        className="flex-1 flex flex-col w-full px-4 pb-[max(env(safe-area-inset-bottom),12px)]"
+        style={{ marginTop: "-40px" }}
+      >
+        <div
+          style={{
+            background: "#FFFFFF",
+            borderRadius: "20px 20px 16px 16px",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.04)",
+            padding: "28px 24px 24px",
+          }}
+        >
+          <form onSubmit={handleLogin} className="flex flex-col gap-5">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[14px] font-medium" style={{ color: "#374151" }} htmlFor="welcome-email">
+                {t("v2.welcome.emailLabel")}
+              </label>
               <input
-                id="welcome-password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder={t("v2.welcome.passwordPlaceholder")}
+                id="welcome-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={t("v2.welcome.emailPlaceholder")}
                 required
-                className="w-full ha-field pr-12"
-                style={{ backgroundColor: "#ffffff", borderColor: "#E5E7EB" }}
-                data-testid="input-password"
+                className="w-full outline-none transition-all"
+                style={{
+                  height: "56px",
+                  borderRadius: "12px",
+                  background: "#F3F4F6",
+                  border: "2px solid transparent",
+                  padding: "0 16px",
+                  fontSize: "16px",
+                  color: "#111827",
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = "rgb(217,26,104)";
+                  e.currentTarget.style.boxShadow = "0 0 0 3px rgba(217,26,104,0.1)";
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = "transparent";
+                  e.currentTarget.style.boxShadow = "none";
+                }}
+                data-testid="input-email"
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors"
-                style={{ color: "#6B7280" }}
-                tabIndex={-1}
-                data-testid="button-toggle-password"
-              >
-                {showPassword
-                  ? <EyeOff className="w-5 h-5" />
-                  : <Eye className="w-5 h-5" />}
-              </button>
             </div>
-            <div className="flex justify-end mt-0.5">
-              <button
-                type="button"
-                onClick={handleForgotPassword}
-                className="text-[14px] font-medium transition-colors hover:underline"
-                style={{ color: "rgb(var(--ha-primary))" }}
-                data-testid="button-forgot-password"
-              >
-                {t("v2.welcome.forgotPassword")}
-              </button>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[14px] font-medium" style={{ color: "#374151" }} htmlFor="welcome-password">
+                {t("v2.welcome.passwordLabel")}
+              </label>
+              <div className="relative">
+                <input
+                  id="welcome-password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder={t("v2.welcome.passwordPlaceholder")}
+                  required
+                  className="w-full outline-none transition-all"
+                  style={{
+                    height: "56px",
+                    borderRadius: "12px",
+                    background: "#F3F4F6",
+                    border: "2px solid transparent",
+                    padding: "0 48px 0 16px",
+                    fontSize: "16px",
+                    color: "#111827",
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = "rgb(217,26,104)";
+                    e.currentTarget.style.boxShadow = "0 0 0 3px rgba(217,26,104,0.1)";
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = "transparent";
+                    e.currentTarget.style.boxShadow = "none";
+                  }}
+                  data-testid="input-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors bg-transparent border-0 cursor-pointer p-0"
+                  style={{ color: "#6B7280" }}
+                  tabIndex={-1}
+                  data-testid="button-toggle-password"
+                >
+                  {showPassword
+                    ? <EyeOff className="w-5 h-5" />
+                    : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+              <div className="flex justify-end mt-0.5">
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  className="text-[14px] font-medium transition-colors hover:underline bg-transparent border-0 cursor-pointer"
+                  style={{ color: "rgb(var(--ha-primary))" }}
+                  data-testid="button-forgot-password"
+                >
+                  {t("v2.welcome.forgotPassword")}
+                </button>
+              </div>
             </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full border-0 font-semibold cursor-pointer flex items-center justify-center gap-2 transition-all active:scale-[0.97]"
+              style={{
+                height: "56px",
+                borderRadius: "14px",
+                background: "rgb(var(--ha-primary))",
+                color: "#FFFFFF",
+                fontSize: "16px",
+                fontWeight: 600,
+                boxShadow: "0 4px 15px rgba(217,26,104,0.25)",
+              }}
+              data-testid="button-login"
+            >
+              {loading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <>
+                  {t("v2.welcome.login")}
+                  <ArrowRight className="w-[18px] h-[18px]" />
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="flex items-center gap-3 my-5">
+            <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
+            <span className="text-[13px] font-semibold" style={{ color: "#9CA3AF" }}>
+              {t("v2.welcome.or") || "OF"}
+            </span>
+            <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
           </div>
 
           <button
-            type="submit"
-            disabled={loading}
-            className="w-full ha-btn text-white font-semibold"
-            style={{ background: OB.pink, boxShadow: OB.pinkShadow }}
-            data-testid="button-login"
+            type="button"
+            onClick={() => navigate("/onboarding/intro")}
+            className="w-full font-semibold cursor-pointer flex items-center justify-center gap-2 transition-all active:scale-[0.97]"
+            style={{
+              height: "56px",
+              borderRadius: "14px",
+              border: "2px solid rgb(var(--ha-primary))",
+              color: "rgb(var(--ha-primary))",
+              backgroundColor: "transparent",
+              fontSize: "16px",
+              fontWeight: 600,
+            }}
+            data-testid="button-signup"
           >
-            {loading ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-              <>
-                {t("v2.welcome.login")}
-                <div className="w-[22px] h-[22px] rounded-full border-[1.5px] border-white/50 flex items-center justify-center ml-1">
-                  <ArrowRight className="w-3 h-3" />
-                </div>
-              </>
-            )}
+            {t("v2.welcome.signupCta")}
+            <ArrowRight className="w-4 h-4" />
           </button>
-        </form>
-
-        <div className="flex items-center gap-3 my-6">
-          <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
-          <span className="text-[13px] font-semibold" style={{ color: "#6B7280" }}>
-            {t("v2.welcome.or") || "OF"}
-          </span>
-          <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
         </div>
-
-        <button
-          type="button"
-          onClick={() => navigate("/onboarding/intro")}
-          className="w-full ha-btn font-semibold"
-          style={{
-            border: `1.5px solid ${OB.pink}`,
-            color: OB.pink,
-            backgroundColor: "transparent",
-          }}
-          data-testid="button-signup"
-        >
-          {t("v2.welcome.signupCta")}
-          <div className="w-[22px] h-[22px] rounded-full border-[1.5px] flex items-center justify-center ml-1" style={{ borderColor: OB.pink }}>
-            <ArrowRight className="w-3 h-3" />
-          </div>
-        </button>
 
         <div className="flex-1" />
 
