@@ -61,15 +61,19 @@ export async function registerRoutes(
 ): Promise<Server> {
   app.get("/housalert-logo.png", async (_req, res) => {
     try {
-      const { LOGO_PNG_BASE64 } = await import("./logo-data");
-      const buf = Buffer.from(LOGO_PNG_BASE64, "base64");
+      const path = await import("path");
+      const fs = await import("fs");
+      const logoPath = path.default.resolve("client/public/housalert-logo.png");
+      if (!fs.default.existsSync(logoPath)) {
+        res.status(404).end();
+        return;
+      }
       res.set({
         "Content-Type": "image/png",
-        "Content-Length": String(buf.length),
         "Cache-Control": "public, max-age=31536000, immutable",
         "Access-Control-Allow-Origin": "*",
       });
-      res.end(buf);
+      fs.default.createReadStream(logoPath).pipe(res);
     } catch (err: any) {
       log(`[LOGO] Error serving logo: ${err.message}`);
       res.status(404).end();

@@ -1,4 +1,4 @@
-import logoSrc from "@assets/5B9D5117-02CB-4353-8AF3-6CCA9249F824_1773839918481.png";
+import logoSrc from "@assets/06CC2246-251F-489D-9B2B-D22F45324AEE_1775477564051.png";
 
 interface HousAlertLogoProps {
   size?: number;
