@@ -216,11 +216,9 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           <p className="text-[15px] font-semibold text-[#111111]">{t("searchProfiles.sectionTitle")}</p>
         </div>
         <div className="flex flex-col items-center text-center py-6 px-2">
-          <div className="w-12 h-12 rounded-full bg-[#F3F4F6] flex items-center justify-center mb-3">
-            <MapPin className="w-5 h-5 text-[#9CA3AF]" />
-          </div>
+          <MapPin className="w-[22px] h-[22px] text-[#111111] mb-4" />
           <p className="text-[15px] font-semibold text-[#111111] mb-1" data-testid="text-empty-title">{t("searchProfiles.emptyTitle")}</p>
-          <p className="text-[13px] text-[#9CA3AF] mb-5 leading-relaxed max-w-[260px]" data-testid="text-empty-subtitle">{t("searchProfiles.emptySubtitle")}</p>
+          <p className="text-[13px] text-[#6B7280] mb-5 leading-relaxed max-w-[260px]" data-testid="text-empty-subtitle">{t("searchProfiles.emptySubtitle")}</p>
           <button
             onClick={() => navigate("/dashboard/searches/new")}
             className="w-full h-[48px] rounded-full bg-ha-primary text-white font-semibold text-[15px] hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
@@ -258,7 +256,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
                       <p className="text-[14px] font-semibold text-[#111111]" data-testid={`text-profile-title-${p.id}`}>
                         {getProfileTitle(p, t, locale)}
                       </p>
-                      <p className="text-[12px] text-[#9CA3AF] mt-0.5" data-testid={`text-profile-summary-${p.id}`}>
+                      <p className="text-[12px] text-[#6B7280] mt-0.5" data-testid={`text-profile-summary-${p.id}`}>
                         {getProfilePriceLine(p, t)}
                       </p>
                       {locationLine && (
@@ -275,7 +273,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
                     <button
                       onClick={(e) => e.stopPropagation()}
                       onPointerDown={(e) => e.stopPropagation()}
-                      className="w-9 h-9 rounded-full flex items-center justify-center text-[#9CA3AF] hover:bg-ha-surface-hover transition-colors flex-shrink-0"
+                      className="w-9 h-9 rounded-full flex items-center justify-center text-[#6B7280] hover:bg-ha-surface-hover transition-colors flex-shrink-0"
                       data-testid={`button-menu-${p.id}`}
                     >
                       <MoreVertical className="w-[18px] h-[18px]" />
@@ -287,7 +285,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
                       className="flex items-center gap-2.5 cursor-pointer"
                       data-testid={`menu-edit-${p.id}`}
                     >
-                      <Pencil className="w-4 h-4 text-ha-text-muted" />
+                      <Pencil className="w-4 h-4 text-[#6B7280]" />
                       {t("common.edit")}
                     </DropdownMenuItem>
                     <DropdownMenuItem
@@ -306,7 +304,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           {canAdd ? (
             <button
               onClick={() => navigate("/dashboard/searches/new")}
-              className="w-full mt-2 h-[42px] rounded-full border border-dashed border-[#D1D5DB] text-[13px] font-semibold text-[#9CA3AF] hover:border-ha-primary hover:text-ha-primary transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
+              className="w-full mt-2 h-[42px] rounded-full border border-dashed border-[#D1D5DB] text-[13px] font-semibold text-[#6B7280] hover:border-ha-primary hover:text-ha-primary transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
               data-testid="button-add-search-profile"
             >
               {t("searchProfiles.addProfile")}
@@ -574,7 +572,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
                   <p className="text-[15px] font-semibold text-[#111111] truncate">{title}</p>
                   <p className="text-[14px] text-[#6B7280] mt-0.5 truncate">{priceLine}</p>
                   {locationLine && (
-                    <p className="text-[14px] text-[#9CA3AF] mt-0.5 truncate">{locationLine}</p>
+                    <p className="text-[14px] text-[#6B7280] mt-0.5 truncate">{locationLine}</p>
                   )}
                 </div>
                 <DropdownMenu>
@@ -582,7 +580,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
                     <button
                       onClick={(e) => e.stopPropagation()}
                       onPointerDown={(e) => e.stopPropagation()}
-                      className="w-9 h-9 rounded-full flex items-center justify-center text-[#9CA3AF] hover:bg-[#F3F4F6] active:bg-[#E5E7EB] transition-colors flex-shrink-0 ml-2"
+                      className="w-9 h-9 rounded-full flex items-center justify-center text-[#6B7280] hover:bg-[#F3F4F6] active:bg-[#E5E7EB] transition-colors flex-shrink-0 ml-2"
                       data-testid={`button-menu-${p.id}`}
                     >
                       <MoreVertical className="w-[18px] h-[18px]" />
@@ -613,9 +611,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
         </div>
       ) : (
         <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-7 flex flex-col items-center text-center" data-testid="card-zoekopdrachten-empty">
-          <div className="w-16 h-16 rounded-full bg-[#F3F4F6] flex items-center justify-center mb-5">
-            <MapPin className="w-7 h-7 text-[#9CA3AF]" />
-          </div>
+          <MapPin className="w-[24px] h-[24px] text-[#111111] mb-5" />
           <p className="text-[18px] font-semibold text-[#111111] mb-2">{t("searchProfiles.emptyTitle")}</p>
           <p className="text-[15px] text-[#6B7280] mb-6 leading-relaxed max-w-[280px]">{t("searchProfiles.emptySubtitle")}</p>
           <button
@@ -727,9 +723,7 @@ function RecentMatchesSection({
 
       {!hasAccess ? (
         <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-7 flex flex-col items-center text-center" data-testid="card-paywall">
-          <div className="w-16 h-16 rounded-full bg-[#F3F4F6] flex items-center justify-center mb-5">
-            <Lock className="w-7 h-7 text-[#9CA3AF]" />
-          </div>
+          <Lock className="w-[24px] h-[24px] text-[#111111] mb-5" />
           <p className="text-[18px] font-semibold text-[#111111] mb-2" data-testid="text-paywall-title">
             {t("home.paywallTitle")}
           </p>
@@ -765,9 +759,7 @@ function RecentMatchesSection({
         </div>
       ) : (
         <div className="rounded-[16px] bg-white border border-[#E5E7EB] py-8 px-7 flex flex-col items-center text-center" data-testid="card-no-matches">
-          <div className="w-16 h-16 rounded-full bg-[#F3F4F6] flex items-center justify-center mb-5">
-            <Search className="w-7 h-7 text-[#9CA3AF]" />
-          </div>
+          <Search className="w-[24px] h-[24px] text-[#111111] mb-5" />
           <p className="text-[18px] font-semibold text-[#111111] mb-2">{t("home.noMatchesYetTitle")}</p>
           <p className="text-[15px] text-[#6B7280] leading-relaxed max-w-[280px]">{t("home.firstMatchesWillAppear")}</p>
         </div>
@@ -867,7 +859,7 @@ function HomeTab({
             className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#F3F4F6] transition-colors"
             data-testid="button-help"
           >
-            <HelpCircle className="w-5 h-5 text-[#9CA3AF]" />
+            <HelpCircle className="w-[22px] h-[22px] text-[#111111]" />
           </button>
         </div>
         <h1 className="text-[34px] font-bold text-[#111111] tracking-[-0.025em] leading-[1.1]" data-testid="text-greeting">
@@ -885,9 +877,7 @@ function HomeTab({
           data-testid="card-home-referral"
         >
           <div className="flex flex-col items-center text-center mb-5">
-            <div className="w-12 h-12 rounded-full bg-white/60 flex items-center justify-center mb-4">
-              <Send className="w-[20px] h-[20px] text-[#111111]" />
-            </div>
+            <Send className="w-[22px] h-[22px] text-[#111111] mb-4" />
             <p className="text-[18px] font-semibold text-[#111111] leading-snug" data-testid="text-referral-body">
               Geef een vriend 25% korting
             </p>
@@ -1141,8 +1131,8 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
 
         <div className="px-5 pt-16">
           <div className="flex flex-col items-center text-center px-6 pb-4">
-            <div className="w-16 h-16 rounded-full bg-[#FDF1F6] flex items-center justify-center mb-6">
-              <Lock className="w-7 h-7 text-ha-primary" />
+            <div className="w-16 h-16 rounded-full bg-[#F5F0EB] flex items-center justify-center mb-6">
+              <Lock className="w-7 h-7 text-[#111111]" />
             </div>
             <h2 className="text-[20px] font-semibold text-[#111111] mb-2.5" data-testid="text-locked-headline">
               {t("matches.locked.headline")}
@@ -1207,8 +1197,8 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
               </div>
             ) : apiMatchesQuery.isError ? (
               <div className="py-16 flex flex-col items-center text-center gap-4 px-4">
-                <div className="w-14 h-14 rounded-full bg-[#F3F4F6] flex items-center justify-center mb-1">
-                  <AlertCircle className="w-7 h-7 text-[#9CA3AF]" />
+                <div className="mb-1">
+                  <AlertCircle className="w-[24px] h-[24px] text-[#111111]" />
                 </div>
                 <p className="text-[18px] font-semibold text-[#111111]">{t("matches.loadError")}</p>
                 <p className="text-[15px] text-[#6B7280] leading-relaxed max-w-[280px]">{t("matches.loadErrorDesc")}</p>
@@ -1746,8 +1736,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               {buddyEmail ? (
                 <div className="px-5 py-4">
                   <div className="flex items-center gap-3.5">
-                    <div className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
-                      <User className="w-[20px] h-[20px] text-[#6B7280]" />
+                    <div className="w-10 h-10 rounded-full bg-[#F5F0EB] flex items-center justify-center flex-shrink-0">
+                      <User className="w-[20px] h-[20px] text-[#111111]" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[15px] font-medium text-[#111111] truncate" data-testid="text-buddy-email">{buddyEmail}</p>
@@ -1853,8 +1843,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             <div className="rounded-[16px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
               {!(subscription.isActive || subscription.isTrial) ? (
                 <div className="px-5 py-8 flex flex-col items-center text-center" data-testid="card-subscription-locked">
-                  <div className="w-14 h-14 rounded-full bg-[#FDF1F6] flex items-center justify-center mb-5">
-                    <Lock className="w-7 h-7 text-ha-primary" />
+                  <div className="w-14 h-14 rounded-full bg-[#F5F0EB] flex items-center justify-center mb-5">
+                    <Lock className="w-7 h-7 text-[#111111]" />
                   </div>
                   <p className="text-[18px] font-semibold text-[#111111]" data-testid="text-sub-locked-title">{t("profile.subLocked.title")}</p>
                   <p className="text-[15px] text-[#6B7280] mt-2 leading-relaxed max-w-[280px]">{t("profile.subLocked.desc")}</p>
@@ -1869,8 +1859,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               ) : (
                 <div className="flex flex-col items-center text-center" data-testid="card-subscription-active">
                   <div className="px-5 pt-8 pb-6 flex flex-col items-center">
-                    <div className="w-14 h-14 rounded-full bg-ha-primary/10 flex items-center justify-center mb-5">
-                      <Crown className="w-7 h-7 text-ha-primary" />
+                    <div className="w-14 h-14 rounded-full bg-[#F5F0EB] flex items-center justify-center mb-5">
+                      <Crown className="w-7 h-7 text-[#111111]" />
                     </div>
                     <p className="text-[18px] font-semibold text-[#111111]" data-testid="text-plan-name">
                       {subscription.isTrial ? t("subscription.status.trial") : getPlanLabel(subscription.plan)}
@@ -1890,7 +1880,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                       <div className="h-px bg-[#F3F4F6] w-[calc(100%-32px)]" />
                       <button
                         onClick={() => navigate("/account/subscription/cancel")}
-                        className="w-full py-3.5 flex items-center justify-center text-[14px] font-medium text-[#9CA3AF] active:bg-[#F9FAFB] transition-colors"
+                        className="w-full py-3.5 flex items-center justify-center text-[14px] font-medium text-[#6B7280] active:bg-[#F9FAFB] transition-colors"
                         data-testid="button-cancel-subscription"
                       >
                         {t("profile.subInline.cancelCta")}
@@ -1958,7 +1948,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           <div className="flex flex-col items-center gap-3 pt-2 pb-2">
             <button
               onClick={() => navigate("/account/delete")}
-              className="text-[13px] text-[#9CA3AF] active:opacity-70 transition-opacity"
+              className="text-[13px] text-[#6B7280] active:opacity-70 transition-opacity"
               data-testid="button-profile-delete-account"
             >
               {t("profile.deleteAccount")}

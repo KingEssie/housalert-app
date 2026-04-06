@@ -234,7 +234,7 @@ export default function ListingDetailPage() {
         <FloatingBackButton navigate={navigate} />
         <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-24 text-center">
           <p className="text-[20px] font-semibold text-[#111111] mb-2">{t("listing.notFound")}</p>
-          <p className="text-[14px] text-[#9CA3AF] mb-6">{t("listing.notFoundDesc")}</p>
+          <p className="text-[14px] text-[#6B7280] mb-6">{t("listing.notFoundDesc")}</p>
           <Button onClick={() => navigate("/dashboard")} className="h-[50px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold px-8" data-testid="button-back-dashboard">
             {t("listing.backToDashboard")}
           </Button>
@@ -326,7 +326,7 @@ export default function ListingDetailPage() {
         {listing.price > 0 && (
           <div className="absolute bottom-4 left-5">
             <span className={`text-[24px] font-semibold ${hasImage && !imgError ? "text-white" : "text-[#374151]"}`} style={hasImage && !imgError ? { textShadow: "0 1px 2px rgba(0,0,0,0.4)" } : undefined} data-testid="text-listing-price">€{listing.price}</span>
-            <span className={`text-[13px] ml-1 ${hasImage && !imgError ? "text-white/70" : "text-[#9CA3AF]"}`} style={hasImage && !imgError ? { textShadow: "0 1px 2px rgba(0,0,0,0.4)" } : undefined}>{t("common.perMonth")}</span>
+            <span className={`text-[13px] ml-1 ${hasImage && !imgError ? "text-white/70" : "text-[#6B7280]"}`} style={hasImage && !imgError ? { textShadow: "0 1px 2px rgba(0,0,0,0.4)" } : undefined}>{t("common.perMonth")}</span>
           </div>
         )}
       </div>
@@ -346,7 +346,7 @@ export default function ListingDetailPage() {
         <div className="flex items-center gap-4 mt-5 text-[13px] text-[#6B7280]">
           {detailItems.map((item, i) => (
             <div key={i} className="flex items-center gap-1.5">
-              {item.locked ? <Lock className="w-3.5 h-3.5 text-[#C4C4C4]" /> : <item.icon className="w-4 h-4 text-[#9CA3AF]" />}
+              {item.locked ? <Lock className="w-3.5 h-3.5 text-[#C4C4C4]" /> : <item.icon className="w-4 h-4 text-[#6B7280]" />}
               <span className={`font-semibold ${item.color || "text-[#111111]"} capitalize`} data-testid={`text-detail-${i}`}>
                 {item.value}
               </span>
@@ -354,7 +354,7 @@ export default function ListingDetailPage() {
           ))}
         </div>
 
-        <div className="flex items-center gap-1 mt-3 text-[12px] text-[#9CA3AF]">
+        <div className="flex items-center gap-1 mt-3 text-[12px] text-[#6B7280]">
           <Clock className="w-3 h-3" />
           <span data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</span>
         </div>
@@ -376,7 +376,7 @@ export default function ListingDetailPage() {
               data-hybrid-pets={hf.pets}
             >
               {unknowns.length > 0 && (
-                <div className="flex items-start gap-2 text-[12px] text-[#9CA3AF]">
+                <div className="flex items-start gap-2 text-[12px] text-[#6B7280]">
                   <Info className="w-3.5 h-3.5 flex-shrink-0 mt-[1px]" />
                   <div>
                     <p className="font-semibold">{t("hybridFilter.unknownHint")}</p>
@@ -389,7 +389,7 @@ export default function ListingDetailPage() {
                 </div>
               )}
               {hasPetsNote && (
-                <div className="flex items-start gap-2 text-[12px] text-[#9CA3AF]">
+                <div className="flex items-start gap-2 text-[12px] text-[#6B7280]">
                   <Info className="w-3.5 h-3.5 flex-shrink-0 mt-[1px]" />
                   <p>{t("hybridFilter.petsNote")}</p>
                 </div>
@@ -429,8 +429,8 @@ export default function ListingDetailPage() {
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowBlockModal(false)}>
           <div className="bg-white w-full max-w-[400px] rounded-t-[20px] sm:rounded-[20px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
             <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-[#FDF1F6] flex items-center justify-center">
-                <ShieldBan className="w-6 h-6 text-ha-primary" />
+              <div className="w-12 h-12 rounded-full bg-[#F5F0EB] flex items-center justify-center">
+                <ShieldBan className="w-6 h-6 text-[#111111]" />
               </div>
             </div>
             <p className="text-[17px] font-semibold text-[#111111] text-center" data-testid="text-block-title">

@@ -131,7 +131,7 @@ export function ListingCardFull({
               data-testid={`badge-price-${match.listing_id}`}
             >
               {formatPrice(match.price, locale)}
-              <span className={`text-[12px] font-normal ml-0.5 ${hasImage ? "opacity-80" : "text-[#9CA3AF]"}`}>{t("common.perMonthShort")}</span>
+              <span className={`text-[12px] font-normal ml-0.5 ${hasImage ? "opacity-80" : "text-[#6B7280]"}`}>{t("common.perMonthShort")}</span>
             </span>
           </div>
         )}
@@ -176,12 +176,12 @@ export function ListingCardFull({
           </p>
         )}
 
-        <p className="text-[13px] text-[#9CA3AF] mt-0.5" data-testid={`detail-source-${match.listing_id}`}>
+        <p className="text-[13px] text-[#6B7280] mt-0.5" data-testid={`detail-source-${match.listing_id}`}>
           {sourceName}
         </p>
 
         {locked && (
-          <div className="flex items-center gap-1.5 mt-0.5 text-[12px] text-[#9CA3AF]" data-testid={`lock-indicator-${match.listing_id}`}>
+          <div className="flex items-center gap-1.5 mt-0.5 text-[12px] text-[#6B7280]" data-testid={`lock-indicator-${match.listing_id}`}>
             <Lock className="w-3 h-3" />
             <span>{t("listing.lockLabel")}</span>
           </div>

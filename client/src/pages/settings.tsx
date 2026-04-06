@@ -82,8 +82,8 @@ export default function SettingsPage() {
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
         <div className="flex flex-col gap-4">
           <div className="app-card flex items-center gap-4" data-testid="card-profile-header">
-            <div className="w-14 h-14 rounded-full bg-ha-surface flex items-center justify-center flex-shrink-0">
-              <User className="w-6 h-6 text-ha-icon-secondary" />
+            <div className="w-14 h-14 rounded-full bg-[#F5F0EB] flex items-center justify-center flex-shrink-0">
+              <User className="w-[22px] h-[22px] text-[#111111]" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[16px] font-semibold text-[#111111] truncate" data-testid="text-profile-name">
@@ -117,9 +117,9 @@ export default function SettingsPage() {
                     >
                       <p className="text-[15px] font-semibold text-[#111111] flex-1">{row.label}</p>
                       {row.external ? (
-                        <ExternalLink className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
+                        <ExternalLink className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
                       ) : (
-                        <ChevronRight className="w-4 h-4 text-ha-icon-secondary flex-shrink-0" />
+                        <ChevronRight className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
                       )}
                     </button>
                   </div>
@@ -144,7 +144,7 @@ export default function SettingsPage() {
               className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-ha-surface-active transition-colors"
               data-testid="button-delete-account"
             >
-              <Trash2 className="w-5 h-5 text-ha-icon-secondary flex-shrink-0" />
+              <Trash2 className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
               <p className="text-[15px] text-ha-text-muted flex-1">{t("profile.deleteAccount")}</p>
             </button>
           </div>

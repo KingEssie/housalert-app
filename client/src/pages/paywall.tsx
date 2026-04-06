@@ -52,7 +52,7 @@ function getPlans(t: (k: string) => string): Plan[] {
       perMonth: "€24,99 " + t("paywall.perMonth"),
       popular: false,
       discountLabel: "0%",
-      discountColor: "#9CA3AF",
+      discountColor: "#6B7280",
     },
   ];
 }

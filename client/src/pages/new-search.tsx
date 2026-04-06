@@ -869,9 +869,9 @@ function StepReview({
 
       <div className="space-y-5">
         {!estimateLoading && (
-          <div className="rounded-[16px] bg-gradient-to-br from-[#FDF2F8] to-[#FCE7F3] border border-[#F9A8D4]/30 p-6 flex items-center gap-4" data-testid="card-review-estimate">
-            <div className="w-12 h-12 rounded-[14px] bg-white/90 flex items-center justify-center flex-shrink-0 shadow-sm">
-              <Sparkles className="w-6 h-6 text-[#BE185D]" />
+          <div className="rounded-[16px] bg-[#F5F0EB] border border-[#E8E2DA] p-6 flex items-center gap-4" data-testid="card-review-estimate">
+            <div className="w-12 h-12 rounded-[14px] bg-white/80 flex items-center justify-center flex-shrink-0 shadow-sm">
+              <Sparkles className="w-6 h-6 text-[#111111]" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-[17px] font-bold text-[#111111] leading-snug">

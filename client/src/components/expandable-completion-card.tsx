@@ -91,7 +91,7 @@ export function ExpandableCompletionCard({
           </p>
         </div>
         <ChevronDown
-          className={`w-5 h-5 text-[#9CA3AF] flex-shrink-0 transition-transform duration-200 ${
+          className={`w-5 h-5 text-[#6B7280] flex-shrink-0 transition-transform duration-200 ${
             expanded ? "rotate-180" : ""
           }`}
         />
@@ -116,7 +116,7 @@ export function ExpandableCompletionCard({
               <span
                 className={`text-[14px] flex-1 leading-snug ${
                   step.completed
-                    ? "text-[#9CA3AF] line-through font-normal"
+                    ? "text-[#6B7280] line-through font-normal"
                     : "text-[#111111] font-medium"
                 }`}
               >
@@ -128,8 +128,8 @@ export function ExpandableCompletionCard({
                     <Check className="w-[13px] h-[13px] text-white" strokeWidth={3} />
                   </div>
                 ) : (
-                  <div className="w-[24px] h-[24px] rounded-full border-[1.5px] border-[#9CA3AF] flex items-center justify-center">
-                    <ChevronRight className="w-[13px] h-[13px] text-[#9CA3AF]" strokeWidth={2.5} />
+                  <div className="w-[24px] h-[24px] rounded-full border-[1.5px] border-[#6B7280] flex items-center justify-center">
+                    <ChevronRight className="w-[13px] h-[13px] text-[#6B7280]" strokeWidth={2.5} />
                   </div>
                 )}
               </div>

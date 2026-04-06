@@ -49,12 +49,14 @@
   --ha-card-hover: 249 250 251;
   --ha-text: 17 17 17;
   --ha-text-secondary: 107 114 128;
-  --ha-text-muted: 156 163 175;
+  --ha-text-muted: 107 114 128;
   --ha-primary: 217 26 104;
   --ha-primary-hover: 179 21 86;
   --ha-primary-light: rgba(217, 26, 104, 0.08);
   --ha-input-bg: 255 255 255;
   --ha-input-border: 229 231 235;
+  --ha-highlight: 245 240 235;
+  --ha-highlight-hover: 237 231 225;
   --ha-surface: 249 250 251;
   --ha-nav-bg: 255 255 255;
   --ha-nav-border: 229 231 235;
@@ -67,7 +69,7 @@
   --ha-status-green: 22 163 74;
   --ha-status-red: 220 38 38;
   --ha-avatar-purple: 217 26 104;
-  --ha-icon-secondary: 156 163 175;
+  --ha-icon-secondary: 107 114 128;
   --ha-badge-bg: 249 250 251;
   --ha-surface-active: 249 250 251;
   --ha-surface-hover: 249 250 251;
@@ -187,7 +189,7 @@
   .text-row-section-title {
     font-size: 13px;
     font-weight: 600;
-    color: #9CA3AF;
+    color: #6B7280;
     line-height: 1.4;
   }
 
@@ -229,7 +231,7 @@
   .text-small-label {
     font-size: 12px;
     font-weight: 600;
-    color: #9CA3AF;
+    color: #6B7280;
     line-height: 1.4;
   }
 
@@ -243,7 +245,7 @@
   .text-field-label {
     font-size: 14px;
     font-weight: 600;
-    color: #111111;
+    color: #4B5563;
     line-height: 1.4;
   }
 

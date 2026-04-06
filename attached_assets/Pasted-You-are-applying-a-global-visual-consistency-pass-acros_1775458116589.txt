@@ -1,0 +1,155 @@
+You are applying a global visual consistency pass across the entire app so the full product uses one clean, premium, mobile-first design system.
+
+IMPORTANT:
+	•	Do NOT redesign app structure or flows
+	•	Do NOT change routing or business logic
+	•	Do NOT make one-off per-screen styling hacks
+	•	This must be implemented as a consistent shared design system across the whole app
+	•	Use shared tokens/components/styles wherever possible
+
+GOAL:
+Make the app visually consistent everywhere, using the same typography, spacing, input styling, card styling, icon treatment, and highlight surfaces.
+
+⸻
+
+	1.	GLOBAL DESIGN SYSTEM
+
+⸻
+
+Create or enforce shared design tokens across the whole app:
+
+Text colors:
+	•	primary text: #111111
+	•	secondary text: #6B7280
+	•	label text: #4B5563
+
+Surfaces:
+	•	page background: clean white / very light neutral
+	•	card background: #FFFFFF
+	•	border color: #E5E7EB
+	•	input background: #FFFFFF
+
+Highlight / soft featured surface:
+	•	replace light pink highlight cards with a soft warm sand / beige tone
+	•	use something like:
+	•	#F3EFE8
+or
+	•	#F5F1EA
+
+Typography:
+	•	page titles: strong and consistent
+	•	subtitles: readable and not too light
+	•	labels: medium weight
+	•	values: semibold
+	•	remove weak / washed out text wherever possible
+
+Spacing:
+	•	use consistent spacing scale everywhere
+	•	ensure cards, rows, sections, and screens all feel aligned and intentional
+
+⸻
+
+	2.	ICON SYSTEM — GLOBAL CHANGE
+
+⸻
+
+Update icon treatment across the app:
+	•	remove decorative colored circle / filled background shapes behind standard icons
+	•	remove pink icon backgrounds in cards and rows
+	•	use clean black icons instead:
+	•	color: #111111
+	•	icon size should be consistent across the app
+	•	standard icon size: 22px to 24px
+
+This should apply across:
+	•	onboarding/search flow
+	•	home
+	•	profile
+	•	tips
+	•	settings / account sections
+	•	support/info rows
+	•	cards and menus
+
+Only keep a background container behind an icon if it is truly part of a featured/highlight card design and serves a clear purpose.
+
+⸻
+
+	3.	HIGHLIGHT / FEATURED CARDS
+
+⸻
+
+Where the app currently uses soft pink highlighted cards (for example: “verwacht x matches per week” and similar featured info blocks):
+	•	replace the pink background with the new soft warm sand/beige highlight surface
+	•	keep the card premium and calm
+	•	improve contrast if needed so text remains highly readable
+	•	avoid bright or overly playful styling
+
+The goal is:
+	•	calmer
+	•	more premium
+	•	less loud
+	•	more Airbnb-like
+
+⸻
+
+	4.	APPLY CONSISTENCY ACROSS THE APP
+
+⸻
+
+Apply the same visual system across all major app areas, including:
+	•	onboarding / search profile flow
+	•	home
+	•	matches
+	•	tips
+	•	search
+	•	profile
+	•	account/settings/help/privacy screens
+	•	support/info cards
+	•	empty states
+	•	search profile cards
+	•	summary/review cards
+
+Make sure these all feel like one product, not separate design experiments.
+
+⸻
+
+	5.	SHARED COMPONENT STYLES
+
+⸻
+
+Create/reuse shared styles for:
+	•	cards
+	•	form fields
+	•	list rows
+	•	icon rows
+	•	highlight cards
+	•	section headers
+	•	empty state blocks
+
+Do NOT duplicate similar styles per page unless necessary.
+
+⸻
+
+	6.	DO NOT CHANGE
+
+⸻
+
+	•	Do NOT change app logic
+	•	Do NOT change navigation
+	•	Do NOT redesign the Matches top tabs if they already have approved styling
+	•	Do NOT add decorative visual noise
+	•	Keep the product clean, premium, and restrained
+
+⸻
+
+	7.	OUTPUT
+
+⸻
+
+After finishing, provide:
+	1.	which global tokens/styles were introduced or updated
+	2.	which icon treatment was changed globally
+	3.	what highlight card color was chosen
+	4.	which shared components were updated
+	5.	which main screens were brought into consistency
+	6.	which files/components were changed

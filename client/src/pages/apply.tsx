@@ -489,7 +489,7 @@ export default function ApplyPage() {
             <div className="flex flex-col" data-testid="text-sticky-price">
               <span className="text-[20px] font-semibold text-[#111111]">€{listing.price}<span className="text-[13px] font-normal text-[#6B7280] ml-1">{t("common.perMonthShort")}</span></span>
               {postedLabel && (
-                <span className="text-[11px] font-normal text-[#9CA3AF] leading-none mt-0.5" data-testid="text-footer-posted">{postedLabel}</span>
+                <span className="text-[11px] font-normal text-[#6B7280] leading-none mt-0.5" data-testid="text-footer-posted">{postedLabel}</span>
               )}
             </div>
           )}
@@ -509,8 +509,8 @@ export default function ApplyPage() {
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowBlockModal(false)}>
           <div className="bg-white w-full max-w-[400px] rounded-t-[20px] sm:rounded-[20px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
             <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-[#FDF1F6] flex items-center justify-center">
-                <ShieldBan className="w-6 h-6 text-ha-primary" />
+              <div className="w-12 h-12 rounded-full bg-[#F5F0EB] flex items-center justify-center">
+                <ShieldBan className="w-6 h-6 text-[#111111]" />
               </div>
             </div>
             <p className="text-[17px] font-semibold text-[#111111] text-center" data-testid="text-block-title-apply">

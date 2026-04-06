@@ -176,10 +176,8 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
             data-testid="card-referral-promo"
           >
             <div className="flex flex-col items-center">
-              <div className="w-12 h-12 rounded-full bg-white/60 flex items-center justify-center mb-4">
-                <Gift className="w-[22px] h-[22px] text-[#111111]" />
-              </div>
-              <p className="text-[13px] font-semibold text-[#9CA3AF] mb-1">
+              <Gift className="w-[22px] h-[22px] text-[#111111] mb-4" />
+              <p className="text-[13px] font-semibold text-[#6B7280] mb-1">
                 {t("tips.referralOverline")}
               </p>
               <p className="text-[16px] font-semibold text-[#111111] leading-snug max-w-[280px]">
