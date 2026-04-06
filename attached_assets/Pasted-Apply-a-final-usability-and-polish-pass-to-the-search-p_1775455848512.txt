@@ -1,0 +1,203 @@
+Apply a final usability and polish pass to the search profile flow and fix the search profile delete bug.
+
+IMPORTANT:
+- Do NOT change business logic
+- Do NOT change routing
+- Do NOT redesign the bottom browser bar
+- Keep the 5-step search profile flow structure intact
+- Focus on scale, spacing, contrast, field comfort, and the delete-menu bug
+- This is intended to make the app feel robust, clear, mobile-first, and App Store ready
+
+GOAL:
+1. Make the full search profile flow feel much stronger, cleaner, and more premium
+2. Fix the bug where tapping "Verwijderen" opens the edit screen instead of deleting
+
+==================================================
+1. GLOBAL UI SCALE FIX FOR SEARCH PROFILE FLOW
+==================================================
+
+The current issue is that the flow still feels too small, too light, and too weak visually.
+
+Increase the UI scale across all 5 steps:
+
+Typography targets:
+- page title: 34–36px, bold
+- subtitle/description: 17px, regular
+- section labels: 15px, medium
+- field values: 17px, semibold
+- helper/meta text: 14px
+
+Color targets:
+- primary text: #111111
+- secondary text: #6B7280
+- placeholder text: slightly muted but still readable
+- remove overly light washed-out grey text wherever possible
+
+Rules:
+- do not let important text feel faint
+- labels should be readable and intentional
+- values should feel strong and easy to scan
+
+==================================================
+2. FIELD / INPUT HEIGHT FIX
+==================================================
+
+The current fields feel too low and weak.
+
+Increase all major field/control heights across the search profile flow.
+
+Targets:
+- input/select/dropdown height: 56px minimum
+- border radius: 16px
+- internal horizontal padding: 16px
+- text size inside controls: 16px minimum
+
+Apply this to:
+- search input
+- dropdown/select fields
+- segmented controls if applicable
+- summary/edit rows where relevant
+
+Make fields feel comfortable for touch and more premium.
+
+==================================================
+3. CONTRAST + SPACING IMPROVEMENTS
+==================================================
+
+Fix the weak/light feeling by increasing clarity and spacing.
+
+Apply:
+- more breathing room under titles/subtitles
+- more vertical spacing between field groups
+- more spacing between grouped sections
+- stronger hierarchy between titles, subtitles, labels, and values
+
+Spacing targets:
+- under subtitle: 24px
+- between field groups: 20px
+- between sections: 28px
+- inside cards/rows: 16–20px
+
+==================================================
+4. STEP-BY-STEP SEARCH FLOW POLISH
+==================================================
+
+Step 1 — Locatie
+- make the top area feel more robust
+- improve spacing between method selector, input, selected item, and map
+- ensure the map block feels visually grounded
+- keep method tabs, but make them feel clean and balanced
+
+Step 2 — Vereisten
+- improve readability of labels and values
+- align icons and text better
+- ensure the screen no longer feels like a thin stack of weak form rows
+- increase comfort and structure
+
+Step 3 — Extra kenmerken
+- rows should feel clearly tappable
+- selection controls must feel stronger and easier to see
+- improve spacing between the “Extra kenmerken” section and the “Wensen” section
+- helper text should be more readable
+
+Step 4 — Doelgroepen & categorieën
+- same treatment as step 3
+- larger, clearer rows
+- stronger text hierarchy
+- no washed-out appearance
+
+Step 5 — Controleer je zoekopdracht
+- strengthen labels vs values hierarchy
+- make the summary easier to scan
+- make edit controls look intentional and clearly interactive
+- maintain the strong sticky CTA
+
+==================================================
+5. BACK BUTTON POSITIONING
+==================================================
+
+The floating back button still sits too high.
+
+Adjust it so it sits lower and respects safe-area spacing.
+
+Goal:
+- visually comfortable
+- not cramped against the top edge
+- consistent across all 5 steps
+
+==================================================
+6. NEXT BUTTON / FLOATING CTA
+==================================================
+
+Refine the floating pink next button:
+- keep the existing concept
+- ensure placement feels intentional
+- maintain consistent size and shadow
+- prevent it from visually colliding with content or browser overlays
+
+==================================================
+7. SEARCH PROFILE CARD MENU BUG
+==================================================
+
+BUG:
+On the Home and Zoek screens, each search profile has a 3-dot menu with:
+- Bewerken
+- Verwijderen
+
+Current issue:
+Tapping “Verwijderen” also triggers the parent click and opens the edit screen.
+
+Fix this properly.
+
+Likely cause:
+- click event bubbling from the dropdown item into the parent row/card click handler
+
+Required fix:
+- prevent event bubbling on the menu trigger and menu items
+- ensure tapping “Verwijderen” only calls the delete action
+- ensure tapping “Bewerken” only calls the edit action
+- ensure the parent card click does not fire when interacting with the menu
+
+Use stopPropagation / preventDefault where appropriate.
+
+==================================================
+8. DELETE UX
+==================================================
+
+When deleting a search profile:
+- show a clear confirmation step before actual deletion
+- do not immediately delete without confirmation
+- keep the UX simple and mobile-friendly
+
+Example:
+“Wil je deze zoekopdracht verwijderen?”
+Buttons:
+- Annuleren
+- Verwijderen
+
+Make sure:
+- confirming delete really removes the profile
+- it no longer navigates to edit
+- the list refreshes correctly afterward
+
+==================================================
+9. DO NOT CHANGE
+==================================================
+
+- Do NOT change routing
+- Do NOT change backend business logic except the delete bug fix path if needed
+- Do NOT redesign the bottom browser/navigation chrome
+- Do NOT change Matches top tab design
+
+==================================================
+10. OUTPUT
+==================================================
+
+After finishing, provide:
+1. what global typography changes were made
+2. what field/input size changes were made
+3. what contrast/spacing changes were made
+4. how the back button positioning was fixed
+5. exactly how the delete bug was fixed
+6. whether delete confirmation was added
+7. which files/components were changed

@@ -274,15 +274,16 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
                   <DropdownMenuTrigger asChild>
                     <button
                       onClick={(e) => e.stopPropagation()}
+                      onPointerDown={(e) => e.stopPropagation()}
                       className="w-9 h-9 rounded-full flex items-center justify-center text-[#9CA3AF] hover:bg-ha-surface-hover transition-colors flex-shrink-0"
                       data-testid={`button-menu-${p.id}`}
                     >
                       <MoreVertical className="w-[18px] h-[18px]" />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="min-w-[160px]">
+                  <DropdownMenuContent align="end" className="min-w-[160px]" onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
                     <DropdownMenuItem
-                      onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
+                      onClick={(e) => { e.stopPropagation(); navigate(`/dashboard/searches/edit/${p.id}`); }}
                       className="flex items-center gap-2.5 cursor-pointer"
                       data-testid={`menu-edit-${p.id}`}
                     >
@@ -290,7 +291,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
                       {t("common.edit")}
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => setConfirmDeleteId(p.id)}
+                      onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(p.id); }}
                       className="flex items-center gap-2.5 text-ha-danger focus:text-ha-danger cursor-pointer"
                       data-testid={`menu-delete-${p.id}`}
                     >
@@ -580,15 +581,16 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
                   <DropdownMenuTrigger asChild>
                     <button
                       onClick={(e) => e.stopPropagation()}
+                      onPointerDown={(e) => e.stopPropagation()}
                       className="w-9 h-9 rounded-full flex items-center justify-center text-[#9CA3AF] hover:bg-[#F3F4F6] active:bg-[#E5E7EB] transition-colors flex-shrink-0 ml-2"
                       data-testid={`button-menu-${p.id}`}
                     >
                       <MoreVertical className="w-[18px] h-[18px]" />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="min-w-[140px]">
+                  <DropdownMenuContent align="end" className="min-w-[140px]" onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
                     <DropdownMenuItem
-                      onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
+                      onClick={(e) => { e.stopPropagation(); navigate(`/dashboard/searches/edit/${p.id}`); }}
                       className="flex items-center gap-2.5 cursor-pointer"
                       data-testid={`menu-edit-${p.id}`}
                     >
@@ -596,7 +598,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
                       {t("home.menuEdit")}
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => setConfirmDeleteId(p.id)}
+                      onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(p.id); }}
                       className="flex items-center gap-2.5 text-ha-danger focus:text-ha-danger cursor-pointer"
                       data-testid={`menu-delete-${p.id}`}
                     >

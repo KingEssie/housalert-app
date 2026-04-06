@@ -371,7 +371,7 @@ export default function NewSearchPage() {
     return (
       <div className="min-h-screen bg-white flex flex-col">
         <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md" style={{ paddingTop: "env(safe-area-inset-top)" }}>
-          <div className="max-w-lg mx-auto flex items-center justify-between h-[56px] px-5">
+          <div className="max-w-lg mx-auto flex items-center justify-between h-[60px] px-5">
             <button
               onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=home")}
               className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
@@ -381,18 +381,18 @@ export default function NewSearchPage() {
             </button>
           </div>
         </header>
-        <div className="flex-1 flex items-center justify-center px-5" style={{ paddingTop: "calc(env(safe-area-inset-top) + 72px)" }}>
+        <div className="flex-1 flex items-center justify-center px-5" style={{ paddingTop: "calc(env(safe-area-inset-top) + 76px)" }}>
           <div className="text-center max-w-sm w-full">
-            <div className="w-14 h-14 rounded-2xl bg-[#F9FAFB] flex items-center justify-center mx-auto mb-5">
-              <AlertCircle className="w-6 h-6 text-ha-primary" />
+            <div className="w-16 h-16 rounded-2xl bg-[#F9FAFB] flex items-center justify-center mx-auto mb-5">
+              <AlertCircle className="w-7 h-7 text-ha-primary" />
             </div>
-            <h2 className="text-[20px] font-semibold text-[#111111] mb-2">{t("newSearch.limitTitle")}</h2>
-            <p className="text-[15px] text-[#6B7280] mb-6 leading-relaxed">
+            <h2 className="text-[22px] font-bold text-[#111111] mb-2">{t("newSearch.limitTitle")}</h2>
+            <p className="text-[17px] text-[#6B7280] mb-7 leading-relaxed">
               {t("newSearch.limitDesc", { max: MAX_PROFILES })}
             </p>
             <Button
               onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=home")}
-              className="w-full h-[48px] rounded-[12px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium"
+              className="w-full h-[52px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold"
               data-testid="button-back-to-dashboard-limit"
             >
               {t("newSearch.backToDashboard")}
@@ -408,7 +408,7 @@ export default function NewSearchPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md" style={{ paddingTop: "env(safe-area-inset-top)" }}>
-        <div className="max-w-lg mx-auto flex items-center justify-between h-[56px] px-5">
+        <div className="max-w-lg mx-auto flex items-center justify-between h-[60px] px-5">
           <button
             onClick={goBack}
             className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
@@ -428,13 +428,13 @@ export default function NewSearchPage() {
               />
             ))}
           </div>
-          <span className="text-[13px] font-medium text-[#9CA3AF] tabular-nums" data-testid="text-step-indicator">
+          <span className="text-[14px] font-semibold text-[#9CA3AF] tabular-nums" data-testid="text-step-indicator">
             {step}/{TOTAL_STEPS}
           </span>
         </div>
       </header>
 
-      <main className="flex-1 w-full max-w-lg mx-auto px-5 pb-36" style={{ paddingTop: "calc(env(safe-area-inset-top) + 72px)" }}>
+      <main className="flex-1 w-full max-w-lg mx-auto px-5 pb-40" style={{ paddingTop: "calc(env(safe-area-inset-top) + 76px)" }}>
         {step === 1 && <Step1Location locationData={locationData} setLocationData={setLocationData} />}
         {step === 2 && <Step2Requirements filters={filters} updateFilters={updateFilters} />}
         {step === 3 && <Step3ExtraFeatures filters={filters} updateFilters={updateFilters} />}
@@ -455,7 +455,7 @@ export default function NewSearchPage() {
       </main>
 
       {step < 5 && (
-        <div className="fixed bottom-8 right-6 z-50" style={{ marginBottom: "env(safe-area-inset-bottom)" }}>
+        <div className="fixed z-50" style={{ bottom: "calc(env(safe-area-inset-bottom) + 28px)", right: 24 }}>
           <button
             onClick={step < TOTAL_STEPS - 1 ? goNext : () => setStep(5)}
             disabled={!canProceed()}
@@ -472,11 +472,11 @@ export default function NewSearchPage() {
 
 function StepHeader({ title, subtitle }: { title: string; subtitle: string }) {
   return (
-    <div className="mb-7">
-      <h2 className="text-[32px] font-bold text-[#111111] leading-[1.15] tracking-[-0.02em] mb-2" data-testid="text-step-title">
+    <div className="mb-8">
+      <h2 className="text-[34px] font-bold text-[#111111] leading-[1.12] tracking-[-0.025em] mb-2.5" data-testid="text-step-title">
         {title}
       </h2>
-      <p className="text-[16px] text-[#6B7280] leading-relaxed">
+      <p className="text-[17px] text-[#6B7280] leading-relaxed">
         {subtitle}
       </p>
     </div>
@@ -501,7 +501,7 @@ function SelectField({
   const { t } = useTranslation();
   return (
     <div>
-      <label className="text-[14px] font-medium text-[#111111] mb-2 flex items-center gap-2">
+      <label className="text-[15px] font-semibold text-[#111111] mb-2.5 flex items-center gap-2.5">
         <span className="w-5 h-5 flex items-center justify-center text-[#6B7280]">{icon}</span>
         {label}
       </label>
@@ -509,14 +509,14 @@ function SelectField({
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full h-[52px] px-4 pr-10 rounded-[14px] border border-[#E5E7EB] bg-[#F9FAFB] text-[15px] font-medium text-[#111111] appearance-none cursor-pointer focus:border-[rgb(var(--ha-primary))] focus:ring-1 focus:ring-[rgb(var(--ha-primary))]/20 focus:bg-white transition-colors outline-none"
+          className="w-full h-[56px] px-4 pr-11 rounded-[16px] border border-[#E5E7EB] bg-[#F9FAFB] text-[17px] font-semibold text-[#111111] appearance-none cursor-pointer focus:border-[rgb(var(--ha-primary))] focus:ring-2 focus:ring-[rgb(var(--ha-primary))]/15 focus:bg-white transition-colors outline-none"
           data-testid={testId}
         >
           {options.map(opt => (
             <option key={String(opt.value)} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
           ))}
         </select>
-        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] pointer-events-none" />
+        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#9CA3AF] pointer-events-none" />
       </div>
     </div>
   );
@@ -556,7 +556,7 @@ function Step2Requirements({
     <div>
       <StepHeader title={t("newSearch.step2.title")} subtitle={t("newSearch.step2.subtitle")} />
 
-      <div className="space-y-5">
+      <div className="space-y-6">
         <SelectField
           icon={<Euro className="w-[18px] h-[18px]" />}
           label={t("newSearch.step2.minPrice")}
@@ -602,7 +602,7 @@ function Step2Requirements({
           testId="select-furnished"
         />
 
-        <div className="pt-2">
+        <div className="pt-1">
           <ToggleSwitch
             checked={filters.priceFlexible}
             onChange={(v) => updateFilters({ priceFlexible: v })}
@@ -627,18 +627,18 @@ function ToggleSwitch({
   testId: string;
 }) {
   return (
-    <label className="flex items-center gap-3 cursor-pointer rounded-[14px] bg-[#F9FAFB] border border-[#E5E7EB] px-4 py-3.5" data-testid={testId}>
+    <label className="flex items-center gap-3.5 cursor-pointer rounded-[16px] bg-[#F9FAFB] border border-[#E5E7EB] px-4 py-4" data-testid={testId}>
       <div
-        className="w-[46px] h-[26px] rounded-full p-[2px] transition-colors shrink-0 cursor-pointer"
+        className="w-[48px] h-[28px] rounded-full p-[2px] transition-colors shrink-0 cursor-pointer"
         style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "#D1D5DB" }}
         onClick={(e) => { e.preventDefault(); onChange(!checked); }}
       >
         <div
-          className="w-[22px] h-[22px] rounded-full bg-white transition-transform shadow-sm"
+          className="w-[24px] h-[24px] rounded-full bg-white transition-transform shadow-sm"
           style={{ transform: checked ? "translateX(20px)" : "translateX(0)" }}
         />
       </div>
-      <span className="text-[14px] leading-snug text-[#111111] font-medium">{label}</span>
+      <span className="text-[15px] leading-snug text-[#111111] font-medium">{label}</span>
     </label>
   );
 }
@@ -660,22 +660,22 @@ function CheckboxRow({
     <button
       type="button"
       onClick={onToggle}
-      className={`w-full flex items-center gap-3.5 px-4 py-3.5 rounded-[14px] border transition-all text-left ${
+      className={`w-full flex items-center gap-4 px-4 py-4 rounded-[16px] border-[1.5px] transition-all text-left ${
         selected
           ? "border-[rgb(var(--ha-primary))] bg-[rgb(var(--ha-primary))]/[0.04]"
           : "border-[#E5E7EB] bg-white hover:bg-[#FAFAFA]"
       }`}
       data-testid={testId}
     >
-      <div className={`w-[22px] h-[22px] rounded-[7px] flex items-center justify-center flex-shrink-0 border-[1.5px] transition-colors ${
+      <div className={`w-[24px] h-[24px] rounded-[8px] flex items-center justify-center flex-shrink-0 border-[1.5px] transition-colors ${
         selected ? "bg-ha-primary border-ha-primary" : "border-[#D1D5DB] bg-white"
       }`}>
-        {selected && <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />}
+        {selected && <Check className="w-4 h-4 text-white" strokeWidth={3} />}
       </div>
       <div className="flex-1 min-w-0">
-        <span className="text-[15px] font-medium text-[#111111]">{label}</span>
+        <span className="text-[16px] font-semibold text-[#111111]">{label}</span>
         {hint && selected && (
-          <p className="text-[13px] text-[#6B7280] mt-0.5 leading-snug">{hint}</p>
+          <p className="text-[14px] text-[#6B7280] mt-1 leading-snug">{hint}</p>
         )}
       </div>
     </button>
@@ -711,9 +711,9 @@ function Step3ExtraFeatures({
         ))}
       </div>
 
-      <div className="mt-8">
-        <h3 className="text-[15px] font-semibold text-[#111111] mb-1.5">{t("newSearch.step3.preferencesTitle")}</h3>
-        <p className="text-[14px] text-[#6B7280] mb-3 leading-relaxed">{t("newSearch.step3.preferencesSubtitle")}</p>
+      <div className="mt-10">
+        <h3 className="text-[16px] font-bold text-[#111111] mb-2">{t("newSearch.step3.preferencesTitle")}</h3>
+        <p className="text-[15px] text-[#6B7280] mb-4 leading-relaxed">{t("newSearch.step3.preferencesSubtitle")}</p>
         <div className="space-y-3">
           {PREFERENCE_OPTIONS.map((opt) => (
             <CheckboxRow
@@ -729,12 +729,12 @@ function Step3ExtraFeatures({
       </div>
 
       {filters.extraFeatures.length === 0 && (
-        <p className="text-[14px] text-[#9CA3AF] text-center mt-6">
+        <p className="text-[15px] text-[#9CA3AF] text-center mt-7">
           {t("newSearch.step3.noSelectionHint")}
         </p>
       )}
 
-      <div className="mt-6">
+      <div className="mt-7">
         <ToggleSwitch
           checked={filters.sendUnclear}
           onChange={(v) => updateFilters({ sendUnclear: v })}
@@ -776,7 +776,7 @@ function Step4TargetCategories({
       </div>
 
       {filters.targetCategories.length === 0 && (
-        <p className="text-[14px] text-[#9CA3AF] text-center mt-6">
+        <p className="text-[15px] text-[#9CA3AF] text-center mt-7">
           {t("newSearch.step4.noSelectionHint")}
         </p>
       )}
@@ -788,15 +788,15 @@ function ReviewRow({ label, value, onEdit }: { label: string; value: string; onE
   return (
     <button
       onClick={onEdit}
-      className="w-full flex items-center justify-between py-4 px-4 border-b border-[#F3F4F6] last:border-b-0 text-left hover:bg-[#FAFAFA] transition-colors active:bg-[#F3F4F6] group"
+      className="w-full flex items-center justify-between py-[18px] px-5 border-b border-[#F3F4F6] last:border-b-0 text-left hover:bg-[#FAFAFA] transition-colors active:bg-[#F3F4F6] group"
       data-testid={`button-review-edit-${label.toLowerCase().replace(/\s/g, "-")}`}
     >
       <div className="flex-1 min-w-0 mr-3">
-        <p className="text-[13px] font-medium text-[#9CA3AF] mb-0.5">{label}</p>
-        <p className="text-[15px] font-semibold text-[#111111] leading-snug">{value}</p>
+        <p className="text-[13px] font-medium text-[#9CA3AF] mb-1">{label}</p>
+        <p className="text-[17px] font-semibold text-[#111111] leading-snug">{value}</p>
       </div>
-      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#F3F4F6] flex items-center justify-center group-hover:bg-[#E5E7EB] transition-colors">
-        <Pencil className="w-3.5 h-3.5 text-[#6B7280]" />
+      <div className="flex-shrink-0 w-9 h-9 rounded-full bg-[#F3F4F6] flex items-center justify-center group-hover:bg-[#E5E7EB] transition-colors">
+        <Pencil className="w-4 h-4 text-[#6B7280]" />
       </div>
     </button>
   );
@@ -839,7 +839,7 @@ function StepReview({
   const priceLabel = (() => {
     const min = filters.priceMin ? `\u20AC${parseInt(filters.priceMin).toLocaleString("de-DE")}` : "";
     const max = filters.priceMax ? `\u20AC${parseInt(filters.priceMax).toLocaleString("de-DE")}` : "";
-    if (min && max) return `${min} - ${max}`;
+    if (min && max) return `${min} \u2013 ${max}`;
     if (min) return t("newSearch.step5.from", { price: parseInt(filters.priceMin).toLocaleString("de-DE") });
     if (max) return t("newSearch.step5.upTo", { price: parseInt(filters.priceMax).toLocaleString("de-DE") });
     return t("newSearch.step2.noPref");
@@ -870,16 +870,16 @@ function StepReview({
       <div className="space-y-5">
         {!estimateLoading && (
           <div className="rounded-[16px] bg-gradient-to-br from-[#FDF2F8] to-[#FCE7F3] border border-[#F9A8D4]/30 p-5 flex items-center gap-4" data-testid="card-review-estimate">
-            <div className="w-11 h-11 rounded-[12px] bg-white/80 flex items-center justify-center flex-shrink-0 shadow-sm">
-              <Sparkles className="w-5 h-5 text-ha-primary" />
+            <div className="w-12 h-12 rounded-[14px] bg-white/80 flex items-center justify-center flex-shrink-0 shadow-sm">
+              <Sparkles className="w-6 h-6 text-ha-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[16px] font-semibold text-[#111111] leading-snug">
+              <p className="text-[17px] font-bold text-[#111111] leading-snug">
                 {perWeek > 0
                   ? t("newSearch.step5.estimate", perWeekRange)
                   : t("newSearch.step5.noMatchesExpected")}
               </p>
-              <p className="text-[13px] text-[#6B7280] mt-0.5">
+              <p className="text-[14px] text-[#6B7280] mt-1">
                 {perWeek > 0
                   ? t("newSearch.step5.estimateDesc")
                   : t("newSearch.step5.adjustFiltersLater")}
@@ -888,7 +888,7 @@ function StepReview({
           </div>
         )}
 
-        <div className="bg-white rounded-[16px] border border-[#E5E7EB] overflow-hidden">
+        <div className="bg-white rounded-[16px] border border-[#E5E7EB] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
           <ReviewRow label={t("newSearch.step5.location")} value={locationLabel} onEdit={() => onEdit(1)} />
           {locationData.tab === "wijken" && (
             <ReviewRow label={t("newSearch.step5.districts")} value={districtsLabel} onEdit={() => onEdit(1)} />
@@ -903,11 +903,11 @@ function StepReview({
       </div>
 
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-t border-[#F3F4F6]" style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}>
-        <div className="max-w-lg mx-auto px-5 pt-3">
+        <div className="max-w-lg mx-auto px-5 pt-4">
           <Button
             onClick={onSubmit}
             disabled={submitting}
-            className="w-full h-[52px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold disabled:opacity-40 shadow-[0_4px_20px_rgba(217,26,104,0.3)]"
+            className="w-full h-[56px] rounded-[16px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[17px] font-bold disabled:opacity-40 shadow-[0_4px_20px_rgba(217,26,104,0.3)]"
             data-testid="button-wizard-submit"
           >
             {submitting ? (
@@ -917,7 +917,7 @@ function StepReview({
               </div>
             ) : (
               <>
-                <Search className="w-4 h-4 mr-1.5" />
+                <Search className="w-5 h-5 mr-2" />
                 {isEditMode ? t("newSearch.step5.update") : t("newSearch.step5.save")}
               </>
             )}
