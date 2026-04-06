@@ -815,7 +815,7 @@ function HomeTab({
             <HelpCircle className="w-[22px] h-[22px] text-[#111111]" />
           </button>
         </div>
-        <h1 className="text-[30px] font-bold text-[#111111] tracking-[-0.025em] leading-[1.15]" data-testid="text-greeting">
+        <h1 className="text-[32px] font-bold text-[#111111] tracking-[-0.025em] leading-[1.15]" data-testid="text-greeting">
           {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")} 👋
         </h1>
         <p className="text-[17px] text-[#4B5563] mt-2 leading-relaxed" data-testid="text-welcome-subtitle">

@@ -290,7 +290,7 @@ export default function ApplicationLetterPage() {
 
         {step === 1 && (
           <div className="flex flex-col gap-4" data-testid="step-intro">
-            <h1 className="text-[22px] font-bold text-black px-1" data-testid="text-intro-heading">
+            <h1 className="text-[28px] font-bold text-black px-1" data-testid="text-intro-heading">
               AI Reactiebrief genereren
             </h1>
 
@@ -328,7 +328,7 @@ export default function ApplicationLetterPage() {
 
         {step === 2 && (
           <div className="flex flex-col gap-4" data-testid="step-personal">
-            <h1 className="text-[22px] font-bold text-black px-1" data-testid="text-personal-heading">
+            <h1 className="text-[28px] font-bold text-black px-1" data-testid="text-personal-heading">
               Persoonlijke gegevens
             </h1>
 
@@ -378,7 +378,7 @@ export default function ApplicationLetterPage() {
 
         {step === 3 && (
           <div className="flex flex-col gap-4" data-testid="step-housing">
-            <h1 className="text-[22px] font-bold text-black px-1" data-testid="text-housing-heading">
+            <h1 className="text-[28px] font-bold text-black px-1" data-testid="text-housing-heading">
               Woonsituatie
             </h1>
 
@@ -432,7 +432,7 @@ export default function ApplicationLetterPage() {
 
         {step === 4 && (
           <div className="flex flex-col gap-4" data-testid="step-preview">
-            <h1 className="text-[22px] font-bold text-black px-1" data-testid="text-preview-heading">
+            <h1 className="text-[28px] font-bold text-black px-1" data-testid="text-preview-heading">
               Reactiebrief
             </h1>
 

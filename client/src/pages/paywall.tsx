@@ -106,7 +106,7 @@ function WebsitePaywall({
 
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-10 overflow-y-auto">
         <h2
-          className="text-[22px] font-bold tracking-[-0.025em] mb-1"
+          className="text-[28px] font-bold tracking-[-0.025em] mb-1"
           style={{ color: OBW.text }}
           data-testid="text-paywall-title"
         >

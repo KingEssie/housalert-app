@@ -156,7 +156,7 @@
 @layer utilities {
 
   .text-page-title {
-    font-size: 30px;
+    font-size: 32px;
     font-weight: 700;
     color: #111111;
     line-height: 1.15;
@@ -165,7 +165,7 @@
   }
 
   .text-title {
-    font-weight: 700 !important;
+    font-weight: 700;
     line-height: 1.25;
     letter-spacing: -0.01em;
   }
