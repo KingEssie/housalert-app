@@ -59,26 +59,29 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  app.get("/housalert-logo.png", async (_req, res) => {
-    try {
-      const path = await import("path");
-      const fs = await import("fs");
-      const logoPath = path.default.resolve("client/public/housalert-logo.png");
-      if (!fs.default.existsSync(logoPath)) {
+  const logoFiles = ["housalert-logo.png", "email-logo-v2.png"];
+  for (const logoFile of logoFiles) {
+    app.get(`/${logoFile}`, async (_req, res) => {
+      try {
+        const path = await import("path");
+        const fs = await import("fs");
+        const logoPath = path.default.resolve(`client/public/${logoFile}`);
+        if (!fs.default.existsSync(logoPath)) {
+          res.status(404).end();
+          return;
+        }
+        res.set({
+          "Content-Type": "image/png",
+          "Cache-Control": "public, max-age=31536000, immutable",
+          "Access-Control-Allow-Origin": "*",
+        });
+        fs.default.createReadStream(logoPath).pipe(res);
+      } catch (err: any) {
+        log(`[LOGO] Error serving ${logoFile}: ${err.message}`);
         res.status(404).end();
-        return;
       }
-      res.set({
-        "Content-Type": "image/png",
-        "Cache-Control": "public, max-age=31536000, immutable",
-        "Access-Control-Allow-Origin": "*",
-      });
-      fs.default.createReadStream(logoPath).pipe(res);
-    } catch (err: any) {
-      log(`[LOGO] Error serving logo: ${err.message}`);
-      res.status(404).end();
-    }
-  });
+    });
+  }
 
 
   app.get("/api/buddy-unsubscribe", async (req, res) => {
