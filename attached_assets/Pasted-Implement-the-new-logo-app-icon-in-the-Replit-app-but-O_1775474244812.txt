@@ -1,0 +1,72 @@
+Implement the new logo/app icon in the Replit app, but ONLY for favicon, PWA/app icon, and install/home-screen usage.
+
+IMPORTANT:
+- Do NOT change the in-app logo/brand usage
+- Do NOT replace logos inside headers, onboarding, login, profile, admin, or any in-app UI
+- Only update browser/app icon related assets
+- Keep the current app structure and routing intact
+
+GOAL:
+Use the new selected logo as the browser/favicon and installable app icon, without changing the in-app branding yet.
+
+==================================================
+1. ADD THE NEW ICON AS AN APP ICON ASSET
+==================================================
+
+Use the provided selected logo/icon as the new app icon asset.
+
+Prepare properly sized versions if needed:
+- square PNG
+- favicon-friendly version
+- PWA-friendly versions with proper padding
+
+==================================================
+2. UPDATE FAVICON ONLY
+==================================================
+
+Replace the current favicon/browser tab icon with the new selected icon.
+
+Make sure:
+- it renders clearly at very small sizes
+- it has enough padding
+- it is not stretched or cropped badly
+
+==================================================
+3. UPDATE PWA / INSTALLABLE APP ICON ONLY
+==================================================
+
+Update the app icon setup used for:
+- web app manifest
+- homescreen install icon
+- apple touch icon if configured
+
+Make sure the correct icon sizes exist, for example:
+- 192x192
+- 512x512
+- apple touch icon size if needed
+
+==================================================
+4. DO NOT TOUCH IN-APP LOGO USAGE
+==================================================
+
+Do NOT replace any in-app brand/logo usage such as:
+- app header
+- onboarding
+- login/welcome
+- profile
+- admin header
+- tips/home cards
+- any visible UI logos inside the app itself
+
+Only favicon / manifest / install icon usage should change.
+
+==================================================
+5. OUTPUT
+==================================================
+
+After finishing, provide:
+1. where the new icon asset was added
+2. favicon changes made
+3. manifest/PWA/icon changes made
+4. whether apple touch icon was updated
+5. which files were changed
