@@ -1,0 +1,119 @@
+Update the HousAlert email templates so they match the app branding more closely.
+
+IMPORTANT:
+- Do NOT change email logic
+- Do NOT change routing or tracking links
+- Only improve styling and fallback rendering
+- Keep the current email structure, but refine the visual design
+
+GOAL:
+1. Make the CTA button more rounded and premium
+2. Always show an image area, even when a listing has no photo
+3. Use Poppins typography throughout the email
+
+--------------------------------------------------
+1. FONT: USE POPPINS
+--------------------------------------------------
+
+Update the email template typography to use:
+
+font-family: 'Poppins', Arial, sans-serif;
+
+Apply this to:
+- logo/brand row text
+- section labels
+- body text
+- property title
+- price
+- meta info
+- CTA button text
+- footer/settings text
+
+If loading external fonts in email is limited, still set Poppins first in the stack and keep a clean sans-serif fallback.
+
+--------------------------------------------------
+2. CTA BUTTON: MORE ROUNDED
+--------------------------------------------------
+
+Update the main CTA button (“Bekijk woning”) to feel more premium.
+
+Use:
+- border-radius: 16px to 18px
+- height: around 52px to 56px
+- font-weight: 600
+- font-size: 16px to 17px
+- background: same brand pink as app buttons
+- text color: white
+- centered text
+- no harsh edges
+
+Keep the button width generous and mobile friendly.
+
+--------------------------------------------------
+3. ALWAYS SHOW AN IMAGE AREA
+--------------------------------------------------
+
+If a listing photo exists:
+- render the real photo as normal
+
+If no listing photo exists:
+- render a fallback/empty-state image block instead of leaving the image area empty
+
+The fallback should:
+- match HousAlert branding
+- feel polished, not broken
+- use the same fallback style already used in the app if available
+- otherwise create a premium placeholder with:
+  - soft light background
+  - centered icon
+  - optional subtle source/location text
+  - rounded top corners to match the card
+
+IMPORTANT:
+- there should always be a visible image/header area for the listing card
+- never show a broken or missing-image feeling
+
+--------------------------------------------------
+4. PROPERTY CARD POLISH
+--------------------------------------------------
+
+Refine the card slightly:
+- keep rounded corners
+- make spacing more consistent
+- ensure image and content sections feel like one clean card
+- maintain strong hierarchy:
+  - title bold
+  - price prominent
+  - meta text muted
+
+Use:
+- title: bold / semibold
+- price: bold
+- meta text: #6B7280
+
+--------------------------------------------------
+5. KEEP BRANDING CONSISTENT
+--------------------------------------------------
+
+Keep:
+- HousAlert logo row
+- section label “NIEUWE MATCH”
+- clean white background
+- soft border color
+
+Use the same visual language as the app:
+- clean
+- modern
+- premium
+- minimal
+
+--------------------------------------------------
+6. OUTPUT
+--------------------------------------------------
+
+After finishing, provide:
+1. where Poppins was applied
+2. CTA button radius/size changes
+3. how missing listing images are now handled
+4. whether the app’s existing fallback image system was reused
+5. which email template files were changed

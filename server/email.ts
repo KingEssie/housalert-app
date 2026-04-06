@@ -218,9 +218,9 @@ function ctaButton(href: string, label: string, primary: boolean): string {
   const fg = primary ? C.white : C.primary;
   const borderColor = C.primary;
   return `<tr><td align="center" style="padding:0 0 ${primary ? "10px" : "0"};">
-          <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${escapeHtml(href)}" style="height:50px;v-text-anchor:middle;width:100%;" arcsize="24%" strokecolor="${borderColor}" fillcolor="${bg}"><w:anchorlock/><center style="color:${fg};font-family:Arial,sans-serif;font-size:15px;font-weight:600;">${escapeHtml(label)}</center></v:roundrect><![endif]-->
+          <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${escapeHtml(href)}" style="height:54px;v-text-anchor:middle;width:100%;" arcsize="33%" strokecolor="${borderColor}" fillcolor="${bg}"><w:anchorlock/><center style="color:${fg};font-family:Arial,sans-serif;font-size:16px;font-weight:600;">${escapeHtml(label)}</center></v:roundrect><![endif]-->
           <!--[if !mso]><!-->
-          <a href="${escapeHtml(href)}" target="_blank" style="display:block;background-color:${bg};color:${fg} !important;-webkit-text-fill-color:${fg};mso-line-height-rule:exactly;font-size:15px;font-weight:600;text-decoration:none;padding:15px 24px;border-radius:12px;text-align:center;mso-hide:all;-webkit-text-size-adjust:none;font-family:${FONT_STACK};${primary ? "" : `border:2px solid ${borderColor};`}"><span style="color:${fg} !important;-webkit-text-fill-color:${fg};">${escapeHtml(label)}</span></a>
+          <a href="${escapeHtml(href)}" target="_blank" style="display:block;background-color:${bg};color:${fg} !important;-webkit-text-fill-color:${fg};mso-line-height-rule:exactly;font-size:16px;font-weight:600;text-decoration:none;padding:17px 24px;border-radius:18px;text-align:center;mso-hide:all;-webkit-text-size-adjust:none;font-family:${FONT_STACK};${primary ? "" : `border:2px solid ${borderColor};`}"><span style="color:${fg} !important;-webkit-text-fill-color:${fg};">${escapeHtml(label)}</span></a>
           <!--<![endif]-->
         </td></tr>`;
 }
@@ -233,13 +233,24 @@ function listingCard(listing: ListingInfo, showButton = false, cardNumber?: numb
   const safeImageUrl = rawImageUrl ? upgradeImageUrl(rawImageUrl) : null;
   const linkTarget = safeUrl || applyUrl || "#";
 
+  const fallbackImageHtml = `<tr><td style="padding:0;line-height:0;font-size:0;">
+        <a href="${escapeHtml(linkTarget)}" target="_blank" style="text-decoration:none;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F3F4F6;">
+            <tr><td align="center" style="padding:48px 24px;">
+              <img src="https://app.housalert.com/icon-192.png" alt="HousAlert" width="48" height="48" style="display:block;width:48px;height:48px;border-radius:12px;opacity:0.5;margin:0 auto 12px;" />
+              <p style="margin:0;font-size:13px;color:#9CA3AF;font-family:${FONT_STACK};font-weight:500;">${listing.city ? escapeHtml(listing.city) : "HousAlert"}</p>
+            </td></tr>
+          </table>
+        </a>
+      </td></tr>`;
+
   const imageHtml = safeImageUrl
     ? `<tr><td style="padding:0;line-height:0;font-size:0;">
         <a href="${escapeHtml(linkTarget)}" target="_blank" style="text-decoration:none;">
           <img src="${escapeHtml(safeImageUrl)}" alt="${escapeHtml(listing.title)}" width="100%" style="display:block;width:100%;height:auto;max-height:220px;object-fit:cover;" />
         </a>
       </td></tr>`
-    : "";
+    : fallbackImageHtml;
 
   const priceLine = listing.price > 0
     ? `<p style="margin:0 0 8px;font-size:20px;font-weight:700;color:${C.text};line-height:1.2;font-family:${FONT_STACK};">${formatPrice(listing.price)}<span style="font-size:13px;font-weight:400;color:${C.textSecondary};margin-left:3px;">${escapeHtml(t(lang, "email.perMonth"))}</span></p>`
@@ -425,7 +436,7 @@ export async function sendBuddyInvitationEmail(
 </p>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
   <tr><td align="center">
-    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:15px;font-weight:600;text-decoration:none;padding:15px 32px;border-radius:12px;font-family:${FONT_STACK};">Bekijk HousAlert</a>
+    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:16px;font-weight:600;text-decoration:none;padding:17px 32px;border-radius:18px;font-family:${FONT_STACK};">Bekijk HousAlert</a>
   </td></tr>
 </table>
 <p style="margin:0;font-size:13px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
@@ -441,7 +452,7 @@ export async function sendBuddyInvitationEmail(
 </p>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
   <tr><td align="center">
-    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:15px;font-weight:600;text-decoration:none;padding:15px 32px;border-radius:12px;font-family:${FONT_STACK};">HousAlert ansehen</a>
+    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:16px;font-weight:600;text-decoration:none;padding:17px 32px;border-radius:18px;font-family:${FONT_STACK};">HousAlert ansehen</a>
   </td></tr>
 </table>
 <p style="margin:0;font-size:13px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
@@ -457,7 +468,7 @@ export async function sendBuddyInvitationEmail(
 </p>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
   <tr><td align="center">
-    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:15px;font-weight:600;text-decoration:none;padding:15px 32px;border-radius:12px;font-family:${FONT_STACK};">View HousAlert</a>
+    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:16px;font-weight:600;text-decoration:none;padding:17px 32px;border-radius:18px;font-family:${FONT_STACK};">View HousAlert</a>
   </td></tr>
 </table>
 <p style="margin:0;font-size:13px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
@@ -583,7 +594,7 @@ export async function sendPasswordResetEmail(
 </p>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 28px;">
   <tr><td align="center">
-    <a href="${safeUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:15px;font-weight:600;text-decoration:none;padding:15px 32px;border-radius:12px;font-family:${FONT_STACK};">${escapeHtml(cta)}</a>
+    <a href="${safeUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:16px;font-weight:600;text-decoration:none;padding:17px 32px;border-radius:18px;font-family:${FONT_STACK};">${escapeHtml(cta)}</a>
   </td></tr>
 </table>
 <p style="margin:0 0 12px;font-size:13px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
