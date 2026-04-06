@@ -73,15 +73,16 @@ interface ListingInfo {
 
 const C = {
   white: "#FFFFFF",
-  bg: "#F9FAFB",
-  navy: "#111C3D",
-  dark: "#1F2937",
-  muted: "#6B7280",
+  bg: "#FFFFFF",
+  text: "#111827",
+  textSecondary: "#6B7280",
   border: "#E5E7EB",
-  accent: "#F97316",
-  accentHover: "#EA580C",
-  lightMuted: "#9CA3AF",
+  primary: "#d91a68",
+  primaryHover: "#b31556",
+  lightBg: "#F9FAFB",
 };
+
+const FONT_STACK = "Poppins, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
 
 function escapeHtml(str: string): string {
   return str
@@ -127,6 +128,10 @@ function getAppBaseUrl(): string {
   return "https://app.housalert.com";
 }
 
+function pinIconSvg(): string {
+  return `<img src="https://app.housalert.com/icon-192.png" alt="HousAlert" width="28" height="28" style="display:block;width:28px;height:28px;border-radius:6px;" />`;
+}
+
 function emailWrapper(content: string, preheader?: string, lang: ServerLocale = "nl", footerOverride?: string, buddyUnsubscribeUrl?: string): string {
   const baseUrl = getAppBaseUrl();
   const preheaderHtml = preheader
@@ -136,9 +141,10 @@ function emailWrapper(content: string, preheader?: string, lang: ServerLocale = 
 <html lang="${lang}">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>HousAlert</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <!--[if mso]><style>table,td{font-family:Arial,sans-serif!important;}</style><![endif]-->
 </head>
-<body style="margin:0;padding:0;background-color:${C.white};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+<body style="margin:0;padding:0;background-color:${C.white};font-family:${FONT_STACK};-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
 ${preheaderHtml}
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${C.white};">
 <tr><td align="center" style="padding:0;">
@@ -146,41 +152,44 @@ ${preheaderHtml}
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;">
 
 <!-- HEADER -->
-<tr><td style="padding:20px 20px 0;">
+<tr><td style="padding:28px 24px 0;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr>
-    <td style="vertical-align:middle;">
-      <a href="${baseUrl}" target="_blank" style="text-decoration:none;font-size:17px;font-weight:700;color:${C.navy};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;">HousAlert</a>
+    <td style="vertical-align:middle;width:36px;">
+      ${pinIconSvg()}
+    </td>
+    <td style="vertical-align:middle;padding-left:10px;">
+      <a href="${baseUrl}" target="_blank" style="text-decoration:none;font-size:18px;font-weight:600;color:${C.text};font-family:${FONT_STACK};letter-spacing:-0.01em;">housalert</a>
     </td>
     <td align="right" style="vertical-align:middle;">
-      <a href="${baseUrl}/instellingen" target="_blank" style="font-size:13px;color:${C.muted};text-decoration:none;">${escapeHtml(t(lang, "email.settings"))}</a>
+      <a href="${baseUrl}/instellingen" target="_blank" style="font-size:13px;color:${C.textSecondary};text-decoration:none;font-family:${FONT_STACK};">${escapeHtml(t(lang, "email.settings"))}</a>
     </td>
   </tr>
   </table>
 </td></tr>
 
 <!-- TAGLINE -->
-<tr><td style="padding:4px 20px 16px;">
-  <p style="margin:0;font-size:12px;color:${C.lightMuted};letter-spacing:0.01em;">${escapeHtml(t(lang, "email.tagline"))}</p>
+<tr><td style="padding:4px 24px 20px 70px;">
+  <p style="margin:0;font-size:12px;color:${C.textSecondary};letter-spacing:0.01em;font-family:${FONT_STACK};">${escapeHtml(t(lang, "email.tagline"))}</p>
 </td></tr>
 
 <!-- DIVIDER -->
-<tr><td style="padding:0 20px;"><div style="border-top:1px solid ${C.border};"></div></td></tr>
+<tr><td style="padding:0 24px;"><div style="border-top:1px solid ${C.border};"></div></td></tr>
 
 <!-- CONTENT -->
-<tr><td style="padding:20px;">
+<tr><td style="padding:28px 24px;">
   ${content}
 </td></tr>
 
 <!-- FOOTER -->
-<tr><td style="padding:0 20px;"><div style="border-top:1px solid ${C.border};"></div></td></tr>
-<tr><td style="padding:16px 20px 24px;">
-  <p style="margin:0 0 4px;font-size:12px;color:${C.lightMuted};line-height:1.6;">
+<tr><td style="padding:0 24px;"><div style="border-top:1px solid ${C.border};"></div></td></tr>
+<tr><td style="padding:20px 24px 32px;">
+  <p style="margin:0 0 4px;font-size:12px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
     ${escapeHtml(footerOverride || t(lang, "email.footer"))}
   </p>
-  ${footerOverride ? "" : `<a href="${baseUrl}/instellingen" target="_blank" style="font-size:12px;color:${C.accent};text-decoration:none;">${escapeHtml(t(lang, "email.manageNotifs"))}</a>`}
-  ${buddyUnsubscribeUrl ? `<br><a href="${buddyUnsubscribeUrl}" target="_blank" style="font-size:11px;color:${C.lightMuted};text-decoration:underline;">${lang === "de" ? "Suchbuddy-Benachrichtigungen abmelden" : lang === "nl" ? "Afmelden voor zoekbuddy-meldingen" : "Unsubscribe from Search Buddy alerts"}</a>` : ""}
-  <p style="margin:12px 0 0;font-size:11px;color:${C.border};">
+  ${footerOverride ? "" : `<a href="${baseUrl}/instellingen" target="_blank" style="font-size:12px;color:${C.primary};text-decoration:none;font-family:${FONT_STACK};">${escapeHtml(t(lang, "email.manageNotifs"))}</a>`}
+  ${buddyUnsubscribeUrl ? `<br><a href="${buddyUnsubscribeUrl}" target="_blank" style="font-size:11px;color:${C.textSecondary};text-decoration:underline;font-family:${FONT_STACK};">${lang === "de" ? "Suchbuddy-Benachrichtigungen abmelden" : lang === "nl" ? "Afmelden voor zoekbuddy-meldingen" : "Unsubscribe from Search Buddy alerts"}</a>` : ""}
+  <p style="margin:16px 0 0;font-size:11px;color:${C.border};font-family:${FONT_STACK};">
     \u00A9 ${new Date().getFullYear()} HousAlert
   </p>
 </td></tr>
@@ -205,13 +214,13 @@ function upgradeImageUrl(url: string): string {
 }
 
 function ctaButton(href: string, label: string, primary: boolean): string {
-  const bg = primary ? C.accent : C.white;
-  const fg = primary ? C.white : C.accent;
-  const border = primary ? C.accent : C.accent;
-  return `<tr><td align="center" style="padding:0 4px ${primary ? "8px" : "0"};">
-          <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${escapeHtml(href)}" style="height:48px;v-text-anchor:middle;width:100%;" arcsize="50%" strokecolor="${border}" fillcolor="${bg}"><w:anchorlock/><center style="color:${fg};font-family:Arial,sans-serif;font-size:15px;font-weight:bold;">${escapeHtml(label)}</center></v:roundrect><![endif]-->
+  const bg = primary ? C.primary : C.white;
+  const fg = primary ? C.white : C.primary;
+  const borderColor = C.primary;
+  return `<tr><td align="center" style="padding:0 0 ${primary ? "10px" : "0"};">
+          <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${escapeHtml(href)}" style="height:50px;v-text-anchor:middle;width:100%;" arcsize="24%" strokecolor="${borderColor}" fillcolor="${bg}"><w:anchorlock/><center style="color:${fg};font-family:Arial,sans-serif;font-size:15px;font-weight:600;">${escapeHtml(label)}</center></v:roundrect><![endif]-->
           <!--[if !mso]><!-->
-          <a href="${escapeHtml(href)}" target="_blank" style="display:block;background-color:${bg};color:${fg} !important;-webkit-text-fill-color:${fg};mso-line-height-rule:exactly;font-size:15px;font-weight:700;text-decoration:none;padding:14px 24px;border-radius:999px;text-align:center;mso-hide:all;-webkit-text-size-adjust:none;${primary ? "" : `border:2px solid ${C.accent};`}"><span style="color:${fg} !important;-webkit-text-fill-color:${fg};">${escapeHtml(label)}</span></a>
+          <a href="${escapeHtml(href)}" target="_blank" style="display:block;background-color:${bg};color:${fg} !important;-webkit-text-fill-color:${fg};mso-line-height-rule:exactly;font-size:15px;font-weight:600;text-decoration:none;padding:15px 24px;border-radius:12px;text-align:center;mso-hide:all;-webkit-text-size-adjust:none;font-family:${FONT_STACK};${primary ? "" : `border:2px solid ${borderColor};`}"><span style="color:${fg} !important;-webkit-text-fill-color:${fg};">${escapeHtml(label)}</span></a>
           <!--<![endif]-->
         </td></tr>`;
 }
@@ -225,7 +234,7 @@ function listingCard(listing: ListingInfo, showButton = false, cardNumber?: numb
   const linkTarget = safeUrl || applyUrl || "#";
 
   const imageHtml = safeImageUrl
-    ? `<tr><td style="padding:0;line-height:0;font-size:0;position:relative;">
+    ? `<tr><td style="padding:0;line-height:0;font-size:0;">
         <a href="${escapeHtml(linkTarget)}" target="_blank" style="text-decoration:none;">
           <img src="${escapeHtml(safeImageUrl)}" alt="${escapeHtml(listing.title)}" width="100%" style="display:block;width:100%;height:auto;max-height:220px;object-fit:cover;" />
         </a>
@@ -233,7 +242,7 @@ function listingCard(listing: ListingInfo, showButton = false, cardNumber?: numb
     : "";
 
   const priceLine = listing.price > 0
-    ? `<p style="margin:0 0 6px;font-size:20px;font-weight:800;color:${C.navy};line-height:1.2;">${formatPrice(listing.price)}<span style="font-size:12px;font-weight:500;color:${C.muted};margin-left:2px;">${escapeHtml(t(lang, "email.perMonth"))}</span></p>`
+    ? `<p style="margin:0 0 8px;font-size:20px;font-weight:700;color:${C.text};line-height:1.2;font-family:${FONT_STACK};">${formatPrice(listing.price)}<span style="font-size:13px;font-weight:400;color:${C.textSecondary};margin-left:3px;">${escapeHtml(t(lang, "email.perMonth"))}</span></p>`
     : "";
 
   const metaParts: string[] = [];
@@ -242,30 +251,29 @@ function listingCard(listing: ListingInfo, showButton = false, cardNumber?: numb
   if (listing.size_m2 > 0) metaParts.push(`${listing.size_m2} m\u00B2`);
 
   const metaHtml = metaParts.length > 0
-    ? `<p style="margin:0 0 6px;font-size:13px;color:${C.dark};line-height:1.5;">${metaParts.join(`<span style="color:${C.border};"> &middot; </span>`)}</p>`
+    ? `<p style="margin:0 0 4px;font-size:13px;color:${C.textSecondary};line-height:1.5;font-family:${FONT_STACK};">${metaParts.join(`<span style="color:${C.border};"> &middot; </span>`)}</p>`
     : "";
 
   const ctaRows: string[] = [];
   if (showButton) {
-    if (applyUrl) {
-      ctaRows.push(ctaButton(applyUrl, t(lang, "email.applyDirect"), true));
-    }
     if (safeUrl) {
-      ctaRows.push(ctaButton(safeUrl, t(lang, "email.viewProperty"), !applyUrl));
+      ctaRows.push(ctaButton(safeUrl, t(lang, "email.viewProperty"), true));
+    } else if (applyUrl) {
+      ctaRows.push(ctaButton(applyUrl, t(lang, "email.viewProperty"), true));
     }
   }
 
   const buttonHtml = ctaRows.length > 0
-    ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:14px;">
+    ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:16px;">
         ${ctaRows.join("\n        ")}
       </table>`
     : "";
 
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${C.white};border-radius:20px;overflow:hidden;margin:0 0 20px;border:1px solid ${C.border};">
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${C.white};border-radius:16px;overflow:hidden;margin:0 0 24px;border:1px solid ${C.border};">
 ${imageHtml}
-<tr><td style="padding:16px 16px 20px;">
-  ${cardNumber ? `<p style="margin:0 0 8px;font-size:11px;font-weight:600;color:${C.muted};text-transform:uppercase;letter-spacing:0.04em;">${escapeHtml(t(lang, "email.listingLabel"))} ${cardNumber}</p>` : ""}
-  <h3 style="margin:0 0 8px;font-size:18px;font-weight:700;color:${C.navy};line-height:1.3;">${escapeHtml(listing.title)}</h3>
+<tr><td style="padding:20px 20px 24px;">
+  ${cardNumber ? `<p style="margin:0 0 8px;font-size:11px;font-weight:600;color:${C.textSecondary};text-transform:uppercase;letter-spacing:0.05em;font-family:${FONT_STACK};">${escapeHtml(t(lang, "email.listingLabel"))} ${cardNumber}</p>` : ""}
+  <h3 style="margin:0 0 8px;font-size:18px;font-weight:700;color:${C.text};line-height:1.3;font-family:${FONT_STACK};">${escapeHtml(listing.title)}</h3>
   ${priceLine}
   ${metaHtml}
   ${buttonHtml}
@@ -297,8 +305,8 @@ export async function sendMatchAlert(
     const textBody = `${t(lang, "email.greeting")},\n\n${t(lang, "email.singleIntro")}\n\n${listing.title}\n${detailsText}${safeUrl ? `\n\n${t(lang, "email.viewProperty")}: ${safeUrl}` : ""}\n\n${t(lang, "email.closing")}`;
 
     const htmlContent = `
-<p style="margin:0 0 4px;font-size:12px;font-weight:600;color:${C.accent};text-transform:uppercase;letter-spacing:0.05em;">${escapeHtml(t(lang, "email.newMatch"))}</p>
-<p style="margin:0 0 16px;font-size:14px;color:${C.muted};line-height:1.5;">${escapeHtml(t(lang, "email.matchFound"))}</p>
+<p style="margin:0 0 6px;font-size:11px;font-weight:600;color:${C.primary};text-transform:uppercase;letter-spacing:0.06em;font-family:${FONT_STACK};">${escapeHtml(t(lang, "email.newMatch"))}</p>
+<p style="margin:0 0 20px;font-size:14px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">${escapeHtml(t(lang, "email.matchFound"))}</p>
 ${listingCard(listing, true, undefined, lang)}`;
 
     const senderConfig = getEmailConfig();
@@ -362,8 +370,8 @@ export async function sendBatchMatchAlert(
     });
 
     const htmlContent = `
-<p style="margin:0 0 4px;font-size:12px;font-weight:600;color:${C.accent};text-transform:uppercase;letter-spacing:0.05em;">${escapeHtml(matchesLabel)}</p>
-<p style="margin:0 0 16px;font-size:14px;color:${C.muted};line-height:1.5;">${escapeHtml(matchesDesc)}</p>
+<p style="margin:0 0 6px;font-size:11px;font-weight:600;color:${C.primary};text-transform:uppercase;letter-spacing:0.06em;font-family:${FONT_STACK};">${escapeHtml(matchesLabel)}</p>
+<p style="margin:0 0 20px;font-size:14px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">${escapeHtml(matchesDesc)}</p>
 ${htmlListings}`;
 
     const imageStats = listings.map((l, i) => `${i + 1}:${l.image_url ? l.image_url.substring(0, 80) : "NO_IMAGE"}`).join(" | ");
@@ -402,57 +410,57 @@ export async function sendBuddyInvitationEmail(
 
     const subjects: Record<ServerLocale, string> = {
       nl: `\u{1F3E0} ${inviterName} heeft je toegevoegd als Zoekbuddy op HousAlert`,
-      de: `\u{1F3E0} ${inviterName} hat dich als Suchbuddy bei HousAlert hinzugefügt`,
+      de: `\u{1F3E0} ${inviterName} hat dich als Suchbuddy bei HousAlert hinzugef\u00FCgt`,
       en: `\u{1F3E0} ${inviterName} added you as a Search Buddy on HousAlert`,
     };
 
     const htmlBodies: Record<ServerLocale, string> = {
       nl: `
-<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.navy};line-height:1.3;">Hey! \u{1F44B}</p>
-<p style="margin:0 0 16px;font-size:15px;color:${C.dark};line-height:1.6;">
+<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.text};line-height:1.3;font-family:${FONT_STACK};">Hey! \u{1F44B}</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">
   <strong>${escapeHtml(inviterName)}</strong> heeft je toegevoegd als <strong>Zoekbuddy</strong> op HousAlert.
 </p>
-<p style="margin:0 0 16px;font-size:15px;color:${C.dark};line-height:1.6;">
+<p style="margin:0 0 16px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">
   Dit betekent dat je voortaan dezelfde woningmeldingen ontvangt als ${escapeHtml(inviterName)}. Zo kunnen jullie samen sneller reageren en de kans op een woning vergroten!
 </p>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:20px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
   <tr><td align="center">
-    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.accent};color:${C.white} !important;font-size:15px;font-weight:700;text-decoration:none;padding:14px 32px;border-radius:999px;">Bekijk HousAlert</a>
+    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:15px;font-weight:600;text-decoration:none;padding:15px 32px;border-radius:12px;font-family:${FONT_STACK};">Bekijk HousAlert</a>
   </td></tr>
 </table>
-<p style="margin:0;font-size:13px;color:${C.muted};line-height:1.6;">
+<p style="margin:0;font-size:13px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
   Veel succes met de zoektocht!
 </p>`,
       de: `
-<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.navy};line-height:1.3;">Hey! \u{1F44B}</p>
-<p style="margin:0 0 16px;font-size:15px;color:${C.dark};line-height:1.6;">
+<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.text};line-height:1.3;font-family:${FONT_STACK};">Hey! \u{1F44B}</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">
   <strong>${escapeHtml(inviterName)}</strong> hat dich als <strong>Suchbuddy</strong> bei HousAlert hinzugef\u00FCgt.
 </p>
-<p style="margin:0 0 16px;font-size:15px;color:${C.dark};line-height:1.6;">
+<p style="margin:0 0 16px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">
   Das bedeutet, dass du ab jetzt dieselben Wohnungsmeldungen erh\u00E4ltst wie ${escapeHtml(inviterName)}. So k\u00F6nnt ihr zusammen schneller reagieren und eure Chancen auf eine Wohnung erh\u00F6hen!
 </p>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:20px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
   <tr><td align="center">
-    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.accent};color:${C.white} !important;font-size:15px;font-weight:700;text-decoration:none;padding:14px 32px;border-radius:999px;">HousAlert ansehen</a>
+    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:15px;font-weight:600;text-decoration:none;padding:15px 32px;border-radius:12px;font-family:${FONT_STACK};">HousAlert ansehen</a>
   </td></tr>
 </table>
-<p style="margin:0;font-size:13px;color:${C.muted};line-height:1.6;">
+<p style="margin:0;font-size:13px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
   Viel Erfolg bei der Wohnungssuche!
 </p>`,
       en: `
-<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.navy};line-height:1.3;">Hey! \u{1F44B}</p>
-<p style="margin:0 0 16px;font-size:15px;color:${C.dark};line-height:1.6;">
+<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.text};line-height:1.3;font-family:${FONT_STACK};">Hey! \u{1F44B}</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">
   <strong>${escapeHtml(inviterName)}</strong> added you as a <strong>Search Buddy</strong> on HousAlert.
 </p>
-<p style="margin:0 0 16px;font-size:15px;color:${C.dark};line-height:1.6;">
+<p style="margin:0 0 16px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">
   This means you\u2019ll receive the same listing alerts as ${escapeHtml(inviterName)}. Together, you can react faster and improve your chances of finding a home!
 </p>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:20px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
   <tr><td align="center">
-    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.accent};color:${C.white} !important;font-size:15px;font-weight:700;text-decoration:none;padding:14px 32px;border-radius:999px;">View HousAlert</a>
+    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:15px;font-weight:600;text-decoration:none;padding:15px 32px;border-radius:12px;font-family:${FONT_STACK};">View HousAlert</a>
   </td></tr>
 </table>
-<p style="margin:0;font-size:13px;color:${C.muted};line-height:1.6;">
+<p style="margin:0;font-size:13px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
   Good luck with the search!
 </p>`,
     };
@@ -472,7 +480,7 @@ export async function sendBuddyInvitationEmail(
 
     const preheaders: Record<ServerLocale, string> = {
       nl: `${inviterName} heeft je toegevoegd als Zoekbuddy`,
-      de: `${inviterName} hat dich als Suchbuddy hinzugefügt`,
+      de: `${inviterName} hat dich als Suchbuddy hinzugef\u00FCgt`,
       en: `${inviterName} added you as a Search Buddy`,
     };
 
@@ -510,20 +518,20 @@ export function generateBuddyUnsubscribeToken(ownerUserId: string, buddyEmail: s
     log("[BUDDY UNSUB] Cannot generate token — SESSION_SECRET not configured");
     return null;
   }
-  const payload = `${ownerUserId}:${buddyEmail.toLowerCase().trim()}`;
+
+  const email = buddyEmail.toLowerCase().trim();
+  const payload = `${ownerUserId}:${email}`;
   const hmac = createHmac("sha256", secret);
   hmac.update(payload);
   const signature = hmac.digest("hex");
-  const data = Buffer.from(JSON.stringify({ u: ownerUserId, e: buddyEmail.toLowerCase().trim() })).toString("base64url");
+  const data = Buffer.from(JSON.stringify({ u: ownerUserId, e: email })).toString("base64url");
   return `${data}.${signature}`;
 }
 
-export function validateBuddyUnsubscribeToken(token: string): { ownerUserId: string; buddyEmail: string } | null {
+export function verifyBuddyUnsubscribeToken(token: string): { ownerUserId: string; buddyEmail: string } | null {
   const secret = getBuddyUnsubscribeSecret();
-  if (!secret) {
-    log("[BUDDY UNSUB] Cannot validate token — SESSION_SECRET not configured");
-    return null;
-  }
+  if (!secret) return null;
+
   try {
     const [data, signature] = token.split(".");
     if (!data || !signature) return null;
@@ -541,6 +549,8 @@ export function validateBuddyUnsubscribeToken(token: string): { ownerUserId: str
     return null;
   }
 }
+
+export const validateBuddyUnsubscribeToken = verifyBuddyUnsubscribeToken;
 
 export function getBuddyUnsubscribeUrl(ownerUserId: string, buddyEmail: string): string | null {
   const token = generateBuddyUnsubscribeToken(ownerUserId, buddyEmail);
@@ -567,20 +577,20 @@ export async function sendPasswordResetEmail(
     const safeUrl = sanitizeUrl(resetUrl) || resetUrl;
 
     const htmlContent = `
-<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.navy};line-height:1.3;">${escapeHtml(title)}</p>
-<p style="margin:0 0 20px;font-size:15px;color:${C.dark};line-height:1.6;">
+<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.text};line-height:1.3;font-family:${FONT_STACK};">${escapeHtml(title)}</p>
+<p style="margin:0 0 24px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">
   ${escapeHtml(intro)}
 </p>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 28px;">
   <tr><td align="center">
-    <a href="${safeUrl}" target="_blank" style="display:inline-block;background-color:${C.accent};color:${C.white} !important;font-size:15px;font-weight:700;text-decoration:none;padding:14px 32px;border-radius:999px;">${escapeHtml(cta)}</a>
+    <a href="${safeUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:15px;font-weight:600;text-decoration:none;padding:15px 32px;border-radius:12px;font-family:${FONT_STACK};">${escapeHtml(cta)}</a>
   </td></tr>
 </table>
-<p style="margin:0 0 12px;font-size:13px;color:${C.muted};line-height:1.6;">
+<p style="margin:0 0 12px;font-size:13px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
   ${escapeHtml(fallback)}<br />
-  <a href="${safeUrl}" target="_blank" style="color:${C.accent};text-decoration:underline;word-break:break-all;font-size:13px;">${safeUrl}</a>
+  <a href="${safeUrl}" target="_blank" style="color:${C.primary};text-decoration:underline;word-break:break-all;font-size:13px;font-family:${FONT_STACK};">${safeUrl}</a>
 </p>
-<p style="margin:0;font-size:13px;color:${C.lightMuted};line-height:1.6;">
+<p style="margin:0;font-size:13px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
   ${escapeHtml(ignore)}
 </p>`;
 
@@ -625,9 +635,9 @@ export async function sendControlledTestEmail(
     subject: "HousAlert email test",
     text: "This is a controlled production email test.",
     html: emailWrapper(
-      `<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.navy};line-height:1.3;">Email Test</p>
-       <p style="margin:0 0 16px;font-size:15px;color:${C.dark};line-height:1.6;">This is a controlled production email test.</p>
-       <p style="margin:0;font-size:13px;color:${C.muted};line-height:1.6;">If you received this email, your Resend integration is working correctly.</p>`,
+      `<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.text};line-height:1.3;font-family:${FONT_STACK};">Email Test</p>
+       <p style="margin:0 0 16px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">This is a controlled production email test.</p>
+       <p style="margin:0;font-size:13px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">If you received this email, your Resend integration is working correctly.</p>`,
       "HousAlert email test",
       "en"
     ),
