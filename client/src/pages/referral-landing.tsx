@@ -78,7 +78,7 @@ export default function ReferralLandingPage() {
       <main className="flex-1 flex flex-col items-center justify-center px-6 max-w-[440px] mx-auto w-full">
         <div className="text-center mb-8">
           <h1
-            className="text-[28px] font-bold leading-[1.2] text-[#111]"
+            className="text-[30px] font-semibold leading-[1.2] text-[#111]"
             data-testid="text-referral-title"
           >
             Vind sneller een woning met HousAlert

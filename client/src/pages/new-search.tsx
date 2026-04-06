@@ -386,7 +386,7 @@ export default function NewSearchPage() {
             <div className="w-16 h-16 rounded-2xl bg-[#F9FAFB] flex items-center justify-center mx-auto mb-5">
               <AlertCircle className="w-7 h-7 text-ha-primary" />
             </div>
-            <h2 className="text-[28px] font-bold text-[#111111] mb-2">{t("newSearch.limitTitle")}</h2>
+            <h2 className="text-[30px] font-semibold text-[#111111] mb-2">{t("newSearch.limitTitle")}</h2>
             <p className="text-[17px] text-[#6B7280] mb-7 leading-relaxed">
               {t("newSearch.limitDesc", { max: MAX_PROFILES })}
             </p>
@@ -473,7 +473,7 @@ export default function NewSearchPage() {
 function StepHeader({ title, subtitle }: { title: string; subtitle: string }) {
   return (
     <div className="mb-8">
-      <h2 className="text-[28px] font-bold text-[#111111] leading-[1.15] tracking-[-0.025em] mb-2.5" data-testid="text-step-title">
+      <h2 className="text-[30px] font-semibold text-[#111111] leading-[1.15] tracking-[-0.025em] mb-2.5" data-testid="text-step-title">
         {title}
       </h2>
       <p className="text-[17px] text-[#6B7280] leading-relaxed">

@@ -83,7 +83,7 @@ export default function ResetPasswordPage() {
   if (sessionError) {
     return (
       <div className="h-[100dvh] flex flex-col items-center justify-center px-8 text-center" style={{ backgroundColor: "#F9FAFB" }} data-testid="page-reset-error">
-        <h1 className="text-[28px] font-bold text-[#111111] mb-3" data-testid="text-error-title">
+        <h1 className="text-[30px] font-semibold text-[#111111] mb-3" data-testid="text-error-title">
           {t("resetPassword.expiredTitle")}
         </h1>
         <p className="text-[15px] text-ha-text-muted leading-[1.5] max-w-[320px] mb-6">

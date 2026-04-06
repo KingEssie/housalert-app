@@ -157,7 +157,7 @@ export default function OnboardingCity() {
 
         <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[100px] overflow-y-auto">
           <h2
-            className="text-[28px] font-bold tracking-[-0.025em] mb-1"
+            className="text-[30px] font-semibold tracking-[-0.025em] mb-1"
             style={{ color: OBW.text }}
             data-testid="text-city-title"
           >

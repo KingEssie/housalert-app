@@ -69,7 +69,7 @@ export default function OnboardingEmail() {
 
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-4 pb-[100px]">
         <h1
-          className="text-[28px] font-bold tracking-[-0.025em] mb-2"
+          className="text-[30px] font-semibold tracking-[-0.025em] mb-2"
           style={{ color: T.text }}
           data-testid="text-email-title"
         >

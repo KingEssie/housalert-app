@@ -87,7 +87,7 @@ export default function ChangePasswordPage() {
                 <CheckCircle2 className="w-7 h-7 text-[#111111]" />
               </div>
             </div>
-            <h2 className="text-[20px] font-bold text-[#111111] mb-2" data-testid="text-success-title">
+            <h2 className="text-[20px] font-semibold text-[#111111] mb-2" data-testid="text-success-title">
               {t("changePassword.successTitle")}
             </h2>
             <p className="text-[15px] text-[#6B7280] mb-6">
