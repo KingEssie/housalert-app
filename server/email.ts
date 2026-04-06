@@ -129,7 +129,7 @@ function getAppBaseUrl(): string {
 }
 
 function pinIconSvg(): string {
-  return `<img src="https://app.housalert.com/icon-192.png" alt="HousAlert" width="28" height="28" style="display:block;width:28px;height:28px;border-radius:6px;" />`;
+  return `<img src="https://app.housalert.com/email-logo-v2.png" alt="HousAlert" width="32" height="32" style="display:block;width:32px;height:32px;border-radius:8px;" />`;
 }
 
 function emailWrapper(content: string, preheader?: string, lang: ServerLocale = "nl", footerOverride?: string, buddyUnsubscribeUrl?: string): string {
@@ -237,7 +237,7 @@ function listingCard(listing: ListingInfo, showButton = false, cardNumber?: numb
         <a href="${escapeHtml(linkTarget)}" target="_blank" style="text-decoration:none;">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F3F4F6;">
             <tr><td align="center" style="padding:48px 24px;">
-              <img src="https://app.housalert.com/icon-192.png" alt="HousAlert" width="48" height="48" style="display:block;width:48px;height:48px;border-radius:12px;opacity:0.5;margin:0 auto 12px;" />
+              <img src="https://app.housalert.com/email-logo-v2.png" alt="HousAlert" width="48" height="48" style="display:block;width:48px;height:48px;border-radius:10px;opacity:0.4;margin:0 auto 12px;" />
               <p style="margin:0;font-size:13px;color:#9CA3AF;font-family:${FONT_STACK};font-weight:500;">${listing.city ? escapeHtml(listing.city) : "HousAlert"}</p>
             </td></tr>
           </table>
