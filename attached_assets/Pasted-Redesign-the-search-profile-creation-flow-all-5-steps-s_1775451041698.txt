@@ -1,0 +1,230 @@
+Redesign the search profile creation flow (all 5 steps) so it feels cleaner, more modern, and more premium, while keeping the existing logic and flow intact.
+
+IMPORTANT:
+- Do NOT change the business logic
+- Do NOT change routing
+- Do NOT remove any required fields
+- Do NOT redesign the bottom browser bar or app navigation
+- Keep the current 5-step flow structure
+- Focus only on visual polish, spacing, hierarchy, field styling, and interaction clarity
+
+GOAL:
+Make the full search profile flow feel like a modern premium mobile app instead of a basic web form.
+
+==================================================
+1. GLOBAL VISUAL SYSTEM FOR THIS FLOW
+==================================================
+
+Apply a consistent design system across all 5 search-profile screens.
+
+Use:
+- background: clean white or very light neutral surface
+- primary text: #111111
+- secondary text: #6B7280
+- border: #E5E7EB
+- soft surface: #F9FAFB
+- brand accent: current brand pink
+
+Typography:
+- page title: 32–34px, bold
+- subtitle/description: 16–17px, regular
+- field labels: 14px, medium
+- field values: 16px, semibold or medium
+- helper/meta text: 13–14px
+
+Spacing:
+- page horizontal padding: 20px
+- spacing under title block: 24px
+- spacing between form groups: 20px
+- spacing between fields: 16px
+- card/internal padding: 16–20px
+
+==================================================
+2. BACK BUTTON POSITIONING
+==================================================
+
+The floating back button currently sits too high and too close to the top.
+
+Fix it:
+- move it slightly lower
+- respect the iOS safe area
+- ensure it has comfortable spacing from the top edge
+
+Target:
+- visually aligned and breathable
+- not cramped against the top bar
+
+==================================================
+3. TITLE / SUBTITLE HIERARCHY
+==================================================
+
+On every step:
+- make the title clearly dominant
+- make subtitle readable but secondary
+- increase spacing between subtitle and content
+
+The title block should feel intentional and premium, not crowded.
+
+==================================================
+4. FIELD / INPUT REDESIGN
+==================================================
+
+Current fields feel too plain and slightly outdated.
+
+Update all input/select/search field surfaces to feel softer and cleaner:
+
+Use:
+- background: #F9FAFB or white
+- border: 1px solid #E5E7EB
+- radius: 14px to 16px
+- generous internal padding
+- clear hover/focus/active states
+
+Avoid:
+- harsh borders
+- inconsistent field heights
+- cramped text
+
+Apply to:
+- search input
+- dropdown/select fields
+- segmented method tabs if applicable
+- summary/edit rows on step 5
+
+==================================================
+5. STEP 1 — LOCATIE
+==================================================
+
+Keep the existing logic:
+- Wijken
+- Radius
+- Reistijd
+- search field
+- map
+
+Improve:
+- method selector styling so it feels more deliberate and modern
+- search field hierarchy
+- more breathing room between input, selected location row, and map
+- map container should feel cleaner and more integrated
+- selected location row should feel like a real selected item, not just plain text
+
+==================================================
+6. STEP 2 — VEREISTEN
+==================================================
+
+This screen should feel less like a long plain stack.
+
+Improve:
+- clearer grouping between sections
+- labels and icons aligned consistently
+- dropdown rows more premium
+- better spacing between form controls
+- toggle row at bottom should not feel squeezed
+
+Ensure:
+- icons are aligned with labels
+- icon size is consistent
+- helper text and values feel intentional
+
+==================================================
+7. STEP 3 — EXTRA KENMERKEN
+==================================================
+
+The selectable rows currently feel too flat.
+
+Improve:
+- each selectable row should feel more tappable
+- selected vs unselected state should be much clearer
+- spacing between groups ("Extra kenmerken", "Wensen") should be more generous
+- explanatory text should be easier to read and less washed out
+
+Selection states:
+- unselected: clean white surface, subtle border
+- selected: stronger border with brand accent and a very subtle tinted background
+
+The toggle at the bottom should align visually better with the descriptive text.
+
+==================================================
+8. STEP 4 — DOELGROEPEN & CATEGORIEËN
+==================================================
+
+This screen has the same flatness issue as step 3.
+
+Improve:
+- stronger hierarchy between title, subtitle, and selectable rows
+- rows must feel modern and consistent
+- selection states must be clear
+- keep everything airy and easy to scan
+
+The long list should not feel dense or repetitive.
+
+==================================================
+9. STEP 5 — CONTROLEER JE ZOEKOPDRACHT
+==================================================
+
+This screen is already the strongest one. Use it as the benchmark for the rest.
+
+Improve further:
+- summary card at the top should feel more premium
+- edit rows should be clearer and better aligned
+- labels and values should have stronger hierarchy
+- edit icon buttons should feel intentional, not faint
+- sticky bottom CTA should remain strong and premium
+
+Make the summary easier to scan quickly.
+
+==================================================
+10. CTA BUTTONS / FLOATING NEXT BUTTON
+==================================================
+
+The floating pink next button feels a bit detached from the rest of the UI.
+
+Improve it:
+- slightly better positioning
+- more consistent shadow and size
+- better relationship with page content
+
+If needed, refine:
+- size around 56px
+- strong but tasteful shadow
+- visually anchored without feeling random
+
+Do NOT remove the button or change navigation logic.
+
+==================================================
+11. CONSISTENCY FOR ICONS
+==================================================
+
+Ensure icons across the flow are consistent:
+- clean stroke
+- readable size
+- aligned with text
+- not too light
+- no random grey variations
+
+==================================================
+12. OVERALL FEEL
+==================================================
+
+Target feeling:
+- calm
+- structured
+- premium
+- mobile-first
+- modern consumer app
+
+The current issue is not missing functionality, but lack of hierarchy and polish.
+Fix the flow so it feels like a designed product, not a stack of form components.
+
+==================================================
+13. OUTPUT
+==================================================
+
+After finishing, provide:
+1. what changed globally across the 5-step flow
+2. how the back button positioning was fixed
+3. how fields/inputs were redesigned
+4. how selection states were improved
+5. what changed specifically on each step
+6. which files/components were updated

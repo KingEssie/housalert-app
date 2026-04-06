@@ -359,7 +359,7 @@ export default function NewSearchPage() {
 
   if (loading || (isEditMode && !editLoaded)) {
     return (
-      <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="w-8 h-8 rounded-full border-2 border-ha-primary border-t-transparent animate-spin" />
       </div>
     );
@@ -369,30 +369,30 @@ export default function NewSearchPage() {
 
   if (atLimit) {
     return (
-      <div className="min-h-screen bg-[#F9FAFB] flex flex-col">
-        <header className="fixed top-0 left-0 right-0 z-50 bg-[#F9FAFB]">
-          <div className="max-w-lg mx-auto flex items-center justify-between h-[48px] px-5">
+      <div className="min-h-screen bg-white flex flex-col">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md" style={{ paddingTop: "env(safe-area-inset-top)" }}>
+          <div className="max-w-lg mx-auto flex items-center justify-between h-[56px] px-5">
             <button
               onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=home")}
-              className="w-12 h-12 rounded-full bg-white shadow-[0_1px_4px_rgba(0,0,0,0.2)] flex items-center justify-center"
+              className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
               data-testid="button-wizard-header-back"
             >
-              <ArrowLeft className="w-5 h-5 text-ha-text-muted" />
+              <ArrowLeft className="w-5 h-5 text-[#111111]" />
             </button>
           </div>
         </header>
-        <div className="flex-1 flex items-center justify-center px-5 pt-[56px]">
+        <div className="flex-1 flex items-center justify-center px-5" style={{ paddingTop: "calc(env(safe-area-inset-top) + 72px)" }}>
           <div className="text-center max-w-sm w-full">
-            <div className="w-14 h-14 rounded-[6px] bg-white flex items-center justify-center mx-auto mb-4">
+            <div className="w-14 h-14 rounded-2xl bg-[#F9FAFB] flex items-center justify-center mx-auto mb-5">
               <AlertCircle className="w-6 h-6 text-ha-primary" />
             </div>
-            <h2 className="text-[18px] font-medium text-[#111111] mb-2">{t("newSearch.limitTitle")}</h2>
-            <p className="text-[14px] text-ha-text-muted mb-5">
+            <h2 className="text-[20px] font-semibold text-[#111111] mb-2">{t("newSearch.limitTitle")}</h2>
+            <p className="text-[15px] text-[#6B7280] mb-6 leading-relaxed">
               {t("newSearch.limitDesc", { max: MAX_PROFILES })}
             </p>
             <Button
               onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=home")}
-              className="w-full h-[48px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium"
+              className="w-full h-[48px] rounded-[12px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-medium"
               data-testid="button-back-to-dashboard-limit"
             >
               {t("newSearch.backToDashboard")}
@@ -406,23 +406,35 @@ export default function NewSearchPage() {
   const perWeekRaw = estimateQuery.data?.perWeekEstimate ?? 0;
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] flex flex-col">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#F9FAFB]">
-        <div className="max-w-lg mx-auto flex items-center justify-between h-[48px] px-5">
+    <div className="min-h-screen bg-white flex flex-col">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md" style={{ paddingTop: "env(safe-area-inset-top)" }}>
+        <div className="max-w-lg mx-auto flex items-center justify-between h-[56px] px-5">
           <button
             onClick={goBack}
-            className="w-12 h-12 rounded-full bg-white shadow-[0_1px_4px_rgba(0,0,0,0.2)] flex items-center justify-center"
+            className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
             data-testid="button-wizard-header-back"
           >
-            <ArrowLeft className="w-5 h-5 text-ha-text-muted" />
+            <ArrowLeft className="w-5 h-5 text-[#111111]" />
           </button>
-          <span className="text-[13px] font-medium text-ha-text-muted" data-testid="text-step-indicator">
-            {t("newSearch.stepOf", { step, total: TOTAL_STEPS })}
+          <div className="flex items-center gap-1.5">
+            {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
+              <div
+                key={i}
+                className="h-[3px] rounded-full transition-all duration-300"
+                style={{
+                  width: i + 1 === step ? 24 : 8,
+                  backgroundColor: i + 1 <= step ? "rgb(var(--ha-primary))" : "#E5E7EB",
+                }}
+              />
+            ))}
+          </div>
+          <span className="text-[13px] font-medium text-[#9CA3AF] tabular-nums" data-testid="text-step-indicator">
+            {step}/{TOTAL_STEPS}
           </span>
         </div>
       </header>
 
-      <main className="flex-1 w-full max-w-lg mx-auto px-5 pt-[72px] pb-32">
+      <main className="flex-1 w-full max-w-lg mx-auto px-5 pb-36" style={{ paddingTop: "calc(env(safe-area-inset-top) + 72px)" }}>
         {step === 1 && <Step1Location locationData={locationData} setLocationData={setLocationData} />}
         {step === 2 && <Step2Requirements filters={filters} updateFilters={updateFilters} />}
         {step === 3 && <Step3ExtraFeatures filters={filters} updateFilters={updateFilters} />}
@@ -443,17 +455,69 @@ export default function NewSearchPage() {
       </main>
 
       {step < 5 && (
-        <div className="fixed bottom-6 right-6 z-50" style={{ maxWidth: "calc(100% - 48px)" }}>
+        <div className="fixed bottom-8 right-6 z-50" style={{ marginBottom: "env(safe-area-inset-bottom)" }}>
           <button
             onClick={step < TOTAL_STEPS - 1 ? goNext : () => setStep(5)}
             disabled={!canProceed()}
-            className="w-14 h-14 rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white flex items-center justify-center shadow-[0_4px_16px_rgba(0,0,0,0.3)] disabled:opacity-40 transition-all active:scale-95"
+            className="w-[56px] h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white flex items-center justify-center shadow-[0_4px_20px_rgba(217,26,104,0.4)] disabled:opacity-30 disabled:shadow-none transition-all active:scale-95"
             data-testid="button-wizard-next"
           >
             <ArrowRight className="w-6 h-6" />
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+function StepHeader({ title, subtitle }: { title: string; subtitle: string }) {
+  return (
+    <div className="mb-7">
+      <h2 className="text-[32px] font-bold text-[#111111] leading-[1.15] tracking-[-0.02em] mb-2" data-testid="text-step-title">
+        {title}
+      </h2>
+      <p className="text-[16px] text-[#6B7280] leading-relaxed">
+        {subtitle}
+      </p>
+    </div>
+  );
+}
+
+function SelectField({
+  icon,
+  label,
+  value,
+  onChange,
+  options,
+  testId,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string | number;
+  onChange: (val: string) => void;
+  options: { value: string | number; label?: string; labelKey?: string }[];
+  testId: string;
+}) {
+  const { t } = useTranslation();
+  return (
+    <div>
+      <label className="text-[14px] font-medium text-[#111111] mb-2 flex items-center gap-2">
+        <span className="w-5 h-5 flex items-center justify-center text-[#6B7280]">{icon}</span>
+        {label}
+      </label>
+      <div className="relative">
+        <select
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="w-full h-[52px] px-4 pr-10 rounded-[14px] border border-[#E5E7EB] bg-[#F9FAFB] text-[15px] font-medium text-[#111111] appearance-none cursor-pointer focus:border-[rgb(var(--ha-primary))] focus:ring-1 focus:ring-[rgb(var(--ha-primary))]/20 focus:bg-white transition-colors outline-none"
+          data-testid={testId}
+        >
+          {options.map(opt => (
+            <option key={String(opt.value)} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
+          ))}
+        </select>
+        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF] pointer-events-none" />
+      </div>
     </div>
   );
 }
@@ -467,16 +531,8 @@ function Step1Location({
 }) {
   const { t } = useTranslation();
   return (
-    <div className="space-y-5">
-      <div>
-        <h2 className="text-page-title mb-1.5" data-testid="text-step-title">
-          {t("newSearch.step1.title")}
-        </h2>
-        <p className="text-subtitle">
-          {t("newSearch.step1.subtitle")}
-        </p>
-      </div>
-
+    <div>
+      <StepHeader title={t("newSearch.step1.title")} subtitle={t("newSearch.step1.subtitle")} />
       <LocationModeSelector
         value={locationData}
         onChange={setLocationData}
@@ -497,123 +553,63 @@ function Step2Requirements({
 }) {
   const { t } = useTranslation();
   return (
-    <div className="space-y-5">
-      <div>
-        <h2 className="text-page-title mb-1.5" data-testid="text-step-title">
-          {t("newSearch.step2.title")}
-        </h2>
-        <p className="text-subtitle">
-          {t("newSearch.step2.subtitle")}
-        </p>
-      </div>
+    <div>
+      <StepHeader title={t("newSearch.step2.title")} subtitle={t("newSearch.step2.subtitle")} />
 
-      <div className="space-y-6">
-        <div>
-          <label className="text-[15px] font-medium text-[#111111] mb-2.5 flex items-center gap-2">
-            <Euro className="w-4 h-4 text-ha-primary" />
-            {t("newSearch.step2.minPrice")}
-          </label>
-          <div className="relative">
-            <select
-              value={filters.priceMin}
-              onChange={(e) => updateFilters({ priceMin: e.target.value })}
-              className="w-full h-[48px] px-4 pr-10 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] appearance-none cursor-pointer"
-              data-testid="select-price-min"
-            >
-              {RENT_OPTIONS.map(opt => (
-                <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted pointer-events-none" />
-          </div>
-        </div>
-
-        <div>
-          <label className="text-[15px] font-medium text-[#111111] mb-2.5 flex items-center gap-2">
-            <Euro className="w-4 h-4 text-ha-primary" />
-            {t("newSearch.step2.maxPrice")}
-          </label>
-          <div className="relative">
-            <select
-              value={filters.priceMax}
-              onChange={(e) => updateFilters({ priceMax: e.target.value })}
-              className="w-full h-[48px] px-4 pr-10 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] appearance-none cursor-pointer"
-              data-testid="select-price-max"
-            >
-              {RENT_OPTIONS.map(opt => (
-                <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted pointer-events-none" />
-          </div>
-        </div>
-
-        <div>
-          <label className="text-[15px] font-medium text-[#111111] mb-2.5 flex items-center gap-2">
-            <BedDouble className="w-4 h-4 text-ha-primary" />
-            {t("newSearch.step2.bedrooms")}
-          </label>
-          <div className="relative">
-            <select
-              value={filters.bedroomsMin}
-              onChange={(e) => updateFilters({ bedroomsMin: parseInt(e.target.value) })}
-              className="w-full h-[48px] px-4 pr-10 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] appearance-none cursor-pointer"
-              data-testid="select-bedrooms"
-            >
-              {BEDROOM_OPTIONS.map(opt => (
-                <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted pointer-events-none" />
-          </div>
-        </div>
-
-        <div>
-          <label className="text-[15px] font-medium text-[#111111] mb-2.5 flex items-center gap-2">
-            <Ruler className="w-4 h-4 text-ha-primary" />
-            {t("newSearch.step2.area")}
-          </label>
-          <div className="relative">
-            <select
-              value={filters.sizeMin}
-              onChange={(e) => updateFilters({ sizeMin: parseInt(e.target.value) })}
-              className="w-full h-[48px] px-4 pr-10 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] appearance-none cursor-pointer"
-              data-testid="select-size"
-            >
-              {SIZE_OPTIONS.map(opt => (
-                <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted pointer-events-none" />
-          </div>
-        </div>
-
-        <div>
-          <label className="text-[15px] font-medium text-[#111111] mb-2.5 flex items-center gap-2">
-            <Sofa className="w-4 h-4 text-ha-primary" />
-            {t("newSearch.step2.furnished")}
-          </label>
-          <div className="relative">
-            <select
-              value={filters.furnished}
-              onChange={(e) => updateFilters({ furnished: e.target.value })}
-              className="w-full h-[48px] px-4 pr-10 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] appearance-none cursor-pointer"
-              data-testid="select-furnished"
-            >
-              {FURNISHED_OPTIONS.map(opt => (
-                <option key={opt.value} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-muted pointer-events-none" />
-          </div>
-        </div>
-
-        <ToggleSwitch
-          checked={filters.priceFlexible}
-          onChange={(v) => updateFilters({ priceFlexible: v })}
-          label={t("onboarding.filters.priceFlexible")}
-          testId="toggle-price-flexible"
+      <div className="space-y-5">
+        <SelectField
+          icon={<Euro className="w-[18px] h-[18px]" />}
+          label={t("newSearch.step2.minPrice")}
+          value={filters.priceMin}
+          onChange={(v) => updateFilters({ priceMin: v })}
+          options={RENT_OPTIONS}
+          testId="select-price-min"
         />
+
+        <SelectField
+          icon={<Euro className="w-[18px] h-[18px]" />}
+          label={t("newSearch.step2.maxPrice")}
+          value={filters.priceMax}
+          onChange={(v) => updateFilters({ priceMax: v })}
+          options={RENT_OPTIONS}
+          testId="select-price-max"
+        />
+
+        <SelectField
+          icon={<BedDouble className="w-[18px] h-[18px]" />}
+          label={t("newSearch.step2.bedrooms")}
+          value={filters.bedroomsMin}
+          onChange={(v) => updateFilters({ bedroomsMin: parseInt(v) })}
+          options={BEDROOM_OPTIONS}
+          testId="select-bedrooms"
+        />
+
+        <SelectField
+          icon={<Ruler className="w-[18px] h-[18px]" />}
+          label={t("newSearch.step2.area")}
+          value={filters.sizeMin}
+          onChange={(v) => updateFilters({ sizeMin: parseInt(v) })}
+          options={SIZE_OPTIONS}
+          testId="select-size"
+        />
+
+        <SelectField
+          icon={<Sofa className="w-[18px] h-[18px]" />}
+          label={t("newSearch.step2.furnished")}
+          value={filters.furnished}
+          onChange={(v) => updateFilters({ furnished: v })}
+          options={FURNISHED_OPTIONS}
+          testId="select-furnished"
+        />
+
+        <div className="pt-2">
+          <ToggleSwitch
+            checked={filters.priceFlexible}
+            onChange={(v) => updateFilters({ priceFlexible: v })}
+            label={t("onboarding.filters.priceFlexible")}
+            testId="toggle-price-flexible"
+          />
+        </div>
       </div>
     </div>
   );
@@ -631,18 +627,18 @@ function ToggleSwitch({
   testId: string;
 }) {
   return (
-    <label className="flex items-start gap-3 cursor-pointer" data-testid={testId}>
+    <label className="flex items-center gap-3 cursor-pointer rounded-[14px] bg-[#F9FAFB] border border-[#E5E7EB] px-4 py-3.5" data-testid={testId}>
       <div
-        className="w-[44px] h-[24px] mt-[1px] rounded-full p-[2px] transition-colors shrink-0"
-        style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "#E5E7EB" }}
-        onClick={() => onChange(!checked)}
+        className="w-[46px] h-[26px] rounded-full p-[2px] transition-colors shrink-0 cursor-pointer"
+        style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "#D1D5DB" }}
+        onClick={(e) => { e.preventDefault(); onChange(!checked); }}
       >
         <div
-          className="w-[20px] h-[20px] rounded-full bg-white transition-transform shadow-sm"
+          className="w-[22px] h-[22px] rounded-full bg-white transition-transform shadow-sm"
           style={{ transform: checked ? "translateX(20px)" : "translateX(0)" }}
         />
       </div>
-      <span className="text-[13px] leading-snug text-[#111111]">{label}</span>
+      <span className="text-[14px] leading-snug text-[#111111] font-medium">{label}</span>
     </label>
   );
 }
@@ -652,25 +648,36 @@ function CheckboxRow({
   selected,
   onToggle,
   testId,
+  hint,
 }: {
   label: string;
   selected: boolean;
   onToggle: () => void;
   testId: string;
+  hint?: string;
 }) {
   return (
     <button
       type="button"
       onClick={onToggle}
-      className="w-full flex items-start gap-4 py-4 border-b border-[#E5E7EB] last:border-b-0 text-left"
+      className={`w-full flex items-center gap-3.5 px-4 py-3.5 rounded-[14px] border transition-all text-left ${
+        selected
+          ? "border-[rgb(var(--ha-primary))] bg-[rgb(var(--ha-primary))]/[0.04]"
+          : "border-[#E5E7EB] bg-white hover:bg-[#FAFAFA]"
+      }`}
       data-testid={testId}
     >
-      <div className={`w-6 h-6 mt-[1px] rounded-md flex items-center justify-center flex-shrink-0 border-2 transition-colors ${
-        selected ? "bg-ha-primary border-ha-primary" : "border-ha-primary bg-transparent"
+      <div className={`w-[22px] h-[22px] rounded-[7px] flex items-center justify-center flex-shrink-0 border-[1.5px] transition-colors ${
+        selected ? "bg-ha-primary border-ha-primary" : "border-[#D1D5DB] bg-white"
       }`}>
-        {selected && <Check className="w-4 h-4 text-white" />}
+        {selected && <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />}
       </div>
-      <span className="text-[15px] font-medium text-[#111111]">{label}</span>
+      <div className="flex-1 min-w-0">
+        <span className="text-[15px] font-medium text-[#111111]">{label}</span>
+        {hint && selected && (
+          <p className="text-[13px] text-[#6B7280] mt-0.5 leading-snug">{hint}</p>
+        )}
+      </div>
     </button>
   );
 }
@@ -689,17 +696,10 @@ function Step3ExtraFeatures({
   };
 
   return (
-    <div className="space-y-5">
-      <div>
-        <h2 className="text-page-title mb-1.5" data-testid="text-step-title">
-          {t("newSearch.step3.title")}
-        </h2>
-        <p className="text-subtitle">
-          {t("newSearch.step3.subtitle")}
-        </p>
-      </div>
+    <div>
+      <StepHeader title={t("newSearch.step3.title")} subtitle={t("newSearch.step3.subtitle")} />
 
-      <div className="bg-white rounded-[6px] border border-[#E5E7EB]">
+      <div className="space-y-3">
         {EXTRA_FEATURE_OPTIONS.map((opt) => (
           <CheckboxRow
             key={opt.value}
@@ -711,38 +711,37 @@ function Step3ExtraFeatures({
         ))}
       </div>
 
-      <div>
-        <h3 className="text-[14px] font-medium text-[#111111] mb-1">{t("newSearch.step3.preferencesTitle")}</h3>
-        <p className="text-[12px] text-ha-text-muted mb-2">{t("newSearch.step3.preferencesSubtitle")}</p>
-        <div className="bg-white rounded-[6px] border border-[#E5E7EB]">
+      <div className="mt-8">
+        <h3 className="text-[15px] font-semibold text-[#111111] mb-1.5">{t("newSearch.step3.preferencesTitle")}</h3>
+        <p className="text-[14px] text-[#6B7280] mb-3 leading-relaxed">{t("newSearch.step3.preferencesSubtitle")}</p>
+        <div className="space-y-3">
           {PREFERENCE_OPTIONS.map((opt) => (
-            <div key={opt.value}>
-              <CheckboxRow
-                label={t(opt.labelKey)}
-                selected={filters.extraFeatures.includes(opt.value)}
-                onToggle={() => toggleFeature(opt.value)}
-                testId={`option-pref-${opt.value}`}
-              />
-              {filters.extraFeatures.includes(opt.value) && (
-                <p className="text-[11px] text-ha-text-muted px-4 pb-3 -mt-1">{t(opt.hintKey)}</p>
-              )}
-            </div>
+            <CheckboxRow
+              key={opt.value}
+              label={t(opt.labelKey)}
+              selected={filters.extraFeatures.includes(opt.value)}
+              onToggle={() => toggleFeature(opt.value)}
+              testId={`option-pref-${opt.value}`}
+              hint={t(opt.hintKey)}
+            />
           ))}
         </div>
       </div>
 
       {filters.extraFeatures.length === 0 && (
-        <p className="text-[13px] text-ha-text-muted text-center">
+        <p className="text-[14px] text-[#9CA3AF] text-center mt-6">
           {t("newSearch.step3.noSelectionHint")}
         </p>
       )}
 
-      <ToggleSwitch
-        checked={filters.sendUnclear}
-        onChange={(v) => updateFilters({ sendUnclear: v })}
-        label={t("onboarding.filters.sendUnclear")}
-        testId="toggle-send-unclear"
-      />
+      <div className="mt-6">
+        <ToggleSwitch
+          checked={filters.sendUnclear}
+          onChange={(v) => updateFilters({ sendUnclear: v })}
+          label={t("onboarding.filters.sendUnclear")}
+          testId="toggle-send-unclear"
+        />
+      </div>
     </div>
   );
 }
@@ -761,17 +760,10 @@ function Step4TargetCategories({
   };
 
   return (
-    <div className="space-y-5">
-      <div>
-        <h2 className="text-page-title mb-1.5" data-testid="text-step-title">
-          {t("newSearch.step4.title")}
-        </h2>
-        <p className="text-subtitle">
-          {t("newSearch.step4.subtitle")}
-        </p>
-      </div>
+    <div>
+      <StepHeader title={t("newSearch.step4.title")} subtitle={t("newSearch.step4.subtitle")} />
 
-      <div className="bg-white rounded-[6px] border border-[#E5E7EB]">
+      <div className="space-y-3">
         {TARGET_CATEGORY_OPTIONS.map((opt) => (
           <CheckboxRow
             key={opt.value}
@@ -784,7 +776,7 @@ function Step4TargetCategories({
       </div>
 
       {filters.targetCategories.length === 0 && (
-        <p className="text-[13px] text-ha-text-muted text-center">
+        <p className="text-[14px] text-[#9CA3AF] text-center mt-6">
           {t("newSearch.step4.noSelectionHint")}
         </p>
       )}
@@ -794,19 +786,19 @@ function Step4TargetCategories({
 
 function ReviewRow({ label, value, onEdit }: { label: string; value: string; onEdit: () => void }) {
   return (
-    <div className="flex items-start justify-between py-3.5 border-b border-[#E5E7EB] last:border-b-0">
+    <button
+      onClick={onEdit}
+      className="w-full flex items-center justify-between py-4 px-4 border-b border-[#F3F4F6] last:border-b-0 text-left hover:bg-[#FAFAFA] transition-colors active:bg-[#F3F4F6] group"
+      data-testid={`button-review-edit-${label.toLowerCase().replace(/\s/g, "-")}`}
+    >
       <div className="flex-1 min-w-0 mr-3">
-        <p className="text-[13px] font-medium text-ha-text-muted mb-0.5">{label}</p>
-        <p className="text-[15px] font-medium text-[#111111]">{value}</p>
+        <p className="text-[13px] font-medium text-[#9CA3AF] mb-0.5">{label}</p>
+        <p className="text-[15px] font-semibold text-[#111111] leading-snug">{value}</p>
       </div>
-      <button
-        onClick={onEdit}
-        className="flex-shrink-0 w-8 h-8 rounded-full bg-[#F9FAFB] flex items-center justify-center hover:bg-[#F9FAFB] transition-colors"
-        data-testid={`button-review-edit-${label.toLowerCase().replace(/\s/g, "-")}`}
-      >
-        <Pencil className="w-3.5 h-3.5 text-ha-text-muted" />
-      </button>
-    </div>
+      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#F3F4F6] flex items-center justify-center group-hover:bg-[#E5E7EB] transition-colors">
+        <Pencil className="w-3.5 h-3.5 text-[#6B7280]" />
+      </div>
+    </button>
   );
 }
 
@@ -873,28 +865,21 @@ function StepReview({
 
   return (
     <div className="pb-28">
-      <div className="space-y-6">
-        <div>
-          <h2 className="text-page-title mb-1.5" data-testid="text-step-title">
-            {t("newSearch.step5.title")}
-          </h2>
-          <p className="text-subtitle">
-            {t("newSearch.step5.subtitle")}
-          </p>
-        </div>
+      <StepHeader title={t("newSearch.step5.title")} subtitle={t("newSearch.step5.subtitle")} />
 
+      <div className="space-y-5">
         {!estimateLoading && (
-          <div className="rounded-[6px] bg-white border border-[#E5E7EB] p-5 flex items-center gap-3" data-testid="card-review-estimate">
-            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
-              <Sparkles className="w-5 h-5 text-[#111111]" />
+          <div className="rounded-[16px] bg-gradient-to-br from-[#FDF2F8] to-[#FCE7F3] border border-[#F9A8D4]/30 p-5 flex items-center gap-4" data-testid="card-review-estimate">
+            <div className="w-11 h-11 rounded-[12px] bg-white/80 flex items-center justify-center flex-shrink-0 shadow-sm">
+              <Sparkles className="w-5 h-5 text-ha-primary" />
             </div>
-            <div>
-              <p className="text-[15px] font-medium text-[#111111]">
+            <div className="flex-1 min-w-0">
+              <p className="text-[16px] font-semibold text-[#111111] leading-snug">
                 {perWeek > 0
                   ? t("newSearch.step5.estimate", perWeekRange)
                   : t("newSearch.step5.noMatchesExpected")}
               </p>
-              <p className="text-[13px] text-[#111111]/60 mt-0.5">
+              <p className="text-[13px] text-[#6B7280] mt-0.5">
                 {perWeek > 0
                   ? t("newSearch.step5.estimateDesc")
                   : t("newSearch.step5.adjustFiltersLater")}
@@ -903,7 +888,7 @@ function StepReview({
           </div>
         )}
 
-        <div className="bg-white rounded-[6px] border border-[#E5E7EB]">
+        <div className="bg-white rounded-[16px] border border-[#E5E7EB] overflow-hidden">
           <ReviewRow label={t("newSearch.step5.location")} value={locationLabel} onEdit={() => onEdit(1)} />
           {locationData.tab === "wijken" && (
             <ReviewRow label={t("newSearch.step5.districts")} value={districtsLabel} onEdit={() => onEdit(1)} />
@@ -917,12 +902,12 @@ function StepReview({
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#F9FAFB] border-t border-[#E5E7EB] p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
-        <div className="max-w-lg mx-auto">
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-t border-[#F3F4F6]" style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}>
+        <div className="max-w-lg mx-auto px-5 pt-3">
           <Button
             onClick={onSubmit}
             disabled={submitting}
-            className="w-full h-[48px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-medium disabled:opacity-40 shadow-[0_2px_12px_rgba(0,0,0,0.3)]"
+            className="w-full h-[52px] rounded-[14px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold disabled:opacity-40 shadow-[0_4px_20px_rgba(217,26,104,0.3)]"
             data-testid="button-wizard-submit"
           >
             {submitting ? (
