@@ -50,7 +50,7 @@ export default function OnboardingIntro() {
 
       <main className="flex-1 flex flex-col justify-center max-w-[480px] mx-auto w-full px-5 pb-[140px]">
         <h1
-          className="text-[34px] font-semibold tracking-[-0.02em] leading-[1.1] mb-5 max-w-[320px]"
+          className="text-[28px] font-bold tracking-[-0.025em] leading-[1.15] mb-5 max-w-[320px]"
           style={{ color: OB.text }}
           data-testid="text-intro-title"
         >

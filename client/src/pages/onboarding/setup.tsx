@@ -198,7 +198,7 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
         </div>
       </div>
 
-      <h1 className="text-[28px] font-semibold tracking-[-0.03em] leading-[1.1] mb-6" style={{ color: TEXT_PRIMARY }} data-testid="text-paywall-title">
+      <h1 className="text-[28px] font-bold tracking-[-0.025em] leading-[1.15] mb-6" style={{ color: TEXT_PRIMARY }} data-testid="text-paywall-title">
         {t("paywall.headline")}
       </h1>
 
@@ -311,11 +311,11 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
         <HousAlertLogo size={24} />
         <div className="text-right">
           <p className="text-[13px] font-semibold" style={{ color: "#00b67a" }}>★ 4,6 uit 5</p>
-          <p className="text-[11px]" style={{ color: "#9CA3AF" }}>Trustpilot</p>
+          <p className="text-[11px]" style={{ color: "#6B7280" }}>Trustpilot</p>
         </div>
       </div>
 
-      <h1 className="text-[28px] font-semibold tracking-[-0.02em] mb-6" style={{ color: "#111111" }} data-testid="text-limited-title">
+      <h1 className="text-[28px] font-bold tracking-[-0.025em] mb-6" style={{ color: "#111111" }} data-testid="text-limited-title">
         {t("onboardingFlow.limitedAccess.title")}
       </h1>
 
@@ -355,7 +355,7 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
         <p className="text-[14px] font-semibold mb-1" style={{ color: "#111111" }}>
           {t("onboardingFlow.limitedAccess.infoTitle")}
         </p>
-        <p className="text-[13px] leading-relaxed" style={{ color: "#9CA3AF" }}>
+        <p className="text-[13px] leading-relaxed" style={{ color: "#6B7280" }}>
           {t("onboardingFlow.limitedAccess.infoDesc")}
         </p>
       </div>
@@ -430,7 +430,7 @@ function WelcomeStep({ onNext, t }: {
 }) {
   return (
     <LightShell step="welcome">
-      <h1 className="text-[26px] font-semibold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-welcome-title">
+      <h1 className="text-[28px] font-bold tracking-[-0.025em] mb-5 text-[#111111]" data-testid="text-welcome-title">
         {t("onboardingFlow.welcome.title")}
       </h1>
 
@@ -475,7 +475,7 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
 }) {
   return (
     <LightShell step="push-test" showBack={false}>
-      <h1 className="text-[26px] font-semibold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-push-title">
+      <h1 className="text-[28px] font-bold tracking-[-0.025em] mb-5 text-[#111111]" data-testid="text-push-title">
         {t("onboardingFlow.pushTest.title")}
       </h1>
 
@@ -533,7 +533,7 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[11px] font-semibold text-[#111111] truncate">HousAlert</p>
-                <p className="text-[10px] text-[#9CA3AF] truncate">{t("onboardingFlow.pushTest.sampleNotification")}</p>
+                <p className="text-[10px] text-[#6B7280] truncate">{t("onboardingFlow.pushTest.sampleNotification")}</p>
               </div>
             </div>
           </div>
@@ -585,7 +585,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
   if (!showForm) {
     return (
       <LightShell step="letter-personal" showBack>
-        <h1 className="text-[26px] font-semibold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-letter-personal-title">
+        <h1 className="text-[28px] font-bold tracking-[-0.025em] mb-5 text-[#111111]" data-testid="text-letter-personal-title">
           {t("onboardingFlow.letterPersonal.title")}
         </h1>
 
@@ -633,7 +633,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
 
   return (
     <LightShell step="letter-personal-form" showBack onBack={() => setShowForm(false)}>
-      <h1 className="text-[26px] font-semibold tracking-[-0.02em] mb-6 text-[#111111]">
+      <h1 className="text-[28px] font-bold tracking-[-0.025em] mb-6 text-[#111111]">
         {t("onboardingFlow.letterPersonal.formTitle")}
       </h1>
 
@@ -758,7 +758,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
 
   return (
     <LightShell step="letter-living" showBack onBack={onBack}>
-      <h1 className="text-[26px] font-semibold tracking-[-0.02em] mb-6 text-[#111111]" data-testid="text-letter-living-title">
+      <h1 className="text-[28px] font-bold tracking-[-0.025em] mb-6 text-[#111111]" data-testid="text-letter-living-title">
         {t("onboardingFlow.letterLiving.title")}
       </h1>
 
@@ -813,7 +813,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
             {t("onboardingFlow.letterLiving.income")}
           </label>
           <div className="relative">
-            <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+            <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
             <input
               type="text"
               inputMode="numeric"
@@ -865,7 +865,7 @@ function LetterPreviewStep({ letterText, onLetterChange, onNext, onBack, t }: {
 }) {
   return (
     <LightShell step="letter-preview" showBack onBack={onBack}>
-      <h1 className="text-[26px] font-semibold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-letter-preview-title">
+      <h1 className="text-[28px] font-bold tracking-[-0.025em] mb-5 text-[#111111]" data-testid="text-letter-preview-title">
         {t("onboardingFlow.letterPreview.title")}
       </h1>
 
@@ -905,7 +905,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
 }) {
   return (
     <LightShell step="search-buddy">
-      <h1 className="text-[26px] font-semibold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-buddy-title">
+      <h1 className="text-[28px] font-bold tracking-[-0.025em] mb-5 text-[#111111]" data-testid="text-buddy-title">
         {t("onboardingFlow.searchBuddy.title")}
       </h1>
 
@@ -1003,7 +1003,7 @@ function SuccessStep({ onFinish, t }: {
 }) {
   return (
     <LightShell step="success">
-      <h1 className="text-[26px] font-semibold tracking-[-0.02em] mb-5 text-[#111111]" data-testid="text-success-title">
+      <h1 className="text-[28px] font-bold tracking-[-0.025em] mb-5 text-[#111111]" data-testid="text-success-title">
         {t("onboardingFlow.success.title")}
       </h1>
 

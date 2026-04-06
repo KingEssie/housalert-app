@@ -141,13 +141,13 @@ export default function ReferralLandingPage() {
           <ArrowRight className="w-5 h-5" />
         </button>
 
-        <p className="text-[12px] text-[#9CA3AF] text-center mt-4">
+        <p className="text-[12px] text-[#6B7280] text-center mt-4">
           Geen creditcard nodig · Gratis proefperiode
         </p>
       </main>
 
       <footer className="px-6 py-6 text-center">
-        <p className="text-[11px] text-[#9CA3AF]">
+        <p className="text-[11px] text-[#6B7280]">
           © {new Date().getFullYear()} HousAlert · Alle rechten voorbehouden
         </p>
       </footer>

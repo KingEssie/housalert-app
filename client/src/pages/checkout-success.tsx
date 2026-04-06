@@ -121,7 +121,7 @@ export default function CheckoutSuccessPage() {
           {status === "error" && <AlertCircle className="w-8 h-8 text-red-500" />}
         </div>
 
-        <h1 className="text-[22px] font-semibold text-[#111] mb-2" data-testid="text-checkout-title">
+        <h1 className="text-[22px] font-bold text-[#111] mb-2" data-testid="text-checkout-title">
           {status === "loading" && "Betaling bevestigen..."}
           {status === "success" && "Betaling gelukt!"}
           {status === "error" && "Er ging iets mis"}

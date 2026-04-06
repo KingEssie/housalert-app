@@ -123,7 +123,7 @@ export default function ProfileEditPage() {
               <p className="text-[15px] text-[#6B7280] text-center leading-relaxed mt-3 max-w-[320px]">{config.description}</p>
             )}
             {buddyRevokedByBuddy && (
-              <p className="text-[13px] text-[#9CA3AF] text-center mt-2">{t("profileEdit.buddyUnsubscribed")}</p>
+              <p className="text-[13px] text-[#6B7280] text-center mt-2">{t("profileEdit.buddyUnsubscribed")}</p>
             )}
             <div className="w-full mt-6">
               <div className="relative">

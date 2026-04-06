@@ -155,7 +155,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 p-0"
-                  style={{ color: "#9CA3AF" }}
+                  style={{ color: "#6B7280" }}
                   data-testid="button-toggle-password"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -191,7 +191,7 @@ export default function LoginPage() {
 
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
-            <span className="text-[13px] font-semibold" style={{ color: "#9CA3AF" }}>
+            <span className="text-[13px] font-semibold" style={{ color: "#6B7280" }}>
               {t("auth.login.or") || "OF"}
             </span>
             <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
@@ -214,7 +214,7 @@ export default function LoginPage() {
           <div className="flex-1" />
 
           <div className="flex items-center justify-center gap-2 pt-8 pb-2">
-            <span className="text-[13px] font-semibold" style={{ color: "#9CA3AF" }}>
+            <span className="text-[13px] font-semibold" style={{ color: "#6B7280" }}>
               Trustpilot
             </span>
             <div className="flex items-center gap-0.5">

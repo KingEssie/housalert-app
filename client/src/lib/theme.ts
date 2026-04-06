@@ -22,7 +22,7 @@ export const theme = {
     successLight: "rgba(22, 163, 74, 0.08)",
     textPrimary: "#111111",
     textSecondary: "#6B7280",
-    textTertiary: "#9CA3AF",
+    textTertiary: "#6B7280",
     background: "#FFFFFF",
     backgroundSoft: "#F9FAFB",
     inputBackground: "#FFFFFF",

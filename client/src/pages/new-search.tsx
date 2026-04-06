@@ -473,7 +473,7 @@ export default function NewSearchPage() {
 function StepHeader({ title, subtitle }: { title: string; subtitle: string }) {
   return (
     <div className="mb-8">
-      <h2 className="text-[34px] font-bold text-[#111111] leading-[1.12] tracking-[-0.025em] mb-2.5" data-testid="text-step-title">
+      <h2 className="text-[30px] font-bold text-[#111111] leading-[1.15] tracking-[-0.025em] mb-2.5" data-testid="text-step-title">
         {title}
       </h2>
       <p className="text-[17px] text-[#6B7280] leading-relaxed">
@@ -668,7 +668,7 @@ function CheckboxRow({
       data-testid={testId}
     >
       <div className={`w-[26px] h-[26px] rounded-[8px] flex items-center justify-center flex-shrink-0 border-2 transition-colors ${
-        selected ? "bg-ha-primary border-ha-primary" : "border-[#9CA3AF] bg-white"
+        selected ? "bg-ha-primary border-ha-primary" : "border-[#6B7280] bg-white"
       }`}>
         {selected && <Check className="w-4 h-4 text-white" strokeWidth={3} />}
       </div>

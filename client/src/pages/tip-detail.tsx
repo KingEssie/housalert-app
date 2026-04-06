@@ -110,7 +110,7 @@ export default function TipDetailPage() {
         >
           <Icon className="w-5 h-5 text-ha-primary flex-shrink-0" />
           <span className="text-[14px] font-medium text-[#111111] flex-1">{t("tips.openContent")}</span>
-          <ChevronRight className="w-4 h-4 text-[#9CA3AF]" />
+          <ChevronRight className="w-4 h-4 text-[#6B7280]" />
         </button>
       </main>
 

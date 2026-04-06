@@ -65,7 +65,7 @@ export default function OnboardingName() {
 
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-4 pb-[100px]">
         <h1
-          className="text-[24px] font-semibold tracking-[-0.02em] mb-2"
+          className="text-[28px] font-bold tracking-[-0.025em] mb-2"
           style={{ color: T.text }}
           data-testid="text-name-title"
         >
@@ -81,7 +81,7 @@ export default function OnboardingName() {
               {t("onboarding.name.firstNameLabel") || "Vorname"}
             </label>
             <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#9CA3AF" }} />
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#6B7280" }} />
               <input
                 type="text"
                 value={firstName}
@@ -100,7 +100,7 @@ export default function OnboardingName() {
               {t("onboarding.name.lastNameLabel") || "Nachname"}
             </label>
             <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#9CA3AF" }} />
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#6B7280" }} />
               <input
                 type="text"
                 value={lastName}

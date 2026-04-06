@@ -654,7 +654,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
             <div className="w-16 h-16 rounded-[16px] bg-ha-primary flex items-center justify-center mb-6">
               <Trash2 className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-[22px] font-semibold text-[#111111] mb-3 text-center" data-testid="text-delete-title">
+            <h2 className="text-[22px] font-bold text-[#111111] mb-3 text-center" data-testid="text-delete-title">
               {t("home.deleteTitle")}
             </h2>
             <p className="text-[15px] text-[#111111]/70 text-center max-w-[320px] mb-10 leading-relaxed" data-testid="text-delete-body">
@@ -815,7 +815,7 @@ function HomeTab({
             <HelpCircle className="w-[22px] h-[22px] text-[#111111]" />
           </button>
         </div>
-        <h1 className="text-[34px] font-bold text-[#111111] tracking-[-0.025em] leading-[1.1]" data-testid="text-greeting">
+        <h1 className="text-[30px] font-bold text-[#111111] tracking-[-0.025em] leading-[1.15]" data-testid="text-greeting">
           {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")} 👋
         </h1>
         <p className="text-[17px] text-[#4B5563] mt-2 leading-relaxed" data-testid="text-welcome-subtitle">
@@ -1924,7 +1924,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             <div className="w-16 h-16 rounded-[16px] bg-[#F3F4F6] flex items-center justify-center mb-6">
               <LogOut className="w-8 h-8 text-[#6B7280]" />
             </div>
-            <h2 className="text-[22px] font-semibold text-[#111111] mb-3 text-center">{t("profile.logoutConfirm")}</h2>
+            <h2 className="text-[22px] font-bold text-[#111111] mb-3 text-center">{t("profile.logoutConfirm")}</h2>
             <p className="text-[15px] text-[#111111]/70 text-center max-w-[320px] mb-10 leading-relaxed">{t("profile.logoutDesc")}</p>
             <div className="w-full max-w-[320px] flex flex-col gap-3">
               <button

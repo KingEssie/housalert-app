@@ -82,7 +82,7 @@ export function SubscriptionCancelConfirmPage() {
               </div>
             </div>
 
-            <h2 className="text-[20px] font-semibold text-[#111111] text-center mb-2" data-testid="text-feedback-title">
+            <h2 className="text-[20px] font-bold text-[#111111] text-center mb-2" data-testid="text-feedback-title">
               {t("cancellation.feedbackQuestion")}
             </h2>
             <p className="text-[14px] text-center text-ha-text-muted mb-5">
@@ -151,7 +151,7 @@ export function SubscriptionCancelConfirmPage() {
             </div>
           </div>
 
-          <h2 className="text-[20px] font-semibold text-[#111111] text-center mb-3" data-testid="text-cancel-title">
+          <h2 className="text-[20px] font-bold text-[#111111] text-center mb-3" data-testid="text-cancel-title">
             {t("subscription.cancelConfirm")}
           </h2>
 
@@ -213,7 +213,7 @@ export function SubscriptionCancelledPage() {
             </div>
           </div>
 
-          <h2 className="text-[20px] font-semibold text-[#111111] text-center mb-3" data-testid="text-cancelled-title">
+          <h2 className="text-[20px] font-bold text-[#111111] text-center mb-3" data-testid="text-cancelled-title">
             {t("subscription.cancelled")}
           </h2>
 

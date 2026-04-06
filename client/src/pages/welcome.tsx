@@ -61,7 +61,7 @@ function LanguageDropdown() {
       >
         <span className="text-[14px]">{current.flag}</span>
         <span className="text-[12px] font-semibold text-[#111111]">{current.label}</span>
-        <ChevronDown className={`w-3.5 h-3.5 text-[#9CA3AF] transition-transform ${open ? "rotate-180" : ""}`} />
+        <ChevronDown className={`w-3.5 h-3.5 text-[#6B7280] transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
@@ -255,7 +255,7 @@ export default function WelcomePage() {
 
         <div className="flex items-center gap-3 my-6">
           <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
-          <span className="text-[13px] font-semibold" style={{ color: "#9CA3AF" }}>
+          <span className="text-[13px] font-semibold" style={{ color: "#6B7280" }}>
             {t("v2.welcome.or") || "OF"}
           </span>
           <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
@@ -281,7 +281,7 @@ export default function WelcomePage() {
         <div className="flex-1" />
 
         <div className="flex items-center justify-center gap-2.5 pt-6 pb-2">
-          <span className="text-[13px] font-semibold" style={{ color: "#9CA3AF" }}>
+          <span className="text-[13px] font-semibold" style={{ color: "#6B7280" }}>
             Trustpilot
           </span>
           <div className="flex items-center gap-[3px]">
