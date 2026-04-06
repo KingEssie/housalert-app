@@ -287,7 +287,7 @@ export async function getUserLanguage(userId: string): Promise<import("../i18n")
 }
 
 export const BUDDY_EMAILS_GLOBAL_KILL_SWITCH = false;
-export const EMAIL_TEST_MODE = true;
+export const EMAIL_TEST_MODE = false;
 
 async function sendBuddyEmail(
   userId: string,

@@ -1,0 +1,139 @@
+Investigate why emails are not being delivered and fully test the Resend setup end-to-end.
+
+IMPORTANT:
+- Do NOT guess
+- Diagnose first, then fix
+- Use the current production-safe email setup already implemented
+- We need to know exactly where the email flow is failing
+- Test both the direct admin test email route and the normal email pipeline conditions
+- Check logs and real responses, not assumptions
+
+GOAL:
+Find out why no emails are arriving and fix the root cause.
+
+==================================================
+1. CHECK EMAIL_TEST_MODE FIRST
+==================================================
+
+Inspect the code and confirm the current value of EMAIL_TEST_MODE.
+
+Report clearly:
+- where EMAIL_TEST_MODE is defined
+- whether it is currently true or false
+- whether it intercepts the normal email pipeline
+- whether it affects the admin-only direct test route
+
+If EMAIL_TEST_MODE is still true for normal sending, report that clearly.
+
+==================================================
+2. TEST THE DIRECT RESEND PATH
+==================================================
+
+Run the admin-only direct real email test route that was created.
+
+Use:
+POST /api/admin/test-email
+
+Send the test to:
+martin.essie87@gmail.com
+
+Check:
+- did the request succeed?
+- what did Resend return?
+- was the email accepted?
+- were there any provider errors?
+- were there any server-side validation errors?
+- did the logs show the real Resend path being used?
+
+If the route fails, fix it.
+
+==================================================
+3. VERIFY ENV + DOMAIN SETUP
+==================================================
+
+Check the current runtime email configuration:
+- RESEND_API_KEY present?
+- RESEND_FROM_EMAIL present?
+- RESEND_REPLY_TO present?
+
+Check the actual values being used (mask secrets where necessary).
+
+Confirm:
+- from email is alerts@housalert.com
+- reply-to is no-reply@housalert.com
+
+Also verify whether the sending domain is actually valid for Resend usage in this environment.
+If the domain/sender setup is the issue, explain it clearly and fix whatever is possible in code/config.
+
+==================================================
+4. CHECK SERVER LOGS
+==================================================
+
+Inspect logs for:
+- EMAIL_TEST_MODE interception
+- Resend send attempts
+- accepted/rejected responses
+- validation errors
+- provider errors
+- any exceptions thrown before email send
+
+We need the exact failure point.
+
+==================================================
+5. TEST THE NORMAL PIPELINE
+==================================================
+
+After the direct test is verified, inspect whether the normal match-email pipeline is still blocked by:
+- subscription checks
+- email toggle checks
+- buddy logic
+- buffer flushing logic
+- EMAIL_TEST_MODE
+- any missing trigger condition
+
+Determine whether:
+- direct Resend works but pipeline is blocked
+or
+- Resend itself is not working
+
+==================================================
+6. FIX THE ROOT CAUSE
+==================================================
+
+Fix only what is necessary.
+
+Possibilities may include:
+- EMAIL_TEST_MODE still enabled
+- broken admin test route
+- env not being read correctly
+- sender config issue
+- Resend request issue
+- pipeline blocked before send
+- anything else found in diagnosis
+
+Do NOT make blind changes.
+
+==================================================
+7. RETEST AFTER FIX
+==================================================
+
+After fixing:
+- run the direct admin test email again
+- confirm whether it now succeeds
+- if possible, verify delivery/acceptance in logs
+- confirm whether the normal email path is now able to send when conditions are met
+
+==================================================
+8. OUTPUT
+==================================================
+
+Return a concise report with:
+
+1. current EMAIL_TEST_MODE status
+2. result of direct admin test email
+3. whether Resend config/env was correct
+4. exact root cause
+5. what was changed
+6. whether direct email now works
+7. whether the normal pipeline now works
+8. any remaining blockers
