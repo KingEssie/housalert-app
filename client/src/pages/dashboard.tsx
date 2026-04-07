@@ -46,7 +46,8 @@ import { HighlightCard } from "@/components/highlight-card";
 import { useReferralShare } from "@/lib/referral-share";
 import TipsPage, { getTipConfig, getTipsReadSet } from "@/pages/tips";
 import { getFlowTipSteps } from "@/pages/tips-flow";
-import { ACCOUNT_FLOW, SEARCH_PREP_FLOW, resolveFlowSteps, buildCompletionMap } from "@/lib/task-flows";
+import { ACCOUNT_FLOW, resolveFlowSteps, buildCompletionMap } from "@/lib/task-flows";
+import { getActiveSearchPrepFlow, getFlowVersion, setFlowVersion, isFlowV2Enabled, buildV2CompletionMap, type FlowVersion } from "@/lib/search-flow-v2";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ListingCardFull, ListingCardMini } from "@/components/listing-card";
 
@@ -372,8 +373,10 @@ function TaskFlowCard({
   const data = strengthQuery.data;
   if (!data) return null;
 
-  const serverTasks = taskSource === "tasks" ? data.tasks : data.prepTasks;
-  const completionMap = buildCompletionMap(serverTasks);
+  const isV2 = flow.id === "search-v2";
+  const completionMap = isV2
+    ? buildV2CompletionMap(data)
+    : buildCompletionMap(taskSource === "tasks" ? data.tasks : data.prepTasks);
   const steps = resolveFlowSteps(flow, completionMap, t, navigate);
 
   return (
@@ -387,6 +390,42 @@ function TaskFlowCard({
   );
 }
 
+
+function FlowVersionToggle() {
+  const [version, setVersion] = useState<FlowVersion>(getFlowVersion());
+
+  function handleSwitch(v: FlowVersion) {
+    setFlowVersion(v);
+    setVersion(v);
+  }
+
+  return (
+    <div className="flex items-center gap-[14px] min-h-[64px] px-5 py-4" data-testid="admin-flow-toggle">
+      <Sparkles className="w-6 h-6 text-[#111111]" strokeWidth={1.6} />
+      <p className="text-[15px] font-medium text-[#111111] flex-1">Zoekflow versie</p>
+      <div className="flex bg-[#F3F4F6] rounded-full p-0.5" data-testid="toggle-flow-version">
+        <button
+          onClick={() => handleSwitch("v1")}
+          className={`px-3.5 py-1.5 rounded-full text-[13px] font-semibold transition-all ${
+            version === "v1" ? "bg-white text-[#111111] shadow-sm" : "text-[#6B7280]"
+          }`}
+          data-testid="button-flow-v1"
+        >
+          Huidig
+        </button>
+        <button
+          onClick={() => handleSwitch("v2")}
+          className={`px-3.5 py-1.5 rounded-full text-[13px] font-semibold transition-all ${
+            version === "v2" ? "bg-white text-ha-primary shadow-sm" : "text-[#6B7280]"
+          }`}
+          data-testid="button-flow-v2"
+        >
+          Nieuw
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function ProfileTipsCompletionCard({ navigate }: { navigate: (path: string) => void }) {
   const { t } = useTranslation();
@@ -725,7 +764,7 @@ function HomeTab({
           </h2>
           <div className="flex flex-col gap-3.5">
             <TaskFlowCard accessToken={accessToken} flow={ACCOUNT_FLOW} taskSource="tasks" navigate={navigate} testId="card-account-completion" />
-            <TaskFlowCard accessToken={accessToken} flow={SEARCH_PREP_FLOW} taskSource="prepTasks" navigate={navigate} testId="card-prep-completion" />
+            <TaskFlowCard accessToken={accessToken} flow={getActiveSearchPrepFlow()} taskSource="prepTasks" navigate={navigate} testId="card-prep-completion" />
           </div>
         </div>
 
@@ -1744,6 +1783,8 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             <div>
               <SectionTitle>Admin</SectionTitle>
               <div className="rounded-[16px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
+                <FlowVersionToggle />
+                <div className="h-px bg-[#F0F0F0] mx-5" />
                 <button
                   onClick={() => navigate("/admin/image-audit")}
                   className="w-full flex items-center gap-[14px] min-h-[64px] px-5 py-4 text-left active:bg-[#F9FAFB] transition-colors"

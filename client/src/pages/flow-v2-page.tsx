@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { useTranslation } from "@/i18n";
 import { apiFetch } from "@/lib/api-base";
 import { FlowLayout } from "@/components/flow-layout";
-import { SEARCH_FLOW_V2 } from "@/lib/search-flow-v2";
+import { SEARCH_FLOW_V2, buildV2CompletionMap } from "@/lib/search-flow-v2";
 import {
   getStepIndex,
   getFlowStepRoute,
@@ -349,22 +349,3 @@ export default function FlowV2Page() {
   );
 }
 
-function buildV2CompletionMap(data: ProfileStrengthResponse | undefined): Record<string, boolean> {
-  if (!data) return {};
-  const hasSearch = (data.tasks.find(t => t.id === "search_profile")?.completed) ?? false;
-  const hasMultipleSearches = (data.prepTasks.find(t => t.id === "extra_search_profile")?.completed) ?? false;
-  const hasDocs = (data.tasks.find(t => t.id === "documents")?.completed) ?? false;
-  const hasLetter = (data.prepTasks.find(t => t.id === "application_letter")?.completed) ?? false;
-  const hasViewingTips = (data.prepTasks.find(t => t.id === "viewing_tips")?.completed) ?? false;
-  const hasNotifications = data.channels.email || data.channels.push;
-  const hasBuddy = (data.tasks.find(t => t.id === "search_buddy")?.completed) ?? false;
-  const hasNetwork = (data.prepTasks.find(t => t.id === "network")?.completed) ?? false;
-
-  return {
-    create: hasSearch,
-    optimize: hasSearch && hasMultipleSearches,
-    ready: hasDocs && hasLetter,
-    tips: hasViewingTips,
-    boost: hasNotifications && hasBuddy && hasNetwork,
-  };
-}

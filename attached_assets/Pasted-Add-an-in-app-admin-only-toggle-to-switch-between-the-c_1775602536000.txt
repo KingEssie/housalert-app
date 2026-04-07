@@ -1,0 +1,112 @@
+Add an in-app admin-only toggle to switch between the current search flow (v1) and the experimental search flow (v2).
+
+IMPORTANT:
+- Do NOT remove v1
+- Do NOT remove v2
+- Do NOT rely only on URL params for testing anymore
+- Keep this as a safe internal testing tool
+- Only show this switch to the admin user
+- Make it easy to remove later
+
+GOAL:
+Let me switch between v1 and v2 inside the app, so I can test both search flows without manually changing URLs or localStorage.
+
+==================================================
+1. ADD AN ADMIN-ONLY FLOW TOGGLE
+==================================================
+
+Create a small admin-only UI control for choosing the search flow version.
+
+Only visible for:
+- martin.essie87@gmail.com
+
+Show either:
+- a segmented control:
+  - Huidig
+  - Nieuw
+or
+- a toggle:
+  - Test nieuwe flow
+
+Preferred behavior:
+- visually simple
+- easy to switch
+- clearly indicates active version
+
+==================================================
+2. STORE THE CHOICE
+==================================================
+
+Persist the selected flow version in localStorage.
+
+Use a key like:
+- flow_version
+
+Allowed values:
+- v1
+- v2
+
+If no value exists:
+- default to v1
+
+==================================================
+3. CENTRALIZE ROUTE RESOLUTION
+==================================================
+
+Create one central helper function to decide which search flow entry route should be used.
+
+Example:
+- getSearchFlowEntryRoute()
+
+Behavior:
+- if flow_version = v2 → return v2 entry route
+- else → return v1 entry route
+
+Do NOT scatter flow version checks across many components if avoidable.
+
+==================================================
+4. APPLY TO SEARCH FLOW ENTRY POINTS
+==================================================
+
+Update the main places where a user starts or opens the search creation flow so they respect the selected version.
+
+Examples may include:
+- “Zoekopdracht toevoegen”
+- dashboard/search entry points
+- relevant CTA buttons that start the search flow
+
+Requirement:
+- when I switch to v2 in-app, these entry points should use v2
+- when I switch back to v1, they should use v1
+
+Do NOT change unrelated routes.
+
+==================================================
+5. KEEP V1 AND V2 FULLY INTACT
+==================================================
+
+Do not merge the flows.
+Do not break either version.
+Only switch which one is opened.
+
+==================================================
+6. EASY TO REMOVE LATER
+==================================================
+
+Keep this implementation isolated and clean so it can be removed later.
+
+For example:
+- one helper
+- one admin-only toggle component
+- minimal touchpoints
+
+==================================================
+7. OUTPUT
+==================================================
+
+After finishing, provide:
+1. where the toggle was added
+2. how the selected version is stored
+3. which entry points now respect the toggle
+4. what helper function was added
+5. confirmation that both v1 and v2 still work independently
