@@ -1,0 +1,158 @@
+We are officially abandoning the experimental v2 search flow.
+
+FINAL DECISION:
+- v2 must be fully removed from the app
+- v1 remains the only real search flow
+- We only want to preserve selected visual design improvements from v2 and apply them to the existing v1 search flow
+
+GOAL:
+1. Remove the v2 search flow completely
+2. Remove the admin flow toggle completely
+3. Restore v1 as the only search flow in the app
+4. Apply the best visual design elements from v2 to ALL v1 search flow screens
+5. Keep the existing v1 structure, content, routing logic, and step logic intact
+
+IMPORTANT:
+- Do NOT redesign the v1 flow
+- Do NOT change the step order or step content of v1
+- Do NOT merge or rewrite the v1 logic again
+- Only remove v2 and polish v1 visually
+- Do NOT break auth, routing, completion logic, or dashboard behavior
+
+==================================================
+1. FULLY REMOVE V2 SEARCH FLOW
+==================================================
+
+Completely remove all v2 flow code and related references, including:
+
+- v2 routes
+- v2 flow config
+- v2 page/component files
+- v2-specific helper functions if no longer needed
+- v2-specific i18n keys
+- v2-specific completion mapping
+- any v2-only logic or conditional checks
+
+Examples may include:
+- search-flow-v2.ts
+- flow-v2-page.tsx
+- /flow-v2/... route definitions
+- v2 completion mappings
+- v2 localStorage flow version logic
+
+After cleanup:
+- there should be no active v2 search flow left in the app
+- there should be no dead code or orphan references related to v2
+
+==================================================
+2. REMOVE THE ADMIN FLOW TOGGLE
+==================================================
+
+Remove the admin-only "Huidig / Nieuw" flow version toggle completely.
+
+Also remove:
+- localStorage flow_version handling
+- any helper logic that switches between v1 and v2
+- any UI related to selecting flow versions
+
+After cleanup:
+- the app should behave normally with only v1
+- there should be no search flow version switching left anywhere
+
+==================================================
+3. RESTORE V1 AS THE ONLY SEARCH FLOW
+==================================================
+
+Make v1 the only active search flow again.
+
+Requirements:
+- all search flow entry points should open v1
+- dashboard and home/search actions should go to the normal v1 flow
+- no stale references to v2 should remain
+- app behavior should be stable and predictable again
+
+==================================================
+4. APPLY THE BEST V2 VISUAL DESIGN ELEMENTS TO ALL V1 SEARCH FLOW SCREENS
+==================================================
+
+Preserve only the best visual design improvements from v2 and apply them to ALL existing v1 search flow screens.
+
+This includes:
+
+A. Progress bar
+- make the progress bar thicker
+- keep it rounded and visually stronger
+- keep it aligned with current branding
+
+B. Step counter
+- make the step counter larger and bolder
+- improve visual balance with the flow title
+- make the current step state more prominent
+
+C. Previous / Next buttons
+- apply the stronger v2-style visual treatment to the previous and next buttons
+- use the improved sizing, weight, and visual clarity from v2
+- preserve v1 behavior and navigation logic
+- preserve disabled states where appropriate
+
+D. General visual consistency
+- keep the v1 flow structure exactly as it is
+- improve only the visual layer using the strongest parts of v2
+- examples:
+  - more robust hierarchy
+  - cleaner spacing
+  - stronger title/counter relationship
+  - more premium bottom navigation area
+  - more consistent action emphasis
+
+IMPORTANT:
+- Do NOT import v2 logic or structure
+- only apply the design treatment to v1
+
+==================================================
+5. APPLY THIS TO ALL V1 SEARCH FLOW SCREENS
+==================================================
+
+Make sure the visual polish is applied consistently to ALL screens that belong to the v1 search flow.
+
+Do not update only one or two screens.
+The full v1 search flow must feel visually consistent from start to finish.
+
+==================================================
+6. KEEP THE CURRENT V1 UX STRUCTURE
+==================================================
+
+Do NOT:
+- replace steps
+- reorder steps
+- merge steps
+- change the current content strategy
+- change completion behavior
+- introduce new flow concepts
+
+Only:
+- remove v2 completely
+- polish v1 visually
+
+==================================================
+7. CLEANUP REQUIREMENT
+==================================================
+
+After implementation:
+- there should be no v2-specific code left
+- there should be no admin toggle left
+- there should be no flow-version state left
+- the codebase should be cleaner than before
+
+==================================================
+8. OUTPUT
+==================================================
+
+After finishing, return:
+
+1. which v2 files/components/routes were deleted
+2. which flow-toggle/versioning logic was removed
+3. which v1 entry points were confirmed to open normally again
+4. which v2 visual design elements were applied to v1
+5. confirmation that all v1 search flow screens now use the updated progress bar, step counter, and previous/next button styling
+6. which files were changed

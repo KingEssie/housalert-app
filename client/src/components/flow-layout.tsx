@@ -41,13 +41,13 @@ export function FlowLayout({
   return (
     <div className="fixed inset-0 z-50 bg-white flex flex-col" data-testid="flow-layout">
       <div className="bg-white">
-        <div className="flex items-center justify-between px-5 h-[60px]">
+        <div className="flex items-center justify-between px-5 h-[64px]">
           <div className="flex-1 min-w-0">
             <p className="text-[17px] font-semibold text-[#111111] truncate" data-testid="text-flow-title">{flowTitle}</p>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-[15px] font-semibold text-[#111111] whitespace-nowrap" data-testid="text-flow-progress">
-              {currentStep + 1}/{totalSteps}
+            <span className="text-[16px] font-bold text-[#111111] tabular-nums whitespace-nowrap" data-testid="text-flow-progress">
+              {currentStep + 1}<span className="text-[#C4C4C4] font-semibold">/{totalSteps}</span>
             </span>
             <button
               onClick={onClose}
@@ -58,7 +58,7 @@ export function FlowLayout({
             </button>
           </div>
         </div>
-        <div className="h-[5px] bg-[#F0F0F0] mx-5 rounded-full overflow-hidden">
+        <div className="h-[6px] bg-[#F0F0F0] mx-5 rounded-full overflow-hidden">
           <div
             className="h-full bg-ha-primary rounded-full transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
@@ -98,12 +98,12 @@ export function FlowLayout({
         </div>
       </div>
 
-      <div className="bg-white border-t border-[#E5E7EB] px-5 py-4 pb-[max(16px,env(safe-area-inset-bottom))]">
+      <div className="bg-white border-t border-[#E5E7EB] px-5 py-5 pb-[max(20px,env(safe-area-inset-bottom))]">
         <div className="max-w-lg mx-auto flex items-center gap-3">
           <button
             onClick={onPrev ?? undefined}
             disabled={!onPrev}
-            className="h-[50px] px-5 rounded-full border border-[#E5E7EB] text-[15px] font-semibold text-[#111111] disabled:opacity-25 disabled:cursor-not-allowed hover:bg-[#F9FAFB] transition-colors flex items-center gap-1.5"
+            className="h-[52px] px-6 rounded-full border border-[#E5E7EB] text-[15px] font-semibold text-[#111111] disabled:opacity-20 disabled:cursor-not-allowed hover:bg-[#F9FAFB] active:scale-[0.97] transition-all flex items-center gap-1.5"
             data-testid="button-flow-prev"
           >
             <ChevronLeft className="w-4 h-4" />
@@ -116,7 +116,7 @@ export function FlowLayout({
             <button
               onClick={onMarkComplete}
               disabled={isPending}
-              className="h-[50px] px-5 rounded-full bg-[#111111] text-white text-[14px] font-semibold hover:bg-[#333333] transition-colors disabled:opacity-50 flex items-center gap-2"
+              className="h-[52px] px-6 rounded-full bg-[#111111] text-white text-[14px] font-semibold hover:bg-[#333333] active:scale-[0.97] transition-all disabled:opacity-50 flex items-center gap-2"
               data-testid="button-flow-mark-complete"
             >
               <Check className="w-4 h-4" />
@@ -127,7 +127,7 @@ export function FlowLayout({
           <button
             onClick={onNext ?? undefined}
             disabled={!onNext}
-            className="h-[50px] px-7 rounded-full bg-ha-primary text-white text-[15px] font-semibold disabled:opacity-25 disabled:cursor-not-allowed hover:brightness-95 transition-all flex items-center gap-1.5"
+            className="h-[52px] px-8 rounded-full bg-ha-primary text-white text-[15px] font-semibold disabled:opacity-20 disabled:cursor-not-allowed hover:brightness-95 active:scale-[0.97] transition-all flex items-center gap-1.5 shadow-[0_2px_8px_rgba(217,26,104,0.18)]"
             data-testid="button-flow-next"
           >
             {isLastStep ? t("taskFlow.ui.finish") : t("taskFlow.ui.next")}

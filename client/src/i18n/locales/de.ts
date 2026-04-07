@@ -1954,45 +1954,6 @@ export const de: Record<string, any> = {
     },
   },
 
-  flowV2: {
-    title: "Suche starten",
-    subtitle: "{done} von {total} erledigt",
-    steps: {
-      create: "Suchauftrag erstellen",
-      optimize: "Suche verfeinern",
-      ready: "Bereit zum Reagieren",
-      tips: "Unsere Tipps ansehen",
-      boost: "Chancen verbessern",
-    },
-    desc: {
-      create: "Erstelle deinen ersten Suchauftrag mit Standort, Budget und Wohnwünschen.",
-      optimize: "Passe deine Filter an für bessere Ergebnisse. Füge bei Bedarf weitere Suchaufträge hinzu.",
-      ready: "Sammle deine Dokumente und bereite dein Bewerbungsschreiben vor, damit du sofort reagieren kannst.",
-      tips: "Lies unsere Besichtigungstipps und erhöhe deine Chancen auf die Wohnung.",
-      boost: "Aktiviere Benachrichtigungen, füge einen Suchpartner hinzu und nutze dein Netzwerk.",
-    },
-    optimize: {
-      noSearches: "Du hast noch keinen Suchauftrag. Erstelle zuerst deinen ersten.",
-      createFirst: "Ersten Suchauftrag erstellen",
-      yourSearches: "Deine Suchaufträge",
-      addAnother: "Weiteren Suchauftrag hinzufügen",
-    },
-    ready: {
-      documents: "Dokumente zusammenstellen",
-      letter: "Bewerbungsschreiben vorbereiten",
-      start: "Starten",
-    },
-    boost: {
-      notifications: "Benachrichtigungen aktivieren",
-      buddy: "Suchpartner hinzufügen",
-      network: "Netzwerk einsetzen",
-    },
-    ui: {
-      createSearch: "Suchauftrag erstellen",
-      viewTips: "Tipps ansehen",
-    },
-  },
-
   boostTask: {
     incomeDocuments: "Einkommensdokumente vorbereiten",
     alerts: "Wohnungsalerts aktivieren",

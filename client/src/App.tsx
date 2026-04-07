@@ -57,7 +57,6 @@ import ApplyPage from "@/pages/apply";
 import TipDetailPage from "@/pages/tip-detail";
 import TipsFlowPage from "@/pages/tips-flow";
 import FlowPage from "@/pages/flow-page";
-import FlowV2Page from "@/pages/flow-v2-page";
 import DocumentsPage from "@/pages/documents";
 import SettingsPage from "@/pages/settings";
 import PreferencesPage from "@/pages/preferences";
@@ -191,7 +190,6 @@ function Router() {
       <Route path="/listing/:id" component={() => <ProtectedRoute component={ListingDetailPage} />} />
       <Route path="/apply/:id" component={() => <ProtectedRoute component={ApplyPage} />} />
       <Route path="/flow/:flowId/:stepId" component={() => <ProtectedRoute component={FlowPage} />} />
-      <Route path="/flow-v2/search/:stepId" component={() => <ProtectedRoute component={FlowV2Page} />} />
       <Route path="/documents" component={() => <ProtectedRoute component={DocumentsPage} />} />
       <Route path="/application-letter" component={() => <ProtectedRoute component={ApplicationLetterPage} />} />
       <Route path="/profile/details" component={() => <ProtectedRoute component={ProfileDetailsPage} />} />

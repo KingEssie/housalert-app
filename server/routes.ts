@@ -2749,9 +2749,6 @@ export async function registerRoutes(
           network: "network_task_done",
           viewing_tips: "viewing_tips_done",
         },
-        "search-v2": {
-          tips: "viewing_tips_done",
-        },
       };
 
       const column = MANUAL_STEP_COLUMNS[flowId]?.[stepId];

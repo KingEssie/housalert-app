@@ -1176,45 +1176,6 @@ export const en: Record<string, any> = {
     },
   },
 
-  flowV2: {
-    title: "Start your search",
-    subtitle: "{done} of {total} completed",
-    steps: {
-      create: "Create your search",
-      optimize: "Optimize your search",
-      ready: "Get ready to respond",
-      tips: "View our tips",
-      boost: "Boost your chances",
-    },
-    desc: {
-      create: "Set up your first search with location, budget and housing preferences.",
-      optimize: "Adjust your filters for better results. Add extra searches if needed.",
-      ready: "Gather your documents and prepare your application letter so you can respond immediately.",
-      tips: "Read our viewing tips and increase your chances of landing the property.",
-      boost: "Enable notifications, add a search buddy and use your network.",
-    },
-    optimize: {
-      noSearches: "You don't have a search yet. Create your first one to get started.",
-      createFirst: "Create first search",
-      yourSearches: "Your searches",
-      addAnother: "Add another search",
-    },
-    ready: {
-      documents: "Gather documents",
-      letter: "Prepare application letter",
-      start: "Start",
-    },
-    boost: {
-      notifications: "Enable notifications",
-      buddy: "Add search buddy",
-      network: "Use your network",
-    },
-    ui: {
-      createSearch: "Create search",
-      viewTips: "View tips",
-    },
-  },
-
   boostTask: {
     incomeDocuments: "Prepare income documents",
     alerts: "Activate housing alerts",
