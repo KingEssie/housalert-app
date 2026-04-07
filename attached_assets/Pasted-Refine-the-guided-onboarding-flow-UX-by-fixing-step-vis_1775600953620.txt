@@ -1,0 +1,136 @@
+Refine the guided onboarding flow UX by fixing step visibility, strengthening the profile-completion step, and improving the notifications step copy and layout.
+
+IMPORTANT:
+- Build on the existing guided flow system
+- Do NOT remove the flow system
+- Do NOT break routing, auth, or completion logic
+- Do NOT redesign everything again
+- Only fix the issues below
+- Keep all steps clickable from the dashboard
+- Keep completed steps clickable
+
+GOAL:
+Make the flow screens more focused, more complete, and more understandable.
+
+==================================================
+1. REMOVE FULL STEP LIST FROM EACH FLOW PAGE
+==================================================
+
+Problem:
+The current flow pages appear to show the steps too prominently on every page, which makes the UI feel busy and unfocused.
+
+Fix:
+- On each individual flow page, show ONLY:
+  - flow title
+  - progress bar
+  - step counter (example: 3/5 klaar)
+- Do NOT show the full list of all steps on every flow page
+- The page should focus on one step at a time
+
+Keep:
+- progress bar
+- current step count
+- flow context
+
+Remove/hide:
+- any full visible step list UI inside each flow page
+- any redundant navigation that makes the page feel cluttered
+
+==================================================
+2. STRENGTHEN THE “PROFILE COMPLETION” STEP
+==================================================
+
+Problem:
+The current “complete your profile” step feels too minimal and does not actually feel like a real profile-completion step.
+
+Update this step so it feels complete and intentional.
+
+Preferred fields:
+- first name
+- last name
+- phone number
+- email address (readonly is okay if already known)
+
+Optional if already available and easy to support:
+- date of birth
+- income/work field
+- short bio/intro field
+
+Requirements:
+- keep the form simple and clean
+- do NOT make it overwhelming
+- make it feel like a real “profile complete” step, not just “add phone number”
+
+Completion logic:
+- update completion logic if needed so this step only becomes complete when the required profile fields are truly filled in
+
+==================================================
+3. IMPROVE THE NOTIFICATIONS STEP COPY + UI
+==================================================
+
+Problem:
+The notification step text currently does not feel strong or clear enough.
+
+Make the notifications step feel more urgent, helpful, and action-oriented.
+
+Use improved copy direction like:
+
+Title:
+- Blijf als eerste op de hoogte
+
+Body:
+- Nieuwe woningen verdwijnen snel.
+- Zorg dat je direct een melding krijgt.
+
+Notification options:
+- Push notificaties (aanrader)
+  - Direct een melding op je telefoon
+- Email notificaties
+  - Ontvang updates in je inbox
+
+Requirements:
+- improve readability
+- keep text concise
+- stronger hierarchy
+- no long gray paragraphs
+- make the benefit clear immediately
+
+Feedback:
+When notifications are enabled, show a small positive confirmation like:
+- ✅ Je ontvangt nu direct meldingen
+
+==================================================
+4. KEEP THE FLOW CLEAN
+==================================================
+
+Maintain the current premium style, but improve focus:
+- one main action area per page
+- no clutter
+- short copy
+- strong titles
+- good spacing
+- dark readable body text
+- minimal use of soft gray text
+
+==================================================
+5. DO NOT BREAK EXISTING FLOW BEHAVIOR
+==================================================
+
+Keep:
+- dashboard task cards open the correct exact step
+- completed steps remain clickable
+- existing flow routing works
+- existing completion system continues to function
+
+Only refine the UX/content and fix the profile step scope.
+
+==================================================
+6. OUTPUT
+==================================================
+
+After finishing, provide:
+1. what step-list UI was removed/hidden from the flow pages
+2. which fields are now included in the profile completion step
+3. what completion logic changed for that profile step
+4. the final notification title/body/option copy used
+5. which files/components were changed

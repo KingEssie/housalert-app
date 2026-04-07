@@ -32,6 +32,9 @@ import {
   Check,
   ArrowRight,
   Loader2,
+  Mail,
+  Calendar,
+  Briefcase,
 } from "lucide-react";
 
 const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -44,12 +47,14 @@ function getStepIcon(iconName: string) {
   return <Icon className="w-8 h-8 text-ha-primary" />;
 }
 
-function InlineProfileDetails({ accessToken }: { accessToken: string }) {
+function InlineProfileDetails({ accessToken, userEmail }: { accessToken: string; userEmail: string }) {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [occupation, setOccupation] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -60,6 +65,8 @@ function InlineProfileDetails({ accessToken }: { accessToken: string }) {
         setFirstName(d?.first_name || "");
         setLastName(d?.last_name || "");
         setPhone(d?.phone || "");
+        setBirthDate(d?.birth_date || "");
+        setOccupation(d?.occupation || "");
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -75,6 +82,8 @@ function InlineProfileDetails({ accessToken }: { accessToken: string }) {
           first_name: firstName.trim() || null,
           last_name: lastName.trim() || null,
           phone: phone.trim() || null,
+          birth_date: birthDate.trim() || null,
+          occupation: occupation.trim() || null,
         }),
       });
       if (!res.ok) throw new Error("Save failed");
@@ -92,25 +101,53 @@ function InlineProfileDetails({ accessToken }: { accessToken: string }) {
   if (loading) return <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-[#9CA3AF]" /></div>;
 
   const inputClass = "w-full h-[50px] px-4 rounded-2xl border border-[#E5E7EB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/30 focus:border-ha-primary transition-colors";
+  const readonlyClass = "w-full h-[50px] px-4 rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] text-[15px] text-[#6B7280] cursor-not-allowed";
+  const canSave = firstName.trim() && lastName.trim() && phone.trim();
 
   return (
     <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 flex flex-col gap-4" data-testid="inline-profile-details">
-      <div>
-        <label className="text-[13px] font-semibold text-[#374151] mb-1.5 block">{t("profileDetails.firstName")}</label>
-        <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder={t("profileEdit.firstNamePlaceholder")} className={inputClass} data-testid="input-first-name" />
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="text-[13px] font-semibold text-[#374151] mb-1.5 block">{t("profileDetails.firstName")}</label>
+          <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder={t("profileEdit.firstNamePlaceholder")} className={inputClass} data-testid="input-first-name" />
+        </div>
+        <div>
+          <label className="text-[13px] font-semibold text-[#374151] mb-1.5 block">{t("profileDetails.lastName")}</label>
+          <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} placeholder={t("profileEdit.lastNamePlaceholder")} className={inputClass} data-testid="input-last-name" />
+        </div>
       </div>
       <div>
-        <label className="text-[13px] font-semibold text-[#374151] mb-1.5 block">{t("profileDetails.lastName")}</label>
-        <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} placeholder={t("profileEdit.lastNamePlaceholder")} className={inputClass} data-testid="input-last-name" />
+        <label className="text-[13px] font-semibold text-[#374151] mb-1.5 block">{t("profileDetails.email")}</label>
+        <div className="relative">
+          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+          <input type="email" value={userEmail} readOnly className={`${readonlyClass} pl-10`} data-testid="input-email-readonly" />
+        </div>
       </div>
       <div>
         <label className="text-[13px] font-semibold text-[#374151] mb-1.5 block">{t("profileDetails.phone")}</label>
-        <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder={t("profileEdit.phonePlaceholder")} className={inputClass} data-testid="input-phone" />
+        <div className="relative">
+          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+          <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder={t("profileEdit.phonePlaceholder")} className={`${inputClass} pl-10`} data-testid="input-phone" />
+        </div>
+      </div>
+      <div>
+        <label className="text-[13px] font-semibold text-[#374151] mb-1.5 block">{t("profileDetails.birthDate")}</label>
+        <div className="relative">
+          <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+          <input type="date" value={birthDate} onChange={e => setBirthDate(e.target.value)} className={`${inputClass} pl-10`} data-testid="input-birth-date" />
+        </div>
+      </div>
+      <div>
+        <label className="text-[13px] font-semibold text-[#374151] mb-1.5 block">{t("profileEdit.occupation")}</label>
+        <div className="relative">
+          <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+          <input type="text" value={occupation} onChange={e => setOccupation(e.target.value)} placeholder={t("profileEdit.occupationPlaceholder")} className={`${inputClass} pl-10`} data-testid="input-occupation" />
+        </div>
       </div>
       <button
         onClick={handleSave}
-        disabled={saving || (!firstName.trim() && !lastName.trim())}
-        className="w-full h-[50px] rounded-full bg-[#111111] text-white text-[15px] font-semibold hover:bg-[#333333] disabled:opacity-40 transition-colors flex items-center justify-center gap-2"
+        disabled={saving || !canSave}
+        className="w-full h-[50px] rounded-full bg-[#111111] text-white text-[15px] font-semibold hover:bg-[#333333] disabled:opacity-40 transition-colors flex items-center justify-center gap-2 mt-1"
         data-testid="button-save-profile"
       >
         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
@@ -162,38 +199,62 @@ function InlineNotifications({ accessToken }: { accessToken: string }) {
   if (loading) return <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-[#9CA3AF]" /></div>;
   if (!settings) return null;
 
+  const anyEnabled = settings.push_enabled || settings.email_enabled;
+
   return (
-    <div className="bg-white rounded-2xl border border-[#E5E7EB] overflow-hidden" data-testid="inline-notifications">
-      <ToggleRow
-        icon={<Bell className="w-5 h-5 text-ha-primary" />}
-        label={t("settings.pushNotifications")}
-        enabled={settings.push_enabled}
-        loading={updating === "push_enabled"}
-        onToggle={() => handleToggle("push_enabled", settings.push_enabled)}
-        testId="toggle-push"
-      />
-      <div className="h-px bg-[#F0F0F0] mx-4" />
-      <ToggleRow
-        icon={<FileText className="w-5 h-5 text-ha-primary" />}
-        label={t("settings.emailNotifications")}
-        enabled={settings.email_enabled}
-        loading={updating === "email_enabled"}
-        onToggle={() => handleToggle("email_enabled", settings.email_enabled)}
-        testId="toggle-email"
-      />
+    <div data-testid="inline-notifications">
+      <div className="bg-white rounded-2xl border border-[#E5E7EB] overflow-hidden">
+        <NotifToggleRow
+          icon={<Bell className="w-5 h-5 text-ha-primary" />}
+          label={t("taskFlow.notif.pushLabel")}
+          subtitle={t("taskFlow.notif.pushDesc")}
+          badge={t("taskFlow.notif.pushBadge")}
+          enabled={settings.push_enabled}
+          loading={updating === "push_enabled"}
+          onToggle={() => handleToggle("push_enabled", settings.push_enabled)}
+          testId="toggle-push"
+        />
+        <div className="h-px bg-[#F0F0F0] mx-5" />
+        <NotifToggleRow
+          icon={<Mail className="w-5 h-5 text-ha-primary" />}
+          label={t("taskFlow.notif.emailLabel")}
+          subtitle={t("taskFlow.notif.emailDesc")}
+          enabled={settings.email_enabled}
+          loading={updating === "email_enabled"}
+          onToggle={() => handleToggle("email_enabled", settings.email_enabled)}
+          testId="toggle-email"
+        />
+      </div>
+
+      {anyEnabled && (
+        <div className="flex items-center gap-2.5 mt-4 py-3 px-4 bg-[#F0FDF4] border border-[#BBF7D0] rounded-2xl" data-testid="notif-active-confirm">
+          <div className="w-[22px] h-[22px] rounded-full bg-[#16A34A] flex items-center justify-center flex-shrink-0">
+            <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
+          </div>
+          <span className="text-[14px] font-medium text-[#16A34A]">{t("taskFlow.notif.activeConfirm")}</span>
+        </div>
+      )}
     </div>
   );
 }
 
-function ToggleRow({ icon, label, enabled, loading, onToggle, testId }: {
-  icon: React.ReactNode; label: string; enabled: boolean; loading: boolean;
+function NotifToggleRow({ icon, label, subtitle, badge, enabled, loading, onToggle, testId }: {
+  icon: React.ReactNode; label: string; subtitle: string; badge?: string; enabled: boolean; loading: boolean;
   onToggle: () => void; testId: string;
 }) {
   return (
-    <button onClick={onToggle} disabled={loading} className="w-full px-5 py-4 flex items-center gap-4 hover:bg-[#FAFAFA] transition-colors" data-testid={testId}>
-      <div className="flex-shrink-0">{icon}</div>
-      <span className="flex-1 text-[15px] font-medium text-[#111111] text-left">{label}</span>
-      <div className={`w-[46px] h-[26px] rounded-full transition-colors flex items-center px-0.5 ${enabled ? "bg-[#111111]" : "bg-[#D1D5DB]"}`}>
+    <button onClick={onToggle} disabled={loading} className="w-full px-5 py-4 flex items-start gap-4 hover:bg-[#FAFAFA] transition-colors text-left" data-testid={testId}>
+      <div className="flex-shrink-0 mt-0.5">{icon}</div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <span className="text-[15px] font-semibold text-[#111111]">{label}</span>
+          {badge && (
+            <span className="text-[11px] font-semibold text-ha-primary bg-[#FDF1F6] px-2 py-0.5 rounded-full">{badge}</span>
+          )}
+        </div>
+        <p className="text-[13px] text-[#6B7280] mt-0.5 leading-snug">{subtitle}</p>
+      </div>
+      <div className={`w-[46px] h-[26px] rounded-full transition-colors flex items-center px-0.5 flex-shrink-0 mt-0.5 ${enabled ? "bg-[#111111]" : "bg-[#D1D5DB]"}`}>
         <div className={`w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${enabled ? "translate-x-[20px]" : "translate-x-0"}`} />
       </div>
     </button>
@@ -285,13 +346,13 @@ function OpenPageButton({ step, label }: { step: TaskFlowStep; label: string }) 
   );
 }
 
-function FlowStepContent({ flow, step, accessToken }: { flow: TaskFlow; step: TaskFlowStep; accessToken: string }) {
+function FlowStepContent({ flow, step, accessToken, userEmail }: { flow: TaskFlow; step: TaskFlowStep; accessToken: string; userEmail: string }) {
   const { t } = useTranslation();
 
   if (step.inline) {
     switch (step.id) {
       case "profile_details":
-        return <InlineProfileDetails accessToken={accessToken} />;
+        return <InlineProfileDetails accessToken={accessToken} userEmail={userEmail} />;
       case "notifications":
         return <InlineNotifications accessToken={accessToken} />;
       case "search_buddy":
@@ -311,55 +372,13 @@ function FlowStepContent({ flow, step, accessToken }: { flow: TaskFlow; step: Ta
   return <OpenPageButton step={step} label={stepLabels[step.id] || t("taskFlow.ui.openStep")} />;
 }
 
-function StepChecklist({ flow, completionMap, currentStepId }: { flow: TaskFlow; completionMap: Record<string, boolean>; currentStepId: string }) {
-  const { t } = useTranslation();
-  const [, navigate] = useLocation();
-
-  return (
-    <div className="mt-8 pt-6 border-t border-[#E5E7EB]">
-      <p className="text-[13px] font-semibold text-[#374151] mb-3" data-testid="text-all-steps-label">
-        {t("taskFlow.ui.allSteps")}
-      </p>
-      <div className="flex flex-col gap-1">
-        {flow.steps.map((s, i) => {
-          const done = completionMap[s.id] ?? false;
-          const isCurrent = s.id === currentStepId;
-          return (
-            <button
-              key={s.id}
-              onClick={() => navigate(getFlowStepRoute(flow, s.id))}
-              className={`w-full h-[46px] flex items-center gap-3 px-4 text-left rounded-xl transition-colors ${
-                isCurrent ? "bg-[#FDF1F6] border border-ha-primary/20" : "hover:bg-[#F4F4F5]"
-              }`}
-              data-testid={`button-step-nav-${s.id}`}
-            >
-              <span className="w-[26px] h-[26px] rounded-full flex items-center justify-center text-[12px] font-semibold flex-shrink-0"
-                style={{
-                  background: done ? "rgb(var(--ha-primary))" : isCurrent ? "#111111" : "#E5E7EB",
-                  color: "white",
-                }}
-              >
-                {done ? <Check className="w-3 h-3" strokeWidth={3} /> : i + 1}
-              </span>
-              <span className={`text-[14px] leading-snug flex-1 ${
-                isCurrent ? "text-[#111111] font-semibold" : done ? "text-[#6B7280] font-medium" : "text-[#374151] font-medium"
-              }`}>
-                {t(s.labelKey)}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 export default function FlowPage() {
   const [, params] = useRoute("/flow/:flowId/:stepId");
   const [, navigate] = useLocation();
   const { session } = useAuth();
   const { t } = useTranslation();
   const accessToken = session?.access_token;
+  const userEmail = session?.user?.email || "";
 
   const flowId = params?.flowId;
   const stepId = params?.stepId;
@@ -438,8 +457,7 @@ export default function FlowPage() {
       onClose={() => navigate("/home")}
       isPending={markCompleteMutation.isPending}
     >
-      <FlowStepContent flow={flow} step={step} accessToken={accessToken || ""} />
-      <StepChecklist flow={flow} completionMap={completionMap} currentStepId={step.id} />
+      <FlowStepContent flow={flow} step={step} accessToken={accessToken || ""} userEmail={userEmail} />
     </FlowLayout>
   );
 }
