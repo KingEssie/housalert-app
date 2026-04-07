@@ -1,0 +1,106 @@
+Build a mobile-first onboarding slideshow screen for my web app (React / Next.js / Tailwind).
+
+GOAL:
+When a user opens the app and is NOT logged in, they should see a full-screen onboarding slideshow before accessing login or signup.
+
+---
+
+FUNCTIONALITY:
+
+1. Slideshow behavior
+- 3 slides total
+- Each slide contains:
+  • Full-width image (top ~60% of screen)
+  • Title
+  • Subtitle
+- Slides auto-advance every 3 seconds
+- After slide 3 → loop back to slide 1 (infinite loop)
+- Add smooth horizontal transition (like iOS onboarding)
+
+2. Manual control
+- User can swipe left/right (mobile touch support)
+- Include pagination dots (3 dots)
+  • Active dot = filled (brand color)
+  • Inactive dots = light gray
+
+---
+
+LAYOUT:
+
+Top:
+- Full-width image (object-cover, height ~60vh)
+
+Bottom (white card style):
+- Rounded top corners (rounded-t-3xl)
+- Slight shadow
+- Contains:
+  • Pagination dots
+  • Title (bold, 24–28px, Poppins)
+  • Subtitle (muted gray #6B7280)
+
+Bottom CTA area:
+- Primary button: “Account aanmaken”
+  • Full width
+  • Height: 56px
+  • Border radius: 14px
+  • Background: use existing app primary button color
+- Secondary button: “Log in”
+  • Outline style
+  • Same size as primary
+
+Spacing:
+- Clean vertical spacing (like modern onboarding apps)
+- Mobile-first padding (px-5 or px-6)
+
+---
+
+CONTENT:
+
+Slide 1:
+Title: "Vind jouw woning sneller"
+Subtitle: "Ontvang direct meldingen zodra er iets online komt dat bij jou past."
+Image: (use uploaded image 1)
+
+Slide 2:
+Title: "Wees er als eerste bij"
+Subtitle: "Krijg direct meldingen en reageer sneller dan anderen."
+Image: (use uploaded image 2)
+
+Slide 3:
+Title: "Begin jouw nieuwe hoofdstuk"
+Subtitle: "Vind een plek waar jij je écht thuis voelt."
+Image: (use uploaded image 3)
+
+---
+
+NAVIGATION:
+
+- Clicking “Log in” → go to login screen
+- Clicking “Account aanmaken” → go to onboarding step 1 (existing flow)
+- Only show this screen if user is NOT authenticated
+
+---
+
+TECH REQUIREMENTS:
+
+- Use React hooks (useState, useEffect)
+- Use setInterval for auto-slide (cleanup properly)
+- Use Tailwind for styling
+- Ensure smooth transitions (translateX or carousel logic)
+- Optimize for mobile performance
+
+---
+
+IMPORTANT:
+
+- Do NOT change any existing auth logic
+- Do NOT break routing
+- Only add this as a new entry screen before login
+
+---
+
+OUTPUT:
+
+- Clean, production-ready component
+- Reusable structure
+- Easy to tweak text/images later
