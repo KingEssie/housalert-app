@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useLocation } from "wouter";
 import { ArrowRight } from "lucide-react";
+import { logoSrc } from "@/components/housalert-logo";
 
 import slide1 from "@assets/CBEC0B90-CFEB-4531-9B92-189C3D5AE11C_1775582560871.png";
 import slide2 from "@assets/0953D9E3-7D7C-4BFA-A772-61A8256302DE_1775582560871.png";
@@ -41,8 +42,8 @@ function usePrefersReducedMotion() {
 export default function OnboardingSlideshow() {
   const [, navigate] = useLocation();
   const [current, setCurrent] = useState(0);
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchDelta, setTouchDelta] = useState(0);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchDeltaX, setTouchDeltaX] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
@@ -70,35 +71,28 @@ export default function OnboardingSlideshow() {
   }, [next, prefersReducedMotion]);
 
   function handleTouchStart(e: React.TouchEvent) {
-    setTouchStart(e.touches[0].clientX);
-    setTouchDelta(0);
+    setTouchStartX(e.touches[0].clientX);
+    setTouchDeltaX(0);
   }
 
   function handleTouchMove(e: React.TouchEvent) {
-    if (touchStart === null) return;
-    setTouchDelta(e.touches[0].clientX - touchStart);
+    if (touchStartX === null) return;
+    setTouchDeltaX(e.touches[0].clientX - touchStartX);
   }
 
   function handleTouchEnd() {
-    if (touchStart === null) return;
-    if (Math.abs(touchDelta) > 50) {
-      if (touchDelta < 0) {
+    if (touchStartX === null) return;
+    if (Math.abs(touchDeltaX) > 50) {
+      if (touchDeltaX < 0) {
         goTo((current + 1) % SLIDES.length);
       } else {
         goTo((current - 1 + SLIDES.length) % SLIDES.length);
       }
       resetTimer();
     }
-    setTouchStart(null);
-    setTouchDelta(0);
+    setTouchStartX(null);
+    setTouchDeltaX(0);
   }
-
-  const dragOffset = touchStart !== null ? touchDelta : 0;
-  const transitionStyle = prefersReducedMotion
-    ? "none"
-    : touchStart !== null
-      ? "none"
-      : "transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)";
 
   return (
     <div
@@ -110,42 +104,68 @@ export default function OnboardingSlideshow() {
     >
       <div
         className="relative w-full flex-shrink-0 overflow-hidden"
-        style={{ height: "58vh" }}
+        style={{ height: "60vh" }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
         aria-live="polite"
       >
+        {SLIDES.map((slide, i) => (
+          <img
+            key={i}
+            src={slide.image}
+            alt={slide.title}
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{
+              opacity: i === current ? 1 : 0,
+              transition: prefersReducedMotion ? "none" : "opacity 0.5s ease-in-out",
+              zIndex: i === current ? 1 : 0,
+            }}
+            draggable={false}
+            loading={i === 0 ? "eager" : "lazy"}
+            aria-hidden={i !== current}
+            data-testid={`slide-image-${i}`}
+          />
+        ))}
+
         <div
-          className="flex h-full"
+          className="absolute inset-0"
           style={{
-            transform: `translateX(calc(-${current * 100}% + ${dragOffset}px))`,
-            transition: transitionStyle,
-            width: `${SLIDES.length * 100}%`,
+            background: "linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.35) 100%)",
+            zIndex: 2,
           }}
+        />
+
+        <div
+          className="absolute left-0 right-0 flex flex-col items-center"
+          style={{ bottom: "36px", zIndex: 3 }}
+          data-testid="brand-overlay"
         >
-          {SLIDES.map((slide, i) => (
-            <div
-              key={i}
-              className="relative h-full flex-shrink-0"
-              style={{ width: `${100 / SLIDES.length}%` }}
-              aria-hidden={i !== current}
-            >
-              <img
-                src={slide.image}
-                alt={slide.title}
-                className="w-full h-full object-cover"
-                draggable={false}
-                loading={i === 0 ? "eager" : "lazy"}
-              />
-              <div
-                className="absolute inset-0"
-                style={{
-                  background: "linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.08) 100%)",
-                }}
-              />
-            </div>
-          ))}
+          <img
+            src={logoSrc}
+            alt="HousAlert logo"
+            className="object-contain"
+            style={{
+              width: 48,
+              height: 48,
+              filter: "brightness(0) invert(1)",
+            }}
+            data-testid="img-brand-logo"
+          />
+          <span
+            style={{
+              color: "#FFFFFF",
+              fontSize: "18px",
+              fontWeight: 600,
+              fontFamily: "'Poppins', sans-serif",
+              letterSpacing: "0.02em",
+              marginTop: "6px",
+              textTransform: "lowercase" as const,
+            }}
+            data-testid="text-brand-name"
+          >
+            housalert
+          </span>
         </div>
       </div>
 
@@ -156,6 +176,7 @@ export default function OnboardingSlideshow() {
           background: "#FFFFFF",
           borderRadius: "24px 24px 0 0",
           boxShadow: "0 -4px 20px rgba(0,0,0,0.06)",
+          zIndex: 4,
         }}
       >
         <div className="flex items-center justify-center gap-2 pt-5 pb-4" role="tablist" aria-label="Slide indicators">
@@ -182,14 +203,14 @@ export default function OnboardingSlideshow() {
         </div>
 
         <h2
-          className="text-[26px] font-bold leading-[1.2] tracking-[-0.02em] mb-2"
+          className="text-[26px] font-bold leading-[1.2] tracking-[-0.02em] mb-2 text-center"
           style={{ color: "#111111" }}
           data-testid="text-slide-title"
         >
           {SLIDES[current].title}
         </h2>
         <p
-          className="text-[15px] leading-[1.5] mb-6"
+          className="text-[15px] leading-[1.55] mb-5 text-center"
           style={{ color: "#6B7280" }}
           data-testid="text-slide-subtitle"
         >

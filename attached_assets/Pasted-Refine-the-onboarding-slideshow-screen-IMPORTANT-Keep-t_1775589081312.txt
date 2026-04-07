@@ -1,0 +1,103 @@
+Refine the onboarding slideshow screen.
+
+IMPORTANT:
+- Keep the current slideshow structure
+- Do NOT rebuild from scratch
+- Only fix the issues below
+- Do NOT change auth logic or routing
+
+GOAL:
+1. Show exactly ONE image per slide
+2. Center-align the slide texts
+3. Add the HousAlert logo + brand name on top of the photo, centered just above the white bottom panel
+
+--------------------------------------------------
+1. FIX THE IMAGE ISSUE
+--------------------------------------------------
+
+Problem:
+On the first slide, 3 images are being rendered incorrectly, causing the last 2 areas to appear white.
+
+Fix:
+- Each slide must render exactly ONE image only
+- Ensure the carousel maps one slide object to one image
+- Remove any accidental nested image rendering or duplicated image containers
+- The image area should always be a single full-width image per active slide
+
+Expected:
+- Slide 1 = only image 1
+- Slide 2 = only image 2
+- Slide 3 = only image 3
+
+--------------------------------------------------
+2. CENTER THE TEXT
+--------------------------------------------------
+
+Update the text layout inside the white bottom panel:
+
+- Center-align title
+- Center-align subtitle
+- Center-align pagination dots
+- Keep the buttons full width below
+
+Typography:
+- Title: centered, bold, strong
+- Subtitle: centered, muted gray, readable line-height
+
+--------------------------------------------------
+3. ADD BRANDING ON TOP OF THE PHOTO
+--------------------------------------------------
+
+Add a centered branding block on the image, positioned just above the white bottom panel.
+
+Structure:
+- Logo centered
+- Under the logo: text "housalert"
+- Text in lowercase
+- Font: Poppins
+- Centered alignment
+
+Placement:
+- Positioned near the bottom of the photo area
+- Just above where the white card starts
+- Must stay readable on all 3 slides
+
+Style:
+- logo size balanced and clearly visible
+- brand text in white
+- use subtle spacing between logo and text
+- no heavy shadow
+- keep it clean and premium
+
+--------------------------------------------------
+4. KEEP THE WHITE BOTTOM PANEL CLEAN
+--------------------------------------------------
+
+Keep:
+- rounded top corners
+- white background
+- good spacing
+- CTA buttons as they are
+
+Do not move the logo block into the white panel.
+It must sit on the image itself, centered above the panel.
+
+--------------------------------------------------
+5. CHECK RESPONSIVENESS
+--------------------------------------------------
+
+Make sure on mobile:
+- the branding block does not overlap awkwardly
+- the image stays visually strong
+- the text panel does not jump between slides
+- only one image is visible at a time
+
+--------------------------------------------------
+6. OUTPUT
+--------------------------------------------------
+
+Return:
+1. what caused the multiple-image issue
+2. how it was fixed
+3. where the centered logo + housalert brand block was added
+4. which files were changed
