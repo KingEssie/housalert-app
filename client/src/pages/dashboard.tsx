@@ -224,7 +224,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           <p className="text-[15px] font-semibold text-[#111111] mb-1" data-testid="text-empty-title">{t("searchProfiles.emptyTitle")}</p>
           <p className="text-[13px] text-[#6B7280] mb-5 leading-relaxed max-w-[260px]" data-testid="text-empty-subtitle">{t("searchProfiles.emptySubtitle")}</p>
           <button
-            onClick={() => navigate("/dashboard/searches/new")}
+            onClick={() => navigate(getSearchFlowEntryRoute())}
             className="w-full h-[48px] rounded-full bg-ha-primary text-white font-semibold text-[15px] hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
             data-testid="button-create-first-profile"
           >
@@ -307,7 +307,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           </div>
           {canAdd ? (
             <button
-              onClick={() => navigate("/dashboard/searches/new")}
+              onClick={() => navigate(getSearchFlowEntryRoute())}
               className="w-full mt-2 h-[42px] rounded-full border border-dashed border-[#D1D5DB] text-[13px] font-semibold text-[#6B7280] hover:border-ha-primary hover:text-ha-primary transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
               data-testid="button-add-search-profile"
             >
@@ -542,7 +542,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
           <p className="text-[18px] font-semibold text-[#111111] mb-2">{t("searchProfiles.emptyTitle")}</p>
           <p className="text-[15px] text-[#6B7280] mb-6 leading-relaxed max-w-[280px]">{t("searchProfiles.emptySubtitle")}</p>
           <button
-            onClick={() => navigate("/dashboard/searches/new")}
+            onClick={() => navigate(getSearchFlowEntryRoute())}
             className="h-[48px] px-8 rounded-[12px] bg-ha-primary text-white text-[15px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
             data-testid="button-create-first-profile"
           >
@@ -553,7 +553,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
 
       {profiles.length > 0 && profiles.length < MAX_PROFILES && (
         <button
-          onClick={() => navigate("/dashboard/searches/new")}
+          onClick={() => navigate(getSearchFlowEntryRoute())}
           className="w-full mt-3 h-[48px] rounded-[12px] bg-[#F3F4F6] text-[14px] font-semibold text-[#111111] hover:bg-[#E5E7EB] transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
           data-testid="button-add-zoekopdracht"
         >
