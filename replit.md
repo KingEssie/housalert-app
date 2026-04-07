@@ -82,6 +82,17 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **Dead code removed**: `client/src/components/profile-strength.tsx` (1068 lines, never imported), `ProfileAccountCompletionCard` (dashboard dead code)
 - **Deduplication**: Removed "Reactiebrief" from both groups (now only in search prep), removed "Maak een account aan" filler, removed "Vertel je vrienden" (merged into "Gebruik je netwerk")
 
+## Guided Flow System
+- **Routes**: `/flow/:flowId/:stepId` — e.g. `/flow/account/notifications`, `/flow/search/documents`
+- **Flow page**: `client/src/pages/flow-page.tsx` — resolves flowId+stepId from URL, renders FlowLayout with step content + all-steps checklist
+- **Flow layout**: `client/src/components/flow-layout.tsx` — reusable full-screen layout: top bar (title, progress count, close), progress bar, centered step info (icon, title, description), sticky bottom footer (prev/mark complete/next)
+- **Completion types**: `auto` (server detects from data) or `manual` (user clicks "Mark as completed" → POST `/api/flow/complete-step`)
+- **Manual completion endpoint**: `POST /api/flow/complete-step` { flowId, stepId } → updates `network_task_done` or `viewing_tips_done` columns in user_profile_data
+- **Dashboard integration**: Task card steps now navigate to `/flow/{flowId}/{stepId}` instead of directly to settings/edit pages. All tasks are clickable including completed ones.
+- **Step content**: Each step has an "Open this step" button linking to the original page (settings/documents/etc.). The flow wraps and guides but doesn't break standalone page access.
+- **All-steps checklist**: Shows all steps in the flow with completion indicators, allowing direct navigation to any step
+- **Extended task-flows.ts**: Steps now include `descriptionKey`, `icon`, `completionType`, `flowPrefix`; new helpers: `getFlowById()`, `getTaskSourceForFlow()`, `getStepIndex()`, `getFlowStepRoute()`
+
 ## V2 Frontend Flow (In Development)
 - **Status**: Phase 1 complete — isolated V2 flow, not replacing production yet
 - **Routes**: `/v2/welcome`, `/v2/onboarding/intro`, `/v2/onboarding/location` (more in Phase 2)

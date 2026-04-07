@@ -1962,6 +1962,27 @@ export const nl: Record<string, any> = {
     network: "Gebruik je netwerk",
     viewingTips: "Lees de bezichtigingstips",
     stepOf: "Stap {current} van {total}",
+    desc: {
+      notifications: "Schakel pushmeldingen in zodat je direct op de hoogte bent van nieuwe woningen.",
+      searchProfile: "Stel je eerste zoekprofiel in met jouw woonwensen en locatie.",
+      phone: "Voeg je telefoonnummer toe zodat je ook via sms bereikbaar bent.",
+      searchBuddy: "Nodig iemand uit om ook meldingen te ontvangen over jouw matches.",
+      profileDetails: "Vul je naam, geboortedatum en andere gegevens aan voor een compleet profiel.",
+      applicationLetter: "Schrijf een standaard reactiebrief zodat je direct kunt reageren.",
+      documents: "Verzamel je inkomensbewijs, ID en andere documenten op één plek.",
+      extraSearchProfile: "Vergroot je kansen door een extra zoekprofiel aan te maken.",
+      network: "Vertel je vrienden en familie dat je op zoek bent naar een woning.",
+      viewingTips: "Lees onze tips om goed voorbereid naar bezichtigingen te gaan.",
+    },
+    ui: {
+      prev: "Vorige",
+      next: "Volgende",
+      finish: "Afronden",
+      markComplete: "Markeer als voltooid",
+      completed: "Voltooid",
+      openStep: "Open deze stap",
+      allSteps: "Alle stappen",
+    },
   },
 
   boostTask: {

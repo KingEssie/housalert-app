@@ -1,0 +1,194 @@
+Implement a full guided onboarding flow system for the existing HousAlert task flows, inspired by the UX pattern shown in Stekkies.
+
+IMPORTANT:
+- Build on top of the completed task flow refactor
+- Reuse the centralized task-flows.ts config as the single source of truth
+- Do NOT reintroduce scattered logic
+- Do NOT break existing auth, routing, or completion logic
+- Keep all tasks clickable, including already completed tasks
+
+GOAL:
+Turn both task groups into real navigable flows:
+
+1. "Rond je account af"
+2. "Bereid je zoekopdracht voor"
+
+Each flow must behave like a step-based onboarding experience.
+
+==================================================
+1. FLOW SYSTEM ARCHITECTURE
+==================================================
+
+Use the central task flow config to power everything.
+
+Each flow must define:
+- flow id
+- title
+- ordered steps
+- route per step
+- completion check per step
+
+Each step must map to:
+- exactly one route
+- exactly one completion state
+- exactly one place in the flow order
+
+==================================================
+2. STEP-BASED ROUTES
+==================================================
+
+Implement real step routes so each task opens directly at the correct step.
+
+Examples:
+- /flow/account/notifications
+- /flow/account/buddy
+- /flow/account/profile
+- /flow/account/documents
+- /flow/account/app
+
+- /flow/search/create-search
+- /flow/search/filters
+- /flow/search/multi-search
+- /flow/search/viewing-tips
+- /flow/search/letter
+- /flow/search/share
+
+If the task is clicked from the dashboard, it must open the exact step route for that task, even if it is already completed.
+
+==================================================
+3. REUSABLE FLOW LAYOUT
+==================================================
+
+Create a reusable FlowLayout component used by all flow steps.
+
+It must include:
+
+Top area:
+- flow title on the left
+- progress summary on the right, e.g. "3/5 klaar"
+- close button
+- progress bar underneath
+
+Middle area:
+- step icon
+- step title
+- step description
+- step-specific content
+
+Bottom sticky footer:
+- previous button
+- "Markeer als voltooid" button where appropriate
+- next button
+
+Behavior:
+- previous disabled on first step
+- next changes appropriately on last step
+- completed steps remain clickable
+- navigation always stays inside the flow context
+
+==================================================
+4. FLOW CONTEXT
+==================================================
+
+Every step page must know:
+- which flow it belongs to
+- current step index
+- total steps
+- previous step route
+- next step route
+- whether current step is completed
+
+This context must come from the central task flow config, not from hardcoded page logic.
+
+==================================================
+5. COMPLETION HANDLING
+==================================================
+
+Support two completion types:
+
+A. automatic completion
+Examples:
+- notifications enabled
+- buddy added
+- documents uploaded
+- search created
+
+B. manual completion
+Examples:
+- viewing tips read
+- app downloaded
+- optional guidance screens
+
+If a step uses manual completion:
+- "Markeer als voltooid" should persist state for the user
+
+If a step uses automatic completion:
+- the UI should detect and reflect completion automatically
+
+All completion state must update progress live.
+
+==================================================
+6. DASHBOARD INTEGRATION
+==================================================
+
+Update the dashboard task cards so they open the exact step route for the clicked task.
+
+Requirements:
+- clicking task 3 opens step 3
+- clicking a completed task still opens that same step
+- progress count on dashboard stays in sync with flow completion
+
+==================================================
+7. VISUAL UX
+==================================================
+
+Match the current premium clean app style.
+
+Requirements:
+- Poppins typography
+- soft neutral background
+- clear hierarchy
+- progress bar like the Stekkies-style reference
+- rounded cards
+- calm spacing
+- strong CTA buttons
+- no clutter
+
+Keep the experience focused and guided.
+
+==================================================
+8. DATA / STATE
+==================================================
+
+If needed, add a user-level progress persistence model for manually completed steps.
+
+Recommended structure:
+- user_id
+- flow_id
+- step_id
+- completed
+- completed_at
+- completion_source (manual/auto)
+
+Do not duplicate completion logic if it already exists elsewhere.
+
+==================================================
+9. DO NOT BREAK EXISTING PAGES
+==================================================
+
+If a page already exists outside the flow (for example settings/documents/profile/search pages), keep it working normally.
+
+The flow version should wrap or guide the user into that page, but not break standalone access.
+
+==================================================
+10. OUTPUT
+==================================================
+
+After finishing, provide:
+
+1. which new routes were created
+2. which reusable components were added
+3. how flow context is derived from task-flows.ts
+4. which steps use automatic vs manual completion
+5. how dashboard task clicks now open the correct step
+6. which files were changed

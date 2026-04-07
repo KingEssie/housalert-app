@@ -1137,6 +1137,27 @@ export const en: Record<string, any> = {
     network: "Use your network",
     viewingTips: "Read the viewing tips",
     stepOf: "Step {current} of {total}",
+    desc: {
+      notifications: "Enable push notifications so you're instantly notified about new listings.",
+      searchProfile: "Set up your first search profile with your housing preferences and location.",
+      phone: "Add your phone number so you can also be reached by SMS.",
+      searchBuddy: "Invite someone to also receive notifications about your matches.",
+      profileDetails: "Fill in your name, date of birth and other details for a complete profile.",
+      applicationLetter: "Write a standard application letter so you can respond immediately.",
+      documents: "Collect your proof of income, ID and other documents in one place.",
+      extraSearchProfile: "Increase your chances by creating an additional search profile.",
+      network: "Tell your friends and family that you're looking for a home.",
+      viewingTips: "Read our tips to be well prepared for viewings.",
+    },
+    ui: {
+      prev: "Previous",
+      next: "Next",
+      finish: "Finish",
+      markComplete: "Mark as completed",
+      completed: "Completed",
+      openStep: "Open this step",
+      allSteps: "All steps",
+    },
   },
 
   boostTask: {

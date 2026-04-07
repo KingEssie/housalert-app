@@ -1915,6 +1915,27 @@ export const de: Record<string, any> = {
     network: "Nutze dein Netzwerk",
     viewingTips: "Besichtigungstipps lesen",
     stepOf: "Schritt {current} von {total}",
+    desc: {
+      notifications: "Aktiviere Push-Benachrichtigungen, damit du sofort über neue Wohnungen informiert wirst.",
+      searchProfile: "Erstelle dein erstes Suchprofil mit deinen Wohnwünschen und deinem Standort.",
+      phone: "Füge deine Telefonnummer hinzu, damit du auch per SMS erreichbar bist.",
+      searchBuddy: "Lade jemanden ein, der auch Benachrichtigungen über deine Matches erhält.",
+      profileDetails: "Ergänze deinen Namen, dein Geburtsdatum und weitere Angaben für ein vollständiges Profil.",
+      applicationLetter: "Schreibe ein Standardbewerbungsschreiben, damit du sofort reagieren kannst.",
+      documents: "Sammle deinen Einkommensnachweis, Ausweis und andere Dokumente an einem Ort.",
+      extraSearchProfile: "Erhöhe deine Chancen, indem du ein zusätzliches Suchprofil erstellst.",
+      network: "Erzähle deinen Freunden und deiner Familie, dass du eine Wohnung suchst.",
+      viewingTips: "Lies unsere Tipps, um gut vorbereitet zu Besichtigungen zu gehen.",
+    },
+    ui: {
+      prev: "Zurück",
+      next: "Weiter",
+      finish: "Abschließen",
+      markComplete: "Als erledigt markieren",
+      completed: "Erledigt",
+      openStep: "Diesen Schritt öffnen",
+      allSteps: "Alle Schritte",
+    },
   },
 
   boostTask: {

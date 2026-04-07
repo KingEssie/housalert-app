@@ -106,17 +106,14 @@ export function ExpandableCompletionCard({
           {steps.map((step) => (
             <button
               key={step.id}
-              onClick={step.completed ? undefined : step.action}
-              disabled={step.completed}
-              className={`w-full h-[48px] flex items-center gap-3 px-4 text-left rounded-[12px] transition-colors ${
-                step.completed ? "bg-[#F9FAFB]" : "bg-[#F9FAFB] active:bg-[#EBEBEB]"
-              }`}
+              onClick={step.action}
+              className={`w-full h-[48px] flex items-center gap-3 px-4 text-left rounded-[12px] transition-colors bg-[#F9FAFB] active:bg-[#EBEBEB]`}
               data-testid={`${testId}-step-${step.id}`}
             >
               <span
                 className={`text-[14px] flex-1 leading-snug ${
                   step.completed
-                    ? "text-[#6B7280] line-through font-normal"
+                    ? "text-[#6B7280] font-normal"
                     : "text-[#111111] font-medium"
                 }`}
               >

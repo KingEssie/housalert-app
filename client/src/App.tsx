@@ -56,6 +56,7 @@ import AdminImageAuditPage from "@/pages/admin-image-audit";
 import ApplyPage from "@/pages/apply";
 import TipDetailPage from "@/pages/tip-detail";
 import TipsFlowPage from "@/pages/tips-flow";
+import FlowPage from "@/pages/flow-page";
 import DocumentsPage from "@/pages/documents";
 import SettingsPage from "@/pages/settings";
 import PreferencesPage from "@/pages/preferences";
@@ -188,6 +189,7 @@ function Router() {
       <Route path="/dashboard/searches/edit/:id" component={() => <ProtectedRoute component={NewSearchPage} />} />
       <Route path="/listing/:id" component={() => <ProtectedRoute component={ListingDetailPage} />} />
       <Route path="/apply/:id" component={() => <ProtectedRoute component={ApplyPage} />} />
+      <Route path="/flow/:flowId/:stepId" component={() => <ProtectedRoute component={FlowPage} />} />
       <Route path="/documents" component={() => <ProtectedRoute component={DocumentsPage} />} />
       <Route path="/application-letter" component={() => <ProtectedRoute component={ApplicationLetterPage} />} />
       <Route path="/profile/details" component={() => <ProtectedRoute component={ProfileDetailsPage} />} />

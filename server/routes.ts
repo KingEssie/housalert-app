@@ -2548,18 +2548,19 @@ export async function registerRoutes(
         (profilePhone && typeof profilePhone === "string" && profilePhone.length > 6)
       );
 
-      const hasNetworkDone = !!(profileData?.network_task_done) || !!(profileData?.first_name && profileData?.last_name && profileData?.phone);
+      const hasNetworkDone = !!(profileData?.network_task_done);
       const hasViewingTipsDone = !!(profileData?.viewing_tips_done);
       const hasMultipleProfiles = searchProfiles.length >= 2;
 
       const hasSearchProfile = searchProfiles.length >= 1;
+      const hasProfileDetails = !!(profileData?.first_name && profileData?.last_name);
 
       const accountTasks = [
         { id: "notifications", completed: hasAlertChannel, score: 20 },
         { id: "search_profile", completed: hasSearchProfile, score: 20 },
         { id: "phone", completed: hasPhone, score: 15 },
         { id: "search_buddy", completed: hasSearchBuddy, score: 10 },
-        { id: "profile_details", completed: hasPhone && hasSearchBuddy, score: 15 },
+        { id: "profile_details", completed: hasProfileDetails, score: 15 },
       ];
 
       const prepTasks = [
@@ -2731,6 +2732,46 @@ export async function registerRoutes(
     } catch (err: any) {
       console.error("[profile-data] GET error:", err.message);
       return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/flow/complete-step", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { flowId, stepId } = req.body;
+      if (!flowId || !stepId) return res.status(400).json({ error: "flowId and stepId required" });
+
+      const MANUAL_STEP_COLUMNS: Record<string, Record<string, string>> = {
+        search: {
+          network: "network_task_done",
+          viewing_tips: "viewing_tips_done",
+        },
+      };
+
+      const column = MANUAL_STEP_COLUMNS[flowId]?.[stepId];
+      if (!column) return res.status(400).json({ error: "Step does not support manual completion" });
+
+      const result = await pgPool.query(
+        `UPDATE user_profile_data SET ${column} = true WHERE user_id = $1`,
+        [user.id]
+      );
+
+      if (result.rowCount === 0) {
+        await pgPool.query(
+          `INSERT INTO user_profile_data (user_id, ${column}) VALUES ($1, true) ON CONFLICT (user_id) DO UPDATE SET ${column} = true`,
+          [user.id]
+        );
+      }
+
+      log(`[flow] Manual completion: userId=${user.id.substring(0, 8)}... flow=${flowId} step=${stepId} column=${column}`);
+      return res.json({ success: true });
+    } catch (err: any) {
+      log(`[flow] Error completing step: ${err.message}`);
+      return res.status(500).json({ error: "Internal server error" });
     }
   });
 

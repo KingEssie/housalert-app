@@ -1,13 +1,21 @@
+import type { CompletionStep } from "@/components/expandable-completion-card";
+
+export type CompletionType = "auto" | "manual";
+
 export interface TaskFlowStep {
   id: string;
   labelKey: string;
+  descriptionKey: string;
+  icon: string;
   route: string;
+  completionType: CompletionType;
 }
 
 export interface TaskFlow {
   id: string;
   titleKey: string;
   subtitleKey: string;
+  flowPrefix: string;
   steps: TaskFlowStep[];
 }
 
@@ -15,12 +23,13 @@ export const ACCOUNT_FLOW: TaskFlow = {
   id: "account",
   titleKey: "taskFlow.accountTitle",
   subtitleKey: "taskFlow.accountSubtitle",
+  flowPrefix: "/flow/account",
   steps: [
-    { id: "notifications", labelKey: "taskFlow.notifications", route: "/settings/preferences" },
-    { id: "search_profile", labelKey: "taskFlow.searchProfile", route: "/dashboard/searches/new" },
-    { id: "phone", labelKey: "taskFlow.phone", route: "/profile/edit/phone" },
-    { id: "search_buddy", labelKey: "taskFlow.searchBuddy", route: "/profile/edit/search_buddy_email" },
-    { id: "profile_details", labelKey: "taskFlow.profileDetails", route: "/profile/details" },
+    { id: "notifications", labelKey: "taskFlow.notifications", descriptionKey: "taskFlow.desc.notifications", icon: "Bell", route: "/settings/preferences", completionType: "auto" },
+    { id: "search_profile", labelKey: "taskFlow.searchProfile", descriptionKey: "taskFlow.desc.searchProfile", icon: "Search", route: "/dashboard/searches/new", completionType: "auto" },
+    { id: "phone", labelKey: "taskFlow.phone", descriptionKey: "taskFlow.desc.phone", icon: "Phone", route: "/profile/edit/phone", completionType: "auto" },
+    { id: "search_buddy", labelKey: "taskFlow.searchBuddy", descriptionKey: "taskFlow.desc.searchBuddy", icon: "Users", route: "/profile/edit/search_buddy_email", completionType: "auto" },
+    { id: "profile_details", labelKey: "taskFlow.profileDetails", descriptionKey: "taskFlow.desc.profileDetails", icon: "UserCircle", route: "/profile/details", completionType: "auto" },
   ],
 };
 
@@ -28,14 +37,33 @@ export const SEARCH_PREP_FLOW: TaskFlow = {
   id: "search",
   titleKey: "taskFlow.searchTitle",
   subtitleKey: "taskFlow.searchSubtitle",
+  flowPrefix: "/flow/search",
   steps: [
-    { id: "application_letter", labelKey: "taskFlow.applicationLetter", route: "/application-letter" },
-    { id: "documents", labelKey: "taskFlow.documents", route: "/documents" },
-    { id: "extra_search_profile", labelKey: "taskFlow.extraSearchProfile", route: "/dashboard/searches/new" },
-    { id: "network", labelKey: "taskFlow.network", route: "/profile/details" },
-    { id: "viewing_tips", labelKey: "taskFlow.viewingTips", route: "/tips/bezichtiging" },
+    { id: "application_letter", labelKey: "taskFlow.applicationLetter", descriptionKey: "taskFlow.desc.applicationLetter", icon: "FileText", route: "/application-letter", completionType: "auto" },
+    { id: "documents", labelKey: "taskFlow.documents", descriptionKey: "taskFlow.desc.documents", icon: "FolderOpen", route: "/documents", completionType: "auto" },
+    { id: "extra_search_profile", labelKey: "taskFlow.extraSearchProfile", descriptionKey: "taskFlow.desc.extraSearchProfile", icon: "PlusCircle", route: "/dashboard/searches/new", completionType: "auto" },
+    { id: "network", labelKey: "taskFlow.network", descriptionKey: "taskFlow.desc.network", icon: "Share2", route: "/profile/details", completionType: "manual" },
+    { id: "viewing_tips", labelKey: "taskFlow.viewingTips", descriptionKey: "taskFlow.desc.viewingTips", icon: "Eye", route: "/tips/bezichtiging", completionType: "manual" },
   ],
 };
+
+export const ALL_FLOWS: TaskFlow[] = [ACCOUNT_FLOW, SEARCH_PREP_FLOW];
+
+export function getFlowById(flowId: string): TaskFlow | undefined {
+  return ALL_FLOWS.find(f => f.id === flowId);
+}
+
+export function getTaskSourceForFlow(flow: TaskFlow): "tasks" | "prepTasks" {
+  return flow.id === "account" ? "tasks" : "prepTasks";
+}
+
+export function getStepIndex(flow: TaskFlow, stepId: string): number {
+  return flow.steps.findIndex(s => s.id === stepId);
+}
+
+export function getFlowStepRoute(flow: TaskFlow, stepId: string): string {
+  return `${flow.flowPrefix}/${stepId}`;
+}
 
 export interface ProfileStrengthResponse {
   score: number;
@@ -58,14 +86,12 @@ export function resolveFlowSteps(
   completionMap: Record<string, boolean>,
   t: (key: string) => string,
   navigate: (path: string) => void,
-) {
-  return flow.steps.map((step, index) => ({
+): CompletionStep[] {
+  return flow.steps.map((step) => ({
     id: step.id,
     label: t(step.labelKey),
     completed: completionMap[step.id] ?? false,
-    action: () => navigate(step.route),
-    stepIndex: index,
-    totalSteps: flow.steps.length,
+    action: () => navigate(getFlowStepRoute(flow, step.id)),
   }));
 }
 
