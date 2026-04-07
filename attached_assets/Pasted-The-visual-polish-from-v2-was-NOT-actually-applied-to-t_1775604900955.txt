@@ -1,0 +1,98 @@
+The visual polish from v2 was NOT actually applied to the real v1 search creation flow screens.
+
+The screenshots confirm this.
+
+Problem:
+The actual search creation flow screens still use the old visual treatment:
+- thin progress indicator dots / old progress style
+- old step counter styling
+- old previous/next button styling
+- old floating next button behavior/style
+
+This means the earlier visual update was not applied to the real search creation screens:
+1. Locatie
+2. Vereisten
+3. Extra kenmerken
+4. Doelgroepen & categorieën
+5. Controleer je zoekopdracht
+
+GOAL:
+Apply the approved visual design improvements to the REAL v1 search creation flow screens, without changing the structure or logic of the flow.
+
+IMPORTANT:
+- Do NOT redesign the flow
+- Do NOT change the step order
+- Do NOT change the filter logic
+- Do NOT change completion logic
+- Only update the visual styling
+- Keep v1 as-is functionally, but visually improve it
+
+==================================================
+1. AUDIT THE REAL SEARCH CREATION FLOW
+==================================================
+
+Inspect which files/components are actually used for these screens:
+- Locatie
+- Vereisten
+- Extra kenmerken
+- Doelgroepen & categorieën
+- Controleer je zoekopdracht
+
+Identify:
+- which layout/component controls the top step indicator
+- which component controls the step counter
+- which component controls the previous/next navigation buttons
+- which component controls the floating next button
+
+==================================================
+2. APPLY THE APPROVED VISUAL UPDATES
+==================================================
+
+Apply these visual improvements to ALL real v1 search creation flow screens:
+
+A. Progress indicator / progress bar
+- Make it visually stronger and more prominent
+- If the current flow uses step dots/progress segments, make them thicker/bolder and more premium
+- The top progress state should feel clearer and more intentional
+- Keep it consistent across all 5 search flow steps
+
+B. Step counter
+- Make the step counter larger and bolder
+- Improve spacing and visibility
+- Keep it aligned properly in the header
+
+C. Previous / Next buttons
+- Apply the stronger v2-inspired button styling to the actual search flow navigation
+- Update both previous and next buttons
+- If the flow uses a floating next button, restyle it to match the approved stronger design
+- Keep behavior exactly the same, only improve styling
+
+D. General consistency
+- Make the full search flow feel visually consistent from step 1 to step 5
+- Stronger hierarchy
+- Cleaner spacing
+- More robust and polished feel
+
+==================================================
+3. DO NOT TOUCH FUNCTIONAL LOGIC
+==================================================
+
+Do NOT:
+- change search logic
+- change fields
+- change ordering
+- change routes
+- change how the flow works
+
+Only fix the styling application on the real search flow screens.
+
+==================================================
+4. OUTPUT
+==================================================
+
+After finishing, return:
+1. which files/components actually control the real search flow UI
+2. why the previous styling update did not affect these screens
+3. which visual elements were now updated
+4. confirmation that all 5 real search creation screens now use the updated styling
+5. which files were changed

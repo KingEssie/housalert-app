@@ -408,10 +408,10 @@ export default function NewSearchPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md" style={{ paddingTop: "env(safe-area-inset-top)" }}>
-        <div className="max-w-lg mx-auto flex items-center justify-between h-[60px] px-5">
+        <div className="max-w-lg mx-auto flex items-center justify-between h-[64px] px-5">
           <button
             onClick={goBack}
-            className="w-11 h-11 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
+            className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
             data-testid="button-wizard-header-back"
           >
             <ArrowLeft className="w-5 h-5 text-[#374151]" />
@@ -420,16 +420,16 @@ export default function NewSearchPage() {
             {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
               <div
                 key={i}
-                className="h-[3px] rounded-full transition-all duration-300"
+                className="h-[5px] rounded-full transition-all duration-300"
                 style={{
-                  width: i + 1 === step ? 24 : 8,
-                  backgroundColor: i + 1 <= step ? "rgb(var(--ha-primary))" : "#D1D5DB",
+                  width: i + 1 === step ? 28 : 8,
+                  backgroundColor: i + 1 <= step ? "rgb(var(--ha-primary))" : "#E5E7EB",
                 }}
               />
             ))}
           </div>
-          <span className="text-[14px] font-semibold text-[#6B7280] tabular-nums" data-testid="text-step-indicator">
-            {step}/{TOTAL_STEPS}
+          <span className="text-[16px] font-bold text-[#111111] tabular-nums" data-testid="text-step-indicator">
+            {step}<span className="text-[#C4C4C4] font-semibold">/{TOTAL_STEPS}</span>
           </span>
         </div>
       </header>
@@ -455,15 +455,29 @@ export default function NewSearchPage() {
       </main>
 
       {step < 5 && (
-        <div className="fixed z-50" style={{ bottom: "calc(env(safe-area-inset-bottom) + 28px)", right: 24 }}>
-          <button
-            onClick={step < TOTAL_STEPS - 1 ? goNext : () => setStep(5)}
-            disabled={!canProceed()}
-            className="w-[56px] h-[56px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white flex items-center justify-center shadow-[0_8px_20px_rgba(0,0,0,0.12),0_4px_16px_rgba(217,26,104,0.35)] disabled:opacity-30 disabled:shadow-none transition-all active:scale-95"
-            data-testid="button-wizard-next"
-          >
-            <ArrowRight className="w-6 h-6" />
-          </button>
+        <div className="fixed z-50" style={{ bottom: "calc(env(safe-area-inset-bottom) + 24px)", left: 20, right: 20 }}>
+          <div className="max-w-lg mx-auto flex items-center gap-3">
+            {step > 1 && (
+              <button
+                onClick={goBack}
+                className="h-[52px] px-5 rounded-full border border-[#E5E7EB] bg-white text-[15px] font-semibold text-[#111111] active:scale-[0.97] transition-all flex items-center gap-1.5 shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
+                data-testid="button-wizard-footer-back"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                {t("taskFlow.ui.prev")}
+              </button>
+            )}
+            <div className="flex-1" />
+            <button
+              onClick={step < TOTAL_STEPS - 1 ? goNext : () => setStep(5)}
+              disabled={!canProceed()}
+              className="h-[52px] px-8 rounded-full bg-ha-primary hover:brightness-95 text-white text-[15px] font-semibold flex items-center justify-center gap-1.5 shadow-[0_4px_16px_rgba(217,26,104,0.3)] disabled:opacity-20 disabled:shadow-none transition-all active:scale-[0.97]"
+              data-testid="button-wizard-next"
+            >
+              {t("taskFlow.ui.next")}
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       )}
     </div>
