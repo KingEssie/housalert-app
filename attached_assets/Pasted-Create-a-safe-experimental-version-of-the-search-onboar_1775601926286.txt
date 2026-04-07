@@ -1,0 +1,125 @@
+Create a safe experimental version of the search onboarding flow (v2), without replacing or breaking the existing flow.
+
+IMPORTANT:
+- Do NOT modify or remove the current (v1) flow
+- Build everything for v2 in isolation
+- The user must be able to switch between v1 and v2
+- We must be able to remove v2 cleanly later
+
+GOAL:
+Implement the new improved search flow as a separate test version (v2) so it can be tested safely.
+
+==================================================
+1. CREATE A NEW FLOW VERSION (v2)
+==================================================
+
+Duplicate the existing search flow structure into a new version:
+
+- Create a new config:
+  searchFlowV2 (in task-flows.ts or separate file)
+
+- DO NOT overwrite existing flow
+- Keep current flow as searchFlowV1
+
+==================================================
+2. NEW ROUTES (ISOLATED)
+==================================================
+
+Create separate routes for v2:
+
+Examples:
+- /flow-v2/search/create
+- /flow-v2/search/optimize
+- /flow-v2/search/ready
+- /flow-v2/search/tips
+- /flow-v2/search/boost
+
+DO NOT reuse existing /flow/search routes.
+
+==================================================
+3. USE EXISTING FLOWLAYOUT
+==================================================
+
+Reuse the FlowLayout component, but:
+- feed it with the v2 config
+- do NOT change existing FlowLayout behavior
+
+==================================================
+4. ADD FEATURE FLAG / TOGGLE
+==================================================
+
+Add a simple toggle system:
+
+Option A (fastest):
+- URL param: ?flow=v2
+
+Option B:
+- localStorage flag: flow_version = "v2"
+
+Behavior:
+- if v2 → use new flow
+- else → default to existing flow
+
+DO NOT auto-switch users.
+
+==================================================
+5. BUILD THE NEW STEP STRUCTURE
+==================================================
+
+Implement the new search flow steps:
+
+1. Create search
+2. Optimize search
+3. Get ready to respond
+4. Tips
+5. Boost chances
+
+IMPORTANT:
+- Keep actions as simple as possible
+- reuse existing components where possible
+- DO NOT overbuild
+
+==================================================
+6. REUSE EXISTING LOGIC
+==================================================
+
+- Reuse existing search creation logic
+- Reuse existing filters page
+- Reuse documents / letter / tips logic
+
+DO NOT duplicate backend logic.
+
+==================================================
+7. KEEP DASHBOARD UNCHANGED (FOR NOW)
+==================================================
+
+- Do NOT change current dashboard behavior
+- Only access v2 manually via URL or toggle
+
+==================================================
+8. MAKE IT EASY TO REMOVE
+==================================================
+
+Structure files cleanly:
+
+- /flow-v2/*
+- search-flow-v2.ts
+
+So we can delete:
+- routes
+- config
+- pages
+
+WITHOUT affecting v1
+
+==================================================
+9. OUTPUT
+==================================================
+
+Return:
+
+1. new v2 routes created
+2. where flow config is defined
+3. how to enable v2 (URL or toggle)
+4. which components were reused
+5. confirmation that v1 is untouched

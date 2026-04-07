@@ -95,6 +95,15 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **All tasks clickable**: including completed ones, no disabled state
 - **Visual design**: white bg, #FAFAFA content area, rounded-2xl cards, #111111 save buttons, thicker progress bar, bold step counter, pink icon circles, green completed badges with border
 
+## V2 Search Flow Experiment
+- **Config**: `client/src/lib/search-flow-v2.ts` — isolated flow config (`SEARCH_FLOW_V2`), feature flag (`isFlowV2Enabled()`)
+- **Page**: `client/src/pages/flow-v2-page.tsx` — standalone page with inline steps (optimize, ready, boost)
+- **Routes**: `/flow-v2/search/{create|optimize|ready|tips|boost}`
+- **Enable**: URL param `?flow=v2` or `localStorage.setItem("flow_version", "v2")`
+- **Steps**: Create search → Optimize search → Get ready to respond → Tips → Boost chances
+- **Server**: `search-v2` flow added to manual completion mapping for `tips` step
+- **Clean removal**: Delete `search-flow-v2.ts`, `flow-v2-page.tsx`, route in App.tsx, `flowV2` i18n keys, server mapping entry
+
 ## V2 Frontend Flow (In Development)
 - **Status**: Phase 1 complete — isolated V2 flow, not replacing production yet
 - **Routes**: `/v2/welcome`, `/v2/onboarding/intro`, `/v2/onboarding/location` (more in Phase 2)

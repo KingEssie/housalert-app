@@ -2001,6 +2001,45 @@ export const nl: Record<string, any> = {
     },
   },
 
+  flowV2: {
+    title: "Zoekproces starten",
+    subtitle: "{done} van de {total} voltooid",
+    steps: {
+      create: "Maak je zoekopdracht",
+      optimize: "Verfijn je zoekopdracht",
+      ready: "Maak je klaar om te reageren",
+      tips: "Bekijk onze tips",
+      boost: "Vergroot je kansen",
+    },
+    desc: {
+      create: "Stel je eerste zoekopdracht in met locatie, budget en woonwensen.",
+      optimize: "Pas je filters aan voor betere resultaten. Voeg eventueel extra zoekopdrachten toe.",
+      ready: "Verzamel je documenten en bereid je reactiebrief voor zodat je direct kunt reageren.",
+      tips: "Lees onze bezichtigingstips en vergroot je kans op de woning.",
+      boost: "Schakel meldingen in, voeg een zoekbuddy toe en gebruik je netwerk.",
+    },
+    optimize: {
+      noSearches: "Je hebt nog geen zoekopdracht. Maak eerst je eerste zoekopdracht aan.",
+      createFirst: "Eerste zoekopdracht aanmaken",
+      yourSearches: "Jouw zoekopdrachten",
+      addAnother: "Extra zoekopdracht toevoegen",
+    },
+    ready: {
+      documents: "Documenten verzamelen",
+      letter: "Reactiebrief voorbereiden",
+      start: "Start",
+    },
+    boost: {
+      notifications: "Meldingen activeren",
+      buddy: "Zoekbuddy toevoegen",
+      network: "Netwerk inzetten",
+    },
+    ui: {
+      createSearch: "Zoekopdracht aanmaken",
+      viewTips: "Tips bekijken",
+    },
+  },
+
   boostTask: {
     incomeDocuments: "Inkomensdocumenten voorbereiden",
     alerts: "Woningmeldingen activeren",
