@@ -39,59 +39,59 @@ export function FlowLayout({
   const isLastStep = currentStep === totalSteps - 1;
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#F9FAFB] flex flex-col" data-testid="flow-layout">
-      <div className="bg-white border-b border-[#E5E7EB]">
-        <div className="flex items-center justify-between px-5 h-[56px]">
+    <div className="fixed inset-0 z-50 bg-white flex flex-col" data-testid="flow-layout">
+      <div className="bg-white">
+        <div className="flex items-center justify-between px-5 h-[60px]">
           <div className="flex-1 min-w-0">
-            <p className="text-[15px] font-semibold text-[#111111] truncate" data-testid="text-flow-title">{flowTitle}</p>
+            <p className="text-[17px] font-semibold text-[#111111] truncate" data-testid="text-flow-title">{flowTitle}</p>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-[13px] font-medium text-[#6B7280] whitespace-nowrap" data-testid="text-flow-progress">
+            <span className="text-[15px] font-semibold text-[#111111] whitespace-nowrap" data-testid="text-flow-progress">
               {currentStep + 1}/{totalSteps}
             </span>
             <button
               onClick={onClose}
-              className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#F0F0F0] transition-colors"
+              className="w-9 h-9 flex items-center justify-center rounded-full bg-[#F4F4F5] hover:bg-[#E5E7EB] transition-colors"
               data-testid="button-flow-close"
             >
-              <X className="w-5 h-5 text-[#6B7280]" />
+              <X className="w-[18px] h-[18px] text-[#111111]" strokeWidth={2.5} />
             </button>
           </div>
         </div>
-        <div className="h-[3px] bg-[#F0F0F0]">
+        <div className="h-[5px] bg-[#F0F0F0] mx-5 rounded-full overflow-hidden">
           <div
-            className="h-full bg-ha-primary rounded-r-full transition-all duration-500 ease-out"
+            className="h-full bg-ha-primary rounded-full transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
             data-testid="progress-flow-bar"
           />
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-lg mx-auto px-6 py-8">
+      <div className="flex-1 overflow-y-auto bg-[#FAFAFA]">
+        <div className="max-w-lg mx-auto px-6 pt-10 pb-8">
           <div className="flex flex-col items-center text-center mb-8">
-            <div className="w-16 h-16 rounded-2xl bg-[#FDF1F6] flex items-center justify-center mb-5" data-testid="icon-flow-step">
+            <div className="w-[72px] h-[72px] rounded-2xl bg-[#FDF1F6] flex items-center justify-center mb-6" data-testid="icon-flow-step">
               {stepIcon}
             </div>
-            <h1 className="text-[22px] font-semibold text-[#111111] leading-tight mb-2" data-testid="text-step-title">
+            <h1 className="text-[26px] font-semibold text-[#111111] leading-tight mb-3" data-testid="text-step-title">
               {stepTitle}
             </h1>
-            <p className="text-[15px] text-[#6B7280] leading-relaxed max-w-sm" data-testid="text-step-description">
+            <p className="text-[16px] text-[#4B5563] leading-relaxed max-w-[340px]" data-testid="text-step-description">
               {stepDescription}
             </p>
           </div>
 
           {isCompleted && (
-            <div className="flex items-center gap-2 justify-center mb-6 py-3 px-4 bg-[#F0FDF4] rounded-xl" data-testid="badge-step-completed">
-              <div className="w-5 h-5 rounded-full bg-[#16A34A] flex items-center justify-center">
-                <Check className="w-3 h-3 text-white" strokeWidth={3} />
+            <div className="flex items-center gap-2.5 justify-center mb-6 py-3.5 px-5 bg-[#F0FDF4] border border-[#BBF7D0] rounded-2xl" data-testid="badge-step-completed">
+              <div className="w-[22px] h-[22px] rounded-full bg-[#16A34A] flex items-center justify-center">
+                <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
               </div>
-              <span className="text-[14px] font-medium text-[#16A34A]">{t("taskFlow.ui.completed")}</span>
+              <span className="text-[15px] font-semibold text-[#16A34A]">{t("taskFlow.ui.completed")}</span>
             </div>
           )}
 
           {children && (
-            <div className="mt-4" data-testid="flow-step-content">
+            <div data-testid="flow-step-content">
               {children}
             </div>
           )}
@@ -103,7 +103,7 @@ export function FlowLayout({
           <button
             onClick={onPrev ?? undefined}
             disabled={!onPrev}
-            className="h-[48px] px-5 rounded-full border border-[#E5E7EB] text-[15px] font-medium text-[#111111] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#F9FAFB] transition-colors flex items-center gap-1.5"
+            className="h-[50px] px-5 rounded-full border border-[#E5E7EB] text-[15px] font-semibold text-[#111111] disabled:opacity-25 disabled:cursor-not-allowed hover:bg-[#F9FAFB] transition-colors flex items-center gap-1.5"
             data-testid="button-flow-prev"
           >
             <ChevronLeft className="w-4 h-4" />
@@ -116,9 +116,10 @@ export function FlowLayout({
             <button
               onClick={onMarkComplete}
               disabled={isPending}
-              className="h-[48px] px-5 rounded-full bg-[#F9FAFB] border border-[#E5E7EB] text-[14px] font-medium text-[#111111] hover:bg-[#F0F0F0] transition-colors disabled:opacity-50"
+              className="h-[50px] px-5 rounded-full bg-[#111111] text-white text-[14px] font-semibold hover:bg-[#333333] transition-colors disabled:opacity-50 flex items-center gap-2"
               data-testid="button-flow-mark-complete"
             >
+              <Check className="w-4 h-4" />
               {isPending ? "..." : t("taskFlow.ui.markComplete")}
             </button>
           )}
@@ -126,7 +127,7 @@ export function FlowLayout({
           <button
             onClick={onNext ?? undefined}
             disabled={!onNext}
-            className="h-[48px] px-6 rounded-full bg-ha-primary text-white text-[15px] font-medium disabled:opacity-30 disabled:cursor-not-allowed hover:brightness-95 transition-all flex items-center gap-1.5"
+            className="h-[50px] px-7 rounded-full bg-ha-primary text-white text-[15px] font-semibold disabled:opacity-25 disabled:cursor-not-allowed hover:brightness-95 transition-all flex items-center gap-1.5"
             data-testid="button-flow-next"
           >
             {isLastStep ? t("taskFlow.ui.finish") : t("taskFlow.ui.next")}

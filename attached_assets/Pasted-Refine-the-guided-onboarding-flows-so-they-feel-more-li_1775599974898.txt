@@ -1,0 +1,156 @@
+Refine the guided onboarding flows so they feel more like a real in-flow experience, with better step grouping, stronger visual hierarchy, and less weak/gray UI.
+
+IMPORTANT:
+- Build on the current guided flow implementation
+- Do NOT remove the existing flow system
+- Do NOT break routing, auth, or completion logic
+- Keep both flows working
+- Keep all steps clickable, including completed ones
+- Do NOT add a new “Download de app” step yet
+- Apply the improvements below to the current system
+
+GOAL:
+Make both flows feel cleaner, more logical, more robust, and more action-oriented — closer to the Stekkies-style experience.
+
+==================================================
+1. RESTRUCTURE THE FLOW GROUPING
+==================================================
+
+Update the step grouping so it feels more logical from a user perspective.
+
+For "Rond je account af":
+- Merge phone number into the profile completion concept
+- Do NOT keep phone as its own separate standalone step if it feels redundant
+- We want fewer but stronger steps
+
+Preferred direction:
+1. Vul je profiel in
+   - includes name + phone number (+ any essential profile basics)
+2. Maak je zoekprofiel aan
+3. Activeer notificaties
+4. Voeg zoekbuddy toe
+5. Verzamel je documenten OR keep the current strongest remaining step if documents fit better here in the current structure
+
+IMPORTANT:
+- If a current step needs to stay technically separate, still make the UX feel grouped and logical
+- Do not keep awkward task splitting just because of old implementation
+
+For "Bereid je zoekopdracht voor":
+- Keep it focused on improving chance and search quality
+- Do NOT make it feel like a random checklist
+- Preserve the strongest existing steps, but improve the order and purpose
+
+Preferred direction:
+1. Optimaliseer je zoekopdracht
+2. Voeg extra zoekopdracht toe
+3. Bereid je aanmeldingsbrief voor
+4. Bekijk relevante tips / bezichtigingstips
+5. Eventuele resterende strongest value step from current structure
+
+==================================================
+2. INLINE ACTIONS WHERE POSSIBLE
+==================================================
+
+This is critical:
+The flow should not feel like “info + open another page” unless absolutely necessary.
+
+Where possible, make the action happen directly inside the flow step.
+
+Examples:
+- Notifications: toggles directly in the flow
+- Search buddy: email input directly in the flow
+- Profile: essential profile fields directly in the flow if feasible
+- Search optimization: show the relevant flow action directly if possible
+- Documents: checklist directly in flow if already implemented there
+
+If a step must still open a separate screen:
+- Keep the CTA, but only where necessary
+- Use a stronger, clearer label than “Open deze stap” if needed
+- Make it feel intentional, not like a broken detour
+
+==================================================
+3. STRONGER VISUAL HIERARCHY
+==================================================
+
+Improve readability and make the flow feel more robust.
+
+Requirements:
+- Progress bar must be thicker and more visually prominent
+- Step counter (e.g. 3/5 klaar) must be larger and bolder
+- Step titles should be clearly large and bold
+- Reduce weak/light gray text
+- Use darker body text where possible
+- Keep supporting text short and readable
+- Avoid long soft gray paragraphs
+
+Typography direction:
+- Titles: strong, bold, clearly dominant
+- Body copy: dark gray, readable, max 2–3 lines where possible
+- Section labels: visible, not tiny/faint
+
+==================================================
+4. MAKE THE UI FEEL MORE SOLID
+==================================================
+
+The design should feel less fragile and more product-grade.
+
+Improve:
+- Card weight / visual strength
+- Input visibility
+- Spacing between elements
+- Better action emphasis
+- Stronger CTA hierarchy
+- More premium rounded blocks where appropriate
+
+Do not make it cluttered.
+We want:
+- calm
+- robust
+- focused
+- premium
+
+==================================================
+5. KEEP COMPLETED STEPS CLICKABLE
+==================================================
+
+This behavior must remain:
+- completed steps stay clickable
+- clicking a completed step opens that exact step in the flow
+- users can revisit and edit/review
+
+Do not regress this.
+
+==================================================
+6. IMPROVE STEP COPY
+==================================================
+
+Refine the copy so each step feels more direct and action-oriented.
+
+Avoid vague filler text.
+Each step should clearly answer:
+- what is this?
+- why does it matter?
+- what should I do now?
+
+Keep copy concise.
+
+==================================================
+7. DO NOT ADD NEW FUTURE STEPS YET
+==================================================
+
+Do NOT add a “Download de app” step yet.
+Do NOT introduce future flow ideas yet.
+Only improve the current flow system with the direction above.
+
+==================================================
+8. OUTPUT
+==================================================
+
+After finishing, return:
+
+1. the final step structure for both flows
+2. which steps were merged / reordered / renamed
+3. which steps now support inline actions
+4. what visual hierarchy changes were made
+5. which screens still require separate page opening and why
+6. which files were changed

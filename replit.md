@@ -83,15 +83,17 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **Deduplication**: Removed "Reactiebrief" from both groups (now only in search prep), removed "Maak een account aan" filler, removed "Vertel je vrienden" (merged into "Gebruik je netwerk")
 
 ## Guided Flow System
-- **Routes**: `/flow/:flowId/:stepId` — e.g. `/flow/account/notifications`, `/flow/search/documents`
-- **Flow page**: `client/src/pages/flow-page.tsx` — resolves flowId+stepId from URL, renders FlowLayout with step content + all-steps checklist
-- **Flow layout**: `client/src/components/flow-layout.tsx` — reusable full-screen layout: top bar (title, progress count, close), progress bar, centered step info (icon, title, description), sticky bottom footer (prev/mark complete/next)
-- **Completion types**: `auto` (server detects from data) or `manual` (user clicks "Mark as completed" → POST `/api/flow/complete-step`)
-- **Manual completion endpoint**: `POST /api/flow/complete-step` { flowId, stepId } → updates `network_task_done` or `viewing_tips_done` columns in user_profile_data
-- **Dashboard integration**: Task card steps now navigate to `/flow/{flowId}/{stepId}` instead of directly to settings/edit pages. All tasks are clickable including completed ones.
-- **Step content**: Each step has an "Open this step" button linking to the original page (settings/documents/etc.). The flow wraps and guides but doesn't break standalone page access.
-- **All-steps checklist**: Shows all steps in the flow with completion indicators, allowing direct navigation to any step
-- **Extended task-flows.ts**: Steps now include `descriptionKey`, `icon`, `completionType`, `flowPrefix`; new helpers: `getFlowById()`, `getTaskSourceForFlow()`, `getStepIndex()`, `getFlowStepRoute()`
+- **Routes**: `/flow/:flowId/:stepId` — e.g. `/flow/account/profile_details`, `/flow/search/application_letter`
+- **Flow page**: `client/src/pages/flow-page.tsx` — resolves flowId+stepId from URL, renders FlowLayout with inline actions or page-open CTAs + all-steps checklist
+- **Flow layout**: `client/src/components/flow-layout.tsx` — full-screen layout: top bar (title, bold progress count, close), thick rounded progress bar, centered step info (72px icon, 26px title, 16px description), sticky footer (prev/mark-complete/next)
+- **Inline actions**: profile_details (name+phone form), notifications (push+email toggles), search_buddy (email input) — all edit directly in flow without opening separate pages
+- **Page-open steps**: search_profile, documents, extra_search_profile, application_letter, viewing_tips, network — use contextual CTA labels instead of generic "Open this step"
+- **Account flow** (5 steps): profile_details → search_profile → notifications → search_buddy → documents
+- **Search prep flow** (4 steps): extra_search_profile → application_letter → viewing_tips → network
+- **Completion types**: `auto` (server detects) or `manual` (user clicks "Mark as completed" → POST `/api/flow/complete-step`)
+- **profile_details completion**: first_name + last_name + phone (phone merged into profile step)
+- **All tasks clickable**: including completed ones, no disabled state
+- **Visual design**: white bg, #FAFAFA content area, rounded-2xl cards, #111111 save buttons, thicker progress bar, bold step counter, pink icon circles, green completed badges with border
 
 ## V2 Frontend Flow (In Development)
 - **Status**: Phase 1 complete — isolated V2 flow, not replacing production yet

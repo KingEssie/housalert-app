@@ -9,6 +9,7 @@ export interface TaskFlowStep {
   icon: string;
   route: string;
   completionType: CompletionType;
+  inline?: boolean;
 }
 
 export interface TaskFlow {
@@ -25,11 +26,11 @@ export const ACCOUNT_FLOW: TaskFlow = {
   subtitleKey: "taskFlow.accountSubtitle",
   flowPrefix: "/flow/account",
   steps: [
-    { id: "notifications", labelKey: "taskFlow.notifications", descriptionKey: "taskFlow.desc.notifications", icon: "Bell", route: "/settings/preferences", completionType: "auto" },
+    { id: "profile_details", labelKey: "taskFlow.profileDetails", descriptionKey: "taskFlow.desc.profileDetails", icon: "UserCircle", route: "/profile/details", completionType: "auto", inline: true },
     { id: "search_profile", labelKey: "taskFlow.searchProfile", descriptionKey: "taskFlow.desc.searchProfile", icon: "Search", route: "/dashboard/searches/new", completionType: "auto" },
-    { id: "phone", labelKey: "taskFlow.phone", descriptionKey: "taskFlow.desc.phone", icon: "Phone", route: "/profile/edit/phone", completionType: "auto" },
-    { id: "search_buddy", labelKey: "taskFlow.searchBuddy", descriptionKey: "taskFlow.desc.searchBuddy", icon: "Users", route: "/profile/edit/search_buddy_email", completionType: "auto" },
-    { id: "profile_details", labelKey: "taskFlow.profileDetails", descriptionKey: "taskFlow.desc.profileDetails", icon: "UserCircle", route: "/profile/details", completionType: "auto" },
+    { id: "notifications", labelKey: "taskFlow.notifications", descriptionKey: "taskFlow.desc.notifications", icon: "Bell", route: "/settings/preferences", completionType: "auto", inline: true },
+    { id: "search_buddy", labelKey: "taskFlow.searchBuddy", descriptionKey: "taskFlow.desc.searchBuddy", icon: "Users", route: "/profile/edit/search_buddy_email", completionType: "auto", inline: true },
+    { id: "documents", labelKey: "taskFlow.documents", descriptionKey: "taskFlow.desc.documents", icon: "FolderOpen", route: "/documents", completionType: "auto" },
   ],
 };
 
@@ -39,11 +40,10 @@ export const SEARCH_PREP_FLOW: TaskFlow = {
   subtitleKey: "taskFlow.searchSubtitle",
   flowPrefix: "/flow/search",
   steps: [
-    { id: "application_letter", labelKey: "taskFlow.applicationLetter", descriptionKey: "taskFlow.desc.applicationLetter", icon: "FileText", route: "/application-letter", completionType: "auto" },
-    { id: "documents", labelKey: "taskFlow.documents", descriptionKey: "taskFlow.desc.documents", icon: "FolderOpen", route: "/documents", completionType: "auto" },
     { id: "extra_search_profile", labelKey: "taskFlow.extraSearchProfile", descriptionKey: "taskFlow.desc.extraSearchProfile", icon: "PlusCircle", route: "/dashboard/searches/new", completionType: "auto" },
-    { id: "network", labelKey: "taskFlow.network", descriptionKey: "taskFlow.desc.network", icon: "Share2", route: "/profile/details", completionType: "manual" },
+    { id: "application_letter", labelKey: "taskFlow.applicationLetter", descriptionKey: "taskFlow.desc.applicationLetter", icon: "FileText", route: "/application-letter", completionType: "auto" },
     { id: "viewing_tips", labelKey: "taskFlow.viewingTips", descriptionKey: "taskFlow.desc.viewingTips", icon: "Eye", route: "/tips/bezichtiging", completionType: "manual" },
+    { id: "network", labelKey: "taskFlow.network", descriptionKey: "taskFlow.desc.network", icon: "Share2", route: "/profile/details", completionType: "manual" },
   ],
 };
 

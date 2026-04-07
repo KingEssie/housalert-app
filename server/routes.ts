@@ -2522,7 +2522,7 @@ export async function registerRoutes(
       const profileData = profileDataResult.data;
       const searchProfiles = searchProfilesResult.data ?? [];
 
-      const hasAlertChannel = !!(notif.email_enabled);
+      const hasAlertChannel = !!(notif.email_enabled || (rawNotif as any)?.push_enabled);
       const hasSearchBuddy = !!(profileData?.search_buddy_email && profileData.search_buddy_email.trim().length > 0 && profileData.search_buddy_status !== "revoked_by_buddy");
 
       const hasStrongProfile = searchProfiles.some(p => {
@@ -2553,22 +2553,21 @@ export async function registerRoutes(
       const hasMultipleProfiles = searchProfiles.length >= 2;
 
       const hasSearchProfile = searchProfiles.length >= 1;
-      const hasProfileDetails = !!(profileData?.first_name && profileData?.last_name);
+      const hasProfileDetails = !!(profileData?.first_name && profileData?.last_name && profilePhone);
 
       const accountTasks = [
-        { id: "notifications", completed: hasAlertChannel, score: 20 },
+        { id: "profile_details", completed: hasProfileDetails, score: 20 },
         { id: "search_profile", completed: hasSearchProfile, score: 20 },
-        { id: "phone", completed: hasPhone, score: 15 },
-        { id: "search_buddy", completed: hasSearchBuddy, score: 10 },
-        { id: "profile_details", completed: hasProfileDetails, score: 15 },
+        { id: "notifications", completed: hasAlertChannel, score: 20 },
+        { id: "search_buddy", completed: hasSearchBuddy, score: 15 },
+        { id: "documents", completed: hasDocuments, score: 15 },
       ];
 
       const prepTasks = [
-        { id: "application_letter", completed: hasApplicationTemplate, score: 15 },
-        { id: "documents", completed: hasDocuments, score: 20 },
-        { id: "extra_search_profile", completed: hasMultipleProfiles, score: 15 },
-        { id: "network", completed: hasNetworkDone, score: 5 },
-        { id: "viewing_tips", completed: hasViewingTipsDone, score: 5 },
+        { id: "extra_search_profile", completed: hasMultipleProfiles, score: 20 },
+        { id: "application_letter", completed: hasApplicationTemplate, score: 20 },
+        { id: "viewing_tips", completed: hasViewingTipsDone, score: 10 },
+        { id: "network", completed: hasNetworkDone, score: 10 },
       ];
 
       const allTasks = [...accountTasks, ...prepTasks];
