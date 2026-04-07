@@ -47,7 +47,7 @@ import { useReferralShare } from "@/lib/referral-share";
 import TipsPage, { getTipConfig, getTipsReadSet } from "@/pages/tips";
 import { getFlowTipSteps } from "@/pages/tips-flow";
 import { ACCOUNT_FLOW, resolveFlowSteps, buildCompletionMap } from "@/lib/task-flows";
-import { getActiveSearchPrepFlow, getFlowVersion, setFlowVersion, isFlowV2Enabled, buildV2CompletionMap, type FlowVersion } from "@/lib/search-flow-v2";
+import { getActiveSearchPrepFlow, getFlowVersion, setFlowVersion, isFlowV2Enabled, buildV2CompletionMap, getSearchFlowEntryRoute, type FlowVersion } from "@/lib/search-flow-v2";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ListingCardFull, ListingCardMini } from "@/components/listing-card";
 
