@@ -72,6 +72,16 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **Emails**: All email templates in `server/email.ts` use `t()` from `server/i18n.ts`. Language passed through entire notification pipeline (buffer → email/push).
 - **Push notifications**: Both web push (`server/notifications/push.ts`) and Expo push (`server/notifications/expo-push.ts`) accept `lang` parameter and use centralized translations.
 
+## Task Flow System
+- **Central config**: `client/src/lib/task-flows.ts` — defines `ACCOUNT_FLOW` and `SEARCH_PREP_FLOW` with step IDs, translation keys, and routes
+- **Server API**: `/api/profile-strength` returns `tasks[]` (account flow) and `prepTasks[]` (search prep flow) with completion status from real data
+- **Dashboard rendering**: `TaskFlowCard` component in `dashboard.tsx` — generic card that takes a flow config + task source, resolves completion from API
+- **Translation keys**: `taskFlow.*` namespace in all 3 locale files
+- **Account flow tasks**: notifications, search_profile, phone, search_buddy, profile_details
+- **Search prep flow tasks**: application_letter, documents, extra_search_profile, network, viewing_tips
+- **Dead code removed**: `client/src/components/profile-strength.tsx` (1068 lines, never imported), `ProfileAccountCompletionCard` (dashboard dead code)
+- **Deduplication**: Removed "Reactiebrief" from both groups (now only in search prep), removed "Maak een account aan" filler, removed "Vertel je vrienden" (merged into "Gebruik je netwerk")
+
 ## V2 Frontend Flow (In Development)
 - **Status**: Phase 1 complete — isolated V2 flow, not replacing production yet
 - **Routes**: `/v2/welcome`, `/v2/onboarding/intro`, `/v2/onboarding/location` (more in Phase 2)

@@ -46,6 +46,7 @@ import { HighlightCard } from "@/components/highlight-card";
 import { useReferralShare } from "@/lib/referral-share";
 import TipsPage, { getTipConfig, getTipsReadSet } from "@/pages/tips";
 import { getFlowTipSteps } from "@/pages/tips-flow";
+import { ACCOUNT_FLOW, SEARCH_PREP_FLOW, resolveFlowSteps, buildCompletionMap } from "@/lib/task-flows";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ListingCardFull, ListingCardMini } from "@/components/listing-card";
 
@@ -340,23 +341,22 @@ interface ActivationStatus {
   subscriptionStarted: boolean;
 }
 
-function HomeAccountCompletionCard({ accessToken, navigate }: { accessToken: string | undefined; navigate: (path: string) => void }) {
+function TaskFlowCard({
+  accessToken,
+  flow,
+  taskSource,
+  navigate,
+  testId,
+}: {
+  accessToken: string | undefined;
+  flow: import("@/lib/task-flows").TaskFlow;
+  taskSource: "tasks" | "prepTasks";
+  navigate: (path: string) => void;
+  testId: string;
+}) {
   const { t } = useTranslation();
 
-  const statusQuery = useQuery<ActivationStatus>({
-    queryKey: ["/api/activation-status"],
-    queryFn: async () => {
-      const res = await apiFetch("/api/activation-status", {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      if (!res.ok) throw new Error("Failed to load");
-      return res.json();
-    },
-    enabled: !!accessToken,
-    staleTime: 60_000,
-  });
-
-  const strengthQuery = useQuery<{ tasks: { id: string; completed: boolean }[] }>({
+  const strengthQuery = useQuery<import("@/lib/task-flows").ProfileStrengthResponse>({
     queryKey: ["/api/profile-strength"],
     queryFn: async () => {
       const res = await apiFetch("/api/profile-strength", {
@@ -369,138 +369,24 @@ function HomeAccountCompletionCard({ accessToken, navigate }: { accessToken: str
     staleTime: 60_000,
   });
 
-  const status = statusQuery.data;
-  const strength = strengthQuery.data;
-  if (!status) return null;
+  const data = strengthQuery.data;
+  if (!data) return null;
 
-  const getStrengthTask = (id: string) => strength?.tasks?.find(t => t.id === id);
-
-  const steps: CompletionStep[] = [
-    { id: "push", label: t("home.taskNotifications"), completed: status.notificationsEnabled, action: () => navigate("/settings/preferences") },
-    { id: "buddy", label: t("home.taskSearchBuddy"), completed: getStrengthTask("search_buddy")?.completed ?? false, action: () => navigate("/profile/edit/search_buddy_email") },
-    { id: "search", label: t("home.taskOptimizeSearch"), completed: status.profileCreated, action: () => navigate("/dashboard/searches/new") },
-    { id: "letter", label: t("home.taskPrepLetter"), completed: getStrengthTask("application_template")?.completed ?? false, action: () => navigate("/application-letter") },
-    { id: "documents", label: t("home.taskDocuments"), completed: false, action: () => navigate("/tips/flow") },
-  ];
+  const serverTasks = taskSource === "tasks" ? data.tasks : data.prepTasks;
+  const completionMap = buildCompletionMap(serverTasks);
+  const steps = resolveFlowSteps(flow, completionMap, t, navigate);
 
   return (
     <ExpandableCompletionCard
-      title={t("home.accountCardTitle")}
+      title={t(flow.titleKey)}
       steps={steps}
       completedLabel={t("activation.completed")}
-      subtitleFormat={t("home.completionSubtitle")}
-      testId="card-account-completion"
+      subtitleFormat={t(flow.subtitleKey)}
+      testId={testId}
     />
   );
 }
 
-function HomePrepCompletionCard({ accessToken, navigate, onTellFriends }: { accessToken: string | undefined; navigate: (path: string) => void; onTellFriends: () => void }) {
-  const { t } = useTranslation();
-
-  const statusQuery = useQuery<ActivationStatus>({
-    queryKey: ["/api/activation-status"],
-    queryFn: async () => {
-      const res = await apiFetch("/api/activation-status", {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      if (!res.ok) throw new Error("Failed to load");
-      return res.json();
-    },
-    enabled: !!accessToken,
-    staleTime: 60_000,
-  });
-
-  const strengthQuery = useQuery<{ tasks: { id: string; completed: boolean }[] }>({
-    queryKey: ["/api/profile-strength"],
-    queryFn: async () => {
-      const res = await apiFetch("/api/profile-strength", {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      if (!res.ok) throw new Error("Failed to load");
-      return res.json();
-    },
-    enabled: !!accessToken,
-    staleTime: 60_000,
-  });
-
-  const status = statusQuery.data;
-  const strength = strengthQuery.data;
-  const flowSteps = getFlowTipSteps();
-  const readSet = getTipsReadSet();
-  if (!status) return null;
-
-  const getStrengthTask = (id: string) => strength?.tasks?.find(t => t.id === id);
-
-  const steps: CompletionStep[] = [
-    { id: "intro_letter", label: t("home.taskWriteLetter"), completed: getStrengthTask("application_template")?.completed ?? false, action: () => navigate("/application-letter") },
-    { id: "tell_friends", label: t("home.taskTellFriends"), completed: false, action: onTellFriends },
-    { id: "add_search", label: t("home.taskAddSearch"), completed: status.profileCreated, action: () => navigate("/dashboard/searches/new") },
-    { id: "create_account", label: t("home.taskCreateAccount"), completed: true, action: () => {} },
-    { id: "online_presence", label: t("home.taskOnlinePresence"), completed: false, action: () => navigate("/profile/details") },
-    { id: "viewing_tips", label: t("home.taskViewingTips"), completed: readSet.has("besichtigung"), action: () => navigate("/tips/flow") },
-  ];
-
-  return (
-    <ExpandableCompletionCard
-      title={t("home.prepCardTitle")}
-      steps={steps}
-      completedLabel={t("activation.completed")}
-      subtitleFormat={t("home.completionSubtitle")}
-      testId="card-prep-completion"
-    />
-  );
-}
-
-function ProfileAccountCompletionCard({ navigate }: { navigate: (path: string) => void }) {
-  const { t } = useTranslation();
-
-  const strengthQuery = useQuery<{ tasks: { id: string; completed: boolean }[]; channels: { push: boolean } }>({
-    queryKey: ["/api/profile-strength"],
-    queryFn: async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) throw new Error("No token");
-      const res = await apiFetch("/api/profile-strength", {
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
-      if (!res.ok) throw new Error("Failed to load");
-      return res.json();
-    },
-  });
-
-  const statusQuery = useQuery<ActivationStatus>({
-    queryKey: ["/api/activation-status"],
-    queryFn: async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.access_token) throw new Error("No token");
-      const res = await apiFetch("/api/activation-status", {
-        headers: { Authorization: `Bearer ${session.access_token}` },
-      });
-      if (!res.ok) throw new Error("Failed to load");
-      return res.json();
-    },
-  });
-
-  const strength = strengthQuery.data;
-  const status = statusQuery.data;
-
-  const getStrengthTask = (id: string) => strength?.tasks?.find(t => t.id === id);
-
-  const steps: CompletionStep[] = [
-    { id: "push", label: t("activation.notificationsEnabled"), completed: status?.notificationsEnabled ?? false, action: () => navigate("/settings/preferences") },
-    { id: "letter", label: t("strengthTask.applicationTemplate"), completed: getStrengthTask("application_template")?.completed ?? false, action: () => navigate("/application-letter") },
-    { id: "buddy", label: t("strengthTask.searchBuddy"), completed: getStrengthTask("search_buddy")?.completed ?? false, action: () => navigate("/profile/edit/search_buddy_email") },
-    { id: "search", label: t("activation.profileCreated"), completed: status?.profileCreated ?? false, action: () => navigate("/dashboard/searches/new") },
-  ];
-
-  return (
-    <ExpandableCompletionCard
-      title={t("profile.completeAccount")}
-      steps={steps}
-      completedLabel={t("profile.completedLabel")}
-      testId="card-profile-account-completion"
-    />
-  );
-}
 
 function ProfileTipsCompletionCard({ navigate }: { navigate: (path: string) => void }) {
   const { t } = useTranslation();
@@ -838,8 +724,8 @@ function HomeTab({
             {t("home.gamificationTitle")}
           </h2>
           <div className="flex flex-col gap-3.5">
-            <HomeAccountCompletionCard accessToken={accessToken} navigate={navigate} />
-            <HomePrepCompletionCard accessToken={accessToken} navigate={navigate} onTellFriends={handleReferralShare} />
+            <TaskFlowCard accessToken={accessToken} flow={ACCOUNT_FLOW} taskSource="tasks" navigate={navigate} testId="card-account-completion" />
+            <TaskFlowCard accessToken={accessToken} flow={SEARCH_PREP_FLOW} taskSource="prepTasks" navigate={navigate} testId="card-prep-completion" />
           </div>
         </div>
 

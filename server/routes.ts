@@ -2548,27 +2548,26 @@ export async function registerRoutes(
         (profilePhone && typeof profilePhone === "string" && profilePhone.length > 6)
       );
 
-      const hasNetworkDone = !!(profileData?.network_task_done);
+      const hasNetworkDone = !!(profileData?.network_task_done) || !!(profileData?.first_name && profileData?.last_name && profileData?.phone);
       const hasViewingTipsDone = !!(profileData?.viewing_tips_done);
       const hasMultipleProfiles = searchProfiles.length >= 2;
 
-      const accountTasks = [
-        { id: "alerts", completed: hasAlertChannel, score: 20 },
-        { id: "search_buddy", completed: hasSearchBuddy, score: 10 },
-        { id: "search_optimize", completed: hasOptimizedSearch, score: 20 },
-        { id: "application_template", completed: hasApplicationTemplate, score: 15 },
-        { id: "documents", completed: hasDocuments, score: 20 },
-        { id: "phone", completed: hasPhone, score: 15 },
-      ];
-
       const hasSearchProfile = searchProfiles.length >= 1;
 
+      const accountTasks = [
+        { id: "notifications", completed: hasAlertChannel, score: 20 },
+        { id: "search_profile", completed: hasSearchProfile, score: 20 },
+        { id: "phone", completed: hasPhone, score: 15 },
+        { id: "search_buddy", completed: hasSearchBuddy, score: 10 },
+        { id: "profile_details", completed: hasPhone && hasSearchBuddy, score: 15 },
+      ];
+
       const prepTasks = [
-        { id: "prep_search_profile", completed: hasSearchProfile, score: 15 },
-        { id: "prep_letter", completed: hasApplicationTemplate, score: 10 },
-        { id: "prep_extra_profile", completed: hasMultipleProfiles, score: 15 },
-        { id: "prep_network", completed: hasNetworkDone, score: 5 },
-        { id: "prep_viewing_tips", completed: hasViewingTipsDone, score: 5 },
+        { id: "application_letter", completed: hasApplicationTemplate, score: 15 },
+        { id: "documents", completed: hasDocuments, score: 20 },
+        { id: "extra_search_profile", completed: hasMultipleProfiles, score: 15 },
+        { id: "network", completed: hasNetworkDone, score: 5 },
+        { id: "viewing_tips", completed: hasViewingTipsDone, score: 5 },
       ];
 
       const allTasks = [...accountTasks, ...prepTasks];

@@ -1,0 +1,97 @@
+Refactor the task system into structured flows.
+
+We already completed an audit. Now implement a clean structure.
+
+IMPORTANT:
+- Do NOT keep the current messy mapping
+- Replace it with a structured flow system
+
+==================================================
+1. CREATE A CENTRAL TASK CONFIG
+==================================================
+
+Create a single source of truth:
+
+const taskFlows = {
+  account: [
+    {
+      id: "notifications",
+      label: "Activeer notificaties",
+      route: "/settings/notifications",
+      isCompleted: () => ...
+    },
+    {
+      id: "buddy",
+      label: "Voeg zoekbuddy toe",
+      route: "/buddy",
+      isCompleted: () => ...
+    },
+    ...
+  ],
+  search: [
+    {
+      id: "create_search",
+      label: "Voeg zoekopdracht toe",
+      route: "/search/create",
+      isCompleted: () => ...
+    },
+    ...
+  ]
+}
+
+No more scattered logic.
+
+==================================================
+2. FIX ROUTING
+==================================================
+
+Ensure:
+
+- Each task → exactly ONE route
+- Each route → matches the intended step
+- No duplicate routes across tasks
+
+==================================================
+3. FIX COMPLETION LOGIC
+==================================================
+
+Each task must:
+
+- have ONE clear completion check
+- reflect real user data
+- instantly update UI when completed
+
+==================================================
+4. CLEAN UI GROUPS
+==================================================
+
+Update UI to:
+
+- Only show valid tasks
+- Remove duplicates
+- Correct ordering
+
+==================================================
+5. PREPARE FOR FLOW MODE
+==================================================
+
+When user opens a task:
+
+Add support for:
+
+- step index (e.g. 3/5)
+- progress bar
+- optional "next step" navigation
+
+Do NOT fully redesign UI yet, just prepare structure.
+
+==================================================
+6. OUTPUT
+==================================================
+
+Return:
+
+1. new taskFlows structure
+2. which old tasks were removed or merged
+3. which routes were corrected
+4. confirmation that each task maps 1:1 to a page

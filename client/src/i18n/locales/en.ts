@@ -1121,6 +1121,23 @@ export const en: Record<string, any> = {
     prepNetwork: "Use your network",
     prepViewingTips: "Read viewing tips",
   },
+  taskFlow: {
+    accountTitle: "Complete your account",
+    accountSubtitle: "{done} of {total} completed",
+    searchTitle: "Prepare your search",
+    searchSubtitle: "{done} of {total} completed",
+    notifications: "Enable notifications",
+    searchProfile: "Create a search profile",
+    phone: "Add phone number",
+    searchBuddy: "Add a search buddy",
+    profileDetails: "Complete your profile",
+    applicationLetter: "Write your application letter",
+    documents: "Gather your documents",
+    extraSearchProfile: "Add an extra search profile",
+    network: "Use your network",
+    viewingTips: "Read the viewing tips",
+    stepOf: "Step {current} of {total}",
+  },
 
   boostTask: {
     incomeDocuments: "Prepare income documents",

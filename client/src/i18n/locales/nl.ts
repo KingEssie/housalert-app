@@ -1946,6 +1946,23 @@ export const nl: Record<string, any> = {
     prepNetwork: "Gebruik je netwerk",
     prepViewingTips: "Bezichtigingstips lezen",
   },
+  taskFlow: {
+    accountTitle: "Rond je account af",
+    accountSubtitle: "{done} van de {total} voltooid",
+    searchTitle: "Bereid je zoekopdracht voor",
+    searchSubtitle: "{done} van de {total} voltooid",
+    notifications: "Activeer notificaties",
+    searchProfile: "Maak een zoekprofiel aan",
+    phone: "Voeg telefoonnummer toe",
+    searchBuddy: "Voeg zoekbuddy toe",
+    profileDetails: "Vul je profiel aan",
+    applicationLetter: "Schrijf je reactiebrief",
+    documents: "Verzamel je documenten",
+    extraSearchProfile: "Voeg extra zoekprofiel toe",
+    network: "Gebruik je netwerk",
+    viewingTips: "Lees de bezichtigingstips",
+    stepOf: "Stap {current} van {total}",
+  },
 
   boostTask: {
     incomeDocuments: "Inkomensdocumenten voorbereiden",
