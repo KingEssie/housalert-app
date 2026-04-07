@@ -1,0 +1,132 @@
+Audit and restructure the “Rond je account af” and “Bereid je zoekopdracht voor” task flows.
+
+IMPORTANT:
+- Do NOT immediately start changing routes blindly
+- Diagnose first
+- We need a full overview before rebuilding the flow
+- The current issue is that some tasks do not link to the correct pages and the task groups feel messy/inconsistent
+
+GOAL:
+Create a clear audit of all tasks, their routes, their completion logic, and then propose a clean step-by-step flow structure.
+
+==================================================
+1. AUDIT THE CURRENT TASK SYSTEM
+==================================================
+
+Inspect the full implementation of:
+
+- “Rond je account af”
+- “Bereid je zoekopdracht voor”
+
+For EACH task item, identify:
+
+1. task label shown in UI
+2. current click target / route
+3. page/component it opens
+4. completion logic/check used
+5. whether the route is correct or incorrect
+6. whether the task is duplicated elsewhere
+7. whether the task belongs in the correct group
+
+We need a complete inventory.
+
+==================================================
+2. OUTPUT A CLEAR OVERVIEW TABLE
+==================================================
+
+Create a structured overview table with columns like:
+
+- Group
+- Task label
+- Current route
+- Actual destination page
+- Completion source/check
+- Problem found?
+- Recommended correct route
+- Keep / Merge / Remove / Move
+
+Do not skip any task.
+
+==================================================
+3. IDENTIFY PROBLEMS
+==================================================
+
+Explicitly flag:
+
+- tasks linking to wrong pages
+- tasks that go to the same page but are presented as different steps
+- tasks with mismatched completion logic
+- tasks that are redundant
+- tasks that are in the wrong section
+- tasks that are completed but still displayed incorrectly
+- tasks that should be merged into one flow
+
+==================================================
+4. DESIGN A CLEAN FLOW STRUCTURE
+==================================================
+
+After the audit, propose a cleaner structure.
+
+We want these sections to become true guided flows.
+
+For each section, propose a logical step order.
+
+Example target outcome:
+
+A. Rond je account af
+- Step 1
+- Step 2
+- Step 3
+- Step 4
+- Step 5
+
+B. Bereid je zoekopdracht voor
+- Step 1
+- Step 2
+- Step 3
+- Step 4
+- Step 5
+- Step 6
+
+Each step must have:
+- one clear purpose
+- one correct route
+- one reliable completion check
+
+==================================================
+5. PREPARE FOR A FLOW UI
+==================================================
+
+We want this to eventually become a real flow.
+
+So propose how each opened task page should support:
+
+- current step number (e.g. 4/5)
+- progress bar
+- previous / next step flow where appropriate
+- consistent back behavior
+- clear completion state
+
+Do NOT fully rebuild this yet unless the audit is complete first.
+
+==================================================
+6. DO NOT GUESS
+==================================================
+
+If some routes or completion logic are unclear, inspect the actual code and identify the real source.
+
+We need truth from the codebase, not assumptions.
+
+==================================================
+7. OUTPUT
+==================================================
+
+Return:
+
+1. complete task audit table
+2. list of routing problems found
+3. list of duplicated / redundant tasks
+4. proposed new structure for both flows
+5. recommended next implementation plan
+
+Do not start major UI refactors until the audit is done.

@@ -18,3 +18,9 @@ id = "A-Vl_1166af_Fj3pyshud"
 uri = "file://.local/ROLLOUT_PLAN.md"
 type = "text"
 title = "Production Migration Rollout Plan"
+
+[[outputs]]
+id = "1U94rBUwPNDCVoPogplQI"
+uri = "file://.local/task-audit.md"
+type = "text"
+title = "Task Flow Audit Report"
