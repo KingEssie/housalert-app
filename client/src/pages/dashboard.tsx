@@ -311,7 +311,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           {canAdd ? (
             <button
               onClick={() => navigate("/dashboard/searches/new")}
-              className="w-full mt-2 h-[42px] rounded-full border border-dashed border-[#D1D5DB] text-[13px] font-semibold text-[#6B7280] hover:border-ha-primary hover:text-ha-primary transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
+              className="w-full mt-2.5 h-[44px] rounded-full bg-ha-primary/10 text-[14px] font-semibold text-ha-primary hover:bg-ha-primary/15 transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
               data-testid="button-add-search-profile"
             >
               {t("searchProfiles.addProfile")}
@@ -835,11 +835,16 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
       {profiles.length > 0 && profiles.length < MAX_PROFILES && (
         <button
           onClick={() => navigate("/dashboard/searches/new")}
-          className="w-full mt-3 h-[48px] rounded-[12px] bg-[#F3F4F6] text-[14px] font-semibold text-[#111111] hover:bg-[#E5E7EB] transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
+          className="w-full mt-3 h-[48px] rounded-[12px] bg-ha-primary/10 text-[14px] font-semibold text-ha-primary hover:bg-ha-primary/15 transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
           data-testid="button-add-zoekopdracht"
         >
           + {t("home.addZoekopdracht")}
         </button>
+      )}
+      {profiles.length >= MAX_PROFILES && (
+        <p className="mt-3 text-[12px] text-[#C4C4C4] text-center" data-testid="text-zoek-max-reached">
+          {t("searchProfiles.maxReached")}
+        </p>
       )}
 
       {confirmDeleteId && (
@@ -2247,10 +2252,20 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
 
 function ZoekTab({ profiles, navigate }: { profiles: SearchProfile[]; navigate: (path: string) => void }) {
   const { t } = useTranslation();
+  const canAdd = profiles.length < MAX_PROFILES;
   return (
     <div className="flex flex-col pb-8">
-      <div className="sticky top-0 z-10 bg-white px-5 pt-8 pb-5">
-        <h1 className="text-page-title">{t("nav.search")}</h1>
+      <div className="sticky top-0 z-10 bg-white px-5 pt-8 pb-5 flex items-center">
+        <h1 className="text-page-title flex-1">{t("nav.search")}</h1>
+        {canAdd && profiles.length > 0 && (
+          <button
+            onClick={() => navigate("/dashboard/searches/new")}
+            className="w-9 h-9 rounded-full bg-ha-primary flex items-center justify-center text-white active:scale-90 transition-transform shadow-sm"
+            data-testid="button-zoek-add-profile"
+          >
+            <span className="text-[20px] font-medium leading-none">+</span>
+          </button>
+        )}
       </div>
       <div className="px-5 pt-1">
         <ZoekopdrachtenSection profiles={profiles} navigate={navigate} />
