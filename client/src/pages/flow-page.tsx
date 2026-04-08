@@ -18,6 +18,7 @@ import {
   type TaskFlow,
   type TaskFlowStep,
 } from "@/lib/task-flows";
+import type { LucideProps } from "lucide-react";
 import {
   Bell,
   Search,
@@ -39,14 +40,14 @@ import {
   Wallet,
 } from "lucide-react";
 
-const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+const ICON_MAP: Record<string, React.ComponentType<LucideProps>> = {
   Bell, Search, Phone, Users, UserCircle, FileText, FolderOpen, PlusCircle, Share2, Eye, Building, Wallet,
 };
 
 function getStepIcon(iconName: string) {
   const Icon = ICON_MAP[iconName];
   if (!Icon) return null;
-  return <Icon className="w-8 h-8 text-ha-primary" />;
+  return <Icon className="w-11 h-11 text-ha-primary" strokeWidth={1.5} />;
 }
 
 function InlineProfileDetails({ accessToken, userEmail }: { accessToken: string; userEmail: string }) {
@@ -350,7 +351,7 @@ function OpenPageButton({ step, label }: { step: TaskFlowStep; label: string }) 
 
 function TipBody({ children }: { children: React.ReactNode }) {
   return (
-    <div className="text-left text-[15px] text-[#374151] leading-relaxed flex flex-col gap-4" data-testid="tip-body">
+    <div className="text-left text-[15px] text-[#374151] leading-relaxed flex flex-col gap-5" data-testid="tip-body">
       {children}
     </div>
   );
@@ -358,41 +359,51 @@ function TipBody({ children }: { children: React.ReactNode }) {
 
 function TipSection({ title, items }: { title?: string; items: string[] }) {
   return (
-    <div>
-      {title && <p className="font-semibold text-[#111111] mb-1.5">{title}</p>}
-      <ul className="flex flex-col gap-1 pl-1">
+    <div className="rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
+      {title && (
+        <div className="px-4 pt-3.5 pb-2">
+          <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide">{title}</p>
+        </div>
+      )}
+      <div className={`flex flex-col ${title ? "" : "pt-1"}`}>
         {items.map((item, i) => (
-          <li key={i} className="flex items-start gap-2">
-            <span className="text-ha-primary mt-0.5 flex-shrink-0">•</span>
-            <span>{item}</span>
-          </li>
+          <div key={i} className={`flex items-center gap-3 px-4 py-3 ${i > 0 ? "border-t border-[#F3F4F6]" : ""}`}>
+            <div className="w-[22px] h-[22px] rounded-[7px] border-2 border-[#D1D5DB] flex items-center justify-center flex-shrink-0">
+              <Check className="w-3 h-3 text-[#D1D5DB]" strokeWidth={2.5} />
+            </div>
+            <span className="text-[14px] text-[#111111]">{item}</span>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
 
 function TipHighlight({ text }: { text: string }) {
-  return <p className="font-semibold text-[#111111] bg-[#FDF8F0] rounded-xl px-4 py-3">{text}</p>;
+  return (
+    <div className="flex items-center gap-3 rounded-2xl bg-[#FDF8F0] border border-[#F5E6D3] px-5 py-4">
+      <span className="text-[18px] flex-shrink-0">💡</span>
+      <p className="text-[14px] font-semibold text-[#111111] leading-snug">{text}</p>
+    </div>
+  );
 }
 
 const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   tip_documents: () => (
     <TipBody>
-      <p>Zorg dat je dit klaar hebt:</p>
-      <TipSection title="Als je in loondienst bent:" items={[
+      <TipSection title="In loondienst" items={[
         "Kopie ID / paspoort",
         "Inkomensverklaring of werkgeversverklaring",
-        "De laatste 3 loonstroken",
+        "Laatste 3 loonstroken",
         "Arbeidscontract (indien mogelijk)",
         "Uittreksel BRP (gemeente)",
       ]} />
-      <TipSection title="Als je zelfstandig bent:" items={[
+      <TipSection title="Zelfstandig" items={[
         "Laatste belastingaangifte",
         "Jaarcijfers / winst- en verliesrekening",
         "Bankafschriften laatste maanden",
       ]} />
-      <TipSection title="Als je al huurt:" items={[
+      <TipSection title="Al een huurwoning" items={[
         "Verhuurdersverklaring",
         "Bewijs van huurbetalingen",
       ]} />
@@ -401,13 +412,20 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   ),
   tip_finances: () => (
     <TipBody>
-      <p><span className="font-semibold text-[#111111]">Inkomen = minimaal 3x de kale huur</span></p>
-      <div className="bg-[#F9FAFB] rounded-xl px-4 py-3">
-        <p className="text-[14px] text-[#6B7280] mb-1">Voorbeeld:</p>
-        <p>Huur: €1.000 → Nodig inkomen: €3.000+</p>
+      <div className="rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
+        <div className="px-5 py-4">
+          <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Vuistregel</p>
+          <p className="text-[22px] font-bold text-[#111111] mb-1">3× de kale huur</p>
+          <p className="text-[14px] text-[#6B7280]">Minimaal bruto maandinkomen</p>
+        </div>
+        <div className="border-t border-[#F3F4F6] px-5 py-3.5 bg-[#FAFAFA]">
+          <p className="text-[14px] text-[#374151]">
+            <span className="text-[#6B7280]">Voorbeeld:</span> Huur €1.000 → inkomen €3.000+
+          </p>
+        </div>
       </div>
-      <p>Soms zelfs hoger (3,5x – 4x), vooral in populaire steden.</p>
-      <TipSection title="Belangrijk:" items={[
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Soms zelfs hoger (3,5× – 4×), vooral in populaire steden.</p>
+      <TipSection title="Belangrijk" items={[
         "Onder deze grens reageren = vaak kansloos",
         "Je verspilt tijd en positie",
       ]} />
@@ -416,14 +434,14 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   ),
   tip_landlord_accounts: () => (
     <TipBody>
-      <TipSection title="Maak accounts op:" items={[
+      <TipSection title="Maak accounts op" items={[
         "Funda",
         "Pararius",
         "Kamernet",
         "Facebook Marketplace",
         "Eventueel lokale verhuurders",
       ]} />
-      <TipSection title="Tip:" items={[
+      <TipSection title="Direct doen" items={[
         "Zet meldingen aan",
         "Vul je profiel volledig in",
         "Upload alvast je documenten",
@@ -433,17 +451,17 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   ),
   tip_facebook_groups: () => (
     <TipBody>
-      <TipSection title="Vooral via:" items={[
+      <TipSection title="Waar zoeken" items={[
         "Facebook-groepen",
-        "Studenten groepen",
+        "Studentengroepen",
         "Lokale communities",
       ]} />
-      <TipSection title="Zoek op:" items={[
-        "Woning gezocht + stad",
-        "Huurwoning + stad",
-        "Kamer gezocht + stad",
+      <TipSection title="Zoektermen" items={[
+        "\"Woning gezocht\" + stad",
+        "\"Huurwoning\" + stad",
+        "\"Kamer gezocht\" + stad",
       ]} />
-      <TipSection title="Tip:" items={[
+      <TipSection title="Acties" items={[
         "Zet meldingen aan",
         "Reageer direct",
         "Plaats zelf ook een oproep",
@@ -453,12 +471,12 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   ),
   tip_network: () => (
     <TipBody>
-      <TipSection title="Check:" items={[
+      <TipSection title="Waar kijken" items={[
         "Projectwebsites",
         "Woningcorporaties",
         "Nieuwbouwplatforms",
       ]} />
-      <TipSection title="Tip:" items={[
+      <TipSection title="Acties" items={[
         "Schrijf je direct in",
         "Hou je mail goed in de gaten",
         "Soms wordt er geloot",
@@ -468,13 +486,13 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   ),
   tip_viewings: () => (
     <TipBody>
-      <TipSection title="Vertel dat je zoekt aan:" items={[
+      <TipSection title="Vertel het aan" items={[
         "Vrienden",
         "Familie",
         "Collega's",
         "Kennissen",
       ]} />
-      <TipSection title="Praktisch:" items={[
+      <TipSection title="Praktisch" items={[
         "Post op social media",
         "Vraag actief rond",
         "Laat mensen je naam doorgeven",

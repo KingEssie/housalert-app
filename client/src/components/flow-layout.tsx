@@ -69,11 +69,11 @@ export function FlowLayout({
 
       <div className="flex-1 overflow-y-auto bg-[#FAFAFA]">
         <div className="max-w-lg mx-auto px-6 pt-10 pb-8">
-          <div className="flex flex-col items-center text-center mb-8">
-            <div className="w-[72px] h-[72px] rounded-2xl bg-[#FDF1F6] flex items-center justify-center mb-6" data-testid="icon-flow-step">
+          <div className="flex flex-col items-center text-center mb-10">
+            <div className="mb-7" data-testid="icon-flow-step">
               {stepIcon}
             </div>
-            <h1 className="text-[26px] font-semibold text-[#111111] leading-tight mb-3" data-testid="text-step-title">
+            <h1 className="text-[26px] font-semibold text-[#111111] leading-tight mb-4" data-testid="text-step-title">
               {stepTitle}
             </h1>
             <p className="text-[16px] text-[#4B5563] leading-relaxed max-w-[340px]" data-testid="text-step-description">

@@ -1,0 +1,135 @@
+We need to redesign the content layout of the tip detail screens in the second flow ("Vergroot je kansen met deze tips") so they feel cleaner, more premium, and easier to scan on mobile.
+
+IMPORTANT:
+- Do NOT change the flow structure
+- Do NOT change routing
+- Do NOT change step order
+- Do NOT change completion logic
+- Do NOT remove the existing 6 tips
+- Do NOT redesign the header/footer/navigation
+- Only improve the content presentation inside the tip detail screens
+
+GOAL:
+Make the tip screens feel less cramped, less text-heavy, and more action-oriented.
+
+==================================================
+1. REMOVE THE PINK BACKGROUND BEHIND THE ICON
+==================================================
+
+Problem:
+The current light-pink rounded square behind the icon feels too soft and not premium enough.
+
+Fix:
+- Remove the pink background behind the icon entirely
+- Keep the icon itself in the brand color
+- Make the icon significantly larger
+- Give it more breathing room
+
+Requirements:
+- icon should feel like a strong visual anchor
+- no colored tile/card behind it
+- use clean spacing
+
+Suggested direction:
+- icon size around 40–48px
+- no background fill
+- more margin below the icon
+
+Apply this to ALL tip screens in the second flow.
+
+==================================================
+2. REDESIGN THE CONTENT AREA TO FEEL LESS CRAMPED
+==================================================
+
+Problem:
+The current content is too text-heavy and feels cramped / packed together on mobile.
+
+Fix:
+- improve spacing between sections
+- avoid large dense text blocks
+- make the content easier to scan quickly
+- reduce the “wall of text” feeling
+
+Requirements:
+- more vertical spacing between title, intro, and content
+- more space between subsections
+- cleaner mobile reading rhythm
+- maintain the same written content, but present it better
+
+==================================================
+3. REPLACE LONG TEXT BLOCKS WITH STRUCTURED CARDS / CHECKLIST-STYLE SECTIONS WHERE APPROPRIATE
+==================================================
+
+For tip content like the documents screen, the current paragraph + long bullet list is not ideal.
+
+Improve the layout by turning grouped info into clearer blocks.
+
+Examples:
+- “Als je in loondienst bent”
+- “Als je zelfstandig bent”
+- “Als je al huurt”
+
+These should be presented in a cleaner, more modular way, such as:
+- section cards
+- checklist-style groups
+- clearly separated content blocks
+
+Do NOT change the actual meaning/content.
+Do improve the visual grouping.
+
+Goal:
+Users should be able to scan each tip quickly instead of reading one long uninterrupted block.
+
+==================================================
+4. MAKE THE CONTENT FEEL MORE ACTIONABLE
+==================================================
+
+Where possible, the content should feel like:
+- a checklist
+- an action guide
+- something the user can work through
+
+Instead of:
+- long static informational text
+
+This does NOT mean changing the tips into a new feature.
+It means improving the visual presentation so the user feels guided.
+
+==================================================
+5. KEEP THE EXISTING HEADER / FOOTER
+==================================================
+
+Do NOT change:
+- top header
+- progress bar
+- step counter
+- back button
+- close button
+- "Markeer als voltooid"
+- next button
+
+Only improve the content presentation in the body of the tip screens.
+
+==================================================
+6. APPLY TO ALL 6 TIP SCREENS
+==================================================
+
+This is not only for tip 1.
+Apply the cleaner visual style to all 6 tip screens where relevant.
+
+Examples:
+- bigger icon, no background
+- more spacing
+- cleaner grouping
+- less cramped layout
+
+==================================================
+7. OUTPUT
+==================================================
+
+After finishing, return:
+1. what changed in the icon styling
+2. how the content layout was improved
+3. which tip sections were converted into clearer grouped blocks/cards
+4. confirmation that flow logic/routing/completion were unchanged
+5. which files were changed
