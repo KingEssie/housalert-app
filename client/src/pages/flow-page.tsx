@@ -574,6 +574,7 @@ export default function FlowPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
+      queryClient.refetchQueries({ queryKey: ["/api/profile-strength"] });
     },
   });
 
@@ -606,8 +607,12 @@ export default function FlowPage() {
         navigate("/home");
       };
   const handleMarkComplete =
-    step.completionType === "manual" && !isCompleted
-      ? () => markCompleteMutation.mutate({ flowId: flow.id, stepId: step.id })
+    step.completionType === "manual"
+      ? () => {
+          if (!isCompleted) {
+            markCompleteMutation.mutate({ flowId: flow.id, stepId: step.id });
+          }
+        }
       : null;
 
   return (
