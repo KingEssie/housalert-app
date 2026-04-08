@@ -2597,10 +2597,12 @@ export async function registerRoutes(
       ];
 
       const prepTasks = [
-        { id: "extra_search_profile", completed: hasMultipleProfiles, score: 20 },
-        { id: "application_letter", completed: hasApplicationTemplate, score: 20 },
-        { id: "viewing_tips", completed: hasViewingTipsDone, score: 10 },
-        { id: "network", completed: hasNetworkDone, score: 10 },
+        { id: "tip_documents", completed: false, score: 10 },
+        { id: "tip_finances", completed: false, score: 10 },
+        { id: "tip_landlord_accounts", completed: false, score: 10 },
+        { id: "tip_facebook_groups", completed: false, score: 10 },
+        { id: "tip_network", completed: false, score: 10 },
+        { id: "tip_viewings", completed: false, score: 10 },
       ];
 
       const allTasks = [...accountTasks, ...prepTasks];

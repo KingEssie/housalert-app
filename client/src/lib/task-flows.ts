@@ -40,10 +40,12 @@ export const SEARCH_PREP_FLOW: TaskFlow = {
   subtitleKey: "taskFlow.searchSubtitle",
   flowPrefix: "/flow/search",
   steps: [
-    { id: "extra_search_profile", labelKey: "taskFlow.extraSearchProfile", descriptionKey: "taskFlow.desc.extraSearchProfile", icon: "PlusCircle", route: "/dashboard/searches/new", completionType: "auto" },
-    { id: "application_letter", labelKey: "taskFlow.applicationLetter", descriptionKey: "taskFlow.desc.applicationLetter", icon: "FileText", route: "/application-letter", completionType: "auto" },
-    { id: "viewing_tips", labelKey: "taskFlow.viewingTips", descriptionKey: "taskFlow.desc.viewingTips", icon: "Eye", route: "/tips/bezichtiging", completionType: "manual" },
-    { id: "network", labelKey: "taskFlow.network", descriptionKey: "taskFlow.desc.network", icon: "Share2", route: "/profile/details", completionType: "manual" },
+    { id: "tip_documents", labelKey: "taskFlow.tipDocuments", descriptionKey: "taskFlow.desc.tipDocuments", icon: "FileText", route: "/tips/documenten", completionType: "manual" },
+    { id: "tip_finances", labelKey: "taskFlow.tipFinances", descriptionKey: "taskFlow.desc.tipFinances", icon: "Wallet", route: "/tips/financien", completionType: "manual" },
+    { id: "tip_landlord_accounts", labelKey: "taskFlow.tipLandlordAccounts", descriptionKey: "taskFlow.desc.tipLandlordAccounts", icon: "Building", route: "/tips/verhuurders", completionType: "manual" },
+    { id: "tip_facebook_groups", labelKey: "taskFlow.tipFacebookGroups", descriptionKey: "taskFlow.desc.tipFacebookGroups", icon: "Users", route: "/tips/facebook", completionType: "manual" },
+    { id: "tip_network", labelKey: "taskFlow.tipNetwork", descriptionKey: "taskFlow.desc.tipNetwork", icon: "Share2", route: "/tips/netwerk", completionType: "manual" },
+    { id: "tip_viewings", labelKey: "taskFlow.tipViewings", descriptionKey: "taskFlow.desc.tipViewings", icon: "Eye", route: "/tips/bezichtiging", completionType: "manual" },
   ],
 };
 

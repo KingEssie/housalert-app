@@ -1,0 +1,77 @@
+We are updating the second home flow card.
+
+GOAL:
+Rename the second flow and replace its current steps with a new set of 6 tips.
+
+IMPORTANT:
+- Do NOT change the first flow
+- Do NOT change the logic of the first flow
+- Only update the second flow card
+- Keep the same existing component structure and completion behavior
+- Do NOT redesign the card system
+- Do NOT break expand/collapse or step click behavior
+
+==================================================
+1. RENAME THE SECOND FLOW
+==================================================
+
+Change the second flow title from:
+
+- "Bereid je zoekopdracht voor"
+
+to:
+
+- "Vergroot je kansen met deze tips"
+
+Make sure this appears consistently everywhere the second flow title is shown.
+
+==================================================
+2. REPLACE THE CURRENT STEP LIST
+==================================================
+
+Replace the current steps of the second flow with exactly these 6 tips:
+
+1. Verzamel vereiste documenten
+2. Check je financiële situatie
+3. Creëer accounts bij populaire verhuurders
+4. Meld je aan voor Facebook-groepen
+5. Zet je netwerk in
+6. Kom goed voor de dag bij bezichtigingen
+
+Use these as the new step titles for the second flow.
+
+==================================================
+3. KEEP STRUCTURE THE SAME
+==================================================
+
+Keep:
+- expandable card behavior
+- progress ring
+- progress text
+- completed / incomplete states
+- step clickability
+
+Do NOT rebuild the component.
+Do NOT change the general UI structure.
+
+==================================================
+4. KEEP COMPLETION LOGIC SIMPLE FOR NOW
+==================================================
+
+For now, keep the step system working with the same existing card mechanics.
+
+If some of these new tips do not yet have real backend completion logic:
+- keep them as incomplete/clickable for now
+- do NOT invent complex backend tracking yet unless already easy to support
+
+We are starting with the content structure first.
+
+==================================================
+5. OUTPUT
+==================================================
+
+After finishing, return:
+1. where the second flow title was changed
+2. where the 6 new tip steps were defined
+3. confirmation that only the second flow was changed
+4. which files were changed

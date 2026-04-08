@@ -647,7 +647,6 @@ function TaskFlowCard({
   searchProfileCount?: number;
 }) {
   const { t } = useTranslation();
-  const [letterOpen, setLetterOpen] = useState(false);
 
   const strengthQuery = useQuery<import("@/lib/task-flows").ProfileStrengthResponse>({
     queryKey: ["/api/profile-strength"],
@@ -692,28 +691,16 @@ function TaskFlowCard({
     }
   }
 
-  if (flow.id === "search") {
-    overrides["application_letter"] = {
-      stepType: "modal",
-      action: () => setLetterOpen(true),
-    };
-  }
-
   const steps = resolveFlowSteps(flow, completionMap, t, navigate, overrides);
 
   return (
-    <>
-      <ExpandableCompletionCard
-        title={t(flow.titleKey)}
-        steps={steps}
-        completedLabel={t("activation.completed")}
-        subtitleFormat={t(flow.subtitleKey)}
-        testId={testId}
-      />
-      {flow.id === "search" && (
-        <LetterModal accessToken={accessToken} open={letterOpen} onClose={() => setLetterOpen(false)} />
-      )}
-    </>
+    <ExpandableCompletionCard
+      title={t(flow.titleKey)}
+      steps={steps}
+      completedLabel={t("activation.completed")}
+      subtitleFormat={t(flow.subtitleKey)}
+      testId={testId}
+    />
   );
 }
 
