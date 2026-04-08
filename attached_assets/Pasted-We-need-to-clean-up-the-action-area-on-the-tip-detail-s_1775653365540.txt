@@ -1,0 +1,101 @@
+We need to clean up the action area on the tip detail screens in the second flow.
+
+PROBLEM:
+The current action area is visually broken:
+- "Markeer als voltooid" overlaps with the navigation buttons
+- button text does not fit properly
+- there are too many competing actions in the same space
+- the footer feels cramped and unpolished on mobile
+
+DECISION:
+We are going with Option B.
+
+GOAL:
+Make the footer clean and premium by keeping only:
+- Previous button
+- Next button
+
+And moving completion to a lighter inline control above the footer.
+
+IMPORTANT:
+- Do NOT change the overall flow structure
+- Do NOT change routing
+- Do NOT remove manual completion behavior
+- Do NOT redesign the whole screen
+- Only clean up the completion + footer action area
+
+==================================================
+1. REMOVE THE CURRENT BLACK "MARKEER ALS VOLTOOID" BUTTON FROM THE FOOTER AREA
+==================================================
+
+- Remove the current large black completion button that overlaps with the footer buttons
+- It should no longer sit between or above the navigation buttons in a way that causes layout issues
+
+==================================================
+2. ADD A LIGHTWEIGHT COMPLETION CONTROL ABOVE THE FOOTER
+==================================================
+
+Instead of the black button, show a much lighter completion control above the footer.
+
+Preferred implementation:
+- a simple checkbox row or toggle-style row
+- label should be shorter and cleaner:
+  - "Klaar"
+  or
+  - "Markeer als klaar"
+
+Recommended:
+- use "Klaar"
+
+Behavior:
+- user can check/toggle it manually
+- this still marks the tip as completed
+- keep the existing manual completion logic
+
+The control should feel subtle and not compete visually with the main CTA.
+
+==================================================
+3. KEEP THE FOOTER CLEAN
+==================================================
+
+The footer should contain only:
+- left: Vorige
+- right: Volgende
+
+Requirements:
+- no overlapping controls
+- no clipped text
+- enough horizontal padding
+- mobile-safe spacing
+- buttons should feel balanced and premium
+
+==================================================
+4. AUTO-COMPLETE BEHAVIOR ON NEXT
+==================================================
+
+When the user taps "Volgende", the current tip may also be treated as completed automatically if that matches the current manual-completion logic cleanly.
+
+Only do this if it does NOT break the existing completion behavior.
+
+If auto-completing on Next introduces risk, then keep completion tied only to the new lightweight "Klaar" control.
+
+Priority:
+- clean UX first
+- no broken logic
+
+==================================================
+5. APPLY TO ALL 6 TIP DETAIL SCREENS
+==================================================
+
+Use the same cleaned-up action layout consistently across all tip detail screens.
+
+==================================================
+6. OUTPUT
+==================================================
+
+After finishing, return:
+1. how the old black completion button was removed
+2. what new completion control was added
+3. whether Next now also auto-completes or not
+4. confirmation that the footer now contains only Vorige and Volgende
+5. which files were changed

@@ -593,8 +593,18 @@ export default function FlowPage() {
 
   const handlePrev = prevStep ? () => navigate(getFlowStepRoute(flow, prevStep.id)) : null;
   const handleNext = nextStep
-    ? () => navigate(getFlowStepRoute(flow, nextStep.id))
-    : () => navigate("/home");
+    ? () => {
+        if (step.completionType === "manual" && !isCompleted) {
+          markCompleteMutation.mutate({ flowId: flow.id, stepId: step.id });
+        }
+        navigate(getFlowStepRoute(flow, nextStep.id));
+      }
+    : () => {
+        if (step.completionType === "manual" && !isCompleted) {
+          markCompleteMutation.mutate({ flowId: flow.id, stepId: step.id });
+        }
+        navigate("/home");
+      };
   const handleMarkComplete =
     step.completionType === "manual" && !isCompleted
       ? () => markCompleteMutation.mutate({ flowId: flow.id, stepId: step.id })

@@ -81,15 +81,6 @@ export function FlowLayout({
             </p>
           </div>
 
-          {isCompleted && (
-            <div className="flex items-center gap-2.5 justify-center mb-6 py-3.5 px-5 bg-[#F0FDF4] border border-[#BBF7D0] rounded-2xl" data-testid="badge-step-completed">
-              <div className="w-[22px] h-[22px] rounded-full bg-[#16A34A] flex items-center justify-center">
-                <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
-              </div>
-              <span className="text-[15px] font-semibold text-[#16A34A]">{t("taskFlow.ui.completed")}</span>
-            </div>
-          )}
-
           {children && (
             <div data-testid="flow-step-content">
               {children}
@@ -98,36 +89,39 @@ export function FlowLayout({
         </div>
       </div>
 
-      <div className="bg-white border-t border-[#E5E7EB] px-5 py-5 pb-[max(20px,env(safe-area-inset-bottom))]">
-        <div className="max-w-lg mx-auto flex items-center gap-3">
+      <div className="bg-white border-t border-[#E5E7EB]">
+        {completionType === "manual" && onMarkComplete && (
+          <div className="max-w-lg mx-auto px-5 pt-4 pb-1">
+            <button
+              onClick={isCompleted ? undefined : onMarkComplete}
+              disabled={isPending || isCompleted}
+              className="flex items-center gap-2.5 group w-full"
+              data-testid="button-flow-mark-complete"
+            >
+              <div className={`w-[22px] h-[22px] rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${isCompleted ? "bg-[#16A34A] border-[#16A34A]" : "border-[#D1D5DB] group-hover:border-[#9CA3AF]"}`}>
+                {isCompleted && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
+              </div>
+              <span className={`text-[14px] transition-colors ${isCompleted ? "text-[#16A34A] font-medium" : "text-[#6B7280] group-hover:text-[#374151]"}`}>
+                {isPending ? "..." : "Klaar"}
+              </span>
+            </button>
+          </div>
+        )}
+        <div className="max-w-lg mx-auto px-5 py-4 pb-[max(16px,env(safe-area-inset-bottom))] flex items-center justify-between gap-3">
           <button
             onClick={onPrev ?? undefined}
             disabled={!onPrev}
-            className="h-[52px] px-6 rounded-full border border-[#E5E7EB] text-[15px] font-semibold text-[#111111] disabled:opacity-20 disabled:cursor-not-allowed hover:bg-[#F9FAFB] active:scale-[0.97] transition-all flex items-center gap-1.5"
+            className="h-[48px] px-6 rounded-full border border-[#E5E7EB] text-[15px] font-semibold text-[#111111] disabled:opacity-20 disabled:cursor-not-allowed hover:bg-[#F9FAFB] active:scale-[0.97] transition-all flex items-center gap-1.5"
             data-testid="button-flow-prev"
           >
             <ChevronLeft className="w-4 h-4" />
             {t("taskFlow.ui.prev")}
           </button>
 
-          <div className="flex-1" />
-
-          {completionType === "manual" && !isCompleted && onMarkComplete && (
-            <button
-              onClick={onMarkComplete}
-              disabled={isPending}
-              className="h-[52px] px-6 rounded-full bg-[#111111] text-white text-[14px] font-semibold hover:bg-[#333333] active:scale-[0.97] transition-all disabled:opacity-50 flex items-center gap-2"
-              data-testid="button-flow-mark-complete"
-            >
-              <Check className="w-4 h-4" />
-              {isPending ? "..." : t("taskFlow.ui.markComplete")}
-            </button>
-          )}
-
           <button
             onClick={onNext ?? undefined}
             disabled={!onNext}
-            className="h-[52px] px-8 rounded-full bg-ha-primary text-white text-[15px] font-semibold disabled:opacity-20 disabled:cursor-not-allowed hover:brightness-95 active:scale-[0.97] transition-all flex items-center gap-1.5 shadow-[0_2px_8px_rgba(217,26,104,0.18)]"
+            className="h-[48px] px-8 rounded-full bg-ha-primary text-white text-[15px] font-semibold disabled:opacity-20 disabled:cursor-not-allowed hover:brightness-95 active:scale-[0.97] transition-all flex items-center gap-1.5 shadow-[0_2px_8px_rgba(217,26,104,0.18)]"
             data-testid="button-flow-next"
           >
             {isLastStep ? t("taskFlow.ui.finish") : t("taskFlow.ui.next")}
