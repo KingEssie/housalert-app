@@ -91,18 +91,18 @@ export function FlowLayout({
 
       <div className="bg-white border-t border-[#E5E7EB]">
         {completionType === "manual" && onMarkComplete && (
-          <div className="max-w-lg mx-auto px-5 pt-4 pb-1">
+          <div className="max-w-lg mx-auto px-5 pt-5 pb-2 flex justify-center">
             <button
               onClick={isCompleted ? undefined : onMarkComplete}
               disabled={isPending || isCompleted}
-              className="flex items-center gap-2.5 group w-full"
+              className="flex items-center gap-2 group"
               data-testid="button-flow-mark-complete"
             >
-              <div className={`w-[22px] h-[22px] rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${isCompleted ? "bg-[#16A34A] border-[#16A34A]" : "border-[#D1D5DB] group-hover:border-[#9CA3AF]"}`}>
+              <div className={`w-[20px] h-[20px] rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${isCompleted ? "bg-ha-primary border-ha-primary" : "border-[#D1D5DB] group-hover:border-[#9CA3AF]"}`}>
                 {isCompleted && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
               </div>
-              <span className={`text-[14px] transition-colors ${isCompleted ? "text-[#16A34A] font-medium" : "text-[#6B7280] group-hover:text-[#374151]"}`}>
-                {isPending ? "..." : "Klaar"}
+              <span className={`text-[14px] font-medium transition-colors ${isCompleted ? "text-[#111111]" : "text-[#111111] group-hover:text-[#000000]"}`}>
+                {isPending ? "..." : "Afgerond"}
               </span>
             </button>
           </div>

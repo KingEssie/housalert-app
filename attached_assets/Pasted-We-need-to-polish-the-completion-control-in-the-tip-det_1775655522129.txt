@@ -1,0 +1,75 @@
+We need to polish the completion control in the tip detail screens.
+
+GOAL:
+- Replace the label "Klaar" with "Afgerond"
+- Center the completion control horizontally
+- Make it feel clean, balanced, and premium
+- Make the label "Afgerond" visually stand out more
+
+IMPORTANT:
+- Do NOT change logic (toggle behavior stays the same)
+- Do NOT affect the footer buttons (Vorige / Volgende)
+- Only update styling and label of the completion control
+
+==================================================
+1. CHANGE LABEL
+==================================================
+
+Replace:
+- "Klaar"
+
+With:
+- "Afgerond"
+
+Apply this consistently wherever the completion toggle appears in the tip detail screens.
+
+==================================================
+2. CENTER THE COMPLETION CONTROL
+==================================================
+
+The checkbox + label should be centered horizontally.
+
+Requirements:
+- The entire row (checkbox + text) is centered
+- Not left-aligned
+- Feels visually balanced on mobile
+
+==================================================
+3. LAYOUT STRUCTURE
+==================================================
+
+Wrap the completion control in a container with:
+
+- display: flex
+- justify-content: center
+- align-items: center
+
+Spacing:
+- gap between checkbox and text: ~8px
+- margin-top: ~16–20px from content above
+- margin-bottom: ~12–16px before footer
+
+==================================================
+4. STYLE IMPROVEMENT (IMPORTANT)
+==================================================
+
+Label ("Afgerond"):
+- color: black (or near-black, e.g. text-neutral-900)
+- font-weight: 500 or 600
+- should stand out clearly compared to surrounding text
+
+Checkbox:
+- default: light gray border
+- checked: brand color fill + white check
+
+Keep the control subtle overall, but ensure the label is clearly readable and prominent.
+
+==================================================
+5. OUTPUT
+==================================================
+
+After finishing, return:
+1. confirmation label is now "Afgerond"
+2. how centering was implemented
+3. confirmation no logic or footer buttons were changed
+4. which file(s) were updated
