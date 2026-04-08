@@ -1009,8 +1009,7 @@ function HomeTab({
     },
     enabled: !!accessToken,
   });
-  const rawFirstName = profileDataQuery.data?.first_name || null;
-  const firstName = rawFirstName ? rawFirstName.split(" ")[0] : null;
+  const firstName = profileDataQuery.data?.first_name?.trim() || null;
   const { handleReferralShare } = useReferralShare();
 
   return (

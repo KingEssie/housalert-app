@@ -1492,13 +1492,21 @@ export async function registerRoutes(
       try {
         const detectedLang = detectLanguageFromHeader(req.headers["accept-language"]);
         log(`[LANG AUTO-DETECT] userId=${userId.substring(0, 8)}... detected="${detectedLang}" from accept-language="${(req.headers["accept-language"] || "").substring(0, 60)}"`);
+        let signupFirstName: string | null = null;
+        let signupLastName: string | null = null;
+        if (fullName && typeof fullName === "string") {
+          const parts = fullName.trim().split(/\s+/);
+          signupFirstName = parts[0] || null;
+          signupLastName = parts.slice(1).join(" ") || null;
+        }
+        if (!signupFirstName) signupFirstName = email.split("@")[0];
         await pgPool.query(
-          `INSERT INTO user_profile_data (user_id, first_name, language, created_at, updated_at)
-           VALUES ($1, $2, $3, NOW(), NOW())
+          `INSERT INTO user_profile_data (user_id, first_name, last_name, language, created_at, updated_at)
+           VALUES ($1, $2, $3, $4, NOW(), NOW())
            ON CONFLICT (user_id) DO NOTHING`,
-          [userId, fullName || email.split("@")[0], detectedLang]
+          [userId, signupFirstName, signupLastName, detectedLang]
         );
-        log(`[LANG FIRST SAVE] userId=${userId.substring(0, 8)}... language="${detectedLang}" saved to DB on signup`);
+        log(`[LANG FIRST SAVE] userId=${userId.substring(0, 8)}... language="${detectedLang}" first_name="${signupFirstName}" last_name="${signupLastName}" saved to DB on signup`);
       } catch (profileErr: any) {
         log(`[SIGNUP] WARNING: Failed to create user_profile_data row for user=${userId}: ${profileErr.message}`);
       }
@@ -1566,13 +1574,23 @@ export async function registerRoutes(
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
       const etDetectedLang = detectLanguageFromHeader(req.headers["accept-language"]);
+      let etFirstName: string | null = null;
+      let etLastName: string | null = null;
+      const etFullName = user.user_metadata?.full_name as string | undefined;
+      if (etFullName) {
+        const parts = etFullName.trim().split(/\s+/);
+        etFirstName = parts[0] || null;
+        etLastName = parts.slice(1).join(" ") || null;
+      }
+      if (!etFirstName) etFirstName = user.user_metadata?.first_name as string || user.email?.split("@")[0] || "";
+      if (!etLastName) etLastName = user.user_metadata?.last_name as string || null;
       pgPool.query(
-        `INSERT INTO user_profile_data (user_id, first_name, language, created_at, updated_at)
-         VALUES ($1, $2, $3, NOW(), NOW())
+        `INSERT INTO user_profile_data (user_id, first_name, last_name, language, created_at, updated_at)
+         VALUES ($1, $2, $3, $4, NOW(), NOW())
          ON CONFLICT (user_id) DO NOTHING`,
-        [user.id, user.user_metadata?.full_name || user.email?.split("@")[0] || "", etDetectedLang]
+        [user.id, etFirstName, etLastName, etDetectedLang]
       ).then(() => {
-        log(`[ensure-trial] Profile row ensured in user_profile_data: user=${user.id} lang=${etDetectedLang}`);
+        log(`[ensure-trial] Profile row ensured in user_profile_data: user=${user.id} first="${etFirstName}" last="${etLastName}" lang=${etDetectedLang}`);
       }).catch((err: any) => {
         log(`[ensure-trial] WARNING: user_profile_data insert failed for user=${user.id}: ${err.message}`);
       });

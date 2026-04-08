@@ -1,0 +1,93 @@
+We need to fix one onboarding/profile data bug and update two step titles in the first home flow.
+
+IMPORTANT:
+- Do NOT change the overall flow logic
+- Do NOT break existing completion logic
+- Do NOT change routing
+- Only fix the bug and update the requested step copy/behavior
+
+==================================================
+1. FIX FIRST NAME / LAST NAME MAPPING BUG
+==================================================
+
+Problem:
+In the onboarding/profile step, the user fills in:
+- first name
+- last name
+
+But after saving, the profile shows both first and last name combined inside the first-name field.
+
+GOAL:
+Ensure first name and last name are stored and loaded correctly as separate values.
+
+Tasks:
+1. Audit the onboarding/profile save logic
+2. Audit the profile load/display logic
+3. Find where first name + last name are incorrectly merged
+4. Fix mapping so:
+   - first name is stored in first_name
+   - last name is stored in last_name
+   - profile screen loads them correctly into separate fields
+5. Check that existing users with valid split data are not broken
+
+Also verify:
+- onboarding form
+- profile edit form
+- any API payload mapping
+- any full_name helper logic that may still overwrite first_name
+
+==================================================
+2. UPDATE STEP TITLE: NOTIFICATIONS
+==================================================
+
+In the first flow card ("Rond je account af"), rename the current notification-related step title to:
+
+- "Zet notificaties aan"
+
+Behavior required:
+- keep this step clickable
+- when the row/title is clicked, it should expand inline
+- inside the expanded section show:
+  - push notifications toggle
+  - email notifications toggle
+
+This should keep the current inline expand behavior and current completion logic:
+- step is completed when at least one notification type is enabled
+
+==================================================
+3. UPDATE STEP TITLE: SEARCH PROFILE
+==================================================
+
+In the first flow card, rename:
+
+- "Maak een zoekprofiel aan"
+
+to:
+
+- "Maak een extra zoekprofiel aan"
+
+This is a copy change only.
+Keep existing behavior and completion logic the same unless a text reference also needs updating for consistency.
+
+==================================================
+4. KEEP COPY CONSISTENT
+==================================================
+
+Make sure the new titles appear consistently in:
+- the home flow card
+- expanded state if applicable
+- any step labels or related UI where the same step title is reused
+
+Do NOT leave old wording in one place and new wording in another.
+
+==================================================
+5. OUTPUT
+==================================================
+
+After finishing, return:
+1. what caused the first/last name bug
+2. how the data mapping was fixed
+3. which files were changed for the name fix
+4. confirmation that "Blijf als eerste op de hoogte" is now "Zet notificaties aan"
+5. confirmation that "Maak een zoekprofiel aan" is now "Maak een extra zoekprofiel aan"
+6. which files were changed for the flow title updates
