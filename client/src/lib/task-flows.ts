@@ -31,7 +31,6 @@ export const ACCOUNT_FLOW: TaskFlow = {
     { id: "search_profile", labelKey: "taskFlow.searchProfile", descriptionKey: "taskFlow.desc.searchProfile", icon: "Search", route: "/dashboard/searches/new", completionType: "auto" },
     { id: "notifications", labelKey: "taskFlow.notifications", descriptionKey: "taskFlow.desc.notifications", icon: "Bell", route: "/settings/preferences", completionType: "auto", inline: true },
     { id: "search_buddy", labelKey: "taskFlow.searchBuddy", descriptionKey: "taskFlow.desc.searchBuddy", icon: "Users", route: "/profile/edit/search_buddy_email", completionType: "auto", inline: true },
-    { id: "documents", labelKey: "taskFlow.documents", descriptionKey: "taskFlow.desc.documents", icon: "FolderOpen", route: "/documents", completionType: "auto" },
   ],
 };
 
