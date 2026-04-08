@@ -22,7 +22,6 @@ import {
   ChevronRight,
   CheckCircle2,
   AlertCircle,
-  Sparkles,
   Crown,
   Send,
   ArrowLeft,
@@ -44,7 +43,7 @@ import { ExpandableCompletionCard, type CompletionStep } from "@/components/expa
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
 import { HighlightCard } from "@/components/highlight-card";
 import { useReferralShare } from "@/lib/referral-share";
-import TipsPage, { getTipConfig, getTipsReadSet } from "@/pages/tips";
+import { getTipsReadSet } from "@/pages/tips";
 import { getFlowTipSteps } from "@/pages/tips-flow";
 import { ACCOUNT_FLOW, SEARCH_PREP_FLOW, resolveFlowSteps, buildCompletionMap } from "@/lib/task-flows";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -52,8 +51,8 @@ import { ListingCardFull, ListingCardMini } from "@/components/listing-card";
 
 const MAX_PROFILES = 4;
 
-type TabKey = "home" | "matches" | "zoek" | "profiel" | "tips";
-type MatchesTopTab = "matches" | "gereageerd" | "favorieten";
+type TabKey = "home" | "matches" | "zoek" | "profiel" | "favorieten";
+type MatchesTopTab = "matches" | "gereageerd";
 
 const MATCH_VIEWED_KEY = "housalert_match_viewed";
 const MATCH_APPLIED_KEY = "housalert_match_applied";
@@ -745,26 +744,13 @@ function HomeTab({
 }
 
 
-function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken: string | undefined; setActiveTab: (tab: TabKey) => void; initialTopTab?: MatchesTopTab | null }) {
-  const [refreshKey, setRefreshKey] = useState(0);
+function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefined; navigate: (path: string) => void }) {
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
-  const [topTab, setTopTab] = useState<MatchesTopTab>(initialTopTab || "matches");
   const [favoriteListings, setFavoriteListings] = useState<ApiMatch[]>([]);
-  const [appliedListings, setAppliedListings] = useState<ApiMatch[]>([]);
   const [favLoading, setFavLoading] = useState(true);
-  const { t, locale } = useTranslation();
-  const { toast } = useToast();
-  const [, navigate] = useLocation();
+  const { t } = useTranslation();
   const sub = useSubscription();
   const hasAccess = sub.isActive || sub.isTrial;
-
-  const apiMatchesQuery = useQuery<ApiMatchesResponse>({
-    queryKey: ["/api/matches"],
-    queryFn: () => fetchApiMatches(accessToken!),
-    enabled: !!accessToken && hasAccess,
-    staleTime: 30_000,
-    refetchOnWindowFocus: true,
-  });
 
   const fetchFavoriteListings = useCallback(() => {
     if (!accessToken) return;
@@ -779,6 +765,157 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
       .catch(() => {})
       .finally(() => setFavLoading(false));
   }, [accessToken]);
+
+  useEffect(() => {
+    if (!accessToken || !hasAccess) return;
+    fetchFavoriteListings();
+    apiFetch("/api/favorites", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.favoriteIds && Array.isArray(data.favoriteIds)) {
+          setFavoriteIds(new Set(data.favoriteIds));
+        }
+      })
+      .catch(() => {});
+  }, [accessToken, hasAccess, fetchFavoriteListings]);
+
+  const toggleFavorite = useCallback(
+    async (listingId: string) => {
+      if (!accessToken) return;
+      const wasFavorited = favoriteIds.has(listingId);
+      setFavoriteIds((prev) => {
+        const next = new Set(prev);
+        if (wasFavorited) next.delete(listingId);
+        else next.add(listingId);
+        return next;
+      });
+      if (wasFavorited) {
+        setFavoriteListings((prev) => prev.filter((l) => l.listing_id !== listingId));
+      }
+
+      try {
+        const res = await apiFetch(`/api/favorites/${listingId}`, {
+          method: wasFavorited ? "DELETE" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        if (!res.ok) throw new Error("request failed");
+        if (!wasFavorited) fetchFavoriteListings();
+      } catch {
+        setFavoriteIds((prev) => {
+          const rollback = new Set(prev);
+          if (wasFavorited) rollback.add(listingId);
+          else rollback.delete(listingId);
+          return rollback;
+        });
+        if (wasFavorited) fetchFavoriteListings();
+      }
+    },
+    [accessToken, favoriteIds, fetchFavoriteListings],
+  );
+
+  if (!hasAccess) {
+    return (
+      <div className="flex flex-col pb-8" data-testid="favorieten-locked">
+        <div className="sticky top-0 z-10 bg-white px-5 pt-8 pb-4">
+          <h1 className="text-page-title">{t("nav.favorites")}</h1>
+        </div>
+        <div className="px-5 pt-16">
+          <div className="flex flex-col items-center text-center px-6 pb-4">
+            <div className="w-16 h-16 rounded-full bg-[#F5F0EB] flex items-center justify-center mb-6">
+              <Lock className="w-7 h-7 text-[#111111]" />
+            </div>
+            <h2 className="text-[20px] font-semibold text-[#111111] mb-2.5" data-testid="text-fav-locked-headline">
+              {t("matches.locked.headline")}
+            </h2>
+            <p className="text-[15px] text-[#6B7280] leading-relaxed max-w-[280px] mb-8" data-testid="text-fav-locked-desc">
+              {t("matches.locked.desc")}
+            </p>
+            <button
+              onClick={() => navigate("/paywall")}
+              className="h-[48px] px-10 rounded-[12px] bg-ha-primary text-white text-[15px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
+              data-testid="button-fav-locked-subscribe"
+            >
+              {t("matches.locked.cta")}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col pb-8">
+      <div className="sticky top-0 z-10 bg-white px-5 pt-8 pb-4">
+        <h1 className="text-page-title">{t("nav.favorites")}</h1>
+      </div>
+
+      <div className="px-5 flex flex-col pt-1">
+        {favLoading ? (
+          <div className="flex flex-col gap-4">
+            {[1, 2].map((i) => (
+              <div key={i} className="animate-pulse">
+                <div className="bg-[#F3F4F6] rounded-[16px]" style={{ aspectRatio: "4/3" }} />
+                <div className="pt-3 flex flex-col gap-2">
+                  <div className="h-4 bg-[#F3F4F6] rounded-full w-3/4" />
+                  <div className="h-3 bg-[#F3F4F6] rounded-full w-1/2" />
+                  <div className="h-3 bg-[#F3F4F6] rounded-full w-2/5" />
+                  <div className="h-3 bg-[#F3F4F6] rounded-full w-1/4" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : favoriteListings.length === 0 ? (
+          <EmptyState
+            illustration={EMPTY_STATE_IMAGES.noFilters}
+            title={t("matches.emptyFavorites.title")}
+            description={t("matches.emptyFavorites.desc")}
+            testId="empty-favorieten-tab"
+          />
+        ) : (
+          <div className="flex flex-col gap-6">
+            {favoriteListings.map((m) => (
+              <ListingCardFull
+                key={m.listing_id}
+                match={m}
+                isFavorited={favoriteIds.has(m.listing_id)}
+                onToggleFavorite={toggleFavorite}
+                onCardClick={() => {
+                  markViewed(m.listing_id);
+                  navigate(`/apply/${m.listing_id}`);
+                }}
+                locked={!hasAccess}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken: string | undefined; setActiveTab: (tab: TabKey) => void; initialTopTab?: MatchesTopTab | null }) {
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
+  const [topTab, setTopTab] = useState<MatchesTopTab>(initialTopTab || "matches");
+  const [appliedListings, setAppliedListings] = useState<ApiMatch[]>([]);
+  const { t, locale } = useTranslation();
+  const { toast } = useToast();
+  const [, navigate] = useLocation();
+  const sub = useSubscription();
+  const hasAccess = sub.isActive || sub.isTrial;
+
+  const apiMatchesQuery = useQuery<ApiMatchesResponse>({
+    queryKey: ["/api/matches"],
+    queryFn: () => fetchApiMatches(accessToken!),
+    enabled: !!accessToken && hasAccess,
+    staleTime: 30_000,
+    refetchOnWindowFocus: true,
+  });
 
   const fetchAppliedListings = useCallback(() => {
     if (!accessToken) return;
@@ -800,9 +937,8 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
 
   useEffect(() => {
     if (!accessToken || !hasAccess) return;
-    fetchFavoriteListings();
     fetchAppliedListings();
-  }, [accessToken, hasAccess, fetchFavoriteListings, fetchAppliedListings]);
+  }, [accessToken, hasAccess, fetchAppliedListings]);
 
   useEffect(() => {
     if (!accessToken || !hasAccess) return;
@@ -871,9 +1007,6 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
         else next.add(listingId);
         return next;
       });
-      if (wasFavorited) {
-        setFavoriteListings((prev) => prev.filter((l) => l.listing_id !== listingId));
-      }
 
       try {
         const res = await apiFetch(`/api/favorites/${listingId}`, {
@@ -884,7 +1017,6 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
           },
         });
         if (!res.ok) throw new Error("request failed");
-        if (!wasFavorited) fetchFavoriteListings();
       } catch {
         setFavoriteIds((prev) => {
           const rollback = new Set(prev);
@@ -892,10 +1024,9 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
           else rollback.delete(listingId);
           return rollback;
         });
-        if (wasFavorited) fetchFavoriteListings();
       }
     },
-    [accessToken, favoriteIds, fetchFavoriteListings],
+    [accessToken, favoriteIds],
   );
 
   const matches = apiMatchesQuery.data?.matches ?? [];
@@ -946,7 +1077,6 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
   const topTabs: { key: MatchesTopTab; label: string }[] = [
     { key: "matches", label: t("matches.title") },
     { key: "gereageerd", label: t("matches.subtabs.applied") },
-    { key: "favorieten", label: t("nav.favorites") },
   ];
 
   if (!hasAccess) {
@@ -1100,48 +1230,6 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
           </>
         )}
 
-        {topTab === "favorieten" && (
-          <>
-            {favLoading ? (
-              <div className="flex flex-col gap-4">
-                {[1, 2].map((i) => (
-                  <div key={i} className="animate-pulse">
-                    <div className="bg-[#F3F4F6] rounded-[16px]" style={{ aspectRatio: "4/3" }} />
-                    <div className="pt-3 flex flex-col gap-2">
-                      <div className="h-4 bg-[#F3F4F6] rounded-full w-3/4" />
-                      <div className="h-3 bg-[#F3F4F6] rounded-full w-1/2" />
-                      <div className="h-3 bg-[#F3F4F6] rounded-full w-2/5" />
-                      <div className="h-3 bg-[#F3F4F6] rounded-full w-1/4" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : favoriteListings.length === 0 ? (
-              <EmptyState
-                illustration={EMPTY_STATE_IMAGES.noFilters}
-                title={t("matches.emptyFavorites.title")}
-                description={t("matches.emptyFavorites.desc")}
-                testId="empty-favorieten-tab"
-              />
-            ) : (
-              <div className="flex flex-col gap-6">
-                {favoriteListings.map((m) => (
-                  <ListingCardFull
-                    key={m.listing_id}
-                    match={m}
-                    isFavorited={favoriteIds.has(m.listing_id)}
-                    onToggleFavorite={toggleFavorite}
-                    onCardClick={() => {
-                      markViewed(m.listing_id);
-                      navigate(`/apply/${m.listing_id}`);
-                    }}
-                    locked={!hasAccess}
-                  />
-                ))}
-              </div>
-            )}
-          </>
-        )}
       </div>
     </div>
   );
@@ -1854,7 +1942,7 @@ function ZoekTab({ profiles, navigate }: { profiles: SearchProfile[]; navigate: 
 const TAB_CONFIG: { key: TabKey; labelKey: string; Icon: any }[] = [
   { key: "home", labelKey: "nav.home", Icon: Home },
   { key: "matches", labelKey: "nav.matches", Icon: Search },
-  { key: "tips", labelKey: "nav.tips", Icon: Sparkles },
+  { key: "favorieten", labelKey: "nav.favorites", Icon: Heart },
   { key: "zoek", labelKey: "nav.search", Icon: MapPin },
   { key: "profiel", labelKey: "nav.profile", Icon: User },
 ];
@@ -1866,15 +1954,14 @@ export default function DashboardPage() {
   const [initialMatchesTopTab] = useState<MatchesTopTab | null>(() => {
     const params = new URLSearchParams(window.location.search);
     const tab = params.get("tab");
-    if (tab === "favorieten") return "favorieten";
     if (tab === "gereageerd") return "gereageerd";
     return null;
   });
   const [activeTab, setActiveTab] = useState<TabKey>(() => {
     const params = new URLSearchParams(window.location.search);
     const tab = params.get("tab");
-    if (tab === "favorieten" || tab === "gereageerd") return "matches";
-    if (tab && ["home", "matches", "tips", "zoek", "profiel"].includes(tab)) {
+    if (tab === "gereageerd") return "matches";
+    if (tab && ["home", "matches", "favorieten", "zoek", "profiel"].includes(tab)) {
       return tab as TabKey;
     }
     return "home";
@@ -1973,7 +2060,9 @@ export default function DashboardPage() {
         {activeTab === "matches" && (
           <MatchesTab accessToken={accessToken} setActiveTab={setActiveTab} initialTopTab={initialMatchesTopTab} />
         )}
-        {activeTab === "tips" && <TipsPage navigate={navigate} />}
+        {activeTab === "favorieten" && (
+          <FavorietenTab accessToken={accessToken} navigate={navigate} />
+        )}
         {activeTab === "zoek" && (
           <ZoekTab profiles={profiles} navigate={navigate} />
         )}

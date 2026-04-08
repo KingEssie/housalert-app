@@ -1,0 +1,78 @@
+Update the bottom navigation so that "Tips" is replaced with "Favorieten".
+
+GOAL:
+- Remove the Tips tab from the bottom navigation
+- Add a Favorieten tab in its place
+- Move saved/favorited listings into this new Favorieten screen
+- Keep the app structure clean and consistent
+
+IMPORTANT:
+- Do NOT break routing
+- Do NOT remove the underlying tips content yet if it is still used elsewhere
+- Do NOT delete tips-related code unless it is truly unused
+- This change is about navigation structure first
+
+==================================================
+1. REPLACE TIPS IN BOTTOM NAV
+==================================================
+
+Current bottom nav:
+- Home
+- Matches
+- Tips
+- Zoek
+- Profiel
+
+Change it to:
+- Home
+- Matches
+- Favorieten
+- Zoek
+- Profiel
+
+Requirements:
+- Use a fitting icon for Favorieten
+- Keep the same visual style and active/inactive behavior as the other tabs
+- Make sure the new tab integrates cleanly with the existing navigation
+
+==================================================
+2. CREATE / CONNECT FAVORIETEN SCREEN
+==================================================
+
+Create or connect a dedicated Favorieten screen that shows the user's saved/favorited listings.
+
+Requirements:
+- This screen should display listings the user has marked as favorite
+- Reuse existing listing card UI where possible
+- Keep the design consistent with the rest of the app
+- If there is already favorite/saved logic in Matches, reuse that logic rather than duplicating it
+
+==================================================
+3. REMOVE TIPS AS A PRIMARY TAB
+==================================================
+
+Remove Tips from the bottom nav only.
+
+Important:
+- Do NOT fully delete tips content yet
+- Keep tips pages/components available if they are still referenced elsewhere
+- We may move tips into the guided flows later
+
+==================================================
+4. KEEP MATCHES CLEAN
+==================================================
+
+Make sure Matches remains focused on match listings, and Favorieten becomes the dedicated saved-listings area.
+
+Do not mix these two concepts.
+
+==================================================
+5. OUTPUT
+==================================================
+
+After finishing, return:
+1. which bottom nav component was changed
+2. which route now powers Favorieten
+3. how favorite listings are loaded
+4. whether any existing tips code was kept for later reuse
+5. which files were changed
