@@ -1,0 +1,214 @@
+We need to update the content of the second home flow ("Vergroot je kansen met deze tips") so the 6 tip detail screens use the new Dutch copy below.
+
+IMPORTANT:
+- Do NOT change the flow structure
+- Do NOT change the step order
+- Do NOT change routing
+- Do NOT change completion logic
+- Do NOT redesign the UI
+- Only replace the current text/content of the 6 tip detail screens
+- Keep the existing component behavior exactly as it is
+
+GOAL:
+Implement the new Dutch content for the 6 tip screens so they are clearer, more practical, and better written.
+
+==================================================
+1. FLOW TITLE
+==================================================
+
+Keep the current title:
+
+- "Vergroot je kansen met deze tips"
+
+Do not change it.
+
+==================================================
+2. REPLACE THE CONTENT OF THE 6 TIP DETAIL SCREENS
+==================================================
+
+Use the following Dutch content exactly as the new copy for each tip.
+
+--------------------------------------------------
+TIP 1
+Title:
+Verzamel alle benodigde documenten
+
+Body:
+Verhuurders beslissen vaak binnen enkele minuten.
+Zonder complete documenten val je vrijwel direct af.
+
+Zorg dat je dit klaar hebt:
+
+Als je in loondienst bent:
+- Kopie ID / paspoort
+- Inkomensverklaring of werkgeversverklaring
+- De laatste 3 loonstroken
+- Arbeidscontract (indien mogelijk)
+- Uittreksel BRP (gemeente)
+
+Als je zelfstandig bent:
+- Laatste belastingaangifte
+- Jaarcijfers / winst- en verliesrekening
+- Bankafschriften laatste maanden
+
+Als je al huurt:
+- Verhuurdersverklaring
+- Bewijs van huurbetalingen
+
+Hoe completer je bent, hoe groter je kans.
+--------------------------------------------------
+
+--------------------------------------------------
+TIP 2
+Title:
+Check je financiële situatie
+
+Body:
+In de meeste gevallen geldt:
+
+Inkomen = minimaal 3x de kale huur
+
+Voorbeeld:
+- Huur: €1.000
+- Nodig inkomen: €3.000+
+
+Soms zelfs hoger (3,5x – 4x), vooral in populaire steden.
+
+Belangrijk:
+- Onder deze grens reageren = vaak kansloos
+- Je verspilt tijd en positie
+
+Stem je zoekfilters hierop af.
+--------------------------------------------------
+
+--------------------------------------------------
+TIP 3
+Title:
+Maak accounts aan op belangrijke platforms
+
+Body:
+Veel woningen gaan via platforms waar je moet inloggen.
+
+Zonder account ben je te laat.
+
+Maak accounts op:
+- Funda
+- Pararius
+- Kamernet
+- Facebook Marketplace
+- Eventueel lokale verhuurders
+
+Tip:
+- Zet meldingen aan
+- Vul je profiel volledig in
+- Upload alvast je documenten
+
+Snel reageren geeft je een groot voordeel.
+--------------------------------------------------
+
+--------------------------------------------------
+TIP 4
+Title:
+Gebruik Facebook-groepen & communities
+
+Body:
+Veel woningen komen nooit op grote platforms.
+
+Vooral via:
+- Facebook-groepen
+- Studenten groepen
+- Lokale communities
+
+Zoek op:
+- Woning gezocht + stad
+- Huurwoning + stad
+- Kamer gezocht + stad
+
+Tip:
+- Zet meldingen aan
+- Reageer direct
+- Plaats zelf ook een oproep
+
+Minder concurrentie betekent vaak meer kans.
+--------------------------------------------------
+
+--------------------------------------------------
+TIP 5
+Title:
+Houd nieuwbouwprojecten in de gaten
+
+Body:
+Nieuwbouw is vaak al vol vóór oplevering.
+
+Je moet er vroeg bij zijn.
+
+Check:
+- Projectwebsites
+- Woningcorporaties
+- Nieuwbouwplatforms
+
+Tip:
+- Schrijf je direct in
+- Hou je mail goed in de gaten
+- Soms wordt er geloot
+
+Goede optie voor de langere termijn.
+--------------------------------------------------
+
+--------------------------------------------------
+TIP 6
+Title:
+Zet je netwerk in
+
+Body:
+Dit wordt vaak onderschat.
+
+Veel woningen gaan via via.
+
+Vertel dat je zoekt aan:
+- Vrienden
+- Familie
+- Collega’s
+- Kennissen
+
+Praktisch:
+- Post op social media
+- Vraag actief rond
+- Laat mensen je naam doorgeven
+
+Eén connectie kan het verschil maken.
+--------------------------------------------------
+
+==================================================
+3. FORMATTING
+==================================================
+
+Make sure the text is formatted cleanly in the UI:
+- headings remain readable
+- bullet lists render properly
+- spacing between paragraphs is clean
+- no huge wall-of-text feeling
+
+Do not redesign the screen, but do make sure the content is displayed neatly.
+
+==================================================
+4. KEEP EXISTING BUTTONS / BEHAVIOR
+==================================================
+
+Keep:
+- back button
+- close button
+- progress bar
+- "Markeer als voltooid" / completion CTA
+- next button
+
+Do not change the interaction flow.
+
+==================================================
+5. OUTPUT
+==================================================
+
+After finishing, return:
+1. which files were changed
+2. confirmation that only the 6 tip texts were replaced
+3. confirmation that structure, routing, and completion behavior were not changed
