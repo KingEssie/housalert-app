@@ -1,4 +1,5 @@
-import type { CompletionStep } from "@/components/expandable-completion-card";
+import type { ReactNode } from "react";
+import type { CompletionStep, StepType } from "@/components/expandable-completion-card";
 
 export type CompletionType = "auto" | "manual";
 
@@ -81,18 +82,30 @@ export interface ProfileStrengthResponse {
   recommendedChannel: string | null;
 }
 
+export interface StepOverride {
+  stepType?: StepType;
+  inlineContent?: ReactNode;
+  action?: () => void;
+}
+
 export function resolveFlowSteps(
   flow: TaskFlow,
   completionMap: Record<string, boolean>,
   t: (key: string) => string,
   navigate: (path: string) => void,
+  overrides?: Record<string, StepOverride>,
 ): CompletionStep[] {
-  return flow.steps.map((step) => ({
-    id: step.id,
-    label: t(step.labelKey),
-    completed: completionMap[step.id] ?? false,
-    action: () => navigate(getFlowStepRoute(flow, step.id)),
-  }));
+  return flow.steps.map((step) => {
+    const override = overrides?.[step.id];
+    return {
+      id: step.id,
+      label: t(step.labelKey),
+      completed: completionMap[step.id] ?? false,
+      action: override?.action ?? (() => navigate(getFlowStepRoute(flow, step.id))),
+      stepType: override?.stepType,
+      inlineContent: override?.inlineContent,
+    };
+  });
 }
 
 export function buildCompletionMap(

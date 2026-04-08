@@ -38,6 +38,9 @@ import {
   X,
   Check,
   Image,
+  Mail,
+  Loader2,
+  RotateCcw,
 } from "lucide-react";
 import { ExpandableCompletionCard, type CompletionStep } from "@/components/expandable-completion-card";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
@@ -45,7 +48,9 @@ import { HighlightCard } from "@/components/highlight-card";
 import { useReferralShare } from "@/lib/referral-share";
 import { getTipsReadSet } from "@/pages/tips";
 import { getFlowTipSteps } from "@/pages/tips-flow";
-import { ACCOUNT_FLOW, SEARCH_PREP_FLOW, resolveFlowSteps, buildCompletionMap } from "@/lib/task-flows";
+import { ACCOUNT_FLOW, SEARCH_PREP_FLOW, resolveFlowSteps, buildCompletionMap, type StepOverride } from "@/lib/task-flows";
+import { isPushSupported, getPushPermissionState, subscribeToPush, unsubscribeFromPush } from "@/lib/push";
+import { generateOnboardingLetter, type OnboardingLetterData } from "@/lib/application-letter";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ListingCardFull, ListingCardMini } from "@/components/listing-card";
 
@@ -340,6 +345,292 @@ interface ActivationStatus {
   subscriptionStarted: boolean;
 }
 
+function NotificationsInline({ accessToken }: { accessToken: string | undefined }) {
+  const { t } = useTranslation();
+  const { toast } = useToast();
+  const [settings, setSettings] = useState<{ push_enabled: boolean; email_enabled: boolean } | null>(null);
+  const [updating, setUpdating] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!accessToken) return;
+    apiFetch("/api/notifications/settings", { headers: { Authorization: `Bearer ${accessToken}` } })
+      .then((r) => r.json())
+      .then((d) => setSettings(d))
+      .catch(() => {});
+  }, [accessToken]);
+
+  async function toggle(key: "push_enabled" | "email_enabled") {
+    if (!accessToken || !settings) return;
+    const current = settings[key];
+    setUpdating(key);
+    try {
+      if (key === "push_enabled" && !current) {
+        if (!isPushSupported()) { toast({ title: t("settings.pushNotSupported"), variant: "destructive" }); setUpdating(null); return; }
+        const perm = await getPushPermissionState();
+        if (perm === "denied") { toast({ title: t("settings.pushDenied"), variant: "destructive" }); setUpdating(null); return; }
+        await subscribeToPush(accessToken);
+      } else if (key === "push_enabled" && current) {
+        await unsubscribeFromPush(accessToken);
+      }
+      const res = await apiFetch("/api/notifications/settings", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ [key]: !current }),
+      });
+      if (!res.ok) throw new Error("fail");
+      setSettings((p) => p ? { ...p, [key]: !current } : p);
+      queryClient.invalidateQueries({ queryKey: ["/api/notifications/settings"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
+    } catch {
+      toast({ title: t("common.error"), variant: "destructive" });
+    } finally {
+      setUpdating(null);
+    }
+  }
+
+  if (!settings) return <div className="flex justify-center py-3"><Loader2 className="w-5 h-5 animate-spin text-[#9CA3AF]" /></div>;
+
+  return (
+    <div className="flex flex-col gap-2" data-testid="inline-notif-toggles">
+      <div className="flex items-center gap-3 bg-white rounded-[12px] px-4 py-3 border border-[#F0F0F0]">
+        <Bell className="w-[18px] h-[18px] text-[#6B7280] flex-shrink-0" />
+        <div className="flex-1 min-w-0">
+          <p className="text-[14px] font-medium text-[#111111]">{t("taskFlow.notif.pushLabel")}</p>
+          <p className="text-[12px] text-[#9CA3AF]">{t("taskFlow.notif.pushDesc")}</p>
+        </div>
+        <button
+          onClick={() => toggle("push_enabled")}
+          disabled={updating === "push_enabled"}
+          className={`w-[44px] h-[26px] rounded-full relative transition-colors flex-shrink-0 ${settings.push_enabled ? "bg-ha-primary" : "bg-[#E5E7EB]"} ${updating === "push_enabled" ? "opacity-50" : ""}`}
+          data-testid="inline-toggle-push"
+        >
+          <span className={`absolute top-[3px] w-[20px] h-[20px] rounded-full bg-white shadow-sm transition-transform ${settings.push_enabled ? "left-[21px]" : "left-[3px]"}`} />
+        </button>
+      </div>
+      <div className="flex items-center gap-3 bg-white rounded-[12px] px-4 py-3 border border-[#F0F0F0]">
+        <Mail className="w-[18px] h-[18px] text-[#6B7280] flex-shrink-0" />
+        <div className="flex-1 min-w-0">
+          <p className="text-[14px] font-medium text-[#111111]">{t("taskFlow.notif.emailLabel")}</p>
+          <p className="text-[12px] text-[#9CA3AF]">{t("taskFlow.notif.emailDesc")}</p>
+        </div>
+        <button
+          onClick={() => toggle("email_enabled")}
+          disabled={updating === "email_enabled"}
+          className={`w-[44px] h-[26px] rounded-full relative transition-colors flex-shrink-0 ${settings.email_enabled ? "bg-ha-primary" : "bg-[#E5E7EB]"} ${updating === "email_enabled" ? "opacity-50" : ""}`}
+          data-testid="inline-toggle-email"
+        >
+          <span className={`absolute top-[3px] w-[20px] h-[20px] rounded-full bg-white shadow-sm transition-transform ${settings.email_enabled ? "left-[21px]" : "left-[3px]"}`} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function BuddyInline({ accessToken }: { accessToken: string | undefined }) {
+  const { t } = useTranslation();
+  const { toast } = useToast();
+  const [email, setEmail] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [existing, setExisting] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!accessToken) return;
+    apiFetch("/api/profile-data", { headers: { Authorization: `Bearer ${accessToken}` } })
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.search_buddy_email && d?.search_buddy_status !== "revoked_by_buddy") {
+          setExisting(d.search_buddy_email);
+          setEmail(d.search_buddy_email);
+        }
+      })
+      .catch(() => {});
+  }, [accessToken]);
+
+  async function handleSave() {
+    if (!accessToken || !email.trim()) return;
+    setSaving(true);
+    try {
+      const res = await apiFetch("/api/profile-data", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ search_buddy_email: email.trim() }),
+      });
+      if (!res.ok) throw new Error("fail");
+      setExisting(email.trim());
+      queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
+      toast({ title: t("profileEdit.saved") });
+    } catch {
+      toast({ title: t("common.error"), variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-2.5" data-testid="inline-buddy">
+      <p className="text-[13px] text-[#6B7280] leading-relaxed">{t("taskFlow.desc.searchBuddy")}</p>
+      <div className="relative">
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder={t("profileEdit.searchBuddyPlaceholder")}
+          className="w-full h-[46px] rounded-[12px] border border-[#E5E7EB] bg-white px-4 text-[14px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/30 focus:border-ha-primary transition-all pr-10"
+          data-testid="inline-buddy-email"
+        />
+        {email && (
+          <button onClick={() => setEmail("")} className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#F3F4F6] flex items-center justify-center" data-testid="inline-buddy-clear">
+            <X className="w-3 h-3 text-[#6B7280]" />
+          </button>
+        )}
+      </div>
+      <button
+        onClick={handleSave}
+        disabled={saving || !email.trim() || email.trim() === existing}
+        className="w-full h-[42px] rounded-[12px] bg-ha-primary text-white text-[14px] font-semibold hover:bg-ha-primary-hover transition-colors disabled:opacity-50 active:scale-[0.97] flex items-center justify-center gap-2"
+        data-testid="inline-buddy-save"
+      >
+        {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : existing ? t("common.save") : t("profile.addBuddy")}
+      </button>
+    </div>
+  );
+}
+
+function LetterModal({ accessToken, open, onClose }: { accessToken: string | undefined; open: boolean; onClose: () => void }) {
+  const { t, locale } = useTranslation();
+  const { toast } = useToast();
+  const [template, setTemplate] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (!open || !accessToken || loaded) return;
+    apiFetch("/api/profile-data", { headers: { Authorization: `Bearer ${accessToken}` } })
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.application_template && d.application_template.trim().length > 0) {
+          setTemplate(d.application_template);
+        } else {
+          const data: OnboardingLetterData = {
+            firstName: d?.first_name || undefined,
+            lastName: d?.last_name || undefined,
+            phone: d?.phone || undefined,
+            email: user?.email || undefined,
+            gender: d?.gender || undefined,
+            livingWith: d?.living_with || undefined,
+            workStatus: d?.work_status || undefined,
+            moveReason: d?.move_reason || undefined,
+            grossIncome: d?.monthly_income || undefined,
+            petsCount: d?.pets_count ?? undefined,
+          };
+          setTemplate(generateOnboardingLetter(data, locale));
+        }
+        setLoaded(true);
+      })
+      .catch(() => setLoaded(true));
+  }, [open, accessToken, loaded]);
+
+  async function handleSave() {
+    if (!accessToken || template.trim().length < 20) return;
+    setSaving(true);
+    try {
+      const res = await apiFetch("/api/profile-data", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ application_template: template }),
+      });
+      if (!res.ok) throw new Error("fail");
+      queryClient.invalidateQueries({ queryKey: ["/api/profile-data"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
+      toast({ title: t("applicationLetter.saved"), description: t("applicationLetter.savedDesc") });
+      onClose();
+    } catch {
+      toast({ title: t("common.error"), variant: "destructive" });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function handleRegenerate() {
+    if (!accessToken) return;
+    apiFetch("/api/profile-data", { headers: { Authorization: `Bearer ${accessToken}` } })
+      .then((r) => r.json())
+      .then((d) => {
+        const data: OnboardingLetterData = {
+          firstName: d?.first_name || undefined,
+          lastName: d?.last_name || undefined,
+          phone: d?.phone || undefined,
+          email: user?.email || undefined,
+          gender: d?.gender || undefined,
+          livingWith: d?.living_with || undefined,
+          workStatus: d?.work_status || undefined,
+          moveReason: d?.move_reason || undefined,
+          grossIncome: d?.monthly_income || undefined,
+          petsCount: d?.pets_count ?? undefined,
+        };
+        setTemplate(generateOnboardingLetter(data, locale));
+        toast({ title: t("applicationLetter.resetDone") });
+      })
+      .catch(() => {});
+  }
+
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center" onClick={onClose}>
+      <div
+        className="bg-white w-full max-w-[480px] max-h-[85vh] rounded-t-[20px] sm:rounded-[20px] flex flex-col animate-in slide-in-from-bottom-4 duration-200"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-5 pt-5 pb-3">
+          <h2 className="text-[18px] font-bold text-[#111111]" data-testid="modal-letter-title">{t("taskFlow.applicationLetter")}</h2>
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-90" data-testid="modal-letter-close">
+            <X className="w-4 h-4 text-[#6B7280]" />
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto px-5 pb-5">
+          {!loaded ? (
+            <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF]" /></div>
+          ) : (
+            <>
+              <p className="text-[13px] text-[#6B7280] mb-3 leading-relaxed">{t("applicationLetter.helperText")}</p>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[12px] font-semibold text-[#9CA3AF] uppercase tracking-wide">{t("applicationLetter.letterLabel")}</span>
+                <button onClick={handleRegenerate} className="flex items-center gap-1 text-[13px] text-[#6B7280] active:text-[#111111]" data-testid="modal-letter-reset">
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  {t("applicationLetter.resetDefault")}
+                </button>
+              </div>
+              <textarea
+                value={template}
+                onChange={(e) => setTemplate(e.target.value)}
+                placeholder={t("applicationLetter.placeholderText")}
+                className="w-full min-h-[220px] rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-[14px] text-[#111111] leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-ha-primary/30 focus:border-ha-primary transition-all"
+                data-testid="modal-letter-textarea"
+              />
+              {template.length > 0 && template.trim().length < 20 && (
+                <p className="text-[12px] text-[#9CA3AF] mt-1">{t("applicationLetter.minChars")}</p>
+              )}
+            </>
+          )}
+        </div>
+        <div className="px-5 pb-5 pt-2 border-t border-[#F0F0F0]">
+          <button
+            onClick={handleSave}
+            disabled={saving || template.trim().length < 20}
+            className="w-full h-[46px] rounded-[12px] bg-ha-primary text-white text-[15px] font-semibold hover:bg-ha-primary-hover transition-colors disabled:opacity-50 active:scale-[0.97] flex items-center justify-center gap-2"
+            data-testid="modal-letter-save"
+          >
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : t("applicationLetter.saveLetter")}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function TaskFlowCard({
   accessToken,
   flow,
@@ -354,6 +645,7 @@ function TaskFlowCard({
   testId: string;
 }) {
   const { t } = useTranslation();
+  const [letterOpen, setLetterOpen] = useState(false);
 
   const strengthQuery = useQuery<import("@/lib/task-flows").ProfileStrengthResponse>({
     queryKey: ["/api/profile-strength"],
@@ -373,16 +665,44 @@ function TaskFlowCard({
 
   const serverTasks = taskSource === "tasks" ? data.tasks : data.prepTasks;
   const completionMap = buildCompletionMap(serverTasks);
-  const steps = resolveFlowSteps(flow, completionMap, t, navigate);
+
+  const overrides: Record<string, StepOverride> = {};
+
+  if (flow.id === "account") {
+    overrides["notifications"] = {
+      stepType: "inline",
+      inlineContent: <NotificationsInline accessToken={accessToken} />,
+      action: () => {},
+    };
+    overrides["search_buddy"] = {
+      stepType: "inline",
+      inlineContent: <BuddyInline accessToken={accessToken} />,
+      action: () => {},
+    };
+  }
+
+  if (flow.id === "search") {
+    overrides["application_letter"] = {
+      stepType: "modal",
+      action: () => setLetterOpen(true),
+    };
+  }
+
+  const steps = resolveFlowSteps(flow, completionMap, t, navigate, overrides);
 
   return (
-    <ExpandableCompletionCard
-      title={t(flow.titleKey)}
-      steps={steps}
-      completedLabel={t("activation.completed")}
-      subtitleFormat={t(flow.subtitleKey)}
-      testId={testId}
-    />
+    <>
+      <ExpandableCompletionCard
+        title={t(flow.titleKey)}
+        steps={steps}
+        completedLabel={t("activation.completed")}
+        subtitleFormat={t(flow.subtitleKey)}
+        testId={testId}
+      />
+      {flow.id === "search" && (
+        <LetterModal accessToken={accessToken} open={letterOpen} onClose={() => setLetterOpen(false)} />
+      )}
+    </>
   );
 }
 

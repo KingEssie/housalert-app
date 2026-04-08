@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { Check, ChevronDown, ChevronRight } from "lucide-react";
 
+export type StepType = "navigate" | "modal" | "inline";
+
 export interface CompletionStep {
   id: string;
   label: string;
   completed: boolean;
   action: () => void;
+  stepType?: StepType;
+  inlineContent?: React.ReactNode;
 }
 
 interface ExpandableCompletionCardProps {
@@ -64,11 +68,20 @@ export function ExpandableCompletionCard({
   defaultExpanded = false,
 }: ExpandableCompletionCardProps) {
   const [expanded, setExpanded] = useState(defaultExpanded);
+  const [expandedInline, setExpandedInline] = useState<string | null>(null);
 
   const doneCount = steps.filter((s) => s.completed).length;
   const totalCount = steps.length;
   const percentage = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
   const allDone = doneCount === totalCount;
+
+  function handleStepClick(step: CompletionStep) {
+    if (step.stepType === "inline" && step.inlineContent) {
+      setExpandedInline((prev) => (prev === step.id ? null : step.id));
+    } else {
+      step.action();
+    }
+  }
 
   return (
     <div
@@ -110,50 +123,71 @@ export function ExpandableCompletionCard({
 
       <div
         className={`transition-all duration-200 ease-in-out overflow-hidden ${
-          expanded ? "max-h-[800px] opacity-100" : "max-h-0 opacity-0"
+          expanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <div className="px-5 pb-5 flex flex-col gap-2">
-          {steps.map((step, index) => (
-            <button
-              key={step.id}
-              onClick={step.action}
-              className={`w-full min-h-[56px] flex items-center gap-3.5 px-4 text-left rounded-[14px] transition-all duration-150 ${
-                step.completed
-                  ? "bg-[#FAFAFA] active:bg-[#F0F0F0]"
-                  : "bg-[#F9FAFB] hover:bg-[#F3F4F6] active:bg-[#EBEBEB] active:scale-[0.99]"
-              }`}
-              data-testid={`${testId}-step-${step.id}`}
-            >
-              <span
-                className={`w-[26px] h-[26px] rounded-full flex items-center justify-center flex-shrink-0 text-[12px] font-bold ${
-                  step.completed
-                    ? "bg-[#E5E7EB] text-[#9CA3AF]"
-                    : "bg-[#111111] text-white"
-                }`}
-              >
-                {index + 1}
-              </span>
-              <span
-                className={`text-[14px] flex-1 leading-snug ${
-                  step.completed
-                    ? "text-[#9CA3AF] font-normal line-through decoration-[#D1D5DB]"
-                    : "text-[#111111] font-medium"
-                }`}
-              >
-                {step.label}
-              </span>
-              <div className="flex-shrink-0">
-                {step.completed ? (
-                  <div className="w-[26px] h-[26px] rounded-full bg-[#16A34A] flex items-center justify-center">
-                    <Check className="w-[14px] h-[14px] text-white" strokeWidth={3} />
+          {steps.map((step, index) => {
+            const isInlineOpen = expandedInline === step.id && step.stepType === "inline";
+            return (
+              <div key={step.id} className="flex flex-col">
+                <button
+                  onClick={() => handleStepClick(step)}
+                  className={`w-full min-h-[56px] flex items-center gap-3.5 px-4 text-left rounded-[14px] transition-all duration-150 ${
+                    step.completed
+                      ? "bg-[#FAFAFA] active:bg-[#F0F0F0]"
+                      : "bg-[#F9FAFB] hover:bg-[#F3F4F6] active:bg-[#EBEBEB] active:scale-[0.99]"
+                  }`}
+                  data-testid={`${testId}-step-${step.id}`}
+                >
+                  <span
+                    className={`w-[26px] h-[26px] rounded-full flex items-center justify-center flex-shrink-0 text-[12px] font-bold ${
+                      step.completed
+                        ? "bg-[#E5E7EB] text-[#9CA3AF]"
+                        : "bg-[#111111] text-white"
+                    }`}
+                  >
+                    {index + 1}
+                  </span>
+                  <span
+                    className={`text-[14px] flex-1 leading-snug ${
+                      step.completed
+                        ? "text-[#9CA3AF] font-normal line-through decoration-[#D1D5DB]"
+                        : "text-[#111111] font-medium"
+                    }`}
+                  >
+                    {step.label}
+                  </span>
+                  <div className="flex-shrink-0">
+                    {step.completed ? (
+                      <div className="w-[26px] h-[26px] rounded-full bg-[#16A34A] flex items-center justify-center">
+                        <Check className="w-[14px] h-[14px] text-white" strokeWidth={3} />
+                      </div>
+                    ) : step.stepType === "inline" ? (
+                      <ChevronDown
+                        className={`w-[18px] h-[18px] text-[#9CA3AF] transition-transform duration-200 ${isInlineOpen ? "rotate-180" : ""}`}
+                        strokeWidth={2}
+                      />
+                    ) : (
+                      <ChevronRight className="w-[18px] h-[18px] text-[#9CA3AF]" strokeWidth={2} />
+                    )}
                   </div>
-                ) : (
-                  <ChevronRight className="w-[18px] h-[18px] text-[#9CA3AF]" strokeWidth={2} />
+                </button>
+
+                {step.stepType === "inline" && step.inlineContent && (
+                  <div
+                    className={`overflow-hidden transition-all duration-200 ease-in-out ${
+                      isInlineOpen ? "max-h-[500px] opacity-100 mt-1" : "max-h-0 opacity-0"
+                    }`}
+                  >
+                    <div className="px-2 py-3" data-testid={`${testId}-inline-${step.id}`}>
+                      {step.inlineContent}
+                    </div>
+                  </div>
                 )}
               </div>
-            </button>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
