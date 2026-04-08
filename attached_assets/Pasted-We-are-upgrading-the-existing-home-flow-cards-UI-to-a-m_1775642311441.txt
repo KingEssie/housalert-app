@@ -1,0 +1,88 @@
+We are upgrading the existing home flow cards UI to a more premium, Rentbird-inspired design.
+
+IMPORTANT:
+- Do NOT change logic or completion behavior
+- Do NOT create new flow systems
+- Do NOT duplicate components
+- Only improve UI/UX of the existing cards
+
+==================================================
+1. TARGET COMPONENT
+==================================================
+
+Update:
+client/src/components/expandable-completion-card.tsx
+
+This is the ONLY component to modify.
+
+==================================================
+2. CARD HEADER REDESIGN
+==================================================
+
+Improve layout:
+
+- Left: progress indicator (keep existing ring, make slightly larger)
+- Right:
+  - Title (bigger, bold)
+  - Subtitle (e.g. "2 van 4 voltooid")
+
+Spacing:
+- Increase padding inside the card
+- Better vertical alignment
+
+==================================================
+3. PROGRESS IMPROVEMENTS
+==================================================
+
+- Keep the progress bar but make it more subtle
+- Focus more on the progress ring + text
+- Completed state:
+  - Replace ring with green check icon
+  - Add subtle green border to card
+
+==================================================
+4. STEP LIST REDESIGN
+==================================================
+
+Each step should:
+
+- Be a full-width clickable row
+- Have:
+  - Step number (left)
+  - Title (center)
+  - Status icon (right)
+    - completed → green check
+    - incomplete → gray circle
+  - Optional chevron (→) to indicate navigation
+
+Styling:
+- Increase row height (min 56px)
+- Add spacing between items
+- Rounded corners
+- Subtle hover/press feedback
+
+==================================================
+5. INTERACTION
+==================================================
+
+- Entire row should be clickable (not just icon/text)
+- Maintain existing navigation logic
+- Keep expand/collapse behavior exactly as is
+
+==================================================
+6. DO NOT CHANGE
+==================================================
+
+- No changes to flow logic
+- No changes to completion logic
+- No API changes
+- No routing changes
+
+==================================================
+7. OUTPUT
+==================================================
+
+Return:
+1. What visual changes were applied
+2. Confirmation no logic was changed
+3. Confirmation both flow cards still work exactly the same
