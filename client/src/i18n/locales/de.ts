@@ -1906,6 +1906,7 @@ export const de: Record<string, any> = {
     searchSubtitle: "{done} von {total} erledigt",
     notifications: "Benachrichtigungen aktivieren",
     searchProfile: "Weiteres Suchprofil erstellen",
+    searchProfileZero: "Suchprofil erstellen",
     phone: "Telefonnummer hinzufügen",
     searchBuddy: "Suchpartner hinzufügen",
     profileDetails: "Profil ausfüllen",

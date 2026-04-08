@@ -85,6 +85,8 @@ export interface StepOverride {
   stepType?: StepType;
   inlineContent?: ReactNode;
   action?: () => void;
+  labelOverride?: string;
+  completedOverride?: boolean;
 }
 
 export function resolveFlowSteps(
@@ -98,8 +100,8 @@ export function resolveFlowSteps(
     const override = overrides?.[step.id];
     return {
       id: step.id,
-      label: t(step.labelKey),
-      completed: completionMap[step.id] ?? false,
+      label: override?.labelOverride ?? t(step.labelKey),
+      completed: override?.completedOverride ?? completionMap[step.id] ?? false,
       action: override?.action ?? (() => navigate(getFlowStepRoute(flow, step.id))),
       stepType: override?.stepType,
       inlineContent: override?.inlineContent,

@@ -1953,6 +1953,7 @@ export const nl: Record<string, any> = {
     searchSubtitle: "{done} van de {total} voltooid",
     notifications: "Zet notificaties aan",
     searchProfile: "Maak een extra zoekprofiel aan",
+    searchProfileZero: "Maak een zoekprofiel aan",
     phone: "Voeg telefoonnummer toe",
     searchBuddy: "Voeg zoekbuddy toe",
     profileDetails: "Vul je profiel in",

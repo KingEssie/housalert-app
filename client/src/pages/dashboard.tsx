@@ -637,12 +637,14 @@ function TaskFlowCard({
   taskSource,
   navigate,
   testId,
+  searchProfileCount,
 }: {
   accessToken: string | undefined;
   flow: import("@/lib/task-flows").TaskFlow;
   taskSource: "tasks" | "prepTasks";
   navigate: (path: string) => void;
   testId: string;
+  searchProfileCount?: number;
 }) {
   const { t } = useTranslation();
   const [letterOpen, setLetterOpen] = useState(false);
@@ -679,6 +681,15 @@ function TaskFlowCard({
       inlineContent: <BuddyInline accessToken={accessToken} />,
       action: () => {},
     };
+    if (searchProfileCount != null) {
+      const spLabel = searchProfileCount === 0
+        ? t("taskFlow.searchProfileZero")
+        : t("taskFlow.searchProfile");
+      overrides["search_profile"] = {
+        labelOverride: spLabel,
+        completedOverride: searchProfileCount >= 2,
+      };
+    }
   }
 
   if (flow.id === "search") {
@@ -1048,7 +1059,7 @@ function HomeTab({
             {t("home.gamificationTitle")}
           </h2>
           <div className="flex flex-col gap-3.5">
-            <TaskFlowCard accessToken={accessToken} flow={ACCOUNT_FLOW} taskSource="tasks" navigate={navigate} testId="card-account-completion" />
+            <TaskFlowCard accessToken={accessToken} flow={ACCOUNT_FLOW} taskSource="tasks" navigate={navigate} testId="card-account-completion" searchProfileCount={profiles.length} />
             <TaskFlowCard accessToken={accessToken} flow={SEARCH_PREP_FLOW} taskSource="prepTasks" navigate={navigate} testId="card-prep-completion" />
           </div>
         </div>

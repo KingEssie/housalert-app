@@ -1128,6 +1128,7 @@ export const en: Record<string, any> = {
     searchSubtitle: "{done} of {total} completed",
     notifications: "Turn on notifications",
     searchProfile: "Create an extra search profile",
+    searchProfileZero: "Create a search profile",
     phone: "Add phone number",
     searchBuddy: "Add a search buddy",
     profileDetails: "Fill in your profile",
