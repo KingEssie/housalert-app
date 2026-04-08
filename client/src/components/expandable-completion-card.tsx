@@ -68,12 +68,11 @@ export function ExpandableCompletionCard({
   const doneCount = steps.filter((s) => s.completed).length;
   const totalCount = steps.length;
   const percentage = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
-
-  if (doneCount === totalCount) return null;
+  const allDone = doneCount === totalCount;
 
   return (
     <div
-      className="rounded-[16px] bg-white border border-[#E5E7EB] overflow-hidden"
+      className={`rounded-[16px] bg-white border overflow-hidden ${allDone ? "border-[#BBF7D0]" : "border-[#E5E7EB]"}`}
       data-testid={testId}
     >
       <button
@@ -81,13 +80,21 @@ export function ExpandableCompletionCard({
         onClick={() => setExpanded(!expanded)}
         data-testid={`${testId}-toggle`}
       >
-        <CircularProgress percentage={percentage} />
+        {allDone ? (
+          <div className="w-[48px] h-[48px] rounded-full bg-[#F0FDF4] flex items-center justify-center flex-shrink-0">
+            <Check className="w-6 h-6 text-[#16A34A]" strokeWidth={2.5} />
+          </div>
+        ) : (
+          <CircularProgress percentage={percentage} />
+        )}
         <div className="flex-1 min-w-0">
           <p className="text-[15px] font-semibold text-[#111111] leading-snug">{title}</p>
-          <p className="text-[14px] text-[#6B7280] mt-0.5">
-            {subtitleFormat
-              ? subtitleFormat.replace("{done}", String(doneCount)).replace("{total}", String(totalCount))
-              : `${doneCount} / ${totalCount} ${completedLabel}`}
+          <p className={`text-[14px] mt-0.5 ${allDone ? "text-[#16A34A] font-medium" : "text-[#6B7280]"}`}>
+            {allDone
+              ? completedLabel
+              : subtitleFormat
+                ? subtitleFormat.replace("{done}", String(doneCount)).replace("{total}", String(totalCount))
+                : `${doneCount} / ${totalCount} ${completedLabel}`}
           </p>
         </div>
         <ChevronDown

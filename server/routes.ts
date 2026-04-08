@@ -537,9 +537,24 @@ export async function registerRoutes(
 
       const { data: existing } = await supabase
         .from("user_notification_settings")
-        .select("user_id")
+        .select("user_id, email_enabled")
         .eq("user_id", user.id)
         .maybeSingle();
+
+      const emailWasOff = existing && existing.email_enabled === false;
+      const emailTurningOn = payload.email_enabled === true;
+
+      if (emailWasOff && emailTurningOn) {
+        try {
+          await pgPool.query(
+            `UPDATE user_profile_data SET email_resume_after = NOW() WHERE user_id = $1`,
+            [user.id]
+          );
+          log(`[NOTIF] Set email_resume_after for user ${user.id.substring(0, 8)}... (email re-enabled)`);
+        } catch (e: any) {
+          log(`[NOTIF] Failed to set email_resume_after: ${e.message}`);
+        }
+      }
 
       let result;
       if (existing) {

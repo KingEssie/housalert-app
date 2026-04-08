@@ -11,6 +11,19 @@ export function areAlertsEnabled(): boolean {
   return process.env.ALERTS_ENABLED === "true";
 }
 
+async function getEmailResumeAfter(userId: string): Promise<Date | null> {
+  try {
+    const result = await pgPool.query(
+      `SELECT email_resume_after FROM user_profile_data WHERE user_id = $1`,
+      [userId]
+    );
+    const ts = result.rows[0]?.email_resume_after;
+    return ts ? new Date(ts) : null;
+  } catch {
+    return null;
+  }
+}
+
 export async function cleanupStaleBuddyData(): Promise<number> {
   try {
     const result = await pgPool.query(
@@ -761,9 +774,19 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
     try { await markPushSent(userId, allVerifiedIds); } catch {}
   }
 
+  const resumeAfter = emailEnabled ? await getEmailResumeAfter(userId) : null;
+  const emailEligible = resumeAfter
+    ? verified.filter(l => new Date(l.matched_at).getTime() >= resumeAfter.getTime())
+    : verified;
+  if (resumeAfter && emailEligible.length < verified.length) {
+    const skippedIds = verified.filter(l => new Date(l.matched_at).getTime() < resumeAfter.getTime()).map(l => l.listing_id);
+    try { await markEmailSent(userId, skippedIds); } catch {}
+    log(`[ALERTS] Backfill: ${skippedIds.length} matches skipped (before email_resume_after=${resumeAfter.toISOString()})`);
+  }
+
   if (emailEnabled) {
-    const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
-    const overflowIds = verified.slice(MAX_LISTINGS_PER_EMAIL).map(l => l.listing_id);
+    const capped = emailEligible.slice(0, MAX_LISTINGS_PER_EMAIL);
+    const overflowIds = emailEligible.slice(MAX_LISTINGS_PER_EMAIL).map(l => l.listing_id);
     if (overflowIds.length > 0) {
       try { await markEmailSent(userId, overflowIds); } catch {}
       log(`[ALERTS] Backfill: ${overflowIds.length} overflow listings beyond cap=${MAX_LISTINGS_PER_EMAIL} — marked email_sent (visible in app)`);
@@ -1015,13 +1038,19 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
     }
 
     const subStartTime = subStatus.created_at ? new Date(subStatus.created_at).getTime() : Date.now();
+    const resumeAfter = emailOn ? await getEmailResumeAfter(userId) : null;
+    const resumeTime = resumeAfter ? resumeAfter.getTime() : 0;
+    const cutoffTime = Math.max(subStartTime, resumeTime);
     const eligibleMatches = matches.filter(m => {
       const matchTime = new Date(m.matched_at).getTime();
-      return matchTime >= subStartTime;
+      return matchTime >= cutoffTime;
     });
+    if (resumeAfter) {
+      log(`[RECOVERY] User ${userId.substring(0, 8)}: email_resume_after=${resumeAfter.toISOString()}, effective cutoff=${new Date(cutoffTime).toISOString()}`);
+    }
     const skippedOld = matches.length - eligibleMatches.length;
     if (skippedOld > 0) {
-      const oldIds = matches.filter(m => new Date(m.matched_at).getTime() < subStartTime).map(m => m.listing_id);
+      const oldIds = matches.filter(m => new Date(m.matched_at).getTime() < cutoffTime).map(m => m.listing_id);
       try { await markEmailSent(userId, oldIds); } catch {}
       try { await markPushSent(userId, oldIds); } catch {}
       log(`[RECOVERY] User ${userId.substring(0, 8)}: ${skippedOld} matches older than subscription start — marked as sent`);

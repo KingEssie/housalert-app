@@ -1,0 +1,66 @@
+We need to fix 2 UX/logic issues in the app.
+
+IMPORTANT:
+- Do NOT break the existing flow system
+- Do NOT break notification delivery logic
+- Make only the changes below
+
+==================================================
+1. KEEP COMPLETED FLOW CARDS VISIBLE ON HOME
+==================================================
+
+Problem:
+When the 2 guided flows reach 100% completion, the dropdown cards on the home screen should NOT disappear.
+
+Required behavior:
+- The flow cards must always remain visible on the home screen
+- Even at 100% completion, they should stay accessible
+- Users must still be able to expand/collapse them
+- Users must still be able to click completed steps
+- The card can visually indicate completion (for example "100% voltooid"), but must not be removed or hidden
+
+Applies to both flows:
+- Rond je account af
+- Bereid je zoekopdracht voor
+
+Please inspect the current logic that hides/removes/completes these cards and change it so they always stay visible.
+
+==================================================
+2. DO NOT SEND OLD EMAILS WHEN EMAIL NOTIFICATIONS ARE RE-ENABLED
+==================================================
+
+Problem:
+If email notifications were turned off, and then turned on again later, the app should NOT send old buffered/backlogged match emails from yesterday or earlier.
+
+Current bad behavior:
+- user enables email notifications again
+- old matches from before re-enabling get emailed
+- this should not happen
+
+Required behavior:
+- when email notifications are turned back ON, only NEW matches from that moment onward may be emailed
+- no backfill
+- no backlog send
+- no catch-up batch from old buffered matches
+
+Implement a safe solution such as:
+- storing a timestamp like:
+  - email_notifications_enabled_at
+  - or notification_resume_at
+- and in the email sending pipeline, only send match emails created after that timestamp
+
+Important:
+- turning email back on should reset the baseline for future email notifications
+- old matches created before re-enabling must be ignored for email sending
+- this should apply only to email sending behavior, not to in-app matches/history
+
+==================================================
+3. OUTPUT
+==================================================
+
+After finishing, return:
+1. where the flow-card visibility logic was changed
+2. confirmation that completed flow cards now stay visible at 100%
+3. what caused old emails to be sent after re-enabling email notifications
+4. how the email notification resume logic was fixed
+5. which files were changed

@@ -183,6 +183,7 @@ async function ensurePostPaywallColumns() {
     { name: "post_paywall_onboarding_completed", sql: "BOOLEAN DEFAULT false" },
     { name: "onboarding_current_step", sql: "TEXT" },
     { name: "push_test_completed", sql: "BOOLEAN DEFAULT false" },
+    { name: "email_resume_after", sql: "TIMESTAMPTZ" },
   ];
 
   for (const col of cols) {
