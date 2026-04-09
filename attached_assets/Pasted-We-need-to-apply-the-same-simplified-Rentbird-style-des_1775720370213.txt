@@ -1,0 +1,95 @@
+We need to apply the same simplified Rentbird-style design from the “Vergroot je kansen met deze tips” flow to the “Rond je account af” flow as well.
+
+At the same time, we need to completely remove the rental pitch generator feature.
+
+IMPORTANT:
+- Do NOT break routing or progress logic for the account flow
+- Do NOT change the step order of the account flow
+- Do NOT change completion logic for the account flow
+- This task is mainly visual cleanup for the account flow + full removal of the rental pitch generator
+
+==================================================
+PART 1 — APPLY THE SAME RENTBIRD-STYLE DESIGN TO “ROND JE ACCOUNT AF”
+==================================================
+
+Use the same visual style that is now used in the tips flow:
+
+- no icons
+- use a clear numbered step label instead
+- titles left-aligned
+- body text left-aligned
+- darker/black text instead of grey body text
+- white content card on a very light grey background
+- simple, readable content presentation
+- same overall feeling as the updated tips flow
+
+Apply this to all screens inside the “Rond je account af” flow.
+
+This includes steps like:
+- Vul je profiel in
+- Maak een extra zoekprofiel aan
+- Zet notificaties aan
+- Voeg zoekbuddy toe
+
+The account flow should now visually match the tips flow.
+
+==================================================
+PART 2 — REMOVE THE RENTAL PITCH GENERATOR COMPLETELY
+==================================================
+
+Remove the rental pitch generator feature from the app.
+
+This means:
+
+1. Remove the button / CTA to open the rental pitch generator
+   - especially from step 8 or anywhere else it appears
+
+2. Remove the dedicated rental pitch generator page/route/component
+   - delete the feature cleanly
+   - remove the route if it exists
+
+3. Remove any navigation entry points that lead to it
+
+4. Remove any code that is only used by this feature
+   - form component
+   - API call logic
+   - prompt generation code
+   - result view
+   - copy-to-clipboard buttons if only used there
+
+5. If step 8 currently references the generator directly,
+   replace that with normal static text only
+
+==================================================
+PART 3 — STEP 8 SHOULD REMAIN A NORMAL CONTENT STEP
+==================================================
+
+After removing the rental pitch generator:
+- step 8 should remain in the tips flow
+- it should just be a normal text/content screen
+- no tool UI
+- no generator CTA
+- no special feature behavior
+
+==================================================
+PART 4 — KEEP THE APP CLEAN
+==================================================
+
+After the cleanup:
+- no dead routes
+- no unused imports
+- no broken buttons
+- no references to the removed rental pitch generator
+
+==================================================
+OUTPUT
+==================================================
+
+After finishing, return:
+1. which files were changed
+2. confirmation that the account flow now uses the same Rentbird-style visual design
+3. confirmation that icons were removed from the account flow
+4. confirmation that text is left-aligned and dark like the tips flow
+5. confirmation that the rental pitch generator was fully removed
+6. confirmation that step 8 remains as a normal content step
+7. confirmation that routing/progress/completion logic for the account flow still works

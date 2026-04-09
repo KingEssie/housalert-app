@@ -7,7 +7,7 @@ interface FlowLayoutProps {
   totalSteps: number;
   stepTitle: string;
   stepDescription: string;
-  stepIcon: React.ReactNode;
+  stepIcon?: React.ReactNode;
   isCompleted: boolean;
   completionType: "auto" | "manual";
   onPrev: (() => void) | null;

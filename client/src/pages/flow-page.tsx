@@ -38,7 +38,6 @@ import {
   Briefcase,
   Building,
   Wallet,
-  Sparkles,
   ChevronDown,
 } from "lucide-react";
 
@@ -386,19 +385,6 @@ function TipHighlight({ text }: { text: string }) {
   );
 }
 
-function TipCta({ label, href }: { label: string; href: string }) {
-  const [, navigate] = useLocation();
-  return (
-    <button
-      onClick={() => navigate(href)}
-      className="w-full h-[48px] rounded-full bg-ha-primary text-white text-[15px] font-semibold hover:brightness-95 active:scale-[0.97] transition-all flex items-center justify-center gap-2 shadow-[0_2px_8px_rgba(217,26,104,0.18)]"
-      data-testid="button-tip-cta"
-    >
-      <Sparkles className="w-5 h-5" />
-      {label}
-    </button>
-  );
-}
 
 type RegionItem = { label: string; url?: string };
 type RegionData = { name: string; platforms: (string | RegionItem)[] };
@@ -607,7 +593,6 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
       <p className="text-[14px] text-[#1F2937] leading-relaxed">Vertel kort iets over jezelf — je naam, leeftijd en situatie. Benoem je werk en inkomen, en leg uit waarom juist deze woning bij je past. Laat merken dat je een rustige, betrouwbare huurder bent. Vermeld eventueel de samenstelling van je huishouden.</p>
       <TipHighlight text="Houd het kort en persoonlijk. Geen standaardtekst — schrijf het alsof je iemand aanspreekt. Stuur het dezelfde dag en combineer het met je documenten (SCHUFA, inkomen)." />
       <p className="text-[14px] text-[#1F2937] leading-relaxed">Ben je zeker? Stuur je pitch direct na de bezichtiging. Twijfel je? Slaap er één nacht over — maar wacht niet te lang. Snelheid telt.</p>
-      <TipCta label="Genereer mijn huurpitch" href="/tools/rental-pitch" />
     </TipBody>
   ),
 };

@@ -2811,65 +2811,6 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/generate-rental-pitch", async (req, res) => {
-    try {
-      const token = req.headers.authorization?.replace("Bearer ", "");
-      if (!token) return res.status(401).json({ error: "Unauthorized" });
-      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
-      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
-
-      const { firstName, age, job, income, city, motivation } = req.body;
-      if (!firstName || !age || !job || !income || !city) {
-        return res.status(400).json({ error: "Missing required fields" });
-      }
-
-      const OpenAI = (await import("openai")).default;
-      const openai = new OpenAI({
-        apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-        baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-      });
-
-      const prompt = `Write a strong German rental application (Mietbewerbung).
-
-The tone should be:
-- polite
-- confident
-- trustworthy
-
-Include:
-- short introduction
-- job and income
-- personal reliability
-- reason for interest in the apartment
-
-User data:
-Name: ${firstName}
-Age: ${age}
-Job: ${job}
-Income: ${income}
-City: ${city}
-${motivation ? `Motivation: ${motivation}` : ""}
-
-Output:
-- clean German text
-- no bullet points
-- max 120–150 words
-- do not include a subject line`;
-
-      const completion = await openai.chat.completions.create({
-        model: "gpt-5-mini",
-        messages: [{ role: "user", content: prompt }],
-        max_completion_tokens: 8192,
-      });
-
-      const text = completion.choices[0]?.message?.content || "";
-      log(`[rental-pitch] Generated pitch for userId=${user.id.substring(0, 8)}...`);
-      return res.json({ text });
-    } catch (err: any) {
-      log(`[rental-pitch] Error: ${err.message}`);
-      return res.status(500).json({ error: "Failed to generate pitch" });
-    }
-  });
 
   app.put("/api/profile-data", async (req, res) => {
     try {
