@@ -456,7 +456,7 @@ export default function OnboardingFilters() {
   }
 
   const ROOM_OPTIONS = [
-    { value: "any", label: "Studio+" },
+    { value: "any", label: t("newSearch.step2.noPref") || "Geen voorkeur" },
     { value: "1", label: "1+" },
     { value: "2", label: "2+" },
     { value: "3", label: "3+" },
@@ -538,24 +538,26 @@ export default function OnboardingFilters() {
           {t("onboarding.filters.bedroomsLabel") || "Slaapkamers"}
         </label>
         <div
-          className="flex p-1 rounded-full"
-          style={{ backgroundColor: "#F3F4F6" }}
+          className="flex gap-2 overflow-x-auto no-scrollbar"
           data-testid="rooms-selector"
         >
-          {ROOM_OPTIONS.map((opt) => (
-            <button
-              key={opt.value}
-              onClick={() => update({ minRooms: opt.value })}
-              className="flex-1 h-[40px] rounded-full text-[13px] font-semibold transition-all"
-              style={{
-                backgroundColor: f.minRooms === opt.value ? "rgb(var(--ha-primary))" : "transparent",
-                color: f.minRooms === opt.value ? "#fff" : T.textSecondary,
-              }}
-              data-testid={`rooms-${opt.value}`}
-            >
-              {opt.label}
-            </button>
-          ))}
+          {ROOM_OPTIONS.map((opt) => {
+            const active = f.minRooms === opt.value;
+            return (
+              <button
+                key={opt.value}
+                onClick={() => update({ minRooms: opt.value })}
+                className="h-[40px] px-4 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96] shrink-0"
+                style={{
+                  backgroundColor: active ? "rgb(var(--ha-primary))" : "#F3F4F6",
+                  color: active ? "#fff" : T.textSecondary,
+                }}
+                data-testid={`rooms-${opt.value}`}
+              >
+                {opt.label}
+              </button>
+            );
+          })}
         </div>
       </section>
 
@@ -729,23 +731,26 @@ export default function OnboardingFilters() {
                 {t("onboarding.filters.bedroomsLabel") || "Slaapkamers"}
               </label>
               <div
-                className="flex p-1 rounded-full bg-[#F3F4F6]"
+                className="flex gap-2 overflow-x-auto no-scrollbar"
                 data-testid="rooms-selector"
               >
-                {ROOM_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.value}
-                    onClick={() => update({ minRooms: opt.value })}
-                    className="flex-1 h-[40px] rounded-full text-[13px] font-semibold transition-all"
-                    style={{
-                      backgroundColor: f.minRooms === opt.value ? "rgb(var(--ha-primary))" : "transparent",
-                      color: f.minRooms === opt.value ? "#fff" : OBW.textSecondary,
-                    }}
-                    data-testid={`rooms-${opt.value}`}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
+                {ROOM_OPTIONS.map((opt) => {
+                  const active = f.minRooms === opt.value;
+                  return (
+                    <button
+                      key={opt.value}
+                      onClick={() => update({ minRooms: opt.value })}
+                      className="h-[40px] px-4 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96] shrink-0"
+                      style={{
+                        backgroundColor: active ? "rgb(var(--ha-primary))" : "#F3F4F6",
+                        color: active ? "#fff" : OBW.textSecondary,
+                      }}
+                      data-testid={`rooms-${opt.value}`}
+                    >
+                      {opt.label}
+                    </button>
+                  );
+                })}
               </div>
             </section>
 

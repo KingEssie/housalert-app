@@ -33,11 +33,11 @@ const MAX_PROFILES = 4;
 const TOTAL_STEPS = 5;
 
 const BEDROOM_OPTIONS = [
-  { value: 0, labelKey: "newSearch.step2.noPref" },
-  { value: 1, labelKey: "newSearch.step2.rooms1" },
-  { value: 2, labelKey: "newSearch.step2.rooms2" },
-  { value: 3, labelKey: "newSearch.step2.rooms3" },
-  { value: 4, labelKey: "newSearch.step2.rooms4plus" },
+  { value: 0, label: "Geen voorkeur" },
+  { value: 1, label: "1+" },
+  { value: 2, label: "2+" },
+  { value: 3, label: "3+" },
+  { value: 4, label: "4+" },
 ];
 
 const SIZE_OPTIONS = [
@@ -689,23 +689,26 @@ function Step2Requirements({
             {t("newSearch.step2.bedrooms")}
           </label>
           <div
-            className="flex p-1 rounded-full bg-[#F3F4F6]"
+            className="flex gap-2 overflow-x-auto no-scrollbar"
             data-testid="rooms-selector"
           >
-            {BEDROOM_OPTIONS.map((opt) => (
-              <button
-                key={opt.value}
-                onClick={() => updateFilters({ bedroomsMin: opt.value })}
-                className="flex-1 h-[40px] rounded-full text-[13px] font-semibold transition-all"
-                style={{
-                  backgroundColor: filters.bedroomsMin === opt.value ? "rgb(var(--ha-primary))" : "transparent",
-                  color: filters.bedroomsMin === opt.value ? "#fff" : "#334855",
-                }}
-                data-testid={`rooms-${opt.value}`}
-              >
-                {t(opt.labelKey)}
-              </button>
-            ))}
+            {BEDROOM_OPTIONS.map((opt) => {
+              const active = filters.bedroomsMin === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  onClick={() => updateFilters({ bedroomsMin: opt.value })}
+                  className="h-[40px] px-4 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96] shrink-0"
+                  style={{
+                    backgroundColor: active ? "rgb(var(--ha-primary))" : "#F3F4F6",
+                    color: active ? "#fff" : "#334855",
+                  }}
+                  data-testid={`rooms-${opt.value}`}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
           </div>
         </section>
 

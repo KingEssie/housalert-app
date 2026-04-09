@@ -647,3 +647,10 @@ input[type="range"]::-moz-range-thumb {
   color: #334855;
   opacity: 0.55;
 }
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
