@@ -576,19 +576,10 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   ),
   tip_network: () => (
     <TipBody>
-      <p className="text-[14px] text-[#6B7280]">Veel woningen in Duitsland worden niet openbaar geadverteerd. Via je netwerk hoor je het eerst.</p>
-      <TipSection title="Vertel dat je zoekt aan" items={[
-        "Vrienden en familie",
-        "Collega's en studiegenoten",
-        "Buren en kennissen",
-        "Je sportclub, kerk of vereniging",
-      ]} />
-      <TipSection title="Praktisch" items={[
-        "Post een bericht op Instagram / Facebook / LinkedIn",
-        "Stuur een kort berichtje in WhatsApp-groepen",
-        "Vraag of mensen je naam doorgeven aan hun verhuurder",
-      ]} />
-      <TipHighlight text="Eén connectie kan het verschil maken." />
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Hoe meer mensen weten dat jij een woning zoekt, hoe groter je kans. In Duitsland gaat veel aanbod via via, nog vóór het online komt.</p>
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Laat daarom op je social media weten dat je op zoek bent naar een woning. Deel het met vrienden, familie, collega's en kennissen.</p>
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Vraag ook actief rond op werk of bij lokale contacten. Misschien kent iemand iemand die binnenkort iets verhuurt.</p>
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Soms komt de beste kans uit onverwachte hoek. Zorg dat mensen aan jou denken zodra er iets vrijkomt.</p>
     </TipBody>
   ),
   tip_viewings: () => (
