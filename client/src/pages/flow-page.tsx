@@ -558,19 +558,20 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   ),
   tip_new_build: () => (
     <TipBody>
-      <p className="text-[14px] text-[#6B7280]">Nieuwbouwprojecten zijn vaak al verhuurd vóór oplevering. Vroeg inschrijven vergroot je kans enorm.</p>
-      <TipSection title="Waar kijken" items={[
-        "Neubaukompass.de",
-        "ImmoScout24 → filter op nieuwbouw",
-        "Immowelt → filter op Neubau",
-        "Websites van lokale projectontwikkelaars",
-      ]} />
-      <TipSection title="Acties" items={[
-        "Schrijf je in op de interesselijst",
-        "Check wekelijks op nieuw aanbod",
-        "Hou je e-mail goed in de gaten",
-      ]} />
-      <TipHighlight text="Nieuwbouw = minder concurrentie als je er vroeg bij bent." />
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Wil je het liefst in een nieuw appartement wonen of kansen vroeg ontdekken? Houd dan nieuwbouwprojecten in jouw regio goed in de gaten.</p>
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">In Duitsland worden veel woningen al toegewezen vóór oplevering. Wie er vroeg bij is, heeft vaak een groot voordeel.</p>
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Projecten worden soms maanden of zelfs jaren vooraf aangekondigd. Vaak kun je je inschrijven voordat de woningen beschikbaar zijn.</p>
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Door dit actief te volgen, vergroot je je kansen aanzienlijk.</p>
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Bekijk actuele en toekomstige nieuwbouwprojecten op:</p>
+      <a
+        href="https://www.neubaukompass.de"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-[14px] font-semibold text-ha-primary hover:underline"
+        data-testid="link-neubaukompass"
+      >
+        » neubaukompass.de
+      </a>
     </TipBody>
   ),
   tip_network: () => (
