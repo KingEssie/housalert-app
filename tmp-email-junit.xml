@@ -1,0 +1,740 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="61" failures="8" errors="0" time="0.428259098">
+    <testsuite name="server/tests/email/email-templates.test.ts" timestamp="2026-04-09T10:35:37.147Z" hostname="d9c6c0c18ecd" tests="61" failures="8" errors="0" skipped="0" time="0.428259098">
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; sendMatchAlert — function signature &gt; accepts (userEmail, listing) and returns Promise&lt;boolean&gt; = true on success" time="0.368647978">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; sendMatchAlert — function signature &gt; returns false when Resend returns an error" time="0.00081443">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; sendMatchAlert — function signature &gt; returns false when Resend throws" time="0.00511187">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; sendBatchMatchAlert — function signature &gt; accepts (userEmail, listings[]) and returns Promise&lt;boolean&gt; = true on success" time="0.00098325">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; sendBatchMatchAlert — function signature &gt; returns false for empty array" time="0.0002605">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; sendBatchMatchAlert — function signature &gt; delegates to sendMatchAlert for single-item array" time="0.00896958">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Subject line generation &gt; single: contains house emoji and listing title" time="0.00045929">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Subject line generation &gt; batch: contains house emoji and listing count" time="0.00050526">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; sanitizeSubject behavior &gt; strips newlines and control characters from title" time="0.00052979">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; sanitizeSubject behavior &gt; truncates very long titles to max 200 chars" time="0.00043058">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Single-match HTML rendering &gt; contains the listing title" time="0.00071628">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Single-match HTML rendering &gt; contains the price formatted with euro sign and /mnd" time="0.00036712">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Single-match HTML rendering &gt; contains bedroom and size chips" time="0.00035137">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Single-match HTML rendering &gt; contains city chip" time="0.00048122">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Single-match HTML rendering &gt; contains hero image when image_url is present" time="0.00033942">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Single-match HTML rendering &gt; contains Reageer direct CTA button with apply link" time="0.00769128">
+            <failure message="expected &apos;&lt;!DOCTYPE html&gt;\n&lt;html lang=&quot;nl&quot;&gt;\n&lt;h…&apos; to contain &apos;Reageer direct&apos;" type="AssertionError">
+AssertionError: expected &apos;&lt;!DOCTYPE html&gt;\n&lt;html lang=&quot;nl&quot;&gt;\n&lt;h…&apos; to contain &apos;Reageer direct&apos;
+
+- Expected
++ Received
+
+- Reageer direct
++ &lt;!DOCTYPE html&gt;
++ &lt;html lang=&quot;nl&quot;&gt;
++ &lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1.0&quot;&gt;
++ &lt;title&gt;HousAlert&lt;/title&gt;
++ &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
++ &lt;!--[if mso]&gt;&lt;style&gt;table,td{font-family:Arial,sans-serif!important;}&lt;/style&gt;&lt;![endif]--&gt;
++ &lt;/head&gt;
++ &lt;body style=&quot;margin:0;padding:0;background-color:#FFFFFF;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;&quot;&gt;
++ &lt;div style=&quot;display:none;font-size:1px;color:#FFFFFF;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;&quot;&gt;Ruim 3-kamer appartement in centrum — €1.850/mnd — Amsterdam&lt;/div&gt;
++ &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;background-color:#FFFFFF;&quot;&gt;
++ &lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:0;&quot;&gt;
++
++ &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;max-width:560px;&quot;&gt;
++
++ &lt;!-- HEADER --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:28px 24px 0;&quot;&gt;
++   &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot;&gt;
++   &lt;tr&gt;
++     &lt;td style=&quot;vertical-align:middle;width:36px;&quot;&gt;
++       &lt;img src=&quot;https://app.housalert.com/email-logo-v2.png&quot; alt=&quot;HousAlert&quot; width=&quot;32&quot; height=&quot;32&quot; style=&quot;display:block;width:32px;height:32px;border-radius:8px;&quot; /&gt;
++     &lt;/td&gt;
++     &lt;td style=&quot;vertical-align:middle;padding-left:10px;&quot;&gt;
++       &lt;a href=&quot;https://app.housalert.com&quot; target=&quot;_blank&quot; style=&quot;text-decoration:none;font-size:18px;font-weight:600;color:#111827;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;letter-spacing:-0.01em;&quot;&gt;housalert&lt;/a&gt;
++     &lt;/td&gt;
++     &lt;td align=&quot;right&quot; style=&quot;vertical-align:middle;&quot;&gt;
++       &lt;a href=&quot;https://app.housalert.com/instellingen&quot; target=&quot;_blank&quot; style=&quot;font-size:13px;color:#6B7280;text-decoration:none;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Instellingen&lt;/a&gt;
++     &lt;/td&gt;
++   &lt;/tr&gt;
++   &lt;/table&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- TAGLINE --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:4px 24px 20px 70px;&quot;&gt;
++   &lt;p style=&quot;margin:0;font-size:12px;color:#6B7280;letter-spacing:0.01em;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Huurkansen, direct in je inbox&lt;/p&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- DIVIDER --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:0 24px;&quot;&gt;&lt;div style=&quot;border-top:1px solid #E5E7EB;&quot;&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- CONTENT --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:28px 24px;&quot;&gt;
++   
++ &lt;p style=&quot;margin:0 0 6px;font-size:11px;font-weight:600;color:#d91a68;text-transform:uppercase;letter-spacing:0.06em;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Nieuwe match&lt;/p&gt;
++ &lt;p style=&quot;margin:0 0 20px;font-size:14px;color:#6B7280;line-height:1.6;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Er is een woning gevonden die bij jouw zoekprofiel past.&lt;/p&gt;
++ &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;background-color:#FFFFFF;border-radius:16px;overflow:hidden;margin:0 0 24px;border:1px solid #E5E7EB;&quot;&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:0;line-height:0;font-size:0;&quot;&gt;
++         &lt;a href=&quot;https://funda.nl/huur/amsterdam/appartement-123&quot; target=&quot;_blank&quot; style=&quot;text-decoration:none;&quot;&gt;
++           &lt;img src=&quot;https://images.funda.nl/photo-abc.jpg&quot; alt=&quot;Ruim 3-kamer appartement in centrum&quot; width=&quot;100%&quot; style=&quot;display:block;width:100%;height:auto;max-height:220px;object-fit:cover;&quot; /&gt;
++         &lt;/a&gt;
++       &lt;/td&gt;&lt;/tr&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:20px 20px 24px;&quot;&gt;
++   
++   &lt;h3 style=&quot;margin:0 0 8px;font-size:18px;font-weight:700;color:#111827;line-height:1.3;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Ruim 3-kamer appartement in centrum&lt;/h3&gt;
++   &lt;p style=&quot;margin:0 0 8px;font-size:20px;font-weight:700;color:#111827;line-height:1.2;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;€1.850&lt;span style=&quot;font-size:13px;font-weight:400;color:#6B7280;margin-left:3px;&quot;&gt;/mnd&lt;/span&gt;&lt;/p&gt;
++   &lt;p style=&quot;margin:0 0 4px;font-size:13px;color:#6B7280;line-height:1.5;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Amsterdam&lt;span style=&quot;color:#E5E7EB;&quot;&gt; &amp;middot; &lt;/span&gt;3 kamers&lt;span style=&quot;color:#E5E7EB;&quot;&gt; &amp;middot; &lt;/span&gt;75 m²&lt;/p&gt;
++   &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;margin-top:16px;&quot;&gt;
++         &lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:0 0 10px;&quot;&gt;
++           &lt;!--[if mso]&gt;&lt;v:roundrect xmlns:v=&quot;urn:schemas-microsoft-com:vml&quot; xmlns:w=&quot;urn:schemas-microsoft-com:office:word&quot; href=&quot;https://funda.nl/huur/amsterdam/appartement-123&quot; style=&quot;height:54px;v-text-anchor:middle;width:100%;&quot; arcsize=&quot;33%&quot; strokecolor=&quot;#d91a68&quot; fillcolor=&quot;#d91a68&quot;&gt;&lt;w:anchorlock/&gt;&lt;center style=&quot;color:#FFFFFF;font-family:Arial,sans-serif;font-size:16px;font-weight:600;&quot;&gt;Bekijk woning&lt;/center&gt;&lt;/v:roundrect&gt;&lt;![endif]--&gt;
++           &lt;!--[if !mso]&gt;&lt;!--&gt;
++           &lt;a href=&quot;https://funda.nl/huur/amsterdam/appartement-123&quot; target=&quot;_blank&quot; style=&quot;display:block;background-color:#d91a68;color:#FFFFFF !important;-webkit-text-fill-color:#FFFFFF;mso-line-height-rule:exactly;font-size:16px;font-weight:600;text-decoration:none;padding:17px 24px;border-radius:18px;text-align:center;mso-hide:all;-webkit-text-size-adjust:none;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;&lt;span style=&quot;color:#FFFFFF !important;-webkit-text-fill-color:#FFFFFF;&quot;&gt;Bekijk woning&lt;/span&gt;&lt;/a&gt;
++           &lt;!--&lt;![endif]--&gt;
++         &lt;/td&gt;&lt;/tr&gt;
++       &lt;/table&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++ &lt;/table&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- FOOTER --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:0 24px;&quot;&gt;&lt;div style=&quot;border-top:1px solid #E5E7EB;&quot;&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:20px 24px 32px;&quot;&gt;
++   &lt;p style=&quot;margin:0 0 4px;font-size:12px;color:#6B7280;line-height:1.6;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;
++     Je ontvangt deze e-mail omdat je een zoekprofiel hebt ingesteld bij HousAlert.
++   &lt;/p&gt;
++   &lt;a href=&quot;https://app.housalert.com/instellingen&quot; target=&quot;_blank&quot; style=&quot;font-size:12px;color:#d91a68;text-decoration:none;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Meldingen aanpassen&lt;/a&gt;
++   
++   &lt;p style=&quot;margin:16px 0 0;font-size:11px;color:#E5E7EB;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;
++     © 2026 HousAlert
++   &lt;/p&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;/table&gt;
++
++ &lt;/td&gt;&lt;/tr&gt;
++ &lt;/table&gt;
++ &lt;/body&gt;
++ &lt;/html&gt;
+
+ ❯ server/tests/email/email-templates.test.ts:239:20
+            </failure>
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Single-match HTML rendering &gt; contains Bekijk woning CTA button with external link" time="0.00029117">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Single-match HTML rendering &gt; contains hidden preheader for inbox preview" time="0.00024986">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Single-match HTML rendering &gt; contains HousAlert brand header with tagline" time="0.00027233">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Single-match HTML rendering &gt; contains Instellingen link in header" time="0.0002366">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Single-match HTML rendering &gt; contains footer disclaimer with settings link" time="0.00023028">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Single-match HTML rendering &gt; contains Nieuwe match label and intro text" time="0.00030421">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Single-match HTML rendering &gt; uses table-based layout for email client compatibility" time="0.00033433">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Missing image fallback &gt; does not render &lt;img&gt; when image_url is null" time="0.00343035">
+            <failure message="expected &apos;&lt;!DOCTYPE html&gt;\n&lt;html lang=&quot;nl&quot;&gt;\n&lt;h…&apos; not to contain &apos;&lt;img&apos;" type="AssertionError">
+AssertionError: expected &apos;&lt;!DOCTYPE html&gt;\n&lt;html lang=&quot;nl&quot;&gt;\n&lt;h…&apos; not to contain &apos;&lt;img&apos;
+
+- Expected
++ Received
+
+- &lt;img
++ &lt;!DOCTYPE html&gt;
++ &lt;html lang=&quot;nl&quot;&gt;
++ &lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1.0&quot;&gt;
++ &lt;title&gt;HousAlert&lt;/title&gt;
++ &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
++ &lt;!--[if mso]&gt;&lt;style&gt;table,td{font-family:Arial,sans-serif!important;}&lt;/style&gt;&lt;![endif]--&gt;
++ &lt;/head&gt;
++ &lt;body style=&quot;margin:0;padding:0;background-color:#FFFFFF;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;&quot;&gt;
++ &lt;div style=&quot;display:none;font-size:1px;color:#FFFFFF;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;&quot;&gt;Studio nabij station — €950/mnd — Utrecht&lt;/div&gt;
++ &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;background-color:#FFFFFF;&quot;&gt;
++ &lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:0;&quot;&gt;
++
++ &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;max-width:560px;&quot;&gt;
++
++ &lt;!-- HEADER --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:28px 24px 0;&quot;&gt;
++   &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot;&gt;
++   &lt;tr&gt;
++     &lt;td style=&quot;vertical-align:middle;width:36px;&quot;&gt;
++       &lt;img src=&quot;https://app.housalert.com/email-logo-v2.png&quot; alt=&quot;HousAlert&quot; width=&quot;32&quot; height=&quot;32&quot; style=&quot;display:block;width:32px;height:32px;border-radius:8px;&quot; /&gt;
++     &lt;/td&gt;
++     &lt;td style=&quot;vertical-align:middle;padding-left:10px;&quot;&gt;
++       &lt;a href=&quot;https://app.housalert.com&quot; target=&quot;_blank&quot; style=&quot;text-decoration:none;font-size:18px;font-weight:600;color:#111827;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;letter-spacing:-0.01em;&quot;&gt;housalert&lt;/a&gt;
++     &lt;/td&gt;
++     &lt;td align=&quot;right&quot; style=&quot;vertical-align:middle;&quot;&gt;
++       &lt;a href=&quot;https://app.housalert.com/instellingen&quot; target=&quot;_blank&quot; style=&quot;font-size:13px;color:#6B7280;text-decoration:none;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Instellingen&lt;/a&gt;
++     &lt;/td&gt;
++   &lt;/tr&gt;
++   &lt;/table&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- TAGLINE --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:4px 24px 20px 70px;&quot;&gt;
++   &lt;p style=&quot;margin:0;font-size:12px;color:#6B7280;letter-spacing:0.01em;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Huurkansen, direct in je inbox&lt;/p&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- DIVIDER --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:0 24px;&quot;&gt;&lt;div style=&quot;border-top:1px solid #E5E7EB;&quot;&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- CONTENT --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:28px 24px;&quot;&gt;
++   
++ &lt;p style=&quot;margin:0 0 6px;font-size:11px;font-weight:600;color:#d91a68;text-transform:uppercase;letter-spacing:0.06em;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Nieuwe match&lt;/p&gt;
++ &lt;p style=&quot;margin:0 0 20px;font-size:14px;color:#6B7280;line-height:1.6;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Er is een woning gevonden die bij jouw zoekprofiel past.&lt;/p&gt;
++ &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;background-color:#FFFFFF;border-radius:16px;overflow:hidden;margin:0 0 24px;border:1px solid #E5E7EB;&quot;&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:0;line-height:0;font-size:0;&quot;&gt;
++         &lt;a href=&quot;https://pararius.nl/studio-456&quot; target=&quot;_blank&quot; style=&quot;text-decoration:none;&quot;&gt;
++           &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;background-color:#F3F4F6;&quot;&gt;
++             &lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:48px 24px;&quot;&gt;
++               &lt;img src=&quot;https://app.housalert.com/email-logo-v2.png&quot; alt=&quot;HousAlert&quot; width=&quot;48&quot; height=&quot;48&quot; style=&quot;display:block;width:48px;height:48px;border-radius:10px;opacity:0.4;margin:0 auto 12px;&quot; /&gt;
++               &lt;p style=&quot;margin:0;font-size:13px;color:#9CA3AF;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;font-weight:500;&quot;&gt;Utrecht&lt;/p&gt;
++             &lt;/td&gt;&lt;/tr&gt;
++           &lt;/table&gt;
++         &lt;/a&gt;
++       &lt;/td&gt;&lt;/tr&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:20px 20px 24px;&quot;&gt;
++   
++   &lt;h3 style=&quot;margin:0 0 8px;font-size:18px;font-weight:700;color:#111827;line-height:1.3;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Studio nabij station&lt;/h3&gt;
++   &lt;p style=&quot;margin:0 0 8px;font-size:20px;font-weight:700;color:#111827;line-height:1.2;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;€950&lt;span style=&quot;font-size:13px;font-weight:400;color:#6B7280;margin-left:3px;&quot;&gt;/mnd&lt;/span&gt;&lt;/p&gt;
++   &lt;p style=&quot;margin:0 0 4px;font-size:13px;color:#6B7280;line-height:1.5;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Utrecht&lt;span style=&quot;color:#E5E7EB;&quot;&gt; &amp;middot; &lt;/span&gt;1 kamer&lt;span style=&quot;color:#E5E7EB;&quot;&gt; &amp;middot; &lt;/span&gt;35 m²&lt;/p&gt;
++   &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;margin-top:16px;&quot;&gt;
++         &lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:0 0 10px;&quot;&gt;
++           &lt;!--[if mso]&gt;&lt;v:roundrect xmlns:v=&quot;urn:schemas-microsoft-com:vml&quot; xmlns:w=&quot;urn:schemas-microsoft-com:office:word&quot; href=&quot;https://pararius.nl/studio-456&quot; style=&quot;height:54px;v-text-anchor:middle;width:100%;&quot; arcsize=&quot;33%&quot; strokecolor=&quot;#d91a68&quot; fillcolor=&quot;#d91a68&quot;&gt;&lt;w:anchorlock/&gt;&lt;center style=&quot;color:#FFFFFF;font-family:Arial,sans-serif;font-size:16px;font-weight:600;&quot;&gt;Bekijk woning&lt;/center&gt;&lt;/v:roundrect&gt;&lt;![endif]--&gt;
++           &lt;!--[if !mso]&gt;&lt;!--&gt;
++           &lt;a href=&quot;https://pararius.nl/studio-456&quot; target=&quot;_blank&quot; style=&quot;display:block;background-color:#d91a68;color:#FFFFFF !important;-webkit-text-fill-color:#FFFFFF;mso-line-height-rule:exactly;font-size:16px;font-weight:600;text-decoration:none;padding:17px 24px;border-radius:18px;text-align:center;mso-hide:all;-webkit-text-size-adjust:none;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;&lt;span style=&quot;color:#FFFFFF !important;-webkit-text-fill-color:#FFFFFF;&quot;&gt;Bekijk woning&lt;/span&gt;&lt;/a&gt;
++           &lt;!--&lt;![endif]--&gt;
++         &lt;/td&gt;&lt;/tr&gt;
++       &lt;/table&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++ &lt;/table&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- FOOTER --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:0 24px;&quot;&gt;&lt;div style=&quot;border-top:1px solid #E5E7EB;&quot;&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:20px 24px 32px;&quot;&gt;
++   &lt;p style=&quot;margin:0 0 4px;font-size:12px;color:#6B7280;line-height:1.6;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;
++     Je ontvangt deze e-mail omdat je een zoekprofiel hebt ingesteld bij HousAlert.
++   &lt;/p&gt;
++   &lt;a href=&quot;https://app.housalert.com/instellingen&quot; target=&quot;_blank&quot; style=&quot;font-size:12px;color:#d91a68;text-decoration:none;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Meldingen aanpassen&lt;/a&gt;
++   
++   &lt;p style=&quot;margin:16px 0 0;font-size:11px;color:#E5E7EB;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;
++     © 2026 HousAlert
++   &lt;/p&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;/table&gt;
++
++ &lt;/td&gt;&lt;/tr&gt;
++ &lt;/table&gt;
++ &lt;/body&gt;
++ &lt;/html&gt;
+
+ ❯ server/tests/email/email-templates.test.ts:298:24
+            </failure>
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Missing image fallback &gt; still renders title, city, price, and CTA when image is missing" time="0.00224244">
+            <failure message="expected &apos;&lt;!DOCTYPE html&gt;\n&lt;html lang=&quot;nl&quot;&gt;\n&lt;h…&apos; to contain &apos;Reageer direct&apos;" type="AssertionError">
+AssertionError: expected &apos;&lt;!DOCTYPE html&gt;\n&lt;html lang=&quot;nl&quot;&gt;\n&lt;h…&apos; to contain &apos;Reageer direct&apos;
+
+- Expected
++ Received
+
+- Reageer direct
++ &lt;!DOCTYPE html&gt;
++ &lt;html lang=&quot;nl&quot;&gt;
++ &lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1.0&quot;&gt;
++ &lt;title&gt;HousAlert&lt;/title&gt;
++ &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
++ &lt;!--[if mso]&gt;&lt;style&gt;table,td{font-family:Arial,sans-serif!important;}&lt;/style&gt;&lt;![endif]--&gt;
++ &lt;/head&gt;
++ &lt;body style=&quot;margin:0;padding:0;background-color:#FFFFFF;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;&quot;&gt;
++ &lt;div style=&quot;display:none;font-size:1px;color:#FFFFFF;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;&quot;&gt;Studio nabij station — €950/mnd — Utrecht&lt;/div&gt;
++ &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;background-color:#FFFFFF;&quot;&gt;
++ &lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:0;&quot;&gt;
++
++ &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;max-width:560px;&quot;&gt;
++
++ &lt;!-- HEADER --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:28px 24px 0;&quot;&gt;
++   &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot;&gt;
++   &lt;tr&gt;
++     &lt;td style=&quot;vertical-align:middle;width:36px;&quot;&gt;
++       &lt;img src=&quot;https://app.housalert.com/email-logo-v2.png&quot; alt=&quot;HousAlert&quot; width=&quot;32&quot; height=&quot;32&quot; style=&quot;display:block;width:32px;height:32px;border-radius:8px;&quot; /&gt;
++     &lt;/td&gt;
++     &lt;td style=&quot;vertical-align:middle;padding-left:10px;&quot;&gt;
++       &lt;a href=&quot;https://app.housalert.com&quot; target=&quot;_blank&quot; style=&quot;text-decoration:none;font-size:18px;font-weight:600;color:#111827;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;letter-spacing:-0.01em;&quot;&gt;housalert&lt;/a&gt;
++     &lt;/td&gt;
++     &lt;td align=&quot;right&quot; style=&quot;vertical-align:middle;&quot;&gt;
++       &lt;a href=&quot;https://app.housalert.com/instellingen&quot; target=&quot;_blank&quot; style=&quot;font-size:13px;color:#6B7280;text-decoration:none;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Instellingen&lt;/a&gt;
++     &lt;/td&gt;
++   &lt;/tr&gt;
++   &lt;/table&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- TAGLINE --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:4px 24px 20px 70px;&quot;&gt;
++   &lt;p style=&quot;margin:0;font-size:12px;color:#6B7280;letter-spacing:0.01em;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Huurkansen, direct in je inbox&lt;/p&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- DIVIDER --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:0 24px;&quot;&gt;&lt;div style=&quot;border-top:1px solid #E5E7EB;&quot;&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- CONTENT --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:28px 24px;&quot;&gt;
++   
++ &lt;p style=&quot;margin:0 0 6px;font-size:11px;font-weight:600;color:#d91a68;text-transform:uppercase;letter-spacing:0.06em;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Nieuwe match&lt;/p&gt;
++ &lt;p style=&quot;margin:0 0 20px;font-size:14px;color:#6B7280;line-height:1.6;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Er is een woning gevonden die bij jouw zoekprofiel past.&lt;/p&gt;
++ &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;background-color:#FFFFFF;border-radius:16px;overflow:hidden;margin:0 0 24px;border:1px solid #E5E7EB;&quot;&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:0;line-height:0;font-size:0;&quot;&gt;
++         &lt;a href=&quot;https://pararius.nl/studio-456&quot; target=&quot;_blank&quot; style=&quot;text-decoration:none;&quot;&gt;
++           &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;background-color:#F3F4F6;&quot;&gt;
++             &lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:48px 24px;&quot;&gt;
++               &lt;img src=&quot;https://app.housalert.com/email-logo-v2.png&quot; alt=&quot;HousAlert&quot; width=&quot;48&quot; height=&quot;48&quot; style=&quot;display:block;width:48px;height:48px;border-radius:10px;opacity:0.4;margin:0 auto 12px;&quot; /&gt;
++               &lt;p style=&quot;margin:0;font-size:13px;color:#9CA3AF;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;font-weight:500;&quot;&gt;Utrecht&lt;/p&gt;
++             &lt;/td&gt;&lt;/tr&gt;
++           &lt;/table&gt;
++         &lt;/a&gt;
++       &lt;/td&gt;&lt;/tr&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:20px 20px 24px;&quot;&gt;
++   
++   &lt;h3 style=&quot;margin:0 0 8px;font-size:18px;font-weight:700;color:#111827;line-height:1.3;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Studio nabij station&lt;/h3&gt;
++   &lt;p style=&quot;margin:0 0 8px;font-size:20px;font-weight:700;color:#111827;line-height:1.2;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;€950&lt;span style=&quot;font-size:13px;font-weight:400;color:#6B7280;margin-left:3px;&quot;&gt;/mnd&lt;/span&gt;&lt;/p&gt;
++   &lt;p style=&quot;margin:0 0 4px;font-size:13px;color:#6B7280;line-height:1.5;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Utrecht&lt;span style=&quot;color:#E5E7EB;&quot;&gt; &amp;middot; &lt;/span&gt;1 kamer&lt;span style=&quot;color:#E5E7EB;&quot;&gt; &amp;middot; &lt;/span&gt;35 m²&lt;/p&gt;
++   &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;margin-top:16px;&quot;&gt;
++         &lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:0 0 10px;&quot;&gt;
++           &lt;!--[if mso]&gt;&lt;v:roundrect xmlns:v=&quot;urn:schemas-microsoft-com:vml&quot; xmlns:w=&quot;urn:schemas-microsoft-com:office:word&quot; href=&quot;https://pararius.nl/studio-456&quot; style=&quot;height:54px;v-text-anchor:middle;width:100%;&quot; arcsize=&quot;33%&quot; strokecolor=&quot;#d91a68&quot; fillcolor=&quot;#d91a68&quot;&gt;&lt;w:anchorlock/&gt;&lt;center style=&quot;color:#FFFFFF;font-family:Arial,sans-serif;font-size:16px;font-weight:600;&quot;&gt;Bekijk woning&lt;/center&gt;&lt;/v:roundrect&gt;&lt;![endif]--&gt;
++           &lt;!--[if !mso]&gt;&lt;!--&gt;
++           &lt;a href=&quot;https://pararius.nl/studio-456&quot; target=&quot;_blank&quot; style=&quot;display:block;background-color:#d91a68;color:#FFFFFF !important;-webkit-text-fill-color:#FFFFFF;mso-line-height-rule:exactly;font-size:16px;font-weight:600;text-decoration:none;padding:17px 24px;border-radius:18px;text-align:center;mso-hide:all;-webkit-text-size-adjust:none;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;&lt;span style=&quot;color:#FFFFFF !important;-webkit-text-fill-color:#FFFFFF;&quot;&gt;Bekijk woning&lt;/span&gt;&lt;/a&gt;
++           &lt;!--&lt;![endif]--&gt;
++         &lt;/td&gt;&lt;/tr&gt;
++       &lt;/table&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++ &lt;/table&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- FOOTER --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:0 24px;&quot;&gt;&lt;div style=&quot;border-top:1px solid #E5E7EB;&quot;&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:20px 24px 32px;&quot;&gt;
++   &lt;p style=&quot;margin:0 0 4px;font-size:12px;color:#6B7280;line-height:1.6;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;
++     Je ontvangt deze e-mail omdat je een zoekprofiel hebt ingesteld bij HousAlert.
++   &lt;/p&gt;
++   &lt;a href=&quot;https://app.housalert.com/instellingen&quot; target=&quot;_blank&quot; style=&quot;font-size:12px;color:#d91a68;text-decoration:none;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Meldingen aanpassen&lt;/a&gt;
++   
++   &lt;p style=&quot;margin:16px 0 0;font-size:11px;color:#E5E7EB;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;
++     © 2026 HousAlert
++   &lt;/p&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;/table&gt;
++
++ &lt;/td&gt;&lt;/tr&gt;
++ &lt;/table&gt;
++ &lt;/body&gt;
++ &lt;/html&gt;
+
+ ❯ server/tests/email/email-templates.test.ts:306:20
+            </failure>
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Zero/empty price handling &gt; does not render price section when price is 0" time="0.000287">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Zero/empty price handling &gt; does not render bedroom chip when bedrooms is 0" time="0.00020879">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Zero/empty price handling &gt; does not render size chip when size_m2 is 0" time="0.00021406">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; CTA link generation &gt; apply link uses APP_PUBLIC_BASE_URL + /apply/ + listing_id" time="0.00136541">
+            <failure message="expected &apos;&lt;!DOCTYPE html&gt;\n&lt;html lang=&quot;nl&quot;&gt;\n&lt;h…&apos; to contain &apos;/apply/lst-001&apos;" type="AssertionError">
+AssertionError: expected &apos;&lt;!DOCTYPE html&gt;\n&lt;html lang=&quot;nl&quot;&gt;\n&lt;h…&apos; to contain &apos;/apply/lst-001&apos;
+
+- Expected
++ Received
+
+- /apply/lst-001
++ &lt;!DOCTYPE html&gt;
++ &lt;html lang=&quot;nl&quot;&gt;
++ &lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1.0&quot;&gt;
++ &lt;title&gt;HousAlert&lt;/title&gt;
++ &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
++ &lt;!--[if mso]&gt;&lt;style&gt;table,td{font-family:Arial,sans-serif!important;}&lt;/style&gt;&lt;![endif]--&gt;
++ &lt;/head&gt;
++ &lt;body style=&quot;margin:0;padding:0;background-color:#FFFFFF;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;&quot;&gt;
++ &lt;div style=&quot;display:none;font-size:1px;color:#FFFFFF;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;&quot;&gt;Ruim 3-kamer appartement in centrum — €1.850/mnd — Amsterdam&lt;/div&gt;
++ &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;background-color:#FFFFFF;&quot;&gt;
++ &lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:0;&quot;&gt;
++
++ &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;max-width:560px;&quot;&gt;
++
++ &lt;!-- HEADER --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:28px 24px 0;&quot;&gt;
++   &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot;&gt;
++   &lt;tr&gt;
++     &lt;td style=&quot;vertical-align:middle;width:36px;&quot;&gt;
++       &lt;img src=&quot;https://app.housalert.com/email-logo-v2.png&quot; alt=&quot;HousAlert&quot; width=&quot;32&quot; height=&quot;32&quot; style=&quot;display:block;width:32px;height:32px;border-radius:8px;&quot; /&gt;
++     &lt;/td&gt;
++     &lt;td style=&quot;vertical-align:middle;padding-left:10px;&quot;&gt;
++       &lt;a href=&quot;https://app.housalert.com&quot; target=&quot;_blank&quot; style=&quot;text-decoration:none;font-size:18px;font-weight:600;color:#111827;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;letter-spacing:-0.01em;&quot;&gt;housalert&lt;/a&gt;
++     &lt;/td&gt;
++     &lt;td align=&quot;right&quot; style=&quot;vertical-align:middle;&quot;&gt;
++       &lt;a href=&quot;https://app.housalert.com/instellingen&quot; target=&quot;_blank&quot; style=&quot;font-size:13px;color:#6B7280;text-decoration:none;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Instellingen&lt;/a&gt;
++     &lt;/td&gt;
++   &lt;/tr&gt;
++   &lt;/table&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- TAGLINE --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:4px 24px 20px 70px;&quot;&gt;
++   &lt;p style=&quot;margin:0;font-size:12px;color:#6B7280;letter-spacing:0.01em;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Huurkansen, direct in je inbox&lt;/p&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- DIVIDER --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:0 24px;&quot;&gt;&lt;div style=&quot;border-top:1px solid #E5E7EB;&quot;&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- CONTENT --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:28px 24px;&quot;&gt;
++   
++ &lt;p style=&quot;margin:0 0 6px;font-size:11px;font-weight:600;color:#d91a68;text-transform:uppercase;letter-spacing:0.06em;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Nieuwe match&lt;/p&gt;
++ &lt;p style=&quot;margin:0 0 20px;font-size:14px;color:#6B7280;line-height:1.6;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Er is een woning gevonden die bij jouw zoekprofiel past.&lt;/p&gt;
++ &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;background-color:#FFFFFF;border-radius:16px;overflow:hidden;margin:0 0 24px;border:1px solid #E5E7EB;&quot;&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:0;line-height:0;font-size:0;&quot;&gt;
++         &lt;a href=&quot;https://funda.nl/huur/amsterdam/appartement-123&quot; target=&quot;_blank&quot; style=&quot;text-decoration:none;&quot;&gt;
++           &lt;img src=&quot;https://images.funda.nl/photo-abc.jpg&quot; alt=&quot;Ruim 3-kamer appartement in centrum&quot; width=&quot;100%&quot; style=&quot;display:block;width:100%;height:auto;max-height:220px;object-fit:cover;&quot; /&gt;
++         &lt;/a&gt;
++       &lt;/td&gt;&lt;/tr&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:20px 20px 24px;&quot;&gt;
++   
++   &lt;h3 style=&quot;margin:0 0 8px;font-size:18px;font-weight:700;color:#111827;line-height:1.3;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Ruim 3-kamer appartement in centrum&lt;/h3&gt;
++   &lt;p style=&quot;margin:0 0 8px;font-size:20px;font-weight:700;color:#111827;line-height:1.2;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;€1.850&lt;span style=&quot;font-size:13px;font-weight:400;color:#6B7280;margin-left:3px;&quot;&gt;/mnd&lt;/span&gt;&lt;/p&gt;
++   &lt;p style=&quot;margin:0 0 4px;font-size:13px;color:#6B7280;line-height:1.5;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Amsterdam&lt;span style=&quot;color:#E5E7EB;&quot;&gt; &amp;middot; &lt;/span&gt;3 kamers&lt;span style=&quot;color:#E5E7EB;&quot;&gt; &amp;middot; &lt;/span&gt;75 m²&lt;/p&gt;
++   &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;margin-top:16px;&quot;&gt;
++         &lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:0 0 10px;&quot;&gt;
++           &lt;!--[if mso]&gt;&lt;v:roundrect xmlns:v=&quot;urn:schemas-microsoft-com:vml&quot; xmlns:w=&quot;urn:schemas-microsoft-com:office:word&quot; href=&quot;https://funda.nl/huur/amsterdam/appartement-123&quot; style=&quot;height:54px;v-text-anchor:middle;width:100%;&quot; arcsize=&quot;33%&quot; strokecolor=&quot;#d91a68&quot; fillcolor=&quot;#d91a68&quot;&gt;&lt;w:anchorlock/&gt;&lt;center style=&quot;color:#FFFFFF;font-family:Arial,sans-serif;font-size:16px;font-weight:600;&quot;&gt;Bekijk woning&lt;/center&gt;&lt;/v:roundrect&gt;&lt;![endif]--&gt;
++           &lt;!--[if !mso]&gt;&lt;!--&gt;
++           &lt;a href=&quot;https://funda.nl/huur/amsterdam/appartement-123&quot; target=&quot;_blank&quot; style=&quot;display:block;background-color:#d91a68;color:#FFFFFF !important;-webkit-text-fill-color:#FFFFFF;mso-line-height-rule:exactly;font-size:16px;font-weight:600;text-decoration:none;padding:17px 24px;border-radius:18px;text-align:center;mso-hide:all;-webkit-text-size-adjust:none;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;&lt;span style=&quot;color:#FFFFFF !important;-webkit-text-fill-color:#FFFFFF;&quot;&gt;Bekijk woning&lt;/span&gt;&lt;/a&gt;
++           &lt;!--&lt;![endif]--&gt;
++         &lt;/td&gt;&lt;/tr&gt;
++       &lt;/table&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++ &lt;/table&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- FOOTER --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:0 24px;&quot;&gt;&lt;div style=&quot;border-top:1px solid #E5E7EB;&quot;&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:20px 24px 32px;&quot;&gt;
++   &lt;p style=&quot;margin:0 0 4px;font-size:12px;color:#6B7280;line-height:1.6;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;
++     Je ontvangt deze e-mail omdat je een zoekprofiel hebt ingesteld bij HousAlert.
++   &lt;/p&gt;
++   &lt;a href=&quot;https://app.housalert.com/instellingen&quot; target=&quot;_blank&quot; style=&quot;font-size:12px;color:#d91a68;text-decoration:none;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Meldingen aanpassen&lt;/a&gt;
++   
++   &lt;p style=&quot;margin:16px 0 0;font-size:11px;color:#E5E7EB;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;
++     © 2026 HousAlert
++   &lt;/p&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;/table&gt;
++
++ &lt;/td&gt;&lt;/tr&gt;
++ &lt;/table&gt;
++ &lt;/body&gt;
++ &lt;/html&gt;
+
+ ❯ server/tests/email/email-templates.test.ts:335:20
+            </failure>
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; CTA link generation &gt; view link uses the original listing URL" time="0.00028492">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; CTA link generation &gt; no apply button when listing_id is missing" time="0.00030813">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; CTA link generation &gt; no view button when url is null" time="0.00184008">
+            <failure message="expected &apos;&lt;!DOCTYPE html&gt;\n&lt;html lang=&quot;nl&quot;&gt;\n&lt;h…&apos; not to contain &apos;Bekijk woning&apos;" type="AssertionError">
+AssertionError: expected &apos;&lt;!DOCTYPE html&gt;\n&lt;html lang=&quot;nl&quot;&gt;\n&lt;h…&apos; not to contain &apos;Bekijk woning&apos;
+
+- Expected
++ Received
+
+- Bekijk woning
++ &lt;!DOCTYPE html&gt;
++ &lt;html lang=&quot;nl&quot;&gt;
++ &lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1.0&quot;&gt;
++ &lt;title&gt;HousAlert&lt;/title&gt;
++ &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
++ &lt;!--[if mso]&gt;&lt;style&gt;table,td{font-family:Arial,sans-serif!important;}&lt;/style&gt;&lt;![endif]--&gt;
++ &lt;/head&gt;
++ &lt;body style=&quot;margin:0;padding:0;background-color:#FFFFFF;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;&quot;&gt;
++ &lt;div style=&quot;display:none;font-size:1px;color:#FFFFFF;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;&quot;&gt;Kamer beschikbaar — €500/mnd — Rotterdam&lt;/div&gt;
++ &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;background-color:#FFFFFF;&quot;&gt;
++ &lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:0;&quot;&gt;
++
++ &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;max-width:560px;&quot;&gt;
++
++ &lt;!-- HEADER --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:28px 24px 0;&quot;&gt;
++   &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot;&gt;
++   &lt;tr&gt;
++     &lt;td style=&quot;vertical-align:middle;width:36px;&quot;&gt;
++       &lt;img src=&quot;https://app.housalert.com/email-logo-v2.png&quot; alt=&quot;HousAlert&quot; width=&quot;32&quot; height=&quot;32&quot; style=&quot;display:block;width:32px;height:32px;border-radius:8px;&quot; /&gt;
++     &lt;/td&gt;
++     &lt;td style=&quot;vertical-align:middle;padding-left:10px;&quot;&gt;
++       &lt;a href=&quot;https://app.housalert.com&quot; target=&quot;_blank&quot; style=&quot;text-decoration:none;font-size:18px;font-weight:600;color:#111827;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;letter-spacing:-0.01em;&quot;&gt;housalert&lt;/a&gt;
++     &lt;/td&gt;
++     &lt;td align=&quot;right&quot; style=&quot;vertical-align:middle;&quot;&gt;
++       &lt;a href=&quot;https://app.housalert.com/instellingen&quot; target=&quot;_blank&quot; style=&quot;font-size:13px;color:#6B7280;text-decoration:none;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Instellingen&lt;/a&gt;
++     &lt;/td&gt;
++   &lt;/tr&gt;
++   &lt;/table&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- TAGLINE --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:4px 24px 20px 70px;&quot;&gt;
++   &lt;p style=&quot;margin:0;font-size:12px;color:#6B7280;letter-spacing:0.01em;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Huurkansen, direct in je inbox&lt;/p&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- DIVIDER --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:0 24px;&quot;&gt;&lt;div style=&quot;border-top:1px solid #E5E7EB;&quot;&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- CONTENT --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:28px 24px;&quot;&gt;
++   
++ &lt;p style=&quot;margin:0 0 6px;font-size:11px;font-weight:600;color:#d91a68;text-transform:uppercase;letter-spacing:0.06em;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Nieuwe match&lt;/p&gt;
++ &lt;p style=&quot;margin:0 0 20px;font-size:14px;color:#6B7280;line-height:1.6;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Er is een woning gevonden die bij jouw zoekprofiel past.&lt;/p&gt;
++ &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;background-color:#FFFFFF;border-radius:16px;overflow:hidden;margin:0 0 24px;border:1px solid #E5E7EB;&quot;&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:0;line-height:0;font-size:0;&quot;&gt;
++         &lt;a href=&quot;https://app.housalert.com/apply/lst-004&quot; target=&quot;_blank&quot; style=&quot;text-decoration:none;&quot;&gt;
++           &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;background-color:#F3F4F6;&quot;&gt;
++             &lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:48px 24px;&quot;&gt;
++               &lt;img src=&quot;https://app.housalert.com/email-logo-v2.png&quot; alt=&quot;HousAlert&quot; width=&quot;48&quot; height=&quot;48&quot; style=&quot;display:block;width:48px;height:48px;border-radius:10px;opacity:0.4;margin:0 auto 12px;&quot; /&gt;
++               &lt;p style=&quot;margin:0;font-size:13px;color:#9CA3AF;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;font-weight:500;&quot;&gt;Rotterdam&lt;/p&gt;
++             &lt;/td&gt;&lt;/tr&gt;
++           &lt;/table&gt;
++         &lt;/a&gt;
++       &lt;/td&gt;&lt;/tr&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:20px 20px 24px;&quot;&gt;
++   
++   &lt;h3 style=&quot;margin:0 0 8px;font-size:18px;font-weight:700;color:#111827;line-height:1.3;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Kamer beschikbaar&lt;/h3&gt;
++   &lt;p style=&quot;margin:0 0 8px;font-size:20px;font-weight:700;color:#111827;line-height:1.2;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;€500&lt;span style=&quot;font-size:13px;font-weight:400;color:#6B7280;margin-left:3px;&quot;&gt;/mnd&lt;/span&gt;&lt;/p&gt;
++   &lt;p style=&quot;margin:0 0 4px;font-size:13px;color:#6B7280;line-height:1.5;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Rotterdam&lt;span style=&quot;color:#E5E7EB;&quot;&gt; &amp;middot; &lt;/span&gt;1 kamer&lt;span style=&quot;color:#E5E7EB;&quot;&gt; &amp;middot; &lt;/span&gt;12 m²&lt;/p&gt;
++   &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;margin-top:16px;&quot;&gt;
++         &lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:0 0 10px;&quot;&gt;
++           &lt;!--[if mso]&gt;&lt;v:roundrect xmlns:v=&quot;urn:schemas-microsoft-com:vml&quot; xmlns:w=&quot;urn:schemas-microsoft-com:office:word&quot; href=&quot;https://app.housalert.com/apply/lst-004&quot; style=&quot;height:54px;v-text-anchor:middle;width:100%;&quot; arcsize=&quot;33%&quot; strokecolor=&quot;#d91a68&quot; fillcolor=&quot;#d91a68&quot;&gt;&lt;w:anchorlock/&gt;&lt;center style=&quot;color:#FFFFFF;font-family:Arial,sans-serif;font-size:16px;font-weight:600;&quot;&gt;Bekijk woning&lt;/center&gt;&lt;/v:roundrect&gt;&lt;![endif]--&gt;
++           &lt;!--[if !mso]&gt;&lt;!--&gt;
++           &lt;a href=&quot;https://app.housalert.com/apply/lst-004&quot; target=&quot;_blank&quot; style=&quot;display:block;background-color:#d91a68;color:#FFFFFF !important;-webkit-text-fill-color:#FFFFFF;mso-line-height-rule:exactly;font-size:16px;font-weight:600;text-decoration:none;padding:17px 24px;border-radius:18px;text-align:center;mso-hide:all;-webkit-text-size-adjust:none;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;&lt;span style=&quot;color:#FFFFFF !important;-webkit-text-fill-color:#FFFFFF;&quot;&gt;Bekijk woning&lt;/span&gt;&lt;/a&gt;
++           &lt;!--&lt;![endif]--&gt;
++         &lt;/td&gt;&lt;/tr&gt;
++       &lt;/table&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++ &lt;/table&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- FOOTER --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:0 24px;&quot;&gt;&lt;div style=&quot;border-top:1px solid #E5E7EB;&quot;&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:20px 24px 32px;&quot;&gt;
++   &lt;p style=&quot;margin:0 0 4px;font-size:12px;color:#6B7280;line-height:1.6;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;
++     Je ontvangt deze e-mail omdat je een zoekprofiel hebt ingesteld bij HousAlert.
++   &lt;/p&gt;
++   &lt;a href=&quot;https://app.housalert.com/instellingen&quot; target=&quot;_blank&quot; style=&quot;font-size:12px;color:#d91a68;text-decoration:none;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Meldingen aanpassen&lt;/a&gt;
++   
++   &lt;p style=&quot;margin:16px 0 0;font-size:11px;color:#E5E7EB;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;
++     © 2026 HousAlert
++   &lt;/p&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;/table&gt;
++
++ &lt;/td&gt;&lt;/tr&gt;
++ &lt;/table&gt;
++ &lt;/body&gt;
++ &lt;/html&gt;
+
+ ❯ server/tests/email/email-templates.test.ts:354:24
+            </failure>
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; CTA link generation &gt; rejects javascript: protocol URLs" time="0.00037428">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Batch HTML rendering &gt; renders count badge with correct number" time="0.00038069">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Batch HTML rendering &gt; renders intro text with plural-aware Dutch" time="0.00044379">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Batch HTML rendering &gt; renders multiple listing cards" time="0.00042144">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Batch HTML rendering &gt; renders image only for listing with image_url" time="0.00191763">
+            <failure message="expected 3 to be 1 // Object.is equality" type="AssertionError">
+AssertionError: expected 3 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 3
+
+ ❯ server/tests/email/email-templates.test.ts:392:34
+            </failure>
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Digest numbering (Woning N) &gt; batch cards have Woning 1, Woning 2, Woning 3" time="0.00041303">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Digest numbering (Woning N) &gt; single-match card does NOT have Woning numbering" time="0.00030394">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Plain text fallback generation &gt; single: contains title, city, price, rooms, size, and sign-off" time="0.00040571">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Plain text fallback generation &gt; single: contains listing URL when available" time="0.00024272">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Plain text fallback generation &gt; single: omits URL line when url is null" time="0.00053121">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Plain text fallback generation &gt; single: omits price line when price is 0" time="0.0002483">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Plain text fallback generation &gt; batch: contains numbered listings" time="0.0004906">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Plain text fallback generation &gt; batch: omits price prefix when price is 0" time="0.00052209">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; HTML escaping and XSS prevention &gt; escapes HTML special chars in listing title" time="0.00032525">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; HTML escaping and XSS prevention &gt; escapes HTML special chars in city name" time="0.00037686">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Resend API call shape &gt; sends from, to, subject, text, and html fields" time="0.00100543">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Logging behavior &gt; logs [EMAIL OK] on success" time="0.00100482">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Logging behavior &gt; logs [EMAIL FAIL] on Resend error response" time="0.00047713">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Logging behavior &gt; logs [EMAIL ERROR] on exception" time="0.00080589">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Email Template Unit Tests &gt; Logging behavior &gt; logs batch OK with count" time="0.00048089">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Pipeline Compatibility Verification &gt; sendMatchAlert has arity 2 (userEmail, listing)" time="0.0001806">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Pipeline Compatibility Verification &gt; sendBatchMatchAlert has arity 2 (userEmail, listings[])" time="0.00014367">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Pipeline Compatibility Verification &gt; sendBatchMatchAlert accepts BufferedMatch-shaped objects (superset of ListingInfo)" time="0.0004656">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Dry-Run: Full Email Render Simulation &gt; Step 1: Renders a complete single-match email with all elements" time="0.00161196">
+            <failure message="expected &apos;&lt;!DOCTYPE html&gt;\n&lt;html lang=&quot;nl&quot;&gt;\n&lt;h…&apos; to contain &apos;/apply/lst-001&apos;" type="AssertionError">
+AssertionError: expected &apos;&lt;!DOCTYPE html&gt;\n&lt;html lang=&quot;nl&quot;&gt;\n&lt;h…&apos; to contain &apos;/apply/lst-001&apos;
+
+- Expected
++ Received
+
+- /apply/lst-001
++ &lt;!DOCTYPE html&gt;
++ &lt;html lang=&quot;nl&quot;&gt;
++ &lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1.0&quot;&gt;
++ &lt;title&gt;HousAlert&lt;/title&gt;
++ &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
++ &lt;!--[if mso]&gt;&lt;style&gt;table,td{font-family:Arial,sans-serif!important;}&lt;/style&gt;&lt;![endif]--&gt;
++ &lt;/head&gt;
++ &lt;body style=&quot;margin:0;padding:0;background-color:#FFFFFF;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;&quot;&gt;
++ &lt;div style=&quot;display:none;font-size:1px;color:#FFFFFF;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;&quot;&gt;Ruim 3-kamer appartement in centrum — €1.850/mnd — Amsterdam&lt;/div&gt;
++ &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;background-color:#FFFFFF;&quot;&gt;
++ &lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:0;&quot;&gt;
++
++ &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;max-width:560px;&quot;&gt;
++
++ &lt;!-- HEADER --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:28px 24px 0;&quot;&gt;
++   &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot;&gt;
++   &lt;tr&gt;
++     &lt;td style=&quot;vertical-align:middle;width:36px;&quot;&gt;
++       &lt;img src=&quot;https://app.housalert.com/email-logo-v2.png&quot; alt=&quot;HousAlert&quot; width=&quot;32&quot; height=&quot;32&quot; style=&quot;display:block;width:32px;height:32px;border-radius:8px;&quot; /&gt;
++     &lt;/td&gt;
++     &lt;td style=&quot;vertical-align:middle;padding-left:10px;&quot;&gt;
++       &lt;a href=&quot;https://app.housalert.com&quot; target=&quot;_blank&quot; style=&quot;text-decoration:none;font-size:18px;font-weight:600;color:#111827;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;letter-spacing:-0.01em;&quot;&gt;housalert&lt;/a&gt;
++     &lt;/td&gt;
++     &lt;td align=&quot;right&quot; style=&quot;vertical-align:middle;&quot;&gt;
++       &lt;a href=&quot;https://app.housalert.com/instellingen&quot; target=&quot;_blank&quot; style=&quot;font-size:13px;color:#6B7280;text-decoration:none;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Instellingen&lt;/a&gt;
++     &lt;/td&gt;
++   &lt;/tr&gt;
++   &lt;/table&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- TAGLINE --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:4px 24px 20px 70px;&quot;&gt;
++   &lt;p style=&quot;margin:0;font-size:12px;color:#6B7280;letter-spacing:0.01em;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Huurkansen, direct in je inbox&lt;/p&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- DIVIDER --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:0 24px;&quot;&gt;&lt;div style=&quot;border-top:1px solid #E5E7EB;&quot;&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- CONTENT --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:28px 24px;&quot;&gt;
++   
++ &lt;p style=&quot;margin:0 0 6px;font-size:11px;font-weight:600;color:#d91a68;text-transform:uppercase;letter-spacing:0.06em;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Nieuwe match&lt;/p&gt;
++ &lt;p style=&quot;margin:0 0 20px;font-size:14px;color:#6B7280;line-height:1.6;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Er is een woning gevonden die bij jouw zoekprofiel past.&lt;/p&gt;
++ &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;background-color:#FFFFFF;border-radius:16px;overflow:hidden;margin:0 0 24px;border:1px solid #E5E7EB;&quot;&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:0;line-height:0;font-size:0;&quot;&gt;
++         &lt;a href=&quot;https://funda.nl/huur/amsterdam/appartement-123&quot; target=&quot;_blank&quot; style=&quot;text-decoration:none;&quot;&gt;
++           &lt;img src=&quot;https://images.funda.nl/photo-abc.jpg&quot; alt=&quot;Ruim 3-kamer appartement in centrum&quot; width=&quot;100%&quot; style=&quot;display:block;width:100%;height:auto;max-height:220px;object-fit:cover;&quot; /&gt;
++         &lt;/a&gt;
++       &lt;/td&gt;&lt;/tr&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:20px 20px 24px;&quot;&gt;
++   
++   &lt;h3 style=&quot;margin:0 0 8px;font-size:18px;font-weight:700;color:#111827;line-height:1.3;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Ruim 3-kamer appartement in centrum&lt;/h3&gt;
++   &lt;p style=&quot;margin:0 0 8px;font-size:20px;font-weight:700;color:#111827;line-height:1.2;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;€1.850&lt;span style=&quot;font-size:13px;font-weight:400;color:#6B7280;margin-left:3px;&quot;&gt;/mnd&lt;/span&gt;&lt;/p&gt;
++   &lt;p style=&quot;margin:0 0 4px;font-size:13px;color:#6B7280;line-height:1.5;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Amsterdam&lt;span style=&quot;color:#E5E7EB;&quot;&gt; &amp;middot; &lt;/span&gt;3 kamers&lt;span style=&quot;color:#E5E7EB;&quot;&gt; &amp;middot; &lt;/span&gt;75 m²&lt;/p&gt;
++   &lt;table role=&quot;presentation&quot; width=&quot;100%&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; border=&quot;0&quot; style=&quot;margin-top:16px;&quot;&gt;
++         &lt;tr&gt;&lt;td align=&quot;center&quot; style=&quot;padding:0 0 10px;&quot;&gt;
++           &lt;!--[if mso]&gt;&lt;v:roundrect xmlns:v=&quot;urn:schemas-microsoft-com:vml&quot; xmlns:w=&quot;urn:schemas-microsoft-com:office:word&quot; href=&quot;https://funda.nl/huur/amsterdam/appartement-123&quot; style=&quot;height:54px;v-text-anchor:middle;width:100%;&quot; arcsize=&quot;33%&quot; strokecolor=&quot;#d91a68&quot; fillcolor=&quot;#d91a68&quot;&gt;&lt;w:anchorlock/&gt;&lt;center style=&quot;color:#FFFFFF;font-family:Arial,sans-serif;font-size:16px;font-weight:600;&quot;&gt;Bekijk woning&lt;/center&gt;&lt;/v:roundrect&gt;&lt;![endif]--&gt;
++           &lt;!--[if !mso]&gt;&lt;!--&gt;
++           &lt;a href=&quot;https://funda.nl/huur/amsterdam/appartement-123&quot; target=&quot;_blank&quot; style=&quot;display:block;background-color:#d91a68;color:#FFFFFF !important;-webkit-text-fill-color:#FFFFFF;mso-line-height-rule:exactly;font-size:16px;font-weight:600;text-decoration:none;padding:17px 24px;border-radius:18px;text-align:center;mso-hide:all;-webkit-text-size-adjust:none;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;&lt;span style=&quot;color:#FFFFFF !important;-webkit-text-fill-color:#FFFFFF;&quot;&gt;Bekijk woning&lt;/span&gt;&lt;/a&gt;
++           &lt;!--&lt;![endif]--&gt;
++         &lt;/td&gt;&lt;/tr&gt;
++       &lt;/table&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++ &lt;/table&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;!-- FOOTER --&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:0 24px;&quot;&gt;&lt;div style=&quot;border-top:1px solid #E5E7EB;&quot;&gt;&lt;/div&gt;&lt;/td&gt;&lt;/tr&gt;
++ &lt;tr&gt;&lt;td style=&quot;padding:20px 24px 32px;&quot;&gt;
++   &lt;p style=&quot;margin:0 0 4px;font-size:12px;color:#6B7280;line-height:1.6;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;
++     Je ontvangt deze e-mail omdat je een zoekprofiel hebt ingesteld bij HousAlert.
++   &lt;/p&gt;
++   &lt;a href=&quot;https://app.housalert.com/instellingen&quot; target=&quot;_blank&quot; style=&quot;font-size:12px;color:#d91a68;text-decoration:none;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;Meldingen aanpassen&lt;/a&gt;
++   
++   &lt;p style=&quot;margin:16px 0 0;font-size:11px;color:#E5E7EB;font-family:Poppins, -apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, Roboto, &apos;Helvetica Neue&apos;, Arial, sans-serif;&quot;&gt;
++     © 2026 HousAlert
++   &lt;/p&gt;
++ &lt;/td&gt;&lt;/tr&gt;
++
++ &lt;/table&gt;
++
++ &lt;/td&gt;&lt;/tr&gt;
++ &lt;/table&gt;
++ &lt;/body&gt;
++ &lt;/html&gt;
+
+ ❯ server/tests/email/email-templates.test.ts:558:18
+            </failure>
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Dry-Run: Full Email Render Simulation &gt; Step 2: Renders a complete batch email with 3 listings, numbered" time="0.00090614">
+            <failure message="expected 4 to be 1 // Object.is equality" type="AssertionError">
+AssertionError: expected 4 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 4
+
+ ❯ server/tests/email/email-templates.test.ts:586:32
+            </failure>
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Dry-Run: Full Email Render Simulation &gt; Step 3: Duplicate send — email.ts sends both (dedup is in buffer.ts, not here)" time="0.00035749">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Dry-Run: Full Email Render Simulation &gt; Step 4: All href links are well-formed HTTPS or # URLs" time="0.00068634">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Duplicate Prevention Architecture Verification &gt; email.ts does NOT implement dedup — sends on every call (correct by design)" time="0.00050724">
+        </testcase>
+        <testcase classname="server/tests/email/email-templates.test.ts" name="Duplicate Prevention Architecture Verification &gt; documents: dedup is in buffer.ts (seenListingIds Set) + user_matches.markEmailSent (DB flag)" time="0.00012441">
+        </testcase>
+    </testsuite>
+</testsuites>
