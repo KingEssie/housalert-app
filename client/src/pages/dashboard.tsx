@@ -223,9 +223,9 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           <p className="text-[15px] font-semibold text-[#111111]">{t("searchProfiles.sectionTitle")}</p>
         </div>
         <div className="flex flex-col items-center text-center py-6 px-2">
-          <MapPin className="w-[22px] h-[22px] text-[#111111] mb-4" />
-          <p className="text-[15px] font-semibold text-[#111111] mb-1" data-testid="text-empty-title">{t("searchProfiles.emptyTitle")}</p>
-          <p className="text-[13px] text-[#6B7280] mb-5 leading-relaxed max-w-[260px]" data-testid="text-empty-subtitle">{t("searchProfiles.emptySubtitle")}</p>
+          <img src={EMPTY_STATE_IMAGES.createSearch} alt="" className="w-[180px] h-auto mb-6" draggable={false} />
+          <p className="text-[15px] font-bold text-[#000000] mb-1" data-testid="text-empty-title">Maak je eerste zoekprofiel aan</p>
+          <p className="text-[13px] text-[#6B7280] mb-5 leading-relaxed max-w-[260px]" data-testid="text-empty-subtitle">Stel je voorkeuren in en ontvang direct nieuwe woningen.</p>
           <button
             onClick={() => navigate("/dashboard/searches/new")}
             className="w-full h-[48px] rounded-full bg-ha-primary text-white font-semibold text-[15px] hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
@@ -807,9 +807,9 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
         </div>
       ) : (
         <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-7 flex flex-col items-center text-center" data-testid="card-zoekopdrachten-empty">
-          <MapPin className="w-[24px] h-[24px] text-[#111111] mb-5" />
-          <p className="text-[18px] font-semibold text-[#111111] mb-2">{t("searchProfiles.emptyTitle")}</p>
-          <p className="text-[15px] text-[#6B7280] mb-6 leading-relaxed max-w-[280px]">{t("searchProfiles.emptySubtitle")}</p>
+          <img src={EMPTY_STATE_IMAGES.createSearch} alt="" className="w-[200px] h-auto mb-6" draggable={false} />
+          <p className="text-[20px] font-bold text-[#000000] mb-2">Maak je eerste zoekprofiel aan</p>
+          <p className="text-[15px] text-[#6B7280] mb-6 leading-relaxed max-w-[280px]">Stel je voorkeuren in en ontvang direct nieuwe woningen.</p>
           <button
             onClick={() => navigate("/dashboard/searches/new")}
             className="h-[48px] px-8 rounded-[12px] bg-ha-primary text-white text-[15px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
@@ -1183,9 +1183,9 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
           </div>
         ) : favoriteListings.length === 0 ? (
           <EmptyState
-            illustration={EMPTY_STATE_IMAGES.noFilters}
-            title={t("matches.emptyFavorites.title")}
-            description={t("matches.emptyFavorites.desc")}
+            illustration={EMPTY_STATE_IMAGES.noFavorites}
+            title="Nog geen favorieten"
+            description="Sla interessante woningen op om ze later terug te vinden."
             testId="empty-favorieten-tab"
           />
         ) : (
@@ -1482,8 +1482,8 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
             ) : matches.length === 0 ? (
               <EmptyState
                 illustration={EMPTY_STATE_IMAGES.noMatches}
-                title={t("matches.emptyNew.title")}
-                description={t("matches.emptyNew.desc")}
+                title="Nog geen matches"
+                description="We zijn voor je aan het zoeken. Nieuwe woningen verschijnen hier."
                 ctaLabel={t("matches.adjustFilters")}
                 onCtaClick={() => setActiveTab("zoek")}
                 testId="empty-matches"
@@ -1514,8 +1514,8 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
             {appliedListings.length === 0 ? (
               <EmptyState
                 illustration={EMPTY_STATE_IMAGES.noApplications}
-                title={t("matches.emptyApplied.title")}
-                description={t("matches.emptyApplied.desc")}
+                title="Nog niet gereageerd"
+                description="Reageer op woningen om je kansen te vergroten."
                 testId="empty-gereageerd-tab"
               />
             ) : (

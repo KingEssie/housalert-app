@@ -1,13 +1,13 @@
-import noMatchesImg from "@assets/7C66CAE0-9FEC-4D54-BEC9-F057AC871640_1772873830485.png";
-import noSavedImg from "@assets/CA6F3392-145F-4FE0-B07C-8EB23BCB72F4_1772873830485.png";
-import noApplicationsImg from "@assets/FB1DBCD2-ED1C-43B9-B2B6-37609353C92A_1772873830485.png";
-import noFiltersImg from "@assets/68671DBF-0C5D-446A-80D3-DAAD6B9A93BB_1772873830485.png";
+import laptopImg from "@assets/laptop_1775723516771.png";
+import emailImg from "@assets/email_1775723524624.png";
+import searchImg from "@assets/search_1775723541638.png";
+import loveImg from "@assets/love_1775723501992.png";
 
 export const EMPTY_STATE_IMAGES = {
-  noMatches: noMatchesImg,
-  noSaved: noSavedImg,
-  noApplications: noApplicationsImg,
-  noFilters: noFiltersImg,
+  createSearch: laptopImg,
+  noMatches: searchImg,
+  noApplications: emailImg,
+  noFavorites: loveImg,
 } as const;
 
 interface EmptyStateProps {
@@ -21,14 +21,14 @@ interface EmptyStateProps {
 
 export function EmptyState({ illustration, title, description, ctaLabel, onCtaClick, testId }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center text-center pt-16 pb-6" data-testid={testId}>
+    <div className="flex flex-col items-center justify-center text-center py-16 px-6" data-testid={testId}>
       <img
         src={illustration}
         alt=""
-        className="w-[220px] h-auto mb-8"
+        className="w-[200px] h-auto mb-8"
         draggable={false}
       />
-      <h2 className="text-[20px] font-semibold text-[#111111] leading-snug mb-2.5" data-testid="text-empty-title">
+      <h2 className="text-[20px] font-bold text-[#000000] leading-snug mb-2" data-testid="text-empty-title">
         {title}
       </h2>
       <p className="text-[15px] text-[#6B7280] leading-relaxed max-w-[280px] mb-8" data-testid="text-empty-description">
