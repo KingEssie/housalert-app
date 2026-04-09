@@ -1,0 +1,123 @@
+We found 3 important product bugs during end-to-end testing. Fix all 3 properly.
+
+IMPORTANT:
+Do not patch symptoms only.
+Investigate root cause and fix the underlying flow/state logic.
+
+==================================================
+1. "AFRONDEN" TOGGLE DOES NOT WORK IN
+"VERGROOT JE KANSEN MET DEZE TIPS"
+==================================================
+
+PROBLEM:
+Tapping the "Afronden" toggle does not actually complete the step.
+
+EXPECTED BEHAVIOR:
+- tapping "Afronden" immediately marks the current tip step as completed
+- completion is persisted
+- progress updates immediately
+- the completion remains visible after refresh / navigation
+- home screen flow card also reflects the updated completion state
+
+INVESTIGATE:
+- whether the toggle only changes local UI state
+- whether the completion API is called
+- whether the correct stepId is sent
+- whether the completion source of truth differs from the UI state
+
+FIX:
+- connect the toggle to the real completion persistence
+- ensure optimistic UI + confirmed persistence
+- refresh or invalidate the relevant progress queries
+
+RETURN:
+- root cause
+- what was fixed
+- where completion is now persisted
+
+==================================================
+2. AFTER STRIPE PAYMENT DURING ONBOARDING,
+USER GOES TO HOME INSTEAD OF ACCOUNT COMPLETION FLOW
+==================================================
+
+PROBLEM:
+After successful Stripe payment during onboarding, the user is redirected directly to the home screen.
+This is wrong.
+
+EXPECTED FLOW:
+signup / onboarding
+-> Stripe checkout
+-> return to app
+-> continue into the "Rond je account af" flow
+-> only after that go to home
+
+INVESTIGATE:
+- Stripe success_url / return_url
+- post-checkout redirect logic
+- onboarding state flags
+- whether the app always redirects paid users to home by default
+
+FIX:
+- preserve onboarding context through Stripe checkout
+- after successful payment, route user to the correct next onboarding/account-completion step
+- do not drop user into home immediately
+
+RETURN:
+- current incorrect redirect path
+- corrected redirect path
+- how onboarding context is now preserved
+
+==================================================
+3. NEW ACCOUNT / SECOND SEARCH PROFILE GETS OLD MATCHES
+FROM DAYS OR A WEEK AGO
+==================================================
+
+PROBLEM:
+After creating a new account or a second search profile, the user immediately receives/gets shown matches from old listings (including listings from a week ago).
+This should not happen.
+
+EXPECTED BEHAVIOR:
+- a new search profile should only start matching from the moment it becomes active
+- no historical backlog should appear
+- old listings should not suddenly count as new matches
+
+INVESTIGATE:
+- matching query logic
+- whether listing.created_at is filtered against search_profile.created_at or activation timestamp
+- whether recovery/buffer pipelines include old listings
+- whether new profiles are missing a "matching_start_at" / "resume_after" timestamp
+- whether old candidate matches are backfilled unintentionally
+
+FIX:
+- introduce a strict start timestamp for every new search profile
+- only allow matches where listing.created_at >= profile.matching_start_at
+- ensure both match feed and alerts follow the same rule
+- ensure second/new profiles also respect this and do not inherit old listings
+
+RETURN:
+- root cause
+- the timestamp field used
+- where the filter is applied
+- confirmation that old listings can no longer appear for new profiles
+
+==================================================
+GENERAL REQUIREMENTS
+==================================================
+
+- Do not break existing flows
+- Keep user experience smooth
+- Use the same source of truth across UI, feed, and notifications
+- If query invalidation/cache is involved, fix that too
+
+==================================================
+OUTPUT
+==================================================
+
+After finishing, return:
+
+1. Root cause for bug #1
+2. Root cause for bug #2
+3. Root cause for bug #3
+4. Which files were changed
+5. Confirmation of the new correct onboarding-after-payment flow
+6. Confirmation that new search profiles no longer receive old matches
