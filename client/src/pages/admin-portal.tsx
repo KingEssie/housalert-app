@@ -1702,17 +1702,8 @@ export default function AdminPortalPage() {
   }
 
   if (accessDenied) {
-    return (
-      <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center px-5">
-        <div className="text-center max-w-sm">
-          <div className="w-14 h-14 rounded-2xl bg-ha-danger/5 flex items-center justify-center mx-auto mb-4">
-            <AlertTriangle className="w-7 h-7 text-ha-danger" />
-          </div>
-          <h1 className="text-[20px] font-bold text-[#111] mb-2">Access Denied</h1>
-          <p className="text-[13px] text-[#334855]">Your account does not have admin access.</p>
-        </div>
-      </div>
-    );
+    navigate("/");
+    return null;
   }
 
   return (
@@ -1749,12 +1740,12 @@ export default function AdminPortalPage() {
 
         <div className="px-3 py-3 border-t border-[#F0F0F0]">
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/")}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-[#334855] hover:bg-[#FAFAFA] hover:text-[#111] transition-colors"
             data-testid="link-back-app"
           >
             <ArrowLeft className="w-[18px] h-[18px]" />
-            Back to app
+            Terug naar app
           </button>
         </div>
       </aside>
@@ -1766,6 +1757,14 @@ export default function AdminPortalPage() {
           </button>
           <HousAlertLogo size={24} />
           <span className="text-[14px] font-bold text-[#111] ml-2">Admin</span>
+          <button
+            onClick={() => navigate("/")}
+            className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold text-[#334855] bg-[#F7F7F7] hover:bg-[#F0F0F0] active:scale-[0.97] transition-all"
+            data-testid="link-back-app-mobile"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            Terug naar app
+          </button>
         </header>
 
         <main className="flex-1 p-5 lg:p-8 max-w-5xl w-full mx-auto overflow-x-hidden">
