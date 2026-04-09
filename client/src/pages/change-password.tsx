@@ -90,7 +90,7 @@ export default function ChangePasswordPage() {
             <h2 className="text-[20px] font-semibold text-[#111111] mb-2" data-testid="text-success-title">
               {t("changePassword.successTitle")}
             </h2>
-            <p className="text-[15px] text-[#6B7280] mb-6">
+            <p className="text-[15px] text-[#334855] mb-6">
               {t("changePassword.successDesc")}
             </p>
             <button

@@ -225,7 +225,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
         <div className="flex flex-col items-center text-center py-6 px-2">
           <img src={EMPTY_STATE_IMAGES.createSearch} alt="" className="w-[180px] h-auto mb-6" draggable={false} />
           <p className="text-[15px] font-bold text-[#000000] mb-1" data-testid="text-empty-title">Maak je eerste zoekprofiel aan</p>
-          <p className="text-[13px] text-[#6B7280] mb-5 leading-relaxed max-w-[260px]" data-testid="text-empty-subtitle">Stel je voorkeuren in en ontvang direct nieuwe woningen.</p>
+          <p className="text-[13px] text-[#334855] mb-5 leading-relaxed max-w-[260px]" data-testid="text-empty-subtitle">Stel je voorkeuren in en ontvang direct nieuwe woningen.</p>
           <button
             onClick={() => navigate("/dashboard/searches/new")}
             className="w-full h-[48px] rounded-full bg-ha-primary text-white font-semibold text-[15px] hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
@@ -263,7 +263,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
                       <p className="text-[14px] font-semibold text-[#111111]" data-testid={`text-profile-title-${p.id}`}>
                         {getProfileTitle(p, t, locale)}
                       </p>
-                      <p className="text-[12px] text-[#6B7280] mt-0.5" data-testid={`text-profile-summary-${p.id}`}>
+                      <p className="text-[12px] text-[#334855] mt-0.5" data-testid={`text-profile-summary-${p.id}`}>
                         {getProfilePriceLine(p, t)}
                       </p>
                       {locationLine && (
@@ -280,7 +280,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
                     <button
                       onClick={(e) => e.stopPropagation()}
                       onPointerDown={(e) => e.stopPropagation()}
-                      className="w-9 h-9 rounded-full flex items-center justify-center text-[#6B7280] hover:bg-ha-surface-hover transition-colors flex-shrink-0"
+                      className="w-9 h-9 rounded-full flex items-center justify-center text-[#334855] hover:bg-ha-surface-hover transition-colors flex-shrink-0"
                       data-testid={`button-menu-${p.id}`}
                     >
                       <MoreVertical className="w-[18px] h-[18px]" />
@@ -292,7 +292,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
                       className="flex items-center gap-2.5 cursor-pointer"
                       data-testid={`menu-edit-${p.id}`}
                     >
-                      <Pencil className="w-4 h-4 text-[#6B7280]" />
+                      <Pencil className="w-4 h-4 text-[#334855]" />
                       {t("common.edit")}
                     </DropdownMenuItem>
                     <DropdownMenuItem
@@ -388,15 +388,15 @@ function NotificationsInline({ accessToken }: { accessToken: string | undefined 
     }
   }
 
-  if (!settings) return <div className="flex justify-center py-3"><Loader2 className="w-5 h-5 animate-spin text-[#9CA3AF]" /></div>;
+  if (!settings) return <div className="flex justify-center py-3"><Loader2 className="w-5 h-5 animate-spin text-[#334855]" /></div>;
 
   return (
     <div className="flex flex-col gap-2" data-testid="inline-notif-toggles">
       <div className="flex items-center gap-3 bg-white rounded-[12px] px-4 py-3 border border-[#F0F0F0]">
-        <Bell className="w-[18px] h-[18px] text-[#6B7280] flex-shrink-0" />
+        <Bell className="w-[18px] h-[18px] text-[#334855] flex-shrink-0" />
         <div className="flex-1 min-w-0">
           <p className="text-[14px] font-medium text-[#111111]">{t("taskFlow.notif.pushLabel")}</p>
-          <p className="text-[12px] text-[#9CA3AF]">{t("taskFlow.notif.pushDesc")}</p>
+          <p className="text-[12px] text-[#334855]">{t("taskFlow.notif.pushDesc")}</p>
         </div>
         <button
           onClick={() => toggle("push_enabled")}
@@ -408,10 +408,10 @@ function NotificationsInline({ accessToken }: { accessToken: string | undefined 
         </button>
       </div>
       <div className="flex items-center gap-3 bg-white rounded-[12px] px-4 py-3 border border-[#F0F0F0]">
-        <Mail className="w-[18px] h-[18px] text-[#6B7280] flex-shrink-0" />
+        <Mail className="w-[18px] h-[18px] text-[#334855] flex-shrink-0" />
         <div className="flex-1 min-w-0">
           <p className="text-[14px] font-medium text-[#111111]">{t("taskFlow.notif.emailLabel")}</p>
-          <p className="text-[12px] text-[#9CA3AF]">{t("taskFlow.notif.emailDesc")}</p>
+          <p className="text-[12px] text-[#334855]">{t("taskFlow.notif.emailDesc")}</p>
         </div>
         <button
           onClick={() => toggle("email_enabled")}
@@ -469,19 +469,19 @@ function BuddyInline({ accessToken }: { accessToken: string | undefined }) {
 
   return (
     <div className="flex flex-col gap-2.5" data-testid="inline-buddy">
-      <p className="text-[13px] text-[#6B7280] leading-relaxed">{t("taskFlow.desc.searchBuddy")}</p>
+      <p className="text-[13px] text-[#334855] leading-relaxed">{t("taskFlow.desc.searchBuddy")}</p>
       <div className="relative">
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("profileEdit.searchBuddyPlaceholder")}
-          className="w-full h-[46px] rounded-[12px] border border-[#E5E7EB] bg-white px-4 text-[14px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/30 focus:border-ha-primary transition-all pr-10"
+          className="w-full h-[46px] rounded-[12px] border border-[#E5E7EB] bg-white px-4 text-[14px] text-[#111111] placeholder:text-[#334855] focus:outline-none focus:ring-2 focus:ring-ha-primary/30 focus:border-ha-primary transition-all pr-10"
           data-testid="inline-buddy-email"
         />
         {email && (
           <button onClick={() => setEmail("")} className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#F3F4F6] flex items-center justify-center" data-testid="inline-buddy-clear">
-            <X className="w-3 h-3 text-[#6B7280]" />
+            <X className="w-3 h-3 text-[#334855]" />
           </button>
         )}
       </div>
@@ -587,18 +587,18 @@ function LetterModal({ accessToken, open, onClose }: { accessToken: string | und
         <div className="flex items-center justify-between px-5 pt-5 pb-3">
           <h2 className="text-[18px] font-bold text-[#111111]" data-testid="modal-letter-title">{t("taskFlow.applicationLetter")}</h2>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-90" data-testid="modal-letter-close">
-            <X className="w-4 h-4 text-[#6B7280]" />
+            <X className="w-4 h-4 text-[#334855]" />
           </button>
         </div>
         <div className="flex-1 overflow-y-auto px-5 pb-5">
           {!loaded ? (
-            <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF]" /></div>
+            <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-[#334855]" /></div>
           ) : (
             <>
-              <p className="text-[13px] text-[#6B7280] mb-3 leading-relaxed">{t("applicationLetter.helperText")}</p>
+              <p className="text-[13px] text-[#334855] mb-3 leading-relaxed">{t("applicationLetter.helperText")}</p>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[12px] font-semibold text-[#9CA3AF] uppercase tracking-wide">{t("applicationLetter.letterLabel")}</span>
-                <button onClick={handleRegenerate} className="flex items-center gap-1 text-[13px] text-[#6B7280] active:text-[#111111]" data-testid="modal-letter-reset">
+                <span className="text-[12px] font-semibold text-[#334855] uppercase tracking-wide">{t("applicationLetter.letterLabel")}</span>
+                <button onClick={handleRegenerate} className="flex items-center gap-1 text-[13px] text-[#334855] active:text-[#111111]" data-testid="modal-letter-reset">
                   <RotateCcw className="w-3.5 h-3.5" />
                   {t("applicationLetter.resetDefault")}
                 </button>
@@ -611,7 +611,7 @@ function LetterModal({ accessToken, open, onClose }: { accessToken: string | und
                 data-testid="modal-letter-textarea"
               />
               {template.length > 0 && template.trim().length < 20 && (
-                <p className="text-[12px] text-[#9CA3AF] mt-1">{t("applicationLetter.minChars")}</p>
+                <p className="text-[12px] text-[#334855] mt-1">{t("applicationLetter.minChars")}</p>
               )}
             </>
           )}
@@ -744,7 +744,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
       <h2 className="text-[18px] font-semibold text-[#111111] mb-1.5" data-testid="text-zoekopdrachten-title">
         {t("home.zoekopdrachtenTitle")}
       </h2>
-      <p className="text-[15px] text-[#6B7280] mb-4" data-testid="text-filters-expected">
+      <p className="text-[15px] text-[#334855] mb-4" data-testid="text-filters-expected">
         {estimatedCount
           ? t("home.filtersExpected", { count: estimatedCount })
           : t("home.filtersExpectedFallback")}
@@ -766,9 +766,9 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
                 <div className="w-2 h-2 rounded-full bg-ha-success flex-shrink-0 mr-3.5" />
                 <div className="flex-1 min-w-0">
                   <p className="text-[15px] font-semibold text-[#111111] truncate">{title}</p>
-                  <p className="text-[14px] text-[#6B7280] mt-0.5 truncate">{priceLine}</p>
+                  <p className="text-[14px] text-[#334855] mt-0.5 truncate">{priceLine}</p>
                   {locationLine && (
-                    <p className="text-[14px] text-[#6B7280] mt-0.5 truncate">{locationLine}</p>
+                    <p className="text-[14px] text-[#334855] mt-0.5 truncate">{locationLine}</p>
                   )}
                 </div>
                 <DropdownMenu>
@@ -776,7 +776,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
                     <button
                       onClick={(e) => e.stopPropagation()}
                       onPointerDown={(e) => e.stopPropagation()}
-                      className="w-9 h-9 rounded-full flex items-center justify-center text-[#6B7280] hover:bg-[#F3F4F6] active:bg-[#E5E7EB] transition-colors flex-shrink-0 ml-2"
+                      className="w-9 h-9 rounded-full flex items-center justify-center text-[#334855] hover:bg-[#F3F4F6] active:bg-[#E5E7EB] transition-colors flex-shrink-0 ml-2"
                       data-testid={`button-menu-${p.id}`}
                     >
                       <MoreVertical className="w-[18px] h-[18px]" />
@@ -788,7 +788,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
                       className="flex items-center gap-2.5 cursor-pointer"
                       data-testid={`menu-edit-${p.id}`}
                     >
-                      <Pencil className="w-4 h-4 text-[#6B7280]" />
+                      <Pencil className="w-4 h-4 text-[#334855]" />
                       {t("home.menuEdit")}
                     </DropdownMenuItem>
                     <DropdownMenuItem
@@ -809,7 +809,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
         <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-7 flex flex-col items-center text-center" data-testid="card-zoekopdrachten-empty">
           <img src={EMPTY_STATE_IMAGES.createSearch} alt="" className="w-[200px] h-auto mb-6" draggable={false} />
           <p className="text-[20px] font-bold text-[#000000] mb-2">Maak je eerste zoekprofiel aan</p>
-          <p className="text-[15px] text-[#6B7280] mb-6 leading-relaxed max-w-[280px]">Stel je voorkeuren in en ontvang direct nieuwe woningen.</p>
+          <p className="text-[15px] text-[#334855] mb-6 leading-relaxed max-w-[280px]">Stel je voorkeuren in en ontvang direct nieuwe woningen.</p>
           <button
             onClick={() => navigate("/dashboard/searches/new")}
             className="h-[48px] px-8 rounded-[12px] bg-ha-primary text-white text-[15px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
@@ -928,7 +928,7 @@ function RecentMatchesSection({
           <p className="text-[18px] font-semibold text-[#111111] mb-2" data-testid="text-paywall-title">
             {t("home.paywallTitle")}
           </p>
-          <p className="text-[15px] text-[#6B7280] mb-6 leading-relaxed max-w-[280px]" data-testid="text-paywall-desc">
+          <p className="text-[15px] text-[#334855] mb-6 leading-relaxed max-w-[280px]" data-testid="text-paywall-desc">
             {t("home.paywallDesc")}
           </p>
           <button
@@ -962,7 +962,7 @@ function RecentMatchesSection({
         <div className="rounded-[16px] bg-white border border-[#E5E7EB] py-8 px-7 flex flex-col items-center text-center" data-testid="card-no-matches">
           <Search className="w-[24px] h-[24px] text-[#111111] mb-5" />
           <p className="text-[18px] font-semibold text-[#111111] mb-2">{t("home.noMatchesYetTitle")}</p>
-          <p className="text-[15px] text-[#6B7280] leading-relaxed max-w-[280px]">{t("home.firstMatchesWillAppear")}</p>
+          <p className="text-[15px] text-[#334855] leading-relaxed max-w-[280px]">{t("home.firstMatchesWillAppear")}</p>
         </div>
       )}
     </div>
@@ -1004,7 +1004,7 @@ function HomeTab({
     <div className="flex flex-col pb-8">
       <div className="px-5 pt-8 pb-4" data-testid="section-welcome">
         <div className="flex items-center justify-between mb-6">
-          <span className="text-[16px] font-semibold text-[#6B7280] tracking-[-0.01em]" data-testid="text-brand">HousAlert</span>
+          <span className="text-[16px] font-semibold text-[#334855] tracking-[-0.01em]" data-testid="text-brand">HousAlert</span>
           <button
             onClick={() => navigate("/settings/preferences")}
             className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#F3F4F6] transition-colors"
@@ -1016,7 +1016,7 @@ function HomeTab({
         <h1 className="text-[34px] font-semibold text-[#111111] tracking-[-0.025em] leading-[1.15]" data-testid="text-greeting">
           {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")} 👋
         </h1>
-        <p className="text-[17px] text-[#4B5563] mt-2 leading-relaxed" data-testid="text-welcome-subtitle">
+        <p className="text-[17px] text-[#334855] mt-2 leading-relaxed" data-testid="text-welcome-subtitle">
           {t("home.welcomeSubtitle")}
         </p>
       </div>
@@ -1144,7 +1144,7 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
             <h2 className="text-[20px] font-semibold text-[#111111] mb-2.5" data-testid="text-fav-locked-headline">
               {t("matches.locked.headline")}
             </h2>
-            <p className="text-[15px] text-[#6B7280] leading-relaxed max-w-[280px] mb-8" data-testid="text-fav-locked-desc">
+            <p className="text-[15px] text-[#334855] leading-relaxed max-w-[280px] mb-8" data-testid="text-fav-locked-desc">
               {t("matches.locked.desc")}
             </p>
             <button
@@ -1406,7 +1406,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
             <h2 className="text-[20px] font-semibold text-[#111111] mb-2.5" data-testid="text-locked-headline">
               {t("matches.locked.headline")}
             </h2>
-            <p className="text-[15px] text-[#6B7280] leading-relaxed max-w-[280px] mb-8" data-testid="text-locked-desc">
+            <p className="text-[15px] text-[#334855] leading-relaxed max-w-[280px] mb-8" data-testid="text-locked-desc">
               {t("matches.locked.desc")}
             </p>
             <button
@@ -1470,7 +1470,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
                   <AlertCircle className="w-[24px] h-[24px] text-[#111111]" />
                 </div>
                 <p className="text-[18px] font-semibold text-[#111111]">{t("matches.loadError")}</p>
-                <p className="text-[15px] text-[#6B7280] leading-relaxed max-w-[280px]">{t("matches.loadErrorDesc")}</p>
+                <p className="text-[15px] text-[#334855] leading-relaxed max-w-[280px]">{t("matches.loadErrorDesc")}</p>
                 <button
                   onClick={() => apiMatchesQuery.refetch()}
                   className="text-[15px] font-semibold text-ha-primary mt-2 active:opacity-70 transition-opacity"
@@ -1839,7 +1839,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
   }
 
   const SectionTitle = ({ children }: { children: string }) => (
-    <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide px-1 mb-2.5">{children}</p>
+    <p className="text-[13px] font-semibold text-[#334855] uppercase tracking-wide px-1 mb-2.5">{children}</p>
   );
 
   const CardRow = ({ label, value, onClick, trailing, testId, last }: { label: string; value?: string; onClick?: () => void; trailing?: any; testId?: string; last?: boolean }) => {
@@ -1854,7 +1854,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
         >
           <span className="text-[15px] font-medium text-[#111111]">{label}</span>
           <div className="flex items-center gap-2">
-            {value && <span className="text-[14px] text-[#6B7280]">{value}</span>}
+            {value && <span className="text-[14px] text-[#334855]">{value}</span>}
             {trailing}
             {onClick && !trailing && <ChevronRight className="w-[18px] h-[18px] text-[#D1D5DB] flex-shrink-0" />}
           </div>
@@ -1869,7 +1869,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       <div className="flex items-center justify-between min-h-[64px] px-5 py-4" data-testid={testId}>
         <div className="flex-1 min-w-0">
           <span className="text-[15px] font-medium text-[#111111]">{label}</span>
-          {subtitle && <p className="text-[13px] text-[#6B7280] mt-0.5 leading-tight">{subtitle}</p>}
+          {subtitle && <p className="text-[13px] text-[#334855] mt-0.5 leading-tight">{subtitle}</p>}
         </div>
         <button
           onClick={() => onToggle(!checked)}
@@ -1908,7 +1908,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 >
                   <span className="text-[15px] font-medium text-[#111111]">{t("profile.language")}</span>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[14px] text-[#6B7280]">{currentLangLabel}</span>
+                    <span className="text-[14px] text-[#334855]">{currentLangLabel}</span>
                     <ChevronRight className={`w-[18px] h-[18px] text-[#D1D5DB] flex-shrink-0 transition-transform duration-200 ${showLangDropdown ? "rotate-90" : ""}`} />
                   </div>
                 </button>
@@ -1968,7 +1968,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-[15px] font-medium text-[#111111] truncate" data-testid="text-buddy-email">{buddyEmail}</p>
-                      <p className="text-[13px] text-[#6B7280] mt-0.5">
+                      <p className="text-[13px] text-[#334855] mt-0.5">
                         {buddyStatus === "active" ? t("profile.searchBuddyReceives")
                           : buddyStatus === "invited" ? t("profile.searchBuddyReceives")
                           : buddyStatus || t("profile.searchBuddyReceives")}
@@ -1985,7 +1985,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 </div>
               ) : (
                 <div className="px-5 py-5">
-                  <p className="text-[14px] text-[#6B7280] leading-relaxed mb-4">{t("profile.noBuddyYet")}</p>
+                  <p className="text-[14px] text-[#334855] leading-relaxed mb-4">{t("profile.noBuddyYet")}</p>
                   <button
                     onClick={() => navigate("/profile/edit/search_buddy_email")}
                     className="h-[44px] px-6 rounded-[12px] bg-ha-primary text-white text-[14px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
@@ -2004,7 +2004,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             <div className="rounded-[16px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
               {letterPreview ? (
                 <div className="px-5 pt-5 pb-4">
-                  <p className="text-[14px] text-[#4B5563] leading-[1.6] line-clamp-4 whitespace-pre-line" data-testid="text-letter-preview">{letterPreview}</p>
+                  <p className="text-[14px] text-[#334855] leading-[1.6] line-clamp-4 whitespace-pre-line" data-testid="text-letter-preview">{letterPreview}</p>
                   <div className="flex items-center gap-4 mt-4 pt-4 border-t border-[#F3F4F6]">
                     <button
                       onClick={() => navigate("/application-letter")}
@@ -2041,7 +2041,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             <div className="rounded-[16px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden" data-testid="section-blocked-sources">
               {blockedSources.length === 0 ? (
                 <div className="px-5 py-4">
-                  <p className="text-[14px] text-[#6B7280]">{t("profile.blockedSources.empty")}</p>
+                  <p className="text-[14px] text-[#334855]">{t("profile.blockedSources.empty")}</p>
                 </div>
               ) : (
                 blockedSources.map((source, i) => (
@@ -2072,7 +2072,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 <div className="p-6 flex flex-col items-center text-center" data-testid="card-subscription-locked">
                   <Lock className="w-[32px] h-[32px] text-[#111111] mb-4" strokeWidth={1.6} />
                   <p className="text-[18px] font-semibold text-[#111111]" data-testid="text-sub-locked-title">{t("profile.subLocked.title")}</p>
-                  <p className="text-[15px] text-[#6B7280] mt-2 leading-relaxed max-w-[280px]">{t("profile.subLocked.desc")}</p>
+                  <p className="text-[15px] text-[#334855] mt-2 leading-relaxed max-w-[280px]">{t("profile.subLocked.desc")}</p>
                   <button
                     onClick={() => navigate("/paywall")}
                     className="mt-5 h-[48px] px-8 rounded-full bg-white text-[#111111] text-[15px] font-semibold hover:bg-[#F9F9F9] transition-colors active:scale-[0.97]"
@@ -2089,7 +2089,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                       {subscription.isTrial ? t("subscription.status.trial") : getPlanLabel(subscription.plan)}
                     </p>
                     {renewalDate && (
-                      <p className="text-[14px] text-[#6B7280] mt-2 leading-relaxed max-w-[300px]" data-testid="text-sub-renewal">
+                      <p className="text-[14px] text-[#334855] mt-2 leading-relaxed max-w-[300px]" data-testid="text-sub-renewal">
                         {subscription.isTrial
                           ? `${t("profile.subInline.trialEndsOn")} ${formatSubDate(renewalDate)}`
                           : isCanceled
@@ -2103,7 +2103,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                       <div className="h-px bg-[#E8E2DA] w-[calc(100%-32px)] mx-auto" />
                       <button
                         onClick={() => navigate("/account/subscription/cancel")}
-                        className="w-full py-3.5 flex items-center justify-center text-[14px] font-medium text-[#6B7280] active:bg-[#EDE7E1] transition-colors rounded-b-[16px]"
+                        className="w-full py-3.5 flex items-center justify-center text-[14px] font-medium text-[#334855] active:bg-[#EDE7E1] transition-colors rounded-b-[16px]"
                         data-testid="button-cancel-subscription"
                       >
                         {t("profile.subInline.cancelCta")}
@@ -2171,7 +2171,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           <div className="flex flex-col items-center gap-3 pt-2 pb-2">
             <button
               onClick={() => navigate("/account/delete")}
-              className="text-[13px] text-[#6B7280] active:opacity-70 transition-opacity"
+              className="text-[13px] text-[#334855] active:opacity-70 transition-opacity"
               data-testid="button-profile-delete-account"
             >
               {t("profile.deleteAccount")}
@@ -2209,7 +2209,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           </header>
           <main className="flex-1 flex flex-col items-center justify-center px-4">
             <div className="w-16 h-16 rounded-[16px] bg-[#F3F4F6] flex items-center justify-center mb-6">
-              <LogOut className="w-8 h-8 text-[#6B7280]" />
+              <LogOut className="w-8 h-8 text-[#334855]" />
             </div>
             <h2 className="text-[22px] font-semibold text-[#111111] mb-3 text-center">{t("profile.logoutConfirm")}</h2>
             <p className="text-[15px] text-[#111111]/70 text-center max-w-[320px] mb-10 leading-relaxed">{t("profile.logoutDesc")}</p>
@@ -2418,9 +2418,9 @@ export default function DashboardPage() {
                     <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <Icon className={`w-[26px] h-[26px] transition-colors ${isActive ? "text-ha-primary" : "text-[#6B7280]"}`} strokeWidth={isActive ? 2.2 : 1.6} />
+                  <Icon className={`w-[26px] h-[26px] transition-colors ${isActive ? "text-ha-primary" : "text-[#334855]"}`} strokeWidth={isActive ? 2.2 : 1.6} />
                 )}
-                <span className={`text-[11px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-[#6B7280]"}`}>
+                <span className={`text-[11px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-[#334855]"}`}>
                   {t(labelKey)}
                 </span>
               </button>

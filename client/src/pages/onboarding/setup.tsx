@@ -107,7 +107,7 @@ function SetupShell({
               style={{ backgroundColor: "#F5F5F5" }}
               data-testid="button-setup-back"
             >
-              <ChevronLeft className="w-5 h-5" style={{ color: "#6B7280" }} />
+              <ChevronLeft className="w-5 h-5" style={{ color: "#334855" }} />
             </button>
           ) : (
             <div className="w-10" />
@@ -311,7 +311,7 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
         <HousAlertLogo size={24} />
         <div className="text-right">
           <p className="text-[13px] font-semibold" style={{ color: "#00b67a" }}>★ 4,6 uit 5</p>
-          <p className="text-[11px]" style={{ color: "#6B7280" }}>Trustpilot</p>
+          <p className="text-[11px]" style={{ color: "#334855" }}>Trustpilot</p>
         </div>
       </div>
 
@@ -327,7 +327,7 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
             </div>
             <div>
               <p className="text-[15px] font-semibold text-ha-danger mb-0.5">{block.title}</p>
-              <p className="text-[13px] leading-relaxed" style={{ color: "#6B7280" }}>{block.desc}</p>
+              <p className="text-[13px] leading-relaxed" style={{ color: "#334855" }}>{block.desc}</p>
             </div>
           </div>
         ))}
@@ -343,7 +343,7 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
           style={{
             border: "1.5px solid #E5E7EB",
             backgroundColor: "transparent",
-            color: "#6B7280",
+            color: "#334855",
           }}
           data-testid="button-limited-continue"
         >
@@ -355,7 +355,7 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
         <p className="text-[14px] font-semibold mb-1" style={{ color: "#111111" }}>
           {t("onboardingFlow.limitedAccess.infoTitle")}
         </p>
-        <p className="text-[13px] leading-relaxed" style={{ color: "#6B7280" }}>
+        <p className="text-[13px] leading-relaxed" style={{ color: "#334855" }}>
           {t("onboardingFlow.limitedAccess.infoDesc")}
         </p>
       </div>
@@ -387,7 +387,7 @@ function LightShell({
               style={{ backgroundColor: "#E5E7EB" }}
               data-testid="button-setup-back"
             >
-              <ChevronLeft className="w-5 h-5 text-[#6B7280]" />
+              <ChevronLeft className="w-5 h-5 text-[#334855]" />
             </button>
           ) : (
             <div className="w-10" />
@@ -453,7 +453,7 @@ function WelcomeStep({ onNext, t }: {
           />
           <div>
             <p className="text-[16px] font-semibold text-[#111111]" style={{ fontStyle: "italic" }}>Elise</p>
-            <p className="text-[13px] text-[#6B7280] mt-0.5" style={{ fontStyle: "italic" }}>COO</p>
+            <p className="text-[13px] text-[#334855] mt-0.5" style={{ fontStyle: "italic" }}>COO</p>
           </div>
         </div>
       </div>
@@ -492,17 +492,17 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
 
         {pushState === "denied" && (
           <div className="rounded-[6px] px-4 py-3 mb-5 flex items-start gap-3" style={{ backgroundColor: "#FFFFFF", border: "1px solid #FFFFFF" }}>
-            <AlertTriangle className="w-5 h-5 text-[#6B7280] flex-shrink-0 mt-0.5" />
+            <AlertTriangle className="w-5 h-5 text-[#334855] flex-shrink-0 mt-0.5" />
             <div>
               <p className="text-[14px] font-medium text-[#111111] mb-1">{t("onboardingFlow.pushTest.denied")}</p>
-              <p className="text-[13px] text-[#6B7280] leading-snug">{t("onboardingFlow.pushTest.deniedHint")}</p>
+              <p className="text-[13px] text-[#334855] leading-snug">{t("onboardingFlow.pushTest.deniedHint")}</p>
             </div>
           </div>
         )}
 
         {pushState !== "granted" && pushState !== "denied" && (
           <div className="rounded-[6px] px-4 py-3 mb-5" style={{ backgroundColor: "#FFFFFF" }}>
-            <p className="text-[13px] text-[#6B7280] leading-snug">
+            <p className="text-[13px] text-[#334855] leading-snug">
               {t("onboardingFlow.pushTest.idleHint")}
             </p>
           </div>
@@ -533,7 +533,7 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[11px] font-semibold text-[#111111] truncate">HousAlert</p>
-                <p className="text-[10px] text-[#6B7280] truncate">{t("onboardingFlow.pushTest.sampleNotification")}</p>
+                <p className="text-[10px] text-[#334855] truncate">{t("onboardingFlow.pushTest.sampleNotification")}</p>
               </div>
             </div>
           </div>
@@ -549,7 +549,7 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
             <button
               onClick={onNext}
               className="w-full h-[56px] text-[14px] font-semibold transition-all active:scale-[0.97]"
-              style={{ color: "#6B7280" }}
+              style={{ color: "#334855" }}
               data-testid="button-push-skip"
             >
               {t("onboardingFlow.pushTest.cta")}
@@ -572,7 +572,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
   onSkip: () => void;
   t: (k: string, p?: Record<string, any>) => string;
 }) {
-  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[rgba(217,26,104,0.2)]";
+  const INPUT_CLS = "w-full h-[48px] px-4 rounded-[12px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
   const [showForm, setShowForm] = useState(false);
 
   const genderOptions = [
@@ -609,7 +609,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
             />
             <div>
               <p className="text-[16px] font-semibold text-[#111111]" style={{ fontStyle: "italic" }}>Elise</p>
-              <p className="text-[13px] text-[#6B7280] mt-0.5" style={{ fontStyle: "italic" }}>COO</p>
+              <p className="text-[13px] text-[#334855] mt-0.5" style={{ fontStyle: "italic" }}>COO</p>
             </div>
           </div>
         </div>
@@ -621,7 +621,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
           <button
             onClick={onSkip}
             className="w-full h-[56px] text-[14px] font-semibold transition-all active:scale-[0.97]"
-            style={{ color: "#6B7280" }}
+            style={{ color: "#334855" }}
             data-testid="button-personal-skip"
           >
             {t("onboardingFlow.letterPersonal.skip")}
@@ -754,7 +754,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
     { value: "other", label: t("onboardingFlow.letterLiving.moveOptions.other") },
   ];
 
-  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[rgba(217,26,104,0.2)]";
+  const INPUT_CLS = "w-full h-[48px] px-4 rounded-[12px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
 
   return (
     <LightShell step="letter-living" showBack onBack={onBack}>
@@ -813,7 +813,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
             {t("onboardingFlow.letterLiving.income")}
           </label>
           <div className="relative">
-            <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]" />
+            <Euro className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#334855]" />
             <input
               type="text"
               inputMode="numeric"
@@ -880,7 +880,7 @@ function LetterPreviewStep({ letterText, onLetterChange, onNext, onBack, t }: {
         <textarea
           value={letterText}
           onChange={(e) => onLetterChange(e.target.value)}
-          className="w-full flex-1 min-h-[280px] p-0 bg-transparent text-[14px] leading-[1.7] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none resize-none"
+          className="w-full flex-1 min-h-[280px] p-0 bg-transparent text-[14px] leading-[1.7] text-[#111111] placeholder:text-[#334855] focus:outline-none resize-none"
           data-testid="textarea-letter"
         />
       </div>
@@ -952,7 +952,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
             value={buddyEmail}
             onChange={(e) => onBuddyEmailChange(e.target.value)}
             placeholder={t("onboardingFlow.searchBuddy.emailPlaceholder")}
-            className="w-full h-[56px] px-4 rounded-[6px] border border-[#E5E7EB] bg-white text-[14px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[rgba(217,26,104,0.2)]"
+            className="w-full h-[48px] px-4 rounded-[12px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all"
             data-testid="input-buddy-email"
           />
         </div>
@@ -1027,7 +1027,7 @@ function SuccessStep({ onFinish, t }: {
           />
           <div>
             <p className="text-[16px] font-semibold text-[#111111]" style={{ fontStyle: "italic" }}>Elise</p>
-            <p className="text-[13px] text-[#6B7280] mt-0.5" style={{ fontStyle: "italic" }}>COO</p>
+            <p className="text-[13px] text-[#334855] mt-0.5" style={{ fontStyle: "italic" }}>COO</p>
           </div>
         </div>
       </div>

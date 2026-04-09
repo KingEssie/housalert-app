@@ -377,7 +377,7 @@ export default function NewSearchPage() {
               className="w-11 h-11 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
               data-testid="button-wizard-header-back"
             >
-              <ArrowLeft className="w-5 h-5 text-[#374151]" />
+              <ArrowLeft className="w-5 h-5 text-[#334855]" />
             </button>
           </div>
         </header>
@@ -387,7 +387,7 @@ export default function NewSearchPage() {
               <AlertCircle className="w-7 h-7 text-ha-primary" />
             </div>
             <h2 className="text-[30px] font-semibold text-[#111111] mb-2">{t("newSearch.limitTitle")}</h2>
-            <p className="text-[17px] text-[#6B7280] mb-7 leading-relaxed">
+            <p className="text-[17px] text-[#334855] mb-7 leading-relaxed">
               {t("newSearch.limitDesc", { max: MAX_PROFILES })}
             </p>
             <Button
@@ -414,7 +414,7 @@ export default function NewSearchPage() {
             className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
             data-testid="button-wizard-header-back"
           >
-            <ArrowLeft className="w-5 h-5 text-[#374151]" />
+            <ArrowLeft className="w-5 h-5 text-[#334855]" />
           </button>
           <div className="flex items-center gap-1.5">
             {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
@@ -490,7 +490,7 @@ function StepHeader({ title, subtitle }: { title: string; subtitle: string }) {
       <h2 className="text-[30px] font-semibold text-[#111111] leading-[1.15] tracking-[-0.025em] mb-2.5" data-testid="text-step-title">
         {title}
       </h2>
-      <p className="text-[17px] text-[#6B7280] leading-relaxed">
+      <p className="text-[17px] text-[#334855] leading-relaxed">
         {subtitle}
       </p>
     </div>
@@ -515,8 +515,8 @@ function SelectField({
   const { t } = useTranslation();
   return (
     <div>
-      <label className="text-[15px] font-medium text-[#4B5563] mb-2.5 flex items-center gap-2.5">
-        <span className="w-5 h-5 flex items-center justify-center text-[#6B7280]">{icon}</span>
+      <label className="text-[15px] font-medium text-[#334855] mb-2.5 flex items-center gap-2.5">
+        <span className="w-5 h-5 flex items-center justify-center text-[#334855]">{icon}</span>
         {label}
       </label>
       <div className="relative">
@@ -530,7 +530,7 @@ function SelectField({
             <option key={String(opt.value)} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
           ))}
         </select>
-        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#374151] pointer-events-none" />
+        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#334855] pointer-events-none" />
       </div>
     </div>
   );
@@ -682,14 +682,14 @@ function CheckboxRow({
       data-testid={testId}
     >
       <div className={`w-[26px] h-[26px] rounded-[8px] flex items-center justify-center flex-shrink-0 border-2 transition-colors ${
-        selected ? "bg-ha-primary border-ha-primary" : "border-[#6B7280] bg-white"
+        selected ? "bg-ha-primary border-ha-primary" : "border-[#334855] bg-white"
       }`}>
         {selected && <Check className="w-4 h-4 text-white" strokeWidth={3} />}
       </div>
       <div className="flex-1 min-w-0">
         <span className="text-[16px] font-medium text-[#111111]">{label}</span>
         {hint && selected && (
-          <p className="text-[14px] text-[#6B7280] mt-1 leading-snug">{hint}</p>
+          <p className="text-[14px] text-[#334855] mt-1 leading-snug">{hint}</p>
         )}
       </div>
     </button>
@@ -727,7 +727,7 @@ function Step3ExtraFeatures({
 
       <div className="mt-10">
         <h3 className="text-[16px] font-bold text-[#111111] mb-2">{t("newSearch.step3.preferencesTitle")}</h3>
-        <p className="text-[15px] text-[#6B7280] mb-4 leading-relaxed">{t("newSearch.step3.preferencesSubtitle")}</p>
+        <p className="text-[15px] text-[#334855] mb-4 leading-relaxed">{t("newSearch.step3.preferencesSubtitle")}</p>
         <div className="space-y-4">
           {PREFERENCE_OPTIONS.map((opt) => (
             <CheckboxRow
@@ -743,7 +743,7 @@ function Step3ExtraFeatures({
       </div>
 
       {filters.extraFeatures.length === 0 && (
-        <p className="text-[15px] text-[#6B7280] text-center mt-7">
+        <p className="text-[15px] text-[#334855] text-center mt-7">
           {t("newSearch.step3.noSelectionHint")}
         </p>
       )}
@@ -790,7 +790,7 @@ function Step4TargetCategories({
       </div>
 
       {filters.targetCategories.length === 0 && (
-        <p className="text-[15px] text-[#6B7280] text-center mt-7">
+        <p className="text-[15px] text-[#334855] text-center mt-7">
           {t("newSearch.step4.noSelectionHint")}
         </p>
       )}
@@ -806,11 +806,11 @@ function ReviewRow({ label, value, onEdit }: { label: string; value: string; onE
       data-testid={`button-review-edit-${label.toLowerCase().replace(/\s/g, "-")}`}
     >
       <div className="flex-1 min-w-0 mr-3">
-        <p className="text-[14px] font-medium text-[#6B7280] mb-1">{label}</p>
+        <p className="text-[14px] font-medium text-[#334855] mb-1">{label}</p>
         <p className="text-[17px] font-semibold text-[#111111] leading-snug">{value}</p>
       </div>
       <div className="flex-shrink-0 w-9 h-9 rounded-full bg-[#F3F4F6] flex items-center justify-center group-hover:bg-[#E5E7EB] transition-colors">
-        <Pencil className="w-4 h-4 text-[#374151]" />
+        <Pencil className="w-4 h-4 text-[#334855]" />
       </div>
     </button>
   );
@@ -893,7 +893,7 @@ function StepReview({
                   ? t("newSearch.step5.estimate", perWeekRange)
                   : t("newSearch.step5.noMatchesExpected")}
               </p>
-              <p className="text-[14px] text-[#6B7280] mt-1">
+              <p className="text-[14px] text-[#334855] mt-1">
                 {perWeek > 0
                   ? t("newSearch.step5.estimateDesc")
                   : t("newSearch.step5.adjustFiltersLater")}

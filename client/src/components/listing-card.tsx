@@ -126,12 +126,12 @@ export function ListingCardFull({
         {match.price > 0 && (
           <div className="absolute bottom-3 left-3">
             <span
-              className={`text-[17px] font-semibold ${hasImage ? "text-white" : "text-[#374151]"}`}
+              className={`text-[17px] font-semibold ${hasImage ? "text-white" : "text-[#334855]"}`}
               style={hasImage ? { textShadow: "0 1px 3px rgba(0,0,0,0.5)" } : undefined}
               data-testid={`badge-price-${match.listing_id}`}
             >
               {formatPrice(match.price, locale)}
-              <span className={`text-[12px] font-normal ml-0.5 ${hasImage ? "opacity-80" : "text-[#6B7280]"}`}>{t("common.perMonthShort")}</span>
+              <span className={`text-[12px] font-normal ml-0.5 ${hasImage ? "opacity-80" : "text-[#334855]"}`}>{t("common.perMonthShort")}</span>
             </span>
           </div>
         )}
@@ -147,7 +147,7 @@ export function ListingCardFull({
 
         {address && (
           <p
-            className="text-[14px] text-[#6B7280] truncate"
+            className="text-[14px] text-[#334855] truncate"
             data-testid={`detail-city-${match.listing_id}`}
           >
             {address}
@@ -155,10 +155,10 @@ export function ListingCardFull({
         )}
 
         {(hasBedrooms || hasSize) && (
-          <p className="text-[14px] text-[#6B7280] flex items-center gap-1.5 truncate" data-testid={`detail-meta-${match.listing_id}`}>
+          <p className="text-[14px] text-[#334855] flex items-center gap-1.5 truncate" data-testid={`detail-meta-${match.listing_id}`}>
             {hasBedrooms && (
               <span className="inline-flex items-center gap-1">
-                <BedDouble className="w-[15px] h-[15px] text-[#6B7280]" strokeWidth={1.8} />
+                <BedDouble className="w-[15px] h-[15px] text-[#334855]" strokeWidth={1.8} />
                 <span>
                   {match.bedrooms === 1
                     ? `${match.bedrooms} ${t("common.bedroom")}`
@@ -169,19 +169,19 @@ export function ListingCardFull({
             {hasBedrooms && hasSize && <span className="text-[#D1D5DB] mx-0.5">·</span>}
             {hasSize && (
               <span className="inline-flex items-center gap-1">
-                <Maximize2 className="w-[15px] h-[15px] text-[#6B7280]" strokeWidth={1.8} />
+                <Maximize2 className="w-[15px] h-[15px] text-[#334855]" strokeWidth={1.8} />
                 <span>{match.size_m2} m²</span>
               </span>
             )}
           </p>
         )}
 
-        <p className="text-[13px] text-[#6B7280] mt-0.5" data-testid={`detail-source-${match.listing_id}`}>
+        <p className="text-[13px] text-[#334855] mt-0.5" data-testid={`detail-source-${match.listing_id}`}>
           {sourceName}
         </p>
 
         {locked && (
-          <div className="flex items-center gap-1.5 mt-0.5 text-[12px] text-[#6B7280]" data-testid={`lock-indicator-${match.listing_id}`}>
+          <div className="flex items-center gap-1.5 mt-0.5 text-[12px] text-[#334855]" data-testid={`lock-indicator-${match.listing_id}`}>
             <Lock className="w-3 h-3" />
             <span>{t("listing.lockLabel")}</span>
           </div>
@@ -256,7 +256,7 @@ export function ListingCardCompact({ match, onCardClick }: ListingCardCompactPro
 
         {match.price > 0 && (
           <div className="absolute bottom-2 left-2.5">
-            <span className={`text-[13px] font-semibold ${hasImage ? "text-white" : "text-[#374151]"}`} style={hasImage ? { textShadow: "0 1px 2px rgba(0,0,0,0.4)" } : undefined}>
+            <span className={`text-[13px] font-semibold ${hasImage ? "text-white" : "text-[#334855]"}`} style={hasImage ? { textShadow: "0 1px 2px rgba(0,0,0,0.4)" } : undefined}>
               {formatPrice(match.price, locale)}
             </span>
           </div>
@@ -267,7 +267,7 @@ export function ListingCardCompact({ match, onCardClick }: ListingCardCompactPro
         <h3 className="text-[14px] font-semibold text-[#111111] leading-snug truncate" data-testid={`text-recent-title-${match.listing_id}`}>
           {match.title}
         </h3>
-        <p className="text-[12px] text-[#6B7280] mt-[2px] truncate" data-testid={`text-recent-city-${match.listing_id}`}>
+        <p className="text-[12px] text-[#334855] mt-[2px] truncate" data-testid={`text-recent-city-${match.listing_id}`}>
           {match.city}
         </p>
       </div>
@@ -317,7 +317,7 @@ export function ListingCardMini({ match, onCardClick }: ListingCardMiniProps) {
       </div>
       <div className="pt-2 pb-0.5">
         <p className="text-[13px] font-semibold text-[#111111] truncate" data-testid={`text-mini-title-${match.listing_id}`}>{match.title}</p>
-        <p className="text-[12px] text-[#6B7280] mt-[2px]" data-testid={`text-mini-meta-${match.listing_id}`}>
+        <p className="text-[12px] text-[#334855] mt-[2px]" data-testid={`text-mini-meta-${match.listing_id}`}>
           {match.price > 0 && <span className="font-semibold text-[#111111]">€{match.price}</span>}
           {match.price > 0 && match.size_m2 > 0 && <span> · </span>}
           {match.size_m2 > 0 && <span>{match.size_m2} m²</span>}

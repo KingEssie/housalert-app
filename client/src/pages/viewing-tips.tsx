@@ -82,7 +82,7 @@ export default function ViewingTipsPage() {
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-32">
         <div className="mb-6">
-          <p className="text-[15px] text-[#6B7280] leading-relaxed">
+          <p className="text-[15px] text-[#334855] leading-relaxed">
             {t("viewingTips.intro")}
           </p>
         </div>

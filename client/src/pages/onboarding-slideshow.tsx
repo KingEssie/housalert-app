@@ -211,7 +211,7 @@ export default function OnboardingSlideshow() {
         </h2>
         <p
           className="text-[15px] leading-[1.55] mb-5 text-center"
-          style={{ color: "#6B7280" }}
+          style={{ color: "#334855" }}
           data-testid="text-slide-subtitle"
         >
           {SLIDES[current].subtitle}

@@ -152,7 +152,7 @@ export default function LoginPage() {
         >
           <form onSubmit={handleLogin} className="flex flex-col gap-5">
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="login-email" className="text-[14px] font-medium" style={{ color: "#374151" }}>
+              <label htmlFor="login-email" className="text-[14px] font-medium text-[#334855]">
                 {t("auth.login.email")}
               </label>
               <input
@@ -162,30 +162,13 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full outline-none transition-all"
-                style={{
-                  height: "56px",
-                  borderRadius: "12px",
-                  background: "#F3F4F6",
-                  border: "2px solid transparent",
-                  padding: "0 16px",
-                  fontSize: "16px",
-                  color: "#111827",
-                }}
-                onFocus={(e) => {
-                  e.currentTarget.style.borderColor = "rgb(217,26,104)";
-                  e.currentTarget.style.boxShadow = "0 0 0 3px rgba(217,26,104,0.1)";
-                }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = "transparent";
-                  e.currentTarget.style.boxShadow = "none";
-                }}
+                className="w-full h-[48px] rounded-[12px] border border-[#E5E7EB] bg-white px-4 text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
                 data-testid="input-login-email"
               />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="login-password" className="text-[14px] font-medium" style={{ color: "#374151" }}>
+              <label htmlFor="login-password" className="text-[14px] font-medium text-[#334855]">
                 {t("auth.login.password")}
               </label>
               <div className="relative">
@@ -196,31 +179,14 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full outline-none transition-all"
-                  style={{
-                    height: "56px",
-                    borderRadius: "12px",
-                    background: "#F3F4F6",
-                    border: "2px solid transparent",
-                    padding: "0 48px 0 16px",
-                    fontSize: "16px",
-                    color: "#111827",
-                  }}
-                  onFocus={(e) => {
-                    e.currentTarget.style.borderColor = "rgb(217,26,104)";
-                    e.currentTarget.style.boxShadow = "0 0 0 3px rgba(217,26,104,0.1)";
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.style.borderColor = "transparent";
-                    e.currentTarget.style.boxShadow = "none";
-                  }}
+                  className="w-full h-[48px] rounded-[12px] border border-[#E5E7EB] bg-white pl-4 pr-12 text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
                   data-testid="input-login-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 p-0 bg-transparent border-0"
-                  style={{ color: "#6B7280" }}
+                  style={{ color: "#334855" }}
                   data-testid="button-toggle-password"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -264,7 +230,7 @@ export default function LoginPage() {
 
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
-            <span className="text-[13px] font-semibold" style={{ color: "#9CA3AF" }}>
+            <span className="text-[13px] font-semibold" style={{ color: "#334855" }}>
               {t("auth.login.or") || "OF"}
             </span>
             <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
@@ -290,7 +256,7 @@ export default function LoginPage() {
         </div>
 
         <div className="flex items-center justify-center gap-2 pt-8 pb-6">
-          <span className="text-[13px] font-semibold" style={{ color: "#6B7280" }}>
+          <span className="text-[13px] font-semibold" style={{ color: "#334855" }}>
             Trustpilot
           </span>
           <div className="flex items-center gap-0.5">
@@ -308,7 +274,7 @@ export default function LoginPage() {
               </div>
             ))}
           </div>
-          <span className="text-[14px] font-semibold" style={{ color: "#6B7280" }}>
+          <span className="text-[14px] font-semibold" style={{ color: "#334855" }}>
             4.8
           </span>
         </div>

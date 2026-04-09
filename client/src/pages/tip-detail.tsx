@@ -26,7 +26,7 @@ export default function TipDetailPage() {
   if (!tip) {
     return (
       <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center">
-        <p className="text-[#6B7280]">{t("tips.notFound")}</p>
+        <p className="text-[#334855]">{t("tips.notFound")}</p>
       </div>
     );
   }
@@ -67,7 +67,7 @@ export default function TipDetailPage() {
             className="w-9 h-9 rounded-full bg-white flex items-center justify-center mr-3 active:scale-95 transition-transform"
             data-testid="button-back-tip"
           >
-            <ArrowLeft className="w-4 h-4 text-[#6B7280]" />
+            <ArrowLeft className="w-4 h-4 text-[#334855]" />
           </button>
           <h1 className="text-[17px] font-medium text-[#111111] flex-1 tracking-wide">
             {t("tips.tipLabel")} {currentIndex + 1}/{TIP_IDS.length}
@@ -99,7 +99,7 @@ export default function TipDetailPage() {
           </div>
         </div>
 
-        <p className="text-[15px] text-[#6B7280] leading-relaxed mb-6" data-testid="text-tip-description">
+        <p className="text-[15px] text-[#334855] leading-relaxed mb-6" data-testid="text-tip-description">
           {tip.description}
         </p>
 
@@ -110,7 +110,7 @@ export default function TipDetailPage() {
         >
           <Icon className="w-5 h-5 text-ha-primary flex-shrink-0" />
           <span className="text-[14px] font-medium text-[#111111] flex-1">{t("tips.openContent")}</span>
-          <ChevronRight className="w-4 h-4 text-[#6B7280]" />
+          <ChevronRight className="w-4 h-4 text-[#334855]" />
         </button>
       </main>
 

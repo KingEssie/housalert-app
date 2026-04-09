@@ -33,15 +33,15 @@ interface CancellationStats {
 }
 
 const FUNNEL_STEPS = [
-  { key: "account_created", label: "Account Created", Icon: UserPlus, color: "#6B7280" },
+  { key: "account_created", label: "Account Created", Icon: UserPlus, color: "#334855" },
   { key: "profile_created", label: "Profile Created", Icon: Search, color: "rgb(var(--ha-primary))" },
   { key: "notifications_enabled", label: "Notifications Enabled", Icon: Bell, color: "#16A34A" },
   { key: "match_received", label: "Match Received", Icon: Inbox, color: "rgb(var(--ha-primary))" },
   { key: "first_match_viewed", label: "First Match Viewed", Icon: Eye, color: "rgb(var(--ha-primary))" },
   { key: "listing_opened", label: "Listing Opened", Icon: ExternalLink, color: "rgb(var(--ha-primary))" },
   { key: "first_reaction", label: "First Reaction", Icon: Send, color: "rgb(var(--ha-primary))" },
-  { key: "trial_started", label: "Trial Started", Icon: Crown, color: "#6B7280" },
-  { key: "subscription_started", label: "Subscription Started", Icon: CreditCard, color: "#6B7280" },
+  { key: "trial_started", label: "Trial Started", Icon: Crown, color: "#334855" },
+  { key: "subscription_started", label: "Subscription Started", Icon: CreditCard, color: "#334855" },
 ];
 
 export default function AdminActivationPage() {
@@ -90,7 +90,7 @@ export default function AdminActivationPage() {
   if (authLoading || loading) {
     return (
       <div className="min-h-screen bg-[#F7F7F7] flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-[#6B7280]" />
+        <Loader2 className="w-6 h-6 animate-spin text-[#334855]" />
       </div>
     );
   }
@@ -120,7 +120,7 @@ export default function AdminActivationPage() {
           </button>
           <div>
             <h1 className="text-[22px] font-bold text-[#111111]" data-testid="text-admin-title">Activation Funnel</h1>
-            <p className="text-[13px] text-[#6B7280]">User activation tracking & metrics</p>
+            <p className="text-[13px] text-[#334855]">User activation tracking & metrics</p>
           </div>
         </div>
 
@@ -130,7 +130,7 @@ export default function AdminActivationPage() {
               <Users className="w-5 h-5 text-ha-primary" />
             </div>
             <div>
-              <p className="text-[13px] text-[#6B7280]">Total Tracked Users</p>
+              <p className="text-[13px] text-[#334855]">Total Tracked Users</p>
               <p className="text-[28px] font-bold text-[#111111]" data-testid="text-total-users">{data?.totalTrackedUsers ?? 0}</p>
             </div>
           </div>
@@ -168,16 +168,16 @@ export default function AdminActivationPage() {
             <h2 className="text-[16px] font-bold text-[#111111] mb-4">Source of Truth (DB)</h2>
             <div className="grid grid-cols-2 gap-3">
               {[
-                { label: "Auth Users", value: data.sourceOfTruth.totalAuthUsers, color: "#6B7280" },
+                { label: "Auth Users", value: data.sourceOfTruth.totalAuthUsers, color: "#334855" },
                 { label: "With Profile", value: data.sourceOfTruth.withSearchProfile, color: "rgb(var(--ha-primary))" },
                 { label: "Notifs Enabled", value: data.sourceOfTruth.withNotifications, color: "#16A34A" },
                 { label: "Viewed Match", value: data.sourceOfTruth.withMatchViewed, color: "rgb(var(--ha-primary))" },
                 { label: "Reacted", value: data.sourceOfTruth.withReaction, color: "rgb(var(--ha-primary))" },
-                { label: "With Trial", value: data.sourceOfTruth.withTrial, color: "#6B7280" },
-                { label: "Active Sub", value: data.sourceOfTruth.withActiveSubscription, color: "#6B7280" },
+                { label: "With Trial", value: data.sourceOfTruth.withTrial, color: "#334855" },
+                { label: "Active Sub", value: data.sourceOfTruth.withActiveSubscription, color: "#334855" },
               ].map(({ label, value, color }) => (
                 <div key={label} className="bg-[#F7F7F7] rounded-xl p-3" data-testid={`sot-${label.toLowerCase().replace(/\s/g, "-")}`}>
-                  <p className="text-[11px] font-medium text-[#6B7280]">{label}</p>
+                  <p className="text-[11px] font-medium text-[#334855]">{label}</p>
                   <p className="text-[22px] font-bold" style={{ color }}>{value ?? "—"}</p>
                 </div>
               ))}
@@ -191,14 +191,14 @@ export default function AdminActivationPage() {
             {[
               { label: "Total Cancellations", value: cancelStats?.total ?? 0, Icon: XCircle, color: "rgb(var(--ha-danger))" },
               { label: "Homes Found via HousAlert", value: cancelStats?.foundViaHousalert ?? 0, Icon: Home, color: "#16A34A" },
-              { label: "Found elsewhere", value: cancelStats?.foundNotViaHousalert ?? 0, Icon: Home, color: "#6B7280" },
-              { label: "Not found", value: cancelStats?.notFound ?? 0, Icon: Search, color: "#6B7280" },
-              { label: "Other reason", value: cancelStats?.other ?? 0, Icon: HelpCircle, color: "#6B7280" },
+              { label: "Found elsewhere", value: cancelStats?.foundNotViaHousalert ?? 0, Icon: Home, color: "#334855" },
+              { label: "Not found", value: cancelStats?.notFound ?? 0, Icon: Search, color: "#334855" },
+              { label: "Other reason", value: cancelStats?.other ?? 0, Icon: HelpCircle, color: "#334855" },
             ].map(({ label, value, Icon, color }) => (
               <div key={label} className="bg-[#F7F7F7] rounded-xl p-3" data-testid={`cancel-${label.toLowerCase().replace(/\s/g, "-")}`}>
                 <div className="flex items-center gap-1.5 mb-1">
                   <Icon className="w-3.5 h-3.5" style={{ color }} />
-                  <p className="text-[11px] font-medium text-[#6B7280]">{label}</p>
+                  <p className="text-[11px] font-medium text-[#334855]">{label}</p>
                 </div>
                 <p className="text-[22px] font-bold" style={{ color }}>{value}</p>
               </div>
@@ -216,17 +216,17 @@ export default function AdminActivationPage() {
         <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5" data-testid="card-recent-events">
           <h2 className="text-[16px] font-bold text-[#111111] mb-4">Recent Events</h2>
           {(!data?.recentEvents || data.recentEvents.length === 0) ? (
-            <p className="text-[13px] text-[#6B7280]">No events recorded yet.</p>
+            <p className="text-[13px] text-[#334855]">No events recorded yet.</p>
           ) : (
             <div className="flex flex-col divide-y divide-[#F7F7F7]">
               {data.recentEvents.map((evt, i) => (
                 <div key={i} className="py-2.5 flex items-center gap-3" data-testid={`event-row-${i}`}>
-                  <Activity className="w-3.5 h-3.5 text-[#6B7280] flex-shrink-0" />
+                  <Activity className="w-3.5 h-3.5 text-[#334855] flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <span className="text-[13px] font-medium text-[#111111]">{evt.event_name}</span>
-                    <span className="text-[11px] text-[#6B7280] ml-2">{evt.user_id.slice(0, 8)}...</span>
+                    <span className="text-[11px] text-[#334855] ml-2">{evt.user_id.slice(0, 8)}...</span>
                   </div>
-                  <span className="text-[11px] text-[#6B7280] flex-shrink-0">
+                  <span className="text-[11px] text-[#334855] flex-shrink-0">
                     {new Date(evt.created_at).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}
                   </span>
                 </div>

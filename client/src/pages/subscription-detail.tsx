@@ -62,7 +62,7 @@ export default function SubscriptionDetailPage() {
 
   function getStatusColor(): string {
     if (subscription?.isExpired) return "bg-ha-danger/10 text-ha-danger";
-    if (isCanceled && subscription?.isActive) return "bg-[#F9FAFB] text-[#6B7280]";
+    if (isCanceled && subscription?.isActive) return "bg-[#F9FAFB] text-[#334855]";
     if (subscription?.isTrial) return "bg-ha-primary/15 text-ha-primary";
     return "bg-ha-success/10 text-ha-success";
   }

@@ -71,7 +71,7 @@ export function ListingFallback({ title, source, city, size = "full" }: ListingF
     <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-[#F9FAFB] to-[#F1F3F5] select-none" data-testid="listing-fallback">
       <div className="flex flex-col items-center gap-1.5">
         <div className="rounded-2xl bg-white/80 p-3 shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
-          <Icon className={`${iconSizes[size]} text-[#6B7280]`} strokeWidth={1.5} />
+          <Icon className={`${iconSizes[size]} text-[#334855]`} strokeWidth={1.5} />
         </div>
 
         {showBrand && (

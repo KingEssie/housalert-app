@@ -120,10 +120,10 @@ export default function ProfileEditPage() {
           <div className="flex flex-col items-center pt-6">
             <h1 className="text-[24px] font-semibold text-[#111111] text-center leading-tight" data-testid="text-buddy-title">{config.question}</h1>
             {config.description && (
-              <p className="text-[15px] text-[#6B7280] text-center leading-relaxed mt-3 max-w-[320px]">{config.description}</p>
+              <p className="text-[15px] text-[#334855] text-center leading-relaxed mt-3 max-w-[320px]">{config.description}</p>
             )}
             {buddyRevokedByBuddy && (
-              <p className="text-[13px] text-[#6B7280] text-center mt-2">{t("profileEdit.buddyUnsubscribed")}</p>
+              <p className="text-[13px] text-[#334855] text-center mt-2">{t("profileEdit.buddyUnsubscribed")}</p>
             )}
             <div className="w-full mt-6">
               <div className="relative">
@@ -134,7 +134,7 @@ export default function ProfileEditPage() {
                   onChange={e => setValue(e.target.value)}
                   placeholder={config.placeholder}
                   aria-label={config.label}
-                  className="w-full h-[52px] rounded-[14px] border border-[#E5E7EB] bg-white px-4 text-[16px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/30 focus:border-ha-primary transition-all pr-12"
+                  className="w-full h-[48px] rounded-[12px] border border-[#E5E7EB] bg-white px-4 text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all pr-12"
                   data-testid="input-edit-field"
                 />
                 {value && (
@@ -145,7 +145,7 @@ export default function ProfileEditPage() {
                     className="absolute right-4 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-90 transition-transform"
                     data-testid="button-clear-field"
                   >
-                    <X className="w-3.5 h-3.5 text-[#6B7280]" />
+                    <X className="w-3.5 h-3.5 text-[#334855]" />
                   </button>
                 )}
               </div>

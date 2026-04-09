@@ -70,7 +70,7 @@ export default function OnboardingIntro() {
                 <p className="text-[16px] font-semibold leading-[1.25]" style={{ color: "#111111" }}>
                   {t(step.titleKey)}
                 </p>
-                <p className="text-[15px] mt-1 leading-[1.45]" style={{ color: "#6B7280" }}>
+                <p className="text-[15px] mt-1 leading-[1.45]" style={{ color: "#334855" }}>
                   {t(step.descKey)}
                 </p>
               </div>
@@ -116,7 +116,7 @@ export default function OnboardingIntro() {
             </button>
           </div>
           <div className="flex items-center justify-center gap-1 mt-2.5 pb-0.5">
-            <span className="text-[14px]" style={{ color: "#6B7280" }}>
+            <span className="text-[14px]" style={{ color: "#334855" }}>
               {t("onboarding.intro.alreadyAccount")}
             </span>
             <button

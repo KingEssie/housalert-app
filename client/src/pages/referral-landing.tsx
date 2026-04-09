@@ -86,7 +86,7 @@ export default function ReferralLandingPage() {
 
           {info?.firstName && (
             <p
-              className="text-[16px] text-[#6B7280] mt-3"
+              className="text-[16px] text-[#334855] mt-3"
               data-testid="text-referral-inviter"
             >
               Uitgenodigd door <span className="font-semibold text-[#111]">{info.firstName}</span>
@@ -110,7 +110,7 @@ export default function ReferralLandingPage() {
               <p className="text-[16px] font-semibold text-[#111]">
                 25% korting op je eerste betaling
               </p>
-              <p className="text-[13px] text-[#6B7280] mt-0.5">
+              <p className="text-[13px] text-[#334855] mt-0.5">
                 Automatisch toegepast bij afrekenen
               </p>
             </div>
@@ -141,13 +141,13 @@ export default function ReferralLandingPage() {
           <ArrowRight className="w-5 h-5" />
         </button>
 
-        <p className="text-[12px] text-[#6B7280] text-center mt-4">
+        <p className="text-[12px] text-[#334855] text-center mt-4">
           Geen creditcard nodig · Gratis proefperiode
         </p>
       </main>
 
       <footer className="px-6 py-6 text-center">
-        <p className="text-[11px] text-[#6B7280]">
+        <p className="text-[11px] text-[#334855]">
           © {new Date().getFullYear()} HousAlert · Alle rechten voorbehouden
         </p>
       </footer>

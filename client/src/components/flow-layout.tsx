@@ -75,7 +75,7 @@ export function FlowLayout({
                 <span className="text-ha-primary mr-1.5">{currentStep + 1}</span>
                 {stepTitle}
               </h1>
-              <p className="text-[15px] text-[#374151] leading-relaxed" data-testid="text-step-description">
+              <p className="text-[15px] text-[#334855] leading-relaxed" data-testid="text-step-description">
                 {stepDescription}
               </p>
             </div>
@@ -98,7 +98,7 @@ export function FlowLayout({
               className="flex items-center gap-2 group"
               data-testid="button-flow-mark-complete"
             >
-              <div className={`w-[20px] h-[20px] rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${isCompleted ? "bg-ha-primary border-ha-primary" : "border-[#D1D5DB] group-hover:border-[#9CA3AF]"}`}>
+              <div className={`w-[20px] h-[20px] rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${isCompleted ? "bg-ha-primary border-ha-primary" : "border-[#D1D5DB] group-hover:border-[#334855]"}`}>
                 {isCompleted && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
               </div>
               <span className={`text-[14px] font-medium transition-colors ${isCompleted ? "text-[#111111]" : "text-[#111111] group-hover:text-[#000000]"}`}>

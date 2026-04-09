@@ -102,49 +102,49 @@ function InlineProfileDetails({ accessToken, userEmail }: { accessToken: string;
     }
   }
 
-  if (loading) return <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-[#9CA3AF]" /></div>;
+  if (loading) return <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-[#334855]" /></div>;
 
-  const inputClass = "w-full h-[50px] px-4 rounded-2xl border border-[#E5E7EB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/30 focus:border-ha-primary transition-colors";
-  const readonlyClass = "w-full h-[50px] px-4 rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] text-[15px] text-[#6B7280] cursor-not-allowed";
+  const inputClass = "w-full h-[48px] px-4 rounded-[12px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
+  const readonlyClass = "w-full h-[48px] px-4 rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] text-[16px] text-[#334855] cursor-not-allowed";
   const canSave = firstName.trim() && lastName.trim() && phone.trim();
 
   return (
     <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 flex flex-col gap-4" data-testid="inline-profile-details">
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-[13px] font-semibold text-[#374151] mb-1.5 block">{t("profileDetails.firstName")}</label>
+          <label className="text-[13px] font-semibold text-[#334855] mb-1.5 block">{t("profileDetails.firstName")}</label>
           <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder={t("profileEdit.firstNamePlaceholder")} className={inputClass} data-testid="input-first-name" />
         </div>
         <div>
-          <label className="text-[13px] font-semibold text-[#374151] mb-1.5 block">{t("profileDetails.lastName")}</label>
+          <label className="text-[13px] font-semibold text-[#334855] mb-1.5 block">{t("profileDetails.lastName")}</label>
           <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} placeholder={t("profileEdit.lastNamePlaceholder")} className={inputClass} data-testid="input-last-name" />
         </div>
       </div>
       <div>
-        <label className="text-[13px] font-semibold text-[#374151] mb-1.5 block">{t("profileDetails.email")}</label>
+        <label className="text-[13px] font-semibold text-[#334855] mb-1.5 block">{t("profileDetails.email")}</label>
         <div className="relative">
-          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#334855]" />
           <input type="email" value={userEmail} readOnly className={`${readonlyClass} pl-10`} data-testid="input-email-readonly" />
         </div>
       </div>
       <div>
-        <label className="text-[13px] font-semibold text-[#374151] mb-1.5 block">{t("profileDetails.phone")}</label>
+        <label className="text-[13px] font-semibold text-[#334855] mb-1.5 block">{t("profileDetails.phone")}</label>
         <div className="relative">
-          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#334855]" />
           <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder={t("profileEdit.phonePlaceholder")} className={`${inputClass} pl-10`} data-testid="input-phone" />
         </div>
       </div>
       <div>
-        <label className="text-[13px] font-semibold text-[#374151] mb-1.5 block">{t("profileDetails.birthDate")}</label>
+        <label className="text-[13px] font-semibold text-[#334855] mb-1.5 block">{t("profileDetails.birthDate")}</label>
         <div className="relative">
-          <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+          <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#334855]" />
           <input type="date" value={birthDate} onChange={e => setBirthDate(e.target.value)} className={`${inputClass} pl-10`} data-testid="input-birth-date" />
         </div>
       </div>
       <div>
-        <label className="text-[13px] font-semibold text-[#374151] mb-1.5 block">{t("profileEdit.occupation")}</label>
+        <label className="text-[13px] font-semibold text-[#334855] mb-1.5 block">{t("profileEdit.occupation")}</label>
         <div className="relative">
-          <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9CA3AF]" />
+          <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#334855]" />
           <input type="text" value={occupation} onChange={e => setOccupation(e.target.value)} placeholder={t("profileEdit.occupationPlaceholder")} className={`${inputClass} pl-10`} data-testid="input-occupation" />
         </div>
       </div>
@@ -200,7 +200,7 @@ function InlineNotifications({ accessToken }: { accessToken: string }) {
     }
   }
 
-  if (loading) return <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-[#9CA3AF]" /></div>;
+  if (loading) return <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-[#334855]" /></div>;
   if (!settings) return null;
 
   const anyEnabled = settings.push_enabled || settings.email_enabled;
@@ -256,7 +256,7 @@ function NotifToggleRow({ icon, label, subtitle, badge, enabled, loading, onTogg
             <span className="text-[11px] font-semibold text-ha-primary bg-[#FDF1F6] px-2 py-0.5 rounded-full">{badge}</span>
           )}
         </div>
-        <p className="text-[13px] text-[#6B7280] mt-0.5 leading-snug">{subtitle}</p>
+        <p className="text-[13px] text-[#334855] mt-0.5 leading-snug">{subtitle}</p>
       </div>
       <div className={`w-[46px] h-[26px] rounded-full transition-colors flex items-center px-0.5 flex-shrink-0 mt-0.5 ${enabled ? "bg-[#111111]" : "bg-[#D1D5DB]"}`}>
         <div className={`w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${enabled ? "translate-x-[20px]" : "translate-x-0"}`} />
@@ -306,16 +306,16 @@ function InlineSearchBuddy({ accessToken }: { accessToken: string }) {
     }
   }
 
-  if (loading) return <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-[#9CA3AF]" /></div>;
+  if (loading) return <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-[#334855]" /></div>;
 
-  const inputClass = "w-full h-[50px] px-4 rounded-2xl border border-[#E5E7EB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/30 focus:border-ha-primary transition-colors";
+  const inputClass = "w-full h-[48px] px-4 rounded-[12px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
 
   return (
     <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 flex flex-col gap-4" data-testid="inline-search-buddy">
       <div>
-        <label className="text-[13px] font-semibold text-[#374151] mb-1.5 block">{t("profileEdit.searchBuddyLabel")}</label>
+        <label className="text-[13px] font-semibold text-[#334855] mb-1.5 block">{t("profileEdit.searchBuddyLabel")}</label>
         <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={t("profileEdit.searchBuddyPlaceholder")} className={inputClass} data-testid="input-buddy-email" />
-        <p className="text-[13px] text-[#6B7280] mt-2 leading-snug">{t("profileEdit.searchBuddyDesc")}</p>
+        <p className="text-[13px] text-[#334855] mt-2 leading-snug">{t("profileEdit.searchBuddyDesc")}</p>
       </div>
       {existing && (
         <div className="flex items-center gap-2 py-2 px-3 bg-[#F0FDF4] rounded-xl">
@@ -367,7 +367,7 @@ function TipSection({ title, items }: { title?: string; items: string[] }) {
       <ul className="flex flex-col gap-1.5 pl-1">
         {items.map((item, i) => (
           <li key={i} className="flex items-start gap-2.5 text-[14px] text-[#1F2937] leading-snug">
-            <span className="text-[#9CA3AF] mt-1.5 text-[7px]">●</span>
+            <span className="text-[#334855] mt-1.5 text-[7px]">●</span>
             <span>{item}</span>
           </li>
         ))}
@@ -401,7 +401,7 @@ function RegionAccordion({ regions }: { regions: RegionData[] }) {
             data-testid={`region-toggle-${i}`}
           >
             <span className="text-[15px] font-semibold text-[#111111]">{r.name}</span>
-            <ChevronDown className={`w-4 h-4 text-[#9CA3AF] transition-transform ${openIdx === i ? "rotate-180" : ""}`} />
+            <ChevronDown className={`w-4 h-4 text-[#334855] transition-transform ${openIdx === i ? "rotate-180" : ""}`} />
           </button>
           {openIdx === i && (
             <ul className="px-5 pb-4 flex flex-col gap-2.5">
@@ -529,9 +529,9 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
       <p className="text-[14px] text-[#1F2937] leading-relaxed">Speur ook zelf naar Facebook-groepen die woningen delen in jouw stad of regio.</p>
       <p className="text-[14px] text-[#1F2937] leading-relaxed">Gebruik in Facebook zoekopdrachten zoals:</p>
       <ul className="flex flex-col gap-1.5 pl-1">
-        <li className="flex items-start gap-2 text-[14px] text-[#1F2937] leading-snug"><span className="text-[#9CA3AF] mt-1.5 text-[7px]">●</span><span>Wohnung + stad</span></li>
-        <li className="flex items-start gap-2 text-[14px] text-[#1F2937] leading-snug"><span className="text-[#9CA3AF] mt-1.5 text-[7px]">●</span><span>WG Zimmer + stad</span></li>
-        <li className="flex items-start gap-2 text-[14px] text-[#1F2937] leading-snug"><span className="text-[#9CA3AF] mt-1.5 text-[7px]">●</span><span>Wohnung mieten + stad</span></li>
+        <li className="flex items-start gap-2 text-[14px] text-[#1F2937] leading-snug"><span className="text-[#334855] mt-1.5 text-[7px]">●</span><span>Wohnung + stad</span></li>
+        <li className="flex items-start gap-2 text-[14px] text-[#1F2937] leading-snug"><span className="text-[#334855] mt-1.5 text-[7px]">●</span><span>WG Zimmer + stad</span></li>
+        <li className="flex items-start gap-2 text-[14px] text-[#1F2937] leading-snug"><span className="text-[#334855] mt-1.5 text-[7px]">●</span><span>Wohnung mieten + stad</span></li>
       </ul>
       <p className="text-[14px] text-[#1F2937] leading-relaxed">Word lid van meerdere groepen en zet meldingen aan, zodat je direct op de hoogte bent van nieuw aanbod.</p>
     </TipBody>

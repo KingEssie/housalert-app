@@ -53,7 +53,7 @@ function LanguageDropdown() {
       >
         <span className="text-[14px]">{current.flag}</span>
         <span className="text-[12px] font-semibold text-[#111111]">{current.label}</span>
-        <ChevronDown className={`w-3.5 h-3.5 text-[#6B7280] transition-transform ${open ? "rotate-180" : ""}`} />
+        <ChevronDown className={`w-3.5 h-3.5 text-[#334855] transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
@@ -184,7 +184,7 @@ export default function WelcomePage() {
         <div>
           <form onSubmit={handleLogin} className="flex flex-col gap-5">
             <div className="flex flex-col gap-1.5">
-              <label className="text-[14px] font-medium" style={{ color: "#374151" }} htmlFor="welcome-email">
+              <label className="text-[14px] font-medium" style={{ color: "#334855" }} htmlFor="welcome-email">
                 {t("v2.welcome.emailLabel")}
               </label>
               <input
@@ -202,7 +202,7 @@ export default function WelcomePage() {
                   border: "2px solid transparent",
                   padding: "0 16px",
                   fontSize: "16px",
-                  color: "#111827",
+                  color: "#111111",
                 }}
                 onFocus={(e) => {
                   e.currentTarget.style.borderColor = "rgb(217,26,104)";
@@ -217,7 +217,7 @@ export default function WelcomePage() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-[14px] font-medium" style={{ color: "#374151" }} htmlFor="welcome-password">
+              <label className="text-[14px] font-medium" style={{ color: "#334855" }} htmlFor="welcome-password">
                 {t("v2.welcome.passwordLabel")}
               </label>
               <div className="relative">
@@ -236,7 +236,7 @@ export default function WelcomePage() {
                     border: "2px solid transparent",
                     padding: "0 48px 0 16px",
                     fontSize: "16px",
-                    color: "#111827",
+                    color: "#111111",
                   }}
                   onFocus={(e) => {
                     e.currentTarget.style.borderColor = "rgb(217,26,104)";
@@ -252,7 +252,7 @@ export default function WelcomePage() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors bg-transparent border-0 cursor-pointer p-0"
-                  style={{ color: "#6B7280" }}
+                  style={{ color: "#334855" }}
                   tabIndex={-1}
                   data-testid="button-toggle-password"
                 >
@@ -302,7 +302,7 @@ export default function WelcomePage() {
 
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
-            <span className="text-[13px] font-semibold" style={{ color: "#9CA3AF" }}>
+            <span className="text-[13px] font-semibold" style={{ color: "#334855" }}>
               {t("v2.welcome.or") || "OF"}
             </span>
             <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
@@ -331,7 +331,7 @@ export default function WelcomePage() {
         <div className="flex-1 min-h-[16px]" />
 
         <div className="flex items-center justify-center gap-2.5 pt-3 pb-2">
-          <span className="text-[13px] font-semibold" style={{ color: "#6B7280" }}>
+          <span className="text-[13px] font-semibold" style={{ color: "#334855" }}>
             Trustpilot
           </span>
           <div className="flex items-center gap-[3px]">
@@ -349,7 +349,7 @@ export default function WelcomePage() {
               </div>
             ))}
           </div>
-          <span className="text-[14px] font-semibold" style={{ color: "#6B7280" }}>
+          <span className="text-[14px] font-semibold" style={{ color: "#334855" }}>
             4.8
           </span>
         </div>

@@ -136,7 +136,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
         <h1 className="text-page-title" data-testid="heading-tips">
           {t("tips.pageTitle")}
         </h1>
-        <p className="text-[15px] text-[#6B7280] mt-2 leading-relaxed" data-testid="text-tips-subtitle">
+        <p className="text-[15px] text-[#334855] mt-2 leading-relaxed" data-testid="text-tips-subtitle">
           {t("tips.pageSubtitle")}
         </p>
       </div>
@@ -172,13 +172,13 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
                     className="w-full flex items-center gap-[14px] px-5 py-4 text-left active:bg-[#F9FAFB] transition-colors"
                     data-testid={`row-guide-${guide.id}`}
                   >
-                    <GuideIcon className={`w-6 h-6 flex-shrink-0 ${isRead ? "text-[#9CA3AF]" : "text-[#111111]"}`} strokeWidth={1.6} />
+                    <GuideIcon className={`w-6 h-6 flex-shrink-0 ${isRead ? "text-[#334855]" : "text-[#111111]"}`} strokeWidth={1.6} />
                     <div className="flex-1 min-w-0">
-                      <p className={`text-[15px] leading-snug truncate ${isRead ? "text-[#9CA3AF]" : "font-medium text-[#111111]"}`}>
+                      <p className={`text-[15px] leading-snug truncate ${isRead ? "text-[#334855]" : "font-medium text-[#111111]"}`}>
                         {guide.title}
                       </p>
                       {guide.description && (
-                        <p className="text-[13px] text-[#6B7280] mt-0.5 truncate">{guide.description}</p>
+                        <p className="text-[13px] text-[#334855] mt-0.5 truncate">{guide.description}</p>
                       )}
                     </div>
                     {isRead ? (

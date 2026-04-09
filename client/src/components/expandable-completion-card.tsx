@@ -106,7 +106,7 @@ export function ExpandableCompletionCard({
         )}
         <div className="flex-1 min-w-0">
           <p className="text-[17px] font-bold text-[#111111] leading-snug tracking-[-0.01em]">{title}</p>
-          <p className={`text-[13px] mt-1 ${allDone ? "text-[#16A34A] font-semibold" : "text-[#9CA3AF] font-medium"}`}>
+          <p className={`text-[13px] mt-1 ${allDone ? "text-[#16A34A] font-semibold" : "text-[#334855] font-medium"}`}>
             {allDone
               ? completedLabel
               : subtitleFormat
@@ -115,7 +115,7 @@ export function ExpandableCompletionCard({
           </p>
         </div>
         <ChevronDown
-          className={`w-5 h-5 text-[#9CA3AF] flex-shrink-0 transition-transform duration-200 ${
+          className={`w-5 h-5 text-[#334855] flex-shrink-0 transition-transform duration-200 ${
             expanded ? "rotate-180" : ""
           }`}
         />
@@ -143,7 +143,7 @@ export function ExpandableCompletionCard({
                   <span
                     className={`w-[26px] h-[26px] rounded-full flex items-center justify-center flex-shrink-0 text-[12px] font-bold ${
                       step.completed
-                        ? "bg-[#E5E7EB] text-[#9CA3AF]"
+                        ? "bg-[#E5E7EB] text-[#334855]"
                         : "bg-[#111111] text-white"
                     }`}
                   >
@@ -152,7 +152,7 @@ export function ExpandableCompletionCard({
                   <span
                     className={`text-[14px] flex-1 leading-snug ${
                       step.completed
-                        ? "text-[#9CA3AF] font-normal line-through decoration-[#D1D5DB]"
+                        ? "text-[#334855] font-normal line-through decoration-[#D1D5DB]"
                         : "text-[#111111] font-medium"
                     }`}
                   >
@@ -165,11 +165,11 @@ export function ExpandableCompletionCard({
                       </div>
                     ) : step.stepType === "inline" ? (
                       <ChevronDown
-                        className={`w-[18px] h-[18px] text-[#9CA3AF] transition-transform duration-200 ${isInlineOpen ? "rotate-180" : ""}`}
+                        className={`w-[18px] h-[18px] text-[#334855] transition-transform duration-200 ${isInlineOpen ? "rotate-180" : ""}`}
                         strokeWidth={2}
                       />
                     ) : (
-                      <ChevronRight className="w-[18px] h-[18px] text-[#9CA3AF]" strokeWidth={2} />
+                      <ChevronRight className="w-[18px] h-[18px] text-[#334855]" strokeWidth={2} />
                     )}
                   </div>
                 </button>

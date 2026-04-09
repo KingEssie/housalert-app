@@ -147,7 +147,7 @@ export function SubscriptionCancelConfirmPage() {
         <div className="app-card">
           <div className="flex items-center justify-center mb-5">
             <div className="w-14 h-14 rounded-[6px] bg-[#F9FAFB] flex items-center justify-center">
-              <AlertCircle className="w-7 h-7 text-[#6B7280]" />
+              <AlertCircle className="w-7 h-7 text-[#334855]" />
             </div>
           </div>
 

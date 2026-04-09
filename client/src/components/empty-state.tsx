@@ -31,7 +31,7 @@ export function EmptyState({ illustration, title, description, ctaLabel, onCtaCl
       <h2 className="text-[20px] font-bold text-[#000000] leading-snug mb-2" data-testid="text-empty-title">
         {title}
       </h2>
-      <p className="text-[15px] text-[#6B7280] leading-relaxed max-w-[280px] mb-8" data-testid="text-empty-description">
+      <p className="text-[15px] text-[#334855] leading-relaxed max-w-[280px] mb-8" data-testid="text-empty-description">
         {description}
       </p>
       {ctaLabel && onCtaClick && (

@@ -83,7 +83,7 @@ export default function DocumentsPage() {
             <FileText className="w-5 h-5 text-ha-icon-secondary" />
             <div>
               <p className="text-[15px] font-semibold text-[#111111]">{t("documents.heading")}</p>
-              <p className="text-[12px] text-[#6B7280]">
+              <p className="text-[12px] text-[#334855]">
                 {checkedCount}/{DOCUMENT_ITEMS.length} {t("documents.collected")}
               </p>
             </div>

@@ -127,7 +127,7 @@ export default function CheckoutSuccessPage() {
           {status === "error" && "Er ging iets mis"}
         </h1>
 
-        <p className="text-[15px] text-[#6B7280]" data-testid="text-checkout-subtitle">
+        <p className="text-[15px] text-[#334855]" data-testid="text-checkout-subtitle">
           {status === "loading" && "Even geduld, we activeren je account."}
           {status === "success" && "Je wordt doorgestuurd naar de app..."}
           {status === "error" && errorMsg}
@@ -146,7 +146,7 @@ export default function CheckoutSuccessPage() {
             </button>
             <button
               onClick={() => navigate("/home")}
-              className="h-[44px] rounded-[10px] text-[15px] font-medium text-[#6B7280] hover:bg-[#F9FAFB] transition-colors"
+              className="h-[44px] rounded-[10px] text-[15px] font-medium text-[#334855] hover:bg-[#F9FAFB] transition-colors"
               data-testid="button-go-home"
             >
               Ga naar de app

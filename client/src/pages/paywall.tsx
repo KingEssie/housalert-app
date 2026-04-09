@@ -52,7 +52,7 @@ function getPlans(t: (k: string) => string): Plan[] {
       perMonth: "€24,99 " + t("paywall.perMonth"),
       popular: false,
       discountLabel: "0%",
-      discountColor: "#6B7280",
+      discountColor: "#334855",
     },
   ];
 }
@@ -279,7 +279,7 @@ function WebsitePaywall({
           <p className="text-[15px] font-semibold mb-1" style={{ color: "#111111" }}>
             Probeer HousAlert zonder risico!
           </p>
-          <p className="text-[13px] leading-[1.55]" style={{ color: "#6B7280" }}>
+          <p className="text-[13px] leading-[1.55]" style={{ color: "#334855" }}>
             Ben je binnen 14 dagen niet tevreden over HousAlert? Dan krijg jij het volledige bedrag terug. Zonder fratsen.
           </p>
         </div>

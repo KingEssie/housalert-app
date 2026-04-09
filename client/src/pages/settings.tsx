@@ -117,9 +117,9 @@ export default function SettingsPage() {
                     >
                       <p className="text-[15px] font-semibold text-[#111111] flex-1">{row.label}</p>
                       {row.external ? (
-                        <ExternalLink className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
+                        <ExternalLink className="w-4 h-4 text-[#334855] flex-shrink-0" />
                       ) : (
-                        <ChevronRight className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
+                        <ChevronRight className="w-4 h-4 text-[#334855] flex-shrink-0" />
                       )}
                     </button>
                   </div>
@@ -144,7 +144,7 @@ export default function SettingsPage() {
               className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-ha-surface-active transition-colors"
               data-testid="button-delete-account"
             >
-              <Trash2 className="w-5 h-5 text-[#6B7280] flex-shrink-0" />
+              <Trash2 className="w-5 h-5 text-[#334855] flex-shrink-0" />
               <p className="text-[15px] text-ha-text-muted flex-1">{t("profile.deleteAccount")}</p>
             </button>
           </div>

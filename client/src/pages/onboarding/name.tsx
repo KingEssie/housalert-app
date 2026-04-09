@@ -81,13 +81,13 @@ export default function OnboardingName() {
               {t("onboarding.name.firstNameLabel") || "Vorname"}
             </label>
             <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#6B7280" }} />
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#334855" }} />
               <input
                 type="text"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 placeholder={t("onboarding.name.firstNamePlaceholder") || "Max"}
-                className={`w-full h-[56px] pl-12 pr-4 rounded-[6px] text-[15px] font-medium ${w ? "ha-field" : "ob-input"}`}
+                className={`w-full h-[48px] pl-12 pr-4 rounded-[12px] text-[16px] font-medium ${w ? "ha-field" : "ob-input"}`}
                 style={w ? { backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text } : undefined}
                 autoFocus
                 data-testid="input-first-name"
@@ -100,13 +100,13 @@ export default function OnboardingName() {
               {t("onboarding.name.lastNameLabel") || "Nachname"}
             </label>
             <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#6B7280" }} />
+              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#334855" }} />
               <input
                 type="text"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 placeholder={t("onboarding.name.lastNamePlaceholder") || "Mustermann"}
-                className={`w-full h-[56px] pl-12 pr-4 rounded-[6px] text-[15px] font-medium ${w ? "ha-field" : "ob-input"}`}
+                className={`w-full h-[48px] pl-12 pr-4 rounded-[12px] text-[16px] font-medium ${w ? "ha-field" : "ob-input"}`}
                 style={w ? { backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text } : undefined}
                 data-testid="input-last-name"
               />
@@ -119,7 +119,7 @@ export default function OnboardingName() {
         <button
           onClick={handleNext}
           disabled={!firstName.trim()}
-          className="w-full h-[56px] rounded-[6px] text-[15px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50"
+          className="w-full h-[48px] rounded-[12px] text-[16px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50"
           style={{ background: T.pink, boxShadow: firstName.trim() ? T.pinkShadow : "none" }}
           data-testid="button-name-next"
         >

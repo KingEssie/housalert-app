@@ -20,11 +20,11 @@ export function HighlightCard({ icon: Icon, title, subtitle, overline, ctaLabel,
       <div className="flex flex-col items-center">
         <Icon className="w-[32px] h-[32px] text-[#111111] mb-4" strokeWidth={1.6} />
         {overline && (
-          <p className="text-[13px] font-semibold text-[#6B7280] mb-1">{overline}</p>
+          <p className="text-[13px] font-semibold text-[#334855] mb-1">{overline}</p>
         )}
         <p className="text-[18px] font-semibold text-[#111111] leading-snug">{title}</p>
         {subtitle && (
-          <p className="text-[15px] text-[#6B7280] mt-1.5 leading-relaxed max-w-[280px]">{subtitle}</p>
+          <p className="text-[15px] text-[#334855] mt-1.5 leading-relaxed max-w-[280px]">{subtitle}</p>
         )}
       </div>
       {ctaLabel && (

@@ -46,17 +46,17 @@ function StatusBadge({ status }: { status: string }) {
     operational: { cls: "bg-emerald-50 text-emerald-700 border-emerald-200", label: "Operational" },
     trial: { cls: "bg-orange-50 text-ha-primary border-orange-200", label: "Trial" },
     canceled: { cls: "bg-ha-danger/5 text-ha-danger border-ha-danger/20", label: "Canceled" },
-    expired: { cls: "bg-[#F7F7F7] text-[#6B7280] border-[#E5E7EB]", label: "Expired" },
+    expired: { cls: "bg-[#F7F7F7] text-[#334855] border-[#E5E7EB]", label: "Expired" },
     error: { cls: "bg-ha-danger/5 text-ha-danger border-ha-danger/20", label: "Error" },
     warning: { cls: "bg-amber-50 text-amber-700 border-amber-200", label: "Warning" },
-    disabled: { cls: "bg-[#F7F7F7] text-[#6B7280] border-[#E5E7EB]", label: "Disabled" },
+    disabled: { cls: "bg-[#F7F7F7] text-[#334855] border-[#E5E7EB]", label: "Disabled" },
     success: { cls: "bg-emerald-50 text-emerald-700 border-emerald-200", label: "Success" },
     partial: { cls: "bg-amber-50 text-amber-700 border-amber-200", label: "Partial" },
     failed: { cls: "bg-ha-danger/5 text-ha-danger border-ha-danger/20", label: "Failed" },
     broken: { cls: "bg-ha-danger/5 text-ha-danger border-ha-danger/20", label: "Broken" },
     degraded: { cls: "bg-amber-50 text-amber-700 border-amber-200", label: "Degraded" },
   };
-  const m = map[status] || { cls: "bg-[#F7F7F7] text-[#6B7280] border-[#E5E7EB]", label: status };
+  const m = map[status] || { cls: "bg-[#F7F7F7] text-[#334855] border-[#E5E7EB]", label: status };
   return <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold border ${m.cls}`}>{m.label}</span>;
 }
 
@@ -75,11 +75,11 @@ function MetricCard({ label, value, sub, icon: Icon }: { label: string; value: s
   return (
     <div className={`${CARD} p-4`} data-testid={`metric-${label.toLowerCase().replace(/\s/g, "-")}`}>
       <div className="flex items-center gap-2 mb-2">
-        <Icon className="w-4 h-4 text-[#6B7280]" />
-        <span className="text-[11px] text-[#6B7280] font-medium uppercase tracking-wide">{label}</span>
+        <Icon className="w-4 h-4 text-[#334855]" />
+        <span className="text-[11px] text-[#334855] font-medium uppercase tracking-wide">{label}</span>
       </div>
       <p className="text-[22px] font-bold text-[#111]">{value}</p>
-      {sub && <p className="text-[11px] text-[#9CA3AF] mt-0.5">{sub}</p>}
+      {sub && <p className="text-[11px] text-[#334855] mt-0.5">{sub}</p>}
     </div>
   );
 }
@@ -87,9 +87,9 @@ function MetricCard({ label, value, sub, icon: Icon }: { label: string; value: s
 function EmptyState({ title, message, onRetry }: { title: string; message: string; onRetry?: () => void }) {
   return (
     <div className={`${CARD} p-8 text-center`}>
-      <Database className="w-6 h-6 text-[#9CA3AF] mx-auto mb-3" />
+      <Database className="w-6 h-6 text-[#334855] mx-auto mb-3" />
       <h4 className="text-[15px] font-semibold text-[#111] mb-1">{title}</h4>
-      <p className="text-[13px] text-[#6B7280] mb-4">{message}</p>
+      <p className="text-[13px] text-[#334855] mb-4">{message}</p>
       {onRetry && <Button variant="outline" size="sm" onClick={onRetry} className="rounded-full" data-testid="button-retry">Try again</Button>}
     </div>
   );
@@ -108,7 +108,7 @@ function ConfirmDialog({ title, message, onConfirm, onCancel }: { title: string;
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={onCancel}>
       <div className={`${CARD} p-6 max-w-sm w-full`} onClick={e => e.stopPropagation()}>
         <h3 className="text-[16px] font-bold text-[#111] mb-2">{title}</h3>
-        <p className="text-[13px] text-[#6B7280] mb-5">{message}</p>
+        <p className="text-[13px] text-[#334855] mb-5">{message}</p>
         <div className="flex gap-3 justify-end">
           <Button variant="outline" size="sm" onClick={onCancel} className="rounded-full" data-testid="button-cancel">Cancel</Button>
           <Button size="sm" onClick={onConfirm} className="rounded-full bg-ha-danger hover:bg-ha-danger/90 text-white" data-testid="button-confirm">Confirm</Button>
@@ -154,10 +154,10 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-[24px] font-bold text-[#111]" data-testid="text-greeting">{getGreeting()}, {userName}</h1>
-          <p className="text-[13px] text-[#6B7280] mt-0.5">Here's what's happening today</p>
+          <p className="text-[13px] text-[#334855] mt-0.5">Here's what's happening today</p>
         </div>
         <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-[#F7F7F7] flex items-center justify-center hover:bg-[#EFEFEF] transition-colors" data-testid="button-refresh-dashboard">
-          <RefreshCw className={`w-4 h-4 text-[#6B7280] ${refreshing ? "animate-spin" : ""}`} />
+          <RefreshCw className={`w-4 h-4 text-[#334855] ${refreshing ? "animate-spin" : ""}`} />
         </button>
       </div>
 
@@ -172,7 +172,7 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
                   <span className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${sColor}`} />
                   <div className="flex-1 min-w-0">
                     <p className="text-[13px] font-semibold text-[#111] leading-snug">{a.message}</p>
-                    <p className="text-[11px] text-[#6B7280] mt-0.5">{new Date(a.timestamp).toLocaleTimeString()}</p>
+                    <p className="text-[11px] text-[#334855] mt-0.5">{new Date(a.timestamp).toLocaleTimeString()}</p>
                   </div>
                 </div>
               );
@@ -202,7 +202,7 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
             { label: "Matches this week", value: data.matchesWeek },
           ].map(({ label, value }) => (
             <div key={label} className="flex items-center justify-between text-[13px]">
-              <span className="text-[#6B7280]">{label}</span>
+              <span className="text-[#334855]">{label}</span>
               <span className="font-semibold text-[#111]">{value}</span>
             </div>
           ))}
@@ -226,7 +226,7 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
                 <div key={city} className="flex items-center gap-3 px-4 py-3">
                   <StatusDot status={info.issues > 0 ? "warning" : "active"} />
                   <span className="text-[13px] font-medium text-[#111] flex-1">{city}</span>
-                  <span className="text-[12px] text-[#6B7280]">{info.total} listings</span>
+                  <span className="text-[12px] text-[#334855]">{info.total} listings</span>
                   <StatusBadge status={info.issues > 0 ? "degraded" : "active"} />
                 </div>
               ));
@@ -248,7 +248,7 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
           ].map(({ icon: Icon, label, tab }) => (
             <button key={tab} onClick={() => onNavigate(tab)} className={`${CARD} p-3 flex flex-col items-center gap-1.5 hover:bg-[#FAFAFA] transition-colors`} data-testid={`quick-${tab}`}>
               <Icon className="w-5 h-5 text-[#111]" />
-              <span className="text-[11px] font-medium text-[#6B7280]">{label}</span>
+              <span className="text-[11px] font-medium text-[#334855]">{label}</span>
             </button>
           ))}
         </div>
@@ -365,7 +365,7 @@ function ListingsTab() {
                 <h2 className="text-[18px] font-bold text-[#111]">{detail.title || "Untitled"}</h2>
                 <div className="flex gap-1.5">
                   {detail.featured && <Badge className="bg-amber-50 text-amber-700 border-amber-200 text-[10px]">Aanrader</Badge>}
-                  {detail.hidden_from_feed && <Badge className="bg-[#F7F7F7] text-[#6B7280] text-[10px]">Hidden</Badge>}
+                  {detail.hidden_from_feed && <Badge className="bg-[#F7F7F7] text-[#334855] text-[10px]">Hidden</Badge>}
                 </div>
               </div>
               {detail.image_url && (
@@ -384,7 +384,7 @@ function ListingsTab() {
                   ["Created", detail.created_at ? new Date(detail.created_at).toLocaleString() : "—"],
                 ].map(([k, v]) => (
                   <div key={k} className="flex justify-between">
-                    <span className="text-[#6B7280]">{k}</span>
+                    <span className="text-[#334855]">{k}</span>
                     <span className="font-medium text-[#111] max-w-[60%] truncate text-right">{v}</span>
                   </div>
                 ))}
@@ -404,7 +404,7 @@ function ListingsTab() {
                     <Star className="w-4 h-4 text-amber-500" />
                     <div>
                       <p className="text-[13px] font-medium text-[#111]">Featured (Aanrader)</p>
-                      <p className="text-[11px] text-[#6B7280]">Prioritize in user feeds</p>
+                      <p className="text-[11px] text-[#334855]">Prioritize in user feeds</p>
                     </div>
                   </div>
                   <button onClick={toggleFeatured} disabled={saving} className="relative" data-testid="toggle-featured">
@@ -413,10 +413,10 @@ function ListingsTab() {
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <EyeOff className="w-4 h-4 text-[#6B7280]" />
+                    <EyeOff className="w-4 h-4 text-[#334855]" />
                     <div>
                       <p className="text-[13px] font-medium text-[#111]">Hide from feed</p>
-                      <p className="text-[11px] text-[#6B7280]">Remove from user matching</p>
+                      <p className="text-[11px] text-[#334855]">Remove from user matching</p>
                     </div>
                   </div>
                   <button onClick={toggleHidden} disabled={saving} className="relative" data-testid="toggle-hidden">
@@ -437,18 +437,18 @@ function ListingsTab() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-[24px] font-bold text-[#111]">Listings</h1>
-        <span className="text-[13px] text-[#6B7280]">{total} total</span>
+        <span className="text-[13px] text-[#334855]">{total} total</span>
       </div>
 
       <div className="flex gap-2">
-        <input placeholder="Filter by city..." value={cityInput} onChange={e => { setCityInput(e.target.value); setPage(1); }} className="flex-1 h-10 px-4 rounded-xl bg-[#F7F7F7] text-[13px] text-[#111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-listing-city" />
-        <input placeholder="Filter by source..." value={sourceInput} onChange={e => { setSourceInput(e.target.value); setPage(1); }} className="flex-1 h-10 px-4 rounded-xl bg-[#F7F7F7] text-[13px] text-[#111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-listing-source" />
+        <input placeholder="Filter by city..." value={cityInput} onChange={e => { setCityInput(e.target.value); setPage(1); }} className="flex-1 h-10 px-4 rounded-xl bg-[#F7F7F7] text-[13px] text-[#111] placeholder:text-[#334855] focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-listing-city" />
+        <input placeholder="Filter by source..." value={sourceInput} onChange={e => { setSourceInput(e.target.value); setPage(1); }} className="flex-1 h-10 px-4 rounded-xl bg-[#F7F7F7] text-[13px] text-[#111] placeholder:text-[#334855] focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-listing-source" />
       </div>
 
       {loading ? <LoadingState /> : (
         <div className={`${CARD} divide-y divide-[#F7F7F7]`}>
           {listings.length === 0 ? (
-            <div className="px-4 py-8 text-center text-[13px] text-[#6B7280]">No listings found</div>
+            <div className="px-4 py-8 text-center text-[13px] text-[#334855]">No listings found</div>
           ) : listings.map(l => (
             <div key={l.id} className="px-4 py-3" data-testid={`listing-row-${l.id}`}>
               {editingId === l.id ? (
@@ -476,9 +476,9 @@ function ListingsTab() {
                     <div className="flex items-center gap-1.5">
                       <p className="text-[13px] font-semibold text-[#111] truncate">{l.title || "Untitled"}</p>
                       {l.featured && <Star className="w-3 h-3 text-amber-500 flex-shrink-0" />}
-                      {l.hidden_from_feed && <EyeOff className="w-3 h-3 text-[#9CA3AF] flex-shrink-0" />}
+                      {l.hidden_from_feed && <EyeOff className="w-3 h-3 text-[#334855] flex-shrink-0" />}
                     </div>
-                    <div className="flex items-center gap-2 text-[11px] text-[#6B7280] mt-0.5">
+                    <div className="flex items-center gap-2 text-[11px] text-[#334855] mt-0.5">
                       <Badge variant="secondary" className="text-[10px] px-1.5 py-0">{l.source}</Badge>
                       <span>{l.city}</span>
                       <span>€{l.price || "—"}</span>
@@ -487,14 +487,14 @@ function ListingsTab() {
                   </div>
                   <div className="flex gap-1 flex-shrink-0">
                     <button onClick={() => startEdit(l)} className="w-8 h-8 rounded-lg bg-[#F7F7F7] flex items-center justify-center hover:bg-[#EFEFEF]" data-testid={`button-edit-${l.id}`}>
-                      <Pencil className="w-3.5 h-3.5 text-[#6B7280]" />
+                      <Pencil className="w-3.5 h-3.5 text-[#334855]" />
                     </button>
                     <button onClick={() => setDeleteConfirm(l.id)} className="w-8 h-8 rounded-lg bg-[#F7F7F7] flex items-center justify-center hover:bg-ha-danger/10" data-testid={`button-delete-${l.id}`}>
                       <Trash2 className="w-3.5 h-3.5 text-ha-danger" />
                     </button>
                     {l.url && (
                       <a href={l.url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg bg-[#F7F7F7] flex items-center justify-center hover:bg-[#EFEFEF]" data-testid={`link-ext-${l.id}`}>
-                        <ExternalLink className="w-3.5 h-3.5 text-[#6B7280]" />
+                        <ExternalLink className="w-3.5 h-3.5 text-[#334855]" />
                       </a>
                     )}
                   </div>
@@ -508,7 +508,7 @@ function ListingsTab() {
       {total > 50 && (
         <div className="flex items-center justify-between">
           <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="rounded-full" data-testid="button-listing-prev">Previous</Button>
-          <span className="text-[12px] text-[#6B7280]">Page {page} of {Math.ceil(total / 50)}</span>
+          <span className="text-[12px] text-[#334855]">Page {page} of {Math.ceil(total / 50)}</span>
           <Button variant="outline" size="sm" disabled={listings.length < 50} onClick={() => setPage(p => p + 1)} className="rounded-full" data-testid="button-listing-next">Next</Button>
         </div>
       )}
@@ -621,19 +621,19 @@ function ImagesTab() {
           </div>
           {backfillStatus.lastRun && (
             <div className={`${CARD} p-4 mt-3`}>
-              <p className="text-[12px] text-[#6B7280] font-medium mb-1">Last run</p>
+              <p className="text-[12px] text-[#334855] font-medium mb-1">Last run</p>
               <p className="text-[13px] text-[#111] font-medium">{new Date(backfillStatus.lastRun.timestamp).toLocaleString()}</p>
-              <p className="text-[11px] text-[#6B7280]">Duration: {backfillStatus.lastRun.duration_ms}ms · Updated: {backfillStatus.lastRun.updated} · Failed: {backfillStatus.lastRun.failed}</p>
+              <p className="text-[11px] text-[#334855]">Duration: {backfillStatus.lastRun.duration_ms}ms · Updated: {backfillStatus.lastRun.updated} · Failed: {backfillStatus.lastRun.failed}</p>
             </div>
           )}
           {backfillStatus.recentRuns && backfillStatus.recentRuns.length > 0 && (
             <div className={`${CARD} mt-3 divide-y divide-[#F7F7F7]`}>
               <div className="px-4 py-2">
-                <p className="text-[12px] font-semibold text-[#6B7280] uppercase tracking-wider">Recent runs</p>
+                <p className="text-[12px] font-semibold text-[#334855] uppercase tracking-wider">Recent runs</p>
               </div>
               {backfillStatus.recentRuns.slice(0, 8).map((run: any, i: number) => (
                 <div key={i} className="px-4 py-2.5 flex items-center justify-between text-[12px]">
-                  <span className="text-[#6B7280]">{new Date(run.started_at).toLocaleString()}</span>
+                  <span className="text-[#334855]">{new Date(run.started_at).toLocaleString()}</span>
                   <div className="flex items-center gap-2">
                     <span className="text-[#111] font-medium">{run.updated}/{run.total}</span>
                     <StatusBadge status={run.updated > 0 ? "success" : "warning"} />
@@ -685,7 +685,7 @@ function ImagesTab() {
                   <div className="h-2 bg-[#F7F7F7] rounded-full overflow-hidden mb-1.5">
                     <div className="h-full rounded-full bg-ha-primary transition-all" style={{ width: `${s.coverage_pct}%` }} />
                   </div>
-                  <div className="flex gap-3 text-[11px] text-[#6B7280]">
+                  <div className="flex gap-3 text-[11px] text-[#334855]">
                     <span>{s.total} total</span>
                     <span className="text-emerald-600">{s.with_image} with</span>
                     <span className="text-ha-danger">{s.without_image} without</span>
@@ -701,7 +701,7 @@ function ImagesTab() {
               <SectionHeader title="Missing image samples" />
               {Object.entries(auditData.samples).map(([source, samples]: [string, any]) => (
                 <div key={source} className="mb-3">
-                  <p className="text-[12px] font-semibold text-[#6B7280] mb-2 uppercase">{source}</p>
+                  <p className="text-[12px] font-semibold text-[#334855] mb-2 uppercase">{source}</p>
                   <div className={`${CARD} divide-y divide-[#F7F7F7]`}>
                     {(samples as any[]).map((s: any) => (
                       <div key={s.id} className="px-4 py-3" data-testid={`sample-${s.id}`}>
@@ -832,7 +832,7 @@ function SourcesTab() {
           <StatusBadge status={latestRun.status} />
           <div className="flex-1 min-w-0">
             <p className="text-[13px] font-semibold text-[#111]">Last ingestion run</p>
-            <p className="text-[11px] text-[#6B7280]">{new Date(latestRun.started_at).toLocaleString()} · {latestRun.duration_sec}s</p>
+            <p className="text-[11px] text-[#334855]">{new Date(latestRun.started_at).toLocaleString()} · {latestRun.duration_sec}s</p>
           </div>
         </div>
       )}
@@ -841,11 +841,11 @@ function SourcesTab() {
         <SectionHeader title="Source monitor" />
         <div className="flex gap-2 overflow-x-auto pb-2 mb-3" style={{ WebkitOverflowScrolling: "touch" }}>
           {["All", "Healthy", "Warning", "Broken"].map(f => (
-            <button key={f} onClick={() => setStatusFilter(f)} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${statusFilter === f ? "bg-[#111] text-white" : "bg-white text-[#6B7280] border border-[#F0F0F0]"}`} data-testid={`filter-status-${f}`}>
+            <button key={f} onClick={() => setStatusFilter(f)} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${statusFilter === f ? "bg-[#111] text-white" : "bg-white text-[#334855] border border-[#F0F0F0]"}`} data-testid={`filter-status-${f}`}>
               {f}
             </button>
           ))}
-          <select value={cityFilter} onChange={e => setCityFilter(e.target.value)} className="px-3 py-1.5 rounded-full text-[12px] font-medium bg-white text-[#6B7280] border border-[#F0F0F0] cursor-pointer" data-testid="select-source-city">
+          <select value={cityFilter} onChange={e => setCityFilter(e.target.value)} className="px-3 py-1.5 rounded-full text-[12px] font-medium bg-white text-[#334855] border border-[#F0F0F0] cursor-pointer" data-testid="select-source-city">
             {SOURCE_HEALTH_CITIES.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
         </div>
@@ -862,7 +862,7 @@ function SourcesTab() {
                   <div className="flex items-center gap-2 min-w-0">
                     <StatusDot status={isAdminEnabled ? st : "disabled"} />
                     <span className="text-[13px] font-semibold text-[#111] truncate">{sourceName}</span>
-                    {!isAdminEnabled && <Badge className="bg-[#F7F7F7] text-[#9CA3AF] text-[9px]">Disabled</Badge>}
+                    {!isAdminEnabled && <Badge className="bg-[#F7F7F7] text-[#334855] text-[9px]">Disabled</Badge>}
                   </div>
                   <div className="flex items-center gap-2">
                     <button
@@ -890,7 +890,7 @@ function SourcesTab() {
                     </Button>
                   </div>
                 </div>
-                <div className="flex gap-3 text-[11px] text-[#6B7280] ml-4">
+                <div className="flex gap-3 text-[11px] text-[#334855] ml-4">
                   {s.city && <span>{s.city}</span>}
                   <span>{s.found ?? 0} found</span>
                   <span>{s.inserted ?? 0} new</span>
@@ -899,7 +899,7 @@ function SourcesTab() {
               </div>
             );
           }) : (
-            <div className="px-4 py-8 text-center text-[13px] text-[#6B7280]">No sources match this filter</div>
+            <div className="px-4 py-8 text-center text-[13px] text-[#334855]">No sources match this filter</div>
           )}
         </div>
       </div>
@@ -966,19 +966,19 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
       <div className={`${CARD} p-5`}>
         <h3 className="text-[16px] font-bold text-[#111] mb-3">Profile</h3>
         <div className="space-y-2.5 text-[13px]">
-          <div className="flex justify-between"><span className="text-[#6B7280]">Name</span><span className="font-medium text-[#111]">{profile?.first_name || ""} {profile?.last_name || ""}</span></div>
-          <div className="flex justify-between"><span className="text-[#6B7280]">Email</span><span className="font-medium text-[#111] max-w-[200px] truncate">{profile?.email || "—"}</span></div>
-          <div className="flex justify-between"><span className="text-[#6B7280]">Phone</span><span className="font-medium text-[#111]">{profile?.phone || "—"}</span></div>
-          <div className="flex justify-between"><span className="text-[#6B7280]">Created</span><span className="font-medium text-[#111]">{profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : "—"}</span></div>
+          <div className="flex justify-between"><span className="text-[#334855]">Name</span><span className="font-medium text-[#111]">{profile?.first_name || ""} {profile?.last_name || ""}</span></div>
+          <div className="flex justify-between"><span className="text-[#334855]">Email</span><span className="font-medium text-[#111] max-w-[200px] truncate">{profile?.email || "—"}</span></div>
+          <div className="flex justify-between"><span className="text-[#334855]">Phone</span><span className="font-medium text-[#111]">{profile?.phone || "—"}</span></div>
+          <div className="flex justify-between"><span className="text-[#334855]">Created</span><span className="font-medium text-[#111]">{profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : "—"}</span></div>
           <div className="flex justify-between items-center">
-            <span className="text-[#6B7280]">Notifications</span>
+            <span className="text-[#334855]">Notifications</span>
             <div className="flex gap-1.5">
               {notificationSettings?.email_enabled && <Badge variant="secondary" className="text-[10px]">Email</Badge>}
               {notificationSettings?.push_enabled && <Badge variant="secondary" className="text-[10px]">Push</Badge>}
-              {!notificationSettings?.email_enabled && !notificationSettings?.push_enabled && <span className="text-[#6B7280]">None</span>}
+              {!notificationSettings?.email_enabled && !notificationSettings?.push_enabled && <span className="text-[#334855]">None</span>}
             </div>
           </div>
-          <div><span className="text-[#6B7280] text-[11px] break-all">{profile?.user_id || ""}</span></div>
+          <div><span className="text-[#334855] text-[11px] break-all">{profile?.user_id || ""}</span></div>
         </div>
       </div>
 
@@ -986,10 +986,10 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
         <div className={`${CARD} p-5`}>
           <h3 className="text-[16px] font-bold text-[#111] mb-3">Subscription</h3>
           <div className="space-y-2.5 text-[13px]">
-            <div className="flex justify-between items-center"><span className="text-[#6B7280]">Status</span><StatusBadge status={subscription.status} /></div>
-            <div className="flex justify-between"><span className="text-[#6B7280]">Plan</span><span className="font-medium">{subscription.plan || "—"}</span></div>
-            <div className="flex justify-between"><span className="text-[#6B7280]">Trial ends</span><span className="font-medium">{subscription.trial_ends_at ? new Date(subscription.trial_ends_at).toLocaleDateString() : "—"}</span></div>
-            <div className="flex justify-between"><span className="text-[#6B7280]">Period ends</span><span className="font-medium">{subscription.current_period_ends_at ? new Date(subscription.current_period_ends_at).toLocaleDateString() : "—"}</span></div>
+            <div className="flex justify-between items-center"><span className="text-[#334855]">Status</span><StatusBadge status={subscription.status} /></div>
+            <div className="flex justify-between"><span className="text-[#334855]">Plan</span><span className="font-medium">{subscription.plan || "—"}</span></div>
+            <div className="flex justify-between"><span className="text-[#334855]">Trial ends</span><span className="font-medium">{subscription.trial_ends_at ? new Date(subscription.trial_ends_at).toLocaleDateString() : "—"}</span></div>
+            <div className="flex justify-between"><span className="text-[#334855]">Period ends</span><span className="font-medium">{subscription.current_period_ends_at ? new Date(subscription.current_period_ends_at).toLocaleDateString() : "—"}</span></div>
             {subscription.stripe_subscription_id && (
               <a href={`https://dashboard.stripe.com/subscriptions/${subscription.stripe_subscription_id}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-ha-primary text-[12px] font-medium" data-testid="link-stripe-sub">
                 <ExternalLink className="w-3 h-3" /> View in Stripe
@@ -1003,7 +1003,7 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
         <h3 className="text-[16px] font-bold text-[#111] mb-3">Actions</h3>
         <div className="space-y-3">
           <div>
-            <p className="text-[12px] text-[#6B7280] font-medium mb-1.5">Extend trial</p>
+            <p className="text-[12px] text-[#334855] font-medium mb-1.5">Extend trial</p>
             <div className="flex gap-2">
               <select value={trialDays} onChange={e => setTrialDays(e.target.value)} className="h-9 px-3 rounded-lg bg-[#F7F7F7] text-[13px] border-0 focus:outline-none" data-testid="select-trial-days">
                 <option value="3">3 days</option>
@@ -1017,7 +1017,7 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
             </div>
           </div>
           <div>
-            <p className="text-[12px] text-[#6B7280] font-medium mb-1.5">Change plan</p>
+            <p className="text-[12px] text-[#334855] font-medium mb-1.5">Change plan</p>
             <div className="flex gap-2">
               {["monthly", "two_month", "three_month"].map(plan => (
                 <Button key={plan} variant="outline" size="sm" onClick={() => changePlan(plan)} disabled={actionLoading === "plan"} className="rounded-full text-[11px]" data-testid={`button-plan-${plan}`}>
@@ -1027,7 +1027,7 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
             </div>
           </div>
           <div>
-            <p className="text-[12px] text-[#6B7280] font-medium mb-1.5">Alerts</p>
+            <p className="text-[12px] text-[#334855] font-medium mb-1.5">Alerts</p>
             <Button variant="outline" size="sm" onClick={resendUserMatches} disabled={actionLoading === "resend"} className="rounded-full" data-testid="button-resend-matches">
               <Send className="w-3.5 h-3.5 mr-1" />
               {actionLoading === "resend" ? "Sending..." : "Resend undelivered matches"}
@@ -1049,7 +1049,7 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
             {searchProfiles.map((sp: any) => (
               <div key={sp.id} className="p-3 bg-[#F7F7F7] rounded-xl text-[12px]">
                 <p className="font-semibold text-[#111] mb-0.5">{sp.city_name || sp.city}</p>
-                <p className="text-[#6B7280]">€{sp.price_min || 0}–€{sp.price_max || "∞"} · {sp.bedrooms_min || 0}+ rooms · {sp.size_min || 0}+ m²</p>
+                <p className="text-[#334855]">€{sp.price_min || 0}–€{sp.price_max || "∞"} · {sp.bedrooms_min || 0}+ rooms · {sp.size_min || 0}+ m²</p>
               </div>
             ))}
           </div>
@@ -1064,7 +1064,7 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
               <div key={m.id} className="flex items-center gap-2 p-2.5 bg-[#F7F7F7] rounded-xl text-[12px]">
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-[#111] truncate">{m.listing_title || m.listing_id?.substring(0, 12)}</p>
-                  <p className="text-[#6B7280]">{m.matched_at ? new Date(m.matched_at).toLocaleString() : "—"}</p>
+                  <p className="text-[#334855]">{m.matched_at ? new Date(m.matched_at).toLocaleString() : "—"}</p>
                 </div>
                 <div className="flex gap-1 flex-shrink-0">
                   {m.email_sent && <Badge variant="secondary" className="text-[9px] px-1.5">Email</Badge>}
@@ -1081,8 +1081,8 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
         <div className={`${CARD} p-5`}>
           <h3 className="text-[16px] font-bold text-[#111] mb-3">Cancellation feedback</h3>
           <div className="space-y-2 text-[13px]">
-            <div className="flex justify-between"><span className="text-[#6B7280]">Reason</span><span className="font-medium">{cancellationFeedback.reason || "—"}</span></div>
-            {cancellationFeedback.feedback && <p className="text-[#6B7280] text-[12px] bg-[#F7F7F7] rounded-xl p-3">{cancellationFeedback.feedback}</p>}
+            <div className="flex justify-between"><span className="text-[#334855]">Reason</span><span className="font-medium">{cancellationFeedback.reason || "—"}</span></div>
+            {cancellationFeedback.feedback && <p className="text-[#334855] text-[12px] bg-[#F7F7F7] rounded-xl p-3">{cancellationFeedback.feedback}</p>}
           </div>
         </div>
       )}
@@ -1142,51 +1142,51 @@ function UsersTab() {
       <h1 className="text-[24px] font-bold text-[#111]">Users</h1>
 
       <div className={`${CARD} px-4 py-3 flex items-center gap-3`}>
-        <Search className="w-5 h-5 text-[#9CA3AF] flex-shrink-0" />
+        <Search className="w-5 h-5 text-[#334855] flex-shrink-0" />
         <input
           placeholder="Search name or email..."
           value={search}
           onChange={e => { setSearch(e.target.value); setPage(1); }}
-          className="flex-1 text-[13px] text-[#111] bg-transparent focus:outline-none placeholder:text-[#9CA3AF]"
+          className="flex-1 text-[13px] text-[#111] bg-transparent focus:outline-none placeholder:text-[#334855]"
           data-testid="input-search-users"
         />
       </div>
 
       <div className="flex gap-2 overflow-x-auto pb-1" style={{ WebkitOverflowScrolling: "touch" }}>
         {["all", "paid", "trial", "canceled", "expired"].map(f => (
-          <button key={f} onClick={() => { setFilter(f); setPage(1); }} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${filter === f ? "bg-[#111] text-white" : "bg-white text-[#6B7280] border border-[#F0F0F0]"}`} data-testid={`filter-user-${f}`}>
+          <button key={f} onClick={() => { setFilter(f); setPage(1); }} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${filter === f ? "bg-[#111] text-white" : "bg-white text-[#334855] border border-[#F0F0F0]"}`} data-testid={`filter-user-${f}`}>
             {f.charAt(0).toUpperCase() + f.slice(1)}
           </button>
         ))}
-        <span className="text-[12px] text-[#6B7280] self-center ml-auto flex-shrink-0">{total} users</span>
+        <span className="text-[12px] text-[#334855] self-center ml-auto flex-shrink-0">{total} users</span>
       </div>
 
       {loading ? <LoadingState /> : (
         <div className={`${CARD} divide-y divide-[#F7F7F7]`}>
           {users.map(u => (
             <button key={u.user_id} onClick={() => openUser(u.user_id)} className="w-full px-4 py-3 flex items-center gap-3 text-left hover:bg-[#FAFAFA] transition-colors" data-testid={`user-card-${u.user_id}`}>
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-[13px] font-bold ${u.has_profile_data === false ? "bg-[#F7F7F7] text-[#9CA3AF]" : "bg-[#F7F7F7] text-ha-primary"}`}>
+              <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-[13px] font-bold ${u.has_profile_data === false ? "bg-[#F7F7F7] text-[#334855]" : "bg-[#F7F7F7] text-ha-primary"}`}>
                 {(u.first_name || u.email || "?")[0]?.toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[13px] font-semibold text-[#111] truncate">{u.first_name || u.email || "Unknown"} {u.last_name || ""}</p>
-                <p className="text-[11px] text-[#6B7280] truncate">{u.email || u.user_id?.substring(0, 8)} · {u.searchProfileCount || 0} profiles · {u.matchCount || 0} matches</p>
+                <p className="text-[11px] text-[#334855] truncate">{u.email || u.user_id?.substring(0, 8)} · {u.searchProfileCount || 0} profiles · {u.matchCount || 0} matches</p>
               </div>
               <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                {u.subscription ? <StatusBadge status={u.subscription.status} /> : <span className="text-[11px] text-[#9CA3AF]">No sub</span>}
-                <span className="text-[10px] text-[#9CA3AF]">{u.created_at ? new Date(u.created_at).toLocaleDateString() : ""}</span>
+                {u.subscription ? <StatusBadge status={u.subscription.status} /> : <span className="text-[11px] text-[#334855]">No sub</span>}
+                <span className="text-[10px] text-[#334855]">{u.created_at ? new Date(u.created_at).toLocaleDateString() : ""}</span>
               </div>
               <ChevronRight className="w-4 h-4 text-gray-200 flex-shrink-0" />
             </button>
           ))}
-          {users.length === 0 && <div className="px-4 py-8 text-center text-[13px] text-[#6B7280]">No users found</div>}
+          {users.length === 0 && <div className="px-4 py-8 text-center text-[13px] text-[#334855]">No users found</div>}
         </div>
       )}
 
       {total > 50 && (
         <div className="flex items-center justify-between">
           <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="rounded-full" data-testid="button-user-prev">Previous</Button>
-          <span className="text-[12px] text-[#6B7280]">Page {page}</span>
+          <span className="text-[12px] text-[#334855]">Page {page}</span>
           <Button variant="outline" size="sm" disabled={users.length < 50} onClick={() => setPage(p => p + 1)} className="rounded-full" data-testid="button-user-next">Next</Button>
         </div>
       )}
@@ -1215,11 +1215,11 @@ function SubscriptionsTab() {
 
       <div className="flex gap-2 overflow-x-auto pb-1" style={{ WebkitOverflowScrolling: "touch" }}>
         {["all", "active", "trial", "canceled", "expired"].map(f => (
-          <button key={f} onClick={() => { setFilter(f); setPage(1); }} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${filter === f ? "bg-[#111] text-white" : "bg-white text-[#6B7280] border border-[#F0F0F0]"}`} data-testid={`filter-sub-${f}`}>
+          <button key={f} onClick={() => { setFilter(f); setPage(1); }} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${filter === f ? "bg-[#111] text-white" : "bg-white text-[#334855] border border-[#F0F0F0]"}`} data-testid={`filter-sub-${f}`}>
             {f.charAt(0).toUpperCase() + f.slice(1)}
           </button>
         ))}
-        <span className="text-[12px] text-[#6B7280] self-center ml-auto flex-shrink-0">{total}</span>
+        <span className="text-[12px] text-[#334855] self-center ml-auto flex-shrink-0">{total}</span>
       </div>
 
       {loading ? <LoadingState /> : subs.length === 0 ? (
@@ -1231,11 +1231,11 @@ function SubscriptionsTab() {
               <div className="flex items-center justify-between mb-1">
                 <div className="min-w-0 flex-1">
                   <p className="text-[13px] font-semibold text-[#111] truncate">{s.userName || "Unknown"}</p>
-                  <p className="text-[10px] text-[#6B7280]">{s.user_id?.substring(0, 8)}...</p>
+                  <p className="text-[10px] text-[#334855]">{s.user_id?.substring(0, 8)}...</p>
                 </div>
                 <StatusBadge status={s.status} />
               </div>
-              <div className="flex items-center gap-3 text-[11px] text-[#6B7280]">
+              <div className="flex items-center gap-3 text-[11px] text-[#334855]">
                 <span>{s.plan || "—"}</span>
                 <span>{s.created_at ? new Date(s.created_at).toLocaleDateString() : ""}</span>
                 {s.stripe_subscription_id && (
@@ -1252,7 +1252,7 @@ function SubscriptionsTab() {
       {total > 50 && (
         <div className="flex items-center justify-between">
           <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="rounded-full" data-testid="button-sub-prev">Previous</Button>
-          <span className="text-[12px] text-[#6B7280]">Page {page}</span>
+          <span className="text-[12px] text-[#334855]">Page {page}</span>
           <Button variant="outline" size="sm" disabled={subs.length < 50} onClick={() => setPage(p => p + 1)} className="rounded-full" data-testid="button-sub-next">Next</Button>
         </div>
       )}
@@ -1307,7 +1307,7 @@ function SystemTab() {
       <div className="flex items-center justify-between">
         <h1 className="text-[24px] font-bold text-[#111]">System</h1>
         <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-[#F7F7F7] flex items-center justify-center hover:bg-[#EFEFEF]" data-testid="button-refresh-system">
-          <RefreshCw className={`w-4 h-4 text-[#6B7280] ${refreshing ? "animate-spin" : ""}`} />
+          <RefreshCw className={`w-4 h-4 text-[#334855] ${refreshing ? "animate-spin" : ""}`} />
         </button>
       </div>
 
@@ -1327,31 +1327,31 @@ function SystemTab() {
           <SectionHeader title="Image backfill pipeline" />
           <div className={`${CARD} p-4 space-y-3`}>
             <div className="flex items-center justify-between text-[13px]">
-              <span className="text-[#6B7280]">Status</span>
+              <span className="text-[#334855]">Status</span>
               <StatusBadge status={backfillStatus.enabled ? "active" : "disabled"} />
             </div>
             <div className="flex items-center justify-between text-[13px]">
-              <span className="text-[#6B7280]">Running</span>
+              <span className="text-[#334855]">Running</span>
               <span className="font-medium text-[#111]">{backfillStatus.running ? "Yes" : "No"}</span>
             </div>
             <div className="flex items-center justify-between text-[13px]">
-              <span className="text-[#6B7280]">Batch size</span>
+              <span className="text-[#334855]">Batch size</span>
               <span className="font-medium text-[#111]">{backfillStatus.batchSize}</span>
             </div>
             <div className="flex items-center justify-between text-[13px]">
-              <span className="text-[#6B7280]">Total updated</span>
+              <span className="text-[#334855]">Total updated</span>
               <span className="font-medium text-[#111]">{backfillStatus.cumulativeUpdates}</span>
             </div>
             <div className="flex items-center justify-between text-[13px]">
-              <span className="text-[#6B7280]">Enabled sources</span>
+              <span className="text-[#334855]">Enabled sources</span>
               <span className="font-medium text-[#111] text-right max-w-[60%] truncate">{(backfillStatus.enabledSources || []).join(", ") || "—"}</span>
             </div>
             {backfillStatus.lastRun && (
               <>
                 <div className="border-t border-[#F7F7F7] pt-2 mt-2">
-                  <p className="text-[12px] text-[#6B7280] font-medium mb-1">Last run</p>
+                  <p className="text-[12px] text-[#334855] font-medium mb-1">Last run</p>
                   <p className="text-[13px] text-[#111]">{new Date(backfillStatus.lastRun.timestamp).toLocaleString()}</p>
-                  <p className="text-[11px] text-[#6B7280]">{backfillStatus.lastRun.duration_ms}ms · {backfillStatus.lastRun.updated} updated · {backfillStatus.lastRun.failed} failed</p>
+                  <p className="text-[11px] text-[#334855]">{backfillStatus.lastRun.duration_ms}ms · {backfillStatus.lastRun.updated} updated · {backfillStatus.lastRun.failed} failed</p>
                 </div>
               </>
             )}
@@ -1360,11 +1360,11 @@ function SystemTab() {
           {backfillStatus.recentRuns && backfillStatus.recentRuns.length > 0 && (
             <div className={`${CARD} mt-3 divide-y divide-[#F7F7F7]`}>
               <div className="px-4 py-2">
-                <p className="text-[12px] font-semibold text-[#6B7280] uppercase tracking-wider">Recent backfill runs</p>
+                <p className="text-[12px] font-semibold text-[#334855] uppercase tracking-wider">Recent backfill runs</p>
               </div>
               {backfillStatus.recentRuns.slice(0, 5).map((run: any, i: number) => (
                 <div key={i} className="px-4 py-2.5 flex items-center justify-between text-[12px]">
-                  <span className="text-[#6B7280]">{new Date(run.started_at).toLocaleString()}</span>
+                  <span className="text-[#334855]">{new Date(run.started_at).toLocaleString()}</span>
                   <div className="flex items-center gap-2">
                     <span className="text-[#111] font-medium">{run.updated}/{run.total}</span>
                     <StatusBadge status={run.status || (run.updated > 0 ? "success" : "warning")} />
@@ -1376,11 +1376,11 @@ function SystemTab() {
 
           {backfillStatus.recoveryStats && (
             <div className={`${CARD} mt-3 p-4`}>
-              <p className="text-[12px] font-semibold text-[#6B7280] uppercase tracking-wider mb-2">Recovery stats</p>
+              <p className="text-[12px] font-semibold text-[#334855] uppercase tracking-wider mb-2">Recovery stats</p>
               <div className="space-y-2 text-[13px]">
                 {Object.entries(backfillStatus.recoveryStats).map(([key, val]: [string, any]) => (
                   <div key={key} className="flex justify-between">
-                    <span className="text-[#6B7280]">{key}</span>
+                    <span className="text-[#334855]">{key}</span>
                     <span className="font-medium text-[#111]">{typeof val === "object" ? JSON.stringify(val) : String(val)}</span>
                   </div>
                 ))}
@@ -1402,7 +1402,7 @@ function SystemTab() {
                   <Icon className="w-5 h-5 text-[#111] flex-shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-[13px] font-semibold text-[#111]">{info.name}</p>
-                    <p className="text-[11px] text-[#6B7280] truncate">{val.message}</p>
+                    <p className="text-[11px] text-[#334855] truncate">{val.message}</p>
                   </div>
                   <StatusBadge status={val.status} />
                 </div>
@@ -1482,7 +1482,7 @@ function AlertsTab() {
       <div className="flex items-center justify-between">
         <h1 className="text-[24px] font-bold text-[#111]">Alert Control</h1>
         <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-[#F7F7F7] flex items-center justify-center hover:bg-[#EFEFEF]" data-testid="button-refresh-alerts">
-          <RefreshCw className={`w-4 h-4 text-[#6B7280] ${refreshing ? "animate-spin" : ""}`} />
+          <RefreshCw className={`w-4 h-4 text-[#334855] ${refreshing ? "animate-spin" : ""}`} />
         </button>
       </div>
 
@@ -1499,15 +1499,15 @@ function AlertsTab() {
         <div className="space-y-3">
           <div className="flex gap-2">
             {(["email", "push"] as const).map(t => (
-              <button key={t} onClick={() => setTestType(t)} className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-colors ${testType === t ? "bg-[#111] text-white" : "bg-white text-[#6B7280] border border-[#F0F0F0]"}`} data-testid={`test-type-${t}`}>
+              <button key={t} onClick={() => setTestType(t)} className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-colors ${testType === t ? "bg-[#111] text-white" : "bg-white text-[#334855] border border-[#F0F0F0]"}`} data-testid={`test-type-${t}`}>
                 {t === "email" ? "Email" : "Push"}
               </button>
             ))}
           </div>
           {testType === "email" ? (
-            <input placeholder="Target email (blank = admin)" value={testEmail} onChange={e => setTestEmail(e.target.value)} className="w-full h-10 px-4 rounded-xl bg-[#F7F7F7] text-[13px] text-[#111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-test-email" />
+            <input placeholder="Target email (blank = admin)" value={testEmail} onChange={e => setTestEmail(e.target.value)} className="w-full h-10 px-4 rounded-xl bg-[#F7F7F7] text-[13px] text-[#111] placeholder:text-[#334855] focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-test-email" />
           ) : (
-            <input placeholder="Target user ID (blank = admin)" value={testUserId} onChange={e => setTestUserId(e.target.value)} className="w-full h-10 px-4 rounded-xl bg-[#F7F7F7] text-[13px] text-[#111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-test-userid" />
+            <input placeholder="Target user ID (blank = admin)" value={testUserId} onChange={e => setTestUserId(e.target.value)} className="w-full h-10 px-4 rounded-xl bg-[#F7F7F7] text-[13px] text-[#111] placeholder:text-[#334855] focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-test-userid" />
           )}
           <div className="flex items-center gap-3">
             <Button size="sm" onClick={sendTestAlert} disabled={sending} className="rounded-full bg-ha-primary hover:bg-ha-primary/90 text-white" data-testid="button-send-test">
@@ -1520,9 +1520,9 @@ function AlertsTab() {
 
       <div className={`${CARD} p-5`}>
         <h3 className="text-[15px] font-semibold text-[#111] mb-3">Resend matches to user</h3>
-        <p className="text-[12px] text-[#6B7280] mb-3">Re-deliver undelivered matches for a specific user via email.</p>
+        <p className="text-[12px] text-[#334855] mb-3">Re-deliver undelivered matches for a specific user via email.</p>
         <div className="flex gap-2">
-          <input placeholder="User ID" value={resendUserId} onChange={e => setResendUserId(e.target.value)} className="flex-1 h-10 px-4 rounded-xl bg-[#F7F7F7] text-[13px] text-[#111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-resend-userid" />
+          <input placeholder="User ID" value={resendUserId} onChange={e => setResendUserId(e.target.value)} className="flex-1 h-10 px-4 rounded-xl bg-[#F7F7F7] text-[13px] text-[#111] placeholder:text-[#334855] focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-resend-userid" />
           <Button size="sm" onClick={resendMatches} disabled={resending || !resendUserId} className="rounded-full bg-ha-primary hover:bg-ha-primary/90 text-white" data-testid="button-resend">
             <RotateCw className={`w-3.5 h-3.5 mr-1 ${resending ? "animate-spin" : ""}`} /> {resending ? "Sending..." : "Resend"}
           </Button>
@@ -1534,17 +1534,17 @@ function AlertsTab() {
         <SectionHeader title="Recent alert activity" />
         <div className={`${CARD} divide-y divide-[#F7F7F7]`}>
           {activity.length === 0 ? (
-            <div className="px-4 py-8 text-center text-[13px] text-[#6B7280]">No recent activity</div>
+            <div className="px-4 py-8 text-center text-[13px] text-[#334855]">No recent activity</div>
           ) : activity.map((a, i) => (
             <div key={i} className="px-4 py-3 flex items-center gap-3" data-testid={`activity-row-${i}`}>
-              {a.channel === "email" ? <Mail className="w-4 h-4 text-[#6B7280] flex-shrink-0" /> : <Smartphone className="w-4 h-4 text-[#6B7280] flex-shrink-0" />}
+              {a.channel === "email" ? <Mail className="w-4 h-4 text-[#334855] flex-shrink-0" /> : <Smartphone className="w-4 h-4 text-[#334855] flex-shrink-0" />}
               <div className="flex-1 min-w-0">
                 <p className="text-[13px] font-medium text-[#111] truncate">{a.title}</p>
-                <p className="text-[11px] text-[#6B7280] truncate">{a.email || a.userId?.substring(0, 8)}</p>
+                <p className="text-[11px] text-[#334855] truncate">{a.email || a.userId?.substring(0, 8)}</p>
               </div>
               <div className="text-right flex-shrink-0">
                 <Badge variant="secondary" className="text-[9px]">{a.channel}</Badge>
-                <p className="text-[10px] text-[#9CA3AF] mt-0.5">{a.emailSentAt ? new Date(a.emailSentAt).toLocaleString() : a.pushSentAt ? new Date(a.pushSentAt).toLocaleString() : ""}</p>
+                <p className="text-[10px] text-[#334855] mt-0.5">{a.emailSentAt ? new Date(a.emailSentAt).toLocaleString() : a.pushSentAt ? new Date(a.pushSentAt).toLocaleString() : ""}</p>
               </div>
             </div>
           ))}
@@ -1589,15 +1589,15 @@ function SettingsTab() {
 
       <div className={`${CARD} p-5`}>
         <h3 className="text-[15px] font-semibold text-[#111] mb-1">Paywall behavior</h3>
-        <p className="text-[12px] text-[#6B7280] mb-4">Control what free/expired users see in the app.</p>
+        <p className="text-[12px] text-[#334855] mb-4">Control what free/expired users see in the app.</p>
 
         <div className="space-y-4">
           <div>
-            <label className="text-[12px] font-medium text-[#6B7280] mb-1.5 block">Free matches limit</label>
-            <p className="text-[11px] text-[#9CA3AF] mb-1.5">Number of matches a free user can see before the paywall appears.</p>
+            <label className="text-[12px] font-medium text-[#334855] mb-1.5 block">Free matches limit</label>
+            <p className="text-[11px] text-[#334855] mb-1.5">Number of matches a free user can see before the paywall appears.</p>
             <div className="flex gap-2">
               {["0", "1", "3", "5", "10"].map(v => (
-                <button key={v} onClick={() => setSettings(s => ({ ...s, free_matches_limit: v }))} className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-colors ${settings.free_matches_limit === v ? "bg-[#111] text-white" : "bg-white text-[#6B7280] border border-[#F0F0F0]"}`} data-testid={`setting-limit-${v}`}>
+                <button key={v} onClick={() => setSettings(s => ({ ...s, free_matches_limit: v }))} className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-colors ${settings.free_matches_limit === v ? "bg-[#111] text-white" : "bg-white text-[#334855] border border-[#F0F0F0]"}`} data-testid={`setting-limit-${v}`}>
                   {v === "0" ? "None" : v}
                 </button>
               ))}
@@ -1615,8 +1615,8 @@ function SettingsTab() {
           <div className="pt-3 border-t border-[#F7F7F7]">
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-[12px] font-medium text-[#6B7280] block">Show blurred locked matches</label>
-                <p className="text-[11px] text-[#9CA3AF]">When enabled, free users see blurred match previews behind the paywall.</p>
+                <label className="text-[12px] font-medium text-[#334855] block">Show blurred locked matches</label>
+                <p className="text-[11px] text-[#334855]">When enabled, free users see blurred match previews behind the paywall.</p>
               </div>
               <button onClick={() => setSettings(s => ({ ...s, show_blurred_locked: s.show_blurred_locked === "true" ? "false" : "true" }))} data-testid="toggle-blurred">
                 {settings.show_blurred_locked === "true"
@@ -1634,7 +1634,7 @@ function SettingsTab() {
         <div className="space-y-2 mt-3">
           {Object.entries(settings).map(([key, value]) => (
             <div key={key} className="flex justify-between text-[13px]">
-              <span className="text-[#6B7280] font-mono text-[12px]">{key}</span>
+              <span className="text-[#334855] font-mono text-[12px]">{key}</span>
               <span className="font-medium text-[#111]">{value}</span>
             </div>
           ))}
@@ -1688,7 +1688,7 @@ export default function AdminPortalPage() {
       <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center px-5">
         <div className="text-center max-w-sm">
           <h1 className="text-[20px] font-bold text-[#111] mb-2">Not authenticated</h1>
-          <p className="text-[13px] text-[#6B7280] mb-4">Please log in to access the admin portal.</p>
+          <p className="text-[13px] text-[#334855] mb-4">Please log in to access the admin portal.</p>
           <Button onClick={() => navigate("/login")} className="rounded-full" data-testid="button-login">Go to login</Button>
         </div>
       </div>
@@ -1703,7 +1703,7 @@ export default function AdminPortalPage() {
             <AlertTriangle className="w-7 h-7 text-ha-danger" />
           </div>
           <h1 className="text-[20px] font-bold text-[#111] mb-2">Access Denied</h1>
-          <p className="text-[13px] text-[#6B7280]">Your account does not have admin access.</p>
+          <p className="text-[13px] text-[#334855]">Your account does not have admin access.</p>
         </div>
       </div>
     );
@@ -1720,7 +1720,7 @@ export default function AdminPortalPage() {
           <HousAlertLogo size={26} />
           <span className="text-[15px] font-bold text-[#111]">Admin</span>
           <button onClick={() => setSidebarOpen(false)} className="ml-auto lg:hidden w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[#F7F7F7]">
-            <X className="w-4 h-4 text-[#6B7280]" />
+            <X className="w-4 h-4 text-[#334855]" />
           </button>
         </div>
 
@@ -1731,7 +1731,7 @@ export default function AdminPortalPage() {
               <button
                 key={id}
                 onClick={() => { setActiveTab(id); setSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium mb-0.5 transition-colors ${active ? "bg-[#F7F7F7] text-[#111]" : "text-[#6B7280] hover:bg-[#FAFAFA] hover:text-[#111]"}`}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium mb-0.5 transition-colors ${active ? "bg-[#F7F7F7] text-[#111]" : "text-[#334855] hover:bg-[#FAFAFA] hover:text-[#111]"}`}
                 data-testid={`nav-${id}`}
               >
                 <Icon className={`w-[18px] h-[18px] ${active ? "text-ha-primary" : ""}`} />
@@ -1744,7 +1744,7 @@ export default function AdminPortalPage() {
         <div className="px-3 py-3 border-t border-[#F0F0F0]">
           <button
             onClick={() => navigate("/dashboard")}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-[#6B7280] hover:bg-[#FAFAFA] hover:text-[#111] transition-colors"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-[#334855] hover:bg-[#FAFAFA] hover:text-[#111] transition-colors"
             data-testid="link-back-app"
           >
             <ArrowLeft className="w-[18px] h-[18px]" />

@@ -320,7 +320,7 @@ export default function OnboardingCity() {
             style={{ backgroundColor: "#FFFFFF" }}
             data-testid="button-city-close"
           >
-            <X className="w-4 h-4" style={{ color: "#6B7280" }} />
+            <X className="w-4 h-4" style={{ color: "#334855" }} />
           </button>
         </div>
       </header>
