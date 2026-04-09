@@ -1,0 +1,186 @@
+We are redesigning step 3 of the “Vergroot je kansen met deze tips” flow.
+
+GOAL:
+Replace generic platforms with real landlords (woningcorporaties + grote verhuurders) per German region, including direct links.
+
+IMPORTANT:
+- Write in DUTCH
+- Keep UI structure identical (accordion per region)
+- Content must feel premium, curated, and useful
+- Include REAL clickable URLs
+- No fake companies
+
+==================================================
+TITLE
+==================================================
+
+Maak accounts aan bij grote verhuurders
+
+==================================================
+INTRO
+==================================================
+
+Veel woningen in Duitsland worden direct via verhuurders aangeboden en verschijnen niet altijd op grote platforms. Door je vooraf in te schrijven bij deze partijen vergroot je je kans aanzienlijk.
+
+==================================================
+STRUCTURE
+==================================================
+
+Use German Bundesländer instead of cities.
+
+Include:
+
+- Berlijn
+- Beieren (Bayern)
+- Noordrijn-Westfalen
+- Baden-Württemberg
+- Hessen
+- Hamburg
+- Overig Duitsland
+
+Each section = accordion list with 5–8 landlords
+
+==================================================
+CONTENT PER REGION
+==================================================
+
+FORMAT:
+
+• Naam verhuurder – korte uitleg (1 regel) – link
+
+--------------------------------------------------
+
+BERLIJN:
+
+• Gewobag – grote woningcorporatie in Berlijn  
+https://www.gewobag.de
+
+• Degewo – één van de grootste verhuurders in Berlijn  
+https://www.degewo.de
+
+• Howoge – veel appartementen in Berlijn  
+https://www.howoge.de
+
+• Stadt und Land – sociale huur en middenhuur  
+https://www.stadtundland.de
+
+• Berlinovo – betaalbare huurwoningen  
+https://www.berlinovo.de
+
+--------------------------------------------------
+
+BEIEREN (BAYERN):
+
+• BayernHeim – betaalbare huurprojecten  
+https://bayernheim.de
+
+• Dawonia – grote private verhuurder  
+https://www.dawonia.de
+
+• GWG München – woningen in München  
+https://www.gwg-muenchen.de
+
+• GEWOFAG – sociale en middenhuur München  
+https://www.gewofag.de
+
+• Patrizia Immobilien – grote vastgoedpartij  
+https://www.patrizia.ag
+
+--------------------------------------------------
+
+NOORDRIJN-WESTFALEN:
+
+• LEG Immobilien – één van de grootste van Duitsland  
+https://www.leg-wohnen.de
+
+• Vonovia – grootste verhuurder van Duitsland  
+https://www.vonovia.de
+
+• Vivawest – actief in NRW  
+https://www.vivawest.de
+
+• GAG Immobilien Köln – regio Keulen  
+https://www.gag-koeln.de
+
+• Düsseldorfer Wohnungsgenossenschaften  
+https://www.dwgn.de
+
+--------------------------------------------------
+
+BADEN-WÜRTTEMBERG:
+
+• SWSG Stuttgart – woningcorporatie Stuttgart  
+https://www.swsg.de
+
+• GBG Mannheim – woningen in Mannheim  
+https://www.gbg-mannheim.de
+
+• Vonovia  
+https://www.vonovia.de
+
+• LEG Immobilien  
+https://www.leg-wohnen.de
+
+--------------------------------------------------
+
+HESSEN:
+
+• Nassauische Heimstätte – grote corporatie  
+https://www.naheimst.de
+
+• ABG Frankfurt Holding – Frankfurt  
+https://www.abg.de
+
+• Vonovia  
+https://www.vonovia.de
+
+• LEG Immobilien  
+https://www.leg-wohnen.de
+
+--------------------------------------------------
+
+HAMBURG:
+
+• SAGA Hamburg – grootste verhuurder  
+https://www.saga.hamburg
+
+• Vonovia  
+https://www.vonovia.de
+
+• LEG Immobilien  
+https://www.leg-wohnen.de
+
+--------------------------------------------------
+
+OVERIG DUITSLAND:
+
+• Vonovia – landelijk actief  
+https://www.vonovia.de
+
+• LEG Immobilien  
+https://www.leg-wohnen.de
+
+• Deutsche Wohnen (onderdeel Vonovia)  
+https://www.deutsche-wohnen.com
+
+• TAG Immobilien  
+https://www.tag-ag.com
+
+==================================================
+UX RULES
+==================================================
+
+- Keep bullet list style
+- 1 line explanation per item
+- Clean and scannable
+- No long paragraphs
+- Keep accordion structure
+
+==================================================
+OUTPUT
+==================================================
+
+Return:
+1. which file(s) were updated
+2. confirmation only step 3 changed
+3. confirmation UI structure unchanged

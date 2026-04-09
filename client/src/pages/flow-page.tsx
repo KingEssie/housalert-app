@@ -404,7 +404,8 @@ function TipCta({ label, href }: { label: string; href: string }) {
   );
 }
 
-type RegionData = { name: string; platforms: string[] };
+type RegionItem = { label: string; url?: string };
+type RegionData = { name: string; platforms: (string | RegionItem)[] };
 
 function RegionAccordion({ regions }: { regions: RegionData[] }) {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
@@ -421,13 +422,21 @@ function RegionAccordion({ regions }: { regions: RegionData[] }) {
             <ChevronDown className={`w-4 h-4 text-[#9CA3AF] transition-transform ${openIdx === i ? "rotate-180" : ""}`} />
           </button>
           {openIdx === i && (
-            <ul className="px-5 pb-4 flex flex-col gap-1.5">
-              {r.platforms.map((p) => (
-                <li key={p} className="flex items-start gap-2 text-[14px] text-[#6B7280] leading-snug">
-                  <span className="text-[#D1D5DB] mt-1.5 text-[8px]">●</span>
-                  <span>{p}</span>
-                </li>
-              ))}
+            <ul className="px-5 pb-4 flex flex-col gap-2.5">
+              {r.platforms.map((p, j) => {
+                const item = typeof p === "string" ? { label: p } : p;
+                return (
+                  <li key={j} className="flex items-start gap-2 text-[14px] leading-snug">
+                    <span className="text-[#D1D5DB] mt-1.5 text-[8px]">●</span>
+                    <div className="flex flex-col">
+                      <span className="text-[#6B7280]">{item.label}</span>
+                      {item.url && (
+                        <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-[13px] text-ha-primary hover:underline truncate" data-testid={`link-region-${i}-${j}`}>{item.url.replace(/^https?:\/\//, "")}</a>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>
@@ -473,49 +482,51 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   ),
   tip_landlord_accounts: () => (
     <TipBody>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Veel woningen in Duitsland worden via platforms aangeboden waar je een account nodig hebt om te reageren. Zonder account ben je vaak te laat. Zorg daarom dat je vooraf accounts aanmaakt en je profiel compleet invult, zodat je direct kunt reageren.</p>
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Veel woningen in Duitsland worden direct via verhuurders aangeboden en verschijnen niet altijd op grote platforms. Door je vooraf in te schrijven bij deze partijen vergroot je je kans aanzienlijk.</p>
       <RegionAccordion regions={[
         { name: "Berlijn", platforms: [
-          "ImmoScout24 (€ premium aanbevolen voor sneller reageren)",
-          "Immowelt (gratis)",
-          "eBay Kleinanzeigen (gratis, veel particulier aanbod)",
-          "WG-Gesucht (gratis, vooral kamers & gedeeld wonen)",
-          "Berlinovo (semi-overheid, betaalbare woningen)",
+          { label: "Gewobag – grote woningcorporatie in Berlijn", url: "https://www.gewobag.de" },
+          { label: "Degewo – één van de grootste verhuurders in Berlijn", url: "https://www.degewo.de" },
+          { label: "Howoge – veel appartementen in Berlijn", url: "https://www.howoge.de" },
+          { label: "Stadt und Land – sociale huur en middenhuur", url: "https://www.stadtundland.de" },
+          { label: "Berlinovo – betaalbare huurwoningen", url: "https://www.berlinovo.de" },
         ]},
-        { name: "München", platforms: [
-          "ImmoScout24 (€ premium vaak nodig)",
-          "Immowelt (gratis)",
-          "eBay Kleinanzeigen (gratis)",
-          "WG-Gesucht (gratis)",
-          "Mr. Lodge (expats / gemeubileerd)",
+        { name: "Beieren (Bayern)", platforms: [
+          { label: "BayernHeim – betaalbare huurprojecten", url: "https://bayernheim.de" },
+          { label: "Dawonia – grote private verhuurder", url: "https://www.dawonia.de" },
+          { label: "GWG München – woningen in München", url: "https://www.gwg-muenchen.de" },
+          { label: "GEWOFAG – sociale en middenhuur München", url: "https://www.gewofag.de" },
+          { label: "Patrizia Immobilien – grote vastgoedpartij", url: "https://www.patrizia.ag" },
+        ]},
+        { name: "Noordrijn-Westfalen", platforms: [
+          { label: "LEG Immobilien – één van de grootste van Duitsland", url: "https://www.leg-wohnen.de" },
+          { label: "Vonovia – grootste verhuurder van Duitsland", url: "https://www.vonovia.de" },
+          { label: "Vivawest – actief in NRW", url: "https://www.vivawest.de" },
+          { label: "GAG Immobilien Köln – regio Keulen", url: "https://www.gag-koeln.de" },
+          { label: "Düsseldorfer Wohnungsgenossenschaften", url: "https://www.dwgn.de" },
+        ]},
+        { name: "Baden-Württemberg", platforms: [
+          { label: "SWSG Stuttgart – woningcorporatie Stuttgart", url: "https://www.swsg.de" },
+          { label: "GBG Mannheim – woningen in Mannheim", url: "https://www.gbg-mannheim.de" },
+          { label: "Vonovia", url: "https://www.vonovia.de" },
+          { label: "LEG Immobilien", url: "https://www.leg-wohnen.de" },
+        ]},
+        { name: "Hessen", platforms: [
+          { label: "Nassauische Heimstätte – grote corporatie", url: "https://www.naheimst.de" },
+          { label: "ABG Frankfurt Holding – Frankfurt", url: "https://www.abg.de" },
+          { label: "Vonovia", url: "https://www.vonovia.de" },
+          { label: "LEG Immobilien", url: "https://www.leg-wohnen.de" },
         ]},
         { name: "Hamburg", platforms: [
-          "ImmoScout24 (€ premium)",
-          "Immowelt (gratis)",
-          "eBay Kleinanzeigen (gratis)",
-          "WG-Gesucht (gratis)",
-          "SAGA Hamburg (woningcorporatie)",
-        ]},
-        { name: "Frankfurt", platforms: [
-          "ImmoScout24 (€ premium)",
-          "Immowelt (gratis)",
-          "eBay Kleinanzeigen (gratis)",
-          "WG-Gesucht (gratis)",
-          "Vonovia (grote verhuurder)",
-        ]},
-        { name: "Keulen / Düsseldorf", platforms: [
-          "ImmoScout24 (€ premium)",
-          "Immowelt (gratis)",
-          "eBay Kleinanzeigen (gratis)",
-          "WG-Gesucht (gratis)",
-          "LEG Immobilien (grote verhuurder)",
+          { label: "SAGA Hamburg – grootste verhuurder", url: "https://www.saga.hamburg" },
+          { label: "Vonovia", url: "https://www.vonovia.de" },
+          { label: "LEG Immobilien", url: "https://www.leg-wohnen.de" },
         ]},
         { name: "Overig Duitsland", platforms: [
-          "ImmoScout24 (€ premium)",
-          "Immowelt (gratis)",
-          "eBay Kleinanzeigen (gratis)",
-          "WG-Gesucht (gratis)",
-          "Vonovia (grote verhuurder)",
+          { label: "Vonovia – landelijk actief", url: "https://www.vonovia.de" },
+          { label: "LEG Immobilien", url: "https://www.leg-wohnen.de" },
+          { label: "Deutsche Wohnen (onderdeel Vonovia)", url: "https://www.deutsche-wohnen.com" },
+          { label: "TAG Immobilien", url: "https://www.tag-ag.com" },
         ]},
       ]} />
     </TipBody>
