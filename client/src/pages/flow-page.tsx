@@ -38,6 +38,7 @@ import {
   Briefcase,
   Building,
   Wallet,
+  Sparkles,
 } from "lucide-react";
 
 const ICON_MAP: Record<string, React.ComponentType<LucideProps>> = {
@@ -388,6 +389,20 @@ function TipHighlight({ text }: { text: string }) {
   );
 }
 
+function TipCta({ label, href }: { label: string; href: string }) {
+  const [, navigate] = useLocation();
+  return (
+    <button
+      onClick={() => navigate(href)}
+      className="w-full h-[48px] rounded-full bg-ha-primary text-white text-[15px] font-semibold hover:brightness-95 active:scale-[0.97] transition-all flex items-center justify-center gap-2 shadow-[0_2px_8px_rgba(217,26,104,0.18)]"
+      data-testid="button-tip-cta"
+    >
+      <Sparkles className="w-5 h-5" />
+      {label}
+    </button>
+  );
+}
+
 const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   tip_documents: () => (
     <TipBody>
@@ -544,6 +559,7 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
         "Stuur het binnen 1 uur na de bezichtiging",
       ]} />
       <TipHighlight text="Een sterke pitch kan de doorslag geven. Bereid hem nu voor." />
+      <TipCta label="Genereer mijn huurpitch" href="/tools/rental-pitch" />
     </TipBody>
   ),
 };
