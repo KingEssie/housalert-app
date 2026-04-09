@@ -2308,6 +2308,9 @@ export async function registerRoutes(
             } else if (subStatus === "past_due") {
               log(`[stripe-webhook] DB UPDATE: sub=${stripeSubId} → past_due (temporary access, payment retrying)`);
               await updateSubscriptionStatus(stripeSubId, "past_due");
+            } else if (subStatus === "incomplete") {
+              log(`[stripe-webhook] DB UPDATE: sub=${stripeSubId} → expired (incomplete — initial payment never finished)`);
+              await updateSubscriptionStatus(stripeSubId, "expired");
             } else if (subStatus === "incomplete_expired") {
               log(`[stripe-webhook] DB UPDATE: sub=${stripeSubId} → expired`);
               await updateSubscriptionStatus(stripeSubId, "expired");
