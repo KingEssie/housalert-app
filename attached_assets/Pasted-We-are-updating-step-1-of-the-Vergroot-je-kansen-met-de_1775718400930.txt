@@ -1,0 +1,83 @@
+We are updating step 1 of the “Vergroot je kansen met deze tips” flow.
+
+GOAL:
+Replace the current content of step 1 with a Germany-specific version, while keeping the same simple Rentbird-style structure:
+- title
+- short intro
+- grouped bullet lists
+- same overall layout
+- same footer / navigation / completion behavior
+
+IMPORTANT:
+- Write in DUTCH
+- Adapt the content to the German rental market
+- Keep the screen simple and scanable
+- Do NOT redesign the whole screen
+- Do NOT change routing
+- Do NOT change progress logic
+- Do NOT change the footer buttons
+- Do NOT add new features
+- Only replace the content of step 1
+
+==================================================
+STEP 1 TITLE
+==================================================
+
+Use this title:
+
+Verzamel vereiste documenten
+
+==================================================
+STEP 1 INTRO
+==================================================
+
+Use this intro:
+
+Verhuurders in Duitsland hechten veel waarde aan documenten waarmee jij laat zien dat je een betrouwbare huurder bent. Zorg dat je alles alvast klaar hebt, zodat je direct kunt reageren.
+
+==================================================
+STEP 1 CONTENT
+==================================================
+
+Use exactly these sections and bullet lists:
+
+Als je in loondienst werkt:
+- Kopie ID / paspoort
+- Laatste 3 loonstroken
+- Arbeidscontract (indien beschikbaar)
+- Werkgeversverklaring (optioneel, maar sterk)
+- SCHUFA-rapport (zeer belangrijk in Duitsland)
+- Bankafschriften van de laatste 3 maanden
+
+Als je al een huurwoning hebt:
+- Verhuurdersverklaring (Mietschuldenfreiheitsbescheinigung)
+- Bewijs van huurbetalingen (laatste 3 maanden)
+
+Als je zelfstandig ondernemer bent:
+- Kopie ID / paspoort
+- Uittreksel Kamer van Koophandel (Handelsregisterauszug)
+- Winst- en verliesrekening (laatste 2–3 jaar)
+- Belastingaangiften / inkomstenoverzicht
+- SCHUFA-rapport
+- Bankafschriften
+
+==================================================
+FORMATTING RULES
+==================================================
+
+- Keep the layout clean and simple
+- Preserve a Rentbird-like structure
+- Use grouped section headers
+- Use bullet points
+- Keep it easy to scan on mobile
+- Do not add long explanatory paragraphs under each bullet
+- No extra design experiments
+
+==================================================
+OUTPUT
+==================================================
+
+After finishing, return:
+1. which file(s) were changed
+2. confirmation that only step 1 content was updated
+3. confirmation that flow structure, routing, and footer behavior were unchanged

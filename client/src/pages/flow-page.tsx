@@ -406,24 +406,27 @@ function TipCta({ label, href }: { label: string; href: string }) {
 const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   tip_documents: () => (
     <TipBody>
-      <p className="text-[14px] text-[#6B7280]">In Duitsland verwachten verhuurders een compleet dossier. Zonder deze documenten word je vaak direct afgewezen.</p>
-      <TipSection title="Altijd nodig" items={[
-        "Kopie ID of paspoort",
-        "SCHUFA-BonitätsAuskunft (kredietcheck)",
+      <p className="text-[14px] text-[#6B7280]">Verhuurders in Duitsland hechten veel waarde aan documenten waarmee jij laat zien dat je een betrouwbare huurder bent. Zorg dat je alles alvast klaar hebt, zodat je direct kunt reageren.</p>
+      <TipSection title="Als je in loondienst werkt" items={[
+        "Kopie ID / paspoort",
         "Laatste 3 loonstroken",
-        "Werkgeversverklaring (Arbeitgeberbescheinigung)",
-        "Mietschuldenfreiheitsbescheinigung (huurschuldvrij-verklaring)",
+        "Arbeidscontract (indien beschikbaar)",
+        "Werkgeversverklaring (optioneel, maar sterk)",
+        "SCHUFA-rapport (zeer belangrijk in Duitsland)",
+        "Bankafschriften van de laatste 3 maanden",
       ]} />
-      <TipSection title="Zelfstandig / freelancer" items={[
-        "Laatste belastingaangifte (Steuerbescheid)",
-        "BWA of winst- en verliesrekening",
-        "Bankafschriften laatste 3 maanden",
+      <TipSection title="Als je al een huurwoning hebt" items={[
+        "Verhuurdersverklaring (Mietschuldenfreiheitsbescheinigung)",
+        "Bewijs van huurbetalingen (laatste 3 maanden)",
       ]} />
-      <TipSection title="Bonus" items={[
-        "Korte motivatiebrief (Bewerbungsschreiben)",
-        "Pasfoto voor je dossier",
+      <TipSection title="Als je zelfstandig ondernemer bent" items={[
+        "Kopie ID / paspoort",
+        "Uittreksel Kamer van Koophandel (Handelsregisterauszug)",
+        "Winst- en verliesrekening (laatste 2–3 jaar)",
+        "Belastingaangiften / inkomstenoverzicht",
+        "SCHUFA-rapport",
+        "Bankafschriften",
       ]} />
-      <TipHighlight text="Hoe completer je dossier, hoe sneller je uitgenodigd wordt." />
     </TipBody>
   ),
   tip_finances: () => (
