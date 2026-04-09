@@ -584,22 +584,26 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   ),
   tip_viewings: () => (
     <TipBody>
-      <p className="text-[14px] text-[#6B7280]">In Duitsland zijn bezichtigingen vaak met meerdere kandidaten tegelijk. Een goede eerste indruk is cruciaal.</p>
-      <TipSection title="Voorbereiding" items={[
-        "Neem je complete dossier mee (geprint of digitaal)",
-        "Kom op tijd — liefst 5 minuten eerder",
-        "Kleed je netjes en verzorgd",
-      ]} />
-      <TipSection title="Tijdens de bezichtiging" items={[
-        "Stel gerichte vragen over de woning en buurt",
-        "Wees vriendelijk tegen de verhuurder én de buren",
-        "Toon oprechte interesse — verhuurders merken dat",
-      ]} />
-      <TipSection title="Pro tip" items={[
-        "Stuur direct na de bezichtiging een bedankberichtje",
-        "Benoem waarom jij de ideale huurder bent",
-      ]} />
-      <TipHighlight text="Je hebt maar één kans om een goede eerste indruk te maken." />
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Een bezichtiging draait niet alleen om de woning. In Duitsland wordt er vaak ook gekeken of jij een betrouwbare huurder bent. Maak daarom een sterke eerste indruk.</p>
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Vier manieren om een positieve indruk te maken:</p>
+      <div className="flex flex-col gap-4">
+        <div>
+          <p className="text-[14px] font-semibold text-[#111111]">1. Wees op tijd</p>
+          <p className="text-[14px] text-[#6B7280] leading-relaxed mt-1">In Duitsland wordt punctualiteit serieus genomen. Kom liever iets te vroeg dan te laat.</p>
+        </div>
+        <div>
+          <p className="text-[14px] font-semibold text-[#111111]">2. Kom verzorgd en rustig over</p>
+          <p className="text-[14px] text-[#6B7280] leading-relaxed mt-1">Verhuurders zoeken iemand die netjes en stabiel oogt. Houd het simpel en professioneel.</p>
+        </div>
+        <div>
+          <p className="text-[14px] font-semibold text-[#111111]">3. Stel een paar gerichte vragen</p>
+          <p className="text-[14px] text-[#6B7280] leading-relaxed mt-1">Laat zien dat je echt interesse hebt. Vraag bijvoorbeeld naar het gebouw, de buren of de huurvoorwaarden.</p>
+        </div>
+        <div>
+          <p className="text-[14px] font-semibold text-[#111111]">4. Laat direct je interesse zien</p>
+          <p className="text-[14px] text-[#6B7280] leading-relaxed mt-1">Ben je enthousiast? Geef dit meteen aan. In Duitsland wordt vaak snel gekozen uit meerdere kandidaten.</p>
+        </div>
+      </div>
     </TipBody>
   ),
   tip_followup: () => (
