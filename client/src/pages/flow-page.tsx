@@ -608,25 +608,22 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   ),
   tip_followup: () => (
     <TipBody>
-      <p className="text-[14px] text-[#6B7280]">Na de bezichtiging ontvangen verhuurders tientallen reacties. Een sterke huurpitch onderscheidt jou van de rest.</p>
-      <TipSection title="Wat is een huurpitch?" items={[
-        "Een kort, persoonlijk bericht aan de verhuurder",
-        "Laat zien wie je bent en waarom jij past",
-        "Geeft vertrouwen over je betrouwbaarheid",
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Na een bezichtiging ben je er nog niet. In Duitsland is het gebruikelijk om een Mietbewerbung (huurpitch) te sturen. Dit is vaak het moment waarop verhuurders hun keuze maken — en het verschil tussen wel of niet uitgekozen worden.</p>
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Een huurpitch is een kort, persoonlijk bericht aan de verhuurder. Je laat zien wie je bent, waarom je betrouwbaar bent en waarom juist deze woning bij je past. Verhuurders ontvangen soms tientallen reacties — een goede pitch helpt je om eruit te springen.</p>
+      <TipSection title="Wat moet erin" items={[
+        "Kort iets over jezelf (naam, leeftijd, situatie)",
+        "Je werk en inkomen",
+        "Waarom juist deze woning",
+        "Dat je een rustige, betrouwbare huurder bent",
+        "Eventueel: samenstelling van je huishouden",
       ]} />
-      <TipSection title="Wat erin moet" items={[
-        "Je naam, leeftijd en beroep",
-        "Je netto-inkomen (of verwijzing naar documenten)",
-        "Waarom je deze woning wilt",
-        "Wanneer je kunt verhuizen",
-        "Dat je documenten compleet zijn",
+      <TipSection title="Praktische tips" items={[
+        "Houd het kort en persoonlijk — geen standaardtekst",
+        "Maak het echt: schrijf het alsof je iemand aanspreekt",
+        "Stuur het dezelfde dag als de bezichtiging",
+        "Combineer het met je documenten (SCHUFA, inkomen)",
       ]} />
-      <TipSection title="Pro tip" items={[
-        "Houd het kort — max 8–10 zinnen",
-        "Schrijf persoonlijk, niet als een template",
-        "Stuur het binnen 1 uur na de bezichtiging",
-      ]} />
-      <TipHighlight text="Een sterke pitch kan de doorslag geven. Bereid hem nu voor." />
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Ben je zeker? Stuur je pitch direct na de bezichtiging. Twijfel je? Slaap er één nacht over — maar wacht niet te lang. Snelheid telt.</p>
       <TipCta label="Genereer mijn huurpitch" href="/tools/rental-pitch" />
     </TipBody>
   ),
