@@ -87,8 +87,60 @@ export async function getSubscriptionStatus(userId: string): Promise<Subscriptio
     };
   }
 
-  const row = data as SubscriptionRow & { cancel_at_period_end?: boolean };
+  let row = data as SubscriptionRow & { cancel_at_period_end?: boolean };
   const now = new Date();
+
+  const periodExpired = row.current_period_ends_at !== null && new Date(row.current_period_ends_at) <= now;
+  const dbLooksExpired = row.status === "active" && periodExpired && row.stripe_subscription_id;
+
+  if (dbLooksExpired) {
+    try {
+      const { getUncachableStripeClient } = await import("./stripe/stripeClient");
+      const stripe = await getUncachableStripeClient();
+      const stripeSub = await stripe.subscriptions.retrieve(row.stripe_subscription_id!);
+      log(`[getSubscriptionStatus] SYNC from Stripe for user=${userId}: stripe status=${stripeSub.status}, current_period_end=${stripeSub.current_period_end ? new Date(stripeSub.current_period_end * 1000).toISOString() : "null"}`);
+
+      let healStatus: string | null = null;
+      let healData: Record<string, any> = { updated_at: new Date().toISOString() };
+
+      if (stripeSub.status === "active" || stripeSub.status === "trialing") {
+        const rawEnd = stripeSub.current_period_end;
+        const newPeriodEnd = rawEnd && rawEnd > 0
+          ? new Date(rawEnd * 1000)
+          : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+        healStatus = "active";
+        healData.status = "active";
+        healData.current_period_ends_at = newPeriodEnd.toISOString();
+        healData.cancel_at_period_end = !!stripeSub.cancel_at_period_end;
+      } else if (stripeSub.status === "past_due") {
+        healStatus = "past_due";
+        healData.status = "past_due";
+      } else if (stripeSub.status === "canceled" || stripeSub.status === "unpaid") {
+        healStatus = "canceled";
+        healData.status = "canceled";
+      } else {
+        healStatus = "expired";
+        healData.status = "expired";
+      }
+
+      if (healStatus) {
+        const { error: healErr } = await supabase
+          .from("subscriptions")
+          .update(healData)
+          .eq("user_id", userId);
+
+        if (healErr) {
+          log(`[getSubscriptionStatus] DB HEAL FAILED for user=${userId}: ${healErr.message}`);
+        } else {
+          log(`[getSubscriptionStatus] DB HEALED: user=${userId} → ${healStatus}${healData.current_period_ends_at ? `, periodEnd=${healData.current_period_ends_at}` : ""}`);
+          row = { ...row, ...healData } as typeof row;
+        }
+      }
+    } catch (syncErr: any) {
+      log(`[getSubscriptionStatus] Stripe sync failed for user=${userId}: ${syncErr.message}`);
+    }
+  }
 
   const isTrial = row.status === "trial" && row.trial_ends_at !== null && new Date(row.trial_ends_at) > now;
   const isActiveStatus = row.status === "active" && (

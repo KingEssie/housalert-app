@@ -613,9 +613,10 @@ A mobile-first rental alert application for the German market. Users can sign up
 - `POST /api/checkout/verify` — Verifies Stripe checkout session (handles both `trialing` and `paid` status) and syncs subscription to DB (requires auth, `{ session_id }`)
 - `POST /api/stripe/confirm-session` — Confirms Stripe checkout session without auth (validates via session metadata). Idempotent — skips duplicate analytics if already activated. Sets `paywall_completed` + `onboarding_completed`. Used by `/checkout/success` page.
 - `GET /api/stripe/publishable-key` — Returns Stripe publishable key
-- `POST /api/stripe/webhook` — Stripe webhook (handles checkout.session.completed, subscription created/updated/deleted)
+- `POST /api/stripe/webhook` — Stripe webhook (handles checkout.session.completed, subscription created/updated/deleted, invoice.paid, invoice.payment_failed). Webhook endpoint registered in Stripe dashboard: `https://app.housalert.com/api/stripe/webhook`
 - `POST /api/subscription/ensure-trial` — Creates trial subscription row if none exists (auth required)
 - `GET /api/subscription/status` — Returns subscription state with isActive/isTrial/isExpired booleans (auth required)
+- **Stripe auto-sync**: `getSubscriptionStatus()` in `server/subscriptions.ts` auto-heals DB when it detects DB status=active with expired period + has stripe_subscription_id. Queries Stripe API for real status and updates DB accordingly. Prevents lockout when webhooks are missed.
 - **Stripe period_end guard**: All code paths that read `current_period_end` from Stripe handle null/0 by falling back to now + 30 days (test-mode Stripe subscriptions may return null)
 - `GET /api/matches` — Returns user's matches with listing details (auth required)
 - `PATCH /api/matches/:listingId/applied` — Sets applied status on a match (auth required, `{ applied: boolean }`)
