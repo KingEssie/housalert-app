@@ -1689,7 +1689,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
     setSigningOut(true);
     try {
       await signOut();
-      window.location.replace("/login");
+      window.location.replace("/");
     } catch {
       setSigningOut(false);
     }
@@ -2300,7 +2300,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!loading && !user) {
-      navigate("/login");
+      navigate("/");
     }
   }, [user, loading, navigate]);
 

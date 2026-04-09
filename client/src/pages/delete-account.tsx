@@ -49,7 +49,7 @@ export default function DeleteAccountPage() {
       }
 
       await signOut();
-      navigate("/login");
+      navigate("/");
     } catch (err: any) {
       setDeleting(false);
       toast({ title: t("common.error"), description: err.message || t("deleteAccount.errorGeneric"), variant: "destructive" });
@@ -57,7 +57,7 @@ export default function DeleteAccountPage() {
   }
 
   if (!user) {
-    navigate("/login");
+    navigate("/");
     return null;
   }
 

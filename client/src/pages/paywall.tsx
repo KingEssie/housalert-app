@@ -332,7 +332,7 @@ export default function PaywallPage() {
 
       if (!token) {
         toast({ title: t("paywall.notLoggedIn"), description: t("paywall.loginAgain"), variant: "destructive" });
-        navigate("/login");
+        navigate("/");
         return;
       }
 

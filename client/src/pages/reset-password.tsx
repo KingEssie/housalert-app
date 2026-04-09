@@ -121,7 +121,7 @@ export default function ResetPasswordPage() {
           {t("resetPassword.successDesc")}
         </p>
         <button
-          onClick={() => navigate("/login")}
+          onClick={() => navigate("/")}
           className="h-[48px] px-8 rounded-[6px] text-[15px] font-semibold text-white bg-ha-primary hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
           data-testid="button-go-login"
         >

@@ -94,7 +94,7 @@ export default function OnboardingIntro() {
             <button
               onClick={async () => {
                 try { if (user) await signOut(); } catch {}
-                window.location.href = "/login";
+                window.location.href = "/";
               }}
               className="w-[56px] h-[56px] rounded-[6px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
               style={{
@@ -122,7 +122,7 @@ export default function OnboardingIntro() {
             <button
               onClick={async () => {
                 try { if (user) await signOut(); } catch {}
-                window.location.href = "/login";
+                window.location.href = "/";
               }}
               className="text-[14px] font-semibold"
               style={{ color: "rgb(var(--ha-primary))" }}

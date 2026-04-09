@@ -76,7 +76,7 @@ export default function OnboardingPreferences() {
   }
 
   function handleClose() {
-    navigate("/login");
+    navigate("/");
   }
 
   if (!w) {

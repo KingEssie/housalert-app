@@ -67,7 +67,7 @@ export default function AuthCallbackPage() {
       <div className="min-h-screen flex flex-col items-center justify-center bg-ha-bg px-6">
         <p className="text-ha-text font-medium text-lg mb-4" data-testid="text-auth-error">{error}</p>
         <button
-          onClick={() => navigate("/login")}
+          onClick={() => navigate("/")}
           className="min-h-[56px] px-8 rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white font-medium text-[16px] transition-colors"
           data-testid="button-go-login"
         >

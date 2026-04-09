@@ -153,7 +153,7 @@ export default function AdminIngestionPage() {
       setError(null);
     } catch (err: any) {
       if (err.message === "UNAUTHORIZED") {
-        navigate("/login");
+        navigate("/");
         return;
       } else if (err.message === "FORBIDDEN") {
         setError("forbidden");
@@ -172,14 +172,14 @@ export default function AdminIngestionPage() {
     try {
       const { data: session } = await supabase.auth.getSession();
       const token = session?.session?.access_token;
-      if (!token) { navigate("/login"); return; }
+      if (!token) { navigate("/"); return; }
 
       const res = await apiFetch("/api/admin/test-push", {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (res.status === 401) { navigate("/login"); return; }
+      if (res.status === 401) { navigate("/"); return; }
       if (res.status === 403) { setPushResult({ success: false, message: "Zugriff verweigert" }); return; }
       if (!res.ok) { setPushResult({ success: false, message: `Server-Fehler (${res.status})` }); return; }
 
@@ -203,7 +203,7 @@ export default function AdminIngestionPage() {
       const data = await fetchAdmin<any>("/api/admin/debug/match-alignment");
       setDebugData(data);
     } catch (err: any) {
-      if (err.message === "UNAUTHORIZED") { navigate("/login"); return; }
+      if (err.message === "UNAUTHORIZED") { navigate("/"); return; }
       if (err.message === "FORBIDDEN") { setDebugError("Zugriff verweigert — nur für Admins"); return; }
       setDebugError(err.message || "Fehler beim Laden");
     } finally {
@@ -213,7 +213,7 @@ export default function AdminIngestionPage() {
 
   useEffect(() => {
     if (authLoading) return;
-    if (!user) { navigate("/login"); return; }
+    if (!user) { navigate("/"); return; }
     loadData();
     const interval = setInterval(() => loadData(), 30000);
     return () => clearInterval(interval);

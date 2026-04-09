@@ -365,7 +365,7 @@ export default function NewSearchPage() {
     );
   }
 
-  if (!user) { navigate("/login"); return null; }
+  if (!user) { navigate("/"); return null; }
 
   if (atLimit) {
     return (

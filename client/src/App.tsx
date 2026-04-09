@@ -102,7 +102,7 @@ function ProtectedRoute({ component: Component, skipOnboardingCheck }: { compone
 
   if (loading) return null;
   if (!user) {
-    return <Redirect to="/login" />;
+    return <Redirect to="/" />;
   }
   if (!skipOnboardingCheck && checking) return null;
   if (!skipOnboardingCheck && needsOnboarding) return <Redirect to="/onboarding/intro" />;

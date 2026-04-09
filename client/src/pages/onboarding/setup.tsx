@@ -1169,7 +1169,7 @@ export default function OnboardingSetup() {
       const s = await supabase.auth.getSession();
       const token = s.data.session?.access_token;
       if (!token) {
-        navigate("/login");
+        navigate("/");
         return;
       }
 

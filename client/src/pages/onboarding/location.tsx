@@ -62,7 +62,7 @@ export default function OnboardingLocation() {
   }
 
   function handleClose() {
-    navigate("/login");
+    navigate("/");
   }
 
   const TAB_OPTIONS: { value: LocationMode; label: string }[] = [

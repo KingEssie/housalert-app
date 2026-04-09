@@ -301,7 +301,7 @@ export default function SignupPage() {
         <p className="text-center text-[14px] text-ha-text-secondary mt-5">
           {t("auth.signup.hasAccount")}{" "}
           <button
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/")}
             className="text-ha-primary font-medium hover:underline"
             data-testid="link-login"
           >
