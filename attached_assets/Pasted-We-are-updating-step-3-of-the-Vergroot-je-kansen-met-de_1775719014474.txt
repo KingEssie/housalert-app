@@ -1,0 +1,131 @@
+We are updating step 3 of the “Vergroot je kansen met deze tips” flow.
+
+GOAL:
+Create a Germany-specific version of this step, including real rental platforms and a better UX than Rentbird.
+
+IMPORTANT:
+- Write in DUTCH
+- Keep the same structure (title + intro + selectable regions + expandable list)
+- Keep UI unchanged (accordion per region)
+- Content must feel local and practical
+- No changes to navigation or logic
+
+==================================================
+STEP 3 TITLE
+==================================================
+
+Use:
+
+Maak accounts aan bij populaire verhuurplatforms
+
+==================================================
+STEP 3 INTRO
+==================================================
+
+Use:
+
+Veel woningen in Duitsland worden via platforms aangeboden waar je een account nodig hebt om te reageren. Zonder account ben je vaak te laat. Zorg daarom dat je vooraf accounts aanmaakt en je profiel compleet invult, zodat je direct kunt reageren.
+
+==================================================
+REGIONS STRUCTURE
+==================================================
+
+Use major German regions/cities instead of Dutch provinces.
+
+Create sections like:
+
+- Berlijn
+- München
+- Hamburg
+- Frankfurt
+- Keulen / Düsseldorf
+- Overig Duitsland
+
+==================================================
+PLATFORM LIST PER REGION
+==================================================
+
+For EACH region include relevant platforms.
+
+IMPORTANT:
+- Include 4–6 platforms per region
+- Show if free or paid
+- Keep format identical to Rentbird (bullet list with short info)
+
+--------------------------------------------------
+
+BERLIJN:
+
+- ImmoScout24 (€ premium aanbevolen voor sneller reageren)
+- Immowelt (gratis)
+- eBay Kleinanzeigen (gratis, veel particulier aanbod)
+- WG-Gesucht (gratis, vooral kamers & gedeeld wonen)
+- Berlinovo (semi-overheid, betaalbare woningen)
+
+--------------------------------------------------
+
+MÜNCHEN:
+
+- ImmoScout24 (€ premium vaak nodig)
+- Immowelt (gratis)
+- eBay Kleinanzeigen (gratis)
+- WG-Gesucht (gratis)
+- Mr. Lodge (expats / gemeubileerd)
+
+--------------------------------------------------
+
+HAMBURG:
+
+- ImmoScout24 (€ premium)
+- Immowelt (gratis)
+- eBay Kleinanzeigen (gratis)
+- WG-Gesucht (gratis)
+- SAGA Hamburg (woningcorporatie)
+
+--------------------------------------------------
+
+FRANKFURT:
+
+- ImmoScout24 (€ premium)
+- Immowelt (gratis)
+- eBay Kleinanzeigen (gratis)
+- WG-Gesucht (gratis)
+- Vonovia (grote verhuurder)
+
+--------------------------------------------------
+
+KEULEN / DÜSSELDORF:
+
+- ImmoScout24 (€ premium)
+- Immowelt (gratis)
+- eBay Kleinanzeigen (gratis)
+- WG-Gesucht (gratis)
+- LEG Immobilien (grote verhuurder)
+
+--------------------------------------------------
+
+OVERIG DUITSLAND:
+
+- ImmoScout24 (€ premium)
+- Immowelt (gratis)
+- eBay Kleinanzeigen (gratis)
+- WG-Gesucht (gratis)
+- Vonovia (grote verhuurder)
+
+==================================================
+UX NOTES
+==================================================
+
+- Keep bullet structure exactly like Rentbird
+- Keep short descriptions (1 line max)
+- No long paragraphs inside lists
+- Prioritize clarity and speed
+
+==================================================
+OUTPUT
+==================================================
+
+After finishing, return:
+1. which file(s) were changed
+2. confirmation that only step 3 content was updated
+3. confirmation that UI/accordion structure remains unchanged

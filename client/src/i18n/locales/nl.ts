@@ -1959,7 +1959,7 @@ export const nl: Record<string, any> = {
     profileDetails: "Vul je profiel in",
     tipDocuments: "Verzamel vereiste documenten",
     tipFinances: "Check je financiële situatie",
-    tipLandlordAccounts: "Creëer accounts bij populaire verhuurders",
+    tipLandlordAccounts: "Maak accounts aan bij populaire verhuurplatforms",
     tipFacebookGroups: "Meld je aan voor Facebook-groepen",
     tipNewBuild: "Houd nieuwbouwprojecten in de gaten",
     tipNetwork: "Zet je netwerk in",
