@@ -10,6 +10,7 @@ export interface SubscriptionState {
   created_at: string | null;
   isActive: boolean;
   isTrial: boolean;
+  isPastDue: boolean;
   isExpired: boolean;
   cancelAtPeriodEnd: boolean;
 }
@@ -18,7 +19,7 @@ async function fetchSubscriptionStatus(): Promise<SubscriptionState> {
   const { data: session } = await supabase.auth.getSession();
   const token = session?.session?.access_token;
   if (!token) {
-    return { status: "none", plan: null, trial_ends_at: null, current_period_ends_at: null, created_at: null, isActive: false, isTrial: false, isExpired: true, cancelAtPeriodEnd: false };
+    return { status: "none", plan: null, trial_ends_at: null, current_period_ends_at: null, created_at: null, isActive: false, isTrial: false, isPastDue: false, isExpired: true, cancelAtPeriodEnd: false };
   }
 
   const res = await apiFetch("/api/subscription/status", {
@@ -26,7 +27,7 @@ async function fetchSubscriptionStatus(): Promise<SubscriptionState> {
   });
 
   if (!res.ok) {
-    return { status: "none", plan: null, trial_ends_at: null, current_period_ends_at: null, created_at: null, isActive: false, isTrial: false, isExpired: true, cancelAtPeriodEnd: false };
+    return { status: "none", plan: null, trial_ends_at: null, current_period_ends_at: null, created_at: null, isActive: false, isTrial: false, isPastDue: false, isExpired: true, cancelAtPeriodEnd: false };
   }
 
   return res.json();
@@ -48,6 +49,7 @@ export function useSubscription() {
     plan: query.data?.plan ?? null,
     isActive: query.data?.isActive ?? false,
     isTrial: query.data?.isTrial ?? false,
+    isPastDue: query.data?.isPastDue ?? false,
     isExpired: query.data?.isExpired ?? true,
     cancelAtPeriodEnd: query.data?.cancelAtPeriodEnd ?? false,
     trialEndsAt: query.data?.trial_ends_at ?? null,

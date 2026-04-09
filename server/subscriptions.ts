@@ -9,7 +9,7 @@ const supabase = createClient(
 export interface SubscriptionRow {
   id: string;
   user_id: string;
-  status: "trial" | "active" | "canceled" | "expired";
+  status: "trial" | "active" | "past_due" | "canceled" | "expired";
   plan: string | null;
   trial_ends_at: string | null;
   current_period_ends_at: string | null;
@@ -27,6 +27,7 @@ export interface SubscriptionStatus {
   created_at: string | null;
   isActive: boolean;
   isTrial: boolean;
+  isPastDue: boolean;
   isExpired: boolean;
   cancelAtPeriodEnd: boolean;
 }
@@ -80,6 +81,7 @@ export async function getSubscriptionStatus(userId: string): Promise<Subscriptio
       created_at: null,
       isActive: false,
       isTrial: false,
+      isPastDue: false,
       isExpired: true,
       cancelAtPeriodEnd: false,
     };
@@ -92,12 +94,13 @@ export async function getSubscriptionStatus(userId: string): Promise<Subscriptio
   const isActiveStatus = row.status === "active" && (
     row.current_period_ends_at === null || new Date(row.current_period_ends_at) > now
   );
+  const isPastDue = row.status === "past_due";
   const canceledButStillActive = row.status === "canceled" && row.current_period_ends_at !== null && new Date(row.current_period_ends_at) > now;
-  const hasAccess = isTrial || isActiveStatus || canceledButStillActive;
+  const hasAccess = isTrial || isActiveStatus || isPastDue || canceledButStillActive;
   const isExpired = !hasAccess;
   const cancelAtPeriodEnd = row.status === "canceled" || row.cancel_at_period_end === true;
 
-  log(`[getSubscriptionStatus] user=${userId} DB row: status=${row.status}, trial_ends=${row.trial_ends_at}, period_ends=${row.current_period_ends_at}, cancel_at_period_end=${row.cancel_at_period_end} → computed: isTrial=${isTrial}, isActive=${hasAccess}, isExpired=${isExpired}`);
+  log(`[getSubscriptionStatus] user=${userId} DB row: status=${row.status}, trial_ends=${row.trial_ends_at}, period_ends=${row.current_period_ends_at}, cancel_at_period_end=${row.cancel_at_period_end} → computed: isTrial=${isTrial}, isPastDue=${isPastDue}, isActive=${hasAccess}, isExpired=${isExpired}`);
 
   return {
     status: row.status,
@@ -107,6 +110,7 @@ export async function getSubscriptionStatus(userId: string): Promise<Subscriptio
     created_at: row.created_at,
     isActive: hasAccess,
     isTrial,
+    isPastDue,
     isExpired,
     cancelAtPeriodEnd,
   };
@@ -150,7 +154,7 @@ export async function updateSubscriptionFromCheckout(
 
 export async function updateSubscriptionStatus(
   stripeSubscriptionId: string,
-  status: "active" | "canceled" | "expired",
+  status: "active" | "past_due" | "canceled" | "expired",
   currentPeriodEnd?: Date
 ): Promise<void> {
   const updateData: Record<string, any> = {

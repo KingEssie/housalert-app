@@ -45,6 +45,7 @@ function StatusBadge({ status }: { status: string }) {
     active: { cls: "bg-emerald-50 text-emerald-700 border-emerald-200", label: "Active" },
     operational: { cls: "bg-emerald-50 text-emerald-700 border-emerald-200", label: "Operational" },
     trial: { cls: "bg-orange-50 text-ha-primary border-orange-200", label: "Trial" },
+    past_due: { cls: "bg-amber-50 text-amber-700 border-amber-200", label: "Past Due" },
     canceled: { cls: "bg-ha-danger/5 text-ha-danger border-ha-danger/20", label: "Canceled" },
     expired: { cls: "bg-[#F7F7F7] text-[#334855] border-[#E5E7EB]", label: "Expired" },
     error: { cls: "bg-ha-danger/5 text-ha-danger border-ha-danger/20", label: "Error" },

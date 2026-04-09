@@ -1103,6 +1103,11 @@ export const nl: Record<string, any> = {
     activated: "Abonnement succesvol geactiveerd",
     paymentReceived: "Betaling ontvangen",
     redirecting: "Je wordt doorgestuurd naar je dashboard...",
+    pastDue: {
+      title: "Betaling mislukt",
+      desc: "We konden je laatste betaling niet verwerken. Werk je betaalmethode bij om toegang te behouden.",
+      action: "Bijwerken",
+    },
     gate: {
       title: "Activeer een abonnement om je matches te bekijken",
       desc: "Ontvang direct meldingen en bekijk al je woningmatches zodra je een abonnement hebt geactiveerd.",

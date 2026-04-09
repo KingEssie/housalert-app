@@ -2305,7 +2305,10 @@ export async function registerRoutes(
             } else if (subStatus === "canceled" || subStatus === "unpaid") {
               log(`[stripe-webhook] DB UPDATE: sub=${stripeSubId} → canceled`);
               await updateSubscriptionStatus(stripeSubId, "canceled");
-            } else if (subStatus === "past_due" || subStatus === "incomplete_expired") {
+            } else if (subStatus === "past_due") {
+              log(`[stripe-webhook] DB UPDATE: sub=${stripeSubId} → past_due (temporary access, payment retrying)`);
+              await updateSubscriptionStatus(stripeSubId, "past_due");
+            } else if (subStatus === "incomplete_expired") {
               log(`[stripe-webhook] DB UPDATE: sub=${stripeSubId} → expired`);
               await updateSubscriptionStatus(stripeSubId, "expired");
             }
@@ -2351,8 +2354,8 @@ export async function registerRoutes(
             const sub = await stripe.subscriptions.retrieve(stripeSubId);
             log(`[stripe-webhook] invoice.payment_failed — Stripe sub status: ${sub.status}`);
             if (sub.status === "past_due") {
-              log(`[stripe-webhook] invoice.payment_failed DB UPDATE: sub=${stripeSubId} → expired (past_due)`);
-              await updateSubscriptionStatus(stripeSubId, "expired");
+              log(`[stripe-webhook] invoice.payment_failed DB UPDATE: sub=${stripeSubId} → past_due (temporary access, retrying payment)`);
+              await updateSubscriptionStatus(stripeSubId, "past_due");
             } else if (sub.status === "canceled" || sub.status === "unpaid") {
               log(`[stripe-webhook] invoice.payment_failed DB UPDATE: sub=${stripeSubId} → canceled`);
               await updateSubscriptionStatus(stripeSubId, "canceled");
@@ -5204,10 +5207,11 @@ export async function registerRoutes(
         const s = subscription as any;
         const isTrial = s.status === "trial" && s.trial_ends_at && new Date(s.trial_ends_at) > now;
         const isActiveStatus = s.status === "active" && (!s.current_period_ends_at || new Date(s.current_period_ends_at) > now);
+        const isPastDue = s.status === "past_due";
         const canceledButActive = s.status === "canceled" && s.current_period_ends_at && new Date(s.current_period_ends_at) > now;
-        const hasAccess = isTrial || isActiveStatus || canceledButActive;
+        const hasAccess = isTrial || isActiveStatus || isPastDue || canceledButActive;
         const computedStatus = hasAccess
-          ? (isTrial ? "trial" : (canceledButActive ? "canceled" : "active"))
+          ? (isTrial ? "trial" : (isPastDue ? "past_due" : (canceledButActive ? "canceled" : "active")))
           : "expired";
         subscription = { ...s, computedStatus, hasAccess };
         log(`[admin-portal] User detail sub: DB status=${s.status}, computedStatus=${computedStatus}, hasAccess=${hasAccess}`);
@@ -5271,11 +5275,12 @@ export async function registerRoutes(
 
         const isTrial = s.status === "trial" && s.trial_ends_at && new Date(s.trial_ends_at) > now;
         const isActiveStatus = s.status === "active" && (!s.current_period_ends_at || new Date(s.current_period_ends_at) > now);
+        const isPastDue = s.status === "past_due";
         const canceledButActive = s.status === "canceled" && s.current_period_ends_at && new Date(s.current_period_ends_at) > now;
-        const hasAccess = isTrial || isActiveStatus || canceledButActive;
+        const hasAccess = isTrial || isActiveStatus || isPastDue || canceledButActive;
 
         const computedStatus = hasAccess
-          ? (isTrial ? "trial" : (canceledButActive ? "canceled" : "active"))
+          ? (isTrial ? "trial" : (isPastDue ? "past_due" : (canceledButActive ? "canceled" : "active")))
           : "expired";
 
         return { ...s, userName, computedStatus, hasAccess };

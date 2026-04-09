@@ -1096,6 +1096,11 @@ export const de: Record<string, any> = {
     activated: "Abonnement erfolgreich aktiviert",
     paymentReceived: "Zahlung erhalten",
     redirecting: "Du wirst zu deinem Dashboard weitergeleitet...",
+    pastDue: {
+      title: "Zahlung fehlgeschlagen",
+      desc: "Wir konnten deine letzte Zahlung nicht verarbeiten. Aktualisiere deine Zahlungsmethode, um den Zugang zu behalten.",
+      action: "Aktualisieren",
+    },
     gate: {
       title: "Aktiviere ein Abonnement, um deine Matches anzuzeigen",
       desc: "Erhalte sofort Benachrichtigungen und sieh alle deine Wohnungsmatches, sobald du ein Abonnement aktiviert hast.",

@@ -939,6 +939,11 @@ export const en: Record<string, any> = {
     cancelConfirm: "Are you sure you want to cancel?",
     cancelKeepActive: "Your subscription stays active until",
     cancelled: "Your subscription has been cancelled",
+    pastDue: {
+      title: "Payment failed",
+      desc: "We couldn't process your last payment. Update your payment method to keep access.",
+      action: "Update",
+    },
     gate: {
       title: "Activate a subscription to view your matches",
       desc: "Get instant notifications and see all your apartment matches once you've activated a subscription.",

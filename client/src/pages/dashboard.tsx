@@ -22,6 +22,7 @@ import {
   ChevronRight,
   CheckCircle2,
   AlertCircle,
+  AlertTriangle,
   Crown,
   Send,
   ArrowLeft,
@@ -2369,6 +2370,22 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
+      {sub.isPastDue && (
+        <div className="bg-amber-50 border-b border-amber-200 px-4 py-3 flex items-center gap-3 max-w-xl mx-auto w-full" data-testid="banner-past-due">
+          <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-[13px] font-semibold text-amber-800">{t("subscription.pastDue.title")}</p>
+            <p className="text-[12px] text-amber-700">{t("subscription.pastDue.desc")}</p>
+          </div>
+          <button
+            onClick={() => navigate("/subscription")}
+            className="px-3 py-1.5 rounded-full bg-amber-600 text-white text-[12px] font-semibold flex-shrink-0 active:scale-[0.97] transition-transform"
+            data-testid="button-fix-payment"
+          >
+            {t("subscription.pastDue.action")}
+          </button>
+        </div>
+      )}
       <main className="flex-1 max-w-xl mx-auto w-full pb-[100px]">
         {activeTab === "home" && (
           <HomeTab
