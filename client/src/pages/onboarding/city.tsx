@@ -240,20 +240,28 @@ export default function OnboardingCity() {
           {selectedCity && (
             <>
               <div style={{ marginTop: "4px" }}>
-                <label className="text-[13px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
+                <label className="text-[13px] font-semibold mb-2 block" style={{ color: OBW.textSecondary }}>
                   Straal rondom {selectedCity.name}
                 </label>
-                <select
-                  value={String(radiusKm)}
-                  onChange={(e) => setRadiusKm(parseInt(e.target.value))}
-                  className="w-full ha-select-web"
-                  style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
-                  data-testid="select-radius"
-                >
-                  {RADIUS_OPTIONS.map((km) => (
-                    <option key={km} value={km}>{km} km</option>
-                  ))}
-                </select>
+                <div className="flex gap-2 overflow-x-auto no-scrollbar" data-testid="select-radius">
+                  {RADIUS_OPTIONS.map((km) => {
+                    const active = radiusKm === km;
+                    return (
+                      <button
+                        key={km}
+                        onClick={() => setRadiusKm(km)}
+                        className="h-[40px] px-4 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96] shrink-0"
+                        style={{
+                          backgroundColor: active ? "rgb(var(--ha-primary))" : "#F3F4F6",
+                          color: active ? "#fff" : "#334855",
+                        }}
+                        data-testid={`radius-${km}`}
+                      >
+                        {km} km
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               <div className="mt-3" data-testid="location-map">

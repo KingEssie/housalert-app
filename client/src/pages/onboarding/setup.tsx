@@ -695,17 +695,25 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
           <label className="text-[14px] font-semibold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterPersonal.gender")}
           </label>
-          <select
-            value={personalData.gender}
-            onChange={(e) => onChange({ gender: e.target.value })}
-            className={INPUT_CLS}
-            data-testid="select-gender"
-          >
-            <option value="" disabled></option>
-            {genderOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
+          <div className="flex flex-wrap gap-2" data-testid="select-gender">
+            {genderOptions.map((opt) => {
+              const active = personalData.gender === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  onClick={() => onChange({ gender: opt.value })}
+                  className="h-[40px] px-4 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96]"
+                  style={{
+                    backgroundColor: active ? "rgb(var(--ha-primary))" : "#F3F4F6",
+                    color: active ? "#fff" : "#334855",
+                  }}
+                  data-testid={`gender-${opt.value}`}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -767,45 +775,75 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
           <label className="text-[14px] font-semibold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterLiving.livingWith")}
           </label>
-          <select
-            value={livingData.livingWith}
-            onChange={(e) => onChange({ livingWith: e.target.value })}
-            className={INPUT_CLS}
-            data-testid="select-living-with"
-          >
-            <option value="" disabled></option>
-            {livingOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-          </select>
+          <div className="flex flex-wrap gap-2" data-testid="select-living-with">
+            {livingOptions.map((o) => {
+              const active = livingData.livingWith === o.value;
+              return (
+                <button
+                  key={o.value}
+                  onClick={() => onChange({ livingWith: o.value })}
+                  className="h-[40px] px-4 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96]"
+                  style={{
+                    backgroundColor: active ? "rgb(var(--ha-primary))" : "#F3F4F6",
+                    color: active ? "#fff" : "#334855",
+                  }}
+                  data-testid={`living-${o.value}`}
+                >
+                  {o.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <div>
           <label className="text-[14px] font-semibold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterLiving.workStatus")}
           </label>
-          <select
-            value={livingData.workStatus}
-            onChange={(e) => onChange({ workStatus: e.target.value })}
-            className={INPUT_CLS}
-            data-testid="select-work-status"
-          >
-            <option value="" disabled></option>
-            {workOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-          </select>
+          <div className="flex flex-wrap gap-2" data-testid="select-work-status">
+            {workOptions.map((o) => {
+              const active = livingData.workStatus === o.value;
+              return (
+                <button
+                  key={o.value}
+                  onClick={() => onChange({ workStatus: o.value })}
+                  className="h-[40px] px-4 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96]"
+                  style={{
+                    backgroundColor: active ? "rgb(var(--ha-primary))" : "#F3F4F6",
+                    color: active ? "#fff" : "#334855",
+                  }}
+                  data-testid={`work-${o.value}`}
+                >
+                  {o.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <div>
           <label className="text-[14px] font-semibold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterLiving.moveReason")}
           </label>
-          <select
-            value={livingData.moveReason}
-            onChange={(e) => onChange({ moveReason: e.target.value })}
-            className={INPUT_CLS}
-            data-testid="select-move-reason"
-          >
-            <option value="" disabled></option>
-            {moveOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-          </select>
+          <div className="flex flex-wrap gap-2" data-testid="select-move-reason">
+            {moveOptions.map((o) => {
+              const active = livingData.moveReason === o.value;
+              return (
+                <button
+                  key={o.value}
+                  onClick={() => onChange({ moveReason: o.value })}
+                  className="h-[40px] px-4 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96]"
+                  style={{
+                    backgroundColor: active ? "rgb(var(--ha-primary))" : "#F3F4F6",
+                    color: active ? "#fff" : "#334855",
+                  }}
+                  data-testid={`move-${o.value}`}
+                >
+                  {o.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <div>
@@ -831,19 +869,25 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
           <label className="text-[14px] font-semibold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterLiving.pets")}
           </label>
-          <select
-            value={livingData.petsCount}
-            onChange={(e) => onChange({ petsCount: e.target.value })}
-            className={INPUT_CLS + " cursor-pointer"}
-            data-testid="input-pets"
-          >
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5+">5+</option>
-          </select>
+          <div className="flex gap-2" data-testid="input-pets">
+            {["0", "1", "2", "3", "4", "5+"].map((v) => {
+              const active = livingData.petsCount === v;
+              return (
+                <button
+                  key={v}
+                  onClick={() => onChange({ petsCount: v })}
+                  className="h-[40px] w-[48px] rounded-full text-[13px] font-semibold transition-all active:scale-[0.96]"
+                  style={{
+                    backgroundColor: active ? "rgb(var(--ha-primary))" : "#F3F4F6",
+                    color: active ? "#fff" : "#334855",
+                  }}
+                  data-testid={`pets-${v}`}
+                >
+                  {v}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
