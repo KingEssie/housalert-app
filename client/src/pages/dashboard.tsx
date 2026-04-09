@@ -959,11 +959,12 @@ function RecentMatchesSection({
           </button>
         </div>
       ) : (
-        <div className="rounded-[16px] bg-white border border-[#E5E7EB] py-8 px-7 flex flex-col items-center text-center" data-testid="card-no-matches">
-          <Search className="w-[24px] h-[24px] text-[#111111] mb-5" />
-          <p className="text-[18px] font-semibold text-[#111111] mb-2">{t("home.noMatchesYetTitle")}</p>
-          <p className="text-[15px] text-[#334855] leading-relaxed max-w-[280px]">{t("home.firstMatchesWillAppear")}</p>
-        </div>
+        <EmptyState
+          illustration={EMPTY_STATE_IMAGES.noMatches}
+          title={t("home.noMatchesYetTitle")}
+          description={t("home.firstMatchesWillAppear")}
+          testId="card-no-matches"
+        />
       )}
     </div>
   );

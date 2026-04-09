@@ -565,18 +565,7 @@ input[type="range"]::-moz-range-thumb {
 .ha-field-light:disabled {
   background: #F9FAFB;
 }
-.ha-field-dark {
-  background: transparent;
-  color: #ffffff;
-  border-color: rgba(255,255,255,0.7);
-}
-.ha-field-dark::placeholder {
-  color: rgba(255,255,255,0.45);
-}
-.ha-field-dark:focus {
-  border-color: rgb(var(--ha-primary));
-  box-shadow: 0 0 0 3px rgba(217,26,104,0.15);
-}
+
 .ha-btn {
   height: 48px;
   border-radius: var(--ha-btn-radius);
@@ -644,25 +633,7 @@ input[type="range"]::-moz-range-thumb {
   border-color: rgb(var(--ha-primary));
   box-shadow: 0 0 0 3px rgba(217,26,104,0.1);
 }
-.ob-input {
-  background: #ffffff;
-  border: 1px solid #E5E7EB;
-  color: #111111;
-  font-size: 16px;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-.ob-input::placeholder {
-  color: #334855;
-  opacity: 0.55;
-}
-.ob-input:focus {
-  border-color: rgb(var(--ha-primary)) !important;
-  box-shadow: 0 0 0 3px rgba(217,26,104,0.1) !important;
-}
-.ob-input:disabled {
-  background: #F9FAFB;
-}
+
 .dual-range-thumb {
   pointer-events: none;
 }

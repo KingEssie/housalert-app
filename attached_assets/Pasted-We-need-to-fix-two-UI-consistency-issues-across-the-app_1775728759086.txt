@@ -1,0 +1,128 @@
+We need to fix two UI consistency issues across the app:
+
+1. Empty state inconsistency
+2. Input field inconsistency
+
+IMPORTANT:
+Do NOT change logic, APIs, or routing.
+Only fix UI and component consistency.
+
+==================================================
+1. EMPTY STATES — MAKE THEM CONSISTENT
+==================================================
+
+GOAL:
+All empty states across the app must follow the SAME design pattern.
+
+STANDARD EMPTY STATE STRUCTURE:
+
+- Illustration (custom uploaded asset)
+- Title (bold, black)
+- Description text (#334855)
+- Optional primary CTA button (brand pink)
+
+SPACING:
+- centered vertically
+- consistent spacing between elements
+
+--------------------------------------------------
+APPLY THIS TO:
+
+1. Matches screen (already correct → use as reference)
+2. Home screen → "Recente matches"
+   → REPLACE current empty state with the SAME structure as Matches screen
+
+--------------------------------------------------
+HOME SCREEN REQUIREMENTS:
+
+- Use the same illustration style as Matches
+- Title: "Nog geen matches"
+- Description: short, same tone as Matches
+- Optional CTA: "Filters aanpassen" (optional)
+
+Ensure Home and Matches empty states feel identical in structure.
+
+==================================================
+2. INPUT FIELD SYSTEM — FULL STANDARDIZATION
+==================================================
+
+GOAL:
+ALL inputs across the app must use ONE consistent design system.
+
+--------------------------------------------------
+CREATE OR USE A SHARED COMPONENT:
+
+- InputField
+- SelectField
+- SearchField
+
+ALL forms must use these components.
+
+--------------------------------------------------
+DESIGN RULES (MANDATORY):
+
+- Height: 48px
+- Border radius: 12px
+- Background: white
+- Border: 1px solid #E5E7EB
+- Font size: 16px
+- Padding: consistent (left/right spacing equal)
+- Text color: black
+- Placeholder color: #334855
+- Focus state:
+  - border becomes brand color
+  - subtle outline or shadow
+
+--------------------------------------------------
+APPLY TO ALL SCREENS:
+
+- Login
+- Signup
+- Onboarding (zoekprofiel maken)
+- Filters
+- Profile edit
+- Search inputs
+- Dropdown/select fields
+
+--------------------------------------------------
+DROPDOWNS:
+
+Dropdowns must visually match input fields:
+- same height
+- same radius
+- same border
+- same padding
+
+NO visual difference between input and select.
+
+==================================================
+3. REMOVE OLD STYLES
+==================================================
+
+- Remove any legacy input styling
+- Remove duplicate classes
+- Remove inconsistent sizes
+
+Everything must use the shared system.
+
+==================================================
+4. RESULT
+==================================================
+
+After implementation:
+
+- All empty states look identical in structure
+- Home empty state matches Matches screen
+- All inputs across the app look exactly the same
+- Onboarding no longer has different input styles
+- UI feels clean, consistent, and premium
+
+==================================================
+OUTPUT
+==================================================
+
+Return:
+1. Which components were created or updated
+2. Which screens were updated
+3. Confirmation that all inputs now use one system
+4. Confirmation that Home empty state now matches Matches screen
