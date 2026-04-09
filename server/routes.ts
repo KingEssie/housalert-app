@@ -2601,8 +2601,10 @@ export async function registerRoutes(
         { id: "tip_finances", completed: false, score: 10 },
         { id: "tip_landlord_accounts", completed: false, score: 10 },
         { id: "tip_facebook_groups", completed: false, score: 10 },
+        { id: "tip_new_build", completed: false, score: 10 },
         { id: "tip_network", completed: false, score: 10 },
         { id: "tip_viewings", completed: false, score: 10 },
+        { id: "tip_followup", completed: false, score: 10 },
       ];
 
       const allTasks = [...accountTasks, ...prepTasks];

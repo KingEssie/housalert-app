@@ -44,8 +44,10 @@ export const SEARCH_PREP_FLOW: TaskFlow = {
     { id: "tip_finances", labelKey: "taskFlow.tipFinances", descriptionKey: "taskFlow.desc.tipFinances", icon: "Wallet", route: "/tips/financien", completionType: "manual" },
     { id: "tip_landlord_accounts", labelKey: "taskFlow.tipLandlordAccounts", descriptionKey: "taskFlow.desc.tipLandlordAccounts", icon: "Building", route: "/tips/verhuurders", completionType: "manual" },
     { id: "tip_facebook_groups", labelKey: "taskFlow.tipFacebookGroups", descriptionKey: "taskFlow.desc.tipFacebookGroups", icon: "Users", route: "/tips/facebook", completionType: "manual" },
+    { id: "tip_new_build", labelKey: "taskFlow.tipNewBuild", descriptionKey: "taskFlow.desc.tipNewBuild", icon: "Building", route: "/tips/nieuwbouw", completionType: "manual" },
     { id: "tip_network", labelKey: "taskFlow.tipNetwork", descriptionKey: "taskFlow.desc.tipNetwork", icon: "Share2", route: "/tips/netwerk", completionType: "manual" },
     { id: "tip_viewings", labelKey: "taskFlow.tipViewings", descriptionKey: "taskFlow.desc.tipViewings", icon: "Eye", route: "/tips/bezichtiging", completionType: "manual" },
+    { id: "tip_followup", labelKey: "taskFlow.tipFollowup", descriptionKey: "taskFlow.desc.tipFollowup", icon: "Mail", route: "/tips/opvolging", completionType: "manual" },
   ],
 };
 
