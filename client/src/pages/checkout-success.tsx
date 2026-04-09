@@ -105,7 +105,8 @@ export default function CheckoutSuccessPage() {
     queryClient.invalidateQueries({ queryKey: ["/api/subscription/status"] });
     queryClient.invalidateQueries({ queryKey: ["/api/profile-stats"] });
     queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
-    setTimeout(() => navigate("/home"), 2500);
+    queryClient.invalidateQueries({ queryKey: ["/api/onboarding-status"] });
+    setTimeout(() => navigate("/onboarding/setup"), 2500);
   }
 
   useEffect(() => {

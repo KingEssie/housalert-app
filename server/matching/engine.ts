@@ -33,6 +33,7 @@ interface SearchProfile {
   radius_km?: number | null;
   send_unclear?: boolean | null;
   price_flexible?: boolean | null;
+  created_at?: string | null;
 }
 
 interface DbListing {
@@ -902,7 +903,12 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
   const userSubCache = new Map<string, { hasAccess: boolean }>();
   const userBlockedCache = new Map<string, Set<string>>();
 
+  const listingCreatedAt = (listing as DbListing).created_at ? new Date((listing as DbListing).created_at!).getTime() : Date.now();
+
   for (const profile of profiles as SearchProfile[]) {
+    const profileCreatedAt = profile.created_at ? new Date(profile.created_at).getTime() : 0;
+    if (profileCreatedAt > listingCreatedAt) continue;
+
     if (!doesListingMatchProfile(listing as DbListing, profile)) continue;
 
     if (!userBlockedCache.has(profile.user_id)) {
@@ -987,7 +993,10 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
 
   const sp = profile as SearchProfile;
 
+  const profileCreatedAt = sp.created_at ? new Date(sp.created_at).toISOString() : new Date().toISOString();
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const matchStartDate = profileCreatedAt > sevenDaysAgo ? profileCreatedAt : sevenDaysAgo;
+  log(`[MATCH ENGINE] Backfill start date: ${matchStartDate} (profile created: ${profileCreatedAt}, 7d ago: ${sevenDaysAgo})`);
 
   const profileCityRaw = sp.city_name || sp.city || "";
   const backfillSearchTerms = getCitySearchTerms(profileCityRaw);
@@ -1000,20 +1009,20 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
     const result = await supabase
       .from("listings")
       .select(getListingSelect())
-      .gte("created_at", sevenDaysAgo)
+      .gte("created_at", matchStartDate)
       .or(orFilter);
     listings = result.data;
     lErr = result.error;
     if (lErr) {
       log(`[MATCH ENGINE] City-filtered listing query failed, falling back to full scan: ${lErr.message}`);
-      const fallback = await supabase.from("listings").select(getListingSelect()).gte("created_at", sevenDaysAgo);
+      const fallback = await supabase.from("listings").select(getListingSelect()).gte("created_at", matchStartDate);
       listings = fallback.data;
       lErr = fallback.error;
     } else {
       log(`[MATCH ENGINE] Backfill pre-filtered to ${listings?.length ?? 0} listings in city="${profileCityRaw}"`);
     }
   } else {
-    const result = await supabase.from("listings").select(getListingSelect()).gte("created_at", sevenDaysAgo);
+    const result = await supabase.from("listings").select(getListingSelect()).gte("created_at", matchStartDate);
     listings = result.data;
     lErr = result.error;
   }

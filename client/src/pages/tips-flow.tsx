@@ -1,7 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { ArrowLeft, X, Check } from "lucide-react";
-import { getTipsReadSet, markTipRead, unmarkTipRead } from "./tips";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
+import { apiFetch } from "@/lib/api-base";
+import { useAuth } from "@/lib/auth";
 
 export const FLOW_TIP_IDS = [
   "dokumente",
@@ -15,6 +18,21 @@ export const FLOW_TIP_IDS = [
 ] as const;
 
 export type FlowTipId = (typeof FLOW_TIP_IDS)[number];
+
+const LOCAL_TO_SERVER_ID: Record<FlowTipId, string> = {
+  dokumente: "tip_documents",
+  finanzen: "tip_finances",
+  reaktion: "tip_landlord_accounts",
+  plattformen: "tip_facebook_groups",
+  neubau: "tip_new_build",
+  netzwerk: "tip_network",
+  besichtigung: "tip_viewings",
+  followup: "tip_followup",
+};
+
+const SERVER_TO_LOCAL: Record<string, FlowTipId> = Object.fromEntries(
+  Object.entries(LOCAL_TO_SERVER_ID).map(([k, v]) => [v, k as FlowTipId])
+) as Record<string, FlowTipId>;
 
 interface TipStepContent {
   id: FlowTipId;
@@ -105,14 +123,54 @@ export function getFlowTipSteps(): { id: string; title: string }[] {
 
 export default function TipsFlowPage() {
   const [, navigate] = useLocation();
+  const { session } = useAuth();
+  const accessToken = session?.access_token;
   const [currentStep, setCurrentStep] = useState(0);
-  const [checkedSteps, setCheckedSteps] = useState<Set<string>>(() => {
-    const readSet = getTipsReadSet();
-    const initial = new Set<string>();
-    FLOW_TIP_IDS.forEach((id) => {
-      if (readSet.has(id)) initial.add(id);
-    });
-    return initial;
+  const [checkedSteps, setCheckedSteps] = useState<Set<string>>(new Set());
+
+  const strengthQuery = useQuery<{ prepTasks: { id: string; completed: boolean }[] }>({
+    queryKey: ["/api/profile-strength"],
+    queryFn: async () => {
+      const res = await apiFetch("/api/profile-strength", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (!res.ok) throw new Error("Failed to load");
+      return res.json();
+    },
+    enabled: !!accessToken,
+  });
+
+  useEffect(() => {
+    if (strengthQuery.data?.prepTasks) {
+      const serverCompleted = new Set<string>();
+      for (const task of strengthQuery.data.prepTasks) {
+        if (task.completed) {
+          const localId = SERVER_TO_LOCAL[task.id];
+          if (localId) serverCompleted.add(localId);
+        }
+      }
+      setCheckedSteps(serverCompleted);
+    }
+  }, [strengthQuery.data]);
+
+  const markCompleteMutation = useMutation({
+    mutationFn: async (stepId: string) => {
+      const serverId = LOCAL_TO_SERVER_ID[stepId as FlowTipId];
+      if (!serverId || !accessToken) return;
+      const res = await apiFetch("/api/flow/complete-step", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ flowId: "search", stepId: serverId }),
+      });
+      if (!res.ok) throw new Error("Failed to mark complete");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
+    },
   });
 
   const step = STEPS[currentStep];
@@ -125,15 +183,20 @@ export default function TipsFlowPage() {
     const next = new Set(checkedSteps);
     if (next.has(step.id)) {
       next.delete(step.id);
-      unmarkTipRead(step.id);
     } else {
       next.add(step.id);
-      markTipRead(step.id);
+      markCompleteMutation.mutate(step.id);
     }
     setCheckedSteps(next);
   }
 
   function handleNext() {
+    if (!isChecked) {
+      const next = new Set(checkedSteps);
+      next.add(step.id);
+      setCheckedSteps(next);
+      markCompleteMutation.mutate(step.id);
+    }
     if (isLastStep) {
       navigate("/dashboard?tab=home");
     } else {

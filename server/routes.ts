@@ -2648,15 +2648,16 @@ export async function registerRoutes(
         { id: "documents", completed: hasDocuments, score: 15 },
       ];
 
+      const completedPrepSet = new Set<string>(profileData?.completed_prep_steps || []);
       const prepTasks = [
-        { id: "tip_documents", completed: false, score: 10 },
-        { id: "tip_finances", completed: false, score: 10 },
-        { id: "tip_landlord_accounts", completed: false, score: 10 },
-        { id: "tip_facebook_groups", completed: false, score: 10 },
-        { id: "tip_new_build", completed: false, score: 10 },
-        { id: "tip_network", completed: false, score: 10 },
-        { id: "tip_viewings", completed: false, score: 10 },
-        { id: "tip_followup", completed: false, score: 10 },
+        { id: "tip_documents", completed: completedPrepSet.has("tip_documents"), score: 10 },
+        { id: "tip_finances", completed: completedPrepSet.has("tip_finances"), score: 10 },
+        { id: "tip_landlord_accounts", completed: completedPrepSet.has("tip_landlord_accounts"), score: 10 },
+        { id: "tip_facebook_groups", completed: completedPrepSet.has("tip_facebook_groups"), score: 10 },
+        { id: "tip_new_build", completed: completedPrepSet.has("tip_new_build"), score: 10 },
+        { id: "tip_network", completed: completedPrepSet.has("tip_network"), score: 10 },
+        { id: "tip_viewings", completed: completedPrepSet.has("tip_viewings"), score: 10 },
+        { id: "tip_followup", completed: completedPrepSet.has("tip_followup"), score: 10 },
       ];
 
       const allTasks = [...accountTasks, ...prepTasks];
@@ -2833,12 +2834,32 @@ export async function registerRoutes(
       const { flowId, stepId } = req.body;
       if (!flowId || !stepId) return res.status(400).json({ error: "flowId and stepId required" });
 
+      const PREP_STEP_IDS = new Set([
+        "tip_documents", "tip_finances", "tip_landlord_accounts", "tip_facebook_groups",
+        "tip_new_build", "tip_network", "tip_viewings", "tip_followup",
+      ]);
+
       const MANUAL_STEP_COLUMNS: Record<string, Record<string, string>> = {
         search: {
           network: "network_task_done",
           viewing_tips: "viewing_tips_done",
         },
       };
+
+      if (flowId === "search" && PREP_STEP_IDS.has(stepId)) {
+        await pgPool.query(
+          `UPDATE user_profile_data
+           SET completed_prep_steps = array_append(
+             COALESCE(completed_prep_steps, '{}'),
+             $2
+           )
+           WHERE user_id = $1
+             AND NOT ($2 = ANY(COALESCE(completed_prep_steps, '{}')))`,
+          [user.id, stepId]
+        );
+        log(`[flow] Prep step completed: userId=${user.id.substring(0, 8)}... step=${stepId}`);
+        return res.json({ success: true });
+      }
 
       const column = MANUAL_STEP_COLUMNS[flowId]?.[stepId];
       if (!column) return res.status(400).json({ error: "Step does not support manual completion" });
