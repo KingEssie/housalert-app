@@ -535,20 +535,25 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   ),
   tip_facebook_groups: () => (
     <TipBody>
-      <p className="text-[14px] text-[#6B7280]">Veel woningen worden nooit op grote platforms geplaatst. Via Facebook-groepen vind je aanbod met minder concurrentie.</p>
-      <TipSection title="Zoek op" items={[
-        "\"Wohnung frei\" + stad",
-        "\"Wohnung mieten\" + stad",
-        "\"WG Zimmer\" + stad",
-        "\"Nachmieter gesucht\" + stad",
-      ]} />
-      <TipSection title="Wat je moet doen" items={[
-        "Meld je aan bij 5–10 groepen in je regio",
-        "Zet meldingen aan voor nieuwe posts",
-        "Reageer binnen minuten — niet uren",
-        "Plaats zelf een bericht met je zoekwensen",
-      ]} />
-      <TipHighlight text="Hoe actiever je bent, hoe meer kansen je ziet." />
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Veel particuliere verhuurders en huurders gebruiken in Duitsland Facebook-groepen om woningen of kamers te delen. Vooral in grote steden en bij gedeeld wonen (WG) komt hier veel aanbod voorbij.</p>
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Zoek en word lid van actieve groepen in jouw regio, zodat je snel kunt reageren op nieuwe woningen.</p>
+      <a
+        href="https://www.facebook.com/search/groups/?q=wohnung%20mieten"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-[14px] font-semibold text-ha-primary hover:underline"
+        data-testid="link-facebook-groups"
+      >
+        » Rooms &amp; Apartments in Berlin, Munich, Hamburg, Frankfurt, Cologne
+      </a>
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Speur ook zelf naar Facebook-groepen die woningen delen in jouw stad of regio.</p>
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Gebruik in Facebook zoekopdrachten zoals:</p>
+      <ul className="flex flex-col gap-1.5 pl-1">
+        <li className="flex items-start gap-2 text-[14px] text-[#6B7280] leading-snug"><span className="text-[#D1D5DB] mt-1.5 text-[8px]">●</span><span>Wohnung + stad</span></li>
+        <li className="flex items-start gap-2 text-[14px] text-[#6B7280] leading-snug"><span className="text-[#D1D5DB] mt-1.5 text-[8px]">●</span><span>WG Zimmer + stad</span></li>
+        <li className="flex items-start gap-2 text-[14px] text-[#6B7280] leading-snug"><span className="text-[#D1D5DB] mt-1.5 text-[8px]">●</span><span>Wohnung mieten + stad</span></li>
+      </ul>
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Word lid van meerdere groepen en zet meldingen aan, zodat je direct op de hoogte bent van nieuw aanbod.</p>
     </TipBody>
   ),
   tip_new_build: () => (
