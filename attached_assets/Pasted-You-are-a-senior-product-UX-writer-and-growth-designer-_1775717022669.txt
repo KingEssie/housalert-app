@@ -1,0 +1,92 @@
+You are a senior product UX writer and growth designer.
+
+Your task is to generate a complete 8-step onboarding “tips flow” for a rental app similar to Rentbird, but optimized for the German housing market.
+
+The output must be written in DUTCH, but all content must be adapted to how the German rental market works.
+
+-----------------------------------
+GOAL
+-----------------------------------
+Create a highly actionable, clean, and scanable flow that:
+- increases user success in finding a rental
+- feels simple, premium, and helpful
+- is easy to implement in a mobile UI
+
+-----------------------------------
+STYLE RULES (VERY IMPORTANT)
+-----------------------------------
+- Use short sentences
+- Use bullet points (no long paragraphs)
+- Keep it scannable (mobile-first)
+- Avoid fluff
+- Tone: helpful, direct, confident
+- Each step must feel actionable (not just informational)
+
+-----------------------------------
+STRUCTURE PER STEP
+-----------------------------------
+For each of the 8 steps, output:
+
+1. Title (short, strong)
+2. Short explanation (max 2 lines)
+3. Section blocks (if relevant), such as:
+   - "Waarom dit belangrijk is"
+   - "Wat je moet doen"
+   - "Pro tip"
+4. Bullet lists for clarity
+5. If applicable: include CTA suggestions (e.g. button labels)
+
+-----------------------------------
+STEPS TO GENERATE
+-----------------------------------
+
+1. Verzamel alle benodigde documenten  
+→ Include German-specific items like SCHUFA, loonstroken, etc.
+
+2. Check je financiële situatie  
+→ Include 3x rent rule and explain briefly
+
+3. Maak accounts aan op belangrijke platforms  
+→ Include: ImmoScout24, Immowelt, WG-Gesucht, eBay Kleinanzeigen
+
+4. Gebruik Facebook-groepen & communities  
+→ Include search tips and behavior
+
+5. Houd nieuwbouwprojecten in de gaten  
+→ Include direct actionable links (Neubaukompass, ImmoScout24 nieuwbouw, Immowelt)
+→ Add CTA: “Open alle websites”
+
+6. Zet je netwerk in  
+→ Include practical actions (friends, socials, colleagues)
+
+7. Kom goed voor de dag bij bezichtigingen  
+→ Include behavioral tips (first impression, timing, questions)
+
+8. Stuur een sterke huurpitch  
+→ Include explanation + clear CTA:
+   “Genereer mijn huurpitch”
+
+-----------------------------------
+IMPORTANT PRODUCT THINKING
+-----------------------------------
+- Steps should guide the user step-by-step toward success
+- Avoid duplicate information between steps
+- Keep each step focused on ONE core idea
+- Make step 8 feel like the most valuable step
+
+-----------------------------------
+EXTRA (VERY IMPORTANT)
+-----------------------------------
+For step 8 (huurpitch), also include:
+
+- Suggested input fields:
+  (name, age, job, income, city, motivation)
+
+- Example output structure of a strong German rental pitch
+
+-----------------------------------
+OUTPUT FORMAT
+-----------------------------------
+- Use clean formatting
+- Separate each step clearly
+- Write as if this will go directly into a production app

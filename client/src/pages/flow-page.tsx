@@ -41,7 +41,7 @@ import {
 } from "lucide-react";
 
 const ICON_MAP: Record<string, React.ComponentType<LucideProps>> = {
-  Bell, Search, Phone, Users, UserCircle, FileText, FolderOpen, PlusCircle, Share2, Eye, Building, Wallet,
+  Bell, Search, Phone, Users, UserCircle, FileText, FolderOpen, PlusCircle, Share2, Eye, Building, Wallet, Mail,
 };
 
 function getStepIcon(iconName: string) {
@@ -391,23 +391,24 @@ function TipHighlight({ text }: { text: string }) {
 const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   tip_documents: () => (
     <TipBody>
-      <TipSection title="In loondienst" items={[
-        "Kopie ID / paspoort",
-        "Inkomensverklaring of werkgeversverklaring",
+      <p className="text-[14px] text-[#6B7280]">In Duitsland verwachten verhuurders een compleet dossier. Zonder deze documenten word je vaak direct afgewezen.</p>
+      <TipSection title="Altijd nodig" items={[
+        "Kopie ID of paspoort",
+        "SCHUFA-BonitätsAuskunft (kredietcheck)",
         "Laatste 3 loonstroken",
-        "Arbeidscontract (indien mogelijk)",
-        "Uittreksel BRP (gemeente)",
+        "Werkgeversverklaring (Arbeitgeberbescheinigung)",
+        "Mietschuldenfreiheitsbescheinigung (huurschuldvrij-verklaring)",
       ]} />
-      <TipSection title="Zelfstandig" items={[
-        "Laatste belastingaangifte",
-        "Jaarcijfers / winst- en verliesrekening",
-        "Bankafschriften laatste maanden",
+      <TipSection title="Zelfstandig / freelancer" items={[
+        "Laatste belastingaangifte (Steuerbescheid)",
+        "BWA of winst- en verliesrekening",
+        "Bankafschriften laatste 3 maanden",
       ]} />
-      <TipSection title="Al een huurwoning" items={[
-        "Verhuurdersverklaring",
-        "Bewijs van huurbetalingen",
+      <TipSection title="Bonus" items={[
+        "Korte motivatiebrief (Bewerbungsschreiben)",
+        "Pasfoto voor je dossier",
       ]} />
-      <TipHighlight text="Hoe completer je bent, hoe groter je kans." />
+      <TipHighlight text="Hoe completer je dossier, hoe sneller je uitgenodigd wordt." />
     </TipBody>
   ),
   tip_finances: () => (
@@ -416,88 +417,133 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
         <div className="px-5 py-4">
           <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Vuistregel</p>
           <p className="text-[22px] font-bold text-[#111111] mb-1">3× de kale huur</p>
-          <p className="text-[14px] text-[#6B7280]">Minimaal bruto maandinkomen</p>
+          <p className="text-[14px] text-[#6B7280]">Minimaal netto maandinkomen</p>
         </div>
         <div className="border-t border-[#F3F4F6] px-5 py-3.5 bg-[#FAFAFA]">
           <p className="text-[14px] text-[#374151]">
-            <span className="text-[#6B7280]">Voorbeeld:</span> Huur €1.000 → inkomen €3.000+
+            <span className="text-[#6B7280]">Voorbeeld:</span> Kaltmiete €800 → netto inkomen €2.400+
           </p>
         </div>
       </div>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Soms zelfs hoger (3,5× – 4×), vooral in populaire steden.</p>
-      <TipSection title="Belangrijk" items={[
-        "Onder deze grens reageren = vaak kansloos",
-        "Je verspilt tijd en positie",
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">In steden als München, Berlijn of Frankfurt kan dit oplopen tot 3,5× – 4×.</p>
+      <TipSection title="Check dit" items={[
+        "Reageer niet op woningen boven je budget",
+        "Reken met Kaltmiete + Nebenkosten (bijkomende kosten)",
+        "Houd rekening met een Kaution van 2–3 maanden huur",
       ]} />
-      <TipHighlight text="Stem je zoekfilters hierop af." />
+      <TipHighlight text="Stem je zoekfilters af op wat je echt kunt betalen." />
     </TipBody>
   ),
   tip_landlord_accounts: () => (
     <TipBody>
-      <TipSection title="Maak accounts op" items={[
-        "Funda",
-        "Pararius",
-        "Kamernet",
-        "Facebook Marketplace",
-        "Eventueel lokale verhuurders",
+      <p className="text-[14px] text-[#6B7280]">De meeste woningen in Duitsland worden aangeboden via een paar grote platforms. Zonder account mis je het meeste aanbod.</p>
+      <TipSection title="Maak accounts aan" items={[
+        "ImmoScout24 (grootste platform)",
+        "Immowelt",
+        "WG-Gesucht (kamers & gedeelde woningen)",
+        "eBay Kleinanzeigen (nu: Kleinanzeigen)",
       ]} />
-      <TipSection title="Direct doen" items={[
-        "Zet meldingen aan",
+      <TipSection title="Direct instellen" items={[
+        "Zet e-mailmeldingen aan voor nieuwe woningen",
         "Vul je profiel volledig in",
-        "Upload alvast je documenten",
+        "Upload je documenten alvast (SCHUFA, loonstroken)",
       ]} />
-      <TipHighlight text="Snel reageren geeft je een groot voordeel." />
+      <TipHighlight text="De eerste reactie wint vaak. Zorg dat je klaarstaat." />
     </TipBody>
   ),
   tip_facebook_groups: () => (
     <TipBody>
-      <TipSection title="Waar zoeken" items={[
-        "Facebook-groepen",
-        "Studentengroepen",
-        "Lokale communities",
+      <p className="text-[14px] text-[#6B7280]">Veel woningen worden nooit op grote platforms geplaatst. Via Facebook-groepen vind je aanbod met minder concurrentie.</p>
+      <TipSection title="Zoek op" items={[
+        "\"Wohnung frei\" + stad",
+        "\"Wohnung mieten\" + stad",
+        "\"WG Zimmer\" + stad",
+        "\"Nachmieter gesucht\" + stad",
       ]} />
-      <TipSection title="Zoektermen" items={[
-        "\"Woning gezocht\" + stad",
-        "\"Huurwoning\" + stad",
-        "\"Kamer gezocht\" + stad",
+      <TipSection title="Wat je moet doen" items={[
+        "Meld je aan bij 5–10 groepen in je regio",
+        "Zet meldingen aan voor nieuwe posts",
+        "Reageer binnen minuten — niet uren",
+        "Plaats zelf een bericht met je zoekwensen",
+      ]} />
+      <TipHighlight text="Hoe actiever je bent, hoe meer kansen je ziet." />
+    </TipBody>
+  ),
+  tip_new_build: () => (
+    <TipBody>
+      <p className="text-[14px] text-[#6B7280]">Nieuwbouwprojecten zijn vaak al verhuurd vóór oplevering. Vroeg inschrijven vergroot je kans enorm.</p>
+      <TipSection title="Waar kijken" items={[
+        "Neubaukompass.de",
+        "ImmoScout24 → filter op nieuwbouw",
+        "Immowelt → filter op Neubau",
+        "Websites van lokale projectontwikkelaars",
       ]} />
       <TipSection title="Acties" items={[
-        "Zet meldingen aan",
-        "Reageer direct",
-        "Plaats zelf ook een oproep",
+        "Schrijf je in op de interesselijst",
+        "Check wekelijks op nieuw aanbod",
+        "Hou je e-mail goed in de gaten",
       ]} />
-      <TipHighlight text="Minder concurrentie betekent vaak meer kans." />
+      <TipHighlight text="Nieuwbouw = minder concurrentie als je er vroeg bij bent." />
     </TipBody>
   ),
   tip_network: () => (
     <TipBody>
-      <TipSection title="Waar kijken" items={[
-        "Projectwebsites",
-        "Woningcorporaties",
-        "Nieuwbouwplatforms",
+      <p className="text-[14px] text-[#6B7280]">Veel woningen in Duitsland worden niet openbaar geadverteerd. Via je netwerk hoor je het eerst.</p>
+      <TipSection title="Vertel dat je zoekt aan" items={[
+        "Vrienden en familie",
+        "Collega's en studiegenoten",
+        "Buren en kennissen",
+        "Je sportclub, kerk of vereniging",
       ]} />
-      <TipSection title="Acties" items={[
-        "Schrijf je direct in",
-        "Hou je mail goed in de gaten",
-        "Soms wordt er geloot",
+      <TipSection title="Praktisch" items={[
+        "Post een bericht op Instagram / Facebook / LinkedIn",
+        "Stuur een kort berichtje in WhatsApp-groepen",
+        "Vraag of mensen je naam doorgeven aan hun verhuurder",
       ]} />
-      <TipHighlight text="Goede optie voor de langere termijn." />
+      <TipHighlight text="Eén connectie kan het verschil maken." />
     </TipBody>
   ),
   tip_viewings: () => (
     <TipBody>
-      <TipSection title="Vertel het aan" items={[
-        "Vrienden",
-        "Familie",
-        "Collega's",
-        "Kennissen",
+      <p className="text-[14px] text-[#6B7280]">In Duitsland zijn bezichtigingen vaak met meerdere kandidaten tegelijk. Een goede eerste indruk is cruciaal.</p>
+      <TipSection title="Voorbereiding" items={[
+        "Neem je complete dossier mee (geprint of digitaal)",
+        "Kom op tijd — liefst 5 minuten eerder",
+        "Kleed je netjes en verzorgd",
       ]} />
-      <TipSection title="Praktisch" items={[
-        "Post op social media",
-        "Vraag actief rond",
-        "Laat mensen je naam doorgeven",
+      <TipSection title="Tijdens de bezichtiging" items={[
+        "Stel gerichte vragen over de woning en buurt",
+        "Wees vriendelijk tegen de verhuurder én de buren",
+        "Toon oprechte interesse — verhuurders merken dat",
       ]} />
-      <TipHighlight text="Eén connectie kan het verschil maken." />
+      <TipSection title="Pro tip" items={[
+        "Stuur direct na de bezichtiging een bedankberichtje",
+        "Benoem waarom jij de ideale huurder bent",
+      ]} />
+      <TipHighlight text="Je hebt maar één kans om een goede eerste indruk te maken." />
+    </TipBody>
+  ),
+  tip_followup: () => (
+    <TipBody>
+      <p className="text-[14px] text-[#6B7280]">Na de bezichtiging ontvangen verhuurders tientallen reacties. Een sterke huurpitch onderscheidt jou van de rest.</p>
+      <TipSection title="Wat is een huurpitch?" items={[
+        "Een kort, persoonlijk bericht aan de verhuurder",
+        "Laat zien wie je bent en waarom jij past",
+        "Geeft vertrouwen over je betrouwbaarheid",
+      ]} />
+      <TipSection title="Wat erin moet" items={[
+        "Je naam, leeftijd en beroep",
+        "Je netto-inkomen (of verwijzing naar documenten)",
+        "Waarom je deze woning wilt",
+        "Wanneer je kunt verhuizen",
+        "Dat je documenten compleet zijn",
+      ]} />
+      <TipSection title="Pro tip" items={[
+        "Houd het kort — max 8–10 zinnen",
+        "Schrijf persoonlijk, niet als een template",
+        "Stuur het binnen 1 uur na de bezichtiging",
+      ]} />
+      <TipHighlight text="Een sterke pitch kan de doorslag geven. Bereid hem nu voor." />
     </TipBody>
   ),
 };
