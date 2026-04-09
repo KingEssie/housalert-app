@@ -1,0 +1,106 @@
+We are building a new feature: Rental Pitch Generator (Mietbewerbung Generator)
+
+GOAL:
+Allow users to generate a strong German rental application text based on a few inputs.
+
+IMPORTANT:
+- Keep it simple (MVP)
+- No complex UI
+- Reuse existing components where possible
+- Do NOT break existing flows
+
+==================================================
+1. CREATE NEW PAGE / COMPONENT
+==================================================
+
+Create a new page:
+- /tools/rental-pitch
+
+This page should contain:
+
+INPUT FORM:
+- firstName (text)
+- age (number)
+- job (text)
+- income (text)
+- city (text)
+- motivation (textarea, optional)
+
+CTA:
+- "Genereer mijn huurpitch"
+
+==================================================
+2. GENERATION LOGIC
+==================================================
+
+When user clicks the CTA:
+
+Call OpenAI (or existing AI service) with this prompt:
+
+---
+
+Write a strong German rental application (Mietbewerbung).
+
+The tone should be:
+- polite
+- confident
+- trustworthy
+
+Include:
+- short introduction
+- job and income
+- personal reliability
+- reason for interest in the apartment
+
+User data:
+Name: {firstName}
+Age: {age}
+Job: {job}
+Income: {income}
+City: {city}
+Motivation: {motivation}
+
+Output:
+- clean German text
+- no bullet points
+- max 120–150 words
+
+---
+
+==================================================
+3. RESULT UI
+==================================================
+
+After generation, show:
+
+- generated text in a clean card
+
+Buttons:
+- "Kopieer tekst"
+- "Opnieuw genereren"
+
+Optional:
+- "Bewerken"
+
+==================================================
+4. INTEGRATION
+==================================================
+
+Add entry points:
+
+1. In step 8 of the flow:
+   button → navigate to /tools/rental-pitch
+
+2. Optional:
+   add shortcut on dashboard:
+   "Maak je huurpitch"
+
+==================================================
+5. OUTPUT
+==================================================
+
+Return:
+1. created files/components
+2. route added
+3. how OpenAI is called
+4. where the feature is linked in the app
