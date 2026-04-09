@@ -25,7 +25,6 @@ import {
   AlertCircle,
   Search,
   Sofa,
-  ChevronDown,
   Check,
   Pencil,
 } from "lucide-react";
@@ -66,28 +65,6 @@ const DEFAULT_BERLIN: LocationData = {
     place_id: "berlin_de",
   },
 };
-
-const RENT_OPTIONS = [
-  { value: "", labelKey: "newSearch.step2.noPref" },
-  { value: "200", label: "\u20AC200" },
-  { value: "300", label: "\u20AC300" },
-  { value: "400", label: "\u20AC400" },
-  { value: "500", label: "\u20AC500" },
-  { value: "600", label: "\u20AC600" },
-  { value: "700", label: "\u20AC700" },
-  { value: "800", label: "\u20AC800" },
-  { value: "900", label: "\u20AC900" },
-  { value: "1000", label: "\u20AC1.000" },
-  { value: "1200", label: "\u20AC1.200" },
-  { value: "1500", label: "\u20AC1.500" },
-  { value: "2000", label: "\u20AC2.000" },
-  { value: "2500", label: "\u20AC2.500" },
-  { value: "3000", label: "\u20AC3.000" },
-  { value: "3500", label: "\u20AC3.500" },
-  { value: "4000", label: "\u20AC4.000" },
-  { value: "4500", label: "\u20AC4.500" },
-  { value: "5000", label: "\u20AC5.000+" },
-];
 
 const FURNISHED_OPTIONS = [
   { value: "", labelKey: "newSearch.step2.doesntMatter" },
@@ -150,8 +127,8 @@ export default function NewSearchPage() {
   const isEditMode = !!editId;
 
   const [filters, setFilters] = useState<FilterData>({
-    priceMin: "",
-    priceMax: "",
+    priceMin: "0",
+    priceMax: "3000",
     bedroomsMin: 0,
     sizeMin: 0,
     furnished: "",
@@ -497,45 +474,6 @@ function StepHeader({ title, subtitle }: { title: string; subtitle: string }) {
   );
 }
 
-function SelectField({
-  icon,
-  label,
-  value,
-  onChange,
-  options,
-  testId,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string | number;
-  onChange: (val: string) => void;
-  options: { value: string | number; label?: string; labelKey?: string }[];
-  testId: string;
-}) {
-  const { t } = useTranslation();
-  return (
-    <div>
-      <label className="text-[15px] font-medium text-[#334855] mb-2.5 flex items-center gap-2.5">
-        <span className="w-5 h-5 flex items-center justify-center text-[#334855]">{icon}</span>
-        {label}
-      </label>
-      <div className="relative">
-        <select
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="w-full h-[56px] px-4 pr-11 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] font-medium text-[#111111] appearance-none cursor-pointer focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25 transition-all outline-none"
-          data-testid={testId}
-        >
-          {options.map(opt => (
-            <option key={String(opt.value)} value={opt.value}>{resolveOptionLabel(opt, t)}</option>
-          ))}
-        </select>
-        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#334855] pointer-events-none" />
-      </div>
-    </div>
-  );
-}
-
 function Step1Location({
   locationData,
   setLocationData,
@@ -558,6 +496,149 @@ function Step1Location({
   );
 }
 
+function PillGroup({
+  options,
+  value,
+  onChange,
+  testId,
+}: {
+  options: { value: string | number; label?: string; labelKey?: string }[];
+  value: string | number;
+  onChange: (v: string) => void;
+  testId: string;
+}) {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-wrap gap-2" data-testid={testId}>
+      {options.map((opt) => {
+        const active = String(value) === String(opt.value);
+        const label = opt.labelKey ? t(opt.labelKey) : opt.label || "";
+        return (
+          <button
+            key={String(opt.value)}
+            onClick={() => onChange(String(opt.value))}
+            className="h-[40px] px-5 rounded-full text-[14px] font-medium border transition-all active:scale-[0.96]"
+            style={{
+              backgroundColor: active ? "rgb(var(--ha-primary))" : "#F9FAFB",
+              borderColor: active ? "rgb(var(--ha-primary))" : "#E5E7EB",
+              color: active ? "#fff" : "#334855",
+            }}
+            data-testid={`${testId}-${opt.value}`}
+          >
+            {label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function DualSlider({
+  min,
+  max,
+  step,
+  valueLow,
+  valueHigh,
+  onChangeLow,
+  onChangeHigh,
+  formatLabel,
+  testId,
+}: {
+  min: number;
+  max: number;
+  step: number;
+  valueLow: number;
+  valueHigh: number;
+  onChangeLow: (v: number) => void;
+  onChangeHigh: (v: number) => void;
+  formatLabel: (v: number) => string;
+  testId: string;
+}) {
+  const pctLow = ((valueLow - min) / (max - min)) * 100;
+  const pctHigh = ((valueHigh - min) / (max - min)) * 100;
+  const trackBg = `linear-gradient(to right, #E5E7EB 0%, #E5E7EB ${pctLow}%, rgb(var(--ha-primary)) ${pctLow}%, rgb(var(--ha-primary)) ${pctHigh}%, #E5E7EB ${pctHigh}%, #E5E7EB 100%)`;
+
+  return (
+    <div data-testid={testId}>
+      <div className="flex justify-between mb-2">
+        <span className="text-[14px] font-semibold text-[#111111]">{formatLabel(valueLow)}</span>
+        <span className="text-[14px] font-semibold text-[#111111]">{formatLabel(valueHigh)}</span>
+      </div>
+      <div className="relative h-[36px]">
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={valueLow}
+          onChange={(e) => {
+            const v = Number(e.target.value);
+            if (v <= valueHigh) onChangeLow(v);
+          }}
+          className="w-full absolute inset-0 dual-range-thumb"
+          style={{ background: trackBg, zIndex: valueLow > max - step ? 3 : 1 }}
+          data-testid="slider-min-price"
+        />
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={valueHigh}
+          onChange={(e) => {
+            const v = Number(e.target.value);
+            if (v >= valueLow) onChangeHigh(v);
+          }}
+          className="w-full absolute inset-0 dual-range-thumb"
+          style={{ background: "transparent", zIndex: 2 }}
+          data-testid="slider-max-price"
+        />
+      </div>
+    </div>
+  );
+}
+
+function SingleSlider({
+  min,
+  max,
+  step,
+  value,
+  onChange,
+  formatLabel,
+  testId,
+}: {
+  min: number;
+  max: number;
+  step: number;
+  value: number;
+  onChange: (v: number) => void;
+  formatLabel: (v: number) => string;
+  testId: string;
+}) {
+  const pct = ((value - min) / (max - min)) * 100;
+  return (
+    <div data-testid={testId}>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="w-full"
+        style={{
+          background: `linear-gradient(to right, rgb(var(--ha-primary)) 0%, rgb(var(--ha-primary)) ${pct}%, #E5E7EB ${pct}%, #E5E7EB 100%)`,
+        }}
+      />
+      <div className="flex justify-between mt-1">
+        <span className="text-[12px] text-[#334855]">{formatLabel(min)}</span>
+        <span className="text-[13px] font-semibold" style={{ color: "rgb(var(--ha-primary))" }}>{formatLabel(value)}</span>
+        <span className="text-[12px] text-[#334855]">{formatLabel(max)}</span>
+      </div>
+    </div>
+  );
+}
+
 function Step2Requirements({
   filters,
   updateFilters,
@@ -566,64 +647,100 @@ function Step2Requirements({
   updateFilters: (partial: Partial<FilterData>) => void;
 }) {
   const { t } = useTranslation();
+  const pMin = filters.priceMin ? parseInt(filters.priceMin) : 0;
+  const pMax = filters.priceMax ? parseInt(filters.priceMax) : 3000;
+
   return (
     <div>
       <StepHeader title={t("newSearch.step2.title")} subtitle={t("newSearch.step2.subtitle")} />
 
-      <div className="space-y-7">
-        <SelectField
-          icon={<Euro className="w-[18px] h-[18px]" />}
-          label={t("newSearch.step2.minPrice")}
-          value={filters.priceMin}
-          onChange={(v) => updateFilters({ priceMin: v })}
-          options={RENT_OPTIONS}
-          testId="select-price-min"
-        />
-
-        <SelectField
-          icon={<Euro className="w-[18px] h-[18px]" />}
-          label={t("newSearch.step2.maxPrice")}
-          value={filters.priceMax}
-          onChange={(v) => updateFilters({ priceMax: v })}
-          options={RENT_OPTIONS}
-          testId="select-price-max"
-        />
-
-        <SelectField
-          icon={<BedDouble className="w-[18px] h-[18px]" />}
-          label={t("newSearch.step2.bedrooms")}
-          value={filters.bedroomsMin}
-          onChange={(v) => updateFilters({ bedroomsMin: parseInt(v) })}
-          options={BEDROOM_OPTIONS}
-          testId="select-bedrooms"
-        />
-
-        <SelectField
-          icon={<Ruler className="w-[18px] h-[18px]" />}
-          label={t("newSearch.step2.area")}
-          value={filters.sizeMin}
-          onChange={(v) => updateFilters({ sizeMin: parseInt(v) })}
-          options={SIZE_OPTIONS}
-          testId="select-size"
-        />
-
-        <SelectField
-          icon={<Sofa className="w-[18px] h-[18px]" />}
-          label={t("newSearch.step2.furnished")}
-          value={filters.furnished}
-          onChange={(v) => updateFilters({ furnished: v })}
-          options={FURNISHED_OPTIONS}
-          testId="select-furnished"
-        />
-
-        <div className="pt-1">
-          <ToggleSwitch
-            checked={filters.priceFlexible}
-            onChange={(v) => updateFilters({ priceFlexible: v })}
-            label={t("onboarding.filters.priceFlexible")}
-            testId="toggle-price-flexible"
+      <div className="flex flex-col gap-6">
+        <section>
+          <label className="text-[15px] font-medium text-[#111111] mb-3 flex items-center gap-2.5">
+            <span className="w-5 h-5 flex items-center justify-center text-[#334855]"><Euro className="w-[18px] h-[18px]" /></span>
+            {t("onboarding.filters.rentLabel") || "Huurprijs"}
+          </label>
+          <DualSlider
+            min={0}
+            max={5000}
+            step={50}
+            valueLow={pMin}
+            valueHigh={pMax}
+            onChangeLow={(v) => updateFilters({ priceMin: String(v) })}
+            onChangeHigh={(v) => updateFilters({ priceMax: String(v) })}
+            formatLabel={(v) => `€${v.toLocaleString("nl-NL")}`}
+            testId="slider-rent-price"
           />
-        </div>
+          <div className="mt-3">
+            <ToggleSwitch
+              checked={filters.priceFlexible}
+              onChange={(v) => updateFilters({ priceFlexible: v })}
+              label={t("onboarding.filters.priceFlexible")}
+              testId="toggle-price-flexible"
+            />
+          </div>
+        </section>
+
+        <div className="h-px bg-[#F0F0F0]" />
+
+        <section>
+          <label className="text-[15px] font-medium text-[#111111] mb-3 flex items-center gap-2.5">
+            <span className="w-5 h-5 flex items-center justify-center text-[#334855]"><BedDouble className="w-[18px] h-[18px]" /></span>
+            {t("newSearch.step2.bedrooms")}
+          </label>
+          <div
+            className="flex p-1 rounded-full bg-[#F3F4F6]"
+            data-testid="rooms-selector"
+          >
+            {BEDROOM_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                onClick={() => updateFilters({ bedroomsMin: opt.value })}
+                className="flex-1 h-[40px] rounded-full text-[13px] font-semibold transition-all"
+                style={{
+                  backgroundColor: filters.bedroomsMin === opt.value ? "rgb(var(--ha-primary))" : "transparent",
+                  color: filters.bedroomsMin === opt.value ? "#fff" : "#334855",
+                }}
+                data-testid={`rooms-${opt.value}`}
+              >
+                {t(opt.labelKey)}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <div className="h-px bg-[#F0F0F0]" />
+
+        <section>
+          <label className="text-[15px] font-medium text-[#111111] mb-3 flex items-center gap-2.5">
+            <span className="w-5 h-5 flex items-center justify-center text-[#334855]"><Ruler className="w-[18px] h-[18px]" /></span>
+            {t("newSearch.step2.area")}
+          </label>
+          <SingleSlider
+            min={0}
+            max={200}
+            step={5}
+            value={filters.sizeMin}
+            onChange={(v) => updateFilters({ sizeMin: v })}
+            formatLabel={(v) => v === 0 ? t("newSearch.step2.noPref") : `${v} m²`}
+            testId="slider-min-size"
+          />
+        </section>
+
+        <div className="h-px bg-[#F0F0F0]" />
+
+        <section>
+          <label className="text-[15px] font-medium text-[#111111] mb-3 flex items-center gap-2.5">
+            <span className="w-5 h-5 flex items-center justify-center text-[#334855]"><Sofa className="w-[18px] h-[18px]" /></span>
+            {t("newSearch.step2.furnished")}
+          </label>
+          <PillGroup
+            options={FURNISHED_OPTIONS}
+            value={filters.furnished}
+            onChange={(v) => updateFilters({ furnished: v })}
+            testId="furnished-selector"
+          />
+        </section>
       </div>
     </div>
   );

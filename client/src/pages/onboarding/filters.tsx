@@ -5,59 +5,14 @@ import { useTranslation } from "@/i18n";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import {
-  Check, Bath, Sun, Trees, Leaf, X,
+  Check, Bath, Sun, Trees, Leaf,
 } from "lucide-react";
-import { OB, OBW, ONBOARDING_TOTAL_STEPS, OBFooter, OBWebHeader, OBWebFooter, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
+import { OB, OBW, OBWebHeader, OBWebFooter, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 import { OnboardingFlowLayout } from "@/components/onboarding-flow-layout";
 import { createSearchProfile, type InsertSearchProfileInput } from "@/lib/search-profiles";
 import { queryClient } from "@/lib/queryClient";
 
 type OBTheme = typeof OB | typeof OBW;
-
-function WebSegmentedControl({
-  options,
-  value,
-  onChange,
-  testId,
-}: {
-  options: { value: string; label: string }[];
-  value: string;
-  onChange: (v: string) => void;
-  testId: string;
-}) {
-  return (
-    <div
-      className="grid overflow-hidden"
-      style={{
-        gridTemplateColumns: `repeat(${options.length}, 1fr)`,
-        border: `1px solid ${OBW.inputBorder}`,
-        borderRadius: "4px",
-        backgroundColor: OBW.inputBg,
-      }}
-      data-testid={testId}
-    >
-      {options.map((opt, i) => {
-        const active = value === opt.value;
-        return (
-          <button
-            key={opt.value}
-            onClick={() => onChange(opt.value)}
-            className="h-[44px] text-[13px] font-semibold transition-all relative"
-            style={{
-              backgroundColor: active ? "#ffffff" : "transparent",
-              color: active ? OBW.text : OBW.textMuted,
-              borderRight: i < options.length - 1 ? `1px solid ${OBW.inputBorder}` : "none",
-              boxShadow: active ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
-            }}
-            data-testid={`${testId}-${opt.value}`}
-          >
-            {opt.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
 
 function WebToggle({
   checked,
@@ -94,6 +49,41 @@ function WebToggle({
       </div>
       <span className="text-[13px] leading-snug" style={{ color: OBW.text }}>{label}</span>
     </label>
+  );
+}
+
+function WebPillGroup({
+  options,
+  value,
+  onChange,
+  testId,
+}: {
+  options: { value: string; label: string }[];
+  value: string;
+  onChange: (v: string) => void;
+  testId: string;
+}) {
+  return (
+    <div className="flex flex-wrap gap-2" data-testid={testId}>
+      {options.map((opt) => {
+        const active = value === opt.value;
+        return (
+          <button
+            key={opt.value}
+            onClick={() => onChange(opt.value)}
+            className="h-[40px] px-5 rounded-full text-[14px] font-medium border transition-all active:scale-[0.96]"
+            style={{
+              backgroundColor: active ? "rgb(var(--ha-primary))" : "#F9FAFB",
+              borderColor: active ? "rgb(var(--ha-primary))" : "#E5E7EB",
+              color: active ? "#fff" : "#334855",
+            }}
+            data-testid={`${testId}-${opt.value}`}
+          >
+            {opt.label}
+          </button>
+        );
+      })}
+    </div>
   );
 }
 
@@ -149,7 +139,6 @@ function Toggle({
   theme?: OBTheme;
 }) {
   const t = theme || OB;
-  const isLight = theme === OBW;
   return (
     <label className="flex items-center gap-3 cursor-pointer" data-testid={testId}>
       <div
@@ -187,7 +176,6 @@ function RangeSlider({
   theme?: OBTheme;
 }) {
   const t = theme || OB;
-  const isLight = theme === OBW;
   const trackInactive = "#E5E7EB";
   const pct = ((value - min) / (max - min)) * 100;
   return (
@@ -237,7 +225,6 @@ function DualRangeSlider({
   theme?: OBTheme;
 }) {
   const t = theme || OB;
-  const isLight = theme === OBW;
   const trackInactive = "#E5E7EB";
   const pctLow = ((valueLow - min) / (max - min)) * 100;
   const pctHigh = ((valueHigh - min) / (max - min)) * 100;
@@ -489,29 +476,6 @@ export default function OnboardingFilters() {
     { value: "unfurnished", label: t("onboarding.filters.furnishedNo") || "Nein" },
   ];
 
-  const WEB_PRICE_OPTIONS = [
-    { value: "500", label: "€500" },
-    { value: "750", label: "€750" },
-    { value: "1000", label: "€1.000" },
-    { value: "1250", label: "€1.250" },
-    { value: "1500", label: "€1.500" },
-    { value: "1750", label: "€1.750" },
-    { value: "2000", label: "€2.000" },
-    { value: "2500", label: "€2.500" },
-    { value: "3000", label: "€3.000" },
-  ];
-
-  const WEB_SIZE_OPTIONS = [
-    { value: "0", label: "Niet belangrijk" },
-    { value: "20", label: "20 m²" },
-    { value: "30", label: "30 m²" },
-    { value: "40", label: "40 m²" },
-    { value: "50", label: "50 m²" },
-    { value: "60", label: "60 m²" },
-    { value: "80", label: "80 m²" },
-    { value: "100", label: "100 m²" },
-  ];
-
   const sLabel = w ? "text-[15px] font-semibold mb-3 block" : "text-[13px] font-semibold mb-3 block";
 
   const darkFilterSections = (
@@ -697,106 +661,182 @@ export default function OnboardingFilters() {
       >
         <OBWebHeader step={2} onClose={handleClose} />
 
-        <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[100px] overflow-y-auto">
+        <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[120px] overflow-y-auto">
           <h2
-            className="text-[30px] font-semibold tracking-[-0.025em] mb-1"
+            className="text-[28px] font-semibold tracking-[-0.025em] mb-1"
             style={{ color: OBW.text }}
             data-testid="text-filters-title"
           >
-            Wat zoek je precies?
+            {t("onboarding.filters.title") || "Stel je voorkeuren in"}
           </h2>
-          <p className="text-[13px] mb-5 leading-relaxed" style={{ color: OBW.textSecondary }}>
-            Verfijn je zoekopdracht voor de beste resultaten.
+          <p className="text-[14px] mb-7 leading-relaxed" style={{ color: OBW.textSecondary }}>
+            {t("onboarding.filters.subtitle") || "Verfijn je zoekopdracht voor de beste resultaten."}
           </p>
 
-          <div className="flex flex-col gap-2.5">
-            <div>
-              <label className="text-[13px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
-                Maximale huurprijs
+          <div className="flex flex-col gap-6">
+            <section>
+              <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
+                {t("onboarding.filters.rentLabel") || "Huurprijs"}
               </label>
-              <select
-                value={String(f.maxPrice)}
-                onChange={(e) => update({ maxPrice: parseInt(e.target.value), minPrice: 0 })}
-                className="w-full ha-select-web"
-                style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
-                data-testid="select-max-price"
-              >
-                {WEB_PRICE_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
-            </div>
+              <DualRangeSlider
+                min={0}
+                max={3000}
+                step={50}
+                valueLow={f.minPrice}
+                valueHigh={f.maxPrice}
+                onChangeLow={(v) => update({ minPrice: v })}
+                onChangeHigh={(v) => update({ maxPrice: v })}
+                formatLabel={(v) => `€${v}`}
+                testId="slider-rent-price"
+                theme={OBW}
+              />
+              <div className="mt-3">
+                <WebToggle
+                  checked={f.priceFlexible}
+                  onChange={(v) => update({ priceFlexible: v })}
+                  label={t("onboarding.filters.priceFlexible") || "Stuur ook iets duurdere perfecte matches"}
+                  testId="toggle-price-flexible"
+                />
+              </div>
+            </section>
 
-            <div>
-              <label className="text-[13px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
-                Slaapkamers
+            <div className="h-px bg-[#F0F0F0]" />
+
+            <section>
+              <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
+                {t("onboarding.filters.propertyTypeLabel") || "Woningtype"}
               </label>
-              <select
-                value={f.minRooms}
-                onChange={(e) => update({ minRooms: e.target.value })}
-                className="w-full ha-select-web"
-                style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
-                data-testid="select-rooms"
+              <WebPillGroup
+                options={PROPERTY_OPTIONS}
+                value={f.propertyType}
+                onChange={(v) => update({ propertyType: v })}
+                testId="property-type"
+              />
+              <div className="mt-3">
+                <WebToggle
+                  checked={f.includeRooms}
+                  onChange={(v) => update({ includeRooms: v })}
+                  label={t("onboarding.filters.includeRooms") || "Zoek ook kamers / onzelfstandige woonruimte"}
+                  testId="toggle-include-rooms"
+                />
+              </div>
+            </section>
+
+            <div className="h-px bg-[#F0F0F0]" />
+
+            <section>
+              <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
+                {t("onboarding.filters.bedroomsLabel") || "Slaapkamers"}
+              </label>
+              <div
+                className="flex p-1 rounded-full bg-[#F3F4F6]"
+                data-testid="rooms-selector"
               >
                 {ROOM_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  <button
+                    key={opt.value}
+                    onClick={() => update({ minRooms: opt.value })}
+                    className="flex-1 h-[40px] rounded-full text-[13px] font-semibold transition-all"
+                    style={{
+                      backgroundColor: f.minRooms === opt.value ? "rgb(var(--ha-primary))" : "transparent",
+                      color: f.minRooms === opt.value ? "#fff" : OBW.textSecondary,
+                    }}
+                    data-testid={`rooms-${opt.value}`}
+                  >
+                    {opt.label}
+                  </button>
                 ))}
-              </select>
-            </div>
+              </div>
+            </section>
 
-            <div>
-              <label className="text-[13px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
-                Minimum oppervlakte
-              </label>
-              <select
-                value={String(f.sizeNA ? 0 : f.minSize)}
-                onChange={(e) => {
-                  const v = parseInt(e.target.value);
-                  update({ minSize: v, sizeNA: v === 0 });
-                }}
-                className="w-full ha-select-web"
-                style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
-                data-testid="select-min-size"
-              >
-                {WEB_SIZE_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
-            </div>
+            <div className="h-px bg-[#F0F0F0]" />
 
-            <div>
-              <label className="text-[13px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
-                Gemeubileerd
+            <section>
+              <div className="flex items-center justify-between mb-3">
+                <label className="text-[15px] font-semibold" style={{ color: OBW.text }}>
+                  {t("onboarding.filters.minSizeLabel") || "Minimale oppervlakte"}
+                </label>
+                <button
+                  onClick={() => update({ sizeNA: !f.sizeNA, minSize: f.sizeNA ? 30 : 0 })}
+                  className="text-[12px] font-medium px-3 py-1 rounded-full border transition-all"
+                  style={{
+                    borderColor: f.sizeNA ? "rgba(217,26,104,0.3)" : "#E5E7EB",
+                    backgroundColor: f.sizeNA ? "rgba(217,26,104,0.06)" : "transparent",
+                    color: f.sizeNA ? OB.pink : OBW.textSecondary,
+                  }}
+                  data-testid="button-size-na"
+                >
+                  n.v.t.
+                </button>
+              </div>
+              {!f.sizeNA && (
+                <RangeSlider
+                  min={0}
+                  max={200}
+                  step={5}
+                  value={f.minSize}
+                  onChange={(v) => update({ minSize: v })}
+                  formatLabel={(v) => `${v} m²`}
+                  testId="slider-min-size"
+                  theme={OBW}
+                />
+              )}
+            </section>
+
+            <div className="h-px bg-[#F0F0F0]" />
+
+            <section>
+              <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
+                {t("onboarding.filters.furnishedLabel") || "Gemeubileerd"}
               </label>
-              <select
+              <WebPillGroup
+                options={FURNISHED_OPTIONS}
                 value={f.furnished}
-                onChange={(e) => update({ furnished: e.target.value })}
-                className="w-full ha-select-web"
-                style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
-                data-testid="select-furnished"
-              >
-                {FURNISHED_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
-            </div>
+                onChange={(v) => update({ furnished: v })}
+                testId="furnished-selector"
+              />
+            </section>
 
-            <div>
-              <label className="text-[13px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
-                Woningtype
+            <div className="h-px bg-[#F0F0F0]" />
+
+            <section>
+              <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
+                {t("onboarding.filters.amenitiesLabel") || "Extra wensen"}
               </label>
-              <select
-                value={f.propertyType}
-                onChange={(e) => update({ propertyType: e.target.value })}
-                className="w-full ha-select-web"
-                style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
-                data-testid="select-property-type"
-              >
-                {PROPERTY_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
-            </div>
+              <div className="flex flex-wrap gap-2" data-testid="amenity-chips">
+                {AMENITY_OPTIONS.map(({ value, labelKey, fallback, icon: Icon }) => {
+                  const active = f.amenities.includes(value);
+                  return (
+                    <button
+                      key={value}
+                      onClick={() => toggleAmenity(value)}
+                      className="flex items-center gap-1.5 h-[40px] px-4 rounded-full text-[13px] font-medium border transition-all active:scale-[0.96]"
+                      style={{
+                        backgroundColor: active ? OB.pink : "#F9FAFB",
+                        borderColor: active ? OB.pink : "#E5E7EB",
+                        color: active ? "#fff" : OBW.textSecondary,
+                      }}
+                      data-testid={`amenity-${value}`}
+                    >
+                      {active && <Check className="w-3 h-3" />}
+                      <Icon className="w-3.5 h-3.5" />
+                      {t(labelKey) || fallback}
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
+            <div className="h-px bg-[#F0F0F0]" />
+
+            <section className="flex flex-col gap-3">
+              <WebToggle
+                checked={f.sendUnclear}
+                onChange={(v) => update({ sendUnclear: v })}
+                label={t("onboarding.filters.sendUnclear") || "Stuur ook woningen waarvan de criteria onduidelijk zijn"}
+                testId="toggle-send-unclear"
+              />
+            </section>
           </div>
         </main>
 

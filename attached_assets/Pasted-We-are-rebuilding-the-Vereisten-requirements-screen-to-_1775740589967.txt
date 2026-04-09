@@ -1,0 +1,196 @@
+We are rebuilding the “Vereisten” (requirements) screen to match the UX pattern used by Rentbird.
+
+IMPORTANT:
+We are NOT improving the current screen.
+We are REPLACING the interaction model completely.
+
+The current implementation uses dropdown fields. This must be removed.
+
+==================================================
+CORE PRINCIPLE
+==================================================
+
+This screen should NOT feel like a form.
+
+It should feel like:
+- fast
+- interactive
+- tap-based
+- no friction
+
+No dropdowns.
+No “form fields”.
+No “Geen voorkeur” inside input boxes.
+
+Everything must be:
+- sliders
+- pills (selectable buttons)
+- toggles
+
+==================================================
+REMOVE COMPLETELY
+==================================================
+
+- All dropdown/select inputs
+- All field-like input boxes for filters
+- Any “Geen voorkeur” text inside fields
+- Any form-style layout
+
+==================================================
+NEW STRUCTURE (LIKE RENTBIRD)
+==================================================
+
+Each section becomes a simple block:
+
+[Title]
+[Interactive control]
+
+Spacing:
+- 24px between sections
+- Clean, minimal layout
+
+==================================================
+1. PRIJS (PRICE)
+==================================================
+
+Replace dropdowns with:
+
+- Range slider (min → max)
+- Show values above slider:
+  €0 — €2500
+
+Optional:
+- small toggle below:
+  “Stuur ook woningen die iets duurder zijn”
+
+No inputs. Only slider.
+
+==================================================
+2. SOORT WONING
+==================================================
+
+Replace with pill buttons:
+
+[ Maakt niet uit ] [ Appartement ] [ Huis ]
+
+- Rounded pills
+- Active = filled (brand color)
+- Inactive = light background
+
+Single select.
+
+==================================================
+3. SLAAPKAMERS
+==================================================
+
+Pills:
+
+[ Studio ] [ 1+ ] [ 2+ ] [ 3+ ] [ 4+ ] [ 5+ ]
+
+Single select.
+
+==================================================
+4. OPPERVLAKTE
+==================================================
+
+Slider:
+
+- Minimum m²
+- Label above: “Minimale oppervlakte”
+- Value shown dynamically
+
+No dropdown.
+
+==================================================
+5. GEMEUBILEERD
+==================================================
+
+Pills:
+
+[ Maakt niet uit ] [ Ja ] [ Nee ]
+
+==================================================
+6. EXTRA WENSEN
+==================================================
+
+Selectable chips:
+
+[ Balkon + ]
+[ Tuin + ]
+[ Dakterras + ]
+[ Bad + ]
+[ Energielabel C of beter + ]
+
+- Multi select
+- Selected = filled or highlighted
+
+==================================================
+7. TOGGLES
+==================================================
+
+Keep toggles for:
+
+- “Stuur ook kamers / onzelfstandig”
+- “Stuur ook woningen waar eisen niet duidelijk zijn”
+
+Style:
+- modern switch
+- consistent spacing
+
+==================================================
+8. VISUAL STYLE
+==================================================
+
+- No heavy borders everywhere
+- Minimal, clean
+- White background
+- Use spacing instead of boxes
+- Rounded elements
+- Modern mobile feel
+
+PILLS:
+- height ~40px
+- border-radius: full
+- padding: 12–16px
+
+SLIDERS:
+- brand color track
+- subtle inactive track
+
+==================================================
+9. STICKY FOOTER
+==================================================
+
+Bottom section stays:
+
+- Left: back button
+- Right: “Volgende”
+
+AND:
+- Show “Geschatte matches (X per week 🔥)”
+- Must NOT overlap content
+- Add bottom padding to page
+
+==================================================
+10. ACCEPTANCE CRITERIA
+==================================================
+
+The screen must:
+
+- Have ZERO dropdowns
+- Have ZERO input fields
+- Feel fast and tap-based
+- Match Rentbird interaction style
+- Be usable with one thumb
+- Look clean and not “form-like”
+
+==================================================
+11. OUTPUT
+==================================================
+
+Return:
+
+1. What components were removed (dropdowns etc.)
+2. What new components were created (slider, pill group, chip group)
+3. Confirmation that ALL filters are now interactive (no inputs)
+4. Confirmation that UX now matches Rentbird pattern
