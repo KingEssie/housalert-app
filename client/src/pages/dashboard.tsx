@@ -670,16 +670,6 @@ function TaskFlowCard({
   const overrides: Record<string, StepOverride> = {};
 
   if (flow.id === "account") {
-    overrides["notifications"] = {
-      stepType: "inline",
-      inlineContent: <NotificationsInline accessToken={accessToken} />,
-      action: () => {},
-    };
-    overrides["search_buddy"] = {
-      stepType: "inline",
-      inlineContent: <BuddyInline accessToken={accessToken} />,
-      action: () => {},
-    };
     if (searchProfileCount != null) {
       const spLabel = searchProfileCount === 0
         ? t("taskFlow.searchProfileZero")

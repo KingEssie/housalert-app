@@ -1,0 +1,67 @@
+We need to remove the inline dropdown actions from the home card for the "Rond je account af" flow.
+
+PROBLEM:
+On the home screen, the steps "Zet notificaties aan" and "Voeg zoekbuddy toe" currently expand inline with toggles/input fields.
+
+This is no longer desired, because these actions already exist inside the dedicated "Rond je account af" flow screens.
+
+GOAL:
+Make the home card a clean overview only.
+The real step actions should only happen inside the dedicated flow screens.
+
+IMPORTANT:
+- Do NOT change the dedicated "Rond je account af" flow screens
+- Keep the inline actions there exactly as they are
+- Only remove inline dropdown behavior from the home card
+- Do NOT change completion logic
+- Do NOT change step order or titles
+- Do NOT break routing
+
+==================================================
+1. HOME CARD BEHAVIOR
+==================================================
+
+For the "Rond je account af" card on the home screen:
+
+- remove inline expand/dropdown behavior for:
+  - Zet notificaties aan
+  - Voeg zoekbuddy toe
+
+- these rows should behave like the other rows:
+  - clickable
+  - no inline fields/toggles on home
+  - tapping them should navigate to the correct step in the dedicated flow
+
+==================================================
+2. KEEP FLOW SCREENS INTACT
+==================================================
+
+Inside the actual "Rond je account af" flow screens, keep the current behavior exactly as it is:
+
+- Zet notificaties aan → show toggles there
+- Voeg zoekbuddy toe → show email input there
+
+Do not remove or redesign those.
+
+==================================================
+3. KEEP HOME CARD CLEAN
+==================================================
+
+The home card should only show:
+- progress
+- step list
+- completed/incomplete state
+- chevrons / navigation cues
+
+No embedded controls or inline forms.
+
+==================================================
+4. OUTPUT
+==================================================
+
+After finishing, return:
+1. which component/file controlled the inline dropdowns on home
+2. how that behavior was removed
+3. confirmation that the home card now only navigates
+4. confirmation that the dedicated flow screens still contain the real actions
+5. which files were changed
