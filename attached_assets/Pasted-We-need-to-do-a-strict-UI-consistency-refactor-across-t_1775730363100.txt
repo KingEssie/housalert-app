@@ -1,0 +1,184 @@
+We need to do a strict UI consistency refactor across the entire app.
+
+There are 2 problems to fix:
+
+1. The “Log in” button on the start screen does nothing
+2. Form fields are still inconsistent across the app
+
+IMPORTANT:
+Do NOT patch this screen by screen.
+Do a full audit and centralize the field system properly.
+
+==================================================
+PART 1 — FIX THE LOGIN BUTTON ON THE START SCREEN
+==================================================
+
+PROBLEM:
+The “Log in” button on the start / landing screen is visible, but tapping it does nothing.
+
+FIX:
+- Find the start screen / landing screen component
+- Find the “Log in” button CTA
+- Ensure it navigates correctly to the login screen route
+- Verify the route exists and works
+- If the app uses a router helper or navigate(), wire it correctly
+- If the button is wrapped in the wrong element or blocked by another layer, fix that too
+
+REQUIREMENT:
+Tapping “Log in” must always open the login screen.
+
+OUTPUT:
+Confirm exactly what caused the issue and how it was fixed.
+
+==================================================
+PART 2 — CREATE ONE SHARED FIELD DESIGN SYSTEM
+==================================================
+
+PROBLEM:
+Fields are still inconsistent in size, color, radius, padding, and overall appearance.
+This includes:
+- text inputs
+- search inputs
+- select/dropdown fields
+- filter controls
+- any field-like interactive input blocks
+
+GOAL:
+ALL fields in the entire app must visually use the SAME design system.
+
+This must include:
+- typed input fields
+- dropdown/select fields
+- search bars
+- field-like selectors
+- filter rows that behave like fields
+
+DO NOT only fix “text inputs”.
+Audit ALL field-like UI controls in the app.
+
+==================================================
+PART 3 — FIELD STYLE SPEC (MANDATORY)
+==================================================
+
+Use this as the single source of truth for ALL fields:
+
+- Height: 56px
+- Border radius: 16px
+- Background color: #FFFFFF
+- Border: 1px solid #E5E7EB
+- Text color: #111111
+- Placeholder / secondary text: #334855
+- Horizontal padding: 16px
+- Font size: 16px
+- Font weight: consistent with current app typography
+- No random shadows unless already part of the field system
+- Clean, premium, minimal look
+
+FOCUS / ACTIVE STATE:
+- Border uses brand pink
+- Very subtle focus ring or outline allowed
+- Must remain elegant and consistent
+
+DISABLED STATE:
+- Slightly muted background
+- Text still readable
+- Same shape and height
+
+==================================================
+PART 4 — CENTRALIZE THE IMPLEMENTATION
+==================================================
+
+Do NOT leave field styling duplicated in many places.
+
+Create or refactor shared reusable components such as:
+- InputField
+- SearchField
+- SelectField
+- FieldContainer
+- FilterFieldRow
+
+If shared components already exist, update them and migrate all screens to use them.
+
+If some screens use inline styles or duplicated classNames, remove that duplication and migrate them to the shared field system.
+
+==================================================
+PART 5 — AUDIT THE ENTIRE APP
+==================================================
+
+Search the codebase for all field-like UI elements and migrate them.
+
+This includes at minimum:
+- login
+- signup
+- onboarding
+- search profile creation
+- filters
+- profile forms
+- search buddy input
+- dropdowns/selects
+- any “tap to choose” field rows
+
+If a control looks like a field, it must match the system.
+
+==================================================
+PART 6 — DROPDOWNS / SELECTS MUST MATCH TOO
+==================================================
+
+Dropdowns and select controls must visually match text inputs.
+
+That means:
+- same height
+- same radius
+- same border
+- same background
+- same padding
+- same text alignment
+
+No more mismatch where dropdowns look larger/smaller/different than normal inputs.
+
+==================================================
+PART 7 — SEARCH PROFILE FLOW MUST BE FIXED
+==================================================
+
+Specifically fix the search profile creation flow screens.
+They are still visibly inconsistent.
+
+Examples to fix:
+- location search field
+- wijken selecteren
+- price dropdowns
+- bedroom / surface / furnished selectors
+- any other field-like controls in that flow
+
+These screens should immediately look unified after the refactor.
+
+==================================================
+PART 8 — DO NOT CHANGE THE PRODUCT LOGIC
+==================================================
+
+Do NOT change:
+- validation
+- routing (except the broken Log in CTA)
+- APIs
+- step logic
+- business logic
+
+This task is about:
+- fixing the login CTA
+- making all fields visually identical
+
+==================================================
+PART 9 — OUTPUT
+==================================================
+
+After finishing, return:
+
+1. Which file/component contains the broken Log in CTA
+2. What caused the issue
+3. Confirmation that the Log in button now navigates correctly
+
+4. Which shared field components were created or updated
+5. Which screens were migrated
+6. Confirmation that ALL field-like controls now use one design system
+7. Confirmation that dropdowns/selects now match text inputs
+8. Confirmation that the search profile flow now uses the same field styling everywhere

@@ -572,7 +572,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
   onSkip: () => void;
   t: (k: string, p?: Record<string, any>) => string;
 }) {
-  const INPUT_CLS = "w-full h-[48px] px-4 rounded-[12px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
+  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
   const [showForm, setShowForm] = useState(false);
 
   const genderOptions = [
@@ -754,7 +754,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
     { value: "other", label: t("onboardingFlow.letterLiving.moveOptions.other") },
   ];
 
-  const INPUT_CLS = "w-full h-[48px] px-4 rounded-[12px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
+  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
 
   return (
     <LightShell step="letter-living" showBack onBack={onBack}>
@@ -952,7 +952,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
             value={buddyEmail}
             onChange={(e) => onBuddyEmailChange(e.target.value)}
             placeholder={t("onboardingFlow.searchBuddy.emailPlaceholder")}
-            className="w-full h-[48px] px-4 rounded-[12px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all"
+            className="w-full h-[56px] px-4 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all"
             data-testid="input-buddy-email"
           />
         </div>

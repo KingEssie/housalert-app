@@ -162,7 +162,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full h-[48px] rounded-[12px] border border-[#E5E7EB] bg-white px-4 text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+                className="w-full h-[56px] rounded-[16px] border border-[#E5E7EB] bg-white px-4 text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
                 data-testid="input-login-email"
               />
             </div>
@@ -179,7 +179,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full h-[48px] rounded-[12px] border border-[#E5E7EB] bg-white pl-4 pr-12 text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+                  className="w-full h-[56px] rounded-[16px] border border-[#E5E7EB] bg-white pl-4 pr-12 text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
                   data-testid="input-login-password"
                 />
                 <button

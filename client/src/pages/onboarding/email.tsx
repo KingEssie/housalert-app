@@ -92,7 +92,7 @@ export default function OnboardingEmail() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={t("onboarding.email.placeholder") || "jouw@email.nl"}
-                className="w-full h-[48px] pl-12 pr-4 rounded-[12px] text-[16px] font-medium ha-field"
+                className="w-full h-[56px] pl-12 pr-4 rounded-[16px] text-[16px] font-medium ha-field"
                 style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
                 autoFocus
                 data-testid="input-email"
@@ -128,7 +128,7 @@ export default function OnboardingEmail() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("onboarding.email.placeholder") || "jouw@email.nl"}
-          className="w-full h-[48px] pl-12 pr-4 rounded-[12px] border border-[#E5E7EB] bg-white text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+          className="w-full h-[56px] pl-12 pr-4 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
           autoFocus
           data-testid="input-email"
         />

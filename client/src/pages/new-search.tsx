@@ -523,7 +523,7 @@ function SelectField({
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="w-full h-[48px] px-4 pr-11 rounded-[12px] border border-[#E5E7EB] bg-white text-[16px] font-medium text-[#111111] appearance-none cursor-pointer focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25 transition-all outline-none"
+          className="w-full h-[56px] px-4 pr-11 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] font-medium text-[#111111] appearance-none cursor-pointer focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25 transition-all outline-none"
           data-testid={testId}
         >
           {options.map(opt => (

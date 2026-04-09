@@ -190,7 +190,7 @@ export default function OnboardingLocation() {
     <>
       <button
         onClick={() => navigate(appendWebsiteParams("/onboarding/city", searchString))}
-        className="w-full flex items-center gap-3 mb-5 h-[48px] rounded-[12px] border border-[#E5E7EB] bg-white px-4"
+        className="w-full flex items-center gap-3 mb-5 h-[56px] rounded-[16px] border border-[#E5E7EB] bg-white px-4"
         data-testid="field-city-display"
       >
         <Search className="w-[16px] h-[16px] shrink-0 text-[#334855]" />
@@ -223,7 +223,7 @@ export default function OnboardingLocation() {
           <p className="text-[14px] font-medium mb-2 text-[#334855]">Buurten</p>
           <button
             onClick={() => setShowDistrictPicker(!showDistrictPicker)}
-            className="w-full flex items-center justify-between h-[48px] rounded-[12px] border border-[#E5E7EB] bg-white px-4"
+            className="w-full flex items-center justify-between h-[56px] rounded-[16px] border border-[#E5E7EB] bg-white px-4"
             data-testid="dropdown-districts"
           >
             <span className="text-[15px] font-medium text-[#111111]">{districtSummary}</span>

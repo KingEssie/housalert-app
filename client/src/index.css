@@ -328,9 +328,9 @@
 
   .app-input {
     background: #FFFFFF;
-    border: 1.5px solid #E5E7EB;
-    border-radius: 12px;
-    height: 48px;
+    border: 1px solid #E5E7EB;
+    border-radius: 16px;
+    height: 56px;
     padding: 12px 16px;
     font-size: 16px;
     color: #111111;
@@ -353,9 +353,9 @@
 
   .app-select {
     background: #FFFFFF;
-    border: 1.5px solid #E5E7EB;
-    border-radius: 12px;
-    height: 48px;
+    border: 1px solid #E5E7EB;
+    border-radius: 16px;
+    height: 56px;
     padding: 12px 16px;
     padding-right: 40px;
     font-size: 16px;
@@ -372,8 +372,8 @@
 
   .app-textarea {
     background: #FFFFFF;
-    border: 1.5px solid #E5E7EB;
-    border-radius: 12px;
+    border: 1px solid #E5E7EB;
+    border-radius: 16px;
     padding: 16px;
     font-size: 16px;
     color: #111111;
@@ -538,8 +538,8 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .ha-field {
-  height: 48px;
-  border-radius: 12px;
+  height: 56px;
+  border-radius: 16px;
   padding-left: 16px;
   padding-right: 16px;
   font-size: 16px;
@@ -591,8 +591,8 @@ input[type="range"]::-moz-range-thumb {
   transform: none;
 }
 .ha-field-web {
-  height: 48px;
-  border-radius: 12px;
+  height: 56px;
+  border-radius: 16px;
   padding-left: 16px;
   padding-right: 16px;
   font-size: 16px;
@@ -611,8 +611,8 @@ input[type="range"]::-moz-range-thumb {
   box-shadow: 0 0 0 3px rgba(217,26,104,0.1);
 }
 .ha-select-web {
-  height: 48px;
-  border-radius: 12px;
+  height: 56px;
+  border-radius: 16px;
   padding-left: 16px;
   padding-right: 40px;
   font-size: 16px;

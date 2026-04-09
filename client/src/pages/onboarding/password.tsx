@@ -442,7 +442,7 @@ export default function OnboardingPassword() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder={t("onboarding.password.placeholder") || "Minimaal 6 tekens"}
             minLength={6}
-            className="w-full h-[48px] pl-12 pr-12 rounded-[12px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+            className="w-full h-[56px] pl-12 pr-12 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
             autoFocus
             data-testid="input-password"
           />
@@ -484,7 +484,7 @@ export default function OnboardingPassword() {
               placeholder={t("referral.inputPlaceholder") || "ABC123"}
               value={referralCode}
               onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-              className="w-full h-[48px] pl-12 pr-4 rounded-[12px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+              className="w-full h-[56px] pl-12 pr-4 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
               autoCapitalize="characters"
               data-testid="input-referral-code"
             />

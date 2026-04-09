@@ -476,7 +476,7 @@ function BuddyInline({ accessToken }: { accessToken: string | undefined }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("profileEdit.searchBuddyPlaceholder")}
-          className="w-full h-[46px] rounded-[12px] border border-[#E5E7EB] bg-white px-4 text-[14px] text-[#111111] placeholder:text-[#334855] focus:outline-none focus:ring-2 focus:ring-ha-primary/30 focus:border-ha-primary transition-all pr-10"
+          className="w-full h-[56px] rounded-[16px] border border-[#E5E7EB] bg-white px-4 text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all pr-10"
           data-testid="inline-buddy-email"
         />
         {email && (
@@ -607,7 +607,7 @@ function LetterModal({ accessToken, open, onClose }: { accessToken: string | und
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
                 placeholder={t("applicationLetter.placeholderText")}
-                className="w-full min-h-[220px] rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-[14px] text-[#111111] leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-ha-primary/30 focus:border-ha-primary transition-all"
+                className="w-full min-h-[220px] rounded-[16px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-[16px] text-[#111111] leading-relaxed resize-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all"
                 data-testid="modal-letter-textarea"
               />
               {template.length > 0 && template.trim().length < 20 && (

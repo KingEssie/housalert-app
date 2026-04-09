@@ -104,8 +104,8 @@ function InlineProfileDetails({ accessToken, userEmail }: { accessToken: string;
 
   if (loading) return <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-[#334855]" /></div>;
 
-  const inputClass = "w-full h-[48px] px-4 rounded-[12px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
-  const readonlyClass = "w-full h-[48px] px-4 rounded-[12px] border border-[#E5E7EB] bg-[#F9FAFB] text-[16px] text-[#334855] cursor-not-allowed";
+  const inputClass = "w-full h-[56px] px-4 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
+  const readonlyClass = "w-full h-[56px] px-4 rounded-[16px] border border-[#E5E7EB] bg-[#F9FAFB] text-[16px] text-[#334855] cursor-not-allowed";
   const canSave = firstName.trim() && lastName.trim() && phone.trim();
 
   return (
@@ -308,7 +308,7 @@ function InlineSearchBuddy({ accessToken }: { accessToken: string }) {
 
   if (loading) return <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-[#334855]" /></div>;
 
-  const inputClass = "w-full h-[48px] px-4 rounded-[12px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
+  const inputClass = "w-full h-[56px] px-4 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
 
   return (
     <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 flex flex-col gap-4" data-testid="inline-search-buddy">
