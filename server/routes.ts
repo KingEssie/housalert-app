@@ -2288,14 +2288,18 @@ export async function registerRoutes(
               await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubId, plan, null, trialEndsAt);
             } else if (subStatus === "active") {
               if (sub.cancel_at_period_end) {
-                const rawEnd = sub.current_period_end;
+                const rawEnd = (sub as any).current_period_end
+                  ?? (sub as any).items?.data?.[0]?.current_period_end
+                  ?? null;
                 const periodEnd = rawEnd && rawEnd > 0
                   ? new Date(rawEnd * 1000)
                   : null;
                 log(`[stripe-webhook] DB UPDATE: user=${userId} → canceled (cancel_at_period_end), periodEnd=${periodEnd?.toISOString()}`);
                 await updateSubscriptionStatus(stripeSubId, "canceled", periodEnd ?? undefined);
               } else {
-                const rawEnd = sub.current_period_end;
+                const rawEnd = (sub as any).current_period_end
+                  ?? (sub as any).items?.data?.[0]?.current_period_end
+                  ?? null;
                 const periodEnd = rawEnd && rawEnd > 0
                   ? new Date(rawEnd * 1000)
                   : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
@@ -2337,7 +2341,9 @@ export async function registerRoutes(
             const sub = await stripe.subscriptions.retrieve(stripeSubId);
             log(`[stripe-webhook] invoice.paid — Stripe sub status after payment: ${sub.status}`);
             if (sub.status === "active") {
-              const rawEnd = (sub as any).current_period_end;
+              const rawEnd = (sub as any).current_period_end
+                ?? (sub as any).items?.data?.[0]?.current_period_end
+                ?? null;
               const periodEnd = rawEnd && rawEnd > 0
                 ? new Date(rawEnd * 1000)
                 : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);

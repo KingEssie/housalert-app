@@ -104,7 +104,9 @@ export async function getSubscriptionStatus(userId: string): Promise<Subscriptio
       let healData: Record<string, any> = { updated_at: new Date().toISOString() };
 
       if (stripeSub.status === "active" || stripeSub.status === "trialing") {
-        const rawEnd = stripeSub.current_period_end;
+        const rawEnd = stripeSub.current_period_end
+          ?? (stripeSub as any).items?.data?.[0]?.current_period_end
+          ?? null;
         const newPeriodEnd = rawEnd && rawEnd > 0
           ? new Date(rawEnd * 1000)
           : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
@@ -112,7 +114,6 @@ export async function getSubscriptionStatus(userId: string): Promise<Subscriptio
         healStatus = "active";
         healData.status = "active";
         healData.current_period_ends_at = newPeriodEnd.toISOString();
-        healData.cancel_at_period_end = !!stripeSub.cancel_at_period_end;
       } else if (stripeSub.status === "past_due") {
         healStatus = "past_due";
         healData.status = "past_due";
