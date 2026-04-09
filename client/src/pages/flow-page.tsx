@@ -353,7 +353,7 @@ function OpenPageButton({ step, label }: { step: TaskFlowStep; label: string }) 
 
 function TipBody({ children }: { children: React.ReactNode }) {
   return (
-    <div className="text-left text-[15px] text-[#374151] leading-relaxed flex flex-col gap-5" data-testid="tip-body">
+    <div className="text-left text-[15px] text-[#1F2937] leading-relaxed flex flex-col gap-5" data-testid="tip-body">
       {children}
     </div>
   );
@@ -361,31 +361,27 @@ function TipBody({ children }: { children: React.ReactNode }) {
 
 function TipSection({ title, items }: { title?: string; items: string[] }) {
   return (
-    <div className="rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
+    <div>
       {title && (
-        <div className="px-4 pt-3.5 pb-2">
-          <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide">{title}</p>
-        </div>
+        <p className="text-[15px] font-semibold text-[#111111] mb-2">{title}</p>
       )}
-      <div className={`flex flex-col ${title ? "" : "pt-1"}`}>
+      <ul className="flex flex-col gap-1.5 pl-1">
         {items.map((item, i) => (
-          <div key={i} className={`flex items-center gap-3 px-4 py-3 ${i > 0 ? "border-t border-[#F3F4F6]" : ""}`}>
-            <div className="w-[22px] h-[22px] rounded-[7px] border-2 border-[#D1D5DB] flex items-center justify-center flex-shrink-0">
-              <Check className="w-3 h-3 text-[#D1D5DB]" strokeWidth={2.5} />
-            </div>
-            <span className="text-[14px] text-[#111111]">{item}</span>
-          </div>
+          <li key={i} className="flex items-start gap-2.5 text-[14px] text-[#1F2937] leading-snug">
+            <span className="text-[#9CA3AF] mt-1.5 text-[7px]">●</span>
+            <span>{item}</span>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }
 
 function TipHighlight({ text }: { text: string }) {
   return (
-    <div className="flex items-center gap-3 rounded-2xl bg-[#FDF8F0] border border-[#F5E6D3] px-5 py-4">
-      <span className="text-[18px] flex-shrink-0">💡</span>
-      <p className="text-[14px] font-semibold text-[#111111] leading-snug">{text}</p>
+    <div className="flex items-center gap-3 rounded-xl bg-[#FDF8F0] border border-[#F5E6D3] px-4 py-3.5">
+      <span className="text-[16px] flex-shrink-0">💡</span>
+      <p className="text-[14px] font-medium text-[#111111] leading-snug">{text}</p>
     </div>
   );
 }
@@ -429,7 +425,7 @@ function RegionAccordion({ regions }: { regions: RegionData[] }) {
                   <li key={j} className="flex items-start gap-2 text-[14px] leading-snug">
                     <span className="text-[#D1D5DB] mt-1.5 text-[8px]">●</span>
                     <div className="flex flex-col">
-                      <span className="text-[#6B7280]">{item.label}</span>
+                      <span className="text-[#1F2937]">{item.label}</span>
                       {item.url && (
                         <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-[13px] text-ha-primary hover:underline truncate" data-testid={`link-region-${i}-${j}`}>{item.url.replace(/^https?:\/\//, "")}</a>
                       )}
@@ -448,7 +444,7 @@ function RegionAccordion({ regions }: { regions: RegionData[] }) {
 const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   tip_documents: () => (
     <TipBody>
-      <p className="text-[14px] text-[#6B7280]">Verhuurders in Duitsland hechten veel waarde aan documenten waarmee jij laat zien dat je een betrouwbare huurder bent. Zorg dat je alles alvast klaar hebt, zodat je direct kunt reageren.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Verhuurders in Duitsland hechten veel waarde aan documenten waarmee jij laat zien dat je een betrouwbare huurder bent. Zorg dat je alles alvast klaar hebt, zodat je direct kunt reageren.</p>
       <TipSection title="Als je in loondienst werkt" items={[
         "Kopie ID / paspoort",
         "Laatste 3 loonstroken",
@@ -473,16 +469,16 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   ),
   tip_finances: () => (
     <TipBody>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">De inkomenseis in Duitsland ligt meestal tussen 3x en 3,5x de kale huurprijs. In populaire steden kan dit zelfs oplopen tot 4x.</p>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Met andere woorden: voor een woning van €1.000 moet je inkomen meestal minimaal €3.000 – €4.000 bruto per maand zijn.</p>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Bij de meeste advertenties staat de inkomenseis vermeld, zodat je snel kunt zien of een woning haalbaar is.</p>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Reageren op woningen boven jouw budget heeft vaak geen zin. Verhuurders selecteren streng en kiezen kandidaten die direct aan de eisen voldoen.</p>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Bepaal daarom vooraf tot welke huurprijs jij realistisch kunt reageren.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">De inkomenseis in Duitsland ligt meestal tussen 3x en 3,5x de kale huurprijs. In populaire steden kan dit zelfs oplopen tot 4x.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Met andere woorden: voor een woning van €1.000 moet je inkomen meestal minimaal €3.000 – €4.000 bruto per maand zijn.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Bij de meeste advertenties staat de inkomenseis vermeld, zodat je snel kunt zien of een woning haalbaar is.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Reageren op woningen boven jouw budget heeft vaak geen zin. Verhuurders selecteren streng en kiezen kandidaten die direct aan de eisen voldoen.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Bepaal daarom vooraf tot welke huurprijs jij realistisch kunt reageren.</p>
     </TipBody>
   ),
   tip_landlord_accounts: () => (
     <TipBody>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Veel woningen in Duitsland worden direct via verhuurders aangeboden en verschijnen niet altijd op grote platforms. Door je vooraf in te schrijven bij deze partijen vergroot je je kans aanzienlijk.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Veel woningen in Duitsland worden direct via verhuurders aangeboden en verschijnen niet altijd op grote platforms. Door je vooraf in te schrijven bij deze partijen vergroot je je kans aanzienlijk.</p>
       <RegionAccordion regions={[
         { name: "Berlijn", platforms: [
           { label: "Gewobag – grote woningcorporatie in Berlijn", url: "https://www.gewobag.de" },
@@ -533,8 +529,8 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   ),
   tip_facebook_groups: () => (
     <TipBody>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Veel particuliere verhuurders en huurders gebruiken in Duitsland Facebook-groepen om woningen of kamers te delen. Vooral in grote steden en bij gedeeld wonen (WG) komt hier veel aanbod voorbij.</p>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Zoek en word lid van actieve groepen in jouw regio, zodat je snel kunt reageren op nieuwe woningen.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Veel particuliere verhuurders en huurders gebruiken in Duitsland Facebook-groepen om woningen of kamers te delen. Vooral in grote steden en bij gedeeld wonen (WG) komt hier veel aanbod voorbij.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Zoek en word lid van actieve groepen in jouw regio, zodat je snel kunt reageren op nieuwe woningen.</p>
       <a
         href="https://www.facebook.com/search/groups/?q=wohnung%20mieten"
         target="_blank"
@@ -544,23 +540,23 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
       >
         » Rooms &amp; Apartments in Berlin, Munich, Hamburg, Frankfurt, Cologne
       </a>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Speur ook zelf naar Facebook-groepen die woningen delen in jouw stad of regio.</p>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Gebruik in Facebook zoekopdrachten zoals:</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Speur ook zelf naar Facebook-groepen die woningen delen in jouw stad of regio.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Gebruik in Facebook zoekopdrachten zoals:</p>
       <ul className="flex flex-col gap-1.5 pl-1">
-        <li className="flex items-start gap-2 text-[14px] text-[#6B7280] leading-snug"><span className="text-[#D1D5DB] mt-1.5 text-[8px]">●</span><span>Wohnung + stad</span></li>
-        <li className="flex items-start gap-2 text-[14px] text-[#6B7280] leading-snug"><span className="text-[#D1D5DB] mt-1.5 text-[8px]">●</span><span>WG Zimmer + stad</span></li>
-        <li className="flex items-start gap-2 text-[14px] text-[#6B7280] leading-snug"><span className="text-[#D1D5DB] mt-1.5 text-[8px]">●</span><span>Wohnung mieten + stad</span></li>
+        <li className="flex items-start gap-2 text-[14px] text-[#1F2937] leading-snug"><span className="text-[#9CA3AF] mt-1.5 text-[7px]">●</span><span>Wohnung + stad</span></li>
+        <li className="flex items-start gap-2 text-[14px] text-[#1F2937] leading-snug"><span className="text-[#9CA3AF] mt-1.5 text-[7px]">●</span><span>WG Zimmer + stad</span></li>
+        <li className="flex items-start gap-2 text-[14px] text-[#1F2937] leading-snug"><span className="text-[#9CA3AF] mt-1.5 text-[7px]">●</span><span>Wohnung mieten + stad</span></li>
       </ul>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Word lid van meerdere groepen en zet meldingen aan, zodat je direct op de hoogte bent van nieuw aanbod.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Word lid van meerdere groepen en zet meldingen aan, zodat je direct op de hoogte bent van nieuw aanbod.</p>
     </TipBody>
   ),
   tip_new_build: () => (
     <TipBody>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Wil je het liefst in een nieuw appartement wonen of kansen vroeg ontdekken? Houd dan nieuwbouwprojecten in jouw regio goed in de gaten.</p>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">In Duitsland worden veel woningen al toegewezen vóór oplevering. Wie er vroeg bij is, heeft vaak een groot voordeel.</p>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Projecten worden soms maanden of zelfs jaren vooraf aangekondigd. Vaak kun je je inschrijven voordat de woningen beschikbaar zijn.</p>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Door dit actief te volgen, vergroot je je kansen aanzienlijk.</p>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Bekijk actuele en toekomstige nieuwbouwprojecten op:</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Wil je het liefst in een nieuw appartement wonen of kansen vroeg ontdekken? Houd dan nieuwbouwprojecten in jouw regio goed in de gaten.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">In Duitsland worden veel woningen al toegewezen vóór oplevering. Wie er vroeg bij is, heeft vaak een groot voordeel.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Projecten worden soms maanden of zelfs jaren vooraf aangekondigd. Vaak kun je je inschrijven voordat de woningen beschikbaar zijn.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Door dit actief te volgen, vergroot je je kansen aanzienlijk.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Bekijk actuele en toekomstige nieuwbouwprojecten op:</p>
       <a
         href="https://www.neubaukompass.de"
         target="_blank"
@@ -574,54 +570,43 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   ),
   tip_network: () => (
     <TipBody>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Hoe meer mensen weten dat jij een woning zoekt, hoe groter je kans. In Duitsland gaat veel aanbod via via, nog vóór het online komt.</p>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Laat daarom op je social media weten dat je op zoek bent naar een woning. Deel het met vrienden, familie, collega's en kennissen.</p>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Vraag ook actief rond op werk of bij lokale contacten. Misschien kent iemand iemand die binnenkort iets verhuurt.</p>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Soms komt de beste kans uit onverwachte hoek. Zorg dat mensen aan jou denken zodra er iets vrijkomt.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Hoe meer mensen weten dat jij een woning zoekt, hoe groter je kans. In Duitsland gaat veel aanbod via via, nog vóór het online komt.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Laat daarom op je social media weten dat je op zoek bent naar een woning. Deel het met vrienden, familie, collega's en kennissen.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Vraag ook actief rond op werk of bij lokale contacten. Misschien kent iemand iemand die binnenkort iets verhuurt.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Soms komt de beste kans uit onverwachte hoek. Zorg dat mensen aan jou denken zodra er iets vrijkomt.</p>
     </TipBody>
   ),
   tip_viewings: () => (
     <TipBody>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Een bezichtiging draait niet alleen om de woning. In Duitsland wordt er vaak ook gekeken of jij een betrouwbare huurder bent. Maak daarom een sterke eerste indruk.</p>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Vier manieren om een positieve indruk te maken:</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Een bezichtiging draait niet alleen om de woning. In Duitsland wordt er vaak ook gekeken of jij een betrouwbare huurder bent. Maak daarom een sterke eerste indruk.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Vier manieren om een positieve indruk te maken:</p>
       <div className="flex flex-col gap-4">
         <div>
           <p className="text-[14px] font-semibold text-[#111111]">1. Wees op tijd</p>
-          <p className="text-[14px] text-[#6B7280] leading-relaxed mt-1">In Duitsland wordt punctualiteit serieus genomen. Kom liever iets te vroeg dan te laat.</p>
+          <p className="text-[14px] text-[#1F2937] leading-relaxed mt-1">In Duitsland wordt punctualiteit serieus genomen. Kom liever iets te vroeg dan te laat.</p>
         </div>
         <div>
           <p className="text-[14px] font-semibold text-[#111111]">2. Kom verzorgd en rustig over</p>
-          <p className="text-[14px] text-[#6B7280] leading-relaxed mt-1">Verhuurders zoeken iemand die netjes en stabiel oogt. Houd het simpel en professioneel.</p>
+          <p className="text-[14px] text-[#1F2937] leading-relaxed mt-1">Verhuurders zoeken iemand die netjes en stabiel oogt. Houd het simpel en professioneel.</p>
         </div>
         <div>
           <p className="text-[14px] font-semibold text-[#111111]">3. Stel een paar gerichte vragen</p>
-          <p className="text-[14px] text-[#6B7280] leading-relaxed mt-1">Laat zien dat je echt interesse hebt. Vraag bijvoorbeeld naar het gebouw, de buren of de huurvoorwaarden.</p>
+          <p className="text-[14px] text-[#1F2937] leading-relaxed mt-1">Laat zien dat je echt interesse hebt. Vraag bijvoorbeeld naar het gebouw, de buren of de huurvoorwaarden.</p>
         </div>
         <div>
           <p className="text-[14px] font-semibold text-[#111111]">4. Laat direct je interesse zien</p>
-          <p className="text-[14px] text-[#6B7280] leading-relaxed mt-1">Ben je enthousiast? Geef dit meteen aan. In Duitsland wordt vaak snel gekozen uit meerdere kandidaten.</p>
+          <p className="text-[14px] text-[#1F2937] leading-relaxed mt-1">Ben je enthousiast? Geef dit meteen aan. In Duitsland wordt vaak snel gekozen uit meerdere kandidaten.</p>
         </div>
       </div>
     </TipBody>
   ),
   tip_followup: () => (
     <TipBody>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Na een bezichtiging ben je er nog niet. In Duitsland is het gebruikelijk om een Mietbewerbung (huurpitch) te sturen. Dit is vaak het moment waarop verhuurders hun keuze maken — en het verschil tussen wel of niet uitgekozen worden.</p>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Een huurpitch is een kort, persoonlijk bericht aan de verhuurder. Je laat zien wie je bent, waarom je betrouwbaar bent en waarom juist deze woning bij je past. Verhuurders ontvangen soms tientallen reacties — een goede pitch helpt je om eruit te springen.</p>
-      <TipSection title="Wat moet erin" items={[
-        "Kort iets over jezelf (naam, leeftijd, situatie)",
-        "Je werk en inkomen",
-        "Waarom juist deze woning",
-        "Dat je een rustige, betrouwbare huurder bent",
-        "Eventueel: samenstelling van je huishouden",
-      ]} />
-      <TipSection title="Praktische tips" items={[
-        "Houd het kort en persoonlijk — geen standaardtekst",
-        "Maak het echt: schrijf het alsof je iemand aanspreekt",
-        "Stuur het dezelfde dag als de bezichtiging",
-        "Combineer het met je documenten (SCHUFA, inkomen)",
-      ]} />
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">Ben je zeker? Stuur je pitch direct na de bezichtiging. Twijfel je? Slaap er één nacht over — maar wacht niet te lang. Snelheid telt.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Na een bezichtiging ben je er nog niet. In Duitsland is het gebruikelijk om een Mietbewerbung (huurpitch) te sturen. Dit is vaak het moment waarop verhuurders hun keuze maken — en het verschil tussen wel of niet uitgekozen worden.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Een huurpitch is een kort, persoonlijk bericht aan de verhuurder. Je laat zien wie je bent, waarom je betrouwbaar bent en waarom juist deze woning bij je past. Verhuurders ontvangen soms tientallen reacties — een goede pitch helpt je om eruit te springen.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Vertel kort iets over jezelf — je naam, leeftijd en situatie. Benoem je werk en inkomen, en leg uit waarom juist deze woning bij je past. Laat merken dat je een rustige, betrouwbare huurder bent. Vermeld eventueel de samenstelling van je huishouden.</p>
+      <TipHighlight text="Houd het kort en persoonlijk. Geen standaardtekst — schrijf het alsof je iemand aanspreekt. Stuur het dezelfde dag en combineer het met je documenten (SCHUFA, inkomen)." />
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">Ben je zeker? Stuur je pitch direct na de bezichtiging. Twijfel je? Slaap er één nacht over — maar wacht niet te lang. Snelheid telt.</p>
       <TipCta label="Genereer mijn huurpitch" href="/tools/rental-pitch" />
     </TipBody>
   ),

@@ -39,7 +39,7 @@ export function FlowLayout({
   const isLastStep = currentStep === totalSteps - 1;
 
   return (
-    <div className="fixed inset-0 z-50 bg-white flex flex-col" data-testid="flow-layout">
+    <div className="fixed inset-0 z-50 bg-[#F5F5F5] flex flex-col" data-testid="flow-layout">
       <div className="bg-white">
         <div className="flex items-center justify-between px-5 h-[64px]">
           <div className="flex-1 min-w-0">
@@ -67,25 +67,25 @@ export function FlowLayout({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto bg-[#FAFAFA]">
-        <div className="max-w-lg mx-auto px-6 pt-10 pb-8">
-          <div className="flex flex-col items-center text-center mb-10">
-            <div className="mb-7" data-testid="icon-flow-step">
-              {stepIcon}
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-lg mx-auto px-4 pt-6 pb-8">
+          <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.06)] px-6 py-7">
+            <div className="text-left mb-6">
+              <h1 className="text-[22px] font-bold text-[#111111] leading-tight mb-3" data-testid="text-step-title">
+                <span className="text-ha-primary mr-1.5">{currentStep + 1}</span>
+                {stepTitle}
+              </h1>
+              <p className="text-[15px] text-[#374151] leading-relaxed" data-testid="text-step-description">
+                {stepDescription}
+              </p>
             </div>
-            <h1 className="text-[26px] font-semibold text-[#111111] leading-tight mb-4" data-testid="text-step-title">
-              {stepTitle}
-            </h1>
-            <p className="text-[16px] text-[#4B5563] leading-relaxed max-w-[340px]" data-testid="text-step-description">
-              {stepDescription}
-            </p>
-          </div>
 
-          {children && (
-            <div data-testid="flow-step-content">
-              {children}
-            </div>
-          )}
+            {children && (
+              <div data-testid="flow-step-content">
+                {children}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

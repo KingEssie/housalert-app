@@ -1,0 +1,132 @@
+We need to restyle the 8-step “Vergroot je kansen met deze tips” flow so it matches the Rentbird style much more closely.
+
+IMPORTANT:
+- Do NOT change routing
+- Do NOT change progress logic
+- Do NOT change footer behavior
+- Do NOT change step order
+- Do NOT change the actual step titles/content, except where explicitly mentioned below
+- This task is mainly about visual structure and presentation
+
+GOAL:
+Make the flow screens visually match Rentbird more closely:
+- no icons
+- use a bold numbered step label instead
+- content should be left-aligned
+- body text should be black/dark, not light grey
+- place the content inside a white card/container on a very light grey page background
+- step 8 must use the same text-style layout as Rentbird, not checklist/card blocks
+
+==================================================
+1. REMOVE ICONS FROM ALL 8 FLOW STEPS
+==================================================
+
+Current state:
+- some steps still show top icons
+
+Change:
+- remove all icons from the tip flow screens
+- replace them with a visible numbered step label at the top of the white content card
+
+Format example:
+“1 Verzamel vereiste documenten”
+“2 Check je financiële situatie”
+
+The number should feel prominent, similar to Rentbird.
+
+==================================================
+2. LEFT-ALIGN ALL STEP CONTENT
+==================================================
+
+Current state:
+- some titles / intro text are centered
+
+Change:
+- titles should be left-aligned
+- intro text should be left-aligned
+- body text should be left-aligned
+- section text should be left-aligned
+
+This should feel like the Rentbird layout, not like a centered onboarding screen.
+
+==================================================
+3. USE DARK TEXT INSTEAD OF GREY TEXT
+==================================================
+
+Current state:
+- too much text is grey / low contrast
+
+Change:
+- main body text should be dark (near black)
+- titles should remain strong black
+- only secondary UI elements may remain lighter
+- improve readability and contrast
+
+Goal:
+The screen must feel more readable and more like a content page.
+
+==================================================
+4. WRAP THE CONTENT IN A WHITE CARD ON A VERY LIGHT GREY BACKGROUND
+==================================================
+
+Current state:
+- the presentation does not match Rentbird closely enough
+
+Change:
+- use a very light grey page background
+- place the actual step content inside a white rounded card/container
+- the white card should contain:
+  - step number + title
+  - intro/body text
+  - lists / sections
+
+This should visually resemble the Rentbird screens:
+- white content block
+- soft contrast with page background
+- simple, clean reading experience
+
+==================================================
+5. STEP 8 MUST MATCH RENTBIRD STRUCTURE MORE CLOSELY
+==================================================
+
+Current state:
+- step 8 currently contains too many bullets / structured checklist blocks
+
+Change:
+- rewrite the presentation of step 8 so it matches Rentbird’s style:
+  - mostly normal text paragraphs
+  - short highlighted tip inside the text
+  - no checklist-style card blocks
+  - no “wat moet erin” checklist card
+- keep the existing topic/content direction:
+  “Stuur na de bezichtiging een overtuigende huurpitch”
+- but present it as a readable text page like Rentbird does
+
+Important:
+- keep it Dutch
+- keep it relevant for the German rental market
+- but visually and structurally it should feel much closer to the Rentbird screenshot
+
+==================================================
+6. KEEP OTHER STEPS STRUCTURALLY CONSISTENT
+==================================================
+
+For steps 1–7:
+- keep the current Germany-adapted content
+- but present it in the simpler Rentbird style
+- avoid overdesigned cards/checklists where not needed
+- if a step currently has too many boxes, simplify it
+
+The whole flow should feel consistent.
+
+==================================================
+7. OUTPUT
+==================================================
+
+After finishing, return:
+1. which files were changed
+2. confirmation that icons were removed
+3. confirmation that titles/body text are now left-aligned
+4. confirmation that text contrast was improved
+5. confirmation that step 8 was simplified to match Rentbird’s text-based structure
+6. confirmation that routing, progress, and footer behavior were unchanged
