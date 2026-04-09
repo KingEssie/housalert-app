@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
-import { Search, MapPin, Loader2, X } from "lucide-react";
+import { Search, MapPin, Loader2 } from "lucide-react";
 import { defaultCities } from "../../../../config/market";
-import { OB, OBW, ONBOARDING_TOTAL_STEPS, OBFooter, OBWebHeader, OBWebFooter, OBInfoBox, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
+import { OBW, OBWebHeader, OBWebFooter, OBInfoBox, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
+import { OnboardingFlowLayout } from "@/components/onboarding-flow-layout";
 import MapView from "@/components/map-view";
 import { useGeocoderSearch } from "@/hooks/use-geocoder-search";
 
@@ -42,7 +43,6 @@ export default function OnboardingCity() {
   const [, navigate] = useLocation();
   const searchString = useHashSearch();
   const w = useWebsiteMode();
-  const T = w ? OBW : OB;
   const didAutostartRef = useRef(false);
   const [search, setSearch] = useState(() => getInitialSearchFromQuery(searchString));
   const [selectedCity, setSelectedCity] = useState<{ name: string; lat: number; lng: number } | null>(
@@ -286,149 +286,113 @@ export default function OnboardingCity() {
     );
   }
 
-  return (
-    <div
-      className="min-h-[100dvh] flex flex-col"
-      style={{ background: T.gradient }}
-      data-testid="screen-onboarding-city"
-    >
-      <header
-        className="w-full sticky top-0 z-20"
-        style={{
-          backgroundColor: T.headerBg,
-          borderBottom: `1px solid ${T.headerBorder}`,
-          paddingTop: "max(8px, env(safe-area-inset-top))",
-        }}
-      >
-        <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
-          <span
-            className="text-[12px] font-semibold px-2.5 py-1 rounded-[6px]"
-            style={{
-              backgroundColor: "#111111",
-              color: "#ffffff",
-            }}
-            data-testid="badge-step"
-          >
-            {`1/${ONBOARDING_TOTAL_STEPS}`}
-          </span>
-          <span className="text-[20px] font-semibold" style={{ color: T.text }}>
-            Zoekopdracht maken
-          </span>
-          <button
-            onClick={handleClose}
-            className="w-[36px] h-[36px] rounded-full flex items-center justify-center active:scale-95 transition-transform"
-            style={{ backgroundColor: "#FFFFFF" }}
-            data-testid="button-city-close"
-          >
-            <X className="w-4 h-4" style={{ color: "#334855" }} />
-          </button>
-        </div>
-      </header>
+  const cityListContent = (
+    <>
+      <div className="relative mb-4">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+            if (selectedCity) setSelectedCity(null);
+          }}
+          placeholder="Zoek stad..."
+          className="w-full h-[48px] rounded-[12px] border border-[#E5E7EB] bg-white px-4 pr-12 text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+          autoFocus
+          data-testid="input-city-search"
+        />
+        {geocoder.loading ? (
+          <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] animate-spin text-[#334855]" />
+        ) : (
+          <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
+        )}
+      </div>
 
-      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pb-[120px] overflow-y-auto">
-        <h2
-          className="text-[18px] font-semibold"
-          style={{ color: T.text, marginTop: "20px", marginBottom: "12px" }}
-          data-testid="text-city-title"
-        >
-          Locatie
-        </h2>
+      {showDropdown && (
+        <div data-testid="city-results">
+          {presetMatches.map((city, i) => (
+            <button
+              key={city.name}
+              onClick={() => selectPresetCity(city)}
+              className="w-full flex items-center gap-3 text-left transition-colors hover:bg-[#F9FAFB] rounded-lg px-1"
+              style={{
+                padding: "14px 4px",
+                borderBottom: i < presetMatches.length - 1 ? "1px solid #F0F0F0" : "none",
+              }}
+              data-testid={`city-option-${city.name}`}
+            >
+              <MapPin className="w-[18px] h-[18px] shrink-0 text-ha-primary" />
+              <span className="text-[16px] font-medium text-[#111111]">{city.name}</span>
+            </button>
+          ))}
 
-        <div className="relative" style={{ marginBottom: "18px" }}>
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              if (selectedCity) setSelectedCity(null);
-            }}
-            placeholder="Zoek stad..."
-            className="w-full pr-12 ha-field"
-            autoFocus
-            data-testid="input-city-search"
-          />
-          {geocoder.loading ? (
-            <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] animate-spin" style={{ color: T.textSecondary }} />
-          ) : (
-            <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: T.textSecondary }} />
+          {presetMatches.length === 0 && geocoder.results.length > 0 && geocoder.results.map((r, i) => (
+              <button
+                key={r.placeId || i}
+                onClick={() => selectGeocoderCity(r)}
+                className="w-full flex items-center gap-3 text-left transition-colors hover:bg-[#F9FAFB] rounded-lg px-1"
+                style={{
+                  padding: "14px 4px",
+                  borderBottom: "1px solid #F0F0F0",
+                }}
+                data-testid={`city-nominatim-${i}`}
+              >
+                <MapPin className="w-[18px] h-[18px] shrink-0 text-ha-primary" />
+                <div>
+                  <span className="text-[16px] font-medium block text-[#111111]">{r.city}</span>
+                  {r.label !== r.city && (
+                    <span className="text-[12px] text-[#334855]">{r.label.replace(`${r.city}, `, "")}</span>
+                  )}
+                </div>
+              </button>
+          ))}
+
+          {presetMatches.length === 0 && geocoder.results.length === 0 && !geocoder.loading && search.trim().length >= 3 && (
+            <p className="text-[13px] text-center py-4 text-[#334855]">
+              Geen resultaten
+            </p>
           )}
         </div>
+      )}
 
-        {showDropdown && (
-          <div data-testid="city-results">
-            {presetMatches.map((city, i) => (
-              <button
-                key={city.name}
-                onClick={() => selectPresetCity(city)}
-                className="w-full flex items-center gap-3 text-left transition-colors hover:bg-[#F9FAFB]"
-                style={{
-                  padding: "14px 0",
-                  borderBottom: i < presetMatches.length - 1 ? `1px solid ${T.divider}` : "none",
-                }}
-                data-testid={`city-option-${city.name}`}
-              >
-                <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: "rgb(var(--ha-primary))" }} />
-                <span className="text-[16px] font-medium" style={{ color: T.text }}>{city.name}</span>
-              </button>
-            ))}
-
-            {presetMatches.length === 0 && geocoder.results.length > 0 && geocoder.results.map((r, i) => (
-                <button
-                  key={r.placeId || i}
-                  onClick={() => selectGeocoderCity(r)}
-                  className="w-full flex items-center gap-3 text-left transition-colors hover:bg-[#F9FAFB]"
-                  style={{
-                    padding: "14px 0",
-                    borderBottom: `1px solid ${T.divider}`,
-                  }}
-                  data-testid={`city-nominatim-${i}`}
-                >
-                  <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: "rgb(var(--ha-primary))" }} />
-                  <div>
-                    <span className="text-[16px] font-medium block" style={{ color: T.text }}>{r.city}</span>
-                    {r.label !== r.city && (
-                      <span className="text-[12px]" style={{ color: T.textSecondary }}>{r.label.replace(`${r.city}, `, "")}</span>
-                    )}
-                  </div>
-                </button>
-            ))}
-
-            {presetMatches.length === 0 && geocoder.results.length === 0 && !geocoder.loading && search.trim().length >= 3 && (
-              <p className="text-[13px] text-center py-4" style={{ color: T.textSecondary }}>
-                Geen resultaten
-              </p>
-            )}
-          </div>
-        )}
-
-        {selectedCity && (
-          <div
-            className="flex items-center gap-3"
-            style={{ padding: "14px 0", borderBottom: `1px solid ${T.divider}` }}
-            data-testid="city-selected"
+      {selectedCity && (
+        <div
+          className="flex items-center gap-3 rounded-lg px-1"
+          style={{ padding: "14px 4px", borderBottom: "1px solid #F0F0F0" }}
+          data-testid="city-selected"
+        >
+          <MapPin className="w-[18px] h-[18px] shrink-0 text-ha-primary" />
+          <span className="text-[16px] font-medium flex-1 text-[#111111]">{selectedCity.name}</span>
+          <button
+            onClick={() => { setSelectedCity(null); setSearch(""); }}
+            className="text-[13px] font-medium px-3 py-1.5 rounded-lg transition-colors hover:bg-[#F9FAFB] text-[#334855]"
+            data-testid="button-city-change"
           >
-            <MapPin className="w-[18px] h-[18px] shrink-0" style={{ color: "rgb(var(--ha-primary))" }} />
-            <span className="text-[16px] font-medium flex-1" style={{ color: T.text }}>{selectedCity.name}</span>
-            <button
-              onClick={() => { setSelectedCity(null); setSearch(""); }}
-              className="text-[13px] font-medium px-3 py-1.5 rounded-[6px] transition-colors hover:bg-[#F9FAFB]"
-              style={{ color: T.textSecondary }}
-              data-testid="button-city-change"
-            >
-              Wijzig
-            </button>
-          </div>
-        )}
-      </main>
+            Wijzig
+          </button>
+        </div>
+      )}
+    </>
+  );
 
-      <OBFooter
-        onBack={handleBack}
-        onNext={handleNext}
-        nextLabel="Volgende"
-        nextDisabled={!selectedCity}
-        backTestId="button-city-back"
-        nextTestId="button-city-next"
-      />
-    </div>
+  return (
+    <OnboardingFlowLayout
+      flowTitle="Zoekopdracht maken"
+      currentStep={1}
+      totalSteps={3}
+      stepTitle="Kies je locatie"
+      stepDescription="Zoek de stad waar je een woning zoekt."
+      onBack={handleBack}
+      onNext={handleNext}
+      onClose={handleClose}
+      nextLabel="Volgende"
+      nextDisabled={!selectedCity}
+      backTestId="button-city-back"
+      nextTestId="button-city-next"
+      closeTestId="button-city-close"
+      screenTestId="screen-onboarding-city"
+    >
+      {cityListContent}
+    </OnboardingFlowLayout>
   );
 }

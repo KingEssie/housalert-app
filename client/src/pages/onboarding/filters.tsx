@@ -8,6 +8,7 @@ import {
   Check, Bath, Sun, Trees, Leaf, X,
 } from "lucide-react";
 import { OB, OBW, ONBOARDING_TOTAL_STEPS, OBFooter, OBWebHeader, OBWebFooter, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
+import { OnboardingFlowLayout } from "@/components/onboarding-flow-layout";
 import { createSearchProfile, type InsertSearchProfileInput } from "@/lib/search-profiles";
 import { queryClient } from "@/lib/queryClient";
 
@@ -812,69 +813,26 @@ export default function OnboardingFilters() {
   }
 
   return (
-    <div
-      className="min-h-[100dvh] flex flex-col"
-      style={{ background: T.gradient }}
-      data-testid="screen-onboarding-filters"
+    <OnboardingFlowLayout
+      flowTitle={t("onboarding.filters.headerTitle") || "Zoekopdracht maken"}
+      currentStep={3}
+      totalSteps={3}
+      stepTitle={t("onboarding.filters.title") || "Stel je voorkeuren in"}
+      stepDescription={t("onboarding.filters.subtitle") || "Verfijn je zoekopdracht voor de beste resultaten."}
+      onBack={handleBack}
+      onNext={handleNext}
+      onClose={handleClose}
+      nextLabel={isSearchOnlyMode
+        ? (t("newSearch.save") || "Opslaan")
+        : (t("common.next") || "Volgende")}
+      saving={saving}
+      nextDisabled={false}
+      backTestId="button-filters-back"
+      nextTestId="button-filters-next"
+      closeTestId="button-filters-close"
+      screenTestId="screen-onboarding-filters"
     >
-      <header
-        className="w-full sticky top-0 z-20 border-b"
-        style={{
-          backgroundColor: T.headerBg,
-          borderColor: T.headerBorder,
-          paddingTop: "max(8px, env(safe-area-inset-top))",
-        }}
-      >
-        <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
-          <span
-            className="text-[12px] font-semibold px-2.5 py-1 rounded-[6px]"
-            style={{
-              backgroundColor: "#111111",
-              color: "#ffffff",
-            }}
-            data-testid="badge-step"
-          >
-            {`3/${ONBOARDING_TOTAL_STEPS}`}
-          </span>
-          <span className="text-[20px] font-semibold" style={{ color: T.text }}>
-            {t("onboarding.filters.headerTitle") || "Zoekopdracht maken"}
-          </span>
-          <button
-            onClick={handleClose}
-            className="w-8 h-8 rounded-full flex items-center justify-center active:scale-95 transition-transform"
-            style={{ backgroundColor: "#FFFFFF" }}
-            data-testid="button-filters-close"
-          >
-            <X className="w-4 h-4" style={{ color: T.textSecondary }} />
-          </button>
-        </div>
-      </header>
-
-      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-[120px] overflow-y-auto">
-        <h2
-          className="text-[30px] font-semibold tracking-[-0.025em] mb-1"
-          style={{ color: T.text }}
-          data-testid="text-filters-title"
-        >
-          {t("onboarding.filters.title") || "Wat zoek je precies?"}
-        </h2>
-        <p className="text-[14px] mb-6" style={{ color: T.textSecondary }}>
-          {t("onboarding.filters.subtitle") || "Verfijn je zoekopdracht."}
-        </p>
-
-        {darkFilterSections}
-      </main>
-
-      <OBFooter
-        onBack={handleBack}
-        onNext={handleNext}
-        nextLabel={isSearchOnlyMode
-          ? (t("newSearch.save") || "Opslaan")
-          : (t("common.next") || "Volgende")}
-        saving={saving}
-        backTestId="button-filters-back"
-        nextTestId="button-filters-next"
-      />
-    </div>
+      {darkFilterSections}
+    </OnboardingFlowLayout>
   );
 }

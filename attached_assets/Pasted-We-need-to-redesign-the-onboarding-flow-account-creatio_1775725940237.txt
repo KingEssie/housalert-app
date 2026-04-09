@@ -1,0 +1,191 @@
+We need to redesign the onboarding flow (account creation / search profile setup flow) so it visually matches the other updated flows in the app:
+
+- “Rond je account af”
+- “Vergroot je kansen met deze tips”
+
+GOAL:
+Make onboarding feel like the same premium guided flow system:
+- light grey page background
+- white rounded content card
+- numbered step style (no icons)
+- clear progress bar
+- left-aligned content
+- same bottom navigation style
+
+IMPORTANT:
+- Do NOT change the actual onboarding logic
+- Do NOT change routing
+- Do NOT change validation
+- Do NOT change step order
+- Do NOT break existing APIs
+- This is mainly a layout / presentation refactor
+
+==================================================
+1. OVERALL LAYOUT
+==================================================
+
+Apply the same visual structure used in the updated guided flows:
+
+- page background: very light grey
+- content placed inside a white rounded card
+- generous spacing / padding
+- clean and minimal layout
+- same visual system as the “tips” and “account completion” flows
+
+The onboarding screens should no longer feel like loose full-page forms.
+
+==================================================
+2. HEADER / TOP AREA
+==================================================
+
+Use the same style as the other flows:
+
+- back button on the left
+- flow title centered or visually balanced
+- close button on the right
+- progress bar directly underneath
+- progress counter visible (e.g. 1/3, 2/3, etc.)
+
+Keep it visually consistent with:
+- “Rond je account af”
+- “Vergroot je kansen met deze tips”
+
+==================================================
+3. NUMBERED STEP STYLE
+==================================================
+
+Inside each onboarding step screen:
+
+- remove large icons / icon-based hero treatment
+- use a numbered step label instead
+- e.g.:
+  1  Kies je locatie
+  2  Stel je voorkeuren in
+  3  Controleer en sla op
+
+No hero icon at the top.
+No centered illustration.
+Use the same numbered visual language as the other flows.
+
+==================================================
+4. CONTENT CARD
+==================================================
+
+Each onboarding step must place its content inside one main white rounded card.
+
+The card should contain:
+- step number + title
+- short explanation text
+- step-specific content (inputs, search field, list, options, etc.)
+
+Examples:
+- location step → search input + city list inside the card
+- preferences step → filters inside the card
+- review step → summary inside the card
+
+The card should feel like one focused block.
+
+==================================================
+5. TEXT ALIGNMENT
+==================================================
+
+- all titles left-aligned
+- all explanatory text left-aligned
+- all form content left-aligned
+
+No centered content except where absolutely necessary.
+Match the Rentbird-like style now used in the other flows.
+
+==================================================
+6. COLORS / TYPOGRAPHY
+==================================================
+
+Use the same design system already established:
+
+- headings: black (#000000)
+- body text: dark (#111111)
+- secondary text: #334855
+- page background: light grey
+- card background: white
+
+Keep typography hierarchy consistent with the other flows.
+
+==================================================
+7. INPUTS / FIELDS
+==================================================
+
+All input fields inside onboarding must use the same shared input styling already applied elsewhere:
+
+- same height
+- same border radius
+- same background color
+- same font size
+- same padding
+- same border treatment
+
+Do not use any old onboarding-specific field style if it differs.
+
+==================================================
+8. LISTS / SELECTABLE ITEMS
+==================================================
+
+For selectable rows (cities, options, etc.):
+
+- keep them visually clean
+- place them inside the white card
+- use consistent row spacing
+- subtle separators if needed
+- no visual clutter
+
+The location list should feel like part of the same card, not separate floating sections.
+
+==================================================
+9. BOTTOM NAVIGATION / CTA AREA
+==================================================
+
+Use the same sticky bottom action area as the other flows:
+
+- left: back button
+- right: primary pink CTA button
+- same spacing
+- same height
+- same rounded styling
+
+Keep this visually consistent across all flows.
+
+==================================================
+10. CONSISTENCY GOAL
+==================================================
+
+After this refactor, the onboarding flow should feel like it belongs to the exact same system as:
+
+- “Rond je account af”
+- “Vergroot je kansen met deze tips”
+
+A user should feel that all flows in the app are part of one coherent guided experience.
+
+==================================================
+11. DO NOT CHANGE
+==================================================
+
+Do NOT change:
+- onboarding step logic
+- field behavior
+- API calls
+- routing
+- validation rules
+- actual search profile functionality
+
+Only refactor the visual layout and presentation.
+
+==================================================
+12. OUTPUT
+==================================================
+
+After finishing, return:
+1. which files were changed
+2. confirmation that onboarding now uses the same flow design system
+3. confirmation that icons/hero-style visuals were removed
+4. confirmation that onboarding content is now placed inside a white card on a light grey background
+5. confirmation that progress/header/footer styling matches the other flows
+6. confirmation that logic/routing/validation were unchanged

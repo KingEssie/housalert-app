@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { useTranslation } from "@/i18n";
+import { Mail, ChevronLeft } from "lucide-react";
+import { useWebsiteMode, OBW, OBStickyBar, OB } from "@/components/onboarding-ui";
+import { OnboardingFlowLayout } from "@/components/onboarding-flow-layout";
 import { HousAlertLogo } from "@/components/housalert-logo";
-import { ChevronLeft, Mail } from "lucide-react";
-import { OB, OBW, OBStickyBar, useWebsiteMode } from "@/components/onboarding-ui";
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -37,79 +38,121 @@ export default function OnboardingEmail() {
     navigate(`/onboarding/name?${out.toString()}`);
   }
 
-  return (
-    <div
-      className="min-h-[100dvh] flex flex-col"
-      style={{ background: T.gradient }}
-      data-testid="screen-onboarding-email"
-    >
-      <header
-        className="sticky top-0 z-20 backdrop-blur-md border-b"
-        style={{
-          backgroundColor: T.headerBg,
-          borderColor: T.headerBorder,
-          paddingTop: w ? "0px" : undefined,
-        }}
+  function handleClose() {
+    navigate("/");
+  }
+
+  if (w) {
+    return (
+      <div
+        className="min-h-[100dvh] flex flex-col"
+        style={{ background: T.gradient }}
+        data-testid="screen-onboarding-email"
       >
-        <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
-          <button
-            onClick={handleBack}
-            className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-transform"
-            style={{ backgroundColor: w ? OBW.backBtnBg : OB.backBtnBg }}
-            data-testid="button-email-back"
+        <header
+          className="sticky top-0 z-20 backdrop-blur-md border-b"
+          style={{ backgroundColor: T.headerBg, borderColor: T.headerBorder }}
+        >
+          <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
+            <button
+              onClick={handleBack}
+              className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-transform"
+              style={{ backgroundColor: OBW.backBtnBg }}
+              data-testid="button-email-back"
+            >
+              <ChevronLeft className="w-5 h-5" style={{ color: T.textSecondary }} />
+            </button>
+            <div className="flex-1 flex justify-center">
+              <HousAlertLogo size={28} />
+            </div>
+            <div className="w-10" />
+          </div>
+        </header>
+
+        <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-4 pb-[100px]">
+          <h1
+            className="text-[30px] font-semibold tracking-[-0.025em] mb-2"
+            style={{ color: T.text }}
+            data-testid="text-email-title"
           >
-            <ChevronLeft className="w-5 h-5" style={{ color: T.textSecondary }} />
+            {t("onboarding.email.title") || "Wat is je e-mailadres?"}
+          </h1>
+          <p className="text-[14px] mb-6 leading-relaxed" style={{ color: T.textSecondary }}>
+            {t("onboarding.email.subtitle") || "Hiernaartoe sturen we je woningmeldingen."}
+          </p>
+
+          <div>
+            <label className="text-[13px] font-medium mb-1.5 block" style={{ color: T.textSecondary }}>
+              {t("onboarding.email.label") || "E-mailadres"}
+            </label>
+            <div className="relative">
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#334855" }} />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={t("onboarding.email.placeholder") || "jouw@email.nl"}
+                className="w-full h-[48px] pl-12 pr-4 rounded-[12px] text-[16px] font-medium ha-field"
+                style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
+                autoFocus
+                data-testid="input-email"
+              />
+            </div>
+          </div>
+        </main>
+
+        <OBStickyBar websiteMode={w}>
+          <button
+            onClick={handleNext}
+            disabled={!isValidEmail(email)}
+            className="w-full h-[48px] rounded-[12px] text-[16px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50"
+            style={{ background: T.pink, boxShadow: isValidEmail(email) ? T.pinkShadow : "none" }}
+            data-testid="button-email-next"
+          >
+            {t("common.next") || "Volgende"}
           </button>
-          <div className="flex-1 flex justify-center">
-            <HousAlertLogo size={28} />
-          </div>
-          <div className="w-10" />
-        </div>
-      </header>
+        </OBStickyBar>
+      </div>
+    );
+  }
 
-      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-4 pb-[100px]">
-        <h1
-          className="text-[30px] font-semibold tracking-[-0.025em] mb-2"
-          style={{ color: T.text }}
-          data-testid="text-email-title"
-        >
-          {t("onboarding.email.title") || "Wie lautet deine E-Mail?"}
-        </h1>
-        <p className="text-[14px] mb-6 leading-relaxed" style={{ color: T.textSecondary }}>
-          {t("onboarding.email.subtitle") || "Hierhin senden wir deine Wohnungsalarme."}
-        </p>
-
-        <div>
-          <label className="text-[13px] font-medium mb-1.5 block" style={{ color: T.textSecondary }}>
-            {t("onboarding.email.label") || "E-Mail-Adresse"}
-          </label>
-          <div className="relative">
-            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#334855" }} />
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={t("onboarding.email.placeholder") || "deine@email.de"}
-              className={`w-full h-[48px] pl-12 pr-4 rounded-[12px] text-[16px] font-medium ${w ? "ha-field" : "ob-input"}`}
-              style={w ? { backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text } : undefined}
-              autoFocus
-              data-testid="input-email"
-            />
-          </div>
-        </div>
-      </main>
-
-      <OBStickyBar websiteMode={w}>
-        <button
-          onClick={handleNext}
-          disabled={!isValidEmail(email)}
-          className="w-full h-[48px] rounded-[12px] text-[16px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50"
-          style={{ background: T.pink, boxShadow: isValidEmail(email) ? T.pinkShadow : "none" }}
-          data-testid="button-email-next"
-        >
-          {t("common.next") || "Weiter"}
-        </button>
-      </OBStickyBar>
+  const emailFormContent = (
+    <div>
+      <label className="text-[13px] font-medium mb-1.5 block text-[#334855]">
+        {t("onboarding.email.label") || "E-mailadres"}
+      </label>
+      <div className="relative">
+        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder={t("onboarding.email.placeholder") || "jouw@email.nl"}
+          className="w-full h-[48px] pl-12 pr-4 rounded-[12px] border border-[#E5E7EB] bg-white text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+          autoFocus
+          data-testid="input-email"
+        />
+      </div>
     </div>
+  );
+
+  return (
+    <OnboardingFlowLayout
+      flowTitle="Account aanmaken"
+      currentStep={2}
+      totalSteps={3}
+      stepTitle={t("onboarding.email.title") || "Wat is je e-mailadres?"}
+      stepDescription={t("onboarding.email.subtitle") || "Hiernaartoe sturen we je woningmeldingen."}
+      onBack={handleBack}
+      onNext={handleNext}
+      onClose={handleClose}
+      nextLabel={t("common.next") || "Volgende"}
+      nextDisabled={!isValidEmail(email)}
+      backTestId="button-email-back"
+      nextTestId="button-email-next"
+      screenTestId="screen-onboarding-email"
+    >
+      {emailFormContent}
+    </OnboardingFlowLayout>
   );
 }

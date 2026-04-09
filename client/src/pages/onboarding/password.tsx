@@ -10,6 +10,7 @@ import { createSearchProfile } from "@/lib/search-profiles";
 import { useToast } from "@/hooks/use-toast";
 import { apiFetch } from "@/lib/api-base";
 import { OB, OBW, OBStickyBar, OBWebHeader, OBInfoBox, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
+import { OnboardingFlowLayout } from "@/components/onboarding-flow-layout";
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -427,151 +428,114 @@ export default function OnboardingPassword() {
     );
   }
 
-  return (
-    <div
-      className="min-h-[100dvh] flex flex-col"
-      style={{ background: T.gradient }}
-      data-testid="screen-onboarding-password"
-    >
-      <header
-        className="sticky top-0 z-20 backdrop-blur-md border-b"
-        style={{
-          backgroundColor: T.headerBg,
-          borderColor: T.headerBorder,
-        }}
-      >
-        <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
+  const passwordFormContent = (
+    <div className="flex flex-col gap-5">
+      <div>
+        <label className="text-[13px] font-medium mb-1.5 block text-[#334855]">
+          {t("onboarding.password.label") || "Wachtwoord"}
+        </label>
+        <div className="relative">
+          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
+          <input
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder={t("onboarding.password.placeholder") || "Minimaal 6 tekens"}
+            minLength={6}
+            className="w-full h-[48px] pl-12 pr-12 rounded-[12px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+            autoFocus
+            data-testid="input-password"
+          />
           <button
-            onClick={handleBack}
-            className="w-10 h-10 rounded-full flex items-center justify-center active:scale-95 transition-transform"
-            style={{ backgroundColor: OB.backBtnBg }}
-            data-testid="button-password-back"
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors text-[#334855]"
+            data-testid="button-toggle-password"
           >
-            <ChevronLeft className="w-5 h-5" style={{ color: T.textSecondary }} />
+            {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
           </button>
-          <div className="flex-1 flex justify-center">
-            <HousAlertLogo size={28} />
-          </div>
-          <div className="w-10" />
         </div>
-      </header>
+        {password.length > 0 && password.length < 6 && (
+          <p className="text-[12px] mt-1.5 text-ha-danger" data-testid="text-password-hint">
+            {t("onboarding.password.tooShort") || "Minimaal 6 tekens vereist"}
+          </p>
+        )}
+      </div>
 
-      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-4 pb-[100px]">
-        <h1
-          className="text-[30px] font-semibold tracking-[-0.025em] mb-2"
-          style={{ color: T.text }}
-          data-testid="text-password-title"
-        >
-          {t("onboarding.password.title") || "Wähle ein Passwort"}
-        </h1>
-        <p className="text-[14px] mb-6 leading-relaxed" style={{ color: T.textSecondary }}>
-          {t("onboarding.password.subtitle") || "Mindestens 6 Zeichen, damit dein Konto sicher ist."}
-        </p>
-
-        <div className="flex flex-col gap-6">
-          <div>
-            <label className="text-[13px] font-medium mb-1.5 block" style={{ color: T.textSecondary }}>
-              {t("onboarding.password.label") || "Passwort"}
-            </label>
-            <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#334855" }} />
-              <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder={t("onboarding.password.placeholder") || "Mindestens 6 Zeichen"}
-                minLength={6}
-                className="w-full h-[48px] pl-12 pr-12 rounded-[12px] text-[15px] font-medium ob-input"
-                autoFocus
-                data-testid="input-password"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors"
-                style={{ color: "#334855" }}
-                data-testid="button-toggle-password"
-              >
-                {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
-              </button>
-            </div>
-            {password.length > 0 && password.length < 6 && (
-              <p className="text-[12px] mt-1.5 text-ha-danger" data-testid="text-password-hint">
-                {t("onboarding.password.tooShort") || "Mindestens 6 Zeichen erforderlich"}
-              </p>
-            )}
-          </div>
-
-          {!showReferral ? (
-            <button
-              type="button"
-              onClick={() => setShowReferral(true)}
-              className="flex items-center gap-2 text-[13px] py-1 transition-colors"
-              style={{ color: T.textSecondary }}
-              data-testid="button-show-referral"
-            >
-              <Gift className="w-4 h-4" />
-              {t("referral.inputLabel") || "Empfehlungscode eingeben"}
-            </button>
-          ) : (
-            <div>
-              <label className="text-[13px] font-medium mb-1.5 block" style={{ color: T.textSecondary }}>
-                {t("referral.inputLabel") || "Empfehlungscode"}
-              </label>
-              <div className="relative">
-                <Gift className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#334855" }} />
-                <input
-                  type="text"
-                  placeholder={t("referral.inputPlaceholder") || "ABC123"}
-                  value={referralCode}
-                  onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-                  className="w-full h-[48px] pl-12 pr-4 rounded-[12px] text-[15px] font-medium ob-input"
-                  autoCapitalize="characters"
-                  data-testid="input-referral-code"
-                />
-              </div>
-              <p className="text-[12px] mt-1 ml-1" style={{ color: T.textMuted }}>
-                {t("referral.inputHelper") || "Optional"}
-              </p>
-            </div>
-          )}
-        </div>
-      </main>
-
-      <OBStickyBar>
+      {!showReferral ? (
         <button
-          onClick={handleCreateAccount}
-          disabled={!canSubmit}
-          className="w-full h-[48px] rounded-[12px] text-[16px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
-          style={{ background: T.pink, boxShadow: canSubmit ? T.pinkShadow : "none" }}
-          data-testid="button-create-account"
+          type="button"
+          onClick={() => setShowReferral(true)}
+          className="flex items-center gap-2 text-[13px] py-1 transition-colors text-[#334855]"
+          data-testid="button-show-referral"
         >
-          {loading ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              {t("onboarding.password.creating") || "Konto wird erstellt..."}
-            </>
-          ) : (
-            t("onboarding.password.cta") || "Konto erstellen"
-          )}
+          <Gift className="w-4 h-4" />
+          {t("referral.inputLabel") || "Aanbevelingscode invoeren"}
         </button>
-
-        <p className="text-center text-[12px] mt-3 leading-relaxed" style={{ color: T.textMuted }}>
-          {t("onboarding.password.terms") || "Mit der Registrierung akzeptierst du unsere Nutzungsbedingungen und Datenschutzrichtlinie."}
-        </p>
-
-        <p className="text-center text-[14px] mt-3 pb-1" style={{ color: T.textSecondary }}>
-          {t("auth.signup.hasAccount") || "Hast du schon ein Konto?"}{" "}
-          <button
-            onClick={() => navigate("/")}
-            className="font-medium hover:underline"
-            style={{ color: OB.pink }}
-            data-testid="link-login"
-          >
-            {t("auth.signup.loginLink") || "Anmelden"}
-          </button>
-        </p>
-      </OBStickyBar>
+      ) : (
+        <div>
+          <label className="text-[13px] font-medium mb-1.5 block text-[#334855]">
+            {t("referral.inputLabel") || "Aanbevelingscode"}
+          </label>
+          <div className="relative">
+            <Gift className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
+            <input
+              type="text"
+              placeholder={t("referral.inputPlaceholder") || "ABC123"}
+              value={referralCode}
+              onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+              className="w-full h-[48px] pl-12 pr-4 rounded-[12px] border border-[#E5E7EB] bg-white text-[15px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+              autoCapitalize="characters"
+              data-testid="input-referral-code"
+            />
+          </div>
+          <p className="text-[12px] mt-1 ml-1 text-[#334855]">
+            {t("referral.inputHelper") || "Optioneel"}
+          </p>
+        </div>
+      )}
     </div>
+  );
+
+  const footerTerms = (
+    <div className="text-center">
+      <p className="text-[12px] leading-relaxed text-[#334855]">
+        {t("onboarding.password.terms") || "Met registratie accepteer je onze voorwaarden en privacybeleid."}
+      </p>
+      <p className="text-[14px] mt-2 text-[#334855]">
+        {t("auth.signup.hasAccount") || "Heb je al een account?"}{" "}
+        <button
+          onClick={() => navigate("/")}
+          className="font-medium hover:underline text-ha-primary"
+          data-testid="link-login"
+        >
+          {t("auth.signup.loginLink") || "Inloggen"}
+        </button>
+      </p>
+    </div>
+  );
+
+  return (
+    <OnboardingFlowLayout
+      flowTitle="Account aanmaken"
+      currentStep={3}
+      totalSteps={3}
+      stepTitle={t("onboarding.password.title") || "Kies een wachtwoord"}
+      stepDescription={t("onboarding.password.subtitle") || "Minimaal 6 tekens om je account te beveiligen."}
+      onBack={handleBack}
+      onNext={handleCreateAccount}
+      onClose={handleClose}
+      nextLabel={loading
+        ? (t("onboarding.password.creating") || "Wordt aangemaakt...")
+        : (t("onboarding.password.cta") || "Account aanmaken")}
+      nextDisabled={!canSubmit}
+      saving={loading}
+      footerExtra={footerTerms}
+      backTestId="button-password-back"
+      nextTestId="button-create-account"
+      screenTestId="screen-onboarding-password"
+    >
+      {passwordFormContent}
+    </OnboardingFlowLayout>
   );
 }
