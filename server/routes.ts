@@ -1618,6 +1618,7 @@ export async function registerRoutes(
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
       const status = await getSubscriptionStatus(user.id);
+      log(`[sub-status] user=${user.id} → DB status=${status.status}, isActive=${status.isActive}, isTrial=${status.isTrial}, isExpired=${status.isExpired}, cancelAtPeriodEnd=${status.cancelAtPeriodEnd}, plan=${status.plan}`);
       return res.json(status);
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
@@ -2318,6 +2319,45 @@ export async function registerRoutes(
           const sub = event.data.object as any;
           log(`[stripe-webhook] subscription.deleted — subId=${sub.id}, customerId=${sub.customer}`);
           await updateSubscriptionStatus(sub.id, "canceled");
+          break;
+        }
+
+        case "invoice.paid": {
+          const invoice = event.data.object as any;
+          const stripeSubId = invoice.subscription as string;
+          const stripeCustomerId = invoice.customer as string;
+          log(`[stripe-webhook] invoice.paid — subId=${stripeSubId}, customerId=${stripeCustomerId}, amount=${invoice.amount_paid}`);
+          if (stripeSubId) {
+            const sub = await stripe.subscriptions.retrieve(stripeSubId);
+            log(`[stripe-webhook] invoice.paid — Stripe sub status after payment: ${sub.status}`);
+            if (sub.status === "active") {
+              const rawEnd = (sub as any).current_period_end;
+              const periodEnd = rawEnd && rawEnd > 0
+                ? new Date(rawEnd * 1000)
+                : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+              log(`[stripe-webhook] invoice.paid DB UPDATE: sub=${stripeSubId} → active, periodEnd=${periodEnd.toISOString()}`);
+              await updateSubscriptionStatus(stripeSubId, "active", periodEnd);
+            }
+          }
+          break;
+        }
+
+        case "invoice.payment_failed": {
+          const invoice = event.data.object as any;
+          const stripeSubId = invoice.subscription as string;
+          const stripeCustomerId = invoice.customer as string;
+          log(`[stripe-webhook] invoice.payment_failed — subId=${stripeSubId}, customerId=${stripeCustomerId}, attempt=${invoice.attempt_count}`);
+          if (stripeSubId) {
+            const sub = await stripe.subscriptions.retrieve(stripeSubId);
+            log(`[stripe-webhook] invoice.payment_failed — Stripe sub status: ${sub.status}`);
+            if (sub.status === "past_due") {
+              log(`[stripe-webhook] invoice.payment_failed DB UPDATE: sub=${stripeSubId} → expired (past_due)`);
+              await updateSubscriptionStatus(stripeSubId, "expired");
+            } else if (sub.status === "canceled" || sub.status === "unpaid") {
+              log(`[stripe-webhook] invoice.payment_failed DB UPDATE: sub=${stripeSubId} → canceled`);
+              await updateSubscriptionStatus(stripeSubId, "canceled");
+            }
+          }
           break;
         }
 
@@ -5158,9 +5198,24 @@ export async function registerRoutes(
 
       log(`[admin-portal] User detail response profile.phone=${profile?.phone} profile.occupation=${profile?.occupation} profile.first_name=${profile?.first_name}`);
 
+      let subscription = subRes.data || null;
+      if (subscription) {
+        const now = new Date();
+        const s = subscription as any;
+        const isTrial = s.status === "trial" && s.trial_ends_at && new Date(s.trial_ends_at) > now;
+        const isActiveStatus = s.status === "active" && (!s.current_period_ends_at || new Date(s.current_period_ends_at) > now);
+        const canceledButActive = s.status === "canceled" && s.current_period_ends_at && new Date(s.current_period_ends_at) > now;
+        const hasAccess = isTrial || isActiveStatus || canceledButActive;
+        const computedStatus = hasAccess
+          ? (isTrial ? "trial" : (canceledButActive ? "canceled" : "active"))
+          : "expired";
+        subscription = { ...s, computedStatus, hasAccess };
+        log(`[admin-portal] User detail sub: DB status=${s.status}, computedStatus=${computedStatus}, hasAccess=${hasAccess}`);
+      }
+
       res.json({
         profile,
-        subscription: subRes.data || null,
+        subscription,
         searchProfiles: searchProfilesRes.data || [],
         recentMatches: recentMatchesRes.rows,
         cancellationFeedback,
@@ -5207,14 +5262,26 @@ export async function registerRoutes(
         }
       }
 
+      const now = new Date();
       const enriched = (data || []).map((s: any) => {
         const profile = userMap[s.user_id];
         const userName = profile
           ? `${profile.first_name || ""} ${profile.last_name || ""}`.trim() || "Unknown"
           : "Unknown";
-        return { ...s, userName };
+
+        const isTrial = s.status === "trial" && s.trial_ends_at && new Date(s.trial_ends_at) > now;
+        const isActiveStatus = s.status === "active" && (!s.current_period_ends_at || new Date(s.current_period_ends_at) > now);
+        const canceledButActive = s.status === "canceled" && s.current_period_ends_at && new Date(s.current_period_ends_at) > now;
+        const hasAccess = isTrial || isActiveStatus || canceledButActive;
+
+        const computedStatus = hasAccess
+          ? (isTrial ? "trial" : (canceledButActive ? "canceled" : "active"))
+          : "expired";
+
+        return { ...s, userName, computedStatus, hasAccess };
       });
 
+      log(`[admin-portal] Subscriptions: returning ${enriched.length} rows, computed statuses: ${JSON.stringify(enriched.reduce((acc: Record<string, number>, s: any) => { acc[s.computedStatus] = (acc[s.computedStatus] || 0) + 1; return acc; }, {}))}`);
       res.json({ subscriptions: enriched, total: count ?? 0, page, limit });
     } catch (err: any) {
       log(`[admin-portal] Subscriptions error: ${err.message}`);

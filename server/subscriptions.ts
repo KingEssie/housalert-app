@@ -97,6 +97,8 @@ export async function getSubscriptionStatus(userId: string): Promise<Subscriptio
   const isExpired = !hasAccess;
   const cancelAtPeriodEnd = row.status === "canceled" || row.cancel_at_period_end === true;
 
+  log(`[getSubscriptionStatus] user=${userId} DB row: status=${row.status}, trial_ends=${row.trial_ends_at}, period_ends=${row.current_period_ends_at}, cancel_at_period_end=${row.cancel_at_period_end} → computed: isTrial=${isTrial}, isActive=${hasAccess}, isExpired=${isExpired}`);
+
   return {
     status: row.status,
     plan: row.plan,

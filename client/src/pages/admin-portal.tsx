@@ -986,7 +986,10 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
         <div className={`${CARD} p-5`}>
           <h3 className="text-[16px] font-bold text-[#111] mb-3">Subscription</h3>
           <div className="space-y-2.5 text-[13px]">
-            <div className="flex justify-between items-center"><span className="text-[#334855]">Status</span><StatusBadge status={subscription.status} /></div>
+            <div className="flex justify-between items-center"><span className="text-[#334855]">Status</span><StatusBadge status={subscription.computedStatus || subscription.status} /></div>
+            {subscription.computedStatus && subscription.computedStatus !== subscription.status && (
+              <div className="flex justify-between items-center"><span className="text-[10px] text-orange-500">DB raw: {subscription.status}</span></div>
+            )}
             <div className="flex justify-between"><span className="text-[#334855]">Plan</span><span className="font-medium">{subscription.plan || "—"}</span></div>
             <div className="flex justify-between"><span className="text-[#334855]">Trial ends</span><span className="font-medium">{subscription.trial_ends_at ? new Date(subscription.trial_ends_at).toLocaleDateString() : "—"}</span></div>
             <div className="flex justify-between"><span className="text-[#334855]">Period ends</span><span className="font-medium">{subscription.current_period_ends_at ? new Date(subscription.current_period_ends_at).toLocaleDateString() : "—"}</span></div>
@@ -1233,8 +1236,11 @@ function SubscriptionsTab() {
                   <p className="text-[13px] font-semibold text-[#111] truncate">{s.userName || "Unknown"}</p>
                   <p className="text-[10px] text-[#334855]">{s.user_id?.substring(0, 8)}...</p>
                 </div>
-                <StatusBadge status={s.status} />
+                <StatusBadge status={s.computedStatus || s.status} />
               </div>
+              {s.computedStatus && s.computedStatus !== s.status && (
+                <p className="text-[10px] text-orange-500 mb-1">DB: {s.status} → Computed: {s.computedStatus}</p>
+              )}
               <div className="flex items-center gap-3 text-[11px] text-[#334855]">
                 <span>{s.plan || "—"}</span>
                 <span>{s.created_at ? new Date(s.created_at).toLocaleDateString() : ""}</span>
