@@ -431,25 +431,11 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   ),
   tip_finances: () => (
     <TipBody>
-      <div className="rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
-        <div className="px-5 py-4">
-          <p className="text-[13px] font-semibold text-[#6B7280] uppercase tracking-wide mb-3">Vuistregel</p>
-          <p className="text-[22px] font-bold text-[#111111] mb-1">3× de kale huur</p>
-          <p className="text-[14px] text-[#6B7280]">Minimaal netto maandinkomen</p>
-        </div>
-        <div className="border-t border-[#F3F4F6] px-5 py-3.5 bg-[#FAFAFA]">
-          <p className="text-[14px] text-[#374151]">
-            <span className="text-[#6B7280]">Voorbeeld:</span> Kaltmiete €800 → netto inkomen €2.400+
-          </p>
-        </div>
-      </div>
-      <p className="text-[14px] text-[#6B7280] leading-relaxed">In steden als München, Berlijn of Frankfurt kan dit oplopen tot 3,5× – 4×.</p>
-      <TipSection title="Check dit" items={[
-        "Reageer niet op woningen boven je budget",
-        "Reken met Kaltmiete + Nebenkosten (bijkomende kosten)",
-        "Houd rekening met een Kaution van 2–3 maanden huur",
-      ]} />
-      <TipHighlight text="Stem je zoekfilters af op wat je echt kunt betalen." />
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">De inkomenseis in Duitsland ligt meestal tussen 3x en 3,5x de kale huurprijs. In populaire steden kan dit zelfs oplopen tot 4x.</p>
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Met andere woorden: voor een woning van €1.000 moet je inkomen meestal minimaal €3.000 – €4.000 bruto per maand zijn.</p>
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Bij de meeste advertenties staat de inkomenseis vermeld, zodat je snel kunt zien of een woning haalbaar is.</p>
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Reageren op woningen boven jouw budget heeft vaak geen zin. Verhuurders selecteren streng en kiezen kandidaten die direct aan de eisen voldoen.</p>
+      <p className="text-[14px] text-[#6B7280] leading-relaxed">Bepaal daarom vooraf tot welke huurprijs jij realistisch kunt reageren.</p>
     </TipBody>
   ),
   tip_landlord_accounts: () => (
