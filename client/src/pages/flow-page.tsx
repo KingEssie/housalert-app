@@ -39,6 +39,7 @@ import {
   Building,
   Wallet,
   Sparkles,
+  ChevronDown,
 } from "lucide-react";
 
 const ICON_MAP: Record<string, React.ComponentType<LucideProps>> = {
@@ -403,6 +404,38 @@ function TipCta({ label, href }: { label: string; href: string }) {
   );
 }
 
+type RegionData = { name: string; platforms: string[] };
+
+function RegionAccordion({ regions }: { regions: RegionData[] }) {
+  const [openIdx, setOpenIdx] = useState<number | null>(null);
+  return (
+    <div className="flex flex-col gap-0 rounded-2xl border border-[#E5E7EB] overflow-hidden bg-white">
+      {regions.map((r, i) => (
+        <div key={r.name} className={i > 0 ? "border-t border-[#F3F4F6]" : ""}>
+          <button
+            onClick={() => setOpenIdx(openIdx === i ? null : i)}
+            className="w-full flex items-center justify-between px-5 py-3.5 text-left"
+            data-testid={`region-toggle-${i}`}
+          >
+            <span className="text-[15px] font-semibold text-[#111111]">{r.name}</span>
+            <ChevronDown className={`w-4 h-4 text-[#9CA3AF] transition-transform ${openIdx === i ? "rotate-180" : ""}`} />
+          </button>
+          {openIdx === i && (
+            <ul className="px-5 pb-4 flex flex-col gap-1.5">
+              {r.platforms.map((p) => (
+                <li key={p} className="flex items-start gap-2 text-[14px] text-[#6B7280] leading-snug">
+                  <span className="text-[#D1D5DB] mt-1.5 text-[8px]">●</span>
+                  <span>{p}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   tip_documents: () => (
     <TipBody>
@@ -440,19 +473,64 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   ),
   tip_landlord_accounts: () => (
     <TipBody>
-      <p className="text-[14px] text-[#6B7280]">De meeste woningen in Duitsland worden aangeboden via een paar grote platforms. Zonder account mis je het meeste aanbod.</p>
-      <TipSection title="Maak accounts aan" items={[
-        "ImmoScout24 (grootste platform)",
-        "Immowelt",
-        "WG-Gesucht (kamers & gedeelde woningen)",
-        "eBay Kleinanzeigen (nu: Kleinanzeigen)",
+      <p className="text-[14px] text-[#6B7280]">Meer kans maken op woningen van populaire verhuurders in jouw regio? Maak dan alvast een account aan, zodat je nog sneller kunt reageren op nieuwe woningen.</p>
+      <RegionAccordion regions={[
+        { name: "Berlijn", platforms: [
+          "ImmobilienScout24 (freemium – premium versnelt reageren)",
+          "Immowelt (gratis)",
+          "Immonet (gratis)",
+          "WG-Gesucht (gratis – kamers & gedeeld wonen)",
+          "eBay Kleinanzeigen (gratis – veel particulier aanbod)",
+          "Gewobag (grote verhuurder – Berlijn)",
+          "Degewo (grote verhuurder – Berlijn)",
+          "HOWOGE (grote verhuurder – Berlijn)",
+        ]},
+        { name: "München", platforms: [
+          "ImmobilienScout24 (freemium – premium versnelt reageren)",
+          "Immowelt (gratis)",
+          "Immonet (gratis)",
+          "WG-Gesucht (gratis – kamers & gedeeld wonen)",
+          "eBay Kleinanzeigen (gratis – veel particulier aanbod)",
+          "Vonovia (grote verhuurder)",
+          "GWG München (grote verhuurder)",
+        ]},
+        { name: "Hamburg", platforms: [
+          "ImmobilienScout24 (freemium – premium versnelt reageren)",
+          "Immowelt (gratis)",
+          "Immonet (gratis)",
+          "WG-Gesucht (gratis – kamers & gedeeld wonen)",
+          "eBay Kleinanzeigen (gratis – veel particulier aanbod)",
+          "Vonovia (grote verhuurder)",
+          "SAGA (grote verhuurder – Hamburg)",
+        ]},
+        { name: "Frankfurt", platforms: [
+          "ImmobilienScout24 (freemium – premium versnelt reageren)",
+          "Immowelt (gratis)",
+          "Immonet (gratis)",
+          "WG-Gesucht (gratis – kamers & gedeeld wonen)",
+          "eBay Kleinanzeigen (gratis – veel particulier aanbod)",
+          "Vonovia (grote verhuurder)",
+          "ABG Frankfurt (grote verhuurder)",
+        ]},
+        { name: "Keulen", platforms: [
+          "ImmobilienScout24 (freemium – premium versnelt reageren)",
+          "Immowelt (gratis)",
+          "Immonet (gratis)",
+          "WG-Gesucht (gratis – kamers & gedeeld wonen)",
+          "eBay Kleinanzeigen (gratis – veel particulier aanbod)",
+          "Vonovia (grote verhuurder)",
+          "LEG Immobilien (grote verhuurder)",
+        ]},
+        { name: "Stuttgart", platforms: [
+          "ImmobilienScout24 (freemium – premium versnelt reageren)",
+          "Immowelt (gratis)",
+          "Immonet (gratis)",
+          "WG-Gesucht (gratis – kamers & gedeeld wonen)",
+          "eBay Kleinanzeigen (gratis – veel particulier aanbod)",
+          "Vonovia (grote verhuurder)",
+          "SWSG (grote verhuurder – Stuttgart)",
+        ]},
       ]} />
-      <TipSection title="Direct instellen" items={[
-        "Zet e-mailmeldingen aan voor nieuwe woningen",
-        "Vul je profiel volledig in",
-        "Upload je documenten alvast (SCHUFA, loonstroken)",
-      ]} />
-      <TipHighlight text="De eerste reactie wint vaak. Zorg dat je klaarstaat." />
     </TipBody>
   ),
   tip_facebook_groups: () => (

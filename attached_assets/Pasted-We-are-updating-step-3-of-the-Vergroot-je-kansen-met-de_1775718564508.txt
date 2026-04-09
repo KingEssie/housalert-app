@@ -1,0 +1,100 @@
+We are updating step 3 of the “Vergroot je kansen met deze tips” flow.
+
+GOAL:
+Replace the content of step 3 with a Germany-specific version, while keeping the exact same structure and interaction as Rentbird:
+- intro text
+- expandable region list
+- per region a list of platforms with links + notes
+
+IMPORTANT:
+- Write in DUTCH
+- Keep UI and interaction identical
+- Keep dropdown per region
+- Do NOT change navigation or logic
+- Do NOT redesign anything
+- Only replace content
+
+==================================================
+STEP 3 TITLE
+==================================================
+
+Use this title:
+
+Creëer accounts bij populaire verhuurders
+
+==================================================
+STEP 3 INTRO
+==================================================
+
+Use this intro:
+
+Meer kans maken op woningen van populaire verhuurders in jouw regio? Maak dan alvast een account aan, zodat je nog sneller kunt reageren op nieuwe woningen.
+
+==================================================
+STEP 3 CONTENT STRUCTURE
+==================================================
+
+Replace "Provincie ..." with German regions / cities.
+
+Use:
+
+Berlijn
+München
+Hamburg
+Frankfurt
+Keulen
+Stuttgart
+
+Each should be expandable like in Rentbird.
+
+==================================================
+PLATFORMS PER REGION
+==================================================
+
+Use these platforms (same for most regions):
+
+- ImmobilienScout24 (grootste platform)
+- Immowelt
+- Immonet
+- WG-Gesucht (voor kamers / gedeeld wonen)
+- eBay Kleinanzeigen (veel particulier aanbod)
+- Vonovia (grote verhuurder)
+- LEG Immobilien (grote verhuurder)
+- Gewobag (vooral Berlijn)
+- Degewo (Berlijn)
+- HOWOGE (Berlijn)
+
+==================================================
+FORMAT PER ITEM
+==================================================
+
+Use format like Rentbird:
+
+- Platformnaam (gratis / betaald / type)
+
+Examples:
+
+- ImmobilienScout24 (freemium – premium versnelt reageren)
+- Immowelt (gratis)
+- WG-Gesucht (gratis – kamers & gedeeld wonen)
+- eBay Kleinanzeigen (gratis – veel particulier aanbod)
+- Vonovia (grote verhuurder)
+
+==================================================
+FORMATTING RULES
+==================================================
+
+- Keep bullet list style
+- Keep it scannable
+- No long descriptions
+- Keep it clean for mobile
+- Same visual density as Rentbird
+
+==================================================
+OUTPUT
+==================================================
+
+After finishing, return:
+1. which file(s) were changed
+2. confirmation that only step 3 content was updated
+3. confirmation that structure, dropdown behavior, and navigation are unchanged
