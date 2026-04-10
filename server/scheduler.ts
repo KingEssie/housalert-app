@@ -2,7 +2,7 @@ import { log } from "./log";
 import { runAllIngesters, OverlapError } from "./ingesters";
 import { persistIngestionRun } from "./admin";
 import { cleanupStaleFetchRuns } from "./user-matches";
-import { recoverUndeliveredMatches, BUDDY_EMAILS_GLOBAL_KILL_SWITCH } from "./notifications/buffer";
+import { recoverUndeliveredMatches } from "./notifications/buffer";
 import { checkExpoReceipts } from "./notifications/expo-push";
 import { updateStalenessStatuses } from "./listing-status";
 import { runImageBackfill, ensureBackfillRunsTable, ensureTrackingTable, isBackfillEnabled, isBackfillRunning } from "./image-backfill";
@@ -70,10 +70,6 @@ export function getNextRun() {
 }
 
 export async function startScheduler() {
-  if (BUDDY_EMAILS_GLOBAL_KILL_SWITCH) {
-    log(`[SYSTEM] ████ BUDDY EMAIL KILL SWITCH ACTIVE ████ — All buddy emails globally disabled`, "scheduler");
-  }
-
   const cleaned = await cleanupStaleFetchRuns();
   if (cleaned > 0) {
     log(`[scheduler] Cleaned up ${cleaned} stale fetch runs from previous server`, "scheduler");

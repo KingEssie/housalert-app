@@ -3407,43 +3407,19 @@ export async function registerRoutes(
         }
       }
 
-      let oldBuddyEmail: string | null = null;
       if (updates.search_buddy_email !== undefined) {
-        try {
-          const { rows: oldRows } = await pgPool.query(
-            "SELECT search_buddy_email FROM user_profile_data WHERE user_id = $1 LIMIT 1",
-            [user.id]
-          );
-          oldBuddyEmail = oldRows[0]?.search_buddy_email?.trim() || null;
-        } catch {}
-
-        const buddyEmail = typeof updates.search_buddy_email === "string" ? updates.search_buddy_email.trim() : "";
-        const explicitlyDisabled = updates.search_buddy_enabled === false;
-
-        if (buddyEmail && !explicitlyDisabled) {
-          if (updates.search_buddy_enabled === undefined) {
-            updates.search_buddy_enabled = true;
-          }
-          updates.search_buddy_status = "active";
-          updates.search_buddy_removed_at = null;
-          console.log(`[profile-data] Buddy ACTIVATED for user ${user.id.substring(0, 8)}... (email: ${buddyEmail}, status→active)`);
-        } else {
-          updates.search_buddy_email = buddyEmail || null;
-          updates.search_buddy_enabled = false;
-          updates.search_buddy_status = "removed";
-          updates.search_buddy_removed_at = new Date().toISOString();
-          console.log(`[profile-data] Buddy REMOVED for user ${user.id.substring(0, 8)}... (status→removed, removed_at=${updates.search_buddy_removed_at}${explicitlyDisabled ? ", reason=explicitly_disabled" : ", reason=email_cleared"})`);
-        }
+        delete updates.search_buddy_email;
+        console.log(`[profile-data] IGNORED legacy search_buddy_email field for user ${user.id.substring(0, 8)}... — use V2 buddy system`);
       }
-      if (updates.search_buddy_enabled !== undefined && updates.search_buddy_email === undefined) {
-        if (updates.search_buddy_enabled === false) {
-          updates.search_buddy_status = "removed";
-          updates.search_buddy_removed_at = new Date().toISOString();
-          updates.search_buddy_email = null;
-          console.log(`[profile-data] Buddy DISABLED/REMOVED for user ${user.id.substring(0, 8)}...: search_buddy_enabled=false, email→null, status→removed`);
-        } else {
-          console.log(`[profile-data] Buddy toggle changed for user ${user.id.substring(0, 8)}...: search_buddy_enabled=${updates.search_buddy_enabled}`);
-        }
+      if (updates.search_buddy_enabled !== undefined) {
+        delete updates.search_buddy_enabled;
+        console.log(`[profile-data] IGNORED legacy search_buddy_enabled field for user ${user.id.substring(0, 8)}... — use V2 buddy system`);
+      }
+      if (updates.search_buddy_status !== undefined) {
+        delete updates.search_buddy_status;
+      }
+      if (updates.search_buddy_removed_at !== undefined) {
+        delete updates.search_buddy_removed_at;
       }
 
       if (Object.keys(updates).length === 0) {

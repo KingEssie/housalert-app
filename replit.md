@@ -153,11 +153,12 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **Notification pipeline**: V2 buddy emails sent via `getOwnerBuddyRelation()` in `server/notifications/buffer.ts`
 - **Admin portal**: User list shows role badges (Owner/Buddy/O+B). User detail view shows diagnostics panel with role, buddy connections, match/email stats, hasAccess.
 
-### Legacy Buddy System (DEPRECATED)
-- **Fields**: `search_buddy_email`, `search_buddy_enabled`, `search_buddy_status` in `user_profile_data`
-- **Status**: DEPRECATED — `getSearchBuddyInfo()` and `cleanupStaleBuddyData()` return null/0 immediately
-- **V2 system handles all buddy email/push sending** — legacy email forwarding disabled to prevent duplicates
-- **Frontend**: Some UI pages still reference `search_buddy_email` for display/edit (dashboard, profile-edit, settings, onboarding/setup). These are safe but should be migrated to V2 in a future cleanup.
+### Legacy Buddy System (FULLY REMOVED)
+- **DB fields**: `search_buddy_email`, `search_buddy_enabled`, `search_buddy_status` columns still exist in `user_profile_data` but are **never written** — `PUT /api/profile-data` silently strips these fields
+- **Email sending code**: All legacy buddy email functions (`getSearchBuddyInfo`, `canBuddyReceiveMatches`, `shouldSendBuddyEmail`, `sendBuddyEmail`, `BUDDY_EMAILS_GLOBAL_KILL_SWITCH`) are fully deleted from `buffer.ts`
+- **`cleanupStaleBuddyData()`**: Still exported (called from server/index.ts) but returns 0 immediately (no-op)
+- **The ONLY active email/push path for buddies** is the V2 system via `getOwnerBuddyRelation()` in flush/backfill/recovery, which looks up buddy email from Supabase Auth (not from any DB field)
+- **Frontend**: Some UI pages still reference `search_buddy_email` for display. These are read-only (writes are stripped server-side). Should be migrated to V2 display in a future cleanup.
 - **Admin portal**: Legacy buddy email shown with "deprecated" amber warning in user diagnostics
 
 ## Referral System

@@ -1,5 +1,5 @@
 import { log } from "../log";
-import { sendBatchMatchAlert, getBuddyUnsubscribeUrl } from "../email";
+import { sendBatchMatchAlert } from "../email";
 import { getSubscriptionStatus } from "../subscriptions";
 import { sendMatchPushNotifications, type PushMatchListing } from "./push";
 import { sendExpoMatchPush, type ExpoMatchListing } from "./expo-push";
@@ -115,130 +115,6 @@ function sortBufferedMatches(listings: BufferedMatch[]): BufferedMatch[] {
   });
 }
 
-type BuddyStatus = "pending" | "active" | "revoked" | "removed" | "expired" | "revoked_by_buddy";
-
-interface BuddyInfo {
-  email: string;
-  enabled: boolean;
-  status: BuddyStatus;
-}
-
-async function getSearchBuddyInfo(userId: string): Promise<BuddyInfo | null> {
-  log(`[BUDDY INFO DEPRECATED] userId=${userId.substring(0, 8)}... — legacy search_buddy_email lookup skipped (V2 buddy system is active)`);
-  return null;
-}
-
-interface BuddyEligibility {
-  eligible: boolean;
-  reason: string;
-  buddyInfo: BuddyInfo | null;
-}
-
-interface ShouldSendBuddyEmailParams {
-  userId: string;
-  mainUserEmail: string;
-  mainUserEmailEnabled: boolean;
-  buddyInfo: BuddyInfo | null;
-  subStatus: import("../subscriptions").SubscriptionStatus;
-}
-
-function shouldSendBuddyEmail(params: ShouldSendBuddyEmailParams): { send: boolean; reason: string } {
-  const { userId, mainUserEmail, mainUserEmailEnabled, buddyInfo, subStatus } = params;
-  const uid = userId.substring(0, 8);
-
-  if (!buddyInfo) {
-    log(`[BUDDY EMAIL CHECK] userId=${uid}... buddyExists=false → RESULT: SKIP (reason: no buddy email)`);
-    return { send: false, reason: "no buddy email" };
-  }
-
-  if (buddyInfo.status !== "active") {
-    log(`[BUDDY EMAIL CHECK] userId=${uid}... buddyStatus=${buddyInfo.status} → RESULT: SKIP (reason: buddy not active)`);
-    return { send: false, reason: `buddy status is '${buddyInfo.status}', not 'active'` };
-  }
-
-  if (!buddyInfo.enabled) {
-    log(`[BUDDY EMAIL CHECK] userId=${uid}... buddyEnabled=false → RESULT: SKIP (reason: feature disabled)`);
-    return { send: false, reason: "feature disabled" };
-  }
-
-  if (!buddyInfo.email || buddyInfo.email.trim().length === 0) {
-    log(`[BUDDY EMAIL CHECK] userId=${uid}... buddyEmail=empty → RESULT: SKIP (reason: no buddy email)`);
-    return { send: false, reason: "no buddy email" };
-  }
-
-  if (buddyInfo.email.toLowerCase() === mainUserEmail.toLowerCase()) {
-    log(`[BUDDY EMAIL CHECK] userId=${uid}... buddyEmail=sameAsMain → RESULT: SKIP (reason: duplicate)`);
-    return { send: false, reason: "duplicate" };
-  }
-
-  const hasActiveTrial = subStatus.isTrial;
-  const hasActivePaid = subStatus.isActive && subStatus.status === "active";
-  const canceledButStillActive = subStatus.status === "canceled" && !subStatus.isExpired;
-
-  if (!hasActiveTrial && !hasActivePaid && !canceledButStillActive) {
-    log(`[BUDDY EMAIL CHECK] userId=${uid}... subscription=${subStatus.status} → RESULT: SKIP (reason: no subscription)`);
-    return { send: false, reason: "no subscription" };
-  }
-
-  const entitlement = hasActiveTrial ? "trial" : hasActivePaid ? "paid" : "canceled-but-active";
-  log(`[BUDDY EMAIL CHECK] userId=${uid}... mainEmailToggle=${mainUserEmailEnabled} subscription=${entitlement} buddyStatus=active buddyEmail=${buddyInfo.email} → RESULT: SEND (buddy is independent of main user email toggle)`);
-  return { send: true, reason: entitlement };
-}
-
-async function canBuddyReceiveMatches(
-  userId: string,
-  prefetchedSubStatus?: import("../subscriptions").SubscriptionStatus,
-  mainUserEmailEnabled?: boolean,
-  mainUserEmail?: string
-): Promise<BuddyEligibility> {
-  if (BUDDY_EMAILS_GLOBAL_KILL_SWITCH) {
-    log(`[BUDDY EMAIL BLOCKED] userId=${userId.substring(0, 8)}... reason=GLOBAL_KILL_SWITCH — canBuddyReceiveMatches forced ineligible`);
-    return { eligible: false, reason: "GLOBAL_KILL_SWITCH", buddyInfo: null };
-  }
-
-  const buddyInfo = await getSearchBuddyInfo(userId);
-
-  if (!buddyInfo) {
-    return { eligible: false, reason: "no buddy configured", buddyInfo: null };
-  }
-
-  if (buddyInfo.status !== "active") {
-    log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy EXCLUDED: status is '${buddyInfo.status}', not 'active'`);
-    return { eligible: false, reason: `buddy status '${buddyInfo.status}'`, buddyInfo };
-  }
-
-  if (!buddyInfo.enabled) {
-    return { eligible: false, reason: "feature disabled", buddyInfo };
-  }
-
-  if (mainUserEmail && buddyInfo.email.toLowerCase() === mainUserEmail.toLowerCase()) {
-    log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy EXCLUDED: same email as main user`);
-    return { eligible: false, reason: "same email as main user", buddyInfo };
-  }
-
-  const subStatus = prefetchedSubStatus ?? await getSubscriptionStatus(userId);
-  const hasActiveTrial = subStatus.isTrial;
-  const hasActivePaid = subStatus.isActive && subStatus.status === "active";
-  const canceledButStillActive = subStatus.status === "canceled" && !subStatus.isExpired;
-
-  if (hasActiveTrial) {
-    log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy INCLUDED: active trial (mainEmail=ON)`);
-    return { eligible: true, reason: "active trial", buddyInfo };
-  }
-
-  if (hasActivePaid) {
-    log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy INCLUDED: active paid subscription (mainEmail=ON)`);
-    return { eligible: true, reason: "active paid subscription", buddyInfo };
-  }
-
-  if (canceledButStillActive) {
-    log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy INCLUDED: canceled but still in paid period (mainEmail=ON)`);
-    return { eligible: true, reason: "canceled but still in paid period", buddyInfo };
-  }
-
-  log(`[BUDDY] userId=${userId.substring(0, 8)}... buddy EXCLUDED: no active entitlement (status=${subStatus.status})`);
-  return { eligible: false, reason: `no active entitlement (status=${subStatus.status})`, buddyInfo };
-}
 
 export async function getUserLanguage(userId: string): Promise<import("../i18n").ServerLocale> {
   try {
@@ -256,74 +132,7 @@ export async function getUserLanguage(userId: string): Promise<import("../i18n")
   return "en";
 }
 
-export const BUDDY_EMAILS_GLOBAL_KILL_SWITCH = false;
 export const EMAIL_TEST_MODE = false;
-
-async function sendBuddyEmail(
-  userId: string,
-  mainUserEmail: string,
-  buddyInfo: BuddyInfo,
-  capped: BufferedMatch[],
-  context: string,
-  lang: import("../i18n").ServerLocale = "en",
-  mainUserEmailEnabled: boolean = true,
-  subStatus?: import("../subscriptions").SubscriptionStatus
-): Promise<boolean> {
-  const uid = userId.substring(0, 8);
-
-  if (BUDDY_EMAILS_GLOBAL_KILL_SWITCH) {
-    log(`[BUDDY EMAIL BLOCKED] recipient=${buddyInfo.email} userId=${uid}... reason=GLOBAL_KILL_SWITCH path=${context} — ALL buddy emails disabled`);
-    return false;
-  }
-
-  const freshBuddyInfo = await getSearchBuddyInfo(userId);
-  if (!freshBuddyInfo) {
-    log(`[BUDDY EMAIL BLOCKED] recipient=${buddyInfo.email} userId=${uid}... reason=SEND_TIME_RECHECK_no_buddy path=${context} — buddy removed between eligibility check and send`);
-    return false;
-  }
-  if (freshBuddyInfo.status !== "active") {
-    log(`[BUDDY EMAIL BLOCKED] recipient=${buddyInfo.email} userId=${uid}... reason=SEND_TIME_RECHECK_status=${freshBuddyInfo.status} path=${context} — buddy no longer active`);
-    return false;
-  }
-  if (!freshBuddyInfo.enabled) {
-    log(`[BUDDY EMAIL BLOCKED] recipient=${buddyInfo.email} userId=${uid}... reason=SEND_TIME_RECHECK_disabled path=${context} — buddy disabled between check and send`);
-    return false;
-  }
-  if (!freshBuddyInfo.email || freshBuddyInfo.email.trim().length === 0) {
-    log(`[BUDDY EMAIL BLOCKED] recipient=${buddyInfo.email} userId=${uid}... reason=SEND_TIME_RECHECK_no_email path=${context} — buddy email cleared`);
-    return false;
-  }
-
-  const freshSubStatus = await getSubscriptionStatus(userId);
-
-  const decision = shouldSendBuddyEmail({
-    userId,
-    mainUserEmail,
-    mainUserEmailEnabled,
-    buddyInfo: freshBuddyInfo,
-    subStatus: freshSubStatus,
-  });
-
-  if (!decision.send) {
-    log(`[BUDDY EMAIL BLOCKED] recipient=${freshBuddyInfo.email} userId=${uid}... reason=SEND_TIME_FINAL_CHECK_${decision.reason} path=${context}`);
-    return false;
-  }
-
-  try {
-    const unsubUrl = getBuddyUnsubscribeUrl(userId, freshBuddyInfo.email) || undefined;
-    log(`[BUDDY EMAIL ATTEMPT] recipient=${freshBuddyInfo.email} userId=${uid}... lang=${lang} count=${capped.length} path=${context} result=SEND`);
-    const success = await sendBatchMatchAlert(freshBuddyInfo.email, capped, lang, "buddy-match", unsubUrl);
-    if (success) {
-      log(`[BUDDY EMAIL ATTEMPT] recipient=${freshBuddyInfo.email} userId=${uid}... result=SENT (${capped.length} listings, lang=${lang})`);
-    } else {
-      log(`[BUDDY EMAIL ATTEMPT] recipient=${freshBuddyInfo.email} userId=${uid}... result=FAILED`);
-    }
-    return success;
-  } catch (err: any) {
-    log(`[BUDDY EMAIL ATTEMPT] recipient=${freshBuddyInfo.email} userId=${uid}... result=ERROR err=${err.message}`);
-    return false;
-  }
-}
 
 export interface BufferedMatch {
   listing_id: string;
@@ -514,17 +323,16 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
     const emailEnabled = settings?.email_enabled ?? true;
     const pushEnabled = settings?.push_enabled ?? false;
 
-    const buddyEligibility = await canBuddyReceiveMatches(userId, subStatus, emailEnabled, email);
     const userLang = await getUserLanguage(userId);
 
-    log(`[ALERTS] User ${userId.substring(0, 8)}... decision: email_enabled=${emailEnabled}, push_enabled=${pushEnabled}, buddy_eligible=${buddyEligibility.eligible} (${buddyEligibility.reason}), buddy_email=${buddyEligibility.buddyInfo?.email || "none"}`);
+    log(`[ALERTS] User ${userId.substring(0, 8)}... decision: email_enabled=${emailEnabled}, push_enabled=${pushEnabled}`);
 
-    if (!emailEnabled && !pushEnabled && !buddyEligibility.eligible) {
+    if (!emailEnabled && !pushEnabled) {
       skippedEmailOff++;
       const skipIds = listings.map(l => l.listing_id);
       try { await markEmailSent(userId, skipIds); } catch {}
       try { await markPushSent(userId, skipIds); } catch {}
-      log(`[ALERTS] Skipping user ${userId.substring(0, 8)}... (email_enabled=false, push_enabled=false, buddy: ${buddyEligibility.reason}) — marked ${skipIds.length} as sent`);
+      log(`[ALERTS] Skipping user ${userId.substring(0, 8)}... (email_enabled=false, push_enabled=false) — marked ${skipIds.length} as sent`);
       continue;
     }
 
@@ -587,13 +395,6 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
         failed++;
         log(`[ALERTS] Error sending digest to ${email}: ${err.message}`);
       }
-    }
-
-    if (buddyEligibility.eligible && buddyEligibility.buddyInfo) {
-      const buddyCapped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
-      await sendBuddyEmail(userId, email, buddyEligibility.buddyInfo, buddyCapped, "[FLUSH]", userLang, emailEnabled, subStatus);
-    } else {
-      log(`[ALERTS] Buddy skip for ${userId.substring(0, 8)}...: ${buddyEligibility.reason}`);
     }
 
     try {
@@ -720,16 +521,15 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
   const emailEnabled = settingsErr ? true : (settings?.email_enabled ?? true);
   const pushEnabled = settingsErr ? false : (settings?.push_enabled ?? false);
 
-  const backfillBuddyEligibility = await canBuddyReceiveMatches(userId, subStatus, emailEnabled, userBuf.email);
   const backfillLang = await getUserLanguage(userId);
 
-  log(`[ALERTS] Backfill user ${userId.substring(0, 8)}... decision: email_enabled=${emailEnabled}, push_enabled=${pushEnabled}, buddy_eligible=${backfillBuddyEligibility.eligible} (${backfillBuddyEligibility.reason})`);
+  log(`[ALERTS] Backfill user ${userId.substring(0, 8)}... decision: email_enabled=${emailEnabled}, push_enabled=${pushEnabled}`);
 
-  if (!emailEnabled && !pushEnabled && !backfillBuddyEligibility.eligible) {
+  if (!emailEnabled && !pushEnabled) {
     const skipIds = userBuf.listings.map(l => l.listing_id);
     try { await markEmailSent(userId, skipIds); } catch {}
     try { await markPushSent(userId, skipIds); } catch {}
-    log(`[ALERTS] Backfill: both channels off, buddy: ${backfillBuddyEligibility.reason} — marked ${skipIds.length} as sent`);
+    log(`[ALERTS] Backfill: both channels off — marked ${skipIds.length} as sent`);
     return;
   }
 
@@ -794,12 +594,6 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
     }
   }
 
-  if (backfillBuddyEligibility.eligible && backfillBuddyEligibility.buddyInfo && userBuf.email) {
-    const buddyCapped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
-    await sendBuddyEmail(userId, userBuf.email, backfillBuddyEligibility.buddyInfo, buddyCapped, "[BACKFILL]", backfillLang, emailEnabled, subStatus);
-  } else if (userBuf.email) {
-    log(`[ALERTS] Backfill buddy skip for ${userId.substring(0, 8)}...: ${backfillBuddyEligibility.reason}`);
-  }
 
   if (emailedListingIds.length > 0) {
     const prev = recentEmailedIds.get(userId);
@@ -928,15 +722,21 @@ export async function simulateEmailLogic(userId: string, supabase: any): Promise
     .maybeSingle();
 
   const emailEnabled = settings?.email_enabled ?? true;
-
-  const buddyInfo = await getSearchBuddyInfo(userId);
-
   const subscriptionActive = hasAccess;
-  const buddyExists = !!buddyInfo;
-  const buddyEnabled = buddyInfo?.enabled ?? false;
-  const buddyStatus = buddyInfo?.status ?? null;
-  const emailNotSame = buddyInfo && mainUserEmail
-    ? buddyInfo.email.toLowerCase() !== mainUserEmail.toLowerCase()
+
+  const v2Buddy = await getOwnerBuddyRelation(userId);
+  const buddyExists = !!(v2Buddy && v2Buddy.invite_status === "accepted" && v2Buddy.buddy_user_id);
+  const buddyEnabled = buddyExists ? (v2Buddy!.email_notifications_enabled ?? false) : false;
+  let buddyEmail: string | null = null;
+  if (buddyExists && v2Buddy!.buddy_user_id) {
+    try {
+      const adminClient = getSupabaseAdmin();
+      const { data: { user: buddyAuthUser } } = await adminClient.auth.admin.getUserById(v2Buddy!.buddy_user_id);
+      buddyEmail = buddyAuthUser?.email || null;
+    } catch {}
+  }
+  const emailNotSame = buddyEmail && mainUserEmail
+    ? buddyEmail.toLowerCase() !== mainUserEmail.toLowerCase()
     : true;
 
   let mainShouldReceive = false;
@@ -957,26 +757,26 @@ export async function simulateEmailLogic(userId: string, supabase: any): Promise
   if (!subscriptionActive) {
     buddyVerdict = `SKIP — no active subscription (status=${subStatus.status})`;
   } else if (!buddyExists) {
-    buddyVerdict = "SKIP — no buddy configured (email null or status not active)";
+    buddyVerdict = "SKIP — no V2 buddy configured (no accepted relation)";
   } else if (!buddyEnabled) {
-    buddyVerdict = "SKIP — buddy feature disabled";
-  } else if (buddyStatus !== "active") {
-    buddyVerdict = `SKIP — buddy status is '${buddyStatus}', not 'active'`;
+    buddyVerdict = "SKIP — V2 buddy email notifications disabled";
+  } else if (!buddyEmail) {
+    buddyVerdict = "SKIP — V2 buddy has no email in auth";
   } else if (!emailNotSame) {
     buddyVerdict = "SKIP — buddy email same as main user email";
   } else {
     buddyShouldReceive = true;
-    buddyVerdict = `SEND — subscription active + buddy active (independent of main user email toggle=${emailEnabled})`;
+    buddyVerdict = `SEND — subscription active + V2 buddy accepted + email_notifications_enabled`;
   }
 
   const finalRecipients: string[] = [];
   if (mainShouldReceive && mainUserEmail) finalRecipients.push(mainUserEmail);
-  if (buddyShouldReceive && buddyInfo) finalRecipients.push(buddyInfo.email);
+  if (buddyShouldReceive && buddyEmail) finalRecipients.push(buddyEmail);
 
   const result: EmailTestResult = {
     user_id: userId,
     main_user_email: mainUserEmail,
-    buddy_email: buddyInfo?.email || null,
+    buddy_email: buddyEmail,
     main_user_should_receive: mainShouldReceive,
     buddy_should_receive: buddyShouldReceive,
     reasons: {
@@ -985,7 +785,7 @@ export async function simulateEmailLogic(userId: string, supabase: any): Promise
       main_email_enabled: emailEnabled,
       buddy_exists: buddyExists,
       buddy_enabled: buddyEnabled,
-      buddy_status: buddyStatus,
+      buddy_status: buddyExists ? "accepted" : null,
       email_not_same: emailNotSame,
     },
     final_recipients: finalRecipients,
@@ -995,7 +795,7 @@ export async function simulateEmailLogic(userId: string, supabase: any): Promise
 
   log(`[EMAIL TEST] User: ${uid}...`);
   log(`[EMAIL TEST]   Main user: ${mainShouldReceive ? "YES" : "NO"} (${mainVerdict})`);
-  log(`[EMAIL TEST]   Buddy: ${buddyShouldReceive ? "YES" : "NO"} (${buddyVerdict})`);
+  log(`[EMAIL TEST]   V2 Buddy: ${buddyShouldReceive ? "YES" : "NO"} (${buddyVerdict})`);
   log(`[EMAIL TEST]   Recipients: [${finalRecipients.join(", ")}]`);
   log(`[EMAIL TEST] ===== End simulation for userId=${uid}... =====`);
 
@@ -1050,13 +850,12 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
       .maybeSingle();
     const emailOn = notifSettings?.email_enabled ?? true;
     const pushOn = notifSettings?.push_enabled ?? false;
-    const recoveryBuddyEligibility = await canBuddyReceiveMatches(userId, subStatus, emailOn, email);
-    log(`[RECOVERY] User ${userId.substring(0, 8)}: email_enabled=${emailOn}, push_enabled=${pushOn}, buddy_eligible=${recoveryBuddyEligibility.eligible} (${recoveryBuddyEligibility.reason})`);
-    if (!emailOn && !pushOn && !recoveryBuddyEligibility.eligible) {
+    log(`[RECOVERY] User ${userId.substring(0, 8)}: email_enabled=${emailOn}, push_enabled=${pushOn}`);
+    if (!emailOn && !pushOn) {
       const skipIds = matches.map(m => m.listing_id);
       try { await markEmailSent(userId, skipIds); } catch {}
       try { await markPushSent(userId, skipIds); } catch {}
-      log(`[RECOVERY] User ${userId.substring(0, 8)}: notifications off, buddy: ${recoveryBuddyEligibility.reason} — marked ${skipIds.length} as sent, skipping`);
+      log(`[RECOVERY] User ${userId.substring(0, 8)}: notifications off — marked ${skipIds.length} as sent, skipping`);
       continue;
     }
 
