@@ -181,29 +181,50 @@ export async function registerRoutes(
       if (!auth) return res.status(401).json({ error: "Unauthorized" });
 
       const { email } = req.body;
+      log(`[BUDDY INVITE] POST /api/buddy/invite — owner=${auth.user.id.substring(0, 8)}... email=${email}`);
       if (!email || typeof email !== "string") return res.status(400).json({ error: "Email required" });
 
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email.trim())) {
+        log(`[BUDDY INVITE] REJECTED — invalid email format: ${email}`);
+        return res.status(400).json({ error: "Invalid email address format" });
+      }
+
       const subCheck = await isOwnerSubscriptionActive(auth.user.id);
-      if (!subCheck.active) return res.status(403).json({ error: "Active subscription required to invite a buddy" });
+      if (!subCheck.active) {
+        log(`[BUDDY INVITE] BLOCKED — no active subscription for owner=${auth.user.id.substring(0, 8)}...`);
+        return res.status(403).json({ error: "Active subscription required to invite a buddy" });
+      }
 
       const ownerEmail = auth.user.email?.toLowerCase().trim();
       if (ownerEmail === email.toLowerCase().trim()) return res.status(400).json({ error: "You cannot invite yourself" });
 
       const result = await inviteBuddy(auth.user.id, email);
+      log(`[BUDDY INVITE] inviteBuddy result — isNew=${result.isNew} error=${result.error || "none"} relationId=${result.relation?.id?.substring(0, 8) || "null"} status=${result.relation?.invite_status || "null"}`);
       if (result.error && !result.relation) return res.status(400).json({ error: result.error });
 
-      if (result.isNew && result.relation) {
+      const shouldSendEmail = result.relation && (result.isNew || result.relation.invite_status === "pending");
+      log(`[BUDDY INVITE] shouldSendEmail=${shouldSendEmail} (isNew=${result.isNew}, status=${result.relation?.invite_status})`);
+
+      let emailSent = false;
+      let emailError: string | null = null;
+      if (shouldSendEmail && result.relation) {
         const ownerProfile = await getOwnerNameForBuddy(auth.user.id);
         const inviterName = ownerProfile ? `${ownerProfile.first_name || ""} ${ownerProfile.last_name || ""}`.trim() : "Someone";
         const lang = detectLanguageFromHeader(req.headers["accept-language"]);
-        sendBuddyInvitationEmail(email, inviterName, lang, result.relation.invite_token).catch(e =>
-          log(`[BUDDY] invite email error: ${e.message}`)
-        );
+        log(`[BUDDY INVITE] Sending email — to=${email} inviter="${inviterName}" lang=${lang} token=${result.relation.invite_token?.substring(0, 8)}...`);
+        try {
+          emailSent = await sendBuddyInvitationEmail(email, inviterName, lang, result.relation.invite_token);
+          log(`[BUDDY INVITE] Email result — sent=${emailSent}`);
+        } catch (e: any) {
+          emailError = e.message;
+          log(`[BUDDY INVITE] Email EXCEPTION — ${e.message}`);
+        }
       }
 
-      return res.json({ ok: true, relation: result.relation, isNew: result.isNew });
+      return res.json({ ok: true, relation: result.relation, isNew: result.isNew, emailSent, emailError });
     } catch (err: any) {
-      log(`[BUDDY] invite error: ${err.message}`);
+      log(`[BUDDY INVITE] UNHANDLED ERROR — ${err.message}`);
       return res.status(500).json({ error: "Server error" });
     }
   });
