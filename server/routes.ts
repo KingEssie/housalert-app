@@ -29,7 +29,7 @@ import {
   getOwnerBuddyRelation, getBuddyRelationsForUser, getPendingInvitesForEmail,
   getRelationById, updateBuddyPreferences, recordBuddyAction,
   getBuddyActionsForListing, getBuddyActionsForListings,
-  isOwnerSubscriptionActive, getRelationByOwnerAndBuddy, getOwnerNameForBuddy,
+  isOwnerSubscriptionActive, getRelationByOwnerAndBuddy, getOwnerNameForBuddy, lookupInviteByToken,
   type BuddyRelation,
 } from "./buddy";
 import { detectLanguage } from "./i18n";
@@ -174,6 +174,28 @@ export async function registerRoutes(
       return { user: { id: user.id, email: user.email } };
     } catch { return null; }
   }
+
+  app.get("/api/buddy/invite-info", async (req, res) => {
+    try {
+      const token = req.query.token as string;
+      if (!token) return res.status(400).json({ error: "Token required" });
+
+      const invite = await lookupInviteByToken(token);
+      if (!invite) return res.status(404).json({ error: "Invalid invite token" });
+
+      const ownerProfile = await getOwnerNameForBuddy(invite.owner_user_id);
+      const ownerName = ownerProfile ? `${ownerProfile.first_name || ""} ${ownerProfile.last_name || ""}`.trim() : null;
+
+      return res.json({
+        invite_email: invite.invite_email,
+        invite_status: invite.invite_status,
+        owner_name: ownerName,
+      });
+    } catch (err: any) {
+      log(`[BUDDY] invite-info error: ${err.message}`);
+      return res.status(500).json({ error: "Server error" });
+    }
+  });
 
   app.post("/api/buddy/invite", async (req, res) => {
     try {

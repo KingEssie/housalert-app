@@ -1,0 +1,89 @@
+We want to finalize the buddy invite acceptance flow.
+
+==================================================
+GOAL
+==================================================
+
+When a user clicks a buddy invite link, the invited email address must already be known and fixed throughout the flow.
+
+The buddy should never have to type the email manually.
+
+==================================================
+EXPECTED FLOW
+==================================================
+
+If the invited email does NOT yet have an account:
+- show the buddy accept screen
+- when the user chooses "Account aanmaken":
+  - prefill the invited email address
+  - make the email field read-only or hidden
+  - require:
+    - first name
+    - password
+- after signup:
+  - automatically continue the invite flow
+  - accept the invite
+  - enter buddy-mode
+
+If the invited email already HAS an account:
+- show the buddy accept screen
+- when the user chooses "Inloggen":
+  - prefill the invited email address
+  - make the email field read-only or hidden
+  - require:
+    - password only
+- after login:
+  - automatically continue the invite flow
+  - accept the invite
+  - enter buddy-mode
+
+==================================================
+ADDITIONAL REQUIREMENTS
+==================================================
+
+1. New buddy signup must require:
+- first name
+- password
+
+2. Existing buddy login must require:
+- password only
+
+3. The invited email must not be editable
+
+4. If a logged-in user has a different email than the invite email:
+show a clear mismatch message
+
+5. After the buddy is logged in and active in the app,
+they must be able to change their password later from their own account/profile settings.
+
+==================================================
+PASSWORD CHANGE
+==================================================
+
+Implement or verify a password change option for logged-in buddy users:
+- available from their own profile/account area
+- current password + new password flow, or your existing secure password reset/change implementation
+- clean UX
+- no access to owner account settings
+
+==================================================
+UX REQUIREMENTS
+==================================================
+
+- keep the flow simple
+- no unnecessary fields
+- no generic start screen interruption
+- after successful login/signup, go straight back into invite acceptance and buddy-mode
+
+==================================================
+OUTPUT
+==================================================
+
+Return:
+1. Which files were changed
+2. How invited email is prefilled and locked
+3. What fields are required for new buddy signup
+4. What fields are required for existing buddy login
+5. How invite token/context survives login/signup
+6. What happens after successful acceptance
+7. Where the buddy can change their password after login

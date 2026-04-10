@@ -221,6 +221,14 @@ export async function getPendingInvitesForEmail(email: string): Promise<BuddyRel
   return result.rows as BuddyRelation[];
 }
 
+export async function lookupInviteByToken(token: string): Promise<{ invite_email: string; invite_status: string; owner_user_id: string } | null> {
+  const result = await pgPool.query(
+    `SELECT invite_email, invite_status, owner_user_id FROM search_profile_buddies WHERE invite_token = $1`,
+    [token]
+  );
+  return result.rows.length > 0 ? result.rows[0] : null;
+}
+
 export async function getRelationById(id: string): Promise<BuddyRelation | null> {
   const result = await pgPool.query(`SELECT * FROM search_profile_buddies WHERE id = $1`, [id]);
   return result.rows.length > 0 ? (result.rows[0] as BuddyRelation) : null;
