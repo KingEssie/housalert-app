@@ -1,0 +1,257 @@
+We are now implementing the frontend UX for the Zoekbuddy feature.
+
+IMPORTANT:
+The backend is already built.
+Now the goal is to make the buddy invite and buddy-mode experience feel clean, clear, personal, and easy to use.
+
+This is NOT just about making it work.
+It must also look trustworthy, simple, and premium.
+
+==================================================
+GOAL
+==================================================
+
+Build the full Zoekbuddy invite + accept + buddy-mode UX so that:
+
+- inviting a buddy feels easy
+- the invitation email feels personal
+- the accept flow is clear
+- the buddy immediately understands their role
+- owner and buddy names are shown where relevant
+- the feature feels polished and worth using
+
+==================================================
+1. BUDDY INVITE ENTRY (OWNER SIDE)
+==================================================
+
+The owner should be able to invite a buddy from the app in a clean way.
+
+Requirements:
+- keep the current "Zoekbuddy toevoegen" location if already present
+- make the input and CTA feel premium and simple
+- ask for:
+  - buddy email
+- optional: show a short explanation text:
+  - "Nodig iemand uit om je te helpen zoeken naar woningen"
+
+After submit:
+- show success feedback
+- clear state: invite sent / pending
+
+UI:
+- clean form row
+- clear CTA button
+- no clutter
+
+==================================================
+2. INVITATION EMAIL COPY
+==================================================
+
+Update the invite email so it feels personal and clear.
+
+The email must include:
+- owner name
+- short explanation of what a zoekbuddy is
+- what the buddy will be able to do
+- a clear CTA button
+
+Suggested structure:
+
+Subject:
+"[Owner name] nodigt je uit als zoekbuddy op HousAlert"
+
+Body:
+- "[Owner name] heeft je uitgenodigd om mee te helpen zoeken naar woningen."
+- "Als zoekbuddy kun je matches bekijken, favorieten markeren, reageren op woningen en aanbevelingen doen."
+- "Je hebt beperkte toegang en kunt geen instellingen of abonnement wijzigen."
+
+CTA button:
+- "Accepteer uitnodiging"
+
+Important:
+- Use the existing email provider integration
+- Keep email visually on-brand and clean
+
+==================================================
+3. INVITE ACCEPT FLOW
+==================================================
+
+When the buddy clicks the invite link:
+
+If not logged in:
+- go to login/signup first
+- then return to invite acceptance
+
+If logged in:
+- show a dedicated accept screen
+
+The accept screen must feel intentional, not technical.
+
+Layout:
+- title
+- short explanation
+- owner name shown clearly
+- CTA button to accept
+
+Suggested copy:
+
+Title:
+"Je bent uitgenodigd als zoekbuddy"
+
+Body:
+"Je helpt [Owner name] met het zoeken naar woningen.
+Je kunt matches bekijken, favorieten markeren, reageren op woningen en woningen aanbevelen."
+
+Small note:
+"Je kunt geen zoekopdracht, documenten, reactiebrief, profiel of abonnement aanpassen."
+
+CTA:
+- "Uitnodiging accepteren"
+
+Optional secondary CTA:
+- "Niet nu"
+
+==================================================
+4. BUDDY LANDING SCREEN / BUDDY MODE
+==================================================
+
+After accepting, the buddy should land in a clear buddy-mode experience.
+
+Requirements:
+- show that the buddy is helping a specific person
+- make the context explicit
+
+Examples:
+- "Je helpt Martin"
+- "Zoekbuddy-modus"
+
+This can be shown as:
+- a banner
+- a top label
+- a small role badge
+
+Do not make the buddy guess whether these are their own matches.
+
+==================================================
+5. SHOW NAMES IN COLLABORATION UI
+==================================================
+
+Use names wherever it adds clarity.
+
+Examples:
+- "Gereageerd door Martin"
+- "Aanbevolen door Elise"
+- "Je helpt Martin"
+
+Do not only show generic labels like:
+- owner
+- buddy
+
+If the real display name is available, use it.
+
+Fallback:
+- if no name is available, use generic labels
+
+==================================================
+6. BUDDY PERMISSION UX
+==================================================
+
+Do not only block restricted actions in backend.
+Make the frontend clearly reflect buddy permissions.
+
+Buddy should NOT see:
+- edit search profile buttons
+- edit filters
+- edit documents
+- edit reaction letter
+- profile/account/subscription controls for owner data
+
+Buddy SHOULD see:
+- matches
+- favorite action
+- respond action
+- recommend action
+- badges showing collaboration state
+
+The UI should feel intentionally limited, not broken.
+
+==================================================
+7. COLLABORATION STATUS BADGES
+==================================================
+
+On listing cards and detail pages, show clear badges such as:
+
+- "Gereageerd door [naam]"
+- "Aanbevolen door [naam]"
+- "In favorieten gezet"
+
+These badges should be:
+- small
+- readable
+- visually consistent
+- not too noisy
+
+If both users interacted, show the most useful combination clearly.
+
+==================================================
+8. BUDDY NOTIFICATION PREFERENCES UI
+==================================================
+
+Buddy must be able to control their own notification preferences.
+
+Create a simple preferences block/screen with:
+
+- E-mailmeldingen [on/off]
+- Pushmeldingen [on/off]
+
+This should save to the existing buddy preferences endpoint.
+
+Copy should make clear that these preferences are for shared matches.
+
+==================================================
+9. OWNER / BUDDY SUBSCRIPTION STATE UX
+==================================================
+
+If the owner no longer has an active subscription:
+
+- owner no longer receives new matches
+- buddy also loses collaboration access for those matches
+
+Frontend must show a clear state instead of broken actions.
+
+Suggested message:
+"[Owner name] heeft momenteel geen actief abonnement.
+Zoekbuddy-toegang is tijdelijk gepauzeerd."
+
+Disable:
+- respond
+- favorite
+- recommend
+
+==================================================
+10. KEEP IT CLEAN
+==================================================
+
+General UX rules:
+- clean layout
+- premium styling
+- simple hierarchy
+- no technical language
+- personal, clear, human copy
+- no cluttered screens
+
+This should feel like a polished consumer app, not an admin system.
+
+==================================================
+11. OUTPUT
+==================================================
+
+After finishing, return:
+
+1. Which frontend files/screens were added or changed
+2. What the invite email copy now says
+3. What the accept screen looks like
+4. How buddy-mode is indicated in the app
+5. Where owner/buddy names are shown
+6. Where buddy notification preferences are managed
+7. How the inactive owner subscription state is shown in the UI

@@ -42,6 +42,8 @@ import {
   Mail,
   Loader2,
   RotateCcw,
+  Users,
+  UserCheck,
 } from "lucide-react";
 import { ExpandableCompletionCard, type CompletionStep } from "@/components/expandable-completion-card";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
@@ -54,6 +56,11 @@ import { isPushSupported, getPushPermissionState, subscribeToPush, unsubscribeFr
 import { generateOnboardingLetter, type OnboardingLetterData } from "@/lib/application-letter";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ListingCardFull, ListingCardMini } from "@/components/listing-card";
+import {
+  useBuddyConnections, useInviteBuddy, useRevokeBuddy,
+  useUpdateBuddyPreferences, isBuddyMode, getActiveBuddyRelation,
+  isOwnerSubActive, type BuddyConnections,
+} from "@/lib/buddy";
 
 const MAX_PROFILES = 4;
 
@@ -1679,7 +1686,230 @@ function formatBlockedSourceDisplay(source: string): string {
   return BLOCKED_SOURCE_DISPLAY[source] || source;
 }
 
-function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canonicalStats, computedAppliedCount }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null; currentPeriodEndsAt: string | null; cancelAtPeriodEnd: boolean }; setActiveTab: (tab: TabKey) => void; canonicalStats?: CanonicalStats; computedAppliedCount: number }) {
+const SectionTitle = ({ children }: { children: string }) => (
+  <p className="text-[13px] font-semibold text-[#334855] uppercase tracking-wide px-1 mb-2.5">{children}</p>
+);
+
+const ToggleRow = ({ label, subtitle, checked, onToggle, testId, last }: { label: string; subtitle?: string; checked: boolean; onToggle: (v: boolean) => void; testId?: string; last?: boolean }) => (
+  <>
+    <div className="flex items-center justify-between min-h-[64px] px-5 py-4" data-testid={testId}>
+      <div className="flex-1 min-w-0">
+        <span className="text-[15px] font-medium text-[#111111]">{label}</span>
+        {subtitle && <p className="text-[13px] text-[#334855] mt-0.5 leading-tight">{subtitle}</p>}
+      </div>
+      <button
+        onClick={() => onToggle(!checked)}
+        className={`relative w-[48px] h-[28px] rounded-full transition-colors duration-200 flex-shrink-0 ml-3 ${checked ? "bg-ha-primary" : "bg-[#D1D5DB]"}`}
+        role="switch"
+        aria-checked={checked}
+        data-testid={testId ? `${testId}-toggle` : undefined}
+      >
+        <span className={`absolute top-[2px] w-[24px] h-[24px] rounded-full bg-white shadow-sm transition-transform duration-200 ${checked ? "left-[22px]" : "left-[2px]"}`} />
+      </button>
+    </div>
+    {!last && <div className="h-px bg-[#F3F4F6] mx-5" />}
+  </>
+);
+
+function BuddyNotifPrefsSection() {
+  const { t } = useTranslation();
+  const { toast } = useToast();
+  const buddyConns = useBuddyConnections();
+  const updatePrefs = useUpdateBuddyPreferences();
+
+  const activeRel = getActiveBuddyRelation(buddyConns.data);
+  const [emailOn, setEmailOn] = useState(false);
+  const [pushOn, setPushOn] = useState(false);
+
+  useEffect(() => {
+    if (activeRel) {
+      setEmailOn(activeRel.email_notifications_enabled);
+      setPushOn(activeRel.push_notifications_enabled);
+    }
+  }, [activeRel?.email_notifications_enabled, activeRel?.push_notifications_enabled]);
+
+  if (!activeRel) return null;
+
+  async function toggle(field: "email" | "push", value: boolean) {
+    if (field === "email") setEmailOn(value);
+    else setPushOn(value);
+
+    try {
+      await updatePrefs.mutateAsync({
+        relationId: activeRel.id,
+        email_notifications_enabled: field === "email" ? value : emailOn,
+        push_notifications_enabled: field === "push" ? value : pushOn,
+      });
+      toast({ title: t("buddyV2.prefsSaved") });
+    } catch {
+      if (field === "email") setEmailOn(!value);
+      else setPushOn(!value);
+    }
+  }
+
+  return (
+    <div>
+      <SectionTitle>{t("buddyV2.prefsTitle")}</SectionTitle>
+      <p className="text-[13px] text-[#334855] mb-3 px-1">{t("buddyV2.prefsSubtitle")}</p>
+      <div className="rounded-[16px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
+        <ToggleRow
+          label={t("buddyV2.prefsPush")}
+          checked={pushOn}
+          onToggle={(v) => toggle("push", v)}
+          testId="row-buddy-notif-push"
+        />
+        <ToggleRow
+          label={t("buddyV2.prefsEmail")}
+          checked={emailOn}
+          onToggle={(v) => toggle("email", v)}
+          testId="row-buddy-notif-email"
+          last
+        />
+      </div>
+    </div>
+  );
+}
+
+function BuddyV2Section({ subscription }: { subscription: { isActive: boolean; isTrial: boolean } }) {
+  const { t } = useTranslation();
+  const { toast } = useToast();
+  const buddyConns = useBuddyConnections();
+  const inviteMutation = useInviteBuddy();
+  const revokeMutation = useRevokeBuddy();
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [showRevokeConfirm, setShowRevokeConfirm] = useState(false);
+
+  const hasActiveSub = subscription.isActive || subscription.isTrial;
+  const ownerRel = buddyConns.data?.asOwner;
+  const isConnected = ownerRel?.invite_status === "accepted";
+  const isPending = ownerRel?.invite_status === "pending";
+  const currentBuddy = (isConnected || isPending) ? ownerRel : null;
+
+  async function handleInvite() {
+    const trimmed = inviteEmail.trim().toLowerCase();
+    if (!trimmed) return;
+    try {
+      await inviteMutation.mutateAsync(trimmed);
+      setInviteEmail("");
+      toast({ title: t("buddyV2.inviteSent") });
+    } catch (err: any) {
+      const msg = err.message || "";
+      if (msg.includes("yourself")) toast({ title: t("buddyV2.inviteSelf"), variant: "destructive" });
+      else if (msg.includes("already")) toast({ title: t("buddyV2.inviteMax"), variant: "destructive" });
+      else if (msg.includes("subscription")) toast({ title: t("buddyV2.inviteSubRequired"), variant: "destructive" });
+      else toast({ title: t("buddyV2.inviteError"), variant: "destructive" });
+    }
+  }
+
+  async function handleRevoke(buddyUserId: string) {
+    try {
+      await revokeMutation.mutateAsync(buddyUserId);
+      setShowRevokeConfirm(false);
+      toast({ title: t("buddyV2.revoked") });
+    } catch {
+      toast({ title: t("buddyV2.inviteError"), variant: "destructive" });
+    }
+  }
+
+  return (
+    <div>
+      <SectionTitle>{t("buddyV2.ownerSection")}</SectionTitle>
+      <div className="rounded-[16px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
+        {currentBuddy ? (
+          <div className="px-5 py-4">
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-full bg-[#FFF0F5] flex items-center justify-center flex-shrink-0">
+                {isConnected ? (
+                  <UserCheck className="w-[20px] h-[20px] text-ha-primary" />
+                ) : (
+                  <Users className="w-[20px] h-[20px] text-ha-primary" />
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[15px] font-medium text-[#111111] truncate" data-testid="text-buddy-email">
+                  {currentBuddy.invite_email}
+                </p>
+                <p className="text-[13px] mt-0.5">
+                  {isConnected ? (
+                    <span className="text-green-600 font-medium">{t("buddyV2.statusConnected")}</span>
+                  ) : (
+                    <span className="text-amber-600 font-medium">{t("buddyV2.statusPending")}</span>
+                  )}
+                </p>
+              </div>
+            </div>
+            {showRevokeConfirm ? (
+              <div className="mt-4 pt-4 border-t border-[#F3F4F6]">
+                <p className="text-[13px] text-[#334855] mb-3">{t("buddyV2.revokeDesc")}</p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleRevoke(currentBuddy.id)}
+                    disabled={revokeMutation.isPending}
+                    className="h-[36px] px-4 rounded-[10px] bg-red-500 text-white text-[13px] font-semibold hover:bg-red-600 transition-colors active:scale-[0.97] disabled:opacity-50"
+                    data-testid="button-buddy-revoke-confirm"
+                  >
+                    {revokeMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : t("buddyV2.revokeConfirm")}
+                  </button>
+                  <button
+                    onClick={() => setShowRevokeConfirm(false)}
+                    className="h-[36px] px-4 rounded-[10px] border border-[#E5E7EB] text-[13px] font-semibold text-[#334855] active:scale-[0.97]"
+                    data-testid="button-buddy-revoke-cancel"
+                  >
+                    {t("buddyV2.revokeCancel")}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowRevokeConfirm(true)}
+                className="mt-3 text-[13px] text-red-500 font-semibold active:opacity-70 transition-opacity"
+                data-testid="button-buddy-revoke"
+              >
+                {t("buddyV2.revokeConfirm")}
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="px-5 py-5">
+            <p className="text-[14px] text-[#334855] leading-relaxed mb-4">{t("buddyV2.inviteSubtitle")}</p>
+            {!hasActiveSub ? (
+              <p className="text-[13px] text-amber-600 font-medium">{t("buddyV2.inviteSubRequired")}</p>
+            ) : (
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <input
+                    type="email"
+                    value={inviteEmail}
+                    onChange={(e) => setInviteEmail(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleInvite()}
+                    placeholder={t("buddyV2.inviteEmailPlaceholder")}
+                    className="w-full h-[44px] px-4 rounded-[12px] border border-[#E5E7EB] bg-white text-[14px] text-[#111111] placeholder:text-[#999] focus:outline-none focus:border-ha-primary transition-colors"
+                    data-testid="input-buddy-invite-email"
+                  />
+                </div>
+                <button
+                  onClick={handleInvite}
+                  disabled={inviteMutation.isPending || !inviteEmail.trim()}
+                  className="h-[44px] px-5 rounded-[12px] bg-ha-primary text-white text-[14px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97] disabled:opacity-50 flex items-center gap-2"
+                  data-testid="button-buddy-invite"
+                >
+                  {inviteMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      {t("buddyV2.inviteCta")}
+                    </>
+                  )}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canonicalStats, computedAppliedCount, buddyMode }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null; currentPeriodEndsAt: string | null; cancelAtPeriodEnd: boolean }; setActiveTab: (tab: TabKey) => void; canonicalStats?: CanonicalStats; computedAppliedCount: number; buddyMode?: boolean }) {
   const [signingOut, setSigningOut] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showLangDropdown, setShowLangDropdown] = useState(false);
@@ -1821,8 +2051,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
 
   const pushEnabled = notifQuery.data?.push_enabled ?? false;
   const emailEnabled = notifQuery.data?.email_enabled ?? true;
-  const buddyEmail = pd?.search_buddy_email || "";
-  const buddyStatus = pd?.search_buddy_status || "";
   const letterPreview = pd?.application_template || "";
 
   const isCanceled = subscription.status === "canceled" || subscription.cancelAtPeriodEnd;
@@ -1839,10 +2067,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       default: return t("subscription.planLabel.default");
     }
   }
-
-  const SectionTitle = ({ children }: { children: string }) => (
-    <p className="text-[13px] font-semibold text-[#334855] uppercase tracking-wide px-1 mb-2.5">{children}</p>
-  );
 
   const CardRow = ({ label, value, onClick, trailing, testId, last }: { label: string; value?: string; onClick?: () => void; trailing?: any; testId?: string; last?: boolean }) => {
     const Wrapper = onClick ? "button" : "div";
@@ -1866,26 +2090,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
     );
   };
 
-  const ToggleRow = ({ label, subtitle, checked, onToggle, testId, last }: { label: string; subtitle?: string; checked: boolean; onToggle: (v: boolean) => void; testId?: string; last?: boolean }) => (
-    <>
-      <div className="flex items-center justify-between min-h-[64px] px-5 py-4" data-testid={testId}>
-        <div className="flex-1 min-w-0">
-          <span className="text-[15px] font-medium text-[#111111]">{label}</span>
-          {subtitle && <p className="text-[13px] text-[#334855] mt-0.5 leading-tight">{subtitle}</p>}
-        </div>
-        <button
-          onClick={() => onToggle(!checked)}
-          className={`relative w-[48px] h-[28px] rounded-full transition-colors duration-200 flex-shrink-0 ml-3 ${checked ? "bg-ha-primary" : "bg-[#D1D5DB]"}`}
-          role="switch"
-          aria-checked={checked}
-          data-testid={testId ? `${testId}-toggle` : undefined}
-        >
-          <span className={`absolute top-[2px] w-[24px] h-[24px] rounded-full bg-white shadow-sm transition-transform duration-200 ${checked ? "left-[22px]" : "left-[2px]"}`} />
-        </button>
-      </div>
-      {!last && <div className="h-px bg-[#F3F4F6] mx-5" />}
-    </>
-  );
 
   return (
     <div className="min-h-[calc(100vh-80px)] bg-[#F9FAFB]">
@@ -1939,6 +2143,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           </div>
 
           {/* 2. Notificaties */}
+          {!buddyMode && (
           <div>
             <SectionTitle>{t("profile.notifications")}</SectionTitle>
             <div className="rounded-[16px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
@@ -1957,51 +2162,16 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               />
             </div>
           </div>
+          )}
 
-          {/* 3. Zoekbuddy */}
-          <div>
-            <SectionTitle>{t("profile.searchBuddy")}</SectionTitle>
-            <div className="rounded-[16px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
-              {buddyEmail ? (
-                <div className="px-5 py-4">
-                  <div className="flex items-center gap-3.5">
-                    <div className="w-10 h-10 rounded-full bg-[#F5F0EB] flex items-center justify-center flex-shrink-0">
-                      <User className="w-[20px] h-[20px] text-[#111111]" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[15px] font-medium text-[#111111] truncate" data-testid="text-buddy-email">{buddyEmail}</p>
-                      <p className="text-[13px] text-[#334855] mt-0.5">
-                        {buddyStatus === "active" ? t("profile.searchBuddyReceives")
-                          : buddyStatus === "invited" ? t("profile.searchBuddyReceives")
-                          : buddyStatus || t("profile.searchBuddyReceives")}
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => navigate("/profile/edit/search_buddy_email")}
-                    className="mt-3 text-[13px] text-ha-primary font-semibold active:opacity-70 transition-opacity"
-                    data-testid="button-buddy-manage"
-                  >
-                    {t("profile.editButton")}
-                  </button>
-                </div>
-              ) : (
-                <div className="px-5 py-5">
-                  <p className="text-[14px] text-[#334855] leading-relaxed mb-4">{t("profile.noBuddyYet")}</p>
-                  <button
-                    onClick={() => navigate("/profile/edit/search_buddy_email")}
-                    className="h-[44px] px-6 rounded-[12px] bg-ha-primary text-white text-[14px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
-                    data-testid="button-buddy-add"
-                  >
-                    {t("profile.addBuddy")}
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
+          {/* Buddy notification preferences — only visible in buddy mode */}
+          {buddyMode && <BuddyNotifPrefsSection />}
 
-          {/* 4. Standaard reactiebrief */}
-          <div>
+          {/* 3. Zoekbuddy V2 — only for owners */}
+          {!buddyMode && <BuddyV2Section subscription={subscription} />}
+
+          {/* 4. Standaard reactiebrief — hidden for buddies */}
+          {!buddyMode && (<div>
             <SectionTitle>{t("profile.reactionLetter")}</SectionTitle>
             <div className="rounded-[16px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
               {letterPreview ? (
@@ -2035,10 +2205,10 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 </button>
               )}
             </div>
-          </div>
+          </div>)}
 
-          {/* 5. Uitgesloten websites */}
-          <div>
+          {/* 5. Uitgesloten websites — hidden for buddies */}
+          {!buddyMode && (<div>
             <SectionTitle>{t("profile.blockedSources.title")}</SectionTitle>
             <div className="rounded-[16px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden" data-testid="section-blocked-sources">
               {blockedSources.length === 0 ? (
@@ -2064,10 +2234,10 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 ))
               )}
             </div>
-          </div>
+          </div>)}
 
-          {/* 6. Abonnementen — centered inline */}
-          <div>
+          {/* 6. Abonnementen — hidden for buddies */}
+          {!buddyMode && (<div>
             <SectionTitle>{t("profile.subscription")}</SectionTitle>
             <div className="rounded-[16px] bg-[#F5F0EB] overflow-hidden">
               {!(subscription.isActive || subscription.isTrial) ? (
@@ -2115,7 +2285,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 </div>
               )}
             </div>
-          </div>
+          </div>)}
 
           {/* 7. Meer info & hulp */}
           <div>
@@ -2291,8 +2461,21 @@ export default function DashboardPage() {
     return "home";
   });
   const sub = useSubscription();
-
   const { toast } = useToast();
+
+  const accessToken = session?.access_token;
+  const buddyConns = useBuddyConnections();
+  const inBuddyMode = isBuddyMode(buddyConns.data);
+  const activeBuddyRel = getActiveBuddyRelation(buddyConns.data);
+  const ownerSubActive = isOwnerSubActive(buddyConns.data);
+
+  const profilesQuery = useQuery<SearchProfile[]>({
+    queryKey: ["/search-profiles"],
+    queryFn: getSearchProfiles,
+    enabled: !!user,
+  });
+
+  const hasActiveSub = sub.isActive || sub.isTrial;
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -2305,6 +2488,12 @@ export default function DashboardPage() {
       navigate("/");
     }
   }, [user, loading, navigate]);
+
+  useEffect(() => {
+    if (inBuddyMode && (activeTab === "home" || activeTab === "zoek")) {
+      setActiveTab("matches");
+    }
+  }, [inBuddyMode, activeTab]);
 
   useEffect(() => {
     if (user) {
@@ -2323,15 +2512,6 @@ export default function DashboardPage() {
       queryClient.invalidateQueries({ queryKey: ["/search-profiles"] });
     }
   }, []);
-
-  const profilesQuery = useQuery<SearchProfile[]>({
-    queryKey: ["/search-profiles"],
-    queryFn: getSearchProfiles,
-    enabled: !!user,
-  });
-
-  const accessToken = session?.access_token;
-  const hasActiveSub = sub.isActive || sub.isTrial;
   const apiMatchesQuery = useQuery<ApiMatchesResponse>({
     queryKey: ["/api/matches"],
     queryFn: () => fetchApiMatches(accessToken!),
@@ -2370,7 +2550,22 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      {sub.isPastDue && (
+      {inBuddyMode && activeBuddyRel && (
+        <div className="bg-[#FFF0F5] border-b border-[#F5C6D8] px-4 py-3 flex items-center gap-3 max-w-xl mx-auto w-full" data-testid="banner-buddy-mode">
+          <Users className="w-5 h-5 text-ha-primary flex-shrink-0" />
+          <div className="flex-1 min-w-0">
+            <p className="text-[13px] font-semibold text-[#111111]">{t("buddyV2.modeBadge")}</p>
+            <p className="text-[12px] text-[#334855]">{t("buddyV2.modeBanner").replace("{name}", activeBuddyRel.owner_name || "")}</p>
+          </div>
+        </div>
+      )}
+      {inBuddyMode && activeBuddyRel && !ownerSubActive && (
+        <div className="bg-amber-50 border-b border-amber-200 px-4 py-3 flex items-center gap-3 max-w-xl mx-auto w-full" data-testid="banner-buddy-sub-paused">
+          <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0" />
+          <p className="text-[13px] text-amber-800">{t("buddyV2.subPaused").replace("{name}", activeBuddyRel.owner_name || "")}</p>
+        </div>
+      )}
+      {sub.isPastDue && !inBuddyMode && (
         <div className="bg-amber-50 border-b border-amber-200 px-4 py-3 flex items-center gap-3 max-w-xl mx-auto w-full" data-testid="banner-past-due">
           <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0" />
           <div className="flex-1 min-w-0">
@@ -2415,13 +2610,17 @@ export default function DashboardPage() {
             setActiveTab={setActiveTab}
             canonicalStats={apiMatchesQuery.data?.canonicalStats}
             computedAppliedCount={computedAppliedCount}
+            buddyMode={inBuddyMode}
           />
         )}
       </main>
 
       <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#E5E7EB]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
         <nav className="max-w-xl mx-auto flex h-[72px]" data-testid="bottom-nav">
-          {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
+          {TAB_CONFIG.filter(({ key }) => {
+            if (inBuddyMode && (key === "zoek" || key === "home")) return false;
+            return true;
+          }).map(({ key, labelKey, Icon }) => {
             const isActive = activeTab === key;
             const isProfileWithPhoto = key === "profiel" && !!tabPhotoUrl;
             return (

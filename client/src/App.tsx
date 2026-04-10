@@ -62,6 +62,7 @@ import SettingsPage from "@/pages/settings";
 import PreferencesPage from "@/pages/preferences";
 import HousingSituationPage from "@/pages/housing-situation";
 import ReferralLandingPage from "@/pages/referral-landing";
+import BuddyAcceptPage from "@/pages/buddy-accept";
 
 function ProtectedRoute({ component: Component, skipOnboardingCheck }: { component: React.ComponentType; skipOnboardingCheck?: boolean }) {
   const { user, session, loading } = useAuth();
@@ -119,6 +120,12 @@ function RootRoute() {
   if (isRecoveryMode()) return <Redirect to="/reset-password" />;
   if (hasRef && !user) return <ReferralLandingPage />;
   if (!user) return <OnboardingSlideshow />;
+
+  const pendingBuddyToken = localStorage.getItem("housalert_buddy_accept_token");
+  if (pendingBuddyToken) {
+    return <Redirect to={`/buddy/accept?token=${encodeURIComponent(pendingBuddyToken)}`} />;
+  }
+
   return <Redirect to="/home" />;
 }
 
@@ -215,6 +222,7 @@ function Router() {
       <Route path="/admin/match-audit" component={() => <ProtectedRoute component={AdminMatchAuditPage} />} />
       <Route path="/admin/activation" component={() => <ProtectedRoute component={AdminActivationPage} />} />
       <Route path="/admin/image-audit" component={() => <ProtectedRoute component={AdminImageAuditPage} />} />
+      <Route path="/buddy/accept" component={BuddyAcceptPage} />
       <Route path="/impressum" component={ImpressumPage} />
       <Route path="/datenschutz" component={DatenschutzPage} />
       <Route path="/terms" component={TermsPage} />
