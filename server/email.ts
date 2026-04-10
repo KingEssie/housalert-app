@@ -3,6 +3,71 @@ import { createHmac } from "crypto";
 import { log } from "./log";
 import { t, type ServerLocale } from "./i18n";
 
+let cachedConnectorCreds: { apiKey: string; fromEmail: string } | null = null;
+let connectorCredsFetchedAt = 0;
+const CONNECTOR_CREDS_TTL = 5 * 60 * 1000;
+
+async function getConnectorCredentials(): Promise<{ apiKey: string; fromEmail: string } | null> {
+  if (cachedConnectorCreds && Date.now() - connectorCredsFetchedAt < CONNECTOR_CREDS_TTL) {
+    return cachedConnectorCreds;
+  }
+  try {
+    const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
+    const xReplitToken = process.env.REPL_IDENTITY
+      ? "repl " + process.env.REPL_IDENTITY
+      : process.env.WEB_REPL_RENEWAL
+      ? "depl " + process.env.WEB_REPL_RENEWAL
+      : null;
+
+    if (!hostname || !xReplitToken) {
+      log("[EMAIL CONFIG] No connector hostname/token — falling back to env vars");
+      return null;
+    }
+
+    const resp = await fetch(
+      "https://" + hostname + "/api/v2/connection?include_secrets=true&connector_names=resend",
+      { headers: { Accept: "application/json", "X-Replit-Token": xReplitToken } }
+    );
+    const data = await resp.json();
+    const conn = data.items?.[0];
+    if (!conn?.settings?.api_key) {
+      log("[EMAIL CONFIG] Connector returned no api_key — falling back to env vars");
+      return null;
+    }
+    cachedConnectorCreds = { apiKey: conn.settings.api_key, fromEmail: conn.settings.from_email || "" };
+    connectorCredsFetchedAt = Date.now();
+    log(`[EMAIL CONFIG] Loaded Resend credentials from connector (from_email=${cachedConnectorCreds.fromEmail || "not set"})`);
+    return cachedConnectorCreds;
+  } catch (err: any) {
+    log(`[EMAIL CONFIG] Connector fetch failed: ${err.message} — falling back to env vars`);
+    return null;
+  }
+}
+
+async function getEmailConfigAsync() {
+  const connector = await getConnectorCredentials();
+
+  const apiKey = connector?.apiKey || process.env.RESEND_API_KEY;
+  const fromEmail = process.env.RESEND_FROM_EMAIL || connector?.fromEmail || "";
+  const replyTo = process.env.RESEND_REPLY_TO || "no-reply@housalert.com";
+
+  if (!apiKey) {
+    throw new Error("[EMAIL CONFIG] No Resend API key available (neither connector nor RESEND_API_KEY env var)");
+  }
+  if (!fromEmail) {
+    throw new Error("[EMAIL CONFIG] No from email available (neither RESEND_FROM_EMAIL nor connector from_email)");
+  }
+
+  const source = connector?.apiKey ? "connector" : "env";
+  log(`[EMAIL CONFIG] Using ${source} API key, from="${fromEmail}", replyTo="${replyTo}"`);
+
+  return {
+    from: `HousAlert <${fromEmail}>`,
+    replyTo,
+    apiKey,
+  };
+}
+
 function getEmailConfig() {
   const fromEmail = process.env.RESEND_FROM_EMAIL;
   const replyTo = process.env.RESEND_REPLY_TO;
@@ -35,7 +100,7 @@ interface FinalSendParams {
 
 async function finalEmailDispatch(client: Resend, params: FinalSendParams, category: string = "unknown"): Promise<{ data: any; error: any }> {
   const recipient = params.to.toLowerCase();
-  const config = getEmailConfig();
+  const config = await getEmailConfigAsync();
 
   let testMode = false;
   try {
@@ -50,7 +115,7 @@ async function finalEmailDispatch(client: Resend, params: FinalSendParams, categ
 
   log(`[FINAL SEND DISPATCH] recipient=${recipient} from="${config.from}" reply_to="${config.replyTo}" category=${category} subject="${params.subject.substring(0, 60)}" result=SEND`);
 
-  return client.emails.send({
+  const result = await client.emails.send({
     from: config.from,
     reply_to: config.replyTo,
     to: params.to,
@@ -58,6 +123,14 @@ async function finalEmailDispatch(client: Resend, params: FinalSendParams, categ
     text: params.text,
     html: params.html,
   });
+
+  if (result.error) {
+    log(`[FINAL SEND DISPATCH] PROVIDER ERROR — category=${category} to=${recipient} error=${(result.error as any).message} name=${(result.error as any).name || "unknown"} statusCode=${(result.error as any).statusCode || "N/A"}`);
+  } else if (result.data) {
+    log(`[FINAL SEND DISPATCH] PROVIDER OK — category=${category} to=${recipient} resend_id=${(result.data as any)?.id || "none"}`);
+  }
+
+  return result;
 }
 
 interface ListingInfo {
@@ -109,7 +182,7 @@ function sanitizeUrl(url: string | null | undefined): string | null {
 }
 
 async function getResendClient() {
-  const config = getEmailConfig();
+  const config = await getEmailConfigAsync();
   return new Resend(config.apiKey);
 }
 
@@ -320,7 +393,7 @@ export async function sendMatchAlert(
 <p style="margin:0 0 20px;font-size:14px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">${escapeHtml(t(lang, "email.matchFound"))}</p>
 ${listingCard(listing, true, undefined, lang)}`;
 
-    const senderConfig = getEmailConfig();
+    const senderConfig = await getEmailConfigAsync();
     log(`[EMAIL SEND] from="${senderConfig.from}" reply_to="${senderConfig.replyTo}" to="${userEmail}" subject="${subject}" lang=${lang} image=${listing.image_url ? listing.image_url.substring(0, 80) : "NO_IMAGE"}`);
 
     const { data, error } = await finalEmailDispatch(client, {
@@ -386,7 +459,7 @@ export async function sendBatchMatchAlert(
 ${htmlListings}`;
 
     const imageStats = listings.map((l, i) => `${i + 1}:${l.image_url ? l.image_url.substring(0, 80) : "NO_IMAGE"}`).join(" | ");
-    const senderConfig = getEmailConfig();
+    const senderConfig = await getEmailConfigAsync();
     log(`[EMAIL SEND] batch from="${senderConfig.from}" reply_to="${senderConfig.replyTo}" to="${userEmail}" count=${listings.length} lang=${lang} subject="${subject}"`);
     log(`[EMAIL IMAGES] ${imageStats}`);
 
@@ -415,7 +488,7 @@ export async function sendBuddyInvitationEmail(
   inviterName: string,
   lang: ServerLocale = "nl",
   inviteToken?: string
-): Promise<boolean> {
+): Promise<{ sent: boolean; error?: string }> {
   try {
     const client = await getResendClient();
     const baseUrl = getAppBaseUrl();
@@ -488,7 +561,7 @@ export async function sendBuddyInvitationEmail(
     const htmlContent = htmlBodies[lang] || htmlBodies.nl;
     const textBody = textBodies[lang] || textBodies.nl;
 
-    const senderConfig = getEmailConfig();
+    const senderConfig = await getEmailConfigAsync();
     log(`[EMAIL SEND] buddy-invite from="${senderConfig.from}" reply_to="${senderConfig.replyTo}" to="${buddyEmail}" inviter="${inviterName}" lang=${lang}`);
 
     const preheaders: Record<ServerLocale, string> = {
@@ -506,14 +579,14 @@ export async function sendBuddyInvitationEmail(
 
     if (error) {
       log(`[EMAIL FAIL] buddy-invite to=${buddyEmail} error=${error.message}`);
-      return false;
+      return { sent: false, error: error.message || "Email provider error" };
     }
 
     log(`[EMAIL OK] buddy-invite to=${buddyEmail} id=${(data as any)?.id || "N/A"}`);
-    return true;
+    return { sent: true };
   } catch (err: any) {
     log(`[EMAIL ERROR] buddy-invite to=${buddyEmail} err=${err.message}`);
-    return false;
+    return { sent: false, error: err.message || "Email send failed" };
   }
 }
 
@@ -695,15 +768,13 @@ export async function sendPasswordResetEmail(
 export async function sendControlledTestEmail(
   toEmail: string
 ): Promise<{ success: boolean; from: string; replyTo: string; to: string; resendId?: string; error?: string }> {
-  const config = getEmailConfig();
+  const config = await getEmailConfigAsync();
 
   log(`[ADMIN TEST EMAIL] Sending controlled test email — from="${config.from}" reply_to="${config.replyTo}" to="${toEmail}"`);
 
   const client = await getResendClient();
 
-  const { data, error } = await client.emails.send({
-    from: config.from,
-    reply_to: config.replyTo,
+  const { data, error } = await finalEmailDispatch(client, {
     to: toEmail,
     subject: "HousAlert email test",
     text: "This is a controlled production email test.",
@@ -714,7 +785,7 @@ export async function sendControlledTestEmail(
       "HousAlert email test",
       "en"
     ),
-  });
+  }, "admin-test");
 
   if (error) {
     log(`[ADMIN TEST EMAIL] FAILED — error=${(error as any).message} statusCode=${(error as any).statusCode || "N/A"}`);

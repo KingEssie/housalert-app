@@ -1828,6 +1828,8 @@ export const en: Record<string, any> = {
     inviteSent: "Invitation sent!",
     invitePending: "Invitation pending",
     inviteError: "Could not send invitation",
+    inviteCreatedEmailFailed: "Invitation created, but email could not be sent. Please check the email address.",
+    inviteInvalidEmail: "Invalid email address",
     inviteSubRequired: "An active subscription is required to invite a buddy",
     inviteSelf: "You cannot invite yourself",
     inviteMax: "You can only have one search buddy",

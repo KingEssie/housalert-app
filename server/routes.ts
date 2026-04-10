@@ -214,8 +214,10 @@ export async function registerRoutes(
         const lang = detectLanguageFromHeader(req.headers["accept-language"]);
         log(`[BUDDY INVITE] Sending email — to=${email} inviter="${inviterName}" lang=${lang} token=${result.relation.invite_token?.substring(0, 8)}...`);
         try {
-          emailSent = await sendBuddyInvitationEmail(email, inviterName, lang, result.relation.invite_token);
-          log(`[BUDDY INVITE] Email result — sent=${emailSent}`);
+          const emailResult = await sendBuddyInvitationEmail(email, inviterName, lang, result.relation.invite_token);
+          emailSent = emailResult.sent;
+          emailError = emailResult.error || null;
+          log(`[BUDDY INVITE] Email result — sent=${emailSent} error=${emailError || "none"}`);
         } catch (e: any) {
           emailError = e.message;
           log(`[BUDDY INVITE] Email EXCEPTION — ${e.message}`);

@@ -2513,6 +2513,8 @@ export const de: Record<string, any> = {
     inviteSent: "Einladung gesendet!",
     invitePending: "Einladung ausstehend",
     inviteError: "Einladung konnte nicht gesendet werden",
+    inviteCreatedEmailFailed: "Einladung erstellt, aber E-Mail konnte nicht gesendet werden. Überprüfe die E-Mail-Adresse.",
+    inviteInvalidEmail: "Ungültige E-Mail-Adresse",
     inviteSubRequired: "Ein aktives Abonnement ist erforderlich, um einen Buddy einzuladen",
     inviteSelf: "Du kannst dich nicht selbst einladen",
     inviteMax: "Du kannst nur einen Suchbuddy haben",

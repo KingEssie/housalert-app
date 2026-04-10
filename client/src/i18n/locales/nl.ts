@@ -2563,6 +2563,8 @@ export const nl: Record<string, any> = {
     inviteSent: "Uitnodiging verstuurd!",
     invitePending: "Uitnodiging in afwachting",
     inviteError: "Uitnodiging kon niet worden verstuurd",
+    inviteCreatedEmailFailed: "Uitnodiging aangemaakt, maar e-mail kon niet worden verzonden. Controleer het e-mailadres.",
+    inviteInvalidEmail: "Ongeldig e-mailadres",
     inviteSubRequired: "Een actief abonnement is vereist om een buddy uit te nodigen",
     inviteSelf: "Je kunt jezelf niet uitnodigen",
     inviteMax: "Je kunt maximaal één zoekbuddy hebben",
