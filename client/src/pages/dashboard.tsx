@@ -224,12 +224,12 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           <p className="text-[15px] font-semibold text-[#111111]">{t("searchProfiles.sectionTitle")}</p>
         </div>
         <div className="flex flex-col items-center text-center py-6 px-2">
-          <img src={EMPTY_STATE_IMAGES.createSearch} alt="" className="w-[180px] h-auto mb-6" draggable={false} />
-          <p className="text-[15px] font-bold text-[#000000] mb-1" data-testid="text-empty-title">Maak je eerste zoekprofiel aan</p>
-          <p className="text-[13px] text-[#334855] mb-5 leading-relaxed max-w-[260px]" data-testid="text-empty-subtitle">Stel je voorkeuren in en ontvang direct nieuwe woningen.</p>
+          <img src={EMPTY_STATE_IMAGES.createSearch} alt="" className="w-[72px] max-h-[72px] h-auto mb-5 object-contain" draggable={false} />
+          <p className="text-[16px] font-bold text-[#000000] mb-1" data-testid="text-empty-title">Maak je eerste zoekprofiel aan</p>
+          <p className="text-[14px] text-[#334855] mb-5 leading-relaxed max-w-[260px]" data-testid="text-empty-subtitle">Stel je voorkeuren in en ontvang direct nieuwe woningen.</p>
           <button
             onClick={() => navigate("/dashboard/searches/new")}
-            className="w-full h-[48px] rounded-full bg-ha-primary text-white font-semibold text-[15px] hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
+            className="w-full h-[48px] rounded-full bg-ha-primary text-white font-semibold text-[16px] hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
             data-testid="button-create-first-profile"
           >
             {t("searchProfiles.createFirst")}
@@ -807,13 +807,13 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
           })}
         </div>
       ) : (
-        <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-7 flex flex-col items-center text-center" data-testid="card-zoekopdrachten-empty">
-          <img src={EMPTY_STATE_IMAGES.createSearch} alt="" className="w-[200px] h-auto mb-6" draggable={false} />
+        <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-7 flex flex-col items-center justify-center text-center min-h-[calc(100dvh-260px)]" data-testid="card-zoekopdrachten-empty">
+          <img src={EMPTY_STATE_IMAGES.createSearch} alt="" className="w-[72px] max-h-[72px] h-auto mb-5 object-contain" draggable={false} />
           <p className="text-[20px] font-bold text-[#000000] mb-2">Maak je eerste zoekprofiel aan</p>
-          <p className="text-[15px] text-[#334855] mb-6 leading-relaxed max-w-[280px]">Stel je voorkeuren in en ontvang direct nieuwe woningen.</p>
+          <p className="text-[16px] text-[#334855] mb-6 leading-relaxed max-w-[280px]">Stel je voorkeuren in en ontvang direct nieuwe woningen.</p>
           <button
             onClick={() => navigate("/dashboard/searches/new")}
-            className="h-[48px] px-8 rounded-[12px] bg-ha-primary text-white text-[15px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
+            className="h-[48px] px-8 rounded-[12px] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
             data-testid="button-create-first-profile"
           >
             {t("home.createProfile")}

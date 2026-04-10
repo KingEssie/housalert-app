@@ -2279,6 +2279,7 @@ export const de: Record<string, any> = {
       month: "Monat",
       year: "Jahr",
       gender: "Geschlecht",
+      genderPlaceholder: "Geschlecht wählen",
       genderOptions: {
         male: "Männlich",
         female: "Weiblich",
@@ -2291,6 +2292,7 @@ export const de: Record<string, any> = {
     letterLiving: {
       title: "Wohnsituation",
       subtitle: "Damit erstellen wir dein persönliches Bewerbungsschreiben.",
+      selectPlaceholder: "Auswählen...",
       livingWith: "Mit wem wirst du wohnen?",
       livingOptions: {
         alone: "Allein",

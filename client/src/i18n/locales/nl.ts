@@ -2453,6 +2453,7 @@ export const nl: Record<string, any> = {
       month: "Maand",
       year: "Jaar",
       gender: "Geslacht",
+      genderPlaceholder: "Selecteer geslacht",
       genderOptions: {
         male: "Man",
         female: "Vrouw",
@@ -2465,6 +2466,7 @@ export const nl: Record<string, any> = {
     letterLiving: {
       title: "Woonsituatie",
       subtitle: "Hiermee maken we je persoonlijke reactiebrief.",
+      selectPlaceholder: "Selecteer...",
       livingWith: "Met wie ga je wonen?",
       livingOptions: {
         alone: "Alleen",

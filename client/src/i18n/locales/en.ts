@@ -1718,6 +1718,7 @@ export const en: Record<string, any> = {
       month: "Month",
       year: "Year",
       gender: "Gender",
+      genderPlaceholder: "Select gender",
       genderOptions: {
         male: "Male",
         female: "Female",
@@ -1730,6 +1731,7 @@ export const en: Record<string, any> = {
     letterLiving: {
       title: "Living situation",
       subtitle: "This helps us create your personalised application letter.",
+      selectPlaceholder: "Select...",
       livingWith: "Who will you be living with?",
       livingOptions: {
         alone: "Alone",
