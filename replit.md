@@ -145,18 +145,20 @@ A mobile-first rental alert application for the German market. Users can sign up
 - **i18n**: `funnel.*` keys in all 3 locale files (nl/de/en).
 - **Data persistence**: Each funnel step saves via `PUT /api/profile-data` (personal info, housing situation, extras, application letter, buddy email). Paywall uses `POST /api/checkout/session`.
 
-## Search Buddy Feature
-- **What**: Users can add a "Zoekbuddy" (search buddy) email so a partner/friend also receives match alerts
-- **Simple rule**: buddy email present = ON, buddy email removed = OFF. No separate toggle in UI.
-- **Data**: `user_profile_data` table in Replit PG has `search_buddy_email` (TEXT) and `search_buddy_enabled` (BOOLEAN, auto-synced)
-- **UI**: Dashboard shows buddy email + "Ontvangt automatisch match-mails" helper text. Edit page explains automatic behavior.
-- **Admin portal**: User list shows "Buddy" badge + email. User detail view shows Search Buddy status + email.
-- **Notification pipeline**: `server/notifications/buffer.ts` makes independent recipient decisions:
-  - Main user: subscription active + `email_enabled` = true
-  - Buddy: subscription active + buddy email exists + not same as main email
-- **Anti-retroactive**: Buddy follows same anti-retroactive rules (premiumStartedAt filter)
-- **Duplicate prevention**: If buddy email = main user email, only one email is sent
-- **Logging**: All buddy decisions logged with clear skip reasons
+## Search Buddy Feature (V2 — Active System)
+- **Architecture**: V2 buddy system uses `search_profile_buddies` table with invite/accept flow
+- **Table**: `search_profile_buddies` — `owner_user_id`, `buddy_user_id`, `invite_email`, `invite_token`, `invite_status`, `role`, `email_notifications_enabled`, `push_notifications_enabled`
+- **Max 1 active buddy** per owner; stale pending records auto-revoked when inviting new email
+- **Buddy accept page**: `/buddy/accept?token=...` — auto-detects signup vs login, email prefilled
+- **Notification pipeline**: V2 buddy emails sent via `getOwnerBuddyRelation()` in `server/notifications/buffer.ts`
+- **Admin portal**: User list shows role badges (Owner/Buddy/O+B). User detail view shows diagnostics panel with role, buddy connections, match/email stats, hasAccess.
+
+### Legacy Buddy System (DEPRECATED)
+- **Fields**: `search_buddy_email`, `search_buddy_enabled`, `search_buddy_status` in `user_profile_data`
+- **Status**: DEPRECATED — `getSearchBuddyInfo()` and `cleanupStaleBuddyData()` return null/0 immediately
+- **V2 system handles all buddy email/push sending** — legacy email forwarding disabled to prevent duplicates
+- **Frontend**: Some UI pages still reference `search_buddy_email` for display/edit (dashboard, profile-edit, settings, onboarding/setup). These are safe but should be migrated to V2 in a future cleanup.
+- **Admin portal**: Legacy buddy email shown with "deprecated" amber warning in user diagnostics
 
 ## Referral System
 - **Database**: `referrals` table in Replit PG + `referral_code`, `referred_by_code`, `referral_applied_at` columns on `user_profile_data`
@@ -390,9 +392,9 @@ A mobile-first rental alert application for the German market. Users can sign up
   2. **Listings**: Paginated listing table with city/source filters. Actions: inline edit (title, price, image_url), delete with confirmation dialog, view detail page, external link
   3. **Images**: Image coverage audit per source with progress bars. Backfill pipeline status (enabled/running/batch size/total updated/recent runs/recovery stats). Actions: trigger full backfill, per-source backfill, per-listing retry image extraction, manually set image_url
   4. **Sources**: Source health monitor with status/city filters. Metrics: active vs broken sources, total listings found, last run duration. Actions: per-source image backfill trigger
-  5. **Users**: Searchable user list with subscription status filters. User detail view with profile, subscription, search profiles, recent matches, cancellation feedback. Actions: extend trial (3/7/14/30 days), change plan (monthly/two_month/three_month), deactivate user
+  5. **Users**: Searchable user list with subscription status filters + role badges (Owner/Buddy/O+B). User detail view with profile, diagnostics panel (role, buddy connections, matches/emails 24h, hasAccess, legacy buddy warning), subscription, search profiles, recent matches, cancellation feedback. Actions: extend trial (3/7/14/30 days), change plan (monthly/two_month/three_month), deactivate user
   6. **Subscriptions**: Paginated subscription list with status filters, Stripe dashboard links
-  7. **System**: Service health checks (Stripe, Places API, Ingestion, Email, Push, DBs). Delivery stats (emails/push today, failures 7d). Image backfill pipeline detailed status with recent runs
+  7. **System**: Service health checks (Stripe, Places API, Ingestion, Email, Push, DBs). Split delivery stats: emails today, push today, real failures 7d, skipped (no sub) 7d. Image backfill pipeline detailed status with recent runs
 - **API endpoints** (all `/api/admin/portal/*`, `requireAdmin`):
   - `GET /overview` — aggregated KPIs
   - `GET /users?search=&filter=&page=&limit=` — paginated user list

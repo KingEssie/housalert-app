@@ -27,27 +27,8 @@ async function getEmailResumeAfter(userId: string): Promise<Date | null> {
 }
 
 export async function cleanupStaleBuddyData(): Promise<number> {
-  try {
-    const result = await pgPool.query(
-      `UPDATE user_profile_data
-       SET search_buddy_email = NULL
-       WHERE search_buddy_email IS NOT NULL
-         AND (search_buddy_status IS NULL OR search_buddy_status != 'active' OR search_buddy_enabled = false)
-       RETURNING user_id, search_buddy_email, search_buddy_status, search_buddy_enabled`
-    );
-    if (result.rowCount && result.rowCount > 0) {
-      for (const row of result.rows) {
-        log(`[BUDDY CLEANUP] Nulled stale buddy email for userId=${row.user_id.substring(0, 8)}... (was: ${row.search_buddy_email}, status=${row.search_buddy_status}, enabled=${row.search_buddy_enabled})`);
-      }
-      log(`[BUDDY CLEANUP] Cleaned ${result.rowCount} stale buddy email(s)`);
-    } else {
-      log(`[BUDDY CLEANUP] No stale buddy data found`);
-    }
-    return result.rowCount || 0;
-  } catch (err: any) {
-    log(`[BUDDY CLEANUP] Error: ${err.message}`);
-    return 0;
-  }
+  log(`[BUDDY CLEANUP DEPRECATED] Legacy search_buddy_email cleanup skipped — V2 buddy system is active`);
+  return 0;
 }
 
 const MAX_LISTINGS_PER_EMAIL = 20;
@@ -143,34 +124,8 @@ interface BuddyInfo {
 }
 
 async function getSearchBuddyInfo(userId: string): Promise<BuddyInfo | null> {
-  try {
-    const { rows } = await pgPool.query(
-      "SELECT search_buddy_email, search_buddy_enabled, search_buddy_status, search_buddy_removed_at FROM user_profile_data WHERE user_id = $1 LIMIT 1",
-      [userId]
-    );
-    if (!rows[0]) return null;
-    const email = rows[0].search_buddy_email?.trim();
-    if (!email) return null;
-    const enabled = rows[0].search_buddy_enabled === true;
-    const status: BuddyStatus = rows[0].search_buddy_status || "removed";
-    const removedAt = rows[0].search_buddy_removed_at;
-
-    if (status !== "active") {
-      log(`[BUDDY INFO] userId=${userId.substring(0, 8)}... email=${email} status=${status} enabled=${enabled} removedAt=${removedAt || "N/A"} — NOT ACTIVE, returning null for safety`);
-      return null;
-    }
-
-    if (!enabled) {
-      log(`[BUDDY INFO] userId=${userId.substring(0, 8)}... email=${email} status=${status} enabled=false — DISABLED, returning null for safety`);
-      return null;
-    }
-
-    log(`[BUDDY INFO] userId=${userId.substring(0, 8)}... email=${email} status=${status} enabled=${enabled} — eligible for further checks`);
-    return { email, enabled, status };
-  } catch (err: any) {
-    log(`[ALERTS] Failed to fetch buddy info for ${userId.substring(0, 8)}...: ${err.message}`);
-    return null;
-  }
+  log(`[BUDDY INFO DEPRECATED] userId=${userId.substring(0, 8)}... — legacy search_buddy_email lookup skipped (V2 buddy system is active)`);
+  return null;
 }
 
 interface BuddyEligibility {

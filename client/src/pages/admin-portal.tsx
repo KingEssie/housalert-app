@@ -196,15 +196,17 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
         <div className={`${CARD} p-4 space-y-3`}>
           {[
             { label: "Matches today", value: data.matchesToday },
-            { label: "Emails sent", value: data.emailsToday },
+            { label: "Emails sent", value: data.emailsToday, color: "text-emerald-600" },
+            { label: "Emails skipped (no sub)", value: data.emailsSkippedNoSub ?? 0, color: "text-[#334855]" },
+            { label: "Real email failures", value: data.emailRealFailures ?? 0, color: (data.emailRealFailures ?? 0) > 0 ? "text-ha-danger" : "text-[#334855]" },
             { label: "Push sent", value: data.pushesToday },
             { label: "Signups this week", value: data.signupsWeek },
             { label: "Listings this week", value: data.listingsWeek },
             { label: "Matches this week", value: data.matchesWeek },
-          ].map(({ label, value }) => (
+          ].map(({ label, value, color }) => (
             <div key={label} className="flex items-center justify-between text-[13px]">
               <span className="text-[#334855]">{label}</span>
-              <span className="font-semibold text-[#111]">{value}</span>
+              <span className={`font-semibold ${color || "text-[#111]"}`}>{value}</span>
             </div>
           ))}
         </div>
@@ -909,7 +911,7 @@ function SourcesTab() {
 }
 
 function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: () => void; onRefresh: () => void }) {
-  const { profile, subscription, searchProfiles, recentMatches, cancellationFeedback, notificationSettings } = detail;
+  const { profile, subscription, searchProfiles, recentMatches, cancellationFeedback, notificationSettings, diagnostics } = detail;
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [trialDays, setTrialDays] = useState("7");
 
@@ -982,6 +984,42 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
           <div><span className="text-[#334855] text-[11px] break-all">{profile?.user_id || ""}</span></div>
         </div>
       </div>
+
+      {diagnostics && (
+        <div className={`${CARD} p-5`}>
+          <h3 className="text-[16px] font-bold text-[#111] mb-3">Diagnostics</h3>
+          <div className="space-y-2.5 text-[13px]">
+            <div className="flex justify-between items-center">
+              <span className="text-[#334855]">Role</span>
+              <Badge variant="secondary" className={`text-[10px] ${diagnostics.accountRole === "owner" ? "bg-ha-primary/10 text-ha-primary" : diagnostics.accountRole === "buddy" ? "bg-blue-50 text-blue-700" : diagnostics.accountRole === "both" ? "bg-purple-50 text-purple-700" : "bg-gray-100 text-gray-500"}`}>
+                {diagnostics.accountRole === "owner" ? "Owner" : diagnostics.accountRole === "buddy" ? "Buddy" : diagnostics.accountRole === "both" ? "Owner + Buddy" : "No role"}
+              </Badge>
+            </div>
+            <div className="flex justify-between"><span className="text-[#334855]">Search profiles</span><span className="font-medium text-[#111]">{diagnostics.searchProfileCount}</span></div>
+            <div className="flex justify-between"><span className="text-[#334855]">Matches (24h)</span><span className="font-medium text-[#111]">{diagnostics.matchesLast24h}</span></div>
+            <div className="flex justify-between"><span className="text-[#334855]">Emails sent (24h)</span><span className="font-medium text-[#111]">{diagnostics.emailsSentLast24h}</span></div>
+            <div className="flex justify-between"><span className="text-[#334855]">hasAccess</span><span className={`font-medium ${subscription?.hasAccess ? "text-emerald-600" : "text-ha-danger"}`}>{subscription?.hasAccess ? "Yes" : "No"}</span></div>
+            {diagnostics.buddyConnections?.asOwner && (
+              <div className="p-2.5 bg-[#F7F7F7] rounded-xl">
+                <p className="text-[11px] font-semibold text-[#334855] mb-1">Buddy (as owner)</p>
+                <p className="text-[12px] text-[#111]">{diagnostics.buddyConnections.asOwner.invite_email} — {diagnostics.buddyConnections.asOwner.invite_status}</p>
+              </div>
+            )}
+            {diagnostics.buddyConnections?.asBuddy?.length > 0 && diagnostics.buddyConnections.asBuddy.map((b: any, i: number) => (
+              <div key={i} className="p-2.5 bg-[#F7F7F7] rounded-xl">
+                <p className="text-[11px] font-semibold text-[#334855] mb-1">Owner (as buddy)</p>
+                <p className="text-[12px] text-[#111]">{b.owner_name || b.owner_user_id?.substring(0, 8)} — {b.invite_status}</p>
+              </div>
+            ))}
+            {diagnostics.legacyBuddyEmail && (
+              <div className="p-2.5 bg-amber-50 rounded-xl">
+                <p className="text-[11px] font-semibold text-amber-700 mb-0.5">Legacy buddy email (deprecated)</p>
+                <p className="text-[12px] text-amber-900">{diagnostics.legacyBuddyEmail}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {subscription && (
         <div className={`${CARD} p-5`}>
@@ -1177,7 +1215,14 @@ function UsersTab() {
                 <p className="text-[11px] text-[#334855] truncate">{u.email || u.user_id?.substring(0, 8)} · {u.searchProfileCount || 0} profiles · {u.matchCount || 0} matches</p>
               </div>
               <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                {u.subscription ? <StatusBadge status={u.subscription.status} /> : <span className="text-[11px] text-[#334855]">No sub</span>}
+                <div className="flex gap-1 items-center">
+                  {u.role && u.role !== "user" && (
+                    <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${u.role === "owner" ? "bg-ha-primary/10 text-ha-primary" : u.role === "buddy" ? "bg-blue-50 text-blue-700" : "bg-purple-50 text-purple-700"}`}>
+                      {u.role === "both" ? "O+B" : u.role.charAt(0).toUpperCase() + u.role.slice(1)}
+                    </span>
+                  )}
+                  {u.subscription ? <StatusBadge status={u.subscription.status} /> : <span className="text-[11px] text-[#334855]">No sub</span>}
+                </div>
                 <span className="text-[10px] text-[#334855]">{u.created_at ? new Date(u.created_at).toLocaleDateString() : ""}</span>
               </div>
               <ChevronRight className="w-4 h-4 text-gray-200 flex-shrink-0" />
@@ -1321,10 +1366,11 @@ function SystemTab() {
       {matchStats && (
         <div>
           <SectionHeader title="Delivery today" />
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             <MetricCard label="Emails" value={matchStats.emailsToday} icon={Mail} />
             <MetricCard label="Push" value={matchStats.pushesToday} icon={Smartphone} />
-            <MetricCard label="Failures 7d" value={matchStats.failuresWeek} icon={AlertTriangle} />
+            <MetricCard label="Real failures 7d" value={matchStats.emailFailuresWeek ?? matchStats.failuresWeek} icon={AlertTriangle} />
+            <MetricCard label="Skipped (no sub) 7d" value={matchStats.emailSkippedNoSubWeek ?? 0} icon={XCircle} />
           </div>
         </div>
       )}
@@ -1494,10 +1540,11 @@ function AlertsTab() {
       </div>
 
       {stats && (
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <MetricCard label="Emails today" value={stats.emailsToday} icon={Mail} />
           <MetricCard label="Push today" value={stats.pushToday} icon={Smartphone} />
-          <MetricCard label="Undelivered 7d" value={stats.undelivered7d} icon={AlertTriangle} />
+          <MetricCard label="Real failures 7d" value={stats.undelivered7d} icon={AlertTriangle} />
+          <MetricCard label="Skipped (no sub) 7d" value={stats.skippedNoSub7d ?? 0} icon={XCircle} />
         </div>
       )}
 

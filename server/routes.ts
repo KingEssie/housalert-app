@@ -5367,7 +5367,7 @@ export async function registerRoutes(
         const [activeSubsRes, trialSubsRes, allSubsRes] = await Promise.all([
           supabase.from("subscriptions").select("id", { count: "exact", head: true }).eq("status", "active"),
           supabase.from("subscriptions").select("id", { count: "exact", head: true }).eq("status", "trial"),
-          supabase.from("subscriptions").select("status, plan"),
+          supabase.from("subscriptions").select("user_id, status, plan, trial_ends_at, current_period_ends_at"),
         ]);
         activeSubscriptions = activeSubsRes.count ?? 0;
         trialUsers = trialSubsRes.count ?? 0;
@@ -5395,9 +5395,33 @@ export async function registerRoutes(
         log(`[admin-portal] Overview: listings/matches query failed: ${e.message}`);
       }
 
+      let emailsSkippedNoSubVal = 0;
+      let emailRealFailuresVal = 0;
       try {
         const eRes = await pgPool.query("SELECT COUNT(*) FROM user_matches WHERE email_sent = true AND matched_at >= $1", [todayStart]);
         emailsTodayVal = parseInt(eRes.rows[0]?.count || "0");
+
+        const now = new Date();
+        const activeSubUserIds = new Set<string>();
+        for (const s of allSubs) {
+          const isTrial = s.status === "trial" && s.trial_ends_at && new Date(s.trial_ends_at) > now;
+          const isActive = s.status === "active" && (!s.current_period_ends_at || new Date(s.current_period_ends_at) > now);
+          const isPastDue = s.status === "past_due";
+          const canceledActive = s.status === "canceled" && s.current_period_ends_at && new Date(s.current_period_ends_at) > now;
+          if (isTrial || isActive || isPastDue || canceledActive) activeSubUserIds.add(s.user_id);
+        }
+        const unsent = await pgPool.query(
+          `SELECT user_id, COUNT(*) as cnt FROM user_matches WHERE email_sent = false AND matched_at >= $1 AND visible_in_app = true GROUP BY user_id`,
+          [todayStart]
+        );
+        for (const row of unsent.rows) {
+          const cnt = parseInt(row.cnt);
+          if (activeSubUserIds.has(row.user_id)) {
+            emailRealFailuresVal += cnt;
+          } else {
+            emailsSkippedNoSubVal += cnt;
+          }
+        }
       } catch (e: any) {
         log(`[admin-portal] Overview: email count failed: ${e.message}`);
       }
@@ -5434,6 +5458,8 @@ export async function registerRoutes(
         listingsToday,
         matchesToday,
         emailsToday: emailsTodayVal,
+        emailsSkippedNoSub: emailsSkippedNoSubVal,
+        emailRealFailures: emailRealFailuresVal,
         pushesToday: pushesTodayVal,
         signupsWeek: signupsWeekVal,
         listingsWeek: listingsWeekVal,
@@ -5479,11 +5505,13 @@ export async function registerRoutes(
         return res.json({ users: [], total: search ? 0 : totalUsers, page, limit });
       }
 
-      const [profilesRes, subsRes, profilesCountRes, matchCountRes] = await Promise.all([
+      const [profilesRes, subsRes, profilesCountRes, matchCountRes, buddyOwnerRes, buddyBuddyRes] = await Promise.all([
         pgPool.query(`SELECT * FROM user_profile_data WHERE user_id = ANY($1::uuid[])`, [userIds]),
         supabase.from("subscriptions").select("user_id, status, plan, trial_ends_at, current_period_ends_at").in("user_id", userIds),
         supabase.from("search_profiles").select("user_id").in("user_id", userIds),
         pgPool.query(`SELECT user_id, COUNT(*) as cnt FROM user_matches WHERE user_id = ANY($1::uuid[]) GROUP BY user_id`, [userIds]),
+        pgPool.query(`SELECT DISTINCT owner_user_id FROM search_profile_buddies WHERE owner_user_id = ANY($1::uuid[]) AND invite_status IN ('pending', 'accepted')`, [userIds]).catch(() => ({ rows: [] })),
+        pgPool.query(`SELECT DISTINCT buddy_user_id FROM search_profile_buddies WHERE buddy_user_id = ANY($1::uuid[]) AND invite_status IN ('pending', 'accepted')`, [userIds]).catch(() => ({ rows: [] })),
       ]);
 
       const profileMap: Record<string, any> = {};
@@ -5498,9 +5526,17 @@ export async function registerRoutes(
       const matchCountMap: Record<string, number> = {};
       for (const m of matchCountRes.rows) matchCountMap[m.user_id] = parseInt(m.cnt);
 
+      const ownerSet = new Set<string>();
+      for (const r of buddyOwnerRes.rows) ownerSet.add(r.owner_user_id);
+      const buddySet = new Set<string>();
+      for (const r of buddyBuddyRes.rows) buddySet.add(r.buddy_user_id);
+
       let users = filteredAuth.map((authUser: any) => {
         const profile = profileMap[authUser.id];
         const meta = authUser.user_metadata || {};
+        const isOwner = ownerSet.has(authUser.id) || (profileCountMap[authUser.id] || 0) > 0;
+        const isBuddy = buddySet.has(authUser.id);
+        const role = isOwner && isBuddy ? "both" : isOwner ? "owner" : isBuddy ? "buddy" : "user";
         return {
           user_id: authUser.id,
           first_name: profile?.first_name || meta.first_name || null,
@@ -5513,6 +5549,7 @@ export async function registerRoutes(
           subscription: subsMap[authUser.id] || null,
           searchProfileCount: profileCountMap[authUser.id] || 0,
           matchCount: matchCountMap[authUser.id] || 0,
+          role,
         };
       });
 
@@ -5553,6 +5590,42 @@ export async function registerRoutes(
       } catch {}
 
       const notifsRes = await supabase.from("user_notification_settings").select("*").eq("user_id", userId).maybeSingle();
+
+      let buddyConnections: { asOwner: any; asBuddy: any[] } = { asOwner: null, asBuddy: [] };
+      let accountRole: "owner" | "buddy" | "both" | "none" = "none";
+      try {
+        const ownerRes = await pgPool.query(
+          `SELECT spb.*, upd.first_name || ' ' || upd.last_name AS buddy_name
+           FROM search_profile_buddies spb
+           LEFT JOIN user_profile_data upd ON spb.buddy_user_id = upd.user_id
+           WHERE spb.owner_user_id = $1 AND spb.invite_status IN ('pending', 'accepted')
+           ORDER BY spb.created_at DESC LIMIT 1`, [userId]
+        );
+        const buddyRes = await pgPool.query(
+          `SELECT spb.*, upd.first_name || ' ' || upd.last_name AS owner_name
+           FROM search_profile_buddies spb
+           LEFT JOIN user_profile_data upd ON spb.owner_user_id = upd.user_id
+           WHERE spb.buddy_user_id = $1 AND spb.invite_status IN ('pending', 'accepted')
+           ORDER BY spb.created_at DESC`, [userId]
+        );
+        buddyConnections.asOwner = ownerRes.rows[0] || null;
+        buddyConnections.asBuddy = buddyRes.rows;
+        const isOwner = !!buddyConnections.asOwner || (searchProfilesRes.data || []).length > 0;
+        const isBuddy = buddyConnections.asBuddy.length > 0;
+        accountRole = isOwner && isBuddy ? "both" : isOwner ? "owner" : isBuddy ? "buddy" : "none";
+      } catch (e: any) {
+        log(`[admin-portal] Buddy connections query failed: ${e.message}`);
+      }
+
+      let matchesLast24h = 0;
+      let emailsSentLast24h = 0;
+      try {
+        const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+        const m24 = await pgPool.query("SELECT COUNT(*) FROM user_matches WHERE user_id = $1 AND matched_at >= $2", [userId, dayAgo]);
+        matchesLast24h = parseInt(m24.rows[0]?.count || "0");
+        const e24 = await pgPool.query("SELECT COUNT(*) FROM user_matches WHERE user_id = $1 AND email_sent = true AND email_sent_at >= $2", [userId, dayAgo]);
+        emailsSentLast24h = parseInt(e24.rows[0]?.count || "0");
+      } catch {}
 
       const authUser = authUserRes.data?.user || null;
       let pgProfile = profileRes.rows[0] || null;
@@ -5618,6 +5691,8 @@ export async function registerRoutes(
         log(`[admin-portal] User detail sub: DB status=${s.status}, computedStatus=${computedStatus}, hasAccess=${hasAccess}`);
       }
 
+      const legacyBuddyEmail = pgProfile?.search_buddy_email || null;
+
       res.json({
         profile,
         subscription,
@@ -5625,6 +5700,14 @@ export async function registerRoutes(
         recentMatches: recentMatchesRes.rows,
         cancellationFeedback,
         notificationSettings: notifsRes.data || null,
+        diagnostics: {
+          accountRole,
+          buddyConnections,
+          matchesLast24h,
+          emailsSentLast24h,
+          searchProfileCount: (searchProfilesRes.data || []).length,
+          legacyBuddyEmail,
+        },
       });
     } catch (err: any) {
       log(`[admin-portal] User detail error: ${err.message}`);
@@ -5812,6 +5895,30 @@ export async function registerRoutes(
         failuresWeek = failRes.count ?? 0;
       } catch {}
 
+      let emailFailuresWeek = 0;
+      let emailSkippedNoSubWeek = 0;
+      try {
+        const now = new Date();
+        const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+        const unsentRes = await pgPool.query(
+          `SELECT user_id, COUNT(*) as cnt FROM user_matches WHERE email_sent = false AND matched_at >= $1 AND visible_in_app = true GROUP BY user_id`,
+          [weekAgo]
+        );
+        const subRes = await supabase.from("subscriptions").select("user_id, status, trial_ends_at, current_period_ends_at");
+        const activeIds = new Set<string>();
+        for (const s of (subRes.data || [])) {
+          const isTrial = s.status === "trial" && s.trial_ends_at && new Date(s.trial_ends_at) > now;
+          const isActive = s.status === "active" && (!s.current_period_ends_at || new Date(s.current_period_ends_at) > now);
+          const canceledActive = s.status === "canceled" && s.current_period_ends_at && new Date(s.current_period_ends_at) > now;
+          if (isTrial || isActive || canceledActive) activeIds.add(s.user_id);
+        }
+        for (const row of unsentRes.rows) {
+          const cnt = parseInt(row.cnt);
+          if (activeIds.has(row.user_id)) emailFailuresWeek += cnt;
+          else emailSkippedNoSubWeek += cnt;
+        }
+      } catch {}
+
       res.json({
         matches: matchesRes.rows,
         total: parseInt(countRes.rows[0]?.count || "0"),
@@ -5821,6 +5928,8 @@ export async function registerRoutes(
           emailsToday: parseInt(emailsTodayRes.rows[0]?.count || "0"),
           pushesToday: parseInt(pushesTodayRes.rows[0]?.count || "0"),
           failuresWeek,
+          emailFailuresWeek,
+          emailSkippedNoSubWeek,
         },
       });
     } catch (err: any) {
@@ -6177,19 +6286,50 @@ export async function registerRoutes(
 
       try {
         const todayStart = new Date(now); todayStart.setHours(0, 0, 0, 0);
-        const totalEmailRes = await pgPool.query(
-          `SELECT COUNT(*) AS total,
-                  COUNT(*) FILTER (WHERE email_sent = false AND matched_at >= $1) AS failed
-           FROM user_matches WHERE matched_at >= $1`,
+        const activeSubUserIds = new Set<string>();
+        try {
+          const subRes = await supabase.from("subscriptions").select("user_id, status, trial_ends_at, current_period_ends_at");
+          for (const s of (subRes.data || [])) {
+            const isTrial = s.status === "trial" && s.trial_ends_at && new Date(s.trial_ends_at) > now;
+            const isActive = s.status === "active" && (!s.current_period_ends_at || new Date(s.current_period_ends_at) > now);
+            const isPastDue = s.status === "past_due";
+            const canceledActive = s.status === "canceled" && s.current_period_ends_at && new Date(s.current_period_ends_at) > now;
+            if (isTrial || isActive || isPastDue || canceledActive) activeSubUserIds.add(s.user_id);
+          }
+        } catch {}
+
+        const emailMetricsRes = await pgPool.query(
+          `SELECT user_id, email_sent FROM user_matches WHERE matched_at >= $1 AND visible_in_app = true`,
           [todayStart.toISOString()]
         );
-        const total = parseInt(totalEmailRes.rows[0]?.total || "0", 10);
-        const failed = parseInt(totalEmailRes.rows[0]?.failed || "0", 10);
-        if (total > 10 && (failed / total) > 0.05) {
+        let emailsSent = 0;
+        let skippedNoSub = 0;
+        let realFailures = 0;
+        for (const row of emailMetricsRes.rows) {
+          if (row.email_sent) {
+            emailsSent++;
+          } else if (!activeSubUserIds.has(row.user_id)) {
+            skippedNoSub++;
+          } else {
+            realFailures++;
+          }
+        }
+        const totalMatches = emailMetricsRes.rows.length;
+
+        if (realFailures > 0) {
           alerts.push({
             type: "email_failure",
-            severity: "warning",
-            message: `Email delivery failure rate ${Math.round((failed / total) * 100)}% (${failed}/${total})`,
+            severity: realFailures > 5 ? "critical" : "warning",
+            message: `${realFailures} real email delivery failure${realFailures !== 1 ? "s" : ""} today (provider errors)`,
+            timestamp: now.toISOString(),
+          });
+        }
+
+        if (skippedNoSub > 0) {
+          alerts.push({
+            type: "email_skipped",
+            severity: "info",
+            message: `${skippedNoSub} match email${skippedNoSub !== 1 ? "s" : ""} skipped (no active subscription) · ${emailsSent} sent successfully`,
             timestamp: now.toISOString(),
           });
         }
@@ -6856,9 +6996,33 @@ export async function registerRoutes(
       const pushToday = await pgPool.query(
         "SELECT COUNT(*) FROM user_matches WHERE push_sent = true AND push_sent_at >= CURRENT_DATE"
       );
-      const failedThisWeek = await pgPool.query(
-        "SELECT COUNT(*) FROM user_matches WHERE email_sent = false AND matched_at >= NOW() - INTERVAL '7 days' AND visible_in_app = true"
+      const unsentWeek = await pgPool.query(
+        "SELECT user_id, COUNT(*) as cnt FROM user_matches WHERE email_sent = false AND matched_at >= NOW() - INTERVAL '7 days' AND visible_in_app = true GROUP BY user_id"
       );
+
+      let realFailures7d = 0;
+      let skippedNoSub7d = 0;
+      try {
+        const now = new Date();
+        const subRes = await supabase.from("subscriptions").select("user_id, status, trial_ends_at, current_period_ends_at");
+        const activeIds = new Set<string>();
+        for (const s of (subRes.data || [])) {
+          const isTrial = s.status === "trial" && s.trial_ends_at && new Date(s.trial_ends_at) > now;
+          const isActive = s.status === "active" && (!s.current_period_ends_at || new Date(s.current_period_ends_at) > now);
+          const isPastDue = s.status === "past_due";
+          const canceledActive = s.status === "canceled" && s.current_period_ends_at && new Date(s.current_period_ends_at) > now;
+          if (isTrial || isActive || isPastDue || canceledActive) activeIds.add(s.user_id);
+        }
+        for (const row of unsentWeek.rows) {
+          const cnt = parseInt(row.cnt);
+          if (activeIds.has(row.user_id)) realFailures7d += cnt;
+          else skippedNoSub7d += cnt;
+        }
+      } catch {
+        for (const row of unsentWeek.rows) {
+          realFailures7d += parseInt(row.cnt);
+        }
+      }
 
       res.json({
         recentActivity: recentEmails.rows.map((r: any) => ({
@@ -6872,7 +7036,8 @@ export async function registerRoutes(
         stats: {
           emailsToday: parseInt(emailsToday.rows[0].count),
           pushToday: parseInt(pushToday.rows[0].count),
-          undelivered7d: parseInt(failedThisWeek.rows[0].count),
+          undelivered7d: realFailures7d,
+          skippedNoSub7d,
         },
       });
     } catch (err: any) {

@@ -1,0 +1,170 @@
+We need to clean up account confusion, legacy buddy data, and misleading admin metrics in HousAlert.
+
+The goal is to make the system easier to understand, remove old buddy leftovers, and make admin reporting accurate.
+
+==================================================
+GOAL
+==================================================
+
+Clean up:
+1. legacy buddy data
+2. account confusion between owner and buddy
+3. misleading admin alert/reporting around email failures
+
+We now know the real current setup is:
+
+OWNER ACCOUNT
+- martin.essie87@gmail.com
+- active paid subscription
+- real search profiles
+- real matches
+- real email alerts
+
+BUDDY ACCOUNT
+- hello@boxbee.nl
+- buddy only
+- no own subscription
+- no own search profiles
+- no own match generation
+- only sees owner's matches in buddy mode
+
+LEGACY / OLD DATA
+- martin@boxbee.nl
+- not a real auth user
+- only appears as old legacy search_buddy_email data
+- should no longer affect the system
+
+==================================================
+1. REMOVE / IGNORE LEGACY BUDDY FIELDS
+==================================================
+
+Find all legacy buddy-related fields and logic from the old system, such as:
+- search_buddy_email
+- any old email-forwarding-only buddy logic
+- any UI that still reads from old buddy fields
+- any backend fallback logic tied to old buddy email storage
+
+Actions:
+- remove dead code where safe
+- if removal is risky, mark legacy fields as deprecated and fully ignore them in active logic
+- ensure only the new V2 buddy system is used
+
+Return exactly which legacy buddy fields and code paths were found.
+
+==================================================
+2. MAKE OWNER VS BUDDY SOURCE OF TRUTH CLEAR
+==================================================
+
+Ensure the system consistently treats:
+- martin.essie87@gmail.com as owner
+- hello@boxbee.nl as buddy
+- martin@boxbee.nl as not a real active app account
+
+Requirements:
+- no active logic should depend on martin@boxbee.nl
+- no UI should surface legacy buddy email fields
+- no backend decisions should depend on legacy buddy email values
+
+==================================================
+3. ADMIN METRICS CLEANUP
+==================================================
+
+The admin dashboard is currently misleading because:
+- skipped emails due to no active subscription are being counted like delivery failures
+
+This must be fixed.
+
+Split email reporting into separate categories:
+
+A. actual_email_failures
+Only count:
+- provider errors
+- send failures
+- bounced/rejected failures if applicable
+
+B. skipped_no_subscription
+Count separately when:
+- user has no active subscription
+- system intentionally does not send email
+
+C. sent_successfully
+Count successful sends separately
+
+D. optional: skipped_no_new_matches
+Optional if useful
+
+Update all admin cards / alerts / ratios so that:
+- "failure rate" only means real delivery/send failure
+- subscription skips are shown as a separate admin metric
+
+==================================================
+4. ADMIN ALERT TEXT CLEANUP
+==================================================
+
+Update alert copy so it reflects reality.
+
+Bad / misleading:
+- "Email delivery failure rate 74%" when most were intentionally skipped
+
+Good:
+- "54 emails skipped due to no active subscription"
+- "2 emails sent successfully"
+- "0 real provider failures"
+
+Make the language operationally accurate.
+
+==================================================
+5. ACCOUNT DIAGNOSTICS PANEL (OPTIONAL BUT RECOMMENDED)
+==================================================
+
+If feasible, add a simple admin detail view or diagnostic section per user showing:
+
+- email
+- role (owner / buddy / both)
+- subscription status
+- hasAccess
+- active search profiles count
+- matches in last 24h
+- email sends in last 24h
+- skips in last 24h
+- buddy connections
+
+This helps avoid confusion in future debugging.
+
+==================================================
+6. BUDDY / OWNER LABELING CLEANUP
+==================================================
+
+Where relevant in admin or diagnostics, clearly label:
+- owner account
+- buddy account
+- legacy/non-user email if applicable
+
+This is to avoid confusion between:
+- real auth users
+- legacy stored emails
+- accepted buddy relations
+
+==================================================
+7. SAFETY
+==================================================
+
+Do NOT break the current working buddy V2 system.
+
+Before deleting anything:
+- verify whether it is still referenced
+- prefer safe deprecation over destructive removal when uncertain
+
+==================================================
+8. OUTPUT
+==================================================
+
+After cleanup, return:
+
+1. Which files were changed
+2. Which legacy buddy fields/code paths were removed or deprecated
+3. Whether martin@boxbee.nl still affects anything
+4. How owner vs buddy is now determined
+5. How admin email metrics are now split
+6. Which misleading alerts/text were updated
+7. Any recommended next cleanup items
