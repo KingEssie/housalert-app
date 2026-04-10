@@ -264,7 +264,7 @@ export default function OnboardingPassword() {
 
           <div className="flex flex-col gap-2.5">
             <div>
-              <label className="text-[13px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[14px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
                 Voornaam
               </label>
               <input
@@ -280,7 +280,7 @@ export default function OnboardingPassword() {
             </div>
 
             <div>
-              <label className="text-[13px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[14px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
                 Achternaam
               </label>
               <input
@@ -295,7 +295,7 @@ export default function OnboardingPassword() {
             </div>
 
             <div>
-              <label className="text-[13px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[14px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
                 E-mailadres
               </label>
               <input
@@ -310,7 +310,7 @@ export default function OnboardingPassword() {
             </div>
 
             <div>
-              <label className="text-[13px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[14px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
                 Wachtwoord
               </label>
               <div className="relative">
@@ -345,7 +345,7 @@ export default function OnboardingPassword() {
               <button
                 type="button"
                 onClick={() => setShowReferral(true)}
-                className="flex items-center gap-2 text-[13px] py-1 transition-colors"
+                className="flex items-center gap-2 text-[14px] py-1 transition-colors"
                 style={{ color: OBW.textSecondary }}
                 data-testid="button-show-referral"
               >
@@ -354,7 +354,7 @@ export default function OnboardingPassword() {
               </button>
             ) : (
               <div>
-                <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: OBW.text }}>
+                <label className="text-[14px] font-semibold mb-1.5 block" style={{ color: OBW.text }}>
                   Empfehlungscode
                 </label>
                 <input
@@ -431,7 +431,7 @@ export default function OnboardingPassword() {
   const passwordFormContent = (
     <div className="flex flex-col gap-5">
       <div>
-        <label className="text-[13px] font-medium mb-1.5 block text-[#334855]">
+        <label className="text-[14px] font-medium mb-1.5 block text-[#334855]">
           {t("onboarding.password.label") || "Wachtwoord"}
         </label>
         <div className="relative">
@@ -466,7 +466,7 @@ export default function OnboardingPassword() {
         <button
           type="button"
           onClick={() => setShowReferral(true)}
-          className="flex items-center gap-2 text-[13px] py-1 transition-colors text-[#334855]"
+          className="flex items-center gap-2 text-[14px] py-1 transition-colors text-[#334855]"
           data-testid="button-show-referral"
         >
           <Gift className="w-4 h-4" />
@@ -474,7 +474,7 @@ export default function OnboardingPassword() {
         </button>
       ) : (
         <div>
-          <label className="text-[13px] font-medium mb-1.5 block text-[#334855]">
+          <label className="text-[14px] font-medium mb-1.5 block text-[#334855]">
             {t("referral.inputLabel") || "Aanbevelingscode"}
           </label>
           <div className="relative">

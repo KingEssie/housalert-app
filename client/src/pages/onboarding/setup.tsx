@@ -132,7 +132,7 @@ function PrimaryBtn({ onClick, children, loading, disabled, testId }: {
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className="w-full h-[56px] rounded-[6px] text-[15px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50"
+      className="w-full h-[56px] rounded-[6px] text-[16px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50"
       style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 15px rgba(217,26,104,0.2)" }}
       data-testid={testId}
     >
@@ -147,7 +147,7 @@ function SecondaryBtn({ onClick, children, testId }: {
   return (
     <button
       onClick={onClick}
-      className="w-full h-[56px] rounded-[6px] text-[15px] font-semibold transition-all active:scale-[0.97] border-2"
+      className="w-full h-[56px] rounded-[6px] text-[16px] font-semibold transition-all active:scale-[0.97] border-2"
       style={{ borderColor: "rgb(var(--ha-card-border))", color: TEXT_SECONDARY }}
       data-testid={testId}
     >
@@ -209,8 +209,8 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
               <Check className="w-3.5 h-3.5 text-[#111111]" />
             </div>
             <div>
-              <p className="text-[15px] font-semibold" style={{ color: TEXT_PRIMARY }}>{t(b.titleKey)}</p>
-              <p className="text-[13px] mt-0.5" style={{ color: TEXT_SECONDARY }}>{t(b.descKey)}</p>
+              <p className="text-[16px] font-semibold" style={{ color: TEXT_PRIMARY }}>{t(b.titleKey)}</p>
+              <p className="text-[14px] mt-0.5" style={{ color: TEXT_SECONDARY }}>{t(b.descKey)}</p>
             </div>
           </div>
         ))}
@@ -247,7 +247,7 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
                     {isSelected && <Check className="w-3 h-3 text-white" />}
                   </div>
                   <div>
-                    <p className="text-[15px] font-semibold" style={{ color: TEXT_PRIMARY }}>{plan.label}</p>
+                    <p className="text-[16px] font-semibold" style={{ color: TEXT_PRIMARY }}>{plan.label}</p>
                     <p className="text-[12px]" style={{ color: TEXT_SECONDARY }}>{plan.perMonth}</p>
                   </div>
                 </div>
@@ -274,7 +274,7 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
         </PrimaryBtn>
         <button
           onClick={onSkip}
-          className="w-full text-center text-[13px] font-medium py-3 transition-colors"
+          className="w-full text-center text-[14px] font-medium py-3 transition-colors"
           style={{ color: TEXT_SECONDARY }}
           data-testid="button-setup-skip-paywall"
         >
@@ -326,8 +326,8 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
               <X className="w-4 h-4 text-ha-danger" />
             </div>
             <div>
-              <p className="text-[15px] font-semibold text-ha-danger mb-0.5">{block.title}</p>
-              <p className="text-[13px] leading-relaxed" style={{ color: "#334855" }}>{block.desc}</p>
+              <p className="text-[16px] font-semibold text-ha-danger mb-0.5">{block.title}</p>
+              <p className="text-[14px] leading-relaxed" style={{ color: "#334855" }}>{block.desc}</p>
             </div>
           </div>
         ))}
@@ -339,7 +339,7 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
         </PrimaryBtn>
         <button
           onClick={onContinue}
-          className="w-full h-[56px] rounded-[6px] text-[15px] font-semibold transition-all active:scale-[0.97]"
+          className="w-full h-[56px] rounded-[6px] text-[16px] font-semibold transition-all active:scale-[0.97]"
           style={{
             border: "1.5px solid #E5E7EB",
             backgroundColor: "transparent",
@@ -355,7 +355,7 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
         <p className="text-[14px] font-semibold mb-1" style={{ color: "#111111" }}>
           {t("onboardingFlow.limitedAccess.infoTitle")}
         </p>
-        <p className="text-[13px] leading-relaxed" style={{ color: "#334855" }}>
+        <p className="text-[14px] leading-relaxed" style={{ color: "#334855" }}>
           {t("onboardingFlow.limitedAccess.infoDesc")}
         </p>
       </div>
@@ -437,7 +437,7 @@ function WelcomeStep({ onNext, t }: {
       <div className="rounded-[6px] bg-white p-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "#FFFFFF" }}>
           <p className="text-[17px] font-semibold text-[#111111] mb-3">Welkom!</p>
-          <p className="text-[15px] leading-[1.65] text-[#111111]" style={{ whiteSpace: "pre-line" }}>
+          <p className="text-[16px] leading-[1.65] text-[#111111]" style={{ whiteSpace: "pre-line" }}>
             {t("onboardingFlow.welcome.speechBody")}
           </p>
           <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "#FFFFFF" }} />
@@ -594,7 +594,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
             <p className="text-[17px] font-semibold text-[#111111] mb-3">
               {t("onboardingFlow.letterPersonal.speechTitle")}
             </p>
-            <p className="text-[15px] leading-[1.65] text-[#111111]" style={{ whiteSpace: "pre-line" }}>
+            <p className="text-[16px] leading-[1.65] text-[#111111]" style={{ whiteSpace: "pre-line" }}>
               {t("onboardingFlow.letterPersonal.speechBody")}
             </p>
             <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "#FFFFFF" }} />
@@ -895,7 +895,7 @@ function LetterPreviewStep({ letterText, onLetterChange, onNext, onBack, t }: {
 
       <div className="rounded-[6px] px-4 py-3 mb-5 flex items-start gap-2.5" style={{ backgroundColor: "#FFFFFF", border: "1px solid #FFFFFF" }}>
         <span className="text-[16px] mt-0.5">💡</span>
-        <p className="text-[13px] leading-snug text-[#111111]">
+        <p className="text-[14px] leading-snug text-[#111111]">
           {t("onboardingFlow.letterPreview.addressNote")}
         </p>
       </div>
@@ -944,7 +944,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
           ].map((text, i) => (
             <div key={i} className="flex items-center gap-3">
               <CheckCircle2 className="w-[22px] h-[22px] flex-shrink-0" style={{ color: "rgb(var(--ha-success))" }} />
-              <span className="text-[15px] text-[#111111] leading-snug">{text}</span>
+              <span className="text-[16px] text-[#111111] leading-snug">{text}</span>
             </div>
           ))}
         </div>
@@ -955,7 +955,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
           ].map((text, i) => (
             <div key={i} className="flex items-center gap-3">
               <X className="w-[22px] h-[22px] text-ha-danger flex-shrink-0" />
-              <span className="text-[15px] text-[#111111] leading-snug">{text}</span>
+              <span className="text-[16px] text-[#111111] leading-snug">{text}</span>
             </div>
           ))}
         </div>

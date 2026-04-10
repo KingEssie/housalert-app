@@ -207,7 +207,7 @@ export function OBInfoBox({ children }: { children: React.ReactNode }) {
       style={{ backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB" }}
     >
       <Info className="w-[15px] h-[15px] shrink-0 mt-[1px]" style={{ color: "rgb(var(--ha-primary))" }} />
-      <div className="text-[13px] leading-[1.55]" style={{ color: "rgb(var(--ha-primary))" }}>
+      <div className="text-[14px] leading-[1.55]" style={{ color: "rgb(var(--ha-primary))" }}>
         {children}
       </div>
     </div>

@@ -83,7 +83,7 @@ export default function OnboardingIntro() {
                     <p className="text-[16px] font-semibold leading-[1.25] text-[#111111]">
                       {t(step.titleKey)}
                     </p>
-                    <p className="text-[15px] mt-1 leading-[1.45] text-[#334855]">
+                    <p className="text-[16px] mt-1 leading-[1.45] text-[#334855]">
                       {t(step.descKey)}
                     </p>
                   </div>
@@ -98,7 +98,7 @@ export default function OnboardingIntro() {
         <div className="max-w-lg mx-auto px-5 py-4 pb-[max(16px,env(safe-area-inset-bottom))]">
           <button
             onClick={() => navigate("/onboarding/city")}
-            className="w-full h-[48px] rounded-full bg-ha-primary text-white text-[15px] font-semibold hover:brightness-95 active:scale-[0.97] transition-all flex items-center justify-center gap-1.5 shadow-[0_2px_8px_rgba(217,26,104,0.18)]"
+            className="w-full h-[48px] rounded-full bg-ha-primary text-white text-[16px] font-semibold hover:brightness-95 active:scale-[0.97] transition-all flex items-center justify-center gap-1.5 shadow-[0_2px_8px_rgba(217,26,104,0.18)]"
             data-testid="button-intro-start"
           >
             {t("onboarding.intro.cta")}
