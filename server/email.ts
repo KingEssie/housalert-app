@@ -3,80 +3,8 @@ import { createHmac } from "crypto";
 import { log } from "./log";
 import { t, type ServerLocale } from "./i18n";
 
-let cachedConnectorCreds: { apiKey: string; fromEmail: string } | null = null;
-let connectorCredsFetchedAt = 0;
-const CONNECTOR_CREDS_TTL = 5 * 60 * 1000;
-
-async function getConnectorCredentials(): Promise<{ apiKey: string; fromEmail: string } | null> {
-  if (cachedConnectorCreds && Date.now() - connectorCredsFetchedAt < CONNECTOR_CREDS_TTL) {
-    return cachedConnectorCreds;
-  }
-  try {
-    const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
-    const xReplitToken = process.env.REPL_IDENTITY
-      ? "repl " + process.env.REPL_IDENTITY
-      : process.env.WEB_REPL_RENEWAL
-      ? "depl " + process.env.WEB_REPL_RENEWAL
-      : null;
-
-    if (!hostname || !xReplitToken) {
-      log("[EMAIL CONFIG] No connector hostname/token — falling back to env vars");
-      return null;
-    }
-
-    const resp = await fetch(
-      "https://" + hostname + "/api/v2/connection?include_secrets=true&connector_names=resend",
-      { headers: { Accept: "application/json", "X-Replit-Token": xReplitToken } }
-    );
-    const data = await resp.json();
-    const conn = data.items?.[0];
-    if (!conn?.settings?.api_key) {
-      log("[EMAIL CONFIG] Connector returned no api_key — falling back to env vars");
-      return null;
-    }
-    cachedConnectorCreds = { apiKey: conn.settings.api_key, fromEmail: conn.settings.from_email || "" };
-    connectorCredsFetchedAt = Date.now();
-    log(`[EMAIL CONFIG] Loaded Resend credentials from connector (from_email=${cachedConnectorCreds.fromEmail || "not set"})`);
-    return cachedConnectorCreds;
-  } catch (err: any) {
-    log(`[EMAIL CONFIG] Connector fetch failed: ${err.message} — falling back to env vars`);
-    return null;
-  }
-}
-
 async function getEmailConfigAsync() {
-  const envApiKey = process.env.RESEND_API_KEY;
-  const envFromEmail = process.env.RESEND_FROM_EMAIL;
-  const replyTo = process.env.RESEND_REPLY_TO || "no-reply@housalert.com";
-
-  if (envApiKey && envFromEmail) {
-    log(`[EMAIL CONFIG] Using env API key, from="${envFromEmail}", replyTo="${replyTo}"`);
-    return {
-      from: `HousAlert <${envFromEmail}>`,
-      replyTo,
-      apiKey: envApiKey,
-    };
-  }
-
-  const connector = await getConnectorCredentials();
-  const apiKey = envApiKey || connector?.apiKey;
-  const fromEmail = envFromEmail || connector?.fromEmail || "";
-
-  if (!apiKey) {
-    throw new Error("[EMAIL CONFIG] No Resend API key available (neither RESEND_API_KEY env var nor connector)");
-  }
-  if (!fromEmail) {
-    throw new Error("[EMAIL CONFIG] No from email available (neither RESEND_FROM_EMAIL nor connector from_email)");
-  }
-
-  const source = envApiKey ? "env" : "connector";
-  log(`[EMAIL CONFIG] Using ${source} API key, from="${fromEmail}", replyTo="${replyTo}"`);
-
-  return {
-    from: `HousAlert <${fromEmail}>`,
-    replyTo,
-    apiKey,
-  };
+  return getEmailConfig();
 }
 
 function getEmailConfig() {
@@ -93,6 +21,8 @@ function getEmailConfig() {
   if (!replyTo) {
     throw new Error("[EMAIL CONFIG] RESEND_REPLY_TO is not set — cannot send emails");
   }
+
+  log(`[EMAIL CONFIG] ENV-ONLY mode — from="${fromEmail}" replyTo="${replyTo}" keyPrefix="${apiKey.substring(0, 8)}..." (connector DISABLED)`);
 
   return {
     from: `HousAlert <${fromEmail}>`,
