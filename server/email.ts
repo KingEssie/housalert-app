@@ -45,20 +45,31 @@ async function getConnectorCredentials(): Promise<{ apiKey: string; fromEmail: s
 }
 
 async function getEmailConfigAsync() {
-  const connector = await getConnectorCredentials();
-
-  const apiKey = connector?.apiKey || process.env.RESEND_API_KEY;
-  const fromEmail = process.env.RESEND_FROM_EMAIL || connector?.fromEmail || "";
+  const envApiKey = process.env.RESEND_API_KEY;
+  const envFromEmail = process.env.RESEND_FROM_EMAIL;
   const replyTo = process.env.RESEND_REPLY_TO || "no-reply@housalert.com";
 
+  if (envApiKey && envFromEmail) {
+    log(`[EMAIL CONFIG] Using env API key, from="${envFromEmail}", replyTo="${replyTo}"`);
+    return {
+      from: `HousAlert <${envFromEmail}>`,
+      replyTo,
+      apiKey: envApiKey,
+    };
+  }
+
+  const connector = await getConnectorCredentials();
+  const apiKey = envApiKey || connector?.apiKey;
+  const fromEmail = envFromEmail || connector?.fromEmail || "";
+
   if (!apiKey) {
-    throw new Error("[EMAIL CONFIG] No Resend API key available (neither connector nor RESEND_API_KEY env var)");
+    throw new Error("[EMAIL CONFIG] No Resend API key available (neither RESEND_API_KEY env var nor connector)");
   }
   if (!fromEmail) {
     throw new Error("[EMAIL CONFIG] No from email available (neither RESEND_FROM_EMAIL nor connector from_email)");
   }
 
-  const source = connector?.apiKey ? "connector" : "env";
+  const source = envApiKey ? "env" : "connector";
   log(`[EMAIL CONFIG] Using ${source} API key, from="${fromEmail}", replyTo="${replyTo}"`);
 
   return {
