@@ -1800,9 +1800,9 @@ function BuddyV2Section({ subscription }: { subscription: { isActive: boolean; i
       const msg = err.message || "";
       if (msg.includes("Invalid email")) toast({ title: t("buddyV2.inviteInvalidEmail"), variant: "destructive" });
       else if (msg.includes("yourself")) toast({ title: t("buddyV2.inviteSelf"), variant: "destructive" });
-      else if (msg.includes("already")) toast({ title: t("buddyV2.inviteMax"), variant: "destructive" });
+      else if (msg.includes("already") || msg.includes("one active") || msg.includes("only have one")) toast({ title: t("buddyV2.inviteMax"), variant: "destructive" });
       else if (msg.includes("subscription")) toast({ title: t("buddyV2.inviteSubRequired"), variant: "destructive" });
-      else toast({ title: t("buddyV2.inviteError"), variant: "destructive" });
+      else toast({ title: msg || t("buddyV2.inviteError"), variant: "destructive" });
     }
   }
 

@@ -111,12 +111,20 @@ export async function inviteBuddy(ownerUserId: string, buddyEmail: string): Prom
     }
   }
 
-  const activeCount = await pgPool.query(
-    `SELECT COUNT(*) as cnt FROM search_profile_buddies WHERE owner_user_id = $1 AND invite_status IN ('pending', 'accepted')`,
+  const activeCheck = await pgPool.query(
+    `SELECT * FROM search_profile_buddies WHERE owner_user_id = $1 AND invite_status IN ('pending', 'accepted') ORDER BY created_at DESC`,
     [ownerUserId]
   );
-  if (parseInt(activeCount.rows[0].cnt) >= 1) {
-    return { relation: null, error: "You can only have one active buddy", isNew: false };
+  for (const row of activeCheck.rows) {
+    const activeRel = row as BuddyRelation;
+    if (activeRel.invite_status === "accepted") {
+      return { relation: null, error: "You already have an active buddy. Revoke them first.", isNew: false };
+    }
+    log(`[BUDDY] Auto-revoking stale pending invite to ${activeRel.invite_email} (id=${activeRel.id.substring(0, 8)}) for new invite to ${email}`);
+    await pgPool.query(
+      `UPDATE search_profile_buddies SET invite_status = 'revoked' WHERE id = $1`,
+      [activeRel.id]
+    );
   }
 
   const token = generateInviteToken();
