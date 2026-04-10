@@ -187,6 +187,16 @@ export async function fetchApiMatches(token: string): Promise<ApiMatchesResponse
   return data as ApiMatchesResponse;
 }
 
+export async function fetchBuddySharedMatches(token: string): Promise<ApiMatchesResponse> {
+  const resp = await apiFetch("/api/buddy/shared-matches", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!resp.ok) throw new Error("Buddy matches could not be loaded");
+  const data = await resp.json();
+  const matches = data.matches || [];
+  return { matches, totalCount: data.total ?? matches.length };
+}
+
 export async function matchListingForUser(
   listing: Listing,
   userId: string,

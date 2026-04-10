@@ -511,13 +511,129 @@ export async function registerRoutes(
       const subCheck = await isOwnerSubscriptionActive(relation.owner_user_id);
       if (!subCheck.active) return res.status(403).json({ error: "Owner subscription not active" });
 
-      const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
-      const offset = parseInt(req.query.offset as string) || 0;
+      const ownerId = relation.owner_user_id;
 
-      const matches = await getRecentUserMatches(relation.owner_user_id, limit, offset);
-      const total = await getMatchCountForUser(relation.owner_user_id);
+      const { data: subRow } = await supabase
+        .from("subscriptions")
+        .select("created_at")
+        .eq("user_id", ownerId)
+        .single();
+      const premiumStartedAt = subRow?.created_at || null;
+      const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+      const cutoff = premiumStartedAt
+        ? (new Date(premiumStartedAt).getTime() > new Date(ninetyDaysAgo).getTime() ? premiumStartedAt : ninetyDaysAgo)
+        : ninetyDaysAgo;
 
-      return res.json({ matches, total, owner_user_id: relation.owner_user_id });
+      let matchQuery = supabase
+        .from("matches")
+        .select("id, listing_id, search_profile_id, created_at")
+        .eq("user_id", ownerId)
+        .gte("created_at", cutoff)
+        .order("created_at", { ascending: false })
+        .limit(1000);
+      const { data: matchRows, error: mErr } = await matchQuery;
+
+      if (mErr) return res.status(500).json({ error: mErr.message });
+      if (!matchRows || matchRows.length === 0) return res.json({ matches: [], totalCount: 0 });
+
+      log(`[BUDDY] shared-matches buddyId=${auth.user.id.substring(0, 8)}... ownerId=${ownerId.substring(0, 8)}... rawMatches=${matchRows.length}`);
+
+      const enriched = matchRows.map((m: any) => ({ ...m, matched_at: m.created_at }));
+      const dedupedByListing: Record<string, any> = {};
+      for (const m of enriched) {
+        if (!dedupedByListing[m.listing_id]) dedupedByListing[m.listing_id] = m;
+      }
+      let uniqueMatches = Object.values(dedupedByListing);
+
+      const allListingIds = uniqueMatches.map((m: any) => m.listing_id);
+      if (allListingIds.length === 0) return res.json({ matches: [], totalCount: 0 });
+
+      const profileIds = [...new Set(uniqueMatches.map((m: any) => m.search_profile_id).filter(Boolean))];
+      const [listingsData, freshnessMap, profilesData] = await Promise.all([
+        batchedIn<any>(
+          "listings", "id", allListingIds,
+          "id, title, price, size_m2, bedrooms, city, source, url, image_url, furnished, pets_allowed, district",
+          (q: any) => q.not("title", "is", null)
+        ),
+        getListingFreshness(allListingIds),
+        profileIds.length > 0
+          ? batchedIn<any>(
+              "search_profiles", "id", profileIds,
+              "id, city, price_min, price_max, bedrooms_min, size_min, furnished, extra_features, districts, location_mode"
+            )
+          : Promise.resolve([]),
+      ]);
+
+      const listingMap: Record<string, any> = {};
+      for (const l of listingsData) listingMap[l.id] = l;
+      const profileMap: Record<string, any> = {};
+      for (const p of profilesData) profileMap[p.id] = p;
+
+      const validListingIds = new Set(Object.keys(listingMap));
+      const validMatches = uniqueMatches.filter((m: any) => validListingIds.has(m.listing_id));
+
+      const validResults = validMatches.map((m: any) => {
+        const l = listingMap[m.listing_id];
+        const firstSeenAt = freshnessMap[m.listing_id]?.first_seen_at || m.created_at;
+        const profile = profileMap[m.search_profile_id];
+        let match_score = null;
+        let match_label = null;
+        let match_reasons: string[] = [];
+        let hybrid_filters = null;
+        if (l && profile) {
+          const scoreResult = computeMatchScore({
+            listing: { price: l.price ?? 0, bedrooms: l.bedrooms ?? 0, size_m2: l.size_m2 ?? 0, city: l.city ?? "" },
+            profile: { city: profile.city, price_min: profile.price_min ?? 0, price_max: profile.price_max ?? 0, bedrooms_min: profile.bedrooms_min ?? 0, size_min: profile.size_min ?? 0 },
+          });
+          match_score = scoreResult.score;
+          match_label = scoreResult.label;
+          match_reasons = getMatchReasons(scoreResult.details);
+          hybrid_filters = computeHybridFilters({
+            listing: { furnished: l.furnished, pets_allowed: l.pets_allowed, district: l.district },
+            profile: { furnished: profile.furnished, extra_features: profile.extra_features, districts: profile.districts, location_mode: profile.location_mode },
+          });
+        }
+        return {
+          listing_id: m.listing_id,
+          title: l.title,
+          price: l.price ?? null,
+          size_m2: l.size_m2 ?? null,
+          bedrooms: l.bedrooms ?? null,
+          city: l.city ?? null,
+          district: l.district ?? null,
+          source: l.source ?? null,
+          url: l.url ?? null,
+          image_url: l.image_url ?? null,
+          matched_at: m.matched_at,
+          first_seen_at: firstSeenAt,
+          fresh_label: computeFreshLabel(firstSeenAt),
+          match_score,
+          match_label,
+          match_reasons,
+          hybrid_filters,
+          in_latest_email: false,
+          canonical_viewed: false,
+          canonical_saved: false,
+          canonical_applied: false,
+          canonical_dismissed: false,
+        };
+      });
+
+      validResults.sort((a: any, b: any) => {
+        const dateA = new Date(a.matched_at).getTime();
+        const dateB = new Date(b.matched_at).getTime();
+        if (dateB !== dateA) return dateB - dateA;
+        return a.listing_id.localeCompare(b.listing_id);
+      });
+
+      const top50 = validResults.slice(0, 50);
+      log(`[BUDDY] shared-matches returned=${top50.length} for buddy=${auth.user.id.substring(0, 8)}...`);
+
+      return res.json({
+        matches: top50,
+        totalCount: validResults.length,
+        owner_user_id: ownerId,
+      });
     } catch (err: any) {
       log(`[BUDDY] shared-matches error: ${err.message}`);
       return res.status(500).json({ error: "Server error" });

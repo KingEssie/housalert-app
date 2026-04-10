@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getSearchProfiles, deleteSearchProfile, type SearchProfile } from "@/lib/search-profiles";
-import { fetchApiMatches, type ApiMatch, type ApiMatchesResponse, type CanonicalStats } from "@/lib/listings";
+import { fetchApiMatches, fetchBuddySharedMatches, type ApiMatch, type ApiMatchesResponse, type CanonicalStats } from "@/lib/listings";
 import { queryClient } from "@/lib/queryClient";
 import { supabase } from "@/lib/supabase";
 import { useSubscription } from "@/lib/subscription";
@@ -1219,7 +1219,7 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
   );
 }
 
-function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken: string | undefined; setActiveTab: (tab: TabKey) => void; initialTopTab?: MatchesTopTab | null }) {
+function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, ownerSubActive }: { accessToken: string | undefined; setActiveTab: (tab: TabKey) => void; initialTopTab?: MatchesTopTab | null; buddyMode?: boolean; ownerSubActive?: boolean }) {
   const [refreshKey, setRefreshKey] = useState(0);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [topTab, setTopTab] = useState<MatchesTopTab>(initialTopTab || "matches");
@@ -1228,18 +1228,18 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
   const { toast } = useToast();
   const [, navigate] = useLocation();
   const sub = useSubscription();
-  const hasAccess = sub.isActive || sub.isTrial;
+  const hasAccess = buddyMode ? (ownerSubActive ?? false) : (sub.isActive || sub.isTrial);
 
   const apiMatchesQuery = useQuery<ApiMatchesResponse>({
-    queryKey: ["/api/matches"],
-    queryFn: () => fetchApiMatches(accessToken!),
+    queryKey: buddyMode ? ["/api/buddy/shared-matches"] : ["/api/matches"],
+    queryFn: () => buddyMode ? fetchBuddySharedMatches(accessToken!) : fetchApiMatches(accessToken!),
     enabled: !!accessToken && hasAccess,
     staleTime: 30_000,
     refetchOnWindowFocus: true,
   });
 
   const fetchAppliedListings = useCallback(() => {
-    if (!accessToken) return;
+    if (!accessToken || buddyMode) return;
     const appliedIds = safeGetSet(MATCH_APPLIED_KEY);
     apiFetch("/api/matches", {
       headers: { Authorization: `Bearer ${accessToken}` },
@@ -1254,15 +1254,15 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab }: { accessToken:
         }
       })
       .catch(() => {});
-  }, [accessToken]);
+  }, [accessToken, buddyMode]);
 
   useEffect(() => {
-    if (!accessToken || !hasAccess) return;
+    if (!accessToken || !hasAccess || buddyMode) return;
     fetchAppliedListings();
-  }, [accessToken, hasAccess, fetchAppliedListings]);
+  }, [accessToken, hasAccess, fetchAppliedListings, buddyMode]);
 
   useEffect(() => {
-    if (!accessToken || !hasAccess) return;
+    if (!accessToken || !hasAccess || buddyMode) return;
     apiFetch("/api/matches/applied", {
       headers: { Authorization: `Bearer ${accessToken}` },
     })
@@ -2598,7 +2598,7 @@ export default function DashboardPage() {
           />
         )}
         {activeTab === "matches" && (
-          <MatchesTab accessToken={accessToken} setActiveTab={setActiveTab} initialTopTab={initialMatchesTopTab} />
+          <MatchesTab accessToken={accessToken} setActiveTab={setActiveTab} initialTopTab={initialMatchesTopTab} buddyMode={inBuddyMode} ownerSubActive={ownerSubActive} />
         )}
         {activeTab === "favorieten" && (
           <FavorietenTab accessToken={accessToken} navigate={navigate} />
