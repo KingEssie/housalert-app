@@ -437,12 +437,6 @@ export default function ApplicationLetterPage() {
             </h1>
 
             <div className="ha-card">
-              <div className="rounded-[--ha-card-inner-radius] bg-[#F9FAFB] px-4 py-3 mb-4">
-                <p className="text-[14px] text-[#111111] leading-relaxed">
-                  {t("applicationLetter.helperText")}
-                </p>
-              </div>
-
               <div className="flex items-center justify-between mb-3">
                 <label className="text-field-label">{t("applicationLetter.letterLabel")}</label>
                 <button
@@ -458,7 +452,7 @@ export default function ApplicationLetterPage() {
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
                 placeholder={t("applicationLetter.placeholderText")}
-                className="app-textarea min-h-[300px] leading-relaxed"
+                className="app-textarea min-h-[300px] text-[17px] leading-[1.75]"
                 data-testid="input-template"
               />
               {template.length > 0 && template.trim().length < 20 && (
@@ -477,13 +471,33 @@ export default function ApplicationLetterPage() {
             </button>
 
             <button
-              onClick={() => {
-                const letter = generatePersonalLetter();
-                setTemplate(letter);
+              onClick={async () => {
+                setSaving(true);
+                try {
+                  await saveProfileFields({
+                    living_with: livingWith || null,
+                    work_status: workStatus || null,
+                    move_reason: moveReason || null,
+                    monthly_income: monthlyIncome || null,
+                    pets_count: petsCount !== "" ? Number(petsCount) : null,
+                    phone: phone.trim() || null,
+                    birth_date: birthDate || null,
+                    gender: gender || null,
+                  });
+                  const letter = generatePersonalLetter();
+                  setTemplate(letter);
+                  toast({ title: t("applicationLetter.regenerated") || "Nieuwe brief gegenereerd", description: t("applicationLetter.regeneratedDesc") || "Je kunt de brief hieronder aanpassen." });
+                } catch {
+                  toast({ title: t("common.error"), variant: "destructive" });
+                } finally {
+                  setSaving(false);
+                }
               }}
-              className="w-full h-[48px] rounded-[--ha-btn-radius] border border-ha-primary text-ha-primary text-[15px] font-semibold hover:bg-ha-primary/5 transition-colors active:scale-[0.98]"
+              disabled={saving}
+              className="w-full h-[48px] rounded-[--ha-btn-radius] border border-ha-primary text-ha-primary text-[15px] font-semibold hover:bg-ha-primary/5 transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
               data-testid="button-regenerate-letter"
             >
+              {saving && <Loader2 className="w-4 h-4 animate-spin" />}
               Nieuwe AI reactiebrief maken
             </button>
           </div>

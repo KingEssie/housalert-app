@@ -98,29 +98,29 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "#FFFFFF" }}>
+    <div className="min-h-screen flex flex-col" style={{ background: "#F9FAFB" }}>
       <div
         className="relative w-full flex-shrink-0"
         style={{
-          background: "#d91a68",
-          minHeight: "24vh",
-          paddingBottom: "40px",
+          background: "linear-gradient(135deg, #d91a68 0%, #a01050 100%)",
+          minHeight: "32vh",
+          paddingBottom: "48px",
         }}
       >
-        <header className="w-full pt-4 px-5">
+        <header className="w-full pt-5 px-5">
           <div className="max-w-[480px] mx-auto flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <img
                 src={logoSrc}
                 alt="HousAlert"
-                width={30}
-                height={30}
+                width={32}
+                height={32}
                 className="object-contain"
-                style={{ width: 30, height: 30, filter: "brightness(0) invert(1)" }}
+                style={{ width: 32, height: 32, filter: "brightness(0) invert(1)" }}
                 data-testid="img-housalert-logo"
               />
               <span
-                className="font-semibold text-[17px] text-white"
+                className="font-bold text-[18px] text-white tracking-[-0.01em]"
                 data-testid="text-logo"
               >
                 HousAlert
@@ -130,22 +130,25 @@ export default function LoginPage() {
           </div>
         </header>
 
-        <div className="max-w-[480px] mx-auto px-6 pt-4">
+        <div className="max-w-[480px] mx-auto px-6 pt-6">
           <h1
-            className="text-[30px] font-bold tracking-[-0.02em] leading-[1.15] text-white"
+            className="text-[32px] font-bold tracking-[-0.025em] leading-[1.15] text-white mb-2"
             data-testid="text-login-title"
           >
             {t("auth.login.title")}
           </h1>
+          <p className="text-[16px] text-white/80 leading-relaxed">
+            {t("auth.login.subtitle") || "Vind sneller je nieuwe woning in Duitsland"}
+          </p>
         </div>
       </div>
 
-      <main className="flex-1 flex flex-col px-4" style={{ marginTop: "-44px" }}>
+      <main className="flex-1 flex flex-col px-4" style={{ marginTop: "-40px" }}>
         <div
           className="w-full max-w-[480px] mx-auto flex flex-col"
           style={{
             background: "#FFFFFF",
-            borderRadius: "20px 20px 16px 16px",
+            borderRadius: "20px",
             boxShadow: "0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.04)",
             padding: "28px 24px 24px",
           }}

@@ -9,7 +9,7 @@ import { HousAlertLogo } from "@/components/housalert-logo";
 import { trackEvent } from "@/lib/track-event";
 import { generateOnboardingLetter, type OnboardingLetterData } from "@/lib/application-letter";
 import {
-  ChevronLeft, Loader2, Check, ArrowRight,
+  ChevronLeft, ChevronDown, Loader2, Check, ArrowRight,
   Euro, Bell, AlertTriangle, X, CheckCircle2, Send,
   BellRing,
 } from "lucide-react";
@@ -27,13 +27,13 @@ type FlowStep =
 
 const ALL_STEPS: FlowStep[] = [
   "paywall", "limited-access",
-  "welcome", "push-test",
+  "welcome",
   "letter-personal", "letter-living",
   "letter-preview", "search-buddy", "success",
 ];
 
 const RESUMABLE_STEPS: FlowStep[] = [
-  "welcome", "push-test",
+  "welcome",
   "letter-personal", "letter-living",
   "letter-preview", "search-buddy", "success",
 ];
@@ -695,24 +695,19 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
           <label className="text-[14px] font-semibold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterPersonal.gender")}
           </label>
-          <div className="flex flex-wrap gap-2" data-testid="select-gender">
-            {genderOptions.map((opt) => {
-              const active = personalData.gender === opt.value;
-              return (
-                <button
-                  key={opt.value}
-                  onClick={() => onChange({ gender: opt.value })}
-                  className="h-[40px] px-4 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96]"
-                  style={{
-                    backgroundColor: active ? "rgb(var(--ha-primary))" : "#F3F4F6",
-                    color: active ? "#fff" : "#334855",
-                  }}
-                  data-testid={`gender-${opt.value}`}
-                >
-                  {opt.label}
-                </button>
-              );
-            })}
+          <div className="relative" data-testid="select-gender">
+            <select
+              value={personalData.gender}
+              onChange={(e) => onChange({ gender: e.target.value })}
+              className={`w-full h-[56px] px-4 pr-10 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] appearance-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all ${!personalData.gender ? "text-[#334855] opacity-55" : ""}`}
+              data-testid="input-gender"
+            >
+              <option value="">{t("onboardingFlow.letterPersonal.genderPlaceholder") || "Selecteer geslacht"}</option>
+              {genderOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#111111] pointer-events-none" />
           </div>
         </div>
       </div>
@@ -775,24 +770,19 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
           <label className="text-[14px] font-semibold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterLiving.livingWith")}
           </label>
-          <div className="flex flex-wrap gap-2" data-testid="select-living-with">
-            {livingOptions.map((o) => {
-              const active = livingData.livingWith === o.value;
-              return (
-                <button
-                  key={o.value}
-                  onClick={() => onChange({ livingWith: o.value })}
-                  className="h-[40px] px-4 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96]"
-                  style={{
-                    backgroundColor: active ? "rgb(var(--ha-primary))" : "#F3F4F6",
-                    color: active ? "#fff" : "#334855",
-                  }}
-                  data-testid={`living-${o.value}`}
-                >
-                  {o.label}
-                </button>
-              );
-            })}
+          <div className="relative">
+            <select
+              value={livingData.livingWith}
+              onChange={(e) => onChange({ livingWith: e.target.value })}
+              className={`w-full h-[56px] px-4 pr-10 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] appearance-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all ${!livingData.livingWith ? "text-[#334855] opacity-55" : ""}`}
+              data-testid="select-living-with"
+            >
+              <option value="">{t("onboardingFlow.letterLiving.selectPlaceholder") || "Selecteer..."}</option>
+              {livingOptions.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#111111] pointer-events-none" />
           </div>
         </div>
 
@@ -800,24 +790,19 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
           <label className="text-[14px] font-semibold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterLiving.workStatus")}
           </label>
-          <div className="flex flex-wrap gap-2" data-testid="select-work-status">
-            {workOptions.map((o) => {
-              const active = livingData.workStatus === o.value;
-              return (
-                <button
-                  key={o.value}
-                  onClick={() => onChange({ workStatus: o.value })}
-                  className="h-[40px] px-4 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96]"
-                  style={{
-                    backgroundColor: active ? "rgb(var(--ha-primary))" : "#F3F4F6",
-                    color: active ? "#fff" : "#334855",
-                  }}
-                  data-testid={`work-${o.value}`}
-                >
-                  {o.label}
-                </button>
-              );
-            })}
+          <div className="relative">
+            <select
+              value={livingData.workStatus}
+              onChange={(e) => onChange({ workStatus: e.target.value })}
+              className={`w-full h-[56px] px-4 pr-10 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] appearance-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all ${!livingData.workStatus ? "text-[#334855] opacity-55" : ""}`}
+              data-testid="select-work-status"
+            >
+              <option value="">{t("onboardingFlow.letterLiving.selectPlaceholder") || "Selecteer..."}</option>
+              {workOptions.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#111111] pointer-events-none" />
           </div>
         </div>
 
@@ -825,24 +810,19 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
           <label className="text-[14px] font-semibold text-[#111111] mb-2 block">
             {t("onboardingFlow.letterLiving.moveReason")}
           </label>
-          <div className="flex flex-wrap gap-2" data-testid="select-move-reason">
-            {moveOptions.map((o) => {
-              const active = livingData.moveReason === o.value;
-              return (
-                <button
-                  key={o.value}
-                  onClick={() => onChange({ moveReason: o.value })}
-                  className="h-[40px] px-4 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96]"
-                  style={{
-                    backgroundColor: active ? "rgb(var(--ha-primary))" : "#F3F4F6",
-                    color: active ? "#fff" : "#334855",
-                  }}
-                  data-testid={`move-${o.value}`}
-                >
-                  {o.label}
-                </button>
-              );
-            })}
+          <div className="relative">
+            <select
+              value={livingData.moveReason}
+              onChange={(e) => onChange({ moveReason: e.target.value })}
+              className={`w-full h-[56px] px-4 pr-10 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] appearance-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all ${!livingData.moveReason ? "text-[#334855] opacity-55" : ""}`}
+              data-testid="select-move-reason"
+            >
+              <option value="">{t("onboardingFlow.letterLiving.selectPlaceholder") || "Selecteer..."}</option>
+              {moveOptions.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#111111] pointer-events-none" />
           </div>
         </div>
 
@@ -924,7 +904,7 @@ function LetterPreviewStep({ letterText, onLetterChange, onNext, onBack, t }: {
         <textarea
           value={letterText}
           onChange={(e) => onLetterChange(e.target.value)}
-          className="w-full flex-1 min-h-[280px] p-0 bg-transparent text-[14px] leading-[1.7] text-[#111111] placeholder:text-[#334855] focus:outline-none resize-none"
+          className="w-full flex-1 min-h-[280px] p-0 bg-transparent text-[17px] leading-[1.75] text-[#111111] placeholder:text-[#334855] focus:outline-none resize-none"
           data-testid="textarea-letter"
         />
       </div>
@@ -954,28 +934,28 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
       </h1>
 
       <div className="rounded-[6px] bg-white p-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-        <p className="text-[16px] font-semibold text-[#111111] mb-1">{t("onboardingFlow.searchBuddy.subtitle")}</p>
-        <p className="text-[13px] font-semibold text-[#111111] mb-3">{t("onboardingFlow.searchBuddy.allowed")}</p>
-        <div className="space-y-3 mb-5">
+        <p className="text-[17px] font-semibold text-[#111111] mb-1">{t("onboardingFlow.searchBuddy.subtitle")}</p>
+        <p className="text-[14px] font-semibold text-[#111111] mb-4">{t("onboardingFlow.searchBuddy.allowed")}</p>
+        <div className="space-y-4 mb-6">
           {[
             t("onboardingFlow.searchBuddy.canAlerts"),
             t("onboardingFlow.searchBuddy.canFavorite"),
             t("onboardingFlow.searchBuddy.canApply"),
           ].map((text, i) => (
-            <div key={i} className="flex items-center gap-2.5">
-              <CheckCircle2 className="w-5 h-5 text-[#111111] flex-shrink-0" />
-              <span className="text-[14px] text-[#111111]">{text}</span>
+            <div key={i} className="flex items-center gap-3">
+              <CheckCircle2 className="w-[22px] h-[22px] flex-shrink-0" style={{ color: "rgb(var(--ha-success))" }} />
+              <span className="text-[15px] text-[#111111] leading-snug">{text}</span>
             </div>
           ))}
         </div>
-        <div className="space-y-3">
+        <div className="space-y-4">
           {[
             t("onboardingFlow.searchBuddy.cannotProfiles"),
             t("onboardingFlow.searchBuddy.cannotLetter"),
           ].map((text, i) => (
-            <div key={i} className="flex items-center gap-2.5">
-              <X className="w-5 h-5 text-ha-danger flex-shrink-0" />
-              <span className="text-[14px] text-[#111111]">{text}</span>
+            <div key={i} className="flex items-center gap-3">
+              <X className="w-[22px] h-[22px] text-ha-danger flex-shrink-0" />
+              <span className="text-[15px] text-[#111111] leading-snug">{text}</span>
             </div>
           ))}
         </div>
@@ -1145,7 +1125,8 @@ export default function OnboardingSetup() {
 
           const paywallDone = d.paywall_completed === true;
 
-          const savedStep = d.onboarding_current_step;
+          let savedStep = d.onboarding_current_step;
+          if (savedStep === "push-test") savedStep = "letter-personal";
           if (savedStep && RESUMABLE_STEPS.includes(savedStep as FlowStep)) {
             setStep(savedStep as FlowStep);
           } else if (paywallDone) {
@@ -1405,18 +1386,9 @@ export default function OnboardingSetup() {
   const showBack = step !== "paywall" && step !== "welcome" && step !== "success" && step !== "limited-access";
 
   if (step === "welcome") {
-    return <WelcomeStep onNext={() => goStep("push-test")} t={t} />;
+    return <WelcomeStep onNext={() => goStep("letter-personal")} t={t} />;
   }
-  if (step === "push-test") {
-    return (
-      <PushTestStep
-        onNext={() => goStep("letter-personal")}
-        onEnable={handlePushEnable}
-        pushState={pushState}
-        t={t}
-      />
-    );
-  }
+  if (step === "push-test") return null;
   if (step === "letter-personal") {
     return (
       <LetterPersonalStep

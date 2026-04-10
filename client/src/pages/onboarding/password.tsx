@@ -264,7 +264,7 @@ export default function OnboardingPassword() {
 
           <div className="flex flex-col gap-2.5">
             <div>
-              <label className="text-[12px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[13px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
                 Voornaam
               </label>
               <input
@@ -280,7 +280,7 @@ export default function OnboardingPassword() {
             </div>
 
             <div>
-              <label className="text-[12px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[13px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
                 Achternaam
               </label>
               <input
@@ -295,7 +295,7 @@ export default function OnboardingPassword() {
             </div>
 
             <div>
-              <label className="text-[12px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[13px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
                 E-mailadres
               </label>
               <input
@@ -310,7 +310,7 @@ export default function OnboardingPassword() {
             </div>
 
             <div>
-              <label className="text-[12px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[13px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
                 Wachtwoord
               </label>
               <div className="relative">

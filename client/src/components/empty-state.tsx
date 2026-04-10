@@ -21,11 +21,11 @@ interface EmptyStateProps {
 
 export function EmptyState({ illustration, title, description, ctaLabel, onCtaClick, testId }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center text-center py-16 px-6" data-testid={testId}>
+    <div className="flex flex-col items-center justify-center text-center py-12 px-6" data-testid={testId}>
       <img
         src={illustration}
         alt=""
-        className="w-[200px] h-auto mb-8"
+        className="w-[120px] max-h-[140px] h-auto mb-6 object-contain"
         draggable={false}
       />
       <h2 className="text-[20px] font-bold text-[#000000] leading-snug mb-2" data-testid="text-empty-title">
