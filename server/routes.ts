@@ -186,10 +186,18 @@ export async function registerRoutes(
       const ownerProfile = await getOwnerNameForBuddy(invite.owner_user_id);
       const ownerName = ownerProfile ? `${ownerProfile.first_name || ""} ${ownerProfile.last_name || ""}`.trim() : null;
 
+      let accountExists = false;
+      try {
+        const sb = getSupabaseAdmin();
+        const { data } = await sb.auth.admin.listUsers({ filter: `email.eq.${invite.invite_email}` });
+        accountExists = (data?.users?.length || 0) > 0;
+      } catch {}
+
       return res.json({
         invite_email: invite.invite_email,
         invite_status: invite.invite_status,
         owner_name: ownerName,
+        account_exists: accountExists,
       });
     } catch (err: any) {
       log(`[BUDDY] invite-info error: ${err.message}`);

@@ -1842,6 +1842,7 @@ export const en: Record<string, any> = {
     statusConnected: "Connected",
     acceptTitle: "You're invited as a search buddy",
     acceptBody: "You're helping {name} search for homes. You can view matches, mark favourites, respond to listings and make recommendations.",
+    acceptBodyShort: "You're helping {name} search for homes",
     acceptNote: "You cannot edit search profiles, documents, application letters, profile or subscription settings.",
     acceptCta: "Accept invitation",
     acceptDecline: "Not now",

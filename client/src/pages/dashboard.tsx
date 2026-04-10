@@ -2556,11 +2556,11 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {inBuddyMode && activeBuddyRel && (
-        <div className="bg-[#FFF0F5] border-b border-[#F5C6D8] px-4 py-3 flex items-center gap-3 max-w-xl mx-auto w-full" data-testid="banner-buddy-mode">
-          <Users className="w-5 h-5 text-ha-primary flex-shrink-0" />
+        <div className="bg-[#2D3748] px-4 py-3 flex items-center gap-3 max-w-xl mx-auto w-full" data-testid="banner-buddy-mode">
+          <Users className="w-5 h-5 text-white/80 flex-shrink-0" />
           <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-semibold text-[#111111]">{t("buddyV2.modeBadge")}</p>
-            <p className="text-[12px] text-[#334855]">{t("buddyV2.modeBanner").replace("{name}", activeBuddyRel.owner_name || "")}</p>
+            <p className="text-[13px] font-semibold text-white">{t("buddyV2.modeBadge")}</p>
+            <p className="text-[12px] text-white/70">{t("buddyV2.modeBanner").replace("{name}", activeBuddyRel.owner_name || "")}</p>
           </div>
         </div>
       )}

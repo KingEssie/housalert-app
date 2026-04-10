@@ -2527,6 +2527,7 @@ export const de: Record<string, any> = {
     statusConnected: "Verbunden",
     acceptTitle: "Du wurdest als Suchbuddy eingeladen",
     acceptBody: "Du hilfst {name} bei der Wohnungssuche. Du kannst Matches ansehen, Favoriten markieren, auf Wohnungen reagieren und Empfehlungen abgeben.",
+    acceptBodyShort: "Du hilfst {name} bei der Wohnungssuche",
     acceptNote: "Du kannst keine Suchprofile, Dokumente, Bewerbungsschreiben, Profil oder Abonnement-Einstellungen ändern.",
     acceptCta: "Einladung annehmen",
     acceptDecline: "Nicht jetzt",

@@ -2577,6 +2577,7 @@ export const nl: Record<string, any> = {
     statusConnected: "Verbonden",
     acceptTitle: "Je bent uitgenodigd als zoekbuddy",
     acceptBody: "Je helpt {name} met het zoeken naar woningen. Je kunt matches bekijken, favorieten markeren, reageren op woningen en woningen aanbevelen.",
+    acceptBodyShort: "Je helpt {name} met het zoeken naar woningen",
     acceptNote: "Je kunt geen zoekopdracht, documenten, reactiebrief, profiel of abonnement aanpassen.",
     acceptCta: "Uitnodiging accepteren",
     acceptDecline: "Niet nu",
