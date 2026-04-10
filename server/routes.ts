@@ -23,7 +23,15 @@ import {
   findUserByStripeCustomerId,
 } from "./subscriptions";
 import { log } from "./log";
-import { validateBuddyUnsubscribeToken } from "./email";
+import { validateBuddyUnsubscribeToken, sendBuddyInvitationEmail, sendBuddyCollaborationEmail } from "./email";
+import {
+  inviteBuddy, acceptInvite, revokeBuddy,
+  getOwnerBuddyRelation, getBuddyRelationsForUser, getPendingInvitesForEmail,
+  getRelationById, updateBuddyPreferences, recordBuddyAction,
+  getBuddyActionsForListing, getBuddyActionsForListings,
+  isOwnerSubscriptionActive, getRelationByOwnerAndBuddy, getOwnerNameForBuddy,
+  type BuddyRelation,
+} from "./buddy";
 import { detectLanguage } from "./i18n";
 import { computeMatchScore, getMatchReasons, computeHybridFilters } from "../shared/match-score";
 import { normalizeCity } from "../shared/city-normalize";
@@ -154,6 +162,316 @@ export async function registerRoutes(
       return res.status(500).send("Something went wrong. Please try again later.");
     }
   });
+
+  // ── Buddy V2 API ──────────────────────────────────────────────────
+
+  async function authenticateRequest(req: any): Promise<{ user: { id: string; email?: string } } | null> {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    if (!token) return null;
+    try {
+      const { data: { user }, error } = await supabase.auth.getUser(token);
+      if (error || !user) return null;
+      return { user: { id: user.id, email: user.email } };
+    } catch { return null; }
+  }
+
+  app.post("/api/buddy/invite", async (req, res) => {
+    try {
+      const auth = await authenticateRequest(req);
+      if (!auth) return res.status(401).json({ error: "Unauthorized" });
+
+      const { email } = req.body;
+      if (!email || typeof email !== "string") return res.status(400).json({ error: "Email required" });
+
+      const subCheck = await isOwnerSubscriptionActive(auth.user.id);
+      if (!subCheck.active) return res.status(403).json({ error: "Active subscription required to invite a buddy" });
+
+      const ownerEmail = auth.user.email?.toLowerCase().trim();
+      if (ownerEmail === email.toLowerCase().trim()) return res.status(400).json({ error: "You cannot invite yourself" });
+
+      const result = await inviteBuddy(auth.user.id, email);
+      if (result.error && !result.relation) return res.status(400).json({ error: result.error });
+
+      if (result.isNew && result.relation) {
+        const ownerProfile = await getOwnerNameForBuddy(auth.user.id);
+        const inviterName = ownerProfile ? `${ownerProfile.first_name || ""} ${ownerProfile.last_name || ""}`.trim() : "Someone";
+        const lang = detectLanguageFromHeader(req.headers["accept-language"]);
+        sendBuddyInvitationEmail(email, inviterName, lang, result.relation.invite_token).catch(e =>
+          log(`[BUDDY] invite email error: ${e.message}`)
+        );
+      }
+
+      return res.json({ ok: true, relation: result.relation, isNew: result.isNew });
+    } catch (err: any) {
+      log(`[BUDDY] invite error: ${err.message}`);
+      return res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  app.post("/api/buddy/accept", async (req, res) => {
+    try {
+      const auth = await authenticateRequest(req);
+      if (!auth) return res.status(401).json({ error: "Unauthorized" });
+
+      const { token } = req.body;
+      if (!token || typeof token !== "string") return res.status(400).json({ error: "Token required" });
+
+      const result = await acceptInvite(token, auth.user.id, auth.user.email);
+      if (result.error && !result.relation) return res.status(400).json({ error: result.error });
+
+      if (result.relation && result.relation.invite_status === "accepted") {
+        const ownerProfile = await getOwnerNameForBuddy(result.relation.owner_user_id);
+        if (ownerProfile) {
+          log(`[BUDDY] Accepted: buddy ${auth.user.id.substring(0, 8)}... for owner ${result.relation.owner_user_id.substring(0, 8)}...`);
+        }
+      }
+
+      return res.json({ ok: true, relation: result.relation });
+    } catch (err: any) {
+      log(`[BUDDY] accept error: ${err.message}`);
+      return res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  app.get("/api/buddy/invites", async (req, res) => {
+    try {
+      const auth = await authenticateRequest(req);
+      if (!auth) return res.status(401).json({ error: "Unauthorized" });
+
+      const email = auth.user.email;
+      if (!email) return res.json({ invites: [] });
+
+      const invites = await getPendingInvitesForEmail(email);
+      const enriched = await Promise.all(invites.map(async (inv) => {
+        const ownerProfile = await getOwnerNameForBuddy(inv.owner_user_id);
+        return { ...inv, owner_name: ownerProfile ? `${ownerProfile.first_name || ""} ${ownerProfile.last_name || ""}`.trim() : null };
+      }));
+
+      return res.json({ invites: enriched });
+    } catch (err: any) {
+      log(`[BUDDY] invites error: ${err.message}`);
+      return res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  app.get("/api/buddy/connections", async (req, res) => {
+    try {
+      const auth = await authenticateRequest(req);
+      if (!auth) return res.status(401).json({ error: "Unauthorized" });
+
+      const asOwner = await getOwnerBuddyRelation(auth.user.id);
+      const asBuddy = await getBuddyRelationsForUser(auth.user.id);
+
+      let ownerData = null;
+      if (asOwner) {
+        ownerData = { ...asOwner };
+      }
+
+      const buddyData = await Promise.all(asBuddy.map(async (rel) => {
+        const ownerProfile = await getOwnerNameForBuddy(rel.owner_user_id);
+        const subCheck = await isOwnerSubscriptionActive(rel.owner_user_id);
+        return {
+          ...rel,
+          owner_name: ownerProfile ? `${ownerProfile.first_name || ""} ${ownerProfile.last_name || ""}`.trim() : null,
+          owner_sub_active: subCheck.active,
+        };
+      }));
+
+      return res.json({ asOwner: ownerData, asBuddy: buddyData });
+    } catch (err: any) {
+      log(`[BUDDY] connections error: ${err.message}`);
+      return res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  app.post("/api/buddy/revoke", async (req, res) => {
+    try {
+      const auth = await authenticateRequest(req);
+      if (!auth) return res.status(401).json({ error: "Unauthorized" });
+
+      const { relationId } = req.body;
+      if (!relationId) return res.status(400).json({ error: "Relation ID required" });
+
+      const ok = await revokeBuddy(auth.user.id, relationId);
+      if (!ok) return res.status(404).json({ error: "Not found or not owner" });
+
+      return res.json({ ok: true });
+    } catch (err: any) {
+      log(`[BUDDY] revoke error: ${err.message}`);
+      return res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  app.put("/api/buddy/preferences", async (req, res) => {
+    try {
+      const auth = await authenticateRequest(req);
+      if (!auth) return res.status(401).json({ error: "Unauthorized" });
+
+      const { relationId, email_notifications_enabled, push_notifications_enabled } = req.body;
+      if (!relationId) return res.status(400).json({ error: "Relation ID required" });
+
+      const ok = await updateBuddyPreferences(auth.user.id, relationId, {
+        email_notifications_enabled,
+        push_notifications_enabled,
+      });
+      if (!ok) return res.status(404).json({ error: "Not found or not buddy" });
+
+      return res.json({ ok: true });
+    } catch (err: any) {
+      log(`[BUDDY] preferences error: ${err.message}`);
+      return res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  app.post("/api/buddy/action", async (req, res) => {
+    try {
+      const auth = await authenticateRequest(req);
+      if (!auth) return res.status(401).json({ error: "Unauthorized" });
+
+      const { listingId, actionType, note } = req.body;
+      if (!listingId || !actionType) return res.status(400).json({ error: "listingId and actionType required" });
+      if (!["responded", "favorited", "recommended"].includes(actionType)) return res.status(400).json({ error: "Invalid action type" });
+
+      const asBuddy = await getBuddyRelationsForUser(auth.user.id);
+      const asOwnerRel = await getOwnerBuddyRelation(auth.user.id);
+
+      let relation: BuddyRelation | null = null;
+      let actorRole: "owner" | "buddy" = "buddy";
+
+      if (asBuddy.length > 0) {
+        relation = asBuddy[0];
+        actorRole = "buddy";
+      } else if (asOwnerRel && asOwnerRel.invite_status === "accepted") {
+        relation = asOwnerRel;
+        actorRole = "owner";
+      }
+
+      if (!relation) return res.status(404).json({ error: "No active buddy connection" });
+
+      const ownerIdForSub = actorRole === "buddy" ? relation.owner_user_id : auth.user.id;
+      const subCheck = await isOwnerSubscriptionActive(ownerIdForSub);
+      if (!subCheck.active) return res.status(403).json({ error: "Owner subscription not active" });
+
+      const action = await recordBuddyAction(relation.id, auth.user.id, actorRole, actionType, listingId, note);
+      if (!action) return res.status(500).json({ error: "Failed to record action" });
+
+      const recipientUserId = actorRole === "buddy" ? relation.owner_user_id : relation.buddy_user_id;
+      if (recipientUserId && relation.email_notifications_enabled) {
+        try {
+          const actorProfile = await getOwnerNameForBuddy(auth.user.id);
+          const actorName = actorProfile ? `${actorProfile.first_name || ""} ${actorProfile.last_name || ""}`.trim() : "Your buddy";
+          const recipientResult = await pgPool.query(
+            `SELECT upd.preferred_language FROM user_profile_data upd WHERE upd.user_id = $1`,
+            [recipientUserId]
+          );
+          const recipientLang = (recipientResult.rows[0]?.preferred_language || "nl") as import("./i18n").ServerLocale;
+
+          const recipientAuthAdmin = getSupabaseAdmin();
+          const { data: recipientUser } = await recipientAuthAdmin.auth.admin.getUserById(recipientUserId);
+          if (recipientUser?.user?.email) {
+            sendBuddyCollaborationEmail(
+              recipientUser.user.email,
+              actorName,
+              actionType,
+              listingId,
+              recipientLang
+            ).catch(e => log(`[BUDDY] collab email error: ${e.message}`));
+          }
+        } catch (e: any) {
+          log(`[BUDDY] collab notification error: ${e.message}`);
+        }
+      }
+
+      return res.json({ ok: true, action });
+    } catch (err: any) {
+      log(`[BUDDY] action error: ${err.message}`);
+      return res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  app.get("/api/buddy/actions/:listingId", async (req, res) => {
+    try {
+      const auth = await authenticateRequest(req);
+      if (!auth) return res.status(401).json({ error: "Unauthorized" });
+
+      const { listingId } = req.params;
+
+      const asBuddy = await getBuddyRelationsForUser(auth.user.id);
+      const asOwnerRel = await getOwnerBuddyRelation(auth.user.id);
+
+      let relation: BuddyRelation | null = null;
+      if (asBuddy.length > 0) relation = asBuddy[0];
+      else if (asOwnerRel && asOwnerRel.invite_status === "accepted") relation = asOwnerRel;
+
+      if (!relation) return res.json({ actions: [] });
+
+      const ownerId = asBuddy.length > 0 ? relation.owner_user_id : auth.user.id;
+      const subCheck = await isOwnerSubscriptionActive(ownerId);
+      if (!subCheck.active) return res.status(403).json({ error: "Owner subscription not active" });
+
+      const actions = await getBuddyActionsForListing(relation.id, listingId);
+      return res.json({ actions });
+    } catch (err: any) {
+      log(`[BUDDY] actions error: ${err.message}`);
+      return res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  app.post("/api/buddy/actions/batch", async (req, res) => {
+    try {
+      const auth = await authenticateRequest(req);
+      if (!auth) return res.status(401).json({ error: "Unauthorized" });
+
+      const { listingIds } = req.body;
+      if (!Array.isArray(listingIds)) return res.status(400).json({ error: "listingIds array required" });
+
+      const asBuddy = await getBuddyRelationsForUser(auth.user.id);
+      const asOwnerRel = await getOwnerBuddyRelation(auth.user.id);
+
+      let relation: BuddyRelation | null = null;
+      if (asBuddy.length > 0) relation = asBuddy[0];
+      else if (asOwnerRel && asOwnerRel.invite_status === "accepted") relation = asOwnerRel;
+
+      if (!relation) return res.json({ actions: {} });
+
+      const ownerId = asBuddy.length > 0 ? relation.owner_user_id : auth.user.id;
+      const subCheck = await isOwnerSubscriptionActive(ownerId);
+      if (!subCheck.active) return res.status(403).json({ error: "Owner subscription not active" });
+
+      const actions = await getBuddyActionsForListings(relation.id, listingIds.slice(0, 100));
+      return res.json({ actions });
+    } catch (err: any) {
+      log(`[BUDDY] batch actions error: ${err.message}`);
+      return res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  app.get("/api/buddy/shared-matches", async (req, res) => {
+    try {
+      const auth = await authenticateRequest(req);
+      if (!auth) return res.status(401).json({ error: "Unauthorized" });
+
+      const asBuddy = await getBuddyRelationsForUser(auth.user.id);
+      if (asBuddy.length === 0) return res.status(403).json({ error: "Not a buddy" });
+
+      const relation = asBuddy[0];
+      const subCheck = await isOwnerSubscriptionActive(relation.owner_user_id);
+      if (!subCheck.active) return res.status(403).json({ error: "Owner subscription not active" });
+
+      const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
+      const offset = parseInt(req.query.offset as string) || 0;
+
+      const matches = await getRecentUserMatches(relation.owner_user_id, limit, offset);
+      const total = await getMatchCountForUser(relation.owner_user_id);
+
+      return res.json({ matches, total, owner_user_id: relation.owner_user_id });
+    } catch (err: any) {
+      log(`[BUDDY] shared-matches error: ${err.message}`);
+      return res.status(500).json({ error: "Server error" });
+    }
+  });
+
+  // ── End Buddy V2 API ──────────────────────────────────────────────
 
   const missingStripeVars: string[] = [];
   if (!process.env.STRIPE_PRICE_MONTHLY && !process.env.STRIPE_PRICE_1_MONTH) missingStripeVars.push("STRIPE_PRICE_MONTHLY");

@@ -4,6 +4,7 @@ import { createActivationEventsTable } from "../activation-events";
 import { createCancellationFeedbackTable } from "../cancellation-feedback";
 import { ensureReferralSchema } from "../referrals";
 import { setDisabledSourceOverrides } from "../ingesters/index";
+import { ensureBuddyTables } from "../buddy";
 
 export async function runStartupMigration() {
   try {
@@ -30,6 +31,7 @@ export async function runStartupMigration() {
   await createCancellationFeedbackTable();
   await ensureReferralSchema(pool);
   await createFavoritesTable();
+  await ensureBuddyTables();
   await createAdminSettingsTable();
   await createAdminSourceOverridesTable();
 }

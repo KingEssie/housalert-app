@@ -1,0 +1,241 @@
+We are implementing the final version of the Zoekbuddy feature.
+
+IMPORTANT:
+This is a role-based collaboration feature inside the app.
+Zoekbuddy is no longer email-only.
+Zoekbuddy must get app access with limited permissions.
+
+Also important:
+- Email notifications must still work through our existing email provider ("Bizent" in our current setup)
+- The buddy must be able to choose their own notification preferences (email and/or push)
+- If the owner no longer has an active subscription, the owner must stop receiving matches, and the buddy must also lose access to match collaboration for that owner profile
+
+==================================================
+1. ROLES
+==================================================
+
+Introduce / finalize two roles:
+
+- owner
+- buddy
+
+Owner:
+- full access to their own account and search profile(s)
+
+Buddy:
+- limited collaboration access only
+
+==================================================
+2. BUDDY CAN DO
+==================================================
+
+Buddy is allowed to:
+
+- view shared matches
+- mark listings as favorite
+- respond to listings
+- receive push notifications
+- receive email notifications
+- recommend / suggest listings to the owner
+- see if the owner has already responded to a listing
+- see if the buddy has already responded to a listing
+
+==================================================
+3. BUDDY CANNOT DO
+==================================================
+
+Buddy is NOT allowed to:
+
+- edit search profiles
+- change filters
+- edit documents
+- edit the application letter / reactiebrief
+- edit owner profile data
+- manage subscription
+- manage account settings
+- add notes
+- view notes
+- share listings externally as a special buddy feature
+
+==================================================
+4. VISUAL STATUS BADGES ON LISTINGS
+==================================================
+
+On listing cards and/or detail pages, show clear collaboration badges such as:
+
+- Gereageerd door owner
+- Gereageerd door zoekbuddy
+- Aanbevolen door zoekbuddy
+
+These should be small, clear labels so both users instantly understand the state of the listing.
+
+==================================================
+5. NOTIFICATIONS
+==================================================
+
+Both owner and buddy should receive collaboration-related notifications for important actions.
+
+At minimum notify when:
+- buddy responds to a listing
+- owner responds to a listing
+- buddy favorites a listing
+- buddy recommends a listing
+
+==================================================
+6. BUDDY ACCESS MODEL
+==================================================
+
+Implement buddy access inside the app, not just by email forwarding.
+
+Expected flow:
+- owner invites buddy by email
+- buddy receives invite email through Bizent
+- buddy accepts invite
+- buddy creates account or logs in
+- buddy gets access to the shared profile in buddy mode
+
+If buddy is already an existing user:
+- simply connect them to the shared profile
+
+==================================================
+7. DATA MODEL
+==================================================
+
+Create / finalize a relation table like:
+
+search_profile_buddies
+- id
+- search_profile_id
+- owner_user_id
+- buddy_user_id
+- role ("buddy")
+- invite_email
+- invite_status ("pending", "accepted", "revoked")
+- email_notifications_enabled (boolean)
+- push_notifications_enabled (boolean)
+- created_at
+- accepted_at
+
+If your schema already exists, extend it instead of duplicating.
+
+==================================================
+8. NOTIFICATION PREFERENCES
+==================================================
+
+Very important:
+Previously the buddy only received default emails after being configured by the owner.
+That is no longer enough.
+
+New requirement:
+The buddy must manage their own notification preferences.
+
+Buddy can choose:
+- email on/off
+- push on/off
+
+These preferences must be stored per buddy relation (or equivalent model), not globally for all users if that would break the feature.
+
+Email notifications must use Bizent.
+Push notifications must use the existing push system.
+
+==================================================
+9. SUBSCRIPTION GATING
+==================================================
+
+Critical rule:
+If the OWNER does not have an active subscription, the OWNER must not receive new matches.
+
+And because the buddy depends on the owner’s paid search access:
+- the buddy must also lose collaboration access to matches for that owner/search profile
+- no new match feed
+- no responding
+- no collaboration actions
+
+The buddy may still see a limited informational state such as:
+"De eigenaar heeft momenteel geen actief abonnement"
+
+But they must not continue getting active match collaboration access.
+
+This gating must use the owner subscription as the source of truth.
+
+==================================================
+10. PERMISSION ENFORCEMENT
+==================================================
+
+Enforce permissions in BOTH:
+- frontend UI
+- backend authorization
+
+Do not rely only on hidden buttons.
+
+If buddy tries to call protected actions directly:
+- backend must reject unauthorized actions
+
+==================================================
+11. UI / UX
+==================================================
+
+Buddy mode should feel intentional and clean.
+
+Requirements:
+- hide edit controls that buddy cannot use
+- show collaboration badges clearly
+- keep shared match browsing simple
+- make favorite/respond/recommend actions obvious
+- if owner subscription is inactive, show a blocked/informational state
+
+==================================================
+12. EMAIL VIA BIZENT
+==================================================
+
+All invite and buddy email notifications must go through Bizent.
+
+At minimum:
+- invite email
+- notification when owner responds
+- notification when buddy responds
+- notification when buddy favorites / recommends (if enabled)
+
+If "Bizent" is just our current internal naming for the email provider integration, wire it to that existing provider implementation rather than creating a parallel email service.
+
+==================================================
+13. REQUIRED API / LOGIC CHECKS
+==================================================
+
+Implement or verify:
+- invite buddy endpoint
+- accept invite endpoint
+- fetch shared profiles for buddy
+- favorite listing as buddy
+- respond to listing as buddy
+- recommend listing as buddy
+- save buddy notification preferences
+- enforce owner subscription gate on buddy access
+
+==================================================
+14. EDGE CASES
+==================================================
+
+Handle these:
+- owner revokes buddy
+- buddy was invited but not yet accepted
+- buddy account already exists
+- owner subscription expires
+- owner subscription becomes active again
+- buddy disables email but keeps push enabled
+- buddy disables push but keeps email enabled
+
+==================================================
+15. OUTPUT
+==================================================
+
+After implementation, return:
+
+1. Which files were changed
+2. Which database tables/columns were added or updated
+3. How buddy invitation works now
+4. How Bizent email integration is used
+5. Where buddy notification preferences are stored
+6. How owner subscription gating is enforced
+7. Which actions buddy can perform
+8. Which actions buddy is blocked from performing

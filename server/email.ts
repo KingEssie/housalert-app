@@ -413,30 +413,32 @@ ${htmlListings}`;
 export async function sendBuddyInvitationEmail(
   buddyEmail: string,
   inviterName: string,
-  lang: ServerLocale = "nl"
+  lang: ServerLocale = "nl",
+  inviteToken?: string
 ): Promise<boolean> {
   try {
     const client = await getResendClient();
     const baseUrl = getAppBaseUrl();
+    const acceptUrl = inviteToken ? `${baseUrl}/buddy/accept?token=${encodeURIComponent(inviteToken)}` : baseUrl;
 
     const subjects: Record<ServerLocale, string> = {
-      nl: `\u{1F3E0} ${inviterName} heeft je toegevoegd als Zoekbuddy op HousAlert`,
-      de: `\u{1F3E0} ${inviterName} hat dich als Suchbuddy bei HousAlert hinzugef\u00FCgt`,
-      en: `\u{1F3E0} ${inviterName} added you as a Search Buddy on HousAlert`,
+      nl: `\u{1F3E0} ${inviterName} nodigt je uit als Zoekbuddy op HousAlert`,
+      de: `\u{1F3E0} ${inviterName} l\u00E4dt dich als Suchbuddy bei HousAlert ein`,
+      en: `\u{1F3E0} ${inviterName} invites you as a Search Buddy on HousAlert`,
     };
 
     const htmlBodies: Record<ServerLocale, string> = {
       nl: `
 <p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.text};line-height:1.3;font-family:${FONT_STACK};">Hey! \u{1F44B}</p>
 <p style="margin:0 0 16px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">
-  <strong>${escapeHtml(inviterName)}</strong> heeft je toegevoegd als <strong>Zoekbuddy</strong> op HousAlert.
+  <strong>${escapeHtml(inviterName)}</strong> nodigt je uit als <strong>Zoekbuddy</strong> op HousAlert.
 </p>
 <p style="margin:0 0 16px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">
-  Dit betekent dat je voortaan dezelfde woningmeldingen ontvangt als ${escapeHtml(inviterName)}. Zo kunnen jullie samen sneller reageren en de kans op een woning vergroten!
+  Als Zoekbuddy kun je samen woningen bekijken, reageren op woningen en aanbevelingen doen. Zo vinden jullie samen sneller een woning!
 </p>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
   <tr><td align="center">
-    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:16px;font-weight:600;text-decoration:none;padding:17px 32px;border-radius:18px;font-family:${FONT_STACK};">Bekijk HousAlert</a>
+    <a href="${acceptUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:16px;font-weight:600;text-decoration:none;padding:17px 32px;border-radius:18px;font-family:${FONT_STACK};">Uitnodiging accepteren</a>
   </td></tr>
 </table>
 <p style="margin:0;font-size:13px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
@@ -445,14 +447,14 @@ export async function sendBuddyInvitationEmail(
       de: `
 <p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.text};line-height:1.3;font-family:${FONT_STACK};">Hey! \u{1F44B}</p>
 <p style="margin:0 0 16px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">
-  <strong>${escapeHtml(inviterName)}</strong> hat dich als <strong>Suchbuddy</strong> bei HousAlert hinzugef\u00FCgt.
+  <strong>${escapeHtml(inviterName)}</strong> l\u00E4dt dich als <strong>Suchbuddy</strong> bei HousAlert ein.
 </p>
 <p style="margin:0 0 16px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">
-  Das bedeutet, dass du ab jetzt dieselben Wohnungsmeldungen erh\u00E4ltst wie ${escapeHtml(inviterName)}. So k\u00F6nnt ihr zusammen schneller reagieren und eure Chancen auf eine Wohnung erh\u00F6hen!
+  Als Suchbuddy kannst du gemeinsam Wohnungen ansehen, auf Wohnungen reagieren und Empfehlungen abgeben. So findet ihr zusammen schneller eine Wohnung!
 </p>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
   <tr><td align="center">
-    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:16px;font-weight:600;text-decoration:none;padding:17px 32px;border-radius:18px;font-family:${FONT_STACK};">HousAlert ansehen</a>
+    <a href="${acceptUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:16px;font-weight:600;text-decoration:none;padding:17px 32px;border-radius:18px;font-family:${FONT_STACK};">Einladung annehmen</a>
   </td></tr>
 </table>
 <p style="margin:0;font-size:13px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
@@ -461,14 +463,14 @@ export async function sendBuddyInvitationEmail(
       en: `
 <p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.text};line-height:1.3;font-family:${FONT_STACK};">Hey! \u{1F44B}</p>
 <p style="margin:0 0 16px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">
-  <strong>${escapeHtml(inviterName)}</strong> added you as a <strong>Search Buddy</strong> on HousAlert.
+  <strong>${escapeHtml(inviterName)}</strong> invites you as a <strong>Search Buddy</strong> on HousAlert.
 </p>
 <p style="margin:0 0 16px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">
-  This means you\u2019ll receive the same listing alerts as ${escapeHtml(inviterName)}. Together, you can react faster and improve your chances of finding a home!
+  As a Search Buddy, you can browse listings together, respond to homes and make recommendations. Together, you\u2019ll find a home faster!
 </p>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
   <tr><td align="center">
-    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:16px;font-weight:600;text-decoration:none;padding:17px 32px;border-radius:18px;font-family:${FONT_STACK};">View HousAlert</a>
+    <a href="${acceptUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:16px;font-weight:600;text-decoration:none;padding:17px 32px;border-radius:18px;font-family:${FONT_STACK};">Accept Invitation</a>
   </td></tr>
 </table>
 <p style="margin:0;font-size:13px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
@@ -477,9 +479,9 @@ export async function sendBuddyInvitationEmail(
     };
 
     const textBodies: Record<ServerLocale, string> = {
-      nl: `Hey!\n\n${inviterName} heeft je toegevoegd als Zoekbuddy op HousAlert.\n\nDit betekent dat je voortaan dezelfde woningmeldingen ontvangt. Zo kunnen jullie samen sneller reageren!\n\nBekijk HousAlert: ${baseUrl}\n\nVeel succes!`,
-      de: `Hey!\n\n${inviterName} hat dich als Suchbuddy bei HousAlert hinzugef\u00FCgt.\n\nDas bedeutet, dass du ab jetzt dieselben Wohnungsmeldungen erh\u00E4ltst. So k\u00F6nnt ihr zusammen schneller reagieren!\n\nHousAlert ansehen: ${baseUrl}\n\nViel Erfolg!`,
-      en: `Hey!\n\n${inviterName} added you as a Search Buddy on HousAlert.\n\nThis means you'll receive the same listing alerts. Together, you can react faster!\n\nView HousAlert: ${baseUrl}\n\nGood luck!`,
+      nl: `Hey!\n\n${inviterName} nodigt je uit als Zoekbuddy op HousAlert.\n\nAls Zoekbuddy kun je samen woningen bekijken, reageren en aanbevelingen doen.\n\nAccepteer de uitnodiging: ${acceptUrl}\n\nVeel succes!`,
+      de: `Hey!\n\n${inviterName} l\u00E4dt dich als Suchbuddy bei HousAlert ein.\n\nAls Suchbuddy kannst du gemeinsam Wohnungen ansehen, reagieren und Empfehlungen abgeben.\n\nEinladung annehmen: ${acceptUrl}\n\nViel Erfolg!`,
+      en: `Hey!\n\n${inviterName} invites you as a Search Buddy on HousAlert.\n\nAs a Search Buddy, you can browse listings, respond and make recommendations together.\n\nAccept invitation: ${acceptUrl}\n\nGood luck!`,
     };
 
     const subject = sanitizeSubject(subjects[lang] || subjects.nl);
@@ -490,9 +492,9 @@ export async function sendBuddyInvitationEmail(
     log(`[EMAIL SEND] buddy-invite from="${senderConfig.from}" reply_to="${senderConfig.replyTo}" to="${buddyEmail}" inviter="${inviterName}" lang=${lang}`);
 
     const preheaders: Record<ServerLocale, string> = {
-      nl: `${inviterName} heeft je toegevoegd als Zoekbuddy`,
-      de: `${inviterName} hat dich als Suchbuddy hinzugef\u00FCgt`,
-      en: `${inviterName} added you as a Search Buddy`,
+      nl: `${inviterName} nodigt je uit als Zoekbuddy`,
+      de: `${inviterName} l\u00E4dt dich als Suchbuddy ein`,
+      en: `${inviterName} invites you as a Search Buddy`,
     };
 
     const { data, error } = await finalEmailDispatch(client, {
@@ -511,6 +513,66 @@ export async function sendBuddyInvitationEmail(
     return true;
   } catch (err: any) {
     log(`[EMAIL ERROR] buddy-invite to=${buddyEmail} err=${err.message}`);
+    return false;
+  }
+}
+
+export async function sendBuddyCollaborationEmail(
+  recipientEmail: string,
+  actorName: string,
+  actionType: "responded" | "favorited" | "recommended",
+  listingTitle: string,
+  lang: ServerLocale = "nl"
+): Promise<boolean> {
+  try {
+    const client = await getResendClient();
+    const baseUrl = getAppBaseUrl();
+
+    const actionLabels: Record<string, Record<ServerLocale, string>> = {
+      responded: { nl: "heeft gereageerd op", de: "hat reagiert auf", en: "responded to" },
+      favorited: { nl: "heeft als favoriet gemarkeerd", de: "hat als Favorit markiert", en: "favorited" },
+      recommended: { nl: "beveelt aan", de: "empfiehlt", en: "recommends" },
+    };
+
+    const actionLabel = actionLabels[actionType]?.[lang] || actionLabels[actionType]?.nl || actionType;
+    const safeTitle = escapeHtml(listingTitle || "een woning");
+
+    const subjects: Record<ServerLocale, string> = {
+      nl: `\u{1F3E0} ${actorName} ${actionLabel}: ${listingTitle}`,
+      de: `\u{1F3E0} ${actorName} ${actionLabel}: ${listingTitle}`,
+      en: `\u{1F3E0} ${actorName} ${actionLabel}: ${listingTitle}`,
+    };
+
+    const htmlContent = `
+<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.text};line-height:1.3;font-family:${FONT_STACK};">Zoekbuddy update \u{1F4AC}</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">
+  <strong>${escapeHtml(actorName)}</strong> ${actionLabel}: <strong>${safeTitle}</strong>
+</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
+  <tr><td align="center">
+    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:16px;font-weight:600;text-decoration:none;padding:17px 32px;border-radius:18px;font-family:${FONT_STACK};">Bekijk in de app</a>
+  </td></tr>
+</table>`;
+
+    const textBody = `Zoekbuddy update\n\n${actorName} ${actionLabel}: ${listingTitle}\n\nBekijk in de app: ${baseUrl}`;
+
+    const subject = sanitizeSubject(subjects[lang] || subjects.nl);
+
+    const { data, error } = await finalEmailDispatch(client, {
+      to: recipientEmail,
+      subject,
+      text: textBody,
+      html: emailWrapper(htmlContent, `${actorName} ${actionLabel}`, lang),
+    }, "buddy-collaboration");
+
+    if (error) {
+      log(`[EMAIL FAIL] buddy-collab to=${recipientEmail} action=${actionType} error=${error.message}`);
+      return false;
+    }
+    log(`[EMAIL OK] buddy-collab to=${recipientEmail} action=${actionType} id=${(data as any)?.id || "N/A"}`);
+    return true;
+  } catch (err: any) {
+    log(`[EMAIL ERROR] buddy-collab to=${recipientEmail} err=${err.message}`);
     return false;
   }
 }

@@ -6,6 +6,8 @@ import { sendExpoMatchPush, type ExpoMatchListing } from "./expo-push";
 import { batchedIn } from "../freshness";
 import { markEmailSent, markPushSent, getUndeliveredMatches } from "../user-matches";
 import { pool as pgPool } from "../pg-pool";
+import { getOwnerBuddyRelation, type BuddyRelation } from "../buddy";
+import { getSupabaseAdmin } from "../supabase-admin";
 
 export function areAlertsEnabled(): boolean {
   return process.env.ALERTS_ENABLED === "true";
@@ -639,6 +641,39 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
       log(`[ALERTS] Buddy skip for ${userId.substring(0, 8)}...: ${buddyEligibility.reason}`);
     }
 
+    try {
+      const v2Buddy = await getOwnerBuddyRelation(userId);
+      if (v2Buddy && v2Buddy.invite_status === "accepted" && v2Buddy.buddy_user_id) {
+        if (v2Buddy.push_notifications_enabled) {
+          const pushListings: PushMatchListing[] = verified.map((l) => ({
+            listing_id: l.listing_id,
+            city: l.city,
+          }));
+          try {
+            log(`[NOTIF] v2-buddy webpush buddyUserId=${v2Buddy.buddy_user_id.substring(0, 8)}... count=${verified.length} path=${source}`);
+            await sendMatchPushNotifications(v2Buddy.buddy_user_id, pushListings, supabase, userLang);
+          } catch (e: any) {
+            log(`[BUDDY V2] flush push error for buddy ${v2Buddy.buddy_user_id.substring(0, 8)}...: ${e.message}`);
+          }
+        }
+        if (v2Buddy.email_notifications_enabled) {
+          const buddyCapped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
+          try {
+            const adminClient = getSupabaseAdmin();
+            const { data: { user: buddyAuthUser } } = await adminClient.auth.admin.getUserById(v2Buddy.buddy_user_id);
+            if (buddyAuthUser?.email) {
+              log(`[NOTIF] v2-buddy email buddyEmail=${buddyAuthUser.email} count=${buddyCapped.length} path=${source}`);
+              await sendBatchMatchAlert(buddyAuthUser.email, buddyCapped, userLang);
+            }
+          } catch (e: any) {
+            log(`[BUDDY V2] flush email error for buddy ${v2Buddy.buddy_user_id.substring(0, 8)}...: ${e.message}`);
+          }
+        }
+      }
+    } catch (e: any) {
+      log(`[BUDDY V2] flush notification error: ${e.message}`);
+    }
+
     if (emailedListingIds.length > 0) {
       recentEmailedIds.set(userId, { listing_ids: emailedListingIds, timestamp: Date.now() });
       try { await markEmailSent(userId, emailedListingIds); } catch {}
@@ -851,6 +886,39 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
     } catch (err: any) {
       log(`[ALERTS] Backfill expo push error for user ${userId.substring(0, 8)}...: ${err.message}`);
     }
+  }
+
+  try {
+    const v2Buddy = await getOwnerBuddyRelation(userId);
+    if (v2Buddy && v2Buddy.invite_status === "accepted" && v2Buddy.buddy_user_id) {
+      if (v2Buddy.push_notifications_enabled) {
+        const pushListings: PushMatchListing[] = verified.map((l) => ({
+          listing_id: l.listing_id,
+          city: l.city,
+        }));
+        try {
+          log(`[NOTIF] v2-buddy webpush buddyUserId=${v2Buddy.buddy_user_id.substring(0, 8)}... count=${verified.length} path=backfill`);
+          await sendMatchPushNotifications(v2Buddy.buddy_user_id, pushListings, supabase, backfillLang);
+        } catch (e: any) {
+          log(`[BUDDY V2] push error for buddy ${v2Buddy.buddy_user_id.substring(0, 8)}...: ${e.message}`);
+        }
+      }
+      if (v2Buddy.email_notifications_enabled) {
+        const buddyCapped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
+        try {
+          const adminClient = getSupabaseAdmin();
+          const { data: { user: buddyAuthUser } } = await adminClient.auth.admin.getUserById(v2Buddy.buddy_user_id);
+          if (buddyAuthUser?.email) {
+            log(`[NOTIF] v2-buddy email buddyEmail=${buddyAuthUser.email} count=${buddyCapped.length} path=backfill`);
+            await sendBatchMatchAlert(buddyAuthUser.email, buddyCapped, backfillLang);
+          }
+        } catch (e: any) {
+          log(`[BUDDY V2] email error for buddy ${v2Buddy.buddy_user_id.substring(0, 8)}...: ${e.message}`);
+        }
+      }
+    }
+  } catch (e: any) {
+    log(`[BUDDY V2] notification delivery error: ${e.message}`);
   }
 }
 
