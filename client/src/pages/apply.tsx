@@ -262,11 +262,11 @@ export default function ApplyPage() {
 
   if (listingLoading || !listing) {
     return (
-      <div className="min-h-screen flex flex-col bg-white">
+      <div className="min-h-screen flex flex-col bg-[#eaeaeb]">
         <StickyHeader />
-        <div className="animate-pulse">
+        <div className="animate-pulse mx-4 mt-4 bg-white rounded-[20px] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}>
           <div className="w-full bg-[#E5E7EB]" style={{ aspectRatio: "16/9" }} />
-          <div className="bg-[#F9FAFB] px-5 pt-4 pb-5 space-y-3">
+          <div className="px-5 pt-4 pb-5 space-y-3">
             <div className="h-5 bg-[#E5E7EB] rounded-md w-4/5" />
             <div className="h-4 bg-[#E5E7EB] rounded-md w-3/5" />
             <div className="flex gap-1.5 mt-3">
@@ -275,11 +275,11 @@ export default function ApplyPage() {
               ))}
             </div>
           </div>
-          <div className="px-5 pt-5 space-y-3">
-            <div className="h-5 bg-[#F3F4F6] rounded w-32" />
-            <div className="h-3.5 bg-[#F3F4F6] rounded w-56" />
-            <div className="h-[220px] bg-[#F3F4F6] rounded-[16px]" />
-          </div>
+        </div>
+        <div className="animate-pulse mx-4 mt-4 bg-white rounded-[20px] p-5 space-y-3" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}>
+          <div className="h-5 bg-[#F3F4F6] rounded w-32" />
+          <div className="h-3.5 bg-[#F3F4F6] rounded w-56" />
+          <div className="h-[220px] bg-[#F3F4F6] rounded-[16px]" />
         </div>
       </div>
     );
@@ -362,8 +362,10 @@ export default function ApplyPage() {
   const metaLine = [timeAgoLabel, sourceLabel].filter(Boolean).join(" · ");
   const postedLabel = listing.first_seen_at ? postedTime(listing.first_seen_at) : "";
 
+  const cardStyle: React.CSSProperties = { boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" };
+
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-[#eaeaeb]">
       {/* Sticky white header */}
       <StickyHeader>
         {listing.source && (
@@ -379,98 +381,101 @@ export default function ApplyPage() {
         )}
       </StickyHeader>
 
-      {/* Image with floating heart */}
-      <div className="relative">
-        {hasImage && !imgError ? (
-          <img
-            src={listing.image_url!}
-            alt={listing.title}
-            className="w-full object-cover"
-            style={{ aspectRatio: "16/9" }}
-            onError={() => setImgError(true)}
-            referrerPolicy="no-referrer"
-            data-testid="img-apply-hero"
-          />
-        ) : (
-          <div className="w-full" style={{ aspectRatio: "16/9" }}>
-            <ListingFallback title={listing.title} source={listing.source || undefined} city={listing.city} size="hero" />
-          </div>
-        )}
-        <button
-          onClick={handleToggleFavorite}
-          disabled={favLoading}
-          className="absolute top-3 right-3 w-[38px] h-[38px] flex items-center justify-center transition-all duration-150 active:scale-110"
-          aria-label="Favorite"
-          data-testid="button-favorite-apply"
-        >
-          <Heart
-            className="w-[22px] h-[22px] transition-all duration-150"
-            fill={isFavorited ? "#FF385C" : "none"}
-            stroke={isFavorited ? "#FF385C" : "#ffffff"}
-            strokeWidth={2.5}
-            style={{ filter: "drop-shadow(0 1px 4px rgba(0,0,0,0.55))" }}
-          />
-        </button>
-      </div>
+      {/* Main listing card — image + info in one rounded white card */}
+      <div className="mx-4 mt-4 bg-white rounded-[20px] overflow-hidden" style={cardStyle}>
+        {/* Image with floating heart */}
+        <div className="relative">
+          {hasImage && !imgError ? (
+            <img
+              src={listing.image_url!}
+              alt={listing.title}
+              className="w-full object-cover"
+              style={{ aspectRatio: "16/9" }}
+              onError={() => setImgError(true)}
+              referrerPolicy="no-referrer"
+              data-testid="img-apply-hero"
+            />
+          ) : (
+            <div className="w-full" style={{ aspectRatio: "16/9" }}>
+              <ListingFallback title={listing.title} source={listing.source || undefined} city={listing.city} size="hero" />
+            </div>
+          )}
+          <button
+            onClick={handleToggleFavorite}
+            disabled={favLoading}
+            className="absolute top-3 right-3 w-[38px] h-[38px] flex items-center justify-center transition-all duration-150 active:scale-110"
+            aria-label="Favorite"
+            data-testid="button-favorite-apply"
+          >
+            <Heart
+              className="w-[22px] h-[22px] transition-all duration-150"
+              fill={isFavorited ? "#FF385C" : "none"}
+              stroke={isFavorited ? "#FF385C" : "#ffffff"}
+              strokeWidth={2.5}
+              style={{ filter: "drop-shadow(0 1px 4px rgba(0,0,0,0.55))" }}
+            />
+          </button>
+        </div>
 
-      {/* Listing info section — matches card visual language */}
-      <div className="bg-[#F9FAFB] px-5 pt-4 pb-5">
-        <h2
-          className="text-[18px] font-bold text-[#111111] leading-snug line-clamp-2"
-          data-testid="text-apply-title"
-        >
-          {listing.title}
-        </h2>
-        {metaLine && (
-          <p className="text-[13px] text-[#111111] mt-1" data-testid="text-apply-meta">
-            {metaLine}
-          </p>
-        )}
-        <div className="flex flex-nowrap gap-1.5 mt-3 overflow-hidden">
-          {listing.city && (
-            <span
-              className="inline-flex items-center gap-[6px] bg-white text-[13px] font-medium text-[#111111] px-2.5 py-[5px] rounded-[8px] min-w-0 shrink"
-              style={pillStyle}
-              data-testid="detail-city-apply"
-            >
-              <MapPin className="w-[15px] h-[15px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
-              <span className="truncate">{listing.city}</span>
-            </span>
+        {/* Listing info */}
+        <div className="px-5 pt-4 pb-5">
+          <h2
+            className="text-[18px] font-bold text-[#111111] leading-snug line-clamp-2"
+            data-testid="text-apply-title"
+          >
+            {listing.title}
+          </h2>
+          {metaLine && (
+            <p className="text-[13px] text-[#111111] mt-1" data-testid="text-apply-meta">
+              {metaLine}
+            </p>
           )}
-          {listing.bedrooms != null && listing.bedrooms > 0 && (
-            <span
-              className="inline-flex items-center gap-[6px] bg-white text-[13px] font-medium text-[#111111] px-2.5 py-[5px] rounded-[8px] shrink-0"
-              style={pillStyle}
-              data-testid="detail-bedrooms-apply"
-            >
-              <BedDouble className="w-[15px] h-[15px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
-              {listing.bedrooms}
-            </span>
-          )}
-          {listing.size_m2 != null && listing.size_m2 > 0 && (
-            <span
-              className="inline-flex items-center gap-[6px] bg-white text-[13px] font-medium text-[#111111] px-2.5 py-[5px] rounded-[8px] shrink-0"
-              style={pillStyle}
-              data-testid="detail-size-apply"
-            >
-              <Maximize2 className="w-[15px] h-[15px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
-              {listing.size_m2} m²
-            </span>
-          )}
-          {listing.price > 0 && (
-            <span
-              className="inline-flex items-center gap-[6px] bg-white text-[13px] font-semibold text-[#111111] px-2.5 py-[5px] rounded-[8px] shrink-0"
-              style={pillStyle}
-              data-testid="detail-price-apply"
-            >
-              €{listing.price}
-            </span>
-          )}
+          <div className="flex flex-nowrap gap-1.5 mt-3 overflow-hidden">
+            {listing.city && (
+              <span
+                className="inline-flex items-center gap-[6px] bg-[#F9FAFB] text-[13px] font-medium text-[#111111] px-2.5 py-[5px] rounded-[8px] min-w-0 shrink"
+                style={pillStyle}
+                data-testid="detail-city-apply"
+              >
+                <MapPin className="w-[15px] h-[15px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
+                <span className="truncate">{listing.city}</span>
+              </span>
+            )}
+            {listing.bedrooms != null && listing.bedrooms > 0 && (
+              <span
+                className="inline-flex items-center gap-[6px] bg-[#F9FAFB] text-[13px] font-medium text-[#111111] px-2.5 py-[5px] rounded-[8px] shrink-0"
+                style={pillStyle}
+                data-testid="detail-bedrooms-apply"
+              >
+                <BedDouble className="w-[15px] h-[15px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
+                {listing.bedrooms}
+              </span>
+            )}
+            {listing.size_m2 != null && listing.size_m2 > 0 && (
+              <span
+                className="inline-flex items-center gap-[6px] bg-[#F9FAFB] text-[13px] font-medium text-[#111111] px-2.5 py-[5px] rounded-[8px] shrink-0"
+                style={pillStyle}
+                data-testid="detail-size-apply"
+              >
+                <Maximize2 className="w-[15px] h-[15px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
+                {listing.size_m2} m²
+              </span>
+            )}
+            {listing.price > 0 && (
+              <span
+                className="inline-flex items-center gap-[6px] bg-[#F9FAFB] text-[13px] font-semibold text-[#111111] px-2.5 py-[5px] rounded-[8px] shrink-0"
+                style={pillStyle}
+                data-testid="detail-price-apply"
+              >
+                €{listing.price}
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Reactiebrief */}
-      <main className="flex-1 px-5 pt-5 pb-[120px]">
+      {/* Reactiebrief — separate white card */}
+      <div className="mx-4 mt-4 mb-[140px] bg-white rounded-[20px] p-5" style={cardStyle}>
         <h2 className="text-[18px] font-semibold text-[#111111] mb-1" data-testid="text-letter-title">
           {t("applySheet.applicationLetter")}
         </h2>
@@ -478,14 +483,14 @@ export default function ApplyPage() {
           {t("applySheet.autoGenerated") || "Automatisch gegenereerd op basis van jouw profiel"}
         </p>
         <textarea
-          className="w-full min-h-[220px] leading-[1.75] bg-white border border-[#E5E7EB] rounded-[16px] p-4 text-[16px] text-[#111111] outline-none resize-vertical focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25 transition-all"
+          className="w-full min-h-[220px] leading-[1.75] bg-[#F9FAFB] border border-[#E5E7EB] rounded-[16px] p-4 text-[16px] text-[#111111] outline-none resize-vertical focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25 transition-all"
           value={editedLetter ?? filledLetter}
           onChange={(e) => setEditedLetter(e.target.value)}
           data-testid="apply-letter-preview"
           autoComplete="off"
           autoCorrect="on"
         />
-      </main>
+      </div>
 
       {/* Sticky bottom CTA */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] z-10 pb-[env(safe-area-inset-bottom)]">

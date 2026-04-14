@@ -1,0 +1,89 @@
+Refactor the listing detail page layout to use a card-based structure like Rentbird.
+
+IMPORTANT:
+Do not change functionality.
+Only restructure the visual layout and containers.
+
+==================================================
+1. PAGE BACKGROUND
+==================================================
+
+- Set the full page background to light grey (same as rest of app, e.g. #eaeaeb)
+- Remove any full-width white background currently used
+
+==================================================
+2. MAIN LISTING CARD (WHITE CONTAINER)
+==================================================
+
+Wrap the entire listing content into ONE white rounded card.
+
+This card must include:
+- top image
+- listing title
+- time + source (e.g. "43 min geleden • wg-gesucht.de")
+- 4 feature pills (location, bedrooms, size, price)
+
+Styling:
+- background: white
+- border radius: same as other cards in app (e.g. 16–20px)
+- margin left/right: consistent with app spacing
+- margin-top: space under header
+- overflow hidden so image follows rounded corners
+
+Image:
+- sits at top inside the card
+- inherits rounded top corners
+
+Goal:
+The listing feels like one cohesive card instead of separate elements.
+
+==================================================
+3. SEPARATE REACTIEBRIEF CARD
+==================================================
+
+Move the Reactiebrief section OUTSIDE of the listing card.
+
+Create a second white card below the listing card.
+
+Structure:
+- title: "Reactiebrief"
+- subtitle (optional): "Automatisch gegenereerd..."
+- text content inside a rounded inner box OR directly inside card
+
+Spacing:
+- add vertical spacing between listing card and reactiebrief card (16–24px)
+
+Styling:
+- same white background
+- same border radius
+- same padding as other cards
+
+==================================================
+4. REMOVE FULL-WIDTH LOOK
+==================================================
+
+Ensure:
+- no section spans edge-to-edge anymore
+- everything sits inside card containers
+- consistent margins on left/right
+
+==================================================
+5. KEEP EXISTING ELEMENTS
+==================================================
+
+Do NOT remove:
+- heart icon
+- sticky header
+- bottom CTA ("Kopiëren en reageren")
+
+Only change layout structure.
+
+==================================================
+6. OUTPUT
+==================================================
+
+Return:
+1. which files were updated
+2. how the main listing card is structured now
+3. confirmation that the page background is grey
+4. confirmation that the Reactiebrief is now a separate white card
