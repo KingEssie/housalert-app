@@ -1477,15 +1477,15 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="sticky top-0 z-10 bg-white px-5 pt-6 pb-0 border-b border-[#E5E7EB]">
-        <div className="flex items-end gap-6" data-testid="matches-top-tabs">
+      <div className="sticky top-0 z-10 bg-white pt-6 pb-0 border-b border-[#E5E7EB]">
+        <div className="flex w-full" data-testid="matches-top-tabs">
           {topTabs.map(({ key, label }) => {
             const isActive = topTab === key;
             return (
               <button
                 key={key}
                 onClick={() => setTopTab(key)}
-                className={`pb-3 text-[15px] transition-all duration-200 border-b-2 ${
+                className={`flex-1 text-center pb-3 text-[15px] transition-all duration-200 border-b-2 ${
                   isActive
                     ? "text-[#111111] font-semibold border-[#111111]"
                     : "text-[#9CA3AF] font-medium border-transparent"

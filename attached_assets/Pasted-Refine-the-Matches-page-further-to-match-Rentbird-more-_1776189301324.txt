@@ -1,0 +1,90 @@
+Refine the Matches page further to match Rentbird more precisely.
+
+IMPORTANT:
+Do not redesign the page structure again.
+Only apply the visual refinements below.
+
+==================================================
+1. FEATURE PILLS — ICONS BIGGER
+==================================================
+
+Increase the icon size inside the 4 feature pills again.
+
+Requirements:
+- Icons should be clearly more prominent
+- Make them slightly larger than they are now
+- Keep them visually balanced with the text
+- They should feel closer to Rentbird’s icon scale
+
+Suggested:
+- Increase icon size by another 10–15%
+
+==================================================
+2. FEATURE PILLS — MORE WHITE SPACE
+==================================================
+
+Add a bit more internal spacing inside each pill.
+
+Requirements:
+- Slightly more horizontal padding
+- Slightly more vertical breathing room
+- Keep all 4 pills still fitting neatly on one row
+
+Goal:
+The pills should feel less cramped and more premium.
+
+==================================================
+3. FEATURE PILLS — LESS ROUNDED
+==================================================
+
+Reduce the border radius again.
+
+Requirements:
+- Make them less pill-like
+- Use a shape closer to Rentbird
+- Suggested radius: around 8px–10px
+
+==================================================
+4. TOP TABS — FULL WIDTH LIKE RENTBIRD
+==================================================
+
+The 2 top tabs ("Matches" and "Gereageerd") should stretch across the full available width, like Rentbird.
+
+Requirements:
+- Do NOT keep both tabs grouped on the left
+- Each tab should occupy equal width
+- The tab bar should span the full width
+- Text centered within each tab
+- Active tab keeps the underline indicator
+- Inactive tab remains lighter
+- Flat, clean Rentbird style
+
+Goal:
+The tabs should feel like a true top navigation bar, not two small items aligned left.
+
+==================================================
+5. KEEP EVERYTHING ELSE THE SAME
+==================================================
+
+Do not change:
+- card structure
+- title clamp behavior
+- image size
+- card background
+- meta line structure
+
+Only refine:
+- icon size
+- pill spacing
+- pill corner radius
+- tab width/alignment
+
+==================================================
+OUTPUT
+==================================================
+
+Return:
+1. which files were changed
+2. how much icon size was increased
+3. what padding/radius values were updated for pills
+4. confirmation that the 2 tabs now span the full width equally

@@ -153,38 +153,38 @@ export function ListingCardFull({
           </p>
         )}
 
-        <div className="flex flex-nowrap gap-1 mt-0.5 overflow-hidden" data-testid={`detail-meta-${match.listing_id}`}>
+        <div className="flex flex-nowrap gap-1.5 mt-0.5 overflow-hidden" data-testid={`detail-meta-${match.listing_id}`}>
           {address && (
             <span
-              className="inline-flex items-center gap-[5px] bg-white text-[13px] font-medium text-[#111111] px-2 py-[3px] rounded-[10px] min-w-0 shrink"
+              className="inline-flex items-center gap-[6px] bg-white text-[13px] font-medium text-[#111111] px-2.5 py-[5px] rounded-[8px] min-w-0 shrink"
               style={{ boxShadow: "0 1px 2px rgba(0,0,0,0.06)" }}
               data-testid={`detail-city-${match.listing_id}`}
             >
-              <MapPin className="w-[13px] h-[13px] flex-shrink-0 text-[#111111]" strokeWidth={2} />
+              <MapPin className="w-[15px] h-[15px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
               <span className="truncate">{address}</span>
             </span>
           )}
           {hasBedrooms && (
             <span
-              className="inline-flex items-center gap-[5px] bg-white text-[13px] font-medium text-[#111111] px-2 py-[3px] rounded-[10px] shrink-0"
+              className="inline-flex items-center gap-[6px] bg-white text-[13px] font-medium text-[#111111] px-2.5 py-[5px] rounded-[8px] shrink-0"
               style={{ boxShadow: "0 1px 2px rgba(0,0,0,0.06)" }}
             >
-              <BedDouble className="w-[13px] h-[13px] flex-shrink-0 text-[#111111]" strokeWidth={2} />
+              <BedDouble className="w-[15px] h-[15px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
               {match.bedrooms}
             </span>
           )}
           {hasSize && (
             <span
-              className="inline-flex items-center gap-[5px] bg-white text-[13px] font-medium text-[#111111] px-2 py-[3px] rounded-[10px] shrink-0"
+              className="inline-flex items-center gap-[6px] bg-white text-[13px] font-medium text-[#111111] px-2.5 py-[5px] rounded-[8px] shrink-0"
               style={{ boxShadow: "0 1px 2px rgba(0,0,0,0.06)" }}
             >
-              <Maximize2 className="w-[13px] h-[13px] flex-shrink-0 text-[#111111]" strokeWidth={2} />
+              <Maximize2 className="w-[15px] h-[15px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
               {match.size_m2} m²
             </span>
           )}
           {match.price > 0 && (
             <span
-              className="inline-flex items-center gap-[5px] bg-white text-[13px] font-semibold text-[#111111] px-2 py-[3px] rounded-[10px] shrink-0"
+              className="inline-flex items-center gap-[6px] bg-white text-[13px] font-semibold text-[#111111] px-2.5 py-[5px] rounded-[8px] shrink-0"
               style={{ boxShadow: "0 1px 2px rgba(0,0,0,0.06)" }}
               data-testid={`badge-price-${match.listing_id}`}
             >
