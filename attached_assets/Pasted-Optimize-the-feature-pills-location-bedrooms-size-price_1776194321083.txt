@@ -1,0 +1,81 @@
+Optimize the feature pills (location, bedrooms, size, price) so more text fits inside them.
+
+GOAL:
+Reduce wasted space so longer text like city names (e.g. "Rotterdam") is fully visible, similar to Rentbird.
+
+IMPORTANT:
+Do not redesign the pills completely.
+Only make them more compact and efficient.
+
+==================================================
+1. REDUCE HORIZONTAL PADDING
+==================================================
+
+Decrease left and right padding inside each pill.
+
+Current issue:
+- too much empty space on both sides
+
+Fix:
+- reduce horizontal padding by ~25–35%
+- keep vertical padding mostly the same
+
+==================================================
+2. REDUCE ICON → TEXT SPACING
+==================================================
+
+Current:
+- too much space between icon and text
+
+Fix:
+- tighten spacing between icon and text
+- keep it readable but compact
+
+==================================================
+3. MAKE TEXT USE MORE SPACE
+==================================================
+
+Ensure:
+- text can expand properly inside pill
+- avoid unnecessary truncation
+
+If needed:
+- use flex layout
+- allow text to take remaining width
+- prevent early ellipsis
+
+==================================================
+4. KEEP ICON SIZE (IMPORTANT)
+==================================================
+
+- keep the newly increased icon size
+- do NOT shrink icons again
+- adjust layout around the icons instead
+
+==================================================
+5. OPTIONAL: SLIGHTLY REDUCE BORDER RADIUS
+==================================================
+
+If pills still feel bulky:
+- slightly reduce border radius (closer to Rentbird style)
+
+==================================================
+6. APPLY EVERYWHERE
+==================================================
+
+Apply the same improvements to:
+- Matches cards
+- Favorites cards
+- Detail page
+
+Consistency is critical.
+
+==================================================
+7. OUTPUT
+==================================================
+
+Return:
+1. what padding values were changed
+2. how icon/text spacing was adjusted
+3. confirmation that longer city names now fit better
+4. confirmation that changes are applied across all pages

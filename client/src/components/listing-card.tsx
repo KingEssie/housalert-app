@@ -154,7 +154,7 @@ export function ListingCardFull({
         <div className="flex flex-nowrap gap-1.5 mt-0.5 overflow-hidden" data-testid={`detail-meta-${match.listing_id}`}>
           {address && (
             <span
-              className="inline-flex items-center gap-[6px] bg-white text-[13px] font-medium text-[#111111] px-3 py-[6px] rounded-[8px] min-w-0 shrink"
+              className="inline-flex items-center gap-[4px] bg-white text-[13px] font-medium text-[#111111] px-2 py-[5px] rounded-[6px] min-w-0 shrink"
               style={{ boxShadow: "0 1px 2px rgba(0,0,0,0.06)" }}
               data-testid={`detail-city-${match.listing_id}`}
             >
@@ -164,7 +164,7 @@ export function ListingCardFull({
           )}
           {hasBedrooms && (
             <span
-              className="inline-flex items-center gap-[6px] bg-white text-[13px] font-medium text-[#111111] px-3 py-[6px] rounded-[8px] shrink-0"
+              className="inline-flex items-center gap-[4px] bg-white text-[13px] font-medium text-[#111111] px-2 py-[5px] rounded-[6px] shrink-0"
               style={{ boxShadow: "0 1px 2px rgba(0,0,0,0.06)" }}
             >
               <BedDouble className="w-[19px] h-[19px] flex-shrink-0 text-[#111111]" strokeWidth={1.7} />
@@ -173,7 +173,7 @@ export function ListingCardFull({
           )}
           {hasSize && (
             <span
-              className="inline-flex items-center gap-[6px] bg-white text-[13px] font-medium text-[#111111] px-3 py-[6px] rounded-[8px] shrink-0"
+              className="inline-flex items-center gap-[4px] bg-white text-[13px] font-medium text-[#111111] px-2 py-[5px] rounded-[6px] shrink-0"
               style={{ boxShadow: "0 1px 2px rgba(0,0,0,0.06)" }}
             >
               <Maximize2 className="w-[19px] h-[19px] flex-shrink-0 text-[#111111]" strokeWidth={1.7} />
@@ -182,7 +182,7 @@ export function ListingCardFull({
           )}
           {match.price > 0 && (
             <span
-              className="inline-flex items-center gap-[6px] bg-white text-[13px] font-semibold text-[#111111] px-3 py-[6px] rounded-[8px] shrink-0"
+              className="inline-flex items-center gap-[4px] bg-white text-[13px] font-semibold text-[#111111] px-2 py-[5px] rounded-[6px] shrink-0"
               style={{ boxShadow: "0 1px 2px rgba(0,0,0,0.06)" }}
               data-testid={`badge-price-${match.listing_id}`}
             >

@@ -434,7 +434,7 @@ export default function ApplyPage() {
           <div className="flex flex-nowrap gap-1.5 mt-3 overflow-hidden">
             {listing.city && (
               <span
-                className="inline-flex items-center gap-[6px] bg-[#F9FAFB] text-[13px] font-medium text-[#111111] px-3 py-[6px] rounded-[8px] min-w-0 shrink"
+                className="inline-flex items-center gap-[4px] bg-[#F9FAFB] text-[13px] font-medium text-[#111111] px-2 py-[5px] rounded-[6px] min-w-0 shrink"
                 style={pillStyle}
                 data-testid="detail-city-apply"
               >
@@ -444,7 +444,7 @@ export default function ApplyPage() {
             )}
             {listing.bedrooms != null && listing.bedrooms > 0 && (
               <span
-                className="inline-flex items-center gap-[6px] bg-[#F9FAFB] text-[13px] font-medium text-[#111111] px-3 py-[6px] rounded-[8px] shrink-0"
+                className="inline-flex items-center gap-[4px] bg-[#F9FAFB] text-[13px] font-medium text-[#111111] px-2 py-[5px] rounded-[6px] shrink-0"
                 style={pillStyle}
                 data-testid="detail-bedrooms-apply"
               >
@@ -454,7 +454,7 @@ export default function ApplyPage() {
             )}
             {listing.size_m2 != null && listing.size_m2 > 0 && (
               <span
-                className="inline-flex items-center gap-[6px] bg-[#F9FAFB] text-[13px] font-medium text-[#111111] px-3 py-[6px] rounded-[8px] shrink-0"
+                className="inline-flex items-center gap-[4px] bg-[#F9FAFB] text-[13px] font-medium text-[#111111] px-2 py-[5px] rounded-[6px] shrink-0"
                 style={pillStyle}
                 data-testid="detail-size-apply"
               >
@@ -464,7 +464,7 @@ export default function ApplyPage() {
             )}
             {listing.price > 0 && (
               <span
-                className="inline-flex items-center gap-[6px] bg-[#F9FAFB] text-[13px] font-semibold text-[#111111] px-3 py-[6px] rounded-[8px] shrink-0"
+                className="inline-flex items-center gap-[4px] bg-[#F9FAFB] text-[13px] font-semibold text-[#111111] px-2 py-[5px] rounded-[6px] shrink-0"
                 style={pillStyle}
                 data-testid="detail-price-apply"
               >
