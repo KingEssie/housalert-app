@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Heart, Lock, CheckCircle2, BedDouble, Maximize2 } from "lucide-react";
+import { Heart, Lock, CheckCircle2, BedDouble, Maximize2, MapPin } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import type { ApiMatch } from "@/lib/listings";
 import { ListingFallback, isValidImageUrl } from "@/components/listing-fallback";
@@ -7,8 +7,7 @@ import { ListingFallback, isValidImageUrl } from "@/components/listing-fallback"
 function formatPrice(price: number, locale: string): string {
   const intlLocale = locale === "de" ? "de-DE" : locale === "en" ? "en-IE" : "nl-NL";
   if (price >= 1000) {
-    const formatted = new Intl.NumberFormat(intlLocale).format(price);
-    return `€${formatted}`;
+    return `€${new Intl.NumberFormat(intlLocale).format(price)}`;
   }
   return `€${price}`;
 }
@@ -35,6 +34,30 @@ function formatAddress(match: ApiMatch): string {
   if (match.district && match.city) return `${match.district}, ${match.city}`;
   if (match.city) return match.city;
   return "";
+}
+
+function formatTimeAgo(dateStr: string | undefined | null, locale: string): string {
+  if (!dateStr) return "";
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const minutes = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+  if (locale === "de") {
+    if (minutes < 2) return "gerade eben";
+    if (minutes < 60) return `vor ${minutes} Min.`;
+    if (hours < 24) return `vor ${hours} Std.`;
+    return `vor ${days} Tag${days !== 1 ? "en" : ""}`;
+  }
+  if (locale === "en") {
+    if (minutes < 2) return "just now";
+    if (minutes < 60) return `${minutes}m ago`;
+    if (hours < 24) return `${hours}h ago`;
+    return `${days}d ago`;
+  }
+  if (minutes < 2) return "zojuist";
+  if (minutes < 60) return `${minutes} min geleden`;
+  if (hours < 24) return hours === 1 ? "1 uur geleden" : `${hours} uur geleden`;
+  return days === 1 ? "1 dag geleden" : `${days} dagen geleden`;
 }
 
 interface ListingCardFullProps {
@@ -64,35 +87,37 @@ export function ListingCardFull({
   const seenAt = match.first_seen_at || match.matched_at;
   const isNew = seenAt ? (Date.now() - new Date(seenAt).getTime()) / 3600000 < 24 : false;
 
+  const address = formatAddress(match);
+  const sourceName = formatSource(match.source);
+  const hasBedrooms = match.bedrooms > 0;
+  const hasSize = match.size_m2 > 0;
+  const timeAgo = formatTimeAgo(seenAt, locale);
+
   function handleHeartClick(e: React.MouseEvent) {
     e.stopPropagation();
     onToggleFavorite(match.listing_id);
   }
 
-  const address = formatAddress(match);
-  const sourceName = formatSource(match.source);
-  const hasBedrooms = match.bedrooms > 0;
-  const hasSize = match.size_m2 > 0;
-
   return (
     <div
-      className="cursor-pointer group active:scale-[0.985] transition-transform duration-200"
+      className="cursor-pointer active:scale-[0.985] transition-transform duration-200 rounded-[16px] overflow-hidden"
+      style={{ backgroundColor: "#def2e9", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
       onClick={onCardClick}
       data-testid={`card-match-${match.listing_id}`}
     >
-      <div className="relative overflow-hidden rounded-[16px]">
+      <div className="relative overflow-hidden">
         {hasImage ? (
           <img
             src={match.image_url!}
             alt={match.title}
-            className="w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-            style={{ aspectRatio: "4/3" }}
+            className="w-full object-cover"
+            style={{ aspectRatio: "16/9" }}
             loading="lazy"
             onError={() => setImgError(true)}
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-full" style={{ aspectRatio: "4/3" }}>
+          <div className="w-full" style={{ aspectRatio: "16/9" }}>
             <ListingFallback title={match.title} source={match.source} city={match.city} size="full" />
           </div>
         )}
@@ -122,66 +147,52 @@ export function ListingCardFull({
             strokeWidth={2}
           />
         </button>
-
-        {match.price > 0 && (
-          <div className="absolute bottom-3 left-3">
-            <span
-              className={`text-[17px] font-semibold ${hasImage ? "text-white" : "text-[#334855]"}`}
-              style={hasImage ? { textShadow: "0 1px 3px rgba(0,0,0,0.5)" } : undefined}
-              data-testid={`badge-price-${match.listing_id}`}
-            >
-              {formatPrice(match.price, locale)}
-              <span className={`text-[12px] font-normal ml-0.5 ${hasImage ? "opacity-80" : "text-[#334855]"}`}>{t("common.perMonthShort")}</span>
-            </span>
-          </div>
-        )}
       </div>
 
-      <div className="pt-3 pb-1 flex flex-col gap-1">
+      <div className="p-4 flex flex-col gap-1.5">
         <h3
-          className="text-[16px] font-semibold text-[#111111] leading-snug truncate"
+          className="text-[16px] font-bold text-[#111111] leading-snug"
           data-testid={`text-match-title-${match.listing_id}`}
         >
           {match.title}
         </h3>
 
-        {address && (
-          <p
-            className="text-[14px] text-[#334855] truncate"
-            data-testid={`detail-city-${match.listing_id}`}
-          >
-            {address}
+        {(timeAgo || sourceName) && (
+          <p className="text-[13px] text-[#6B7280]" data-testid={`detail-source-${match.listing_id}`}>
+            {timeAgo && sourceName ? `${timeAgo} · ${sourceName}` : timeAgo || sourceName}
           </p>
         )}
 
-        {(hasBedrooms || hasSize) && (
-          <p className="text-[14px] text-[#334855] flex items-center gap-1.5 truncate" data-testid={`detail-meta-${match.listing_id}`}>
-            {hasBedrooms && (
-              <span className="inline-flex items-center gap-1">
-                <BedDouble className="w-[15px] h-[15px] text-[#334855]" strokeWidth={1.8} />
-                <span>
-                  {match.bedrooms === 1
-                    ? `${match.bedrooms} ${t("common.bedroom")}`
-                    : `${match.bedrooms} ${t("common.bedrooms")}`}
-                </span>
-              </span>
-            )}
-            {hasBedrooms && hasSize && <span className="text-[#D1D5DB] mx-0.5">·</span>}
-            {hasSize && (
-              <span className="inline-flex items-center gap-1">
-                <Maximize2 className="w-[15px] h-[15px] text-[#334855]" strokeWidth={1.8} />
-                <span>{match.size_m2} m²</span>
-              </span>
-            )}
-          </p>
-        )}
-
-        <p className="text-[13px] text-[#334855] mt-0.5" data-testid={`detail-source-${match.listing_id}`}>
-          {sourceName}
-        </p>
+        <div className="flex flex-wrap gap-x-3 gap-y-1 mt-0.5" data-testid={`detail-meta-${match.listing_id}`}>
+          {address && (
+            <span className="flex items-center gap-1 text-[13px] text-[#334855]" data-testid={`detail-city-${match.listing_id}`}>
+              <MapPin className="w-[13px] h-[13px] flex-shrink-0 text-[#6B7280]" strokeWidth={1.8} />
+              {address}
+            </span>
+          )}
+          {hasBedrooms && (
+            <span className="flex items-center gap-1 text-[13px] text-[#334855]">
+              <BedDouble className="w-[13px] h-[13px] flex-shrink-0 text-[#6B7280]" strokeWidth={1.8} />
+              {match.bedrooms === 1
+                ? `${match.bedrooms} ${t("common.bedroom")}`
+                : `${match.bedrooms} ${t("common.bedrooms")}`}
+            </span>
+          )}
+          {hasSize && (
+            <span className="flex items-center gap-1 text-[13px] text-[#334855]">
+              <Maximize2 className="w-[13px] h-[13px] flex-shrink-0 text-[#6B7280]" strokeWidth={1.8} />
+              {match.size_m2} m²
+            </span>
+          )}
+          {match.price > 0 && (
+            <span className="flex items-center gap-1 text-[13px] font-semibold text-[#111111]" data-testid={`badge-price-${match.listing_id}`}>
+              {formatPrice(match.price, locale)}
+            </span>
+          )}
+        </div>
 
         {locked && (
-          <div className="flex items-center gap-1.5 mt-0.5 text-[12px] text-[#334855]" data-testid={`lock-indicator-${match.listing_id}`}>
+          <div className="flex items-center gap-1.5 mt-1 text-[12px] text-[#334855]" data-testid={`lock-indicator-${match.listing_id}`}>
             <Lock className="w-3 h-3" />
             <span>{t("listing.lockLabel")}</span>
           </div>

@@ -1,0 +1,145 @@
+Redesign the Matches page to follow the Rentbird-style structure and visual hierarchy, while keeping our own branding.
+
+IMPORTANT:
+Do not redesign the whole product.
+Only update the Matches page UI and layout according to the instructions below.
+
+==================================================
+1. STICKY PAGE HEADER
+==================================================
+
+At the very top of the Matches page:
+- Use the same header style as the current Notificaties page
+- Title: "Matches"
+- The header must stay sticky while scrolling
+- Keep the styling clean and minimal
+- Same typography style and spacing as the Notificaties page header
+
+==================================================
+2. SEARCH BAR UNDER HEADER
+==================================================
+
+Directly under the sticky header:
+- Add a search field so users can search through matches
+- Placeholder: "Zoek naar een woning"
+- Search icon on the left
+- Keep it visually clean and premium
+- White background
+- Light border
+- Rounded corners (same system as rest of app)
+- Match the visual tone of Rentbird
+
+Optional:
+- You may place a sort/filter button to the right if already supported, but only if it fits cleanly
+
+==================================================
+3. WHITE SECTION CONTAINER
+==================================================
+
+The match results should no longer sit directly on the grey page background.
+
+Create a white rounded container/card section under the search bar:
+- background: #ffffff
+- border-radius: 20px
+- padding: 16px–20px
+- subtle shadow if needed
+- margin-top: 16px
+
+All match cards should sit inside this white container.
+
+==================================================
+4. MATCH CARD STYLE
+==================================================
+
+Each listing card should be redesigned with this visual structure:
+
+Card background:
+- Use this exact background color: #def2e9
+- Rounded corners
+- Clean spacing
+- Slight shadow or border if needed, but keep it subtle
+
+Image:
+- Keep the image wide
+- Make the image clearly LESS tall than it is now
+- More compact visual ratio
+- Rounded corners
+
+==================================================
+5. INFORMATION HIERARCHY INSIDE EACH MATCH CARD
+==================================================
+
+For each listing, show the information in this order:
+
+1. Title
+- Bold / strong
+- Main focus line
+
+2. Meta line below title
+- Format:
+  "[moment van plaatsing] • [website]"
+- Example:
+  "2 uur geleden • wg-gesucht.de"
+- Smaller and darker grey than title
+
+3. Feature row with 4 items
+Show these 4 info items with icons + text:
+- Plaatsnaam
+- Slaapkamers
+- Afmeting
+- Huurprijs
+
+Example structure:
+- 📍 Berlin
+- 🛏 2 slaapkamers
+- 📐 63 m²
+- € 1190
+
+Rules:
+- Keep the row clean and readable
+- Use small icons
+- Use consistent spacing between items
+- On small screens, wrap neatly if needed
+- Make sure the design still feels airy and not crowded
+
+==================================================
+6. REMOVE CURRENT VISUAL CHAOS
+==================================================
+
+The current Matches page feels too loose and unstructured.
+We want the new version to feel:
+
+- cleaner
+- more premium
+- easier to scan
+- more grouped
+- more consistent with the rest of the app
+
+So:
+- reduce random spacing
+- group content better
+- make the cards feel intentional
+- do not let listings float directly on the grey background
+
+==================================================
+7. KEEP CONSISTENT WITH APP STYLING
+==================================================
+
+Use the same design system already used elsewhere:
+- page background: the existing global light grey
+- white cards/containers
+- rounded corners
+- dark typography
+- pink as accent where needed
+- keep it aligned with the improved Home / Zoekopdrachten look
+
+==================================================
+8. OUTPUT
+==================================================
+
+After implementing, return:
+1. Which files were changed
+2. How the sticky header was implemented
+3. How the search field works
+4. What was changed in the listing card layout
+5. Confirmation that all matches now render inside a white container

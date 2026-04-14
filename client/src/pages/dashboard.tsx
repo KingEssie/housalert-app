@@ -1253,6 +1253,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
   const [refreshKey, setRefreshKey] = useState(0);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [topTab, setTopTab] = useState<MatchesTopTab>(initialTopTab || "matches");
+  const [searchQuery, setSearchQuery] = useState("");
   const [appliedListings, setAppliedListings] = useState<ApiMatch[]>([]);
   const { t, locale } = useTranslation();
   const { toast } = useToast();
@@ -1393,6 +1394,17 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
     return new Date(dateB).getTime() - new Date(dateA).getTime();
   });
 
+  const filteredMatches = searchQuery.trim()
+    ? allMatchesSorted.filter((m) => {
+        const q = searchQuery.toLowerCase();
+        return (
+          m.title?.toLowerCase().includes(q) ||
+          m.city?.toLowerCase().includes(q) ||
+          (m.district?.toLowerCase().includes(q) ?? false)
+        );
+      })
+    : allMatchesSorted;
+
   const removeApplied = useCallback(async (listingId: string) => {
     if (!accessToken) return;
     const prevListings = appliedListings;
@@ -1461,11 +1473,13 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
     );
   }
 
+  const cardStyle = { boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" };
+
   return (
     <div className="flex flex-col pb-8">
       <div className="sticky top-0 z-10 bg-white px-5 pt-8 pb-4">
         <h1 className="text-page-title mb-4">{t("matches.title")}</h1>
-        <div className="flex items-center gap-2" data-testid="matches-top-tabs">
+        <div className="flex items-center gap-2 mb-3" data-testid="matches-top-tabs">
           {topTabs.map(({ key, label }) => {
             const isActive = topTab === key;
             return (
@@ -1484,65 +1498,84 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
             );
           })}
         </div>
+        {topTab === "matches" && (
+          <div className="relative">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[17px] h-[17px] text-[#9CA3AF] pointer-events-none" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Zoek naar een woning"
+              className="w-full h-[44px] pl-10 pr-4 rounded-[14px] bg-[#F3F4F6] border border-transparent text-[15px] text-[#111111] placeholder-[#9CA3AF] outline-none focus:bg-white focus:border-[#E5E7EB] transition-all"
+              data-testid="input-search-matches"
+            />
+          </div>
+        )}
       </div>
 
-      <div className="px-5 flex flex-col pt-1">
+      <div className="px-5 pt-4">
         {topTab === "matches" && (
           <>
             {apiMatchesQuery.isLoading ? (
-              <div className="flex flex-col gap-4">
+              <div className="bg-white rounded-[20px] p-4 flex flex-col gap-4" style={cardStyle}>
                 {[1, 2].map((i) => (
-                  <div key={i} className="animate-pulse">
-                    <div className="bg-[#F3F4F6] rounded-[16px]" style={{ aspectRatio: "4/3" }} />
-                    <div className="pt-3 flex flex-col gap-2">
-                      <div className="h-4 bg-[#F3F4F6] rounded-full w-3/4" />
-                      <div className="h-3 bg-[#F3F4F6] rounded-full w-1/2" />
-                      <div className="h-3 bg-[#F3F4F6] rounded-full w-2/5" />
-                      <div className="h-3 bg-[#F3F4F6] rounded-full w-1/4" />
+                  <div key={i} className="animate-pulse rounded-[16px] overflow-hidden bg-[#def2e9]">
+                    <div className="bg-[#cee8da]" style={{ aspectRatio: "16/9" }} />
+                    <div className="p-4 flex flex-col gap-2">
+                      <div className="h-4 bg-[#cee8da] rounded-full w-3/4" />
+                      <div className="h-3 bg-[#cee8da] rounded-full w-1/2" />
+                      <div className="h-3 bg-[#cee8da] rounded-full w-2/5" />
                     </div>
                   </div>
                 ))}
               </div>
             ) : apiMatchesQuery.isError ? (
-              <div className="py-16 flex flex-col items-center text-center gap-4 px-4">
-                <div className="mb-1">
-                  <AlertCircle className="w-[24px] h-[24px] text-[#111111]" />
-                </div>
+              <div className="bg-white rounded-[20px] p-6 flex flex-col items-center text-center gap-4" style={cardStyle}>
+                <AlertCircle className="w-[24px] h-[24px] text-[#111111]" />
                 <p className="text-[18px] font-semibold text-[#111111]">{t("matches.loadError")}</p>
                 <p className="text-[15px] text-[#334855] leading-relaxed max-w-[280px]">{t("matches.loadErrorDesc")}</p>
                 <button
                   onClick={() => apiMatchesQuery.refetch()}
-                  className="text-[15px] font-semibold text-ha-primary mt-2 active:opacity-70 transition-opacity"
+                  className="text-[15px] font-semibold text-ha-primary active:opacity-70 transition-opacity"
                   data-testid="button-retry-matches"
                 >
                   {t("common.retry")}
                 </button>
               </div>
             ) : matches.length === 0 ? (
-              <EmptyState
-                illustration={EMPTY_STATE_IMAGES.noMatches}
-                title="Nog geen matches"
-                description="We zijn voor je aan het zoeken. Nieuwe woningen verschijnen hier."
-                ctaLabel={t("matches.adjustFilters")}
-                onCtaClick={() => setActiveTab("zoek")}
-                testId="empty-matches"
-              />
+              <div className="bg-white rounded-[20px]" style={cardStyle}>
+                <EmptyState
+                  illustration={EMPTY_STATE_IMAGES.noMatches}
+                  title="Nog geen matches"
+                  description="We zijn voor je aan het zoeken. Nieuwe woningen verschijnen hier."
+                  ctaLabel={t("matches.adjustFilters")}
+                  onCtaClick={() => setActiveTab("zoek")}
+                  testId="empty-matches"
+                  compact
+                />
+              </div>
             ) : (
-              <div className="flex flex-col gap-6">
-                {allMatchesSorted.map((m) => (
-                  <ListingCardFull
-                    key={m.listing_id}
-                    match={m}
-                    isFavorited={favoriteIds.has(m.listing_id)}
-                    onToggleFavorite={toggleFavorite}
-                    onCardClick={() => {
-                      markViewed(m.listing_id);
-                      refreshStatuses();
-                      navigate(`/apply/${m.listing_id}`);
-                    }}
-                    locked={!hasAccess}
-                  />
-                ))}
+              <div className="bg-white rounded-[20px] p-4 flex flex-col gap-4" style={cardStyle}>
+                {filteredMatches.length === 0 ? (
+                  <p className="text-center text-[15px] text-[#6B7280] py-8" data-testid="text-no-search-results">
+                    Geen woningen gevonden voor "{searchQuery}"
+                  </p>
+                ) : (
+                  filteredMatches.map((m) => (
+                    <ListingCardFull
+                      key={m.listing_id}
+                      match={m}
+                      isFavorited={favoriteIds.has(m.listing_id)}
+                      onToggleFavorite={toggleFavorite}
+                      onCardClick={() => {
+                        markViewed(m.listing_id);
+                        refreshStatuses();
+                        navigate(`/apply/${m.listing_id}`);
+                      }}
+                      locked={!hasAccess}
+                    />
+                  ))
+                )}
               </div>
             )}
           </>
@@ -1551,36 +1584,37 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
         {topTab === "gereageerd" && (
           <>
             {appliedListings.length === 0 ? (
-              <EmptyState
-                illustration={EMPTY_STATE_IMAGES.noApplications}
-                title="Nog niet gereageerd"
-                description="Reageer op woningen om je kansen te vergroten."
-                testId="empty-gereageerd-tab"
-              />
+              <div className="bg-white rounded-[20px]" style={cardStyle}>
+                <EmptyState
+                  illustration={EMPTY_STATE_IMAGES.noApplications}
+                  title="Nog niet gereageerd"
+                  description="Reageer op woningen om je kansen te vergroten."
+                  testId="empty-gereageerd-tab"
+                  compact
+                />
+              </div>
             ) : (
-              <div className="flex flex-col gap-6">
+              <div className="bg-white rounded-[20px] p-4 flex flex-col gap-4" style={cardStyle}>
                 {appliedListings.map((m) => (
-                  <div key={m.listing_id} data-testid={`card-applied-${m.listing_id}`}>
-                    <ListingCardFull
-                      match={m}
-                      isFavorited={favoriteIds.has(m.listing_id)}
-                      onToggleFavorite={toggleFavorite}
-                      onCardClick={() => {
-                        markViewed(m.listing_id);
-                        navigate(`/apply/${m.listing_id}`);
-                      }}
-                      locked={!hasAccess}
-                      respondedLabel={formatRespondedDate(m)}
-                      onRemoveResponse={() => removeApplied(m.listing_id)}
-                      removeResponseLabel={t("matches.removeResponse")}
-                    />
-                  </div>
+                  <ListingCardFull
+                    key={m.listing_id}
+                    match={m}
+                    isFavorited={favoriteIds.has(m.listing_id)}
+                    onToggleFavorite={toggleFavorite}
+                    onCardClick={() => {
+                      markViewed(m.listing_id);
+                      navigate(`/apply/${m.listing_id}`);
+                    }}
+                    locked={!hasAccess}
+                    respondedLabel={formatRespondedDate(m)}
+                    onRemoveResponse={() => removeApplied(m.listing_id)}
+                    removeResponseLabel={t("matches.removeResponse")}
+                  />
                 ))}
               </div>
             )}
           </>
         )}
-
       </div>
     </div>
   );
