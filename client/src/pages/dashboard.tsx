@@ -2016,7 +2016,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
         className="w-full flex items-center justify-between px-4 h-[52px] text-left active:bg-[#F9FAFB] transition-colors"
         data-testid={`menu-item-${label.toLowerCase().replace(/\s+/g, "-")}`}
       >
-        <span className="text-[15px] font-medium text-[#111111]">{label}</span>
+        <span className="text-[15px] font-semibold text-[#111111]">{label}</span>
         {external
           ? <ExternalLink className="w-[16px] h-[16px] text-[#9CA3AF] flex-shrink-0" />
           : <ChevronRight className="w-[16px] h-[16px] text-[#D1D5DB] flex-shrink-0" />
@@ -2026,74 +2026,78 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
     </>
   );
 
-  const SectionBlock = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  const SectionInline = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <div>
-      <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider mb-2 px-1">{title}</p>
-      <div className="bg-white rounded-[16px] border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
-        {children}
-      </div>
+      <div className="h-px bg-[#F3F4F6]" />
+      <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-4 pt-4 pb-1">{title}</p>
+      {children}
     </div>
   );
 
   return (
     <div className="min-h-[calc(100vh-80px)] bg-[#eaeaeb]">
 
-      {/* ── HEADER ── */}
-      <div className="bg-ha-profile-header" style={{ borderBottomLeftRadius: 24, borderBottomRightRadius: 24 }}>
-        <div className="flex flex-col items-center px-5 pt-10 pb-8">
-          <div className="w-[72px] h-[72px] rounded-full bg-white/20 flex items-center justify-center mb-4">
-            <span className="text-[28px] font-bold text-white" data-testid="text-account-initials">{initials}</span>
+      {/* ── MAIN PANEL ── */}
+      <div className="px-4 pt-6 pb-8 max-w-[480px] mx-auto">
+
+        {/* Single white container */}
+        <div className="bg-white rounded-[20px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden mb-4">
+
+          {/* Profile row */}
+          <div className="flex items-center gap-3 px-4 py-4" data-testid="row-account-profile">
+            <div className="w-[44px] h-[44px] rounded-full bg-ha-primary flex items-center justify-center flex-shrink-0">
+              <span className="text-[16px] font-bold text-white" data-testid="text-account-initials">{initials}</span>
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[15px] font-semibold text-[#111111] truncate" data-testid="text-account-name">{displayName}</p>
+              <p className="text-[13px] text-[#9CA3AF] truncate" data-testid="text-account-email">{user.email}</p>
+            </div>
           </div>
-          <p className="text-[19px] font-bold text-white" data-testid="text-account-name">{displayName}</p>
-          {memberSinceLabel && (
-            <p className="text-[13px] text-white/60 mt-1" data-testid="text-account-member-since">{memberSinceLabel}</p>
+
+          {/* ACCOUNT */}
+          <SectionInline title="Account">
+            <MenuItem label="Voorkeuren" onClick={() => navigate("/settings/preferences")} />
+            <MenuItem label="Wachtwoord" onClick={() => navigate("/account/change-password")} />
+            <MenuItem label="Abonnement" onClick={() => navigate("/account/subscription")} last />
+          </SectionInline>
+
+          {/* PERSOONLIJKE GEGEVENS */}
+          <SectionInline title="Persoonlijke gegevens">
+            <MenuItem label="Mijn gegevens" onClick={() => navigate("/profile/details")} />
+            <MenuItem label="Woonsituatie" onClick={() => navigate("/settings/housing")} last />
+          </SectionInline>
+
+          {/* ZOEKEN EN REAGEREN */}
+          {!buddyMode && (
+            <SectionInline title="Zoeken en reageren">
+              <MenuItem label="Zoekbuddy beheren" onClick={() => navigate("/profile/edit/search_buddy_email")} />
+              <MenuItem label="Reactiebrief" onClick={() => navigate("/application-letter")} last />
+            </SectionInline>
           )}
+
+          {/* HELP */}
+          <SectionInline title="Help">
+            <MenuItem label="Veelgestelde vragen" onClick={() => window.open("https://www.housalert.com/faq", "_blank")} external />
+            <MenuItem label="Contacteer ons" onClick={() => { window.location.href = "mailto:support@housalert.com"; }} external last />
+          </SectionInline>
+
+          {/* VOORWAARDEN */}
+          <SectionInline title="Voorwaarden">
+            <MenuItem label="Algemene voorwaarden" onClick={() => navigate("/terms")} />
+            <MenuItem label="Privacybeleid" onClick={() => navigate("/datenschutz")} last />
+          </SectionInline>
+
+          {/* ADMIN */}
+          {isAdmin && (
+            <SectionInline title="Admin">
+              <MenuItem label="Beeldkwaliteit listings" onClick={() => navigate("/admin/image-audit")} />
+              <MenuItem label="Admin portaal" onClick={() => navigate("/admin/portal")} last />
+            </SectionInline>
+          )}
+
+          {/* bottom padding */}
+          <div className="h-3" />
         </div>
-      </div>
-
-      {/* ── CONTENT ── */}
-      <div className="px-4 pt-6 pb-8 max-w-[480px] mx-auto flex flex-col gap-5">
-
-        {/* ACCOUNT */}
-        <SectionBlock title="Account">
-          <MenuItem label="Voorkeuren" onClick={() => navigate("/settings/preferences")} />
-          <MenuItem label="Wachtwoord" onClick={() => navigate("/account/change-password")} />
-          <MenuItem label="Abonnement" onClick={() => navigate("/account/subscription")} last />
-        </SectionBlock>
-
-        {/* PERSOONLIJKE GEGEVENS */}
-        <SectionBlock title="Persoonlijke gegevens">
-          <MenuItem label="Mijn gegevens" onClick={() => navigate("/profile/details")} />
-          <MenuItem label="Woonsituatie" onClick={() => navigate("/settings/housing")} last />
-        </SectionBlock>
-
-        {/* ZOEKEN EN REAGEREN */}
-        {!buddyMode && (
-          <SectionBlock title="Zoeken en reageren">
-            <MenuItem label="Zoekbuddy beheren" onClick={() => navigate("/profile/edit/search_buddy_email")} />
-            <MenuItem label="Reactiebrief" onClick={() => navigate("/application-letter")} last />
-          </SectionBlock>
-        )}
-
-        {/* HELP */}
-        <SectionBlock title="Help">
-          <MenuItem label="Veelgestelde vragen" onClick={() => window.open("https://www.housalert.com/faq", "_blank")} external />
-          <MenuItem label="Contacteer ons" onClick={() => { window.location.href = "mailto:support@housalert.com"; }} external last />
-        </SectionBlock>
-
-        {/* VOORWAARDEN */}
-        <SectionBlock title="Voorwaarden">
-          <MenuItem label="Algemene voorwaarden" onClick={() => navigate("/terms")} />
-          <MenuItem label="Privacybeleid" onClick={() => navigate("/datenschutz")} last />
-        </SectionBlock>
-
-        {/* ADMIN */}
-        {isAdmin && (
-          <SectionBlock title="Admin">
-            <MenuItem label="Beeldkwaliteit listings" onClick={() => navigate("/admin/image-audit")} />
-            <MenuItem label="Admin portaal" onClick={() => navigate("/admin/portal")} last />
-          </SectionBlock>
-        )}
 
         {/* UITLOGGEN */}
         <button
@@ -2105,7 +2109,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           {signingOut ? t("profile.signingOut") : t("profile.logout")}
         </button>
 
-        <div className="flex flex-col items-center gap-3 pt-2 pb-4">
+        <div className="flex flex-col items-center gap-3 pt-4 pb-4">
           <button
             onClick={() => navigate("/account/delete")}
             className="text-[13px] text-[#334855] active:opacity-70 transition-opacity"

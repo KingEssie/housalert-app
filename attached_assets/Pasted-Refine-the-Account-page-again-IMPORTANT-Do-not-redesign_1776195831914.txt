@@ -1,0 +1,115 @@
+Refine the Account page again.
+
+IMPORTANT:
+Do not redesign the whole screen from scratch.
+Keep the current Rentbird-style settings structure, but make these exact adjustments.
+
+==================================================
+1. REMOVE THE LARGE TOP HEADER
+==================================================
+
+Remove the current large dark header/profile hero section entirely.
+
+Remove:
+- the dark/colored top block
+- the large centered profile area
+- the “Lid sinds …” line in that hero area
+
+We do NOT want a separate hero/header block anymore.
+
+==================================================
+2. MOVE PROFILE INFO INTO THE MAIN WHITE CONTAINER
+==================================================
+
+At the TOP of the main white settings container, add a compact profile row like in the Rentbird example.
+
+This row should include:
+- a circular avatar with the user initials (for example: "ME")
+- the user name
+- the user email address
+
+Layout:
+- avatar on the left
+- name + email stacked on the right
+- aligned neatly
+- compact and premium
+
+Style:
+- avatar circle visible and clean
+- name bold
+- email smaller and grey
+- spacing like Rentbird
+
+==================================================
+3. EVERYTHING INSIDE ONE WHITE CONTAINER
+==================================================
+
+The entire account/settings content should sit inside ONE white rounded container.
+
+This includes:
+- profile row
+- all section titles
+- all menu items
+
+There should NOT be separate loose cards/blocks.
+
+Requirements:
+- page background stays light grey
+- one main white rounded panel
+- all settings sections live inside that one panel
+- subtle shadow is okay
+- same overall feel as the Rentbird settings screen
+
+==================================================
+4. MENU TEXTS BOLDER
+==================================================
+
+Make the menu item labels slightly bolder / stronger.
+
+Examples:
+- Voorkeuren
+- Wachtwoord
+- Abonnement
+- Mijn gegevens
+- Woonsituatie
+- Zoekbuddy beheren
+- Reactiebrief
+- Veelgestelde vragen
+- Contacteer ons
+- Algemene voorwaarden
+- Privacybeleid
+
+Requirements:
+- stronger than they are now
+- still elegant, not too heavy
+- closer to Rentbird readability
+
+Suggested:
+- font-weight around 600
+
+==================================================
+5. KEEP THE EXISTING STRUCTURE
+==================================================
+
+Keep:
+- the current menu items
+- the current section grouping
+- the current right-side chevrons/external-link icons
+- the bottom navigation label "Account"
+
+Only change:
+- remove top hero/header
+- move profile identity row into the main white container
+- ensure all content is inside one white panel
+- increase menu text weight
+
+==================================================
+6. OUTPUT
+==================================================
+
+Return:
+1. which files were changed
+2. confirmation that the large top header was removed
+3. confirmation that the initials/avatar + name + email now appear inside the main white container
+4. confirmation that the entire settings screen now sits in one white panel
+5. what font-weight was used for the menu labels
