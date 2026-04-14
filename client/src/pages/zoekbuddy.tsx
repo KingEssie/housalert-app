@@ -28,7 +28,7 @@ function buildInviteLink(token: string) {
 }
 
 const INPUT_CLS =
-  "w-full h-[52px] px-4 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] font-normal text-[#000000] placeholder:text-[#9CA3AF] outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/20";
+  "w-full h-[52px] px-4 rounded-[8px] border border-[#C7CDD4] bg-white text-[16px] font-normal text-[#000000] placeholder:text-[#9CA3AF] outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/20";
 
 const ALLOWED_ITEMS = [
   "Woningalerts ontvangen via de app",
@@ -54,7 +54,6 @@ export default function ZoekbuddyPage() {
   const asOwner = connections?.asOwner ?? null;
   const isConnected = asOwner?.invite_status === "accepted";
   const isPending  = asOwner?.invite_status === "pending";
-  const hasBuddy   = isConnected || isPending;
 
   const inviteLink = asOwner?.invite_token ? buildInviteLink(asOwner.invite_token) : null;
 
@@ -138,20 +137,20 @@ export default function ZoekbuddyPage() {
           /* ── STATE B: CONNECTED ── */
           <div className="flex flex-col gap-3">
             <div className="app-card !p-5">
-              <h2 className="text-[18px] font-bold text-[#000000] mb-1">Zoekbuddy verbonden</h2>
-              <p className="text-[14px] text-[#000000] mb-5 leading-snug">
+              <h2 className="text-[21px] font-bold text-[#000000] mb-1">Zoekbuddy verbonden</h2>
+              <p className="text-[16px] text-[#000000] mb-5 leading-snug">
                 Je zoekbuddy is gekoppeld en kan meezoeken in de app.
               </p>
 
               {/* Buddy email row */}
               <div className="flex items-center gap-3 py-3 border-t border-[#E5E7EB]">
-                <Mail className="w-[18px] h-[18px] text-[#000000] flex-shrink-0" strokeWidth={1.8} />
-                <span className="text-[15px] text-[#000000] font-medium break-all" data-testid="text-buddy-email">
+                <Mail className="w-[19px] h-[19px] text-[#000000] flex-shrink-0" strokeWidth={1.8} />
+                <span className="text-[16px] text-[#000000] font-medium break-all" data-testid="text-buddy-email">
                   {asOwner?.invite_email}
                 </span>
               </div>
 
-              {/* Share link row */}
+              {/* Action rows */}
               {inviteLink && (
                 <>
                   <button
@@ -159,8 +158,8 @@ export default function ZoekbuddyPage() {
                     className="flex items-center gap-3 w-full py-3 border-t border-[#E5E7EB] text-left"
                     data-testid="button-share-link"
                   >
-                    <Share2 className="w-[18px] h-[18px] text-[#000000] flex-shrink-0" strokeWidth={1.8} />
-                    <span className="text-[15px] text-[#000000] font-medium">Deel link</span>
+                    <Share2 className="w-[19px] h-[19px] text-[#000000] flex-shrink-0" strokeWidth={1.8} />
+                    <span className="text-[16px] text-[#000000] font-medium">Deel link</span>
                   </button>
 
                   <button
@@ -168,13 +167,13 @@ export default function ZoekbuddyPage() {
                     className="flex items-center gap-3 w-full py-3 border-t border-[#E5E7EB] text-left"
                     data-testid="button-copy-link-connected"
                   >
-                    <Copy className="w-[18px] h-[18px] text-[#000000] flex-shrink-0" strokeWidth={1.8} />
-                    <span className="text-[15px] text-[#000000] font-medium">Link kopiëren</span>
+                    <Copy className="w-[19px] h-[19px] text-[#000000] flex-shrink-0" strokeWidth={1.8} />
+                    <span className="text-[16px] text-[#000000] font-medium">Link kopiëren</span>
                   </button>
                 </>
               )}
 
-              {/* Subtle revoke */}
+              {/* Subtle revoke — intentionally de-emphasised */}
               <button
                 onClick={handleRevoke}
                 disabled={revoking}
@@ -195,10 +194,10 @@ export default function ZoekbuddyPage() {
             {/* Pending status banner */}
             {isPending && (
               <div className="app-card !p-4 flex items-start gap-3">
-                <Clock className="w-[18px] h-[18px] text-[#F59E0B] flex-shrink-0 mt-0.5" strokeWidth={1.8} />
+                <Clock className="w-[19px] h-[19px] text-[#F59E0B] flex-shrink-0 mt-0.5" strokeWidth={2} />
                 <div>
-                  <p className="text-[14px] font-semibold text-[#000000]">Uitnodiging verstuurd</p>
-                  <p className="text-[13px] text-[#000000] leading-snug mt-0.5">
+                  <p className="text-[15px] font-semibold text-[#000000]">Uitnodiging verstuurd</p>
+                  <p className="text-[14px] font-medium text-[#000000] leading-snug mt-0.5">
                     Wachtend op acceptatie van <strong>{asOwner?.invite_email}</strong>
                   </p>
                 </div>
@@ -207,32 +206,46 @@ export default function ZoekbuddyPage() {
 
             {/* Info panel */}
             <div className="app-card !p-5">
-              <h2 className="text-[18px] font-bold text-[#000000] mb-1">
+              {/* Panel title — 21px bold black */}
+              <h2 className="text-[21px] font-bold text-[#000000] mb-2">
                 Samen wonen? Samen zoeken!
               </h2>
-              <p className="text-[14px] text-[#000000] mb-4 leading-snug">
+              {/* Intro — 16px medium black */}
+              <p className="text-[16px] font-medium text-[#000000] mb-4 leading-snug">
                 Je zoekbuddy kan:
               </p>
 
-              <div className="flex flex-col gap-2.5 mb-5">
+              {/* Permission list — 16px, filled icons, no icon containers */}
+              <div className="flex flex-col gap-3 mb-5">
                 {ALLOWED_ITEMS.map(item => (
-                  <div key={item} className="flex items-center gap-2.5">
-                    <CheckCircle2 className="w-[17px] h-[17px] text-[#16A34A] flex-shrink-0" strokeWidth={2} />
-                    <span className="text-[14px] text-[#000000]">{item}</span>
+                  <div key={item} className="flex items-center gap-3">
+                    <CheckCircle2
+                      className="flex-shrink-0 w-[20px] h-[20px]"
+                      fill="#16A34A"
+                      stroke="white"
+                      strokeWidth={2}
+                    />
+                    <span className="text-[16px] font-medium text-[#000000]">{item}</span>
                   </div>
                 ))}
                 {NOT_ALLOWED_ITEMS.map(item => (
-                  <div key={item} className="flex items-center gap-2.5">
-                    <XCircle className="w-[17px] h-[17px] text-[#DC2626] flex-shrink-0" strokeWidth={2} />
-                    <span className="text-[14px] text-[#000000]">{item}</span>
+                  <div key={item} className="flex items-center gap-3">
+                    <XCircle
+                      className="flex-shrink-0 w-[20px] h-[20px]"
+                      fill="#DC2626"
+                      stroke="white"
+                      strokeWidth={2}
+                    />
+                    <span className="text-[16px] font-medium text-[#000000]">{item}</span>
                   </div>
                 ))}
               </div>
 
-              {/* Email input — only when no pending */}
+              {/* Email input — only when no pending invite */}
               {!isPending && (
                 <div>
-                  <label className="text-[14px] font-semibold text-[#000000] mb-2 block">
+                  {/* Label — 16px semibold black */}
+                  <label className="text-[16px] font-semibold text-[#000000] mb-2 block">
                     E-mailadres zoekbuddy
                   </label>
                   <input
@@ -247,15 +260,15 @@ export default function ZoekbuddyPage() {
                 </div>
               )}
 
-              {/* Copy link when pending */}
+              {/* Copy link row when pending */}
               {isPending && inviteLink && (
                 <button
                   onClick={handleCopyLink}
-                  className="flex items-center gap-2.5 py-3 border-t border-[#E5E7EB] w-full text-left mt-1"
+                  className="flex items-center gap-3 py-3 border-t border-[#E5E7EB] w-full text-left mt-1"
                   data-testid="button-copy-link-pending"
                 >
-                  <Copy className="w-[17px] h-[17px] text-[#000000] flex-shrink-0" strokeWidth={1.8} />
-                  <span className="text-[14px] text-[#000000] font-medium">Link kopiëren</span>
+                  <Copy className="w-[19px] h-[19px] text-[#000000] flex-shrink-0" strokeWidth={1.8} />
+                  <span className="text-[16px] font-medium text-[#000000]">Link kopiëren</span>
                 </button>
               )}
             </div>
@@ -268,7 +281,6 @@ export default function ZoekbuddyPage() {
         <div className="sticky bottom-0 bg-white border-t border-[#E5E7EB] px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
           <div className="max-w-[480px] mx-auto flex flex-col gap-2">
             {isConnected ? (
-              /* Connected primary action */
               <button
                 onClick={handleShareLink}
                 className="w-full h-[52px] rounded-[10px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98] flex items-center justify-center gap-2"
@@ -278,7 +290,6 @@ export default function ZoekbuddyPage() {
                 Deel uitnodigingslink
               </button>
             ) : isPending ? (
-              /* Pending: share + secondary resend option */
               <>
                 <button
                   onClick={handleShareLink}
@@ -298,7 +309,6 @@ export default function ZoekbuddyPage() {
                 </button>
               </>
             ) : (
-              /* No buddy: invite button */
               <button
                 onClick={handleInvite}
                 disabled={inviting || !emailInput.trim()}

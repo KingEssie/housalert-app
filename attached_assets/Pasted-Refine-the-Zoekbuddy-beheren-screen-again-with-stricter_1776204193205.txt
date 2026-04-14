@@ -1,0 +1,157 @@
+Refine the “Zoekbuddy beheren” screen again with stricter visual rules.
+
+IMPORTANT:
+Do NOT make soft approximations.
+Do NOT keep any washed-out or lightly styled elements.
+Apply the exact corrections below.
+
+GOAL:
+Make this screen feel stronger, clearer, and more premium:
+- darker text
+- larger text
+- filled status icons
+- sharper input
+- less rounded corners
+
+==================================================
+1. ALL TEXT MUST BE TRUE BLACK
+==================================================
+
+Problem:
+Some text is still not fully black and still feels slightly grey.
+
+Fix this across the entire Zoekbuddy beheren screen:
+
+A. Titles:
+- color: #000000
+- font-weight: 700
+- strong, clear hierarchy
+
+B. Body text / descriptions:
+- color: #000000
+- font-weight: 400–500
+- no faded grey text
+
+C. Labels:
+- color: #000000
+- font-weight: 600
+
+Affected text includes at least:
+- "Samen wonen? Samen zoeken!"
+- "Je zoekbuddy kan:"
+- all allowed / not allowed item labels
+- "E-mailadres zoekbuddy"
+- placeholder/value styling should also be darker and more readable
+
+No light grey descriptive text allowed.
+
+==================================================
+2. MAKE TEXT LARGER
+==================================================
+
+Increase typography scale slightly on this screen.
+
+Use stronger sizing hierarchy:
+
+- Main title in white panel:
+  around 20–22px
+- Intro/section label:
+  around 16–17px
+- Permission list items:
+  around 16–17px
+- Input label:
+  around 16px
+
+Goal:
+The screen should feel easier to scan and more premium.
+
+==================================================
+3. STATUS ICONS MUST BE FILLED, NOT OUTLINED
+==================================================
+
+Problem:
+The green and red icons are currently outlined.
+
+Fix this:
+
+Allowed items:
+- use FILLED green check icon
+- no outline-only icon
+
+Not allowed items:
+- use FILLED red X icon
+- no outline-only icon
+
+IMPORTANT:
+- no circles around the icons
+- no icon containers
+- icon itself should be filled and strong
+- icon size slightly larger than current
+
+Icon style should feel bold and clear, not delicate.
+
+==================================================
+4. INPUT FIELD — STRONGER BORDER
+==================================================
+
+Problem:
+The email input border is too light.
+
+Fix this:
+- border: 1px solid #C7CDD4 or slightly stronger than current
+- make the border clearly visible
+- still clean, not heavy
+
+==================================================
+5. INPUT FIELD — LESS ROUNDED
+==================================================
+
+Problem:
+The input field corners are too rounded again.
+
+Fix this:
+- border-radius: 8px
+- do NOT exceed 8px
+- keep consistent with the rest of the updated app
+
+==================================================
+6. INPUT FIELD — PREMIUM ALIGNMENT
+==================================================
+
+Refine input field styling:
+- text vertically centered
+- placeholder readable
+- padding consistent with other screens
+- clean horizontal spacing
+
+==================================================
+7. KEEP THE REST OF THE STRUCTURE
+==================================================
+
+Keep:
+- current white content panel
+- current header title
+- sticky bottom action area
+- invite button logic
+
+Only improve:
+- text color
+- text size
+- icon style
+- input border
+- input radius
+
+==================================================
+8. OUTPUT
+==================================================
+
+Return:
+1. which files were changed
+2. exact colors used for titles/body text
+3. exact font sizes used for:
+   - panel title
+   - intro text
+   - list items
+   - labels
+4. which filled icons were used for allowed/not allowed items
+5. exact border color and radius used for the email input
