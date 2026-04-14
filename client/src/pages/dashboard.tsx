@@ -1040,27 +1040,20 @@ function HomeTab({
         </p>
       </div>
 
-      <div className="flex flex-col gap-8 px-5 pt-0">
-        <div style={{ marginTop: 20 }}>
-          <HighlightCard
-            icon={Send}
-            title="Geef een vriend 25% korting"
-            ctaLabel="Deel je link"
-            onClick={handleReferralShare}
-            testId="card-home-referral"
-            bgColor="#f2f6ff"
-          />
+      <div className="flex flex-col gap-5 px-5 pt-0">
+        <div className="flex flex-col gap-3.5" style={{ marginTop: 20 }} data-testid="section-gamification">
+          <TaskFlowCard accessToken={accessToken} flow={ACCOUNT_FLOW} taskSource="tasks" navigate={navigate} testId="card-account-completion" searchProfileCount={profiles.length} />
+          <TaskFlowCard accessToken={accessToken} flow={SEARCH_PREP_FLOW} taskSource="prepTasks" navigate={navigate} testId="card-prep-completion" />
         </div>
 
-        <div data-testid="section-gamification">
-          <h2 className="text-[18px] font-semibold text-[#111111] mb-4" data-testid="text-gamification-title">
-            {t("home.gamificationTitle")}
-          </h2>
-          <div className="flex flex-col gap-3.5">
-            <TaskFlowCard accessToken={accessToken} flow={ACCOUNT_FLOW} taskSource="tasks" navigate={navigate} testId="card-account-completion" searchProfileCount={profiles.length} />
-            <TaskFlowCard accessToken={accessToken} flow={SEARCH_PREP_FLOW} taskSource="prepTasks" navigate={navigate} testId="card-prep-completion" />
-          </div>
-        </div>
+        <HighlightCard
+          icon={Send}
+          title="Geef een vriend 25% korting"
+          ctaLabel="Deel je link"
+          onClick={handleReferralShare}
+          testId="card-home-referral"
+          bgColor="#f2f6ff"
+        />
 
         <ZoekopdrachtenSection profiles={profiles} navigate={navigate} />
 
