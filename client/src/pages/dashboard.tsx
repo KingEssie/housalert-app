@@ -20,7 +20,6 @@ import {
   Bell,
   LogOut,
   ChevronRight,
-  CheckCircle2,
   AlertCircle,
   AlertTriangle,
   Crown,
@@ -763,7 +762,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
             className="text-[12px] font-medium px-[10px] py-[4px] rounded-full"
             style={{ backgroundColor: "#e6f0f7", color: "#4b7b94" }}
           >
-            {profiles.length}
+            {profiles.length}/4
           </span>
         )}
       </div>
@@ -1001,21 +1000,17 @@ function HomeTab({
               style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}
               data-testid="card-reactiebrief-status"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ background: "#fdf2f7" }}>
-                    <FileText className="w-[18px] h-[18px]" style={{ color: "#d91a68" }} />
-                  </div>
-                  <span className="text-[16px] font-semibold text-[#111111]">Reactiebrief</span>
-                </div>
+              <div className="flex items-center gap-2.5">
+                <FileText className="w-[20px] h-[20px] text-ha-primary flex-shrink-0" />
+                <h2 className="text-[21px] font-semibold text-[#111111] flex-1">Reactiebrief</h2>
                 <span className="text-[14px] font-medium" style={{ color: "#0891B2" }}>
                   {hasLetter ? "Beheren" : "Genereren"}
                 </span>
               </div>
-              <div className="flex items-center gap-2 pl-[48px]">
+              <div className="flex items-center gap-2 pl-[30px]">
                 {hasLetter ? (
                   <>
-                    <CheckCircle2 className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "#16A34A" }} />
+                    <Check className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "#16A34A" }} />
                     <span className="text-[13px] font-medium" style={{ color: "#16A34A" }}>Reactiebrief ingesteld</span>
                   </>
                 ) : (
@@ -1040,19 +1035,15 @@ function HomeTab({
               style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}
               data-testid="card-zoekbuddy-status"
             >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ background: "#fdf2f7" }}>
-                    <Users className="w-[18px] h-[18px]" style={{ color: "#d91a68" }} />
-                  </div>
-                  <span className="text-[16px] font-semibold text-[#111111]">Zoekbuddy</span>
-                </div>
+              <div className="flex items-center gap-2.5">
+                <Users className="w-[20px] h-[20px] text-ha-primary flex-shrink-0" />
+                <h2 className="text-[21px] font-semibold text-[#111111] flex-1">Zoekbuddy</h2>
                 <span className="text-[14px] font-medium" style={{ color: "#0891B2" }}>Beheren</span>
               </div>
-              <div className="flex items-center gap-2 pl-[48px]">
+              <div className="flex items-center gap-2 pl-[30px]">
                 {hasBuddy ? (
                   <>
-                    <CheckCircle2 className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "#16A34A" }} />
+                    <Check className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "#16A34A" }} />
                     <span className="text-[13px] font-medium" style={{ color: "#16A34A" }}>Zoekbuddy verbonden</span>
                   </>
                 ) : (
@@ -1063,7 +1054,7 @@ function HomeTab({
                 )}
               </div>
               {!hasBuddy && (
-                <p className="text-[13px] leading-snug pl-[48px]" style={{ color: "#6B7280" }}>
+                <p className="text-[13px] leading-snug pl-[30px]" style={{ color: "#6B7280" }}>
                   Zoek je met een partner of huisgenoot? Voeg deze als zoekbuddy toe en ontvang beide matches!
                 </p>
               )}

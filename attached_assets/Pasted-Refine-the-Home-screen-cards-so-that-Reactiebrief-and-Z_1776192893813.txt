@@ -1,0 +1,88 @@
+Refine the Home screen cards so that "Reactiebrief" and "Zoekbuddy" match the same header/title style as "Zoekopdrachten".
+
+IMPORTANT:
+Do not redesign the whole Home screen again.
+Only apply the specific visual changes below.
+
+==================================================
+1. REACTIEBRIEF + ZOEKBUDDY TITLES
+==================================================
+
+The titles "Reactiebrief" and "Zoekbuddy" should use the same visual style as the "Zoekopdrachten" section title.
+
+Update both cards so that:
+
+- the title styling matches Zoekopdrachten:
+  - bold / strong dark text
+  - same font size
+  - same visual hierarchy
+- add an icon to the LEFT of the title
+- remove the current pink icon background box completely
+- the icon should sit directly on the card background (no colored square behind it)
+- use the same icon scale / alignment style as the Zoekopdrachten title icon
+
+Goal:
+The header row of all three cards should feel like one consistent design system.
+
+==================================================
+2. SEARCH PROFILE COUNTER
+==================================================
+
+Update the Zoekopdrachten counter badge.
+
+Current:
+- just shows "2"
+
+Change it to:
+- "2/4"
+
+Reason:
+- maximum allowed search profiles is 4
+- user should clearly see current usage out of max
+
+Keep badge style clean and compact.
+
+==================================================
+3. STATUS ICONS (REACTIEBRIEF + ZOEKBUDDY)
+==================================================
+
+The current green check icons have a circle around them.
+
+Change this:
+- remove the surrounding circle/background
+- keep only the check icon itself
+- same for red cross state if present:
+  - no circle
+  - just the icon
+
+So status row should look more like:
+- check icon + green text
+- cross icon + red text
+
+without any enclosing circle or badge.
+
+==================================================
+4. KEEP EVERYTHING ELSE THE SAME
+==================================================
+
+Do not change:
+- card positions
+- card spacing
+- CTA button
+- overall Home layout
+
+Only update:
+- title rows of Reactiebrief and Zoekbuddy
+- search profile badge text
+- status icon style
+
+==================================================
+OUTPUT
+==================================================
+
+Return:
+1. which files were changed
+2. how the title rows were made consistent
+3. confirmation that the pink icon background boxes were removed
+4. confirmation that the search counter now shows current/max (e.g. 2/4)
+5. confirmation that status icons no longer have circles around them
