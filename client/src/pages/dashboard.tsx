@@ -1172,8 +1172,8 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
   if (!hasAccess) {
     return (
       <div className="flex flex-col pb-8" data-testid="favorieten-locked">
-        <div className="sticky top-0 z-10 bg-white px-5 pt-8 pb-4">
-          <h1 className="text-page-title">{t("nav.favorites")}</h1>
+        <div className="sticky top-0 z-10 bg-white px-5 pt-6 pb-4 border-b border-[#E5E7EB]">
+          <h1 className="text-[22px] font-bold text-[#111111]">{t("nav.favorites")}</h1>
         </div>
         <div className="px-5 pt-16">
           <div className="flex flex-col items-center text-center px-6 pb-4">
@@ -1201,8 +1201,15 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="sticky top-0 z-10 bg-white px-5 pt-8 pb-4">
-        <h1 className="text-page-title">{t("nav.favorites")}</h1>
+      <div className="sticky top-0 z-10 bg-white px-5 pt-6 pb-4 border-b border-[#E5E7EB]">
+        <div className="flex items-center gap-2.5">
+          <h1 className="text-[22px] font-bold text-[#111111]">{t("nav.favorites")}</h1>
+          {favoriteListings.length > 0 && (
+            <span className="text-[12px] font-semibold text-white bg-[#FF385C] px-[9px] py-[3px] rounded-full" data-testid="badge-favorites-count">
+              {favoriteListings.length}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="px-5 flex flex-col pt-1">

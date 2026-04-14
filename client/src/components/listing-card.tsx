@@ -124,15 +124,15 @@ export function ListingCardFull({
 
         <button
           onClick={handleHeartClick}
-          className="absolute top-3 right-3 w-[38px] h-[38px] rounded-full flex items-center justify-center transition-all duration-150 active:scale-110"
-          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+          className="absolute top-3 right-3 w-[38px] h-[38px] flex items-center justify-center transition-all duration-150 active:scale-110"
           data-testid={`button-favorite-${match.listing_id}`}
         >
           <Heart
-            className="w-[18px] h-[18px] transition-all duration-150"
+            className="w-[22px] h-[22px] transition-all duration-150"
             fill={isFavorited ? "#FF385C" : "none"}
             stroke={isFavorited ? "#FF385C" : "#ffffff"}
             strokeWidth={2.5}
+            style={{ filter: "drop-shadow(0 1px 4px rgba(0,0,0,0.55))" }}
           />
         </button>
       </div>

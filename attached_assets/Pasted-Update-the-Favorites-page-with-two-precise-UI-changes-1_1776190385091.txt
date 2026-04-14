@@ -1,0 +1,93 @@
+Update the Favorites page with two precise UI changes:
+
+1) Fix the favorite heart icon (Airbnb style)
+2) Update the page header to match the notifications screen (WITH count badge, NO action button)
+
+IMPORTANT:
+Do NOT redesign the full page.
+Only apply the changes below.
+
+==================================================
+PART 1 — FAVORITE HEART (AIRBNB STYLE)
+==================================================
+
+The current heart icon is incorrect because it sits inside a circular background.
+
+Fix this:
+
+- Remove the circular/dark background completely
+- The heart must be placed directly on the image (no container)
+
+Position:
+- Top-right corner
+- 12–16px from edges
+
+States:
+- Default:
+  - white outline heart (#ffffff)
+- Favorited:
+  - filled heart (#FF385C)
+
+Visibility:
+- Add a subtle shadow or stroke so the heart remains visible on light images
+- Do NOT add any circle, button, or background behind it
+
+Goal:
+The heart should feel like a floating overlay on the image, not a button.
+
+==================================================
+PART 2 — HEADER (LIKE NOTIFICATIONS, WITH BADGE)
+==================================================
+
+Replace the current page title with a sticky header like the notifications screen.
+
+Header requirements:
+
+- Sticky at top (position: sticky, top: 0, high z-index)
+- Background: #ffffff
+- Subtle bottom border: 1px solid #e5e7eb
+
+LEFT SIDE:
+- Title: "Favorieten"
+- Font size: ~20–22px
+- Font weight: 600–700
+- Color: #111111
+
+COUNT BADGE:
+- Place directly next to the title
+- Small rounded badge
+- Background: pink/red (#FF385C or similar)
+- Text color: white
+- Font size: ~12–14px
+- Padding: small (e.g. 6px 10px)
+- Slight margin-left from title
+
+RIGHT SIDE:
+- EMPTY (no “mark as read”, no action button)
+
+IMPORTANT:
+- Remove any large title inside the page content
+- The header replaces it fully
+
+==================================================
+PART 3 — KEEP REST UNCHANGED
+==================================================
+
+Do NOT change:
+- listing cards
+- layout
+- spacing
+- functionality
+
+Only update:
+- heart icon styling
+- header layout
+
+==================================================
+OUTPUT
+==================================================
+
+Return:
+1. which files were updated
+2. confirmation that the heart background was removed
+3. confirmation that the header now includes title + count badge only
