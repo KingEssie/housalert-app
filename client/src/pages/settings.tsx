@@ -77,7 +77,7 @@ export default function SettingsPage() {
   const logoutIcon = (
     <button
       onClick={() => setShowLogoutConfirm(true)}
-      className="w-10 h-10 flex items-center justify-center rounded-full active:bg-[#F3F4F6] transition-colors"
+      className="w-10 h-10 flex items-center justify-center rounded-full bg-[#E5E7EB] active:bg-[#D1D5DB] transition-colors"
       aria-label="Uitloggen"
       data-testid="button-logout-icon"
     >
@@ -126,7 +126,7 @@ export default function SettingsPage() {
                           navigate(row.route);
                         }
                       }}
-                      className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-ha-surface-active transition-colors"
+                      className="w-full flex items-center gap-3 py-[13px] px-5 text-left active:bg-ha-surface-active transition-colors"
                       data-testid={`button-settings-${si}-${ri}`}
                     >
                       <p className="text-[15px] font-semibold text-[#111111] flex-1">{row.label}</p>
@@ -145,7 +145,7 @@ export default function SettingsPage() {
           <div className="app-card !p-0">
             <button
               onClick={() => navigate("/account/delete")}
-              className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-ha-surface-active transition-colors"
+              className="w-full flex items-center gap-3 py-[13px] px-5 text-left active:bg-ha-surface-active transition-colors"
               data-testid="button-delete-account"
             >
               <Trash2 className="w-5 h-5 text-[#334855] flex-shrink-0" />

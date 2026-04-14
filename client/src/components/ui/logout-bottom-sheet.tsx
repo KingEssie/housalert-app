@@ -28,7 +28,7 @@ export function LogoutBottomSheet({ open, onClose, onConfirm, loading }: LogoutB
         <button
           onClick={onConfirm}
           disabled={loading}
-          className="w-full h-[52px] rounded-[12px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 mb-3"
+          className="w-full h-[58px] rounded-[10px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 mb-3"
           data-testid="button-logout-confirm"
         >
           {loading && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -38,7 +38,7 @@ export function LogoutBottomSheet({ open, onClose, onConfirm, loading }: LogoutB
         <button
           onClick={onClose}
           disabled={loading}
-          className="w-full h-[52px] rounded-[12px] border border-ha-primary text-ha-primary text-[16px] font-semibold hover:bg-ha-primary/5 transition-colors active:scale-[0.98] disabled:opacity-50"
+          className="w-full h-[58px] rounded-[10px] border border-ha-primary text-ha-primary text-[16px] font-semibold hover:bg-ha-primary/5 transition-colors active:scale-[0.98] disabled:opacity-50"
           data-testid="button-logout-cancel"
         >
           Nee, ingelogd blijven

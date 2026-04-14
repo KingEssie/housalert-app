@@ -1,0 +1,145 @@
+Refine the account/settings screen and logout modal with stricter UI rules. Do NOT partially apply. Implement all changes exactly.
+
+IMPORTANT:
+This is a precision polish task.
+Do not change functionality.
+Only update layout, typography, spacing, and visual styling.
+
+==================================================
+1. ACCOUNT SCREEN — REDUCE VERTICAL SPACING OF MENU ITEMS
+==================================================
+
+Problem:
+The menu items currently have too much vertical spacing and feel too loose.
+
+Fix:
+- Reduce vertical padding inside each menu row
+- Reduce spacing between rows
+- Keep it readable, but noticeably tighter than current
+
+Target feel:
+- More compact
+- More like Rentbird
+- Still premium and calm
+
+Suggested direction:
+- row vertical padding around 14–16px
+- divider spacing tighter
+- no excessive whitespace between menu items
+
+==================================================
+2. SECTION LABELS — NO ALL CAPS
+==================================================
+
+Problem:
+The light grey section titles are all uppercase.
+This looks too technical and not elegant.
+
+Fix:
+Change these section labels from ALL CAPS to normal title case / sentence case.
+
+Examples:
+- "ACCOUNT" → "Account"
+- "PERSOONLIJKE GEGEVENS" → "Persoonlijke gegevens"
+- "ZOEKEN EN REAGEREN" → "Zoeken en reageren"
+- "HELP" → "Help"
+- "VOORWAARDEN" → "Voorwaarden"
+
+Style:
+- keep them subtle
+- color may stay light grey
+- but normal capitalization only
+- no forced uppercase styling anywhere
+
+==================================================
+3. ACCOUNT EMAIL — MUST BE BLACK
+==================================================
+
+Problem:
+The email under the account name is still grey and feels secondary.
+
+Fix:
+- Make the visible account email black (#000000)
+- Keep it slightly smaller than the name
+- Regular font weight is fine
+- But it must no longer look washed out
+
+Name hierarchy:
+- Name = strongest
+- Email = smaller, but still black and clearly readable
+
+==================================================
+4. LOGOUT ICON BUTTON — STRONGER CIRCLE BACKGROUND
+==================================================
+
+Problem:
+The logout icon button in the top right has a background that is too light.
+It is barely visible.
+
+Fix:
+- Keep the logout icon in a circular background
+- Make the circle background more visible
+- Use a stronger light grey background so it is clearly distinguishable from the page background
+
+Suggested direction:
+- background around #E5E7EB or slightly stronger if needed
+- icon stays dark/black
+- maintain clean premium style
+
+Do NOT:
+- remove the circle
+- leave it too faint
+
+==================================================
+5. LOGOUT MODAL BUTTONS — LESS ROUNDED + TALLER
+==================================================
+
+Problem:
+The logout modal buttons are too rounded and slightly too short.
+
+Fix both modal buttons:
+- reduce border radius
+- make them a little taller
+
+Use:
+- button height around 56–60px
+- border-radius around 10–12px max
+
+Apply to:
+- "Ja, log me uit"
+- "Nee, ingelogd blijven"
+
+Keep:
+- primary = pink filled
+- secondary = outlined
+
+But make both feel:
+- stronger
+- cleaner
+- less bubbly
+
+==================================================
+6. KEEP CONSISTENCY
+==================================================
+
+Keep the rest of the current screen structure intact.
+Do not redesign the page.
+
+Only improve:
+- menu compactness
+- capitalization of section labels
+- email color
+- logout icon circle visibility
+- logout modal button proportions
+
+==================================================
+7. OUTPUT
+==================================================
+
+Return:
+1. which files were changed
+2. exact row padding used for the menu items
+3. confirmation that section labels are no longer uppercase
+4. exact color used for the logout icon circle background
+5. exact height and border radius used for the logout modal buttons
+6. confirmation that the visible account email is now black

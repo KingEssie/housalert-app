@@ -2014,7 +2014,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       <button
         type="button"
         onClick={onClick}
-        className="w-full flex items-center justify-between px-4 h-[46px] text-left active:bg-[#F9FAFB] transition-colors"
+        className="w-full flex items-center justify-between px-4 h-[42px] text-left active:bg-[#F9FAFB] transition-colors"
         data-testid={`menu-item-${label.toLowerCase().replace(/\s+/g, "-")}`}
       >
         <span className="text-[15px] font-semibold text-[#111111]">{label}</span>
@@ -2030,7 +2030,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
   const SectionInline = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <div>
       <div className="h-px bg-[#F3F4F6]" />
-      <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-4 pt-4 pb-1">{title}</p>
+      <p className="text-[11px] font-semibold text-[#9CA3AF] px-4 pt-4 pb-1">{title}</p>
       {children}
     </div>
   );
@@ -2051,11 +2051,11 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-[15px] font-semibold text-[#111111] truncate" data-testid="text-account-name">{displayName}</p>
-              <p className="text-[13px] text-[#9CA3AF] truncate" data-testid="text-account-email">{user.email}</p>
+              <p className="text-[13px] text-[#000000] truncate" data-testid="text-account-email">{user.email}</p>
             </div>
             <button
               onClick={() => setShowLogoutConfirm(true)}
-              className="w-10 h-10 flex items-center justify-center rounded-full active:bg-[#F3F4F6] transition-colors shrink-0"
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-[#E5E7EB] active:bg-[#D1D5DB] transition-colors shrink-0"
               aria-label="Uitloggen"
               data-testid="button-logout-icon"
             >
