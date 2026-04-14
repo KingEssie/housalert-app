@@ -1,0 +1,112 @@
+"}
+Refactor the logout UX across the entire app to match a modern premium mobile pattern (like Rentbird). Do not partially implement.
+
+-------------------------------------
+1. REMOVE CURRENT IMPLEMENTATION
+-------------------------------------
+
+- Remove ANY logout button from the bottom of screens
+- Remove ANY dedicated logout screen/page
+- Logout should NOT navigate to a new screen
+
+-------------------------------------
+2. HEADER ACTION (GLOBAL)
+-------------------------------------
+
+Add a logout icon button in the top right of the header:
+
+- Icon: logout / arrow-right-from-bracket
+- Style:
+  - No background
+  - Black icon
+  - Size: 20–24px
+- Position:
+  - Right side of header
+  - Same alignment as back button on left
+
+-------------------------------------
+3. INTERACTION
+-------------------------------------
+
+When user taps logout icon:
+
+- Do NOT navigate
+- Open a modal (bottom sheet style)
+
+-------------------------------------
+4. LOGOUT MODAL (CRITICAL)
+-------------------------------------
+
+Modal style:
+
+- Appears from bottom
+- White background
+- Rounded top corners (16px)
+- Padding: 20–24px
+- Shadow on top
+
+Content:
+
+Title:
+- Text: “Weet je zeker dat je wilt uitloggen?”
+- Font: 18px, semibold, black
+
+Spacing:
+- 16px space below title
+
+Buttons:
+
+Primary button:
+- Text: “Ja, log me uit”
+- Full width
+- Height: 52–56px
+- Background: brand pink
+- Text: white, semibold
+- Border radius: 12px
+
+Spacing: 12px
+
+Secondary button:
+- Text: “Nee, ingelogd blijven”
+- Full width
+- Same height
+- Outline style:
+  - Border: 1px brand pink
+  - Text: brand pink
+  - Background: white
+  - Border radius: 12px
+
+-------------------------------------
+5. FUNCTIONAL BEHAVIOR
+-------------------------------------
+
+Primary button:
+→ Perform logout
+→ Redirect to login / onboarding screen
+
+Secondary button:
+→ Close modal
+
+Tap outside modal:
+→ Close modal
+
+-------------------------------------
+6. UX RULES
+-------------------------------------
+
+- No extra icons inside buttons
+- No unnecessary text
+- Keep it minimal and fast
+- Must feel instant and lightweight
+
+-------------------------------------
+7. CONSISTENCY
+-------------------------------------
+
+Apply same modal pattern for:
+- destructive actions
+- confirmations
+
+-------------------------------------
+END
+-----------------------------------

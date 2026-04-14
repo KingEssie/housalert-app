@@ -61,6 +61,7 @@ import {
   useUpdateBuddyPreferences, isBuddyMode, getActiveBuddyRelation,
   isOwnerSubActive, type BuddyConnections,
 } from "@/lib/buddy";
+import { LogoutBottomSheet } from "@/components/ui/logout-bottom-sheet";
 
 const MAX_PROFILES = 4;
 
@@ -2052,6 +2053,14 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
               <p className="text-[15px] font-semibold text-[#111111] truncate" data-testid="text-account-name">{displayName}</p>
               <p className="text-[13px] text-[#9CA3AF] truncate" data-testid="text-account-email">{user.email}</p>
             </div>
+            <button
+              onClick={() => setShowLogoutConfirm(true)}
+              className="w-10 h-10 flex items-center justify-center rounded-full active:bg-[#F3F4F6] transition-colors shrink-0"
+              aria-label="Uitloggen"
+              data-testid="button-logout-icon"
+            >
+              <LogOut className="w-[20px] h-[20px] text-[#111111]" strokeWidth={2} />
+            </button>
           </div>
 
           {/* ACCOUNT */}
@@ -2091,16 +2100,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           <div className="h-3" />
         </div>
 
-        {/* UITLOGGEN */}
-        <button
-          onClick={() => setShowLogoutConfirm(true)}
-          disabled={signingOut}
-          className={`w-full h-[48px] rounded-[12px] bg-[#F3F4F6] text-[#111111] text-[15px] font-semibold active:scale-[0.97] transition-transform hover:bg-[#E5E7EB] ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
-          data-testid="button-profile-logout"
-        >
-          {signingOut ? t("profile.signingOut") : t("profile.logout")}
-        </button>
-
         <div className="flex flex-col items-center gap-3 pt-4 pb-4">
           <button
             onClick={() => navigate("/account/delete")}
@@ -2126,46 +2125,12 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
         </button>
       )}
 
-      {/* Logout confirm */}
-      {showLogoutConfirm && (
-        <div className="fixed inset-0 z-50 bg-[#eaeaeb] flex flex-col">
-          <header className="sticky top-0 z-10">
-            <div className="max-w-lg mx-auto flex items-center h-[48px] px-4">
-              <button
-                onClick={() => setShowLogoutConfirm(false)}
-                className="w-9 h-9 rounded-full flex items-center justify-center active:scale-95 transition-transform"
-                data-testid="button-logout-back"
-              >
-                <ArrowLeft className="w-4 h-4 text-[#111111]/80" />
-              </button>
-              <h1 className="text-[17px] font-semibold text-[#111111] flex-1 text-center pr-9">{t("profile.logoutConfirm")}</h1>
-            </div>
-          </header>
-          <main className="flex-1 flex flex-col items-center justify-center px-4">
-            <div className="w-16 h-16 rounded-[10px] bg-[#F3F4F6] flex items-center justify-center mb-6">
-              <LogOut className="w-8 h-8 text-[#334855]" />
-            </div>
-            <h2 className="text-[22px] font-semibold text-[#111111] mb-3 text-center">{t("profile.logoutConfirm")}</h2>
-            <p className="text-[15px] text-[#111111]/70 text-center max-w-[320px] mb-10 leading-relaxed">{t("profile.logoutDesc")}</p>
-            <div className="w-full max-w-[320px] flex flex-col gap-3">
-              <button
-                onClick={handleLogout}
-                className="w-full h-[48px] rounded-full bg-ha-danger text-white text-[16px] font-semibold transition-colors active:scale-[0.98]"
-                data-testid="button-profile-logout-confirm"
-              >
-                {t("profile.logoutYes")}
-              </button>
-              <button
-                onClick={() => setShowLogoutConfirm(false)}
-                className="w-full h-[48px] rounded-full border border-[#E5E7EB] text-[#111111] text-[16px] font-medium hover:bg-white/5 transition-colors"
-                data-testid="button-profile-logout-cancel"
-              >
-                {t("profileDetails.cancel")}
-              </button>
-            </div>
-          </main>
-        </div>
-      )}
+      <LogoutBottomSheet
+        open={showLogoutConfirm}
+        onClose={() => setShowLogoutConfirm(false)}
+        onConfirm={handleLogout}
+        loading={signingOut}
+      />
 
     </div>
   );

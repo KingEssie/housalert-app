@@ -2,7 +2,6 @@ import { useAuth } from "@/lib/auth";
 import { useLocation } from "wouter";
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
 import {
   ChevronRight,
@@ -12,11 +11,11 @@ import {
   User,
 } from "lucide-react";
 import { AppHeader } from "@/components/ui/app-header";
+import { LogoutBottomSheet } from "@/components/ui/logout-bottom-sheet";
 
 export default function SettingsPage() {
   const { user } = useAuth();
   const [, navigate] = useLocation();
-  const { toast } = useToast();
   const { t } = useTranslation();
 
   const [signingOut, setSigningOut] = useState(false);
@@ -75,9 +74,24 @@ export default function SettingsPage() {
     },
   ];
 
+  const logoutIcon = (
+    <button
+      onClick={() => setShowLogoutConfirm(true)}
+      className="w-10 h-10 flex items-center justify-center rounded-full active:bg-[#F3F4F6] transition-colors"
+      aria-label="Uitloggen"
+      data-testid="button-logout-icon"
+    >
+      <LogOut className="w-[20px] h-[20px] text-[#111111]" strokeWidth={2} />
+    </button>
+  );
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#eaeaeb" }}>
-      <AppHeader title={t("settings.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
+      <AppHeader
+        title={t("settings.title")}
+        onBack={() => navigate("/dashboard?tab=profiel")}
+        trailing={logoutIcon}
+      />
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
         <div className="flex flex-col gap-4">
@@ -130,16 +144,6 @@ export default function SettingsPage() {
 
           <div className="app-card !p-0">
             <button
-              onClick={() => setShowLogoutConfirm(true)}
-              disabled={signingOut}
-              className={`w-full flex items-center gap-3 py-4 px-5 text-left active:bg-ha-surface-active transition-colors ${signingOut ? "opacity-60 pointer-events-none" : ""}`}
-              data-testid="button-logout"
-            >
-              <LogOut className="w-5 h-5 text-ha-status-red flex-shrink-0" />
-              <p className="text-[15px] font-semibold text-ha-status-red flex-1">{signingOut ? t("profile.signingOut") : t("profile.logout")}</p>
-            </button>
-            <div className="h-px bg-ha-divider mx-5" />
-            <button
               onClick={() => navigate("/account/delete")}
               className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-ha-surface-active transition-colors"
               data-testid="button-delete-account"
@@ -156,28 +160,12 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {showLogoutConfirm && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowLogoutConfirm(false)}>
-          <div className="bg-white w-full max-w-[400px] rounded-t-[--ha-card-radius] sm:rounded-[--ha-card-radius] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
-            <p className="text-[17px] font-semibold text-[#111111] text-center">{t("profile.logoutConfirm")}</p>
-            <p className="text-[15px] text-ha-text-secondary text-center mt-2 mb-6">{t("profile.logoutDesc")}</p>
-            <button
-              onClick={handleLogout}
-              className="w-full ha-btn bg-ha-status-red text-white font-semibold mb-3"
-              data-testid="button-logout-confirm"
-            >
-              {t("profile.logoutYes")}
-            </button>
-            <button
-              onClick={() => setShowLogoutConfirm(false)}
-              className="w-full ha-btn text-[#111111] font-medium active:bg-ha-surface-hover"
-              data-testid="button-logout-cancel"
-            >
-              {t("profileDetails.cancel")}
-            </button>
-          </div>
-        </div>
-      )}
+      <LogoutBottomSheet
+        open={showLogoutConfirm}
+        onClose={() => setShowLogoutConfirm(false)}
+        onConfirm={handleLogout}
+        loading={signingOut}
+      />
     </div>
   );
 }
