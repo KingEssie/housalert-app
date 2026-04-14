@@ -753,7 +753,8 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
       className="bg-white rounded-[20px] p-5"
       style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}
     >
-      <div className="flex items-center gap-2 mb-1.5">
+      <div className="flex items-center gap-2.5 mb-1.5">
+        <Search className="w-[20px] h-[20px] text-ha-primary flex-shrink-0" />
         <h2 className="text-[21px] font-semibold text-[#111111] flex-1" data-testid="text-zoekopdrachten-title">
           {t("home.zoekopdrachtenTitle")}
         </h2>
@@ -939,10 +940,17 @@ function RecentMatchesSection({
     .slice(0, 6);
 
   return (
-    <div data-testid="section-recent-matches">
-      <h2 className="text-[18px] font-semibold text-[#111111] mb-3" data-testid="text-recent-matches-title">
-        {t("home.recentMatchesTitle")}
-      </h2>
+    <div
+      data-testid="section-recent-matches"
+      className="bg-white rounded-[20px] p-5"
+      style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}
+    >
+      <div className="flex items-center gap-2.5 mb-3">
+        <Bell className="w-[20px] h-[20px] text-ha-primary flex-shrink-0" />
+        <h2 className="text-[21px] font-semibold text-[#111111]" data-testid="text-recent-matches-title">
+          {t("home.recentMatchesTitle")}
+        </h2>
+      </div>
 
       {!hasAccess ? (
         <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-7 flex flex-col items-center text-center" data-testid="card-paywall">
@@ -974,7 +982,7 @@ function RecentMatchesSection({
           </div>
           <button
             onClick={() => setActiveTab("matches")}
-            className="mt-3 w-full h-[48px] rounded-[12px] border border-[#E5E7EB] text-[14px] font-semibold text-[#111111] hover:bg-[#F9FAFB] transition-colors active:scale-[0.98]"
+            className="mt-4 w-full py-[14px] rounded-[16px] bg-transparent border-2 border-ha-primary text-[16px] font-semibold text-ha-primary hover:bg-ha-primary/5 transition-colors active:scale-[0.98]"
             data-testid="button-view-all-matches"
           >
             {t("home.viewAll")}
@@ -986,6 +994,7 @@ function RecentMatchesSection({
           title={t("home.noMatchesYetTitle")}
           description={t("home.firstMatchesWillAppear")}
           testId="card-no-matches"
+          compact
         />
       )}
     </div>

@@ -17,27 +17,31 @@ interface EmptyStateProps {
   ctaLabel?: string;
   onCtaClick?: () => void;
   testId?: string;
+  compact?: boolean;
 }
 
-export function EmptyState({ illustration, title, description, ctaLabel, onCtaClick, testId }: EmptyStateProps) {
+export function EmptyState({ illustration, title, description, ctaLabel, onCtaClick, testId, compact }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center text-center min-h-[calc(100dvh-260px)] px-6" data-testid={testId}>
+    <div
+      className={`flex flex-col items-center justify-center text-center px-6 ${compact ? "py-6" : "min-h-[calc(100dvh-260px)]"}`}
+      data-testid={testId}
+    >
       <img
         src={illustration}
         alt=""
-        className="w-[72px] max-h-[72px] h-auto mb-5 object-contain"
+        className="w-[64px] max-h-[64px] h-auto mb-4 object-contain"
         draggable={false}
       />
-      <h2 className="text-[20px] font-bold text-[#000000] leading-snug mb-2" data-testid="text-empty-title">
+      <h2 className="text-[18px] font-semibold text-[#111111] leading-snug mb-2" data-testid="text-empty-title">
         {title}
       </h2>
-      <p className="text-[16px] text-[#334855] leading-relaxed max-w-[280px] mb-8" data-testid="text-empty-description">
+      <p className="text-[15px] text-[#6B7280] leading-relaxed max-w-[260px] mb-4" data-testid="text-empty-description">
         {description}
       </p>
       {ctaLabel && onCtaClick && (
         <button
           onClick={onCtaClick}
-          className="h-[48px] px-8 rounded-[12px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.97]"
+          className="py-[14px] px-8 rounded-[16px] bg-transparent border-2 border-ha-primary text-ha-primary text-[16px] font-semibold hover:bg-ha-primary/5 transition-colors active:scale-[0.97]"
           data-testid="button-empty-cta"
         >
           {ctaLabel}
