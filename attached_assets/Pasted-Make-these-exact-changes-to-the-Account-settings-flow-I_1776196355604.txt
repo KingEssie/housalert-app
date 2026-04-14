@@ -1,0 +1,122 @@
+Make these exact changes to the Account settings flow.
+
+IMPORTANT:
+Do not redesign unrelated screens.
+Only apply the changes below.
+
+==================================================
+1. REMOVE ADMIN MENU SECTION
+==================================================
+
+On the main Account screen:
+
+- Remove the full "ADMIN" section from the menu list
+- Remove these menu items from the settings list:
+  - Beeldkwaliteit listings
+  - Admin portal
+
+IMPORTANT:
+- Keep the floating black pill/button that says "Naar adminmodus"
+- That pill should remain the only way to access admin from the Account area
+
+==================================================
+2. VOORKEUREN SCREEN — MATCH RENTBIRD MORE CLOSELY
+==================================================
+
+Refine the "Voorkeuren" screen so it looks closer to the Rentbird example.
+
+GOAL:
+- darker text
+- one main white container
+- less rounded corners
+- cleaner, flatter layout
+
+==================================================
+3. TEXT COLOR — MAKE IT REALLY BLACK
+==================================================
+
+On the Voorkeuren screen:
+- All main labels and values should be true dark text
+- Use black / near-black for:
+  - "Voorkeuren"
+  - "Taal"
+  - "Hoe wil je woningmatches ontvangen?"
+  - "Push notificaties"
+  - "E-mail notificaties"
+  - selected language value
+
+Suggested:
+- primary text: #111111
+- secondary text can still be darker grey, but not washed out
+
+==================================================
+4. ONE WHITE PANEL — NO LOOSE WHITE BLOCKS
+==================================================
+
+Currently the screen feels like separate white blocks.
+
+Change this so the content sits in one main white panel/container, similar to Rentbird:
+- one white rounded rectangle containing all preference content
+- background page stays light grey
+- remove the feeling of multiple floating white cards
+
+Inside this one panel:
+- language row / dropdown
+- notification preferences section
+- toggles
+
+==================================================
+5. LESS ROUNDED CORNERS
+==================================================
+
+Reduce border radius across the Voorkeuren content area.
+
+Requirements:
+- main white panel less rounded
+- inner input/dropdown less rounded
+- overall closer to Rentbird, less soft/bubbly
+
+Suggested:
+- panel radius around 12px–16px
+- dropdown/input radius around 10px–12px
+
+==================================================
+6. LANGUAGE FIELD = RENTBIRD-STYLE DROPDOWN
+==================================================
+
+For "Taal":
+- Use a dropdown/select like Rentbird
+- Show current selected value on the right side
+- Clean row design
+- No oversized custom field look
+- Make it feel like a native settings row with a dropdown affordance
+
+Goal:
+- closer to Rentbird's compact settings style
+- not a chunky boxed input
+
+==================================================
+7. KEEP THE REST FUNCTIONAL
+==================================================
+
+Do not remove:
+- language switching
+- push toggle
+- email toggle
+
+Only change:
+- structure
+- visual styling
+- admin menu presence on Account screen
+
+==================================================
+8. OUTPUT
+==================================================
+
+Return:
+1. which files were changed
+2. confirmation that the Admin menu section was removed from the Account list
+3. confirmation that the floating "Naar adminmodus" pill was kept
+4. how the Voorkeuren panel was restructured into one white container
+5. what border radius values were reduced
+6. how the Taal dropdown now works visually

@@ -2087,14 +2087,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             <MenuItem label="Privacybeleid" onClick={() => navigate("/datenschutz")} last />
           </SectionInline>
 
-          {/* ADMIN */}
-          {isAdmin && (
-            <SectionInline title="Admin">
-              <MenuItem label="Beeldkwaliteit listings" onClick={() => navigate("/admin/image-audit")} />
-              <MenuItem label="Admin portaal" onClick={() => navigate("/admin/portal")} last />
-            </SectionInline>
-          )}
-
           {/* bottom padding */}
           <div className="h-3" />
         </div>

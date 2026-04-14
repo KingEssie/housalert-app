@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
 import { apiFetch } from "@/lib/api-base";
 import { queryClient } from "@/lib/queryClient";
-import { Check, Bell, Mail, Globe } from "lucide-react";
+import { Check, ChevronRight } from "lucide-react";
 import { isPushSupported, getPushPermissionState, subscribeToPush, unsubscribeFromPush } from "@/lib/push";
 import { AppHeader } from "@/components/ui/app-header";
 
@@ -93,76 +93,91 @@ export default function PreferencesPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#eaeaeb" }}>
+    <div className="min-h-screen bg-[#eaeaeb]">
       <AppHeader title={t("settings.preferences")} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
-        <div className="flex flex-col gap-4">
-          <div>
-            <p className="text-row-section-title px-1 mb-2">
-              {t("settings.sectionLanguage")}
-            </p>
-            <div className="app-card !p-0">
-              <button
-                onClick={() => setShowLangSheet(true)}
-                className="w-full flex items-center gap-3 py-4 px-5 text-left active:bg-[#F9FAFB] transition-colors"
-                data-testid="button-pref-language"
-              >
-                <Globe className="w-5 h-5 text-ha-text-muted flex-shrink-0" />
-                <p className="text-[15px] font-semibold text-[#111111] flex-1">{t("profile.language")}</p>
-                <span className="text-[14px] text-ha-text-secondary mr-1">{currentLangLabel}</span>
-              </button>
+
+        {/* ONE white panel */}
+        <div className="bg-white rounded-[14px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden">
+
+          {/* TAAL section */}
+          <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-4 pt-4 pb-1">
+            {t("settings.sectionLanguage")}
+          </p>
+
+          <button
+            onClick={() => setShowLangSheet(true)}
+            className="w-full flex items-center justify-between px-4 h-[52px] text-left active:bg-[#F9FAFB] transition-colors"
+            data-testid="button-pref-language"
+          >
+            <span className="text-[15px] font-semibold text-[#111111]">{t("profile.language")}</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[14px] text-[#6B7280]">{currentLangLabel}</span>
+              <ChevronRight className="w-[15px] h-[15px] text-[#D1D5DB] flex-shrink-0" />
             </div>
+          </button>
+
+          {/* Divider before notifications */}
+          <div className="h-px bg-[#F3F4F6]" />
+
+          {/* NOTIFICATIES section */}
+          <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-4 pt-4 pb-1">
+            {t("settings.sectionNotifications")}
+          </p>
+
+          {/* Push row */}
+          <div className="flex items-center px-4 h-[52px]">
+            <span className="text-[15px] font-semibold text-[#111111] flex-1">{t("profile.pushNotifications")}</span>
+            <button
+              onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
+              disabled={loading || notifUpdating === "push_enabled"}
+              className={`w-[48px] h-[28px] rounded-full relative transition-colors flex-shrink-0 ${notifSettings?.push_enabled ? "bg-ha-primary" : "bg-[#E5E7EB]"} ${(loading || notifUpdating === "push_enabled") ? "opacity-50" : ""}`}
+              data-testid="toggle-push"
+            >
+              <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[23px]" : "left-[3px]"}`} />
+            </button>
           </div>
 
-          <div>
-            <p className="text-row-section-title px-1 mb-2">
-              {t("settings.sectionNotifications")}
-            </p>
-            <div className="app-card !p-0">
-              <div className="flex items-center gap-3 py-4 px-5">
-                <Bell className="w-5 h-5 text-ha-text-muted flex-shrink-0" />
-                <span className="text-[15px] font-semibold text-[#111111] flex-1">{t("profile.pushNotifications")}</span>
-                <button
-                  onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
-                  disabled={loading || notifUpdating === "push_enabled"}
-                  className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.push_enabled ? "bg-ha-primary" : "bg-[#E5E7EB]"} ${(loading || notifUpdating === "push_enabled") ? "opacity-50" : ""}`}
-                  data-testid="toggle-push"
-                >
-                  <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[23px]" : "left-[3px]"}`} />
-                </button>
-              </div>
-              <div className="h-px bg-ha-divider mx-5" />
-              <div className="flex items-center gap-3 py-4 px-5">
-                <Mail className="w-5 h-5 text-ha-text-muted flex-shrink-0" />
-                <span className="text-[15px] font-semibold text-[#111111] flex-1">{t("profile.emailNotifications")}</span>
-                <button
-                  onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}
-                  disabled={loading || notifUpdating === "email_enabled"}
-                  className={`w-[48px] h-[28px] rounded-full relative transition-colors ${notifSettings?.email_enabled ? "bg-ha-primary" : "bg-[#E5E7EB]"} ${(loading || notifUpdating === "email_enabled") ? "opacity-50" : ""}`}
-                  data-testid="toggle-email"
-                >
-                  <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.email_enabled ? "left-[23px]" : "left-[3px]"}`} />
-                </button>
-              </div>
-            </div>
+          <div className="h-px bg-[#F3F4F6] mx-4" />
+
+          {/* Email row */}
+          <div className="flex items-center px-4 h-[52px]">
+            <span className="text-[15px] font-semibold text-[#111111] flex-1">{t("profile.emailNotifications")}</span>
+            <button
+              onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}
+              disabled={loading || notifUpdating === "email_enabled"}
+              className={`w-[48px] h-[28px] rounded-full relative transition-colors flex-shrink-0 ${notifSettings?.email_enabled ? "bg-ha-primary" : "bg-[#E5E7EB]"} ${(loading || notifUpdating === "email_enabled") ? "opacity-50" : ""}`}
+              data-testid="toggle-email"
+            >
+              <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.email_enabled ? "left-[23px]" : "left-[3px]"}`} />
+            </button>
           </div>
+
+          <div className="h-3" />
         </div>
       </div>
 
+      {/* Language bottom sheet */}
       {showLangSheet && (
-        <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowLangSheet(false)}>
-          <div className="bg-white w-full max-w-[400px] rounded-t-[6px] sm:rounded-[6px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4"
+          onClick={() => setShowLangSheet(false)}
+        >
+          <div
+            className="bg-white w-full max-w-[400px] rounded-t-[14px] sm:rounded-[14px] px-5 pt-6 pb-6 animate-in slide-in-from-bottom-4 duration-200"
+            onClick={e => e.stopPropagation()}
+          >
             <p className="text-[17px] font-semibold text-[#111111] text-center mb-4">{t("profile.language")}</p>
             {LANG_OPTIONS.map(lang => (
               <button
                 key={lang.code}
                 onClick={() => handleLanguageChange(lang.code)}
-                className={`w-full flex items-center justify-between py-3.5 px-2 rounded-[6px] text-left active:bg-[#F9FAFB] transition-colors ${locale === lang.code ? "bg-ha-primary/10" : ""}`}
+                className={`w-full flex items-center justify-between py-3.5 px-3 rounded-[10px] text-left transition-colors ${locale === lang.code ? "bg-ha-primary/10" : "active:bg-[#F9FAFB]"}`}
                 data-testid={`button-lang-${lang.code}`}
               >
-                <span className="text-[15px] text-[#111111] font-medium">{lang.label}</span>
-                {locale === lang.code && <Check className="w-5 h-5 text-[#111111]" />}
+                <span className="text-[15px] font-semibold text-[#111111]">{lang.label}</span>
+                {locale === lang.code && <Check className="w-5 h-5 text-ha-primary" />}
               </button>
             ))}
           </div>
