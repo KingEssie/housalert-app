@@ -1,0 +1,130 @@
+Update the Home screen layout.
+
+GOAL:
+Remove the "Recente matches" section from Home and replace it with two status/action cards:
+1. Reactiebrief
+2. Zoekbuddy
+
+The new sections should visually follow the Rentbird-style example provided.
+
+==================================================
+1. REMOVE RECENTE MATCHES FROM HOME
+==================================================
+
+- Remove the entire "Recente matches" section from the Home screen
+- Remove:
+  - section title
+  - empty state / illustrations
+  - any related button in that section
+- Do not remove actual match functionality from the app
+- Matches should still exist in the Matches tab/page
+- This change is Home screen only
+
+==================================================
+2. ADD "REACTIEBRIEF" CARD
+==================================================
+
+Create a white rounded card on Home, styled similarly to the Rentbird example.
+
+Structure:
+- Left: pink icon
+- Main title: "Reactiebrief"
+- Right action text: "Genereren" or "Beheren" depending on current state
+
+Second row / status:
+- If reaction letter exists:
+  - green check icon
+  - green status text: "Reactiebrief ingesteld"
+- If no reaction letter exists:
+  - red cross icon
+  - red status text: "Nog geen reactiebrief"
+
+Behavior:
+- Tap on card or action should open the reaction letter screen / relevant page
+
+Style:
+- white card
+- rounded corners
+- clean spacing
+- same visual system as the rest of Home
+- title dark and bold
+- action text in blue/cyan like the Rentbird example
+- status text color-coded (green or red)
+
+==================================================
+3. ADD "ZOEKBUDDY" CARD
+==================================================
+
+Create a second white rounded card directly under Reactiebrief.
+
+Structure:
+- Left: pink icon
+- Main title: "Zoekbuddy"
+- Right action text: "Beheren"
+
+Status row:
+- If buddy exists:
+  - green check icon
+  - green status text like:
+    "Zoekbuddy verbonden"
+- If no buddy exists:
+  - red cross icon
+  - red status text:
+    "Nog geen zoekbuddy"
+
+Description text underneath:
+- Only show when no buddy exists:
+  "Zoek je met een partner of huisgenoot? Voeg deze als zoekbuddy toe en ontvang beide matches!"
+- If buddy exists, keep this area minimal or show a short connected message
+
+Behavior:
+- Tap on card or action should open the buddy management / invite screen
+
+Style:
+- same card style as Reactiebrief
+- same spacing and alignment
+- same title/action hierarchy
+
+==================================================
+4. POSITIONING ON HOME
+==================================================
+
+Place the new cards where "Recente matches" used to be, so Home becomes:
+
+- header / welcome area
+- activation flows
+- search profiles section
+- Reactiebrief card
+- Zoekbuddy card
+
+If another order fits better visually with current Home, keep it logical and clean, but both cards must replace the old Recente matches area.
+
+==================================================
+5. VISUAL REQUIREMENTS
+==================================================
+
+- background of page remains current light grey
+- cards are white
+- radius and spacing consistent with the rest of the improved Home screen
+- make the cards feel premium and scannable
+- action text on the right should feel tappable but not like a big button
+- keep text left-aligned
+
+==================================================
+6. KEEP FUNCTIONALITY INTACT
+==================================================
+
+- Do not remove the Matches page/tab content itself
+- Do not remove reaction letter or buddy functionality
+- Only change Home layout and add status cards that deep-link into those flows
+
+==================================================
+7. OUTPUT
+==================================================
+
+Return:
+1. which files were changed
+2. confirmation that Recente matches was removed from Home
+3. how Reactiebrief state is determined
+4. how Zoekbuddy state is determined
+5. where each card links to

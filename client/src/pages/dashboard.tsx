@@ -908,98 +908,6 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
   );
 }
 
-function RecentMatchesSection({
-  accessToken,
-  subscription,
-  navigate,
-  setActiveTab,
-}: {
-  accessToken: string | undefined;
-  subscription: { isTrial: boolean; isExpired: boolean; isActive: boolean };
-  navigate: (path: string) => void;
-  setActiveTab: (tab: TabKey) => void;
-}) {
-  const { t } = useTranslation();
-  const [, nav] = useLocation();
-  const hasAccess = subscription.isActive || subscription.isTrial;
-
-  const apiMatchesQuery = useQuery<ApiMatchesResponse>({
-    queryKey: ["/api/matches"],
-    queryFn: () => fetchApiMatches(accessToken!),
-    enabled: !!accessToken && hasAccess,
-    staleTime: 30_000,
-  });
-
-  const recentMatches = (apiMatchesQuery.data?.matches ?? [])
-    .filter(m => m.title && m.url && m.listing_id)
-    .sort((a, b) => {
-      const dateA = a.first_seen_at || a.matched_at || "";
-      const dateB = b.first_seen_at || b.matched_at || "";
-      return new Date(dateB).getTime() - new Date(dateA).getTime();
-    })
-    .slice(0, 6);
-
-  return (
-    <div
-      data-testid="section-recent-matches"
-      className="bg-white rounded-[20px] p-5"
-      style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}
-    >
-      <div className="flex items-center gap-2.5 mb-3">
-        <Bell className="w-[20px] h-[20px] text-ha-primary flex-shrink-0" />
-        <h2 className="text-[21px] font-semibold text-[#111111]" data-testid="text-recent-matches-title">
-          {t("home.recentMatchesTitle")}
-        </h2>
-      </div>
-
-      {!hasAccess ? (
-        <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-7 flex flex-col items-center text-center" data-testid="card-paywall">
-          <Lock className="w-[24px] h-[24px] text-[#111111] mb-5" />
-          <p className="text-[18px] font-semibold text-[#111111] mb-2" data-testid="text-paywall-title">
-            {t("home.paywallTitle")}
-          </p>
-          <p className="text-[15px] text-[#334855] mb-6 leading-relaxed max-w-[280px]" data-testid="text-paywall-desc">
-            {t("home.paywallDesc")}
-          </p>
-          <button
-            onClick={() => navigate("/paywall")}
-            className="h-[48px] px-8 rounded-[12px] bg-ha-primary text-white text-[15px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
-            data-testid="button-paywall-cta"
-          >
-            {t("home.paywallCta")}
-          </button>
-        </div>
-      ) : recentMatches.length > 0 ? (
-        <div>
-          <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-none" style={{ scrollSnapType: "x proximity" }}>
-            {recentMatches.map((match) => (
-              <ListingCardMini
-                key={match.listing_id}
-                match={match}
-                onCardClick={() => nav(`/apply/${match.listing_id}`)}
-              />
-            ))}
-          </div>
-          <button
-            onClick={() => setActiveTab("matches")}
-            className="mt-4 w-full py-[14px] rounded-[16px] bg-transparent border-2 border-ha-primary text-[16px] font-semibold text-ha-primary hover:bg-ha-primary/5 transition-colors active:scale-[0.98]"
-            data-testid="button-view-all-matches"
-          >
-            {t("home.viewAll")}
-          </button>
-        </div>
-      ) : (
-        <EmptyState
-          illustration={EMPTY_STATE_IMAGES.noMatches}
-          title={t("home.noMatchesYetTitle")}
-          description={t("home.firstMatchesWillAppear")}
-          testId="card-no-matches"
-          compact
-        />
-      )}
-    </div>
-  );
-}
 
 function HomeTab({
   user,
@@ -1082,12 +990,86 @@ function HomeTab({
 
         <ZoekopdrachtenSection profiles={profiles} navigate={navigate} />
 
-        <RecentMatchesSection
-          accessToken={accessToken}
-          subscription={subscription}
-          navigate={navigate}
-          setActiveTab={setActiveTab}
-        />
+        {/* Reactiebrief status card */}
+        {(() => {
+          const pd = profileDataQuery.data;
+          const hasLetter = !!(pd?.application_template?.trim());
+          return (
+            <button
+              onClick={() => navigate("/application-letter")}
+              className="w-full text-left bg-white rounded-[20px] p-5 flex flex-col gap-3 active:scale-[0.985] transition-transform"
+              style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}
+              data-testid="card-reactiebrief-status"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ background: "#fdf2f7" }}>
+                    <FileText className="w-[18px] h-[18px]" style={{ color: "#d91a68" }} />
+                  </div>
+                  <span className="text-[16px] font-semibold text-[#111111]">Reactiebrief</span>
+                </div>
+                <span className="text-[14px] font-medium" style={{ color: "#0891B2" }}>
+                  {hasLetter ? "Beheren" : "Genereren"}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 pl-[48px]">
+                {hasLetter ? (
+                  <>
+                    <CheckCircle2 className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "#16A34A" }} />
+                    <span className="text-[13px] font-medium" style={{ color: "#16A34A" }}>Reactiebrief ingesteld</span>
+                  </>
+                ) : (
+                  <>
+                    <X className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "#DC2626" }} />
+                    <span className="text-[13px] font-medium" style={{ color: "#DC2626" }}>Nog geen reactiebrief</span>
+                  </>
+                )}
+              </div>
+            </button>
+          );
+        })()}
+
+        {/* Zoekbuddy status card */}
+        {(() => {
+          const pd = profileDataQuery.data;
+          const hasBuddy = !!(pd?.search_buddy_email?.trim()) && pd?.search_buddy_status !== "revoked_by_buddy";
+          return (
+            <button
+              onClick={() => navigate("/profile/edit/search_buddy_email")}
+              className="w-full text-left bg-white rounded-[20px] p-5 flex flex-col gap-3 active:scale-[0.985] transition-transform"
+              style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}
+              data-testid="card-zoekbuddy-status"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-[10px] flex items-center justify-center flex-shrink-0" style={{ background: "#fdf2f7" }}>
+                    <Users className="w-[18px] h-[18px]" style={{ color: "#d91a68" }} />
+                  </div>
+                  <span className="text-[16px] font-semibold text-[#111111]">Zoekbuddy</span>
+                </div>
+                <span className="text-[14px] font-medium" style={{ color: "#0891B2" }}>Beheren</span>
+              </div>
+              <div className="flex items-center gap-2 pl-[48px]">
+                {hasBuddy ? (
+                  <>
+                    <CheckCircle2 className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "#16A34A" }} />
+                    <span className="text-[13px] font-medium" style={{ color: "#16A34A" }}>Zoekbuddy verbonden</span>
+                  </>
+                ) : (
+                  <>
+                    <X className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "#DC2626" }} />
+                    <span className="text-[13px] font-medium" style={{ color: "#DC2626" }}>Nog geen zoekbuddy</span>
+                  </>
+                )}
+              </div>
+              {!hasBuddy && (
+                <p className="text-[13px] leading-snug pl-[48px]" style={{ color: "#6B7280" }}>
+                  Zoek je met een partner of huisgenoot? Voeg deze als zoekbuddy toe en ontvang beide matches!
+                </p>
+              )}
+            </button>
+          );
+        })()}
       </div>
 
     </div>
