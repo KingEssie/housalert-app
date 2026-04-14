@@ -2070,7 +2070,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           {/* ZOEKEN EN REAGEREN */}
           {!buddyMode && (
             <SectionInline title="Zoeken en reageren">
-              <MenuItem label="Zoekbuddy beheren" onClick={() => navigate("/profile/edit/search_buddy_email")} />
+              <MenuItem label="Zoekbuddy beheren" onClick={() => navigate("/profile/search-buddy")} />
               <MenuItem label="Reactiebrief" onClick={() => navigate("/application-letter")} last />
             </SectionInline>
           )}

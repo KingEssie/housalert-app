@@ -1,0 +1,109 @@
+Unify the “Zoekbuddy beheren” experience so there is only ONE screen design and ONE route pattern used everywhere.
+
+IMPORTANT:
+Do NOT keep two separate Zoekbuddy beheren UIs.
+Do NOT leave one version reachable from Home and another from Account.
+We want a single canonical screen.
+
+GOAL:
+Both entry points must open the same Zoekbuddy beheren screen:
+- the version that looks like photo 1
+- the version with:
+  - header title "Zoekbuddy beheren"
+  - white content panel
+  - permissions list
+  - buddy email input
+  - sticky bottom action area with the invite button
+
+The alternate screen (photo 2 style) must be removed from normal app usage.
+
+==================================================
+1. CANONICAL SCREEN
+==================================================
+
+Keep ONLY the Zoekbuddy beheren screen that matches photo 1.
+
+This canonical screen must include:
+- page header with title: "Zoekbuddy beheren"
+- light grey page background
+- one white rounded content panel
+- title inside panel:
+  "Samen wonen? Samen zoeken!"
+- intro text:
+  "Je zoekbuddy kan:"
+- permissions list
+- buddy email input
+- sticky bottom white action bar
+- primary button: "Uitnodigen"
+
+This is the only Zoekbuddy beheren design that should remain reachable.
+
+==================================================
+2. REMOVE / REPLACE ALTERNATE SCREEN
+==================================================
+
+The screen that currently looks like photo 2 must no longer be used.
+
+That means:
+- remove it from navigation flow
+- remove any direct route usage from Account
+- if it has its own separate component/page, stop using it
+- if appropriate, delete it or refactor it so all traffic uses the canonical screen
+
+The photo 2 style should not be accessible anymore through normal navigation.
+
+==================================================
+3. HOME ENTRY POINT
+==================================================
+
+When the user opens Zoekbuddy beheren from Home:
+- continue opening the canonical screen (photo 1 style)
+
+No visual change needed here except ensuring it points to the canonical implementation.
+
+==================================================
+4. ACCOUNT ENTRY POINT
+==================================================
+
+When the user opens Zoekbuddy beheren from Account:
+- it must open the exact same canonical screen as Home
+- same route or same component
+- same layout
+- same behavior
+- same design
+
+No separate Account-specific version allowed.
+
+==================================================
+5. STATE HANDLING
+==================================================
+
+The canonical screen must still support the intended buddy states, but all inside the same design system.
+
+At minimum:
+- no buddy configured → invite-focused state with list + input + invite CTA
+- buddy configured → still use this same screen structure, not a separate different page design
+
+If buddy-configured content needs to appear later, keep it inside the same canonical screen layout and style.
+
+==================================================
+6. KEEP DESIGN CONSISTENCY
+==================================================
+
+The canonical screen should continue following the app’s current premium settings/detail style:
+- titles black
+- text black
+- reduced border radius
+- visible input border
+- filled green/red icons if already fixed
+- sticky full-width white bottom action bar
+
+==================================================
+7. OUTPUT
+==================================================
+
+Return:
+1. which files/routes/components were changed
+2. which old Zoekbuddy screen/component was removed or deprecated
+3. confirmation that both Home and Account now open the same canonical Zoekbuddy beheren screen
+4. confirmation that the photo-2 style screen is no longer reachable in normal navigation

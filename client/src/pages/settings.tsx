@@ -55,7 +55,7 @@ export default function SettingsPage() {
     {
       title: t("settings.sectionSearchReact"),
       rows: [
-        { label: t("settings.zoekbuddy"), route: "/profile/edit/search_buddy_email", external: false },
+        { label: t("settings.zoekbuddy"), route: "/profile/search-buddy", external: false },
         { label: t("settings.reactionLetter"), route: "/application-letter", external: false },
       ],
     },
