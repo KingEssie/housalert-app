@@ -207,46 +207,84 @@ function generateLetterDE(d: OnboardingLetterData, name: string, income: string)
   if (d.email) closing += `\n- E-Mail: ${d.email}`;
   closing += "\n\nIch freue mich auf Ihre Rückmeldung.\n\nMit freundlichen Grüßen,\n" + name;
 
-  return [intro, middle, closing].filter(Boolean).join(" ");
+  return [intro, middle, closing].filter(Boolean).join("\n\n");
 }
 
 function generateLetterNL(d: OnboardingLetterData, name: string, income: string): string {
-  const livNL: Record<string, string> = { alone: "alleen te gaan wonen", partner: "samen met mijn partner te gaan wonen", partner_kids: "samen met mijn partner en kind(eren) te gaan wonen", kids: "met mijn kind(eren) te gaan wonen", roommates: "met huisgenoten te gaan wonen", family: "met mijn familie te gaan wonen" };
-  const workNL: Record<string, string> = { employed: "in loondienst", self_employed: "zelfstandig ondernemer", student: "student", expat: "expat", benefits: "uitkeringsgerechtigde" };
-  const reasonNL: Record<string, string> = { work_study: "werk of studie", first_together: "de wens om voor het eerst met mijn partner te gaan samenwonen", family_growth: "gezinsuitbreiding", breakup: "een relatiebreuk", first_own: "de wens om mijn eerste eigen woning te vinden", bigger: "de behoefte aan meer ruimte", cheaper: "de zoektocht naar een betaalbaardere woning", new_area: "de wens om naar een andere buurt te verhuizen", specific_needs: "specifieke woonwensen", energy_efficient: "de zoektocht naar een energiezuinigere woning" };
+  const livNL: Record<string, string> = {
+    alone: "op mezelf",
+    partner: "samen met mijn partner",
+    partner_children: "samen met mijn partner en kind(eren)",
+    children: "samen met mijn kind(eren)",
+    friend: "samen met een huisgenoot",
+    family: "samen met mijn familie",
+    other: "met anderen",
+  };
+  const workNL: Record<string, string> = {
+    employed: "in loondienst werkzaam",
+    self_employed: "zelfstandig ondernemer",
+    student: "student",
+    retired: "gepensioneerd",
+    unemployed: "momenteel op zoek naar werk",
+    other: "werkzaam",
+  };
+  const reasonNL: Record<string, string> = {
+    job_change: "een nieuwe baan of functiewijziging",
+    study: "mijn studie",
+    relationship: "een verandering in mijn persoonlijke situatie",
+    larger_home: "de behoefte aan meer ruimte",
+    smaller_home: "de zoektocht naar een praktischere woning",
+    cheaper: "de wens om mijn woonlasten te verlagen",
+    neighborhood: "de wens om in een andere buurt te wonen",
+    other: "persoonlijke redenen",
+  };
 
-  let intro = `Geachte verhuurder,\n\nMet grote interesse heb ik uw woning aan [[ADRES]] gezien en stel ik mij graag voor als huurkandidaat.\n\nMijn naam is ${name}`;
-  if (d.livingWith && livNL[d.livingWith]) {
-    intro += ` en ik ben van plan ${livNL[d.livingWith]}`;
-  }
-  intro += ".";
+  const paragraphs: string[] = [];
 
-  let middle = "";
-  if (d.workStatus && workNL[d.workStatus]) {
-    middle = `Ik ben ${workNL[d.workStatus]}`;
-    if (income) middle += ` met een bruto maandinkomen van ${income}`;
-    middle += ".";
+  paragraphs.push(`Geachte verhuurder,\n\nMet veel interesse heb ik uw woning aan [[ADRES]] bekeken en wil ik mij graag voorstellen als huurkandidaat.`);
+
+  const who: string[] = [];
+  who.push(`Mijn naam is ${name}`);
+
+  const livingStr = d.livingWith && livNL[d.livingWith] ? livNL[d.livingWith] : null;
+  const workStr = d.workStatus && workNL[d.workStatus] ? workNL[d.workStatus] : null;
+
+  if (livingStr) who.push(`en ik zoek een woning voor ${livingStr}`);
+  const introLine = who.join(" ") + ".";
+
+  const workLines: string[] = [];
+  if (workStr) {
+    let line = `Beroepsmatig ben ik ${workStr}`;
+    if (income) line += `, met een bruto maandinkomen van ${income}`;
+    workLines.push(line + ".");
   } else if (income) {
-    middle = `Mijn bruto maandinkomen bedraagt ${income}.`;
+    workLines.push(`Mijn bruto maandinkomen bedraagt ${income}.`);
   }
 
-  if (d.petsCount !== undefined && d.petsCount > 0) {
-    middle += ` Ik neem ${d.petsCount === 1 ? "één huisdier" : `${d.petsCount} huisdieren`} mee.`;
-  } else if (d.petsCount === 0) {
-    middle += " Ik heb geen huisdieren.";
-  }
+  const midParts = [introLine, ...workLines].filter(Boolean);
+  if (midParts.length > 0) paragraphs.push(midParts.join(" "));
 
+  const contextLines: string[] = [];
   if (d.moveReason && reasonNL[d.moveReason]) {
-    middle += ` De reden voor mijn verhuizing is ${reasonNL[d.moveReason]}.`;
+    contextLines.push(`De aanleiding voor mijn verhuizing is ${reasonNL[d.moveReason]}.`);
   }
+  if (d.petsCount !== undefined && d.petsCount > 0) {
+    contextLines.push(`Ik breng ${d.petsCount === 1 ? "één huisdier" : `${d.petsCount} huisdieren`} mee.`);
+  } else if (d.petsCount === 0) {
+    contextLines.push("Ik heb geen huisdieren.");
+  }
+  if (contextLines.length > 0) paragraphs.push(contextLines.join(" "));
 
-  let closing = "Alle benodigde documenten kan ik op korte termijn aanleveren.";
-  closing += "\n\nGraag zou ik een bezichtiging willen inplannen. U kunt mij bereiken via:";
-  if (d.phone) closing += `\n- Telefoon: ${d.phone}`;
-  if (d.email) closing += `\n- E-mail: ${d.email}`;
-  closing += "\n\nIk kijk uit naar uw reactie.\n\nMet vriendelijke groet,\n" + name;
+  const contactParts: string[] = [];
+  if (d.phone) contactParts.push(`telefonisch op ${d.phone}`);
+  if (d.email) contactParts.push(`per e-mail via ${d.email}`);
+  const contactStr = contactParts.length > 0 ? ` U kunt mij bereiken ${contactParts.join(" of ")}.` : "";
 
-  return [intro, middle, closing].filter(Boolean).join(" ");
+  paragraphs.push(`Alle benodigde documenten, zoals inkomensbewijzen en een werkgeversverklaring, kan ik op korte termijn aanleveren. Graag zou ik een bezichtiging willen inplannen.${contactStr}`);
+
+  paragraphs.push(`Ik kijk uit naar uw reactie.\n\nMet vriendelijke groet,\n${name}`);
+
+  return paragraphs.join("\n\n");
 }
 
 function generateLetterEN(d: OnboardingLetterData, name: string, income: string): string {
@@ -285,5 +323,5 @@ function generateLetterEN(d: OnboardingLetterData, name: string, income: string)
   if (d.email) closing += `\n- Email: ${d.email}`;
   closing += "\n\nI look forward to hearing from you.\n\nKind regards,\n" + name;
 
-  return [intro, middle, closing].filter(Boolean).join(" ");
+  return [intro, middle, closing].filter(Boolean).join("\n\n");
 }

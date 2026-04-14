@@ -1,0 +1,177 @@
+Refactor the “Reactiebrief” screen to match a clean, premium Rentbird-style UI and improve both design and AI output quality.
+
+IMPORTANT:
+Do NOT approximate.
+Do NOT keep any outdated styling.
+Apply ALL rules exactly.
+
+==================================================
+1. REMOVE DUPLICATE / WEAK TITLE STRUCTURE
+==================================================
+
+Problem:
+There is a small header title AND another large title inside a grey/white block.
+
+Fix:
+- Keep ONLY the page header title “Reactiebrief”
+- REMOVE the duplicate large title inside the card
+- No second title inside the content panel
+
+==================================================
+2. INTRO / HELPER BLOCK
+==================================================
+
+Problem:
+The grey info box (💡 “Wijzig het veld [ADRES] niet…”) feels heavy and unnecessary.
+
+Fix:
+- Remove this block entirely OR
+- Replace with a very subtle small helper text above the textarea:
+  font-size: 13–14px
+  color: #6B7280
+  no background box
+
+==================================================
+3. CONTENT CARD STRUCTURE
+==================================================
+
+Rebuild the white card like this:
+
+Top row inside card:
+- Left: “Jouw reactiebrief”
+  font-size: 16px
+  font-weight: 600
+  color: #000000
+
+- Right: “Standaard herstellen”
+  font-size: 14px
+  color: #6B7280
+  icon: small reset icon
+  aligned right
+
+Spacing:
+- margin-bottom between header and textarea: 12–16px
+
+==================================================
+4. TEXTAREA (VERY IMPORTANT)
+==================================================
+
+Problem:
+Current textarea feels heavy, too rounded, and text is too dense.
+
+Fix styling:
+- border: 1px solid #C7CDD4
+- border-radius: 8px (NOT more)
+- padding: 16–18px
+- font-size: 16px
+- line-height: 1.6–1.7
+- text color: #000000
+
+==================================================
+5. LETTER TEXT FORMATTING (CRITICAL UX FIX)
+==================================================
+
+Problem:
+The letter reads like a block or semi-list.
+
+Fix:
+- Enforce proper paragraph spacing inside textarea
+- Add empty line between paragraphs
+- Max 2–3 sentences per paragraph
+
+Example structure:
+
+Geachte verhuurder,
+
+[short paragraph]
+
+[short paragraph]
+
+[short paragraph]
+
+Met vriendelijke groet,
+Naam
+
+==================================================
+6. AI OUTPUT QUALITY (VERY IMPORTANT)
+==================================================
+
+Current problem:
+The generated letter feels like an information list.
+
+Fix:
+Update generation logic so output is ALWAYS:
+
+- natural flowing story
+- not bullet-style sentences
+- emotionally engaging but calm
+- written like a human
+
+Rules:
+- no repetitive sentence structure
+- no robotic phrasing like:
+  “Ik ben…, Ik ben…, Ik heb…”
+- combine information into natural sentences
+
+==================================================
+7. BUTTON STRUCTURE
+==================================================
+
+Replace current buttons with clear hierarchy:
+
+Primary button:
+- label: “Brief opslaan”
+- full width
+- background: primary pink
+- text: white
+- border-radius: 10px
+
+Secondary button:
+- label: “Nieuwe AI reactiebrief maken”
+- outlined button (NOT text link)
+- border: 1px solid primary color
+- text color: primary
+- same width as primary button
+
+Spacing:
+- 12px between buttons
+
+==================================================
+8. REMOVE WEAK STYLING
+==================================================
+
+Ensure:
+- no light grey text for main content
+- all main text = #000000
+- no overly rounded containers
+- no washed-out borders
+- no “card inside card” feeling
+
+==================================================
+9. VISUAL BALANCE
+==================================================
+
+Spacing rules:
+- card padding: 16–20px
+- space between elements: 12–16px
+- consistent vertical rhythm
+
+==================================================
+10. FLOW CONNECTION
+==================================================
+
+“Nieuwe AI reactiebrief maken” must:
+- open AI generation flow
+- generate improved story-style letter
+- replace textarea content
+
+==================================================
+11. OUTPUT
+==================================================
+
+Return:
+1. updated component structure
+2. exact font sizes used
+3. exact spacing values
+4. textarea styling values
+5. AI prompt used for generating better letters

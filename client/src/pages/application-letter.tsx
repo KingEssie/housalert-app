@@ -432,42 +432,73 @@ export default function ApplicationLetterPage() {
 
         {step === 4 && (
           <div className="flex flex-col gap-4" data-testid="step-preview">
-            <h1 className="text-[30px] font-semibold text-black px-1" data-testid="text-preview-heading">
-              Reactiebrief
-            </h1>
-
-            <div className="ha-card">
-              <div className="flex items-center justify-between mb-3">
-                <label className="text-field-label">{t("applicationLetter.letterLabel")}</label>
+            <div className="bg-white rounded-[12px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-5">
+              {/* Card header */}
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[16px] font-semibold text-[#000000]">
+                  Jouw reactiebrief
+                </span>
                 <button
                   onClick={handleReset}
-                  className="flex items-center gap-1 text-[14px] text-ha-text-secondary active:text-[#111111] transition-colors"
+                  className="flex items-center gap-1.5 text-[14px] text-[#6B7280] hover:text-[#374151] transition-colors active:scale-95"
                   data-testid="button-reset-template"
                 >
-                  <RotateCcw className="w-3.5 h-3.5" />
-                  {t("applicationLetter.resetDefault")}
+                  <RotateCcw className="w-[14px] h-[14px]" strokeWidth={2} />
+                  Standaard herstellen
                 </button>
               </div>
+
+              {/* Helper text */}
+              <p className="text-[13px] text-[#6B7280] mb-3 leading-snug">
+                Wijzig <strong>[ADRES]</strong> en <strong>[STAD]</strong> niet — die worden automatisch ingevuld bij elke woning.
+              </p>
+
+              {/* Textarea */}
               <textarea
                 value={template}
-                onChange={(e) => setTemplate(e.target.value)}
+                onChange={e => setTemplate(e.target.value)}
                 placeholder={t("applicationLetter.placeholderText")}
-                className="app-textarea min-h-[300px] text-[17px] leading-[1.75]"
+                style={{
+                  width: "100%",
+                  minHeight: "340px",
+                  border: "1px solid #C7CDD4",
+                  borderRadius: "8px",
+                  padding: "16px",
+                  fontSize: "16px",
+                  lineHeight: "1.65",
+                  color: "#000000",
+                  background: "#FFFFFF",
+                  outline: "none",
+                  resize: "vertical",
+                  fontFamily: "inherit",
+                  boxSizing: "border-box",
+                  transition: "border-color 0.15s ease",
+                }}
+                onFocus={e => { e.currentTarget.style.borderColor = "rgb(217,26,104)"; }}
+                onBlur={e => { e.currentTarget.style.borderColor = "#C7CDD4"; }}
                 data-testid="input-template"
               />
               {template.length > 0 && template.trim().length < 20 && (
-                <p className="text-[12px] text-ha-text-muted mt-2">{t("applicationLetter.minChars")}</p>
+                <p className="text-[12px] text-[#9CA3AF] mt-2">{t("applicationLetter.minChars")}</p>
               )}
             </div>
+          </div>
+        )}
 
+      </main>
+
+      {/* Sticky bottom bar — only for step 4 */}
+      {step === 4 && (
+        <div className="sticky bottom-0 bg-white border-t border-[#E5E7EB] px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+          <div className="max-w-[480px] mx-auto flex flex-col gap-3">
             <button
               onClick={() => saveMutation.mutate(template)}
               disabled={template.trim().length < 20 || saveMutation.isPending}
-              className="w-full h-[48px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-[52px] rounded-[10px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
               data-testid="button-save-template"
             >
               {saveMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
-              {saveMutation.isPending ? t("applicationLetter.saving") : t("applicationLetter.saveLetter")}
+              {saveMutation.isPending ? t("applicationLetter.saving") : "Brief opslaan"}
             </button>
 
             <button
@@ -475,18 +506,18 @@ export default function ApplicationLetterPage() {
                 setSaving(true);
                 try {
                   await saveProfileFields({
-                    living_with: livingWith || null,
-                    work_status: workStatus || null,
-                    move_reason: moveReason || null,
-                    monthly_income: monthlyIncome || null,
-                    pets_count: petsCount !== "" ? Number(petsCount) : null,
-                    phone: phone.trim() || null,
-                    birth_date: birthDate || null,
-                    gender: gender || null,
+                    living_with: livingWith || profileData?.living_with || null,
+                    work_status: workStatus || profileData?.work_status || null,
+                    move_reason: moveReason || profileData?.move_reason || null,
+                    monthly_income: monthlyIncome || profileData?.monthly_income || null,
+                    pets_count: petsCount !== "" ? Number(petsCount) : (profileData?.pets_count ?? null),
+                    phone: phone.trim() || profileData?.phone || null,
+                    birth_date: birthDate || profileData?.birth_date || null,
+                    gender: gender || profileData?.gender || null,
                   });
                   const letter = generatePersonalLetter();
                   setTemplate(letter);
-                  toast({ title: t("applicationLetter.regenerated") || "Nieuwe brief gegenereerd", description: t("applicationLetter.regeneratedDesc") || "Je kunt de brief hieronder aanpassen." });
+                  toast({ title: "Nieuwe brief gegenereerd", description: "Je kunt de brief hieronder aanpassen." });
                 } catch {
                   toast({ title: t("common.error"), variant: "destructive" });
                 } finally {
@@ -494,16 +525,15 @@ export default function ApplicationLetterPage() {
                 }
               }}
               disabled={saving}
-              className="w-full h-[48px] rounded-[--ha-btn-radius] border border-ha-primary text-ha-primary text-[15px] font-semibold hover:bg-ha-primary/5 transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-[48px] rounded-[10px] border border-ha-primary text-ha-primary text-[15px] font-semibold hover:bg-ha-primary/5 transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
               data-testid="button-regenerate-letter"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
               Nieuwe AI reactiebrief maken
             </button>
           </div>
-        )}
-
-      </main>
+        </div>
+      )}
     </div>
   );
 }
