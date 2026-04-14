@@ -206,13 +206,13 @@ export default function ProfileDetailsPage() {
                 {/* Geboortedatum — 3 dropdowns: dag / maand / jaar */}
                 <div>
                   <label className={FIELD_LABEL}>{t("profileDetails.birthDate")}</label>
-                  <div className="flex items-center gap-[10px] w-full overflow-hidden">
-                    {/* Dag — 25% */}
-                    <div className="relative" style={{ flex: "0 0 25%", minWidth: 0 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr 1fr", gap: "10px", width: "100%" }}>
+                    {/* Dag — 1fr */}
+                    <div className="relative min-w-0">
                       <select
                         value={birthDay}
                         onChange={e => setBirthDay(e.target.value)}
-                        className={`${INPUT_CLS} appearance-none text-center pr-6 ${!birthDay ? "text-[#9CA3AF]" : "text-[#000000]"}`}
+                        className={`${INPUT_CLS} appearance-none text-center px-2 pr-6 ${!birthDay ? "text-[#9CA3AF]" : "text-[#000000]"}`}
                         data-testid="select-birth-day"
                       >
                         <option value="">Dag</option>
@@ -220,14 +220,14 @@ export default function ProfileDetailsPage() {
                           <option key={d} value={String(d)}>{d}</option>
                         ))}
                       </select>
-                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-[13px] h-[13px] text-[#000000] pointer-events-none" strokeWidth={2} />
+                      <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-[13px] h-[13px] text-[#000000] pointer-events-none" strokeWidth={2} />
                     </div>
-                    {/* Maand — 50%, full names, left-aligned */}
-                    <div className="relative" style={{ flex: "0 0 50%", minWidth: 0 }}>
+                    {/* Maand — 2fr, full names, left-aligned */}
+                    <div className="relative min-w-0">
                       <select
                         value={birthMonth}
                         onChange={e => setBirthMonth(e.target.value)}
-                        className={`${INPUT_CLS} appearance-none text-left pr-7 ${!birthMonth ? "text-[#9CA3AF]" : "text-[#000000]"}`}
+                        className={`${INPUT_CLS} appearance-none text-left px-3 pr-7 ${!birthMonth ? "text-[#9CA3AF]" : "text-[#000000]"}`}
                         data-testid="select-birth-month"
                       >
                         <option value="">Maand</option>
@@ -240,12 +240,12 @@ export default function ProfileDetailsPage() {
                       </select>
                       <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-[13px] h-[13px] text-[#000000] pointer-events-none" strokeWidth={2} />
                     </div>
-                    {/* Jaar — 25%, 1940–now */}
-                    <div className="relative" style={{ flex: "0 0 25%", minWidth: 0 }}>
+                    {/* Jaar — 1fr, 1940–now */}
+                    <div className="relative min-w-0">
                       <select
                         value={birthYear}
                         onChange={e => setBirthYear(e.target.value)}
-                        className={`${INPUT_CLS} appearance-none text-center pr-6 ${!birthYear ? "text-[#9CA3AF]" : "text-[#000000]"}`}
+                        className={`${INPUT_CLS} appearance-none text-center px-2 pr-6 ${!birthYear ? "text-[#9CA3AF]" : "text-[#000000]"}`}
                         data-testid="select-birth-year"
                       >
                         <option value="">Jaar</option>
@@ -253,7 +253,7 @@ export default function ProfileDetailsPage() {
                           <option key={y} value={String(y)}>{y}</option>
                         ))}
                       </select>
-                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-[13px] h-[13px] text-[#000000] pointer-events-none" strokeWidth={2} />
+                      <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-[13px] h-[13px] text-[#000000] pointer-events-none" strokeWidth={2} />
                     </div>
                   </div>
                 </div>
@@ -279,16 +279,18 @@ export default function ProfileDetailsPage() {
               </div>
             </div>
 
-            {/* Opslaan CTA */}
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="w-full h-[52px] rounded-[10px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
-              data-testid="button-save-details"
-            >
-              {saving && <Loader2 className="w-4 h-4 animate-spin" />}
-              {t("settings.save")}
-            </button>
+            {/* Opslaan — white anchored container */}
+            <div className="app-card !p-4">
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="w-full h-[52px] rounded-[10px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+                data-testid="button-save-details"
+              >
+                {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+                {t("settings.save")}
+              </button>
+            </div>
           </div>
         )}
       </div>

@@ -1,0 +1,151 @@
+Fix the remaining issues on the “Mijn gegevens” and “Woonsituatie” screens with strict implementation rules.
+
+IMPORTANT:
+Do NOT make loose visual tweaks.
+Do NOT partially fix this.
+Apply the exact fixes below.
+
+==================================================
+1. MIJN GEGEVENS — YEAR DROPDOWN STILL OVERFLOWS
+==================================================
+
+Problem:
+- The year dropdown in the Geboortedatum row still sticks out beyond the white container.
+
+Fix this properly.
+
+Required layout for Geboortedatum row:
+- 3 dropdown fields in one row:
+  - Day = 25%
+  - Month = 50%
+  - Year = 25%
+- gap between fields: 10px
+- total row width must never exceed the parent container width
+
+Implementation requirements:
+- Use box-sizing: border-box
+- Ensure flex children can shrink correctly
+- Ensure parent container has overflow hidden
+- Ensure the year field stays fully inside the white panel on all mobile widths
+- No horizontal overflow at all
+
+If needed:
+- slightly reduce horizontal padding inside the date fields
+- but do NOT change the width ratio
+
+==================================================
+2. WOONSITUATIE — LABELS MUST BE BLACK
+==================================================
+
+Problem:
+- Field labels on the Woonsituatie screen are still grey
+- They must match the rest of the updated settings UI
+
+Fix this:
+
+For all field labels on Woonsituatie:
+- color: #000000
+- font-weight: 600
+- font-size: 16px–17px
+
+Affected labels include:
+- Met wie ga je wonen?
+- Wat is je huidige werksituatie?
+- Wat is de reden voor je verhuizing?
+- Bruto maandinkomen
+- Welke huisdieren neem je mee?
+
+These labels must be visually darker and stronger than the field values/placeholders.
+
+==================================================
+3. WOONSITUATIE — FIELDS STILL TOO ROUNDED
+==================================================
+
+Reduce field rounding so it matches the rest of the app.
+
+Apply to all fields on Woonsituatie:
+- dropdowns
+- input fields
+- any text fields
+
+Use:
+- border-radius: 8px
+- border: 1px solid #D1D5DB
+- background: #FFFFFF
+
+Do NOT leave old overly rounded fields.
+
+==================================================
+4. WOONSITUATIE — THESE VALUES ARE NOT SAVING
+==================================================
+
+Critical functional bug:
+The following fields are not being persisted correctly:
+
+- Werksituatie
+- Maandinkomen
+- Huisdieren
+
+Fix this end-to-end.
+
+Requirements:
+- load existing saved values into the form
+- editing them updates local form state
+- clicking Opslaan persists them correctly
+- revisiting the page shows the saved values again
+- values must also be reflected wherever else they are used in the app
+
+Please verify:
+- request payload includes these fields
+- backend accepts and stores them
+- frontend hydrates them correctly after reload
+
+==================================================
+5. SAVE BUTTON AREA — MUST SIT INSIDE A WHITE CONTAINER
+==================================================
+
+For all menu-item detail screens that end with a save button, the save button should sit inside a white bottom container.
+
+Examples:
+- Mijn gegevens
+- Woonsituatie
+- any similar account detail/edit screens with an Opslaan button
+
+Required behavior:
+- The bottom save area is a distinct white section/container
+- The pink button sits inside that white section
+- It should feel intentional and anchored
+- Not like the button is floating directly on the grey page background
+
+Style:
+- white background container
+- same horizontal spacing as screen content
+- clean separation from the grey page background
+- keep the pink button full-width inside this white section
+
+==================================================
+6. KEEP CONSISTENCY
+==================================================
+
+Apply the same design system already established:
+- black labels
+- regular-weight values
+- 8px input radius
+- clear borders
+- clean spacing
+- no soft grey labels
+
+==================================================
+7. OUTPUT
+==================================================
+
+Return:
+1. which files were changed
+2. what caused the year dropdown overflow and how it was fixed
+3. confirmation that all Woonsituatie labels are now black
+4. confirmation that Woonsituatie fields now use 8px radius
+5. exact fix for persistence of:
+   - Werksituatie
+   - Maandinkomen
+   - Huisdieren
+6. which screens now use a white bottom save container
