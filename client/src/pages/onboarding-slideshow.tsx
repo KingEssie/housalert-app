@@ -2,28 +2,13 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useLocation } from "wouter";
 import { ArrowRight } from "lucide-react";
 import { logoSrc } from "@/components/housalert-logo";
+import { useTranslation } from "@/i18n";
 
 import slide1 from "@assets/CBEC0B90-CFEB-4531-9B92-189C3D5AE11C_1775582560871.png";
 import slide2 from "@assets/0953D9E3-7D7C-4BFA-A772-61A8256302DE_1775582560871.png";
 import slide3 from "@assets/A66E9676-D495-4D6C-A082-21D327233B05_1775582560871.png";
 
-const SLIDES = [
-  {
-    image: slide1,
-    title: "Vind jouw woning sneller",
-    subtitle: "Ontvang direct meldingen zodra er iets online komt dat bij jou past.",
-  },
-  {
-    image: slide2,
-    title: "Wees er als eerste bij",
-    subtitle: "Krijg direct meldingen en reageer sneller dan anderen.",
-  },
-  {
-    image: slide3,
-    title: "Begin jouw nieuwe hoofdstuk",
-    subtitle: "Vind een plek waar jij je écht thuis voelt.",
-  },
-];
+const SLIDE_IMAGES = [slide1, slide2, slide3];
 
 const AUTO_ADVANCE_MS = 3000;
 
@@ -41,7 +26,14 @@ function usePrefersReducedMotion() {
 
 export default function OnboardingSlideshow() {
   const [, navigate] = useLocation();
+  const { t } = useTranslation();
   const [current, setCurrent] = useState(0);
+
+  const SLIDES = [
+    { image: SLIDE_IMAGES[0], title: t("slideshow.slide1Title"), subtitle: t("slideshow.slide1Subtitle") },
+    { image: SLIDE_IMAGES[1], title: t("slideshow.slide2Title"), subtitle: t("slideshow.slide2Subtitle") },
+    { image: SLIDE_IMAGES[2], title: t("slideshow.slide3Title"), subtitle: t("slideshow.slide3Subtitle") },
+  ];
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [touchDeltaX, setTouchDeltaX] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -234,7 +226,7 @@ export default function OnboardingSlideshow() {
             }}
             data-testid="button-create-account"
           >
-            Account aanmaken
+            {t("slideshow.createAccount")}
             <ArrowRight className="w-[18px] h-[18px]" />
           </button>
 
@@ -252,7 +244,7 @@ export default function OnboardingSlideshow() {
             }}
             data-testid="button-login"
           >
-            Log in
+            {t("slideshow.login")}
           </button>
         </div>
       </div>

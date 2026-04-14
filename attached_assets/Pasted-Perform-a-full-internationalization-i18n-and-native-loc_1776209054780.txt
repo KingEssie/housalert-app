@@ -1,0 +1,308 @@
+Perform a full internationalization (i18n) and native localization overhaul across the entire user-facing app.
+
+IMPORTANT:
+This is NOT just a translation task.
+This is BOTH:
+1. a technical i18n cleanup
+2. a copy localization rewrite
+
+The admin portal must remain 100% Dutch and must NOT be changed.
+
+==================================================
+1. PRIMARY GOAL
+==================================================
+
+Refactor the user-facing app so that:
+
+- no hardcoded Dutch strings remain in the user app
+- all visible text uses translation keys
+- language switching works globally and consistently
+- translations sound native and product-quality
+- the app should feel like it was built for each language, not translated afterwards
+
+Admin portal:
+- stays fully Dutch
+- untouched
+
+==================================================
+2. TECHNICAL I18N CLEANUP
+==================================================
+
+Scan the full user-facing frontend codebase and replace all hardcoded visible strings with translation keys.
+
+This includes:
+- page titles
+- headers
+- buttons
+- labels
+- placeholders
+- helper text
+- validation messages
+- empty states
+- modals
+- onboarding flow
+- Reactiebrief flow
+- Zoekbuddy flow
+- notification screens
+- settings/account screens
+- subscription screens
+- match/favorites/detail screens where relevant text is hardcoded
+
+Example:
+❌ "Instellingen"
+✅ t("settings.title")
+
+No mixed system allowed.
+No hardcoded Dutch text allowed in the user app.
+
+==================================================
+3. TRANSLATION KEY STRUCTURE
+==================================================
+
+Create or clean up a structured translation system.
+
+Use grouped namespaces, for example:
+
+common:
+  save:
+  next:
+  cancel:
+  back:
+  close:
+  delete:
+  confirm:
+
+settings:
+  title:
+  account:
+  preferences:
+  password:
+  subscription:
+  personal_data:
+  housing:
+  search_buddy:
+  response_letter:
+  faq:
+  contact:
+  terms:
+  privacy:
+  logout_confirm_title:
+  logout_confirm_yes:
+  logout_confirm_no:
+
+response_letter:
+  title:
+  subtitle:
+  generate_title:
+  intro_title:
+  intro_body:
+  your_letter:
+  reset_default:
+  save_letter:
+  generate_new_ai:
+  helper_address:
+  step_personal_data:
+  step_housing:
+  step_generate:
+
+search_buddy:
+  title:
+  intro_title:
+  intro_body:
+  email_label:
+  invite:
+  copy_link:
+  connected_title:
+  connected_body:
+  allowed_alerts:
+  allowed_favorites:
+  allowed_apply:
+  blocked_profiles:
+  blocked_letter:
+
+housing:
+  title:
+  living_with:
+  work_status:
+  move_reason:
+  income:
+  pets:
+
+personal_data:
+  title:
+  first_name:
+  last_name:
+  email:
+  phone:
+  birth_date:
+  gender:
+
+Keep keys consistent and reusable.
+No messy flat translation file.
+
+==================================================
+4. LANGUAGE STATE / PERSISTENCE
+==================================================
+
+Ensure the active language is applied consistently across the app.
+
+Requirements:
+- read current language from the correct source (user profile and/or stored preference)
+- persist language across refresh
+- switching language updates all user-facing text
+- no stale Dutch strings after switching
+
+==================================================
+5. STRICT FALLBACK RULE
+==================================================
+
+If a translation key is missing:
+- fallback to English
+- NEVER fallback to Dutch in the user-facing app
+
+Again:
+- admin portal stays Dutch
+- user app fallback = English
+
+==================================================
+6. NATIVE LOCALIZATION (VERY IMPORTANT)
+==================================================
+
+Do NOT use literal translations.
+Do NOT produce Google Translate style copy.
+Rewrite user-facing copy so it sounds native, natural, and product-quality in each target language.
+
+This applies especially to:
+- German
+- English
+
+The Dutch source may remain as-is unless cleanup is needed.
+
+==================================================
+7. GERMAN LOCALIZATION STYLE RULES
+==================================================
+
+German copy must sound like a real German consumer app in the rental / housing category.
+
+Requirements:
+- short, clear, modern phrasing
+- avoid stiff corporate language
+- avoid literal Dutch sentence structure
+- avoid awkward formal constructions unless necessary
+- CTAs should be concise and natural
+- settings labels should sound like a native German app
+- onboarding copy should feel friendly and clear
+- empty states and helper text should feel idiomatic
+
+Examples of desired tone:
+- natural
+- app-native
+- trustworthy
+- modern
+- not over-formal
+- not robotic
+
+Bad localization examples to avoid:
+- overly literal Dutch-to-German phrasing
+- strange word order
+- long stiff text blocks
+- generic machine-translated UI text
+
+==================================================
+8. ENGLISH LOCALIZATION STYLE RULES
+==================================================
+
+English copy must sound like polished product English.
+
+Requirements:
+- concise
+- natural
+- mobile-app friendly
+- no literal translations from Dutch
+- no awkward or overly formal phrasing
+
+==================================================
+9. HIGH-PRIORITY SCREENS TO REWRITE NATIVELY
+==================================================
+
+The following screens/flows must receive extra attention and be rewritten natively, not just translated:
+
+- settings/account screen
+- preferences
+- password
+- subscription
+- personal data
+- housing situation
+- search buddy
+- reaction letter flow
+- logout modal
+- onboarding / intro text
+- empty states
+- CTA buttons
+- notification texts
+- premium/subscription texts
+
+==================================================
+10. COPYWRITING QUALITY RULES
+==================================================
+
+For all languages:
+- prefer short and clear UI copy
+- avoid clunky wording
+- avoid repeated phrasing
+- avoid sounding translated
+- prefer idiomatic phrasing
+- keep button text concise
+- keep section labels simple
+- keep helper text human and readable
+
+The app should feel locally written, not globally translated.
+
+==================================================
+11. DO NOT TOUCH ADMIN
+==================================================
+
+The admin portal must remain Dutch.
+Do not replace admin text with translation keys.
+Do not rewrite admin copy.
+Do not change admin labels.
+
+Only clean the user-facing app.
+
+==================================================
+12. QA / VERIFICATION
+==================================================
+
+Verify manually that the following are fully localized:
+- account/settings menu
+- logout modal
+- password screens
+- subscription screen
+- personal data screen
+- housing situation screen
+- search buddy
+- reaction letter screens
+- onboarding steps
+- buttons
+- placeholders
+- empty states
+- notifications
+
+Check:
+- no Dutch remains in the user app when German or English is selected
+- no mixed-language screens
+- no hardcoded Dutch strings in user app components
+
+==================================================
+13. OUTPUT
+==================================================
+
+Return:
+1. all files changed
+2. all hardcoded strings replaced
+3. translation namespaces created or updated
+4. confirmation that the settings/account menu now translates correctly
+5. confirmation that fallback is English, not Dutch
+6. confirmation that admin remained untouched
+7. list of high-priority copy that was rewritten natively for German and English
+8. any strings that were ambiguous and how they were localized

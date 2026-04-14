@@ -980,9 +980,9 @@ function HomeTab({
 
         <HighlightCard
           icon={Send}
-          title="Geef een vriend 25% korting"
-          subtitle="Deel je persoonlijke link. Jij en je vriend krijgen korting op de eerste betaling."
-          ctaLabel="Deel je link"
+          title={t("home.referralTitle")}
+          subtitle={t("home.referralSubtitle")}
+          ctaLabel={t("home.referralShareCta")}
           onClick={handleReferralShare}
           testId="card-home-referral"
           bgColor="#f2f6ff"
@@ -1209,8 +1209,8 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
           <div className="bg-white rounded-[12px]" style={cardStyle}>
             <EmptyState
               illustration={EMPTY_STATE_IMAGES.noFavorites}
-              title="Nog geen favorieten"
-              description="Sla interessante woningen op om ze later terug te vinden."
+              title={t("matches.emptyFavorites.title")}
+              description={t("matches.emptyFavorites.desc")}
               testId="empty-favorieten-tab"
               compact
             />
@@ -1497,7 +1497,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Zoek naar een woning"
+                placeholder={t("matches.searchPlaceholder")}
                 className="w-full h-[44px] pl-10 pr-4 rounded-[14px] bg-[#F3F4F6] border border-transparent text-[15px] text-[#111111] placeholder-[#9CA3AF] outline-none focus:bg-white focus:border-[#E5E7EB] transition-all"
                 data-testid="input-search-matches"
               />
@@ -1532,8 +1532,8 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
             ) : matches.length === 0 ? (
               <EmptyState
                 illustration={EMPTY_STATE_IMAGES.noMatches}
-                title="Nog geen matches"
-                description="We zijn voor je aan het zoeken. Nieuwe woningen verschijnen hier."
+                title={t("home.noMatchesYetTitle")}
+                description={t("matches.searchingForYouDesc")}
                 ctaLabel={t("matches.adjustFilters")}
                 onCtaClick={() => setActiveTab("home")}
                 testId="empty-matches"
@@ -1568,8 +1568,8 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
               <div className="bg-white rounded-[12px]" style={cardStyle}>
                 <EmptyState
                   illustration={EMPTY_STATE_IMAGES.noApplications}
-                  title="Nog niet gereageerd"
-                  description="Reageer op woningen om je kansen te vergroten."
+                  title={t("matches.emptyApplied.title")}
+                  description={t("matches.emptyApplied.desc")}
                   testId="empty-gereageerd-tab"
                   compact
                 />
@@ -2064,36 +2064,36 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           </div>
 
           {/* ACCOUNT */}
-          <SectionInline title="Account">
-            <MenuItem label="Voorkeuren" onClick={() => navigate("/settings/preferences")} />
-            <MenuItem label="Wachtwoord" onClick={() => navigate("/account/change-password")} />
-            <MenuItem label="Abonnement" onClick={() => navigate("/account/subscription")} last />
+          <SectionInline title={t("settings.sectionAccount")}>
+            <MenuItem label={t("settings.preferences")} onClick={() => navigate("/settings/preferences")} />
+            <MenuItem label={t("settings.password")} onClick={() => navigate("/account/change-password")} />
+            <MenuItem label={t("settings.subscription")} onClick={() => navigate("/account/subscription")} last />
           </SectionInline>
 
           {/* PERSOONLIJKE GEGEVENS */}
-          <SectionInline title="Persoonlijke gegevens">
-            <MenuItem label="Mijn gegevens" onClick={() => navigate("/profile/details")} />
-            <MenuItem label="Woonsituatie" onClick={() => navigate("/settings/housing")} last />
+          <SectionInline title={t("settings.sectionPersonal")}>
+            <MenuItem label={t("settings.myDetails")} onClick={() => navigate("/profile/details")} />
+            <MenuItem label={t("settings.housingSituation")} onClick={() => navigate("/settings/housing")} last />
           </SectionInline>
 
           {/* ZOEKEN EN REAGEREN */}
           {!buddyMode && (
-            <SectionInline title="Zoeken en reageren">
-              <MenuItem label="Zoekbuddy beheren" onClick={() => navigate("/profile/search-buddy")} />
-              <MenuItem label="Reactiebrief" onClick={() => navigate("/application-letter")} last />
+            <SectionInline title={t("settings.sectionSearchReact")}>
+              <MenuItem label={t("settings.zoekbuddy")} onClick={() => navigate("/profile/search-buddy")} />
+              <MenuItem label={t("settings.reactionLetter")} onClick={() => navigate("/application-letter")} last />
             </SectionInline>
           )}
 
           {/* HELP */}
-          <SectionInline title="Help">
-            <MenuItem label="Veelgestelde vragen" onClick={() => window.open("https://www.housalert.com/faq", "_blank")} external />
-            <MenuItem label="Contacteer ons" onClick={() => { window.location.href = "mailto:support@housalert.com"; }} external last />
+          <SectionInline title={t("settings.sectionHelp")}>
+            <MenuItem label={t("settings.faq")} onClick={() => window.open("https://www.housalert.com/faq", "_blank")} external />
+            <MenuItem label={t("settings.contactUs")} onClick={() => { window.location.href = "mailto:support@housalert.com"; }} external last />
           </SectionInline>
 
           {/* VOORWAARDEN */}
-          <SectionInline title="Voorwaarden">
-            <MenuItem label="Algemene voorwaarden" onClick={() => navigate("/terms")} />
-            <MenuItem label="Privacybeleid" onClick={() => navigate("/datenschutz")} last />
+          <SectionInline title={t("settings.sectionLegal")}>
+            <MenuItem label={t("settings.termsConditions")} onClick={() => navigate("/terms")} />
+            <MenuItem label={t("settings.privacyPolicy")} onClick={() => navigate("/datenschutz")} last />
           </SectionInline>
 
           {/* bottom padding */}

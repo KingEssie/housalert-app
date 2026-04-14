@@ -149,6 +149,8 @@ export const en: Record<string, any> = {
     },
     adjustFilters: "Adjust filters",
     discoverListings: "Discover listings",
+    searchPlaceholder: "Search for a listing",
+    searchingForYouDesc: "We are searching for you. New listings will appear here.",
     loadError: "Could not load matches",
     loadErrorDesc: "Check your connection and try again.",
     applyDirect: "Apply directly",
@@ -239,6 +241,9 @@ export const en: Record<string, any> = {
     logoutConfirm: "Do you want to log out?",
     logoutDesc: "You can log in again anytime with your email address and password.",
     logoutYes: "Yes, log out",
+    logoutSheetTitle: "Are you sure you want to log out?",
+    logoutSheetConfirm: "Yes, log me out",
+    logoutSheetCancel: "No, stay logged in",
     deleteAccount: "Delete account",
     photo: {
       title: "Profile photo",
@@ -526,6 +531,17 @@ export const en: Record<string, any> = {
       toLogin: "Go to sign in",
       noEmail: "No email received? Check your spam folder or try registering again.",
     },
+  },
+
+  slideshow: {
+    slide1Title: "Find your home faster",
+    slide1Subtitle: "Get instant alerts as soon as something comes online that suits you.",
+    slide2Title: "Be the first to respond",
+    slide2Subtitle: "Get instant notifications and respond faster than others.",
+    slide3Title: "Start your new chapter",
+    slide3Subtitle: "Find a place where you truly feel at home.",
+    createAccount: "Create account",
+    login: "Log in",
   },
 
   languageScreen: {
@@ -987,6 +1003,9 @@ export const en: Record<string, any> = {
     referralOverline: "Help your friends",
     referralText: "Share your personal discount code",
     referralCta: "View code",
+    referralTitle: "Give a friend 25% off",
+    referralSubtitle: "Share your personal link. You and your friend both get a discount on the first payment.",
+    referralShareCta: "Share your link",
     guidesTitle: "Guides",
     guide: {
       dokumente: "Gather your documents",

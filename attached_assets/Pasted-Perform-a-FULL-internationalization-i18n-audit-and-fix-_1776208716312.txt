@@ -1,0 +1,173 @@
+Perform a FULL internationalization (i18n) audit and fix across the entire app.
+
+IMPORTANT:
+This is a strict cleanup task.
+The app must be 100% correctly translated and consistent.
+No mixed languages anywhere.
+
+The admin portal must remain Dutch.
+The user-facing app must fully support the active language (e.g. German / English / Dutch depending on locale).
+
+==================================================
+1. GOAL
+==================================================
+
+Ensure:
+- NO hardcoded Dutch text in the user app
+- ALL user-facing text uses translation keys
+- Language switching works globally
+- No screen is partially translated
+
+Admin portal:
+- stays 100% Dutch
+- must NOT be affected
+
+==================================================
+2. REMOVE ALL HARDCODED TEXT
+==================================================
+
+Scan entire frontend codebase and:
+
+REPLACE ALL hardcoded strings like:
+- "Instellingen"
+- "Mijn gegevens"
+- "Woonsituatie"
+- "Zoekbuddy beheren"
+- "Reactiebrief"
+- "Opslaan"
+- "Volgende"
+- etc.
+
+WITH:
+- proper translation keys
+
+Example:
+❌ "Instellingen"
+✅ t("settings.title")
+
+Do this for:
+- headers
+- buttons
+- labels
+- placeholders
+- validation messages
+- empty states
+- modals
+- onboarding flow
+- AI flow screens
+
+==================================================
+3. MENU SCREEN FIX (CRITICAL)
+==================================================
+
+Problem:
+Menu screen is still stuck in Dutch.
+
+Fix:
+- ALL menu items must use translation keys
+- Section titles too (Account, Help, etc.)
+- No fallback to Dutch allowed
+
+==================================================
+4. CREATE CLEAN TRANSLATION STRUCTURE
+==================================================
+
+Organize translations properly:
+
+Example structure:
+
+settings:
+  title:
+  account:
+  preferences:
+  password:
+  subscription:
+  personal_data:
+  housing:
+  search_buddy:
+  response_letter:
+
+common:
+  save:
+  next:
+  back:
+  cancel:
+
+response_letter:
+  title:
+  generate:
+  intro:
+  next:
+
+housing:
+  title:
+  living_with:
+  work_status:
+  reason_move:
+  income:
+  pets:
+
+IMPORTANT:
+- Use consistent naming
+- No duplicate keys
+- No messy flat structure
+
+==================================================
+5. LANGUAGE DETECTION & STATE
+==================================================
+
+Ensure:
+- App reads active language correctly (from user profile or browser)
+- Language persists (localStorage or user profile)
+- On refresh → language stays correct
+
+==================================================
+6. FALLBACK LOGIC
+==================================================
+
+Implement strict fallback:
+
+If translation missing:
+- fallback to English (NOT Dutch)
+
+==================================================
+7. ADMIN PORTAL EXCEPTION
+==================================================
+
+VERY IMPORTANT:
+- Admin portal must stay Dutch
+- Do NOT apply translations there
+- Keep all admin labels untouched
+
+==================================================
+8. QA CHECKLIST (MANDATORY)
+==================================================
+
+Verify manually:
+
+- Settings screen → fully translated
+- Menu items → correct language
+- Buttons → correct language
+- Reactiebrief flow → correct language
+- Onboarding → correct language
+- Modals → correct language
+- Empty states → correct language
+
+Check:
+- No Dutch words remain in user app
+- No mixed language screens
+
+==================================================
+9. OUTPUT
+==================================================
+
+Return:
+
+1. List of files updated
+2. List of all replaced hardcoded strings
+3. Translation structure overview
+4. Confirmation that:
+   - Menu screen is fully translated
+   - No Dutch remains in user app
+   - Admin portal untouched
+5. Any missing translations that were added

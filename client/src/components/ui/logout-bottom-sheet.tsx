@@ -1,4 +1,5 @@
 import { Loader2 } from "lucide-react";
+import { useTranslation } from "@/i18n";
 
 interface LogoutBottomSheetProps {
   open: boolean;
@@ -8,6 +9,8 @@ interface LogoutBottomSheetProps {
 }
 
 export function LogoutBottomSheet({ open, onClose, onConfirm, loading }: LogoutBottomSheetProps) {
+  const { t } = useTranslation();
+
   if (!open) return null;
 
   return (
@@ -22,7 +25,7 @@ export function LogoutBottomSheet({ open, onClose, onConfirm, loading }: LogoutB
         data-testid="sheet-logout"
       >
         <p className="text-[18px] font-semibold text-[#000000] mb-5" data-testid="text-logout-title">
-          Weet je zeker dat je wilt uitloggen?
+          {t("profile.logoutSheetTitle")}
         </p>
 
         <button
@@ -32,7 +35,7 @@ export function LogoutBottomSheet({ open, onClose, onConfirm, loading }: LogoutB
           data-testid="button-logout-confirm"
         >
           {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-          Ja, log me uit
+          {t("profile.logoutSheetConfirm")}
         </button>
 
         <button
@@ -41,7 +44,7 @@ export function LogoutBottomSheet({ open, onClose, onConfirm, loading }: LogoutB
           className="w-full h-[58px] rounded-[10px] border border-ha-primary text-ha-primary text-[16px] font-semibold hover:bg-ha-primary/5 transition-colors active:scale-[0.98] disabled:opacity-50"
           data-testid="button-logout-cancel"
         >
-          Nee, ingelogd blijven
+          {t("profile.logoutSheetCancel")}
         </button>
       </div>
     </div>

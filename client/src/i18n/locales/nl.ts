@@ -219,6 +219,8 @@ export const nl: Record<string, any> = {
     view: "Bekijk",
     viewOriginal: "Naar advertentie",
     discoverListings: "Woningen ontdekken",
+    searchPlaceholder: "Zoek naar een woning",
+    searchingForYouDesc: "We zijn voor je aan het zoeken. Nieuwe woningen verschijnen hier.",
     emptyViewed: {
       title: "Geen woningen gevonden",
       desc: "We konden geen woningen vinden die passen bij je huidige filters. Pas je filters aan en probeer het opnieuw.",
@@ -319,6 +321,9 @@ export const nl: Record<string, any> = {
     logoutConfirm: "Wil je uitloggen?",
     logoutDesc: "Je kunt je altijd opnieuw aanmelden met je e-mailadres en wachtwoord.",
     logoutYes: "Ja, uitloggen",
+    logoutSheetTitle: "Weet je zeker dat je wilt uitloggen?",
+    logoutSheetConfirm: "Ja, log me uit",
+    logoutSheetCancel: "Nee, ingelogd blijven",
     signingOut: "Uitloggen...",
     deleteAccount: "Account verwijderen",
     addPhone: "Telefoonnummer toevoegen",
@@ -584,6 +589,17 @@ export const nl: Record<string, any> = {
       toLogin: "Naar inloggen",
       noEmail: "Geen e-mail ontvangen? Controleer je spamfolder of probeer het opnieuw.",
     },
+  },
+
+  slideshow: {
+    slide1Title: "Vind jouw woning sneller",
+    slide1Subtitle: "Ontvang direct meldingen zodra er iets online komt dat bij jou past.",
+    slide2Title: "Wees er als eerste bij",
+    slide2Subtitle: "Krijg direct meldingen en reageer sneller dan anderen.",
+    slide3Title: "Begin jouw nieuwe hoofdstuk",
+    slide3Subtitle: "Vind een plek waar jij je écht thuis voelt.",
+    createAccount: "Account aanmaken",
+    login: "Inloggen",
   },
 
   languageScreen: {
@@ -1162,6 +1178,9 @@ export const nl: Record<string, any> = {
     referralOverline: "Help je vrienden",
     referralText: "Deel jouw persoonlijke kortingscode",
     referralCta: "Bekijk code",
+    referralTitle: "Geef een vriend 25% korting",
+    referralSubtitle: "Deel je persoonlijke link. Jij en je vriend krijgen korting op de eerste betaling.",
+    referralShareCta: "Deel je link",
     guidesTitle: "Guides",
     guide: {
       dokumente: "Verzamel je documenten",
