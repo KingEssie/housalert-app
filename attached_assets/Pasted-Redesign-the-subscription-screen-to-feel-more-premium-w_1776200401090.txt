@@ -1,0 +1,175 @@
+Redesign the subscription screen to feel more premium while staying fully consistent with our existing visual style.
+
+IMPORTANT:
+Do not redesign the whole app.
+Only improve the subscription screen.
+Keep our branding:
+- light grey page background
+- white cards
+- pink accent color
+- clean premium style
+
+GOAL:
+Make this screen feel like a premium membership/subscription overview, not like a basic settings table.
+
+==================================================
+1. HEADER
+==================================================
+
+Keep the current page header structure and navigation style.
+Title remains:
+- "Abonnement"
+
+Do not redesign the top navigation bar.
+
+==================================================
+2. TOP SUBSCRIPTION CARD — MAKE IT FEEL LIKE A MEMBERSHIP CARD
+==================================================
+
+The current top card is too table-like.
+Transform it into a stronger premium summary card.
+
+Top section of the card should show:
+- plan name: "Premium Maandelijks"
+- status badge: "Actief"
+- a strong renewal message:
+  - "Volgende verlenging op 9 mei 2026"
+  OR similar wording based on real data
+
+This top summary should be the visual focus.
+
+Typography hierarchy:
+- plan name: strongest and largest text in card
+- status badge: smaller but premium
+- renewal message: clear secondary emphasis
+
+Spacing:
+- add more breathing room around the top summary
+- make this feel like a membership status block
+
+==================================================
+3. STATUS BADGE
+==================================================
+
+Refine the active badge so it feels more premium.
+
+Requirements:
+- smaller and tighter than now
+- elegant, not playful
+- subtle green background
+- darker green text
+- less pill-like if currently too rounded
+
+Suggested feel:
+- premium SaaS status badge
+- quiet confidence
+
+==================================================
+4. DETAILS SECTION — SECONDARY INFORMATION
+==================================================
+
+Below the top summary area, show the detailed metadata in a cleaner hierarchy.
+
+Fields to keep:
+- Abonnement
+- Prijs
+- Startdatum
+- Volgende verlenging
+- Automatisch verlengen
+- Betaalmethode
+
+But improve the presentation:
+
+- these rows should feel secondary, not equal to the top membership status
+- labels on the left
+- values on the right
+- use cleaner spacing and divider rhythm
+- reduce “spreadsheet/table” feeling
+
+Typography:
+- labels: medium dark grey
+- values: darker and slightly stronger
+- keep it elegant
+
+==================================================
+5. ADD ONE LIGHT VALUE MESSAGE
+==================================================
+
+Somewhere near the top summary or between summary and metadata, add one subtle supportive line that reinforces the value of the subscription.
+
+Examples:
+- "Je ontvangt direct nieuwe woningmatches"
+- "Inclusief reageren op woningen"
+- "Actief abonnement sinds maart 2026"
+
+Use only ONE such line.
+It should be subtle and premium, not salesy.
+
+==================================================
+6. ACTIONS SECTION
+==================================================
+
+The lower actions currently feel too flat.
+
+Refine them into a cleaner management section.
+
+A. "Betaalmethode beheren"
+- make this the primary management action
+- white row/card style
+- icon left
+- title strong
+- optional small subtitle like:
+  - "Werk je betaalgegevens bij"
+- chevron right
+
+B. "Abonnement opzeggen"
+- keep as destructive action
+- but reduce the visual aggressiveness slightly
+- still clearly destructive
+- not the main visual focus of the screen
+- keep it below the payment management action
+
+Goal:
+The user should first feel “I have an active premium plan”
+and only secondarily see management/destructive actions.
+
+==================================================
+7. VISUAL STYLE
+==================================================
+
+Keep everything in our current design language:
+- page background: light grey
+- cards: white
+- corners: use our updated less-rounded radius system
+- typography: strong and premium
+- no overly bubbly UI
+- premium, calm, polished
+
+==================================================
+8. DO NOT CHANGE
+==================================================
+
+Do not change:
+- actual subscription logic
+- routing
+- data fields
+- payment functionality
+- cancellation logic
+
+Only improve:
+- layout
+- hierarchy
+- spacing
+- visual priority
+- perceived premium quality
+
+==================================================
+9. OUTPUT
+==================================================
+
+Return:
+1. which files were changed
+2. how the top subscription card was restructured
+3. what renewal message is shown and where
+4. how the actions section was improved
+5. confirmation that the screen now feels more like a premium membership overview than a settings table
