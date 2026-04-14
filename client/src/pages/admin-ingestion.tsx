@@ -221,7 +221,7 @@ export default function AdminIngestionPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F5F6F8]">
+      <div className="min-h-screen flex items-center justify-center bg-[#edf2f7]">
         <Loader2 className="w-8 h-8 animate-spin text-[#334855]" />
       </div>
     );
@@ -229,7 +229,7 @@ export default function AdminIngestionPage() {
 
   if (error === "forbidden") {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F5F6F8] px-6">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#edf2f7] px-6">
         <XCircle className="w-12 h-12 text-ha-danger mb-4" />
         <h1 className="text-xl font-bold text-[#111111] mb-2" data-testid="text-forbidden">Access denied</h1>
         <p className="text-[#334855] mb-6">You do not have admin access.</p>
@@ -242,7 +242,7 @@ export default function AdminIngestionPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F5F6F8] px-6">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#edf2f7] px-6">
         <AlertTriangle className="w-12 h-12 text-[#334855] mb-4" />
         <h1 className="text-xl font-bold text-[#111111] mb-2">Error loading data</h1>
         <p className="text-[#334855] mb-6">{error}</p>
@@ -261,11 +261,11 @@ export default function AdminIngestionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F6F8]">
+    <div className="min-h-screen bg-[#edf2f7]">
       <header className="bg-white border-b border-[#E5E7EB] sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate("/dashboard")} className="p-1.5 rounded-lg hover:bg-[#F5F6F8]" data-testid="button-back">
+            <button onClick={() => navigate("/dashboard")} className="p-1.5 rounded-lg hover:bg-[#edf2f7]" data-testid="button-back">
               <ChevronLeft className="w-5 h-5 text-[#334855]" />
             </button>
             <div className="flex items-center gap-2">
@@ -282,7 +282,7 @@ export default function AdminIngestionPage() {
           <button
             onClick={() => loadData(true)}
             disabled={refreshing}
-            className="p-2 rounded-lg hover:bg-[#F5F6F8] disabled:opacity-50"
+            className="p-2 rounded-lg hover:bg-[#edf2f7] disabled:opacity-50"
             data-testid="button-refresh"
           >
             <RefreshCw className={`w-4 h-4 text-[#334855] ${refreshing ? "animate-spin" : ""}`} />
@@ -346,7 +346,7 @@ export default function AdminIngestionPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-[#F5F6F8] text-left">
+                <tr className="bg-[#edf2f7] text-left">
                   <th className="px-4 py-2 font-semibold text-[#334855]">City</th>
                   <th className="px-3 py-2 font-semibold text-[#334855] text-right">Found</th>
                   <th className="px-3 py-2 font-semibold text-[#334855] text-right">Inserted</th>
@@ -360,7 +360,7 @@ export default function AdminIngestionPage() {
                 {cities.length === 0 ? (
                   <tr><td colSpan={7} className="px-4 py-6 text-center text-[#334855]">No data yet — waiting for first completed run</td></tr>
                 ) : cities.map((row) => (
-                  <tr key={row.city} className="border-t border-gray-50 hover:bg-[#F5F6F8]" data-testid={`row-city-${row.city}`}>
+                  <tr key={row.city} className="border-t border-gray-50 hover:bg-[#edf2f7]" data-testid={`row-city-${row.city}`}>
                     <td className="px-4 py-2 font-medium text-[#111111]">{row.city}</td>
                     <td className="px-3 py-2 text-right text-[#111111]">{row.found}</td>
                     <td className="px-3 py-2 text-right text-green-700 font-medium">{row.inserted}</td>
@@ -382,7 +382,7 @@ export default function AdminIngestionPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-[#F5F6F8] text-left">
+                <tr className="bg-[#edf2f7] text-left">
                   <th className="px-4 py-2 font-semibold text-[#334855]">Source</th>
                   <th className="px-3 py-2 font-semibold text-[#334855] text-right">Found</th>
                   <th className="px-3 py-2 font-semibold text-[#334855] text-right">Inserted</th>
@@ -398,7 +398,7 @@ export default function AdminIngestionPage() {
                 ) : sources.map((src) => {
                   const platformStatus = statuses.find(s => s.name === src.name);
                   return (
-                    <tr key={src.name} className="border-t border-gray-50 hover:bg-[#F5F6F8]" data-testid={`row-source-${src.name}`}>
+                    <tr key={src.name} className="border-t border-gray-50 hover:bg-[#edf2f7]" data-testid={`row-source-${src.name}`}>
                       <td className="px-4 py-2 font-medium text-[#111111]">{src.name}</td>
                       <td className="px-3 py-2 text-right text-[#111111]">{src.found}</td>
                       <td className="px-3 py-2 text-right text-green-700 font-medium">{src.inserted}</td>
@@ -424,7 +424,7 @@ export default function AdminIngestionPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-[#F5F6F8] text-left">
+                  <tr className="bg-[#edf2f7] text-left">
                     <th className="px-4 py-2 font-semibold text-[#334855]">Time</th>
                     <th className="px-3 py-2 font-semibold text-[#334855] text-right">Duration</th>
                     <th className="px-3 py-2 font-semibold text-[#334855] text-right">Cities</th>
@@ -437,7 +437,7 @@ export default function AdminIngestionPage() {
                 </thead>
                 <tbody>
                   {summary.runs.map((run) => (
-                    <tr key={run.id} className="border-t border-gray-50 hover:bg-[#F5F6F8]" data-testid={`row-run-${run.id}`}>
+                    <tr key={run.id} className="border-t border-gray-50 hover:bg-[#edf2f7]" data-testid={`row-run-${run.id}`}>
                       <td className="px-4 py-2 text-[#111111]">{formatTime(run.finished_at)}</td>
                       <td className="px-3 py-2 text-right text-[#111111]">{run.duration_sec}s</td>
                       <td className="px-3 py-2 text-right text-[#111111]">{run.cities_count}</td>
@@ -491,7 +491,7 @@ export default function AdminIngestionPage() {
             <button
               onClick={loadDebugData}
               disabled={debugLoading}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F5F6F8] hover:bg-[#E5E7EB] text-[#111111] text-xs font-semibold disabled:opacity-50 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#edf2f7] hover:bg-[#E5E7EB] text-[#111111] text-xs font-semibold disabled:opacity-50 transition-colors"
               data-testid="button-refresh-debug"
             >
               {debugLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
@@ -511,15 +511,15 @@ export default function AdminIngestionPage() {
             {debugData && (
               <div className="flex flex-col gap-5">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                  <div className="bg-[#F5F6F8] rounded-lg p-3">
+                  <div className="bg-[#edf2f7] rounded-lg p-3">
                     <div className="text-lg font-bold text-[#111111]">{debugData.total_match_rows ?? 0}</div>
                     <div className="text-[10px] uppercase text-[#334855] font-medium">Match-Zeilen</div>
                   </div>
-                  <div className="bg-[#F5F6F8] rounded-lg p-3">
+                  <div className="bg-[#edf2f7] rounded-lg p-3">
                     <div className="text-lg font-bold text-[#111111]">{debugData.app_visible_count ?? 0}</div>
                     <div className="text-[10px] uppercase text-[#334855] font-medium">App-sichtbar</div>
                   </div>
-                  <div className="bg-[#F5F6F8] rounded-lg p-3">
+                  <div className="bg-[#edf2f7] rounded-lg p-3">
                     <div className="text-lg font-bold text-[#111111]">{debugData.recent_emailed_count ?? 0}</div>
                     <div className="text-[10px] uppercase text-[#334855] font-medium">Zuletzt gemailt</div>
                   </div>
@@ -578,7 +578,7 @@ export default function AdminIngestionPage() {
                     <div className="overflow-x-auto">
                       <table className="w-full text-xs">
                         <thead>
-                          <tr className="bg-[#F5F6F8] text-left">
+                          <tr className="bg-[#edf2f7] text-left">
                             <th className="px-2 py-1.5 font-semibold text-[#334855]">Titel</th>
                             <th className="px-2 py-1.5 font-semibold text-[#334855]">Stadt</th>
                             <th className="px-2 py-1.5 font-semibold text-[#334855]">Quelle</th>
@@ -610,7 +610,7 @@ export default function AdminIngestionPage() {
                     <div className="overflow-x-auto">
                       <table className="w-full text-xs">
                         <thead>
-                          <tr className="bg-[#F5F6F8] text-left">
+                          <tr className="bg-[#edf2f7] text-left">
                             <th className="px-2 py-1.5 font-semibold text-[#334855]">Titel</th>
                             <th className="px-2 py-1.5 font-semibold text-[#334855]">Stadt</th>
                             <th className="px-2 py-1.5 font-semibold text-[#334855]">Quelle</th>
@@ -637,7 +637,7 @@ export default function AdminIngestionPage() {
                 </div>
 
                 {debugData.recent_emailed.length === 0 && debugData.emailed_but_not_visible.length === 0 && (
-                  <div className="flex items-center gap-2 text-sm text-[#334855] bg-[#F5F6F8] rounded-lg p-3">
+                  <div className="flex items-center gap-2 text-sm text-[#334855] bg-[#edf2f7] rounded-lg p-3">
                     <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0" />
                     Keine E-Mails in diesem Zyklus versendet — es gibt noch keine Vergleichsdaten. Warte bis zum nächsten Ingestion-Zyklus mit aktiven Matches.
                   </div>

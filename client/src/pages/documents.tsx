@@ -74,7 +74,7 @@ export default function DocumentsPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#F5F6F8" }} data-testid="page-documents">
+    <div className="min-h-screen" style={{ backgroundColor: "#edf2f7" }} data-testid="page-documents">
       <AppHeader title={t("documents.title")} />
 
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">

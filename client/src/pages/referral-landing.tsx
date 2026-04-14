@@ -52,7 +52,7 @@ export default function ReferralLandingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F5F6F8] flex items-center justify-center">
+      <div className="min-h-screen bg-[#edf2f7] flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin" style={{ color: HA_PRIMARY }} />
       </div>
     );
@@ -70,7 +70,7 @@ export default function ReferralLandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F5F6F8] flex flex-col" data-testid="page-referral-landing">
+    <div className="min-h-screen bg-[#edf2f7] flex flex-col" data-testid="page-referral-landing">
       <header className="px-5 pt-6 pb-2 flex items-center justify-center">
         <HousAlertLogo size="md" />
       </header>
