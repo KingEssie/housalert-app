@@ -64,7 +64,7 @@ import {
 
 const MAX_PROFILES = 4;
 
-type TabKey = "home" | "matches" | "zoek" | "profiel" | "favorieten";
+type TabKey = "home" | "matches" | "profiel" | "favorieten";
 type MatchesTopTab = "matches" | "gereageerd";
 
 const MATCH_VIEWED_KEY = "housalert_match_viewed";
@@ -1169,6 +1169,8 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
     [accessToken, favoriteIds, fetchFavoriteListings],
   );
 
+  const cardStyle = { boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" };
+
   if (!hasAccess) {
     return (
       <div className="flex flex-col pb-8" data-testid="favorieten-locked">
@@ -1212,30 +1214,34 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
         </div>
       </div>
 
-      <div className="px-5 flex flex-col pt-1">
+      <div className="px-5 pt-3">
         {favLoading ? (
-          <div className="flex flex-col gap-4">
+          <div className="bg-white rounded-[20px] p-4 flex flex-col gap-4" style={cardStyle}>
             {[1, 2].map((i) => (
               <div key={i} className="animate-pulse">
-                <div className="bg-[#F3F4F6] rounded-[16px]" style={{ aspectRatio: "4/3" }} />
+                <div className="bg-[#F3F4F6] rounded-[16px]" style={{ aspectRatio: "16/9" }} />
                 <div className="pt-3 flex flex-col gap-2">
                   <div className="h-4 bg-[#F3F4F6] rounded-full w-3/4" />
                   <div className="h-3 bg-[#F3F4F6] rounded-full w-1/2" />
-                  <div className="h-3 bg-[#F3F4F6] rounded-full w-2/5" />
-                  <div className="h-3 bg-[#F3F4F6] rounded-full w-1/4" />
+                  <div className="flex gap-1.5 mt-1">
+                    {[1, 2, 3].map((j) => <div key={j} className="h-[22px] bg-[#F3F4F6] rounded-[8px] w-14" />)}
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         ) : favoriteListings.length === 0 ? (
-          <EmptyState
-            illustration={EMPTY_STATE_IMAGES.noFavorites}
-            title="Nog geen favorieten"
-            description="Sla interessante woningen op om ze later terug te vinden."
-            testId="empty-favorieten-tab"
-          />
+          <div className="bg-white rounded-[20px]" style={cardStyle}>
+            <EmptyState
+              illustration={EMPTY_STATE_IMAGES.noFavorites}
+              title="Nog geen favorieten"
+              description="Sla interessante woningen op om ze later terug te vinden."
+              testId="empty-favorieten-tab"
+              compact
+            />
+          </div>
         ) : (
-          <div className="flex flex-col gap-6">
+          <div className="bg-white rounded-[20px] p-4 flex flex-col gap-4" style={cardStyle}>
             {favoriteListings.map((m) => (
               <ListingCardFull
                 key={m.listing_id}
@@ -1246,7 +1252,7 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
                   markViewed(m.listing_id);
                   navigate(`/apply/${m.listing_id}`);
                 }}
-                locked={!hasAccess}
+                locked={false}
               />
             ))}
           </div>
@@ -1554,7 +1560,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
                 title="Nog geen matches"
                 description="We zijn voor je aan het zoeken. Nieuwe woningen verschijnen hier."
                 ctaLabel={t("matches.adjustFilters")}
-                onCtaClick={() => setActiveTab("zoek")}
+                onCtaClick={() => setActiveTab("home")}
                 testId="empty-matches"
                 compact
               />
@@ -2506,7 +2512,6 @@ const TAB_CONFIG: { key: TabKey; labelKey: string; Icon: any }[] = [
   { key: "home", labelKey: "nav.home", Icon: Home },
   { key: "matches", labelKey: "nav.matches", Icon: Search },
   { key: "favorieten", labelKey: "nav.favorites", Icon: Heart },
-  { key: "zoek", labelKey: "nav.search", Icon: MapPin },
   { key: "profiel", labelKey: "nav.profile", Icon: User },
 ];
 
@@ -2524,7 +2529,7 @@ export default function DashboardPage() {
     const params = new URLSearchParams(window.location.search);
     const tab = params.get("tab");
     if (tab === "gereageerd") return "matches";
-    if (tab && ["home", "matches", "favorieten", "zoek", "profiel"].includes(tab)) {
+    if (tab && ["home", "matches", "favorieten", "profiel"].includes(tab)) {
       return tab as TabKey;
     }
     return "home";
@@ -2559,7 +2564,7 @@ export default function DashboardPage() {
   }, [user, loading, navigate]);
 
   useEffect(() => {
-    if (inBuddyMode && (activeTab === "home" || activeTab === "zoek")) {
+    if (inBuddyMode && activeTab === "home") {
       setActiveTab("matches");
     }
   }, [inBuddyMode, activeTab]);
@@ -2667,9 +2672,6 @@ export default function DashboardPage() {
         {activeTab === "favorieten" && (
           <FavorietenTab accessToken={accessToken} navigate={navigate} />
         )}
-        {activeTab === "zoek" && (
-          <ZoekTab profiles={profiles} navigate={navigate} />
-        )}
         {activeTab === "profiel" && (
           <ProfielTab
             user={user}
@@ -2687,7 +2689,7 @@ export default function DashboardPage() {
       <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#E5E7EB]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
         <nav className="max-w-xl mx-auto flex h-[72px]" data-testid="bottom-nav">
           {TAB_CONFIG.filter(({ key }) => {
-            if (inBuddyMode && (key === "zoek" || key === "home")) return false;
+            if (inBuddyMode && key === "home") return false;
             return true;
           }).map(({ key, labelKey, Icon }) => {
             const isActive = activeTab === key;

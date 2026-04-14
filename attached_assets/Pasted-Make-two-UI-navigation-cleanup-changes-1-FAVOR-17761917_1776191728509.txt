@@ -1,0 +1,61 @@
+Make two UI/navigation cleanup changes:
+
+==================================================
+1. FAVORIETEN PAGE — SAME WHITE CONTAINER AS MATCHES
+==================================================
+
+The Favorites page currently looks inconsistent with the Matches page.
+
+Problem:
+- On Matches, the listing cards sit inside a white rounded container
+- On Favorites, the listing cards sit directly on the grey page background
+
+Fix this:
+- Make the Favorites page use the exact same white content container structure as the Matches page
+- Under the page header, create the same white rounded section/card wrapper used on Matches
+- All favorite listing cards must render inside that white container
+- Keep the existing listing card style itself the same
+- Keep spacing and padding consistent with Matches
+
+Goal:
+Favorites and Matches should feel like the same design system:
+- same grey page background
+- same white rounded content area
+- same visual grouping of cards
+
+==================================================
+2. REMOVE "ZOEK" PAGE ENTIRELY
+==================================================
+
+The separate "Zoek" page is no longer needed because search profiles are already visible from the Home screen.
+
+Remove the "Zoek" page completely from the app:
+
+A. Bottom navigation
+- Remove the "Zoek" tab from the bottom navigation bar
+
+B. Routing
+- Remove or disable the Zoek page route from normal navigation
+- If needed, redirect old /zoek routes safely to Home or the relevant Home section
+
+C. Navigation consistency
+- After removing Zoek, rebalance the bottom nav items cleanly
+- Keep the remaining tabs visually balanced
+
+D. Any references
+- Remove obvious UI references to the separate Zoek page if they are no longer relevant
+
+IMPORTANT:
+- Do not remove search profile functionality itself
+- Search profiles must still be accessible from Home
+- Only remove the separate standalone Zoek page and its tab
+
+==================================================
+OUTPUT
+==================================================
+
+Return:
+1. which files were changed
+2. confirmation that Favorites now uses the same white container structure as Matches
+3. confirmation that the Zoek tab was removed from bottom navigation
+4. what happens if an old Zoek route is opened
