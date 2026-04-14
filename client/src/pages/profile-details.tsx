@@ -203,40 +203,58 @@ export default function ProfileDetailsPage() {
                   />
                 </div>
 
-                {/* Geboortedatum — 3 losse inputs */}
+                {/* Geboortedatum — 3 dropdowns: dag / maand / jaar */}
                 <div>
                   <label className={FIELD_LABEL}>{t("profileDetails.birthDate")}</label>
-                  <div className="flex items-center gap-2.5">
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      maxLength={2}
-                      value={birthDay}
-                      onChange={e => setBirthDay(e.target.value.replace(/\D/g, ""))}
-                      placeholder="DD"
-                      className={`${INPUT_CLS} w-[72px] flex-shrink-0 text-center`}
-                      data-testid="input-birth-day"
-                    />
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      maxLength={2}
-                      value={birthMonth}
-                      onChange={e => setBirthMonth(e.target.value.replace(/\D/g, ""))}
-                      placeholder="MM"
-                      className={`${INPUT_CLS} w-[72px] flex-shrink-0 text-center`}
-                      data-testid="input-birth-month"
-                    />
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      maxLength={4}
-                      value={birthYear}
-                      onChange={e => setBirthYear(e.target.value.replace(/\D/g, ""))}
-                      placeholder="JJJJ"
-                      className={`${INPUT_CLS} flex-1 text-center`}
-                      data-testid="input-birth-year"
-                    />
+                  <div className="flex items-center gap-[10px] w-full overflow-hidden">
+                    {/* Dag */}
+                    <div className="relative flex-1">
+                      <select
+                        value={birthDay}
+                        onChange={e => setBirthDay(e.target.value)}
+                        className={`${INPUT_CLS} appearance-none text-center pr-7 ${!birthDay ? "text-[#9CA3AF]" : "text-[#000000]"}`}
+                        data-testid="select-birth-day"
+                      >
+                        <option value="">DD</option>
+                        {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
+                          <option key={d} value={String(d)}>{String(d).padStart(2, "0")}</option>
+                        ))}
+                      </select>
+                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-[14px] h-[14px] text-[#000000] pointer-events-none" strokeWidth={2} />
+                    </div>
+                    {/* Maand */}
+                    <div className="relative flex-1">
+                      <select
+                        value={birthMonth}
+                        onChange={e => setBirthMonth(e.target.value)}
+                        className={`${INPUT_CLS} appearance-none text-center pr-7 ${!birthMonth ? "text-[#9CA3AF]" : "text-[#000000]"}`}
+                        data-testid="select-birth-month"
+                      >
+                        <option value="">MM</option>
+                        {[
+                          "Jan","Feb","Mrt","Apr","Mei","Jun",
+                          "Jul","Aug","Sep","Okt","Nov","Dec"
+                        ].map((name, i) => (
+                          <option key={i + 1} value={String(i + 1)}>{String(i + 1).padStart(2, "0")} – {name}</option>
+                        ))}
+                      </select>
+                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-[14px] h-[14px] text-[#000000] pointer-events-none" strokeWidth={2} />
+                    </div>
+                    {/* Jaar */}
+                    <div className="relative flex-[2]">
+                      <select
+                        value={birthYear}
+                        onChange={e => setBirthYear(e.target.value)}
+                        className={`${INPUT_CLS} appearance-none text-center pr-7 ${!birthYear ? "text-[#9CA3AF]" : "text-[#000000]"}`}
+                        data-testid="select-birth-year"
+                      >
+                        <option value="">JJJJ</option>
+                        {Array.from({ length: new Date().getFullYear() - 1919 }, (_, i) => new Date().getFullYear() - i).map(y => (
+                          <option key={y} value={String(y)}>{y}</option>
+                        ))}
+                      </select>
+                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-[14px] h-[14px] text-[#000000] pointer-events-none" strokeWidth={2} />
+                    </div>
                   </div>
                 </div>
 
