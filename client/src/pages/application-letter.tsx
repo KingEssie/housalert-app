@@ -204,6 +204,17 @@ export default function ApplicationLetterPage() {
     else setStep((step - 1) as Step);
   }
 
+  function handleBirthChange(part: "year" | "month" | "day", value: string) {
+    const parts = birthDate ? birthDate.split("-") : ["", "", ""];
+    if (part === "year") parts[0] = value;
+    if (part === "month") parts[1] = value;
+    if (part === "day") parts[2] = value;
+    setBirthDate(parts.join("-"));
+  }
+
+  const MONTHS_NL = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
+  const [bYear = "", bMonth = "", bDay = ""] = birthDate ? birthDate.split("-") : [];
+
   const GENDER_OPTIONS = [
     { value: "", label: t("profileDetails.genderSelect") },
     { value: "male", label: t("profileDetails.genderMale") },
@@ -290,7 +301,7 @@ export default function ApplicationLetterPage() {
 
         {step === 1 && (
           <div className="flex flex-col gap-4" data-testid="step-intro">
-            <h1 className="text-[30px] font-semibold text-black px-1" data-testid="text-intro-heading">
+            <h1 className="text-[28px] font-bold text-[#000000] px-1" data-testid="text-intro-heading">
               AI Reactiebrief genereren
             </h1>
 
@@ -328,9 +339,12 @@ export default function ApplicationLetterPage() {
 
         {step === 2 && (
           <div className="flex flex-col gap-4" data-testid="step-personal">
-            <h1 className="text-[30px] font-semibold text-black px-1" data-testid="text-personal-heading">
-              Persoonlijke gegevens
-            </h1>
+            <div className="px-1">
+              <p className="text-[13px] font-medium text-[#6B7280] mb-1" data-testid="text-step-indicator">Stap 1 van 2</p>
+              <h1 className="text-[28px] font-bold text-[#000000]" data-testid="text-personal-heading">
+                Persoonlijke gegevens
+              </h1>
+            </div>
 
             <div className="ha-card">
               <div className="flex flex-col gap-5">
@@ -348,13 +362,53 @@ export default function ApplicationLetterPage() {
 
                 <div>
                   <label className={labelClass}>Geboortedatum</label>
-                  <input
-                    type="date"
-                    value={birthDate}
-                    onChange={e => setBirthDate(e.target.value)}
-                    className="app-input"
-                    data-testid="input-birthdate"
-                  />
+                  <div className="grid grid-cols-[1fr_2fr_1fr] gap-2" data-testid="input-birthdate-group">
+                    {/* Day */}
+                    <div className="relative">
+                      <select
+                        value={bDay}
+                        onChange={e => handleBirthChange("day", e.target.value)}
+                        className={`app-select ${bDay ? "" : "text-ha-icon-secondary"}`}
+                        data-testid="select-birth-day"
+                      >
+                        <option value="">Dag</option>
+                        {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
+                          <option key={d} value={String(d).padStart(2, "0")}>{d}</option>
+                        ))}
+                      </select>
+                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[#111111] pointer-events-none" />
+                    </div>
+                    {/* Month */}
+                    <div className="relative">
+                      <select
+                        value={bMonth}
+                        onChange={e => handleBirthChange("month", e.target.value)}
+                        className={`app-select ${bMonth ? "" : "text-ha-icon-secondary"}`}
+                        data-testid="select-birth-month"
+                      >
+                        <option value="">Maand</option>
+                        {MONTHS_NL.map((m, i) => (
+                          <option key={i} value={String(i + 1).padStart(2, "0")}>{m}</option>
+                        ))}
+                      </select>
+                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[#111111] pointer-events-none" />
+                    </div>
+                    {/* Year */}
+                    <div className="relative">
+                      <select
+                        value={bYear}
+                        onChange={e => handleBirthChange("year", e.target.value)}
+                        className={`app-select ${bYear ? "" : "text-ha-icon-secondary"}`}
+                        data-testid="select-birth-year"
+                      >
+                        <option value="">Jaar</option>
+                        {Array.from({ length: 80 }, (_, i) => new Date().getFullYear() - 18 - i).map(y => (
+                          <option key={y} value={String(y)}>{y}</option>
+                        ))}
+                      </select>
+                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[#111111] pointer-events-none" />
+                    </div>
+                  </div>
                 </div>
 
                 <div>
@@ -367,7 +421,7 @@ export default function ApplicationLetterPage() {
             <button
               onClick={handleStep2Next}
               disabled={saving}
-              className="w-full h-[48px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-[52px] rounded-[10px] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
               data-testid="button-personal-next"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -378,9 +432,12 @@ export default function ApplicationLetterPage() {
 
         {step === 3 && (
           <div className="flex flex-col gap-4" data-testid="step-housing">
-            <h1 className="text-[30px] font-semibold text-black px-1" data-testid="text-housing-heading">
-              Woonsituatie
-            </h1>
+            <div className="px-1">
+              <p className="text-[13px] font-medium text-[#6B7280] mb-1" data-testid="text-step-indicator-3">Stap 2 van 2</p>
+              <h1 className="text-[28px] font-bold text-[#000000]" data-testid="text-housing-heading">
+                Woonsituatie
+              </h1>
+            </div>
 
             <div className="ha-card">
               <div className="flex flex-col gap-5">
@@ -421,11 +478,11 @@ export default function ApplicationLetterPage() {
             <button
               onClick={handleStep3Generate}
               disabled={saving}
-              className="w-full h-[48px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-[52px] rounded-[10px] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
               data-testid="button-generate-letter"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
-              AI reactiebrief maken
+              Volgende
             </button>
           </div>
         )}

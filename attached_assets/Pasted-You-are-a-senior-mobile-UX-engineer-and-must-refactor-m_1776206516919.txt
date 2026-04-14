@@ -1,0 +1,239 @@
+You are a senior mobile UX engineer and must refactor my entire app UI and flow to match a premium, Rentbird-level experience. Do NOT partially implement. Apply ALL rules globally and consistently across the entire app.
+
+-------------------------------------
+CORE GOAL
+-------------------------------------
+Transform the app from “settings-like screens” into a clean, guided onboarding + premium dashboard experience.
+
+-------------------------------------
+1. GLOBAL DESIGN SYSTEM (APPLY EVERYWHERE)
+-------------------------------------
+
+Typography:
+- Page titles: 28px, bold, black (#000)
+- Section titles: 18px, semibold, black (#000)
+- Labels (field titles): 16px, medium, black (#000)
+- Input text: 16px, regular, black (#000)
+- NO grey text for primary content
+- Only use grey (#6B7280) for helper/secondary text
+
+Spacing:
+- Between label and input: 8px
+- Between fields: 20–24px
+- Card padding: 20–24px
+- Screen horizontal padding: 16px
+
+Inputs:
+- Height: 48–52px
+- Padding: 16px
+- Border: 1px solid #D1D5DB
+- Border radius: MAX 10–12px (reduce all current rounding by ~50%)
+- Background: white
+- Text: black
+
+Cards:
+- White background
+- Border radius: 16px
+- Padding: 20–24px
+- Subtle shadow (very light)
+
+Icons:
+- Use filled icons (NOT outlined)
+- NO circles behind icons
+- Icon color: black or status color (green/red)
+- Slightly larger than current
+
+-------------------------------------
+2. REMOVE BAD PATTERNS
+-------------------------------------
+
+- Remove ALL grey labels → make black
+- Remove overly rounded inputs everywhere
+- Remove inconsistent spacing
+- Remove mixed input styles (everything consistent)
+- Remove “settings page feeling”
+
+-------------------------------------
+3. FLOW STRUCTURE (CRITICAL)
+-------------------------------------
+
+Refactor AI reactiebrief into a proper step-by-step flow:
+
+Step 1 → Intro screen (AI uitleg)
+Step 2 → Persoonlijke gegevens
+Step 3 → Woonsituatie
+Step 4 → Generate
+Step 5 → Result screen (reactiebrief)
+
+Rules:
+- Each step = separate screen
+- Always ONE primary button: “Volgende”
+- Show progress indicator (e.g. “Stap 2 van 3”)
+- Persist data between steps
+
+-------------------------------------
+4. INTRO SCREEN (AI REACTIEBRIEF)
+-------------------------------------
+
+- Keep visual block (speech bubble + person)
+- Improve spacing (more breathing room)
+- Title bold black
+- Text readable, max width, good line-height
+- Button at bottom: “Volgende”
+
+-------------------------------------
+5. FORM SCREENS (VERY IMPORTANT)
+-------------------------------------
+
+Apply to ALL forms:
+
+- Everything inside ONE white card
+- Strong vertical rhythm
+- Labels black and clearly visible
+- Inputs consistent
+
+-------------------------------------
+6. DATE FIELD (FIX PROPERLY)
+-------------------------------------
+
+Replace current broken implementation with:
+
+3 dropdowns in ONE row:
+- Day → 25%
+- Month → 50% (FULL month names, e.g. “Februari”)
+- Year → 25%
+
+Rules:
+- Must NEVER overflow container
+- Must stay inside white card
+- Same styling as other inputs
+- Equal height as other fields
+
+-------------------------------------
+7. WOONSITUATIE SCREEN
+-------------------------------------
+
+Fix:
+- Labels must be black (currently grey → wrong)
+- Dropdowns consistent
+- Fix saving issue for:
+  - Werksituatie
+  - Maandinkomen
+  - Huisdieren
+
+Ensure:
+- All values persist correctly
+- No lost state
+
+-------------------------------------
+8. BUTTON SYSTEM (GLOBAL)
+-------------------------------------
+
+ALL screens must use:
+
+Sticky bottom container:
+- Full width
+- White background
+- Padding: 16px
+- Light shadow on top
+
+Primary button:
+- Full width
+- Height: 52–56px
+- Border radius: 12px
+- Color: brand pink
+- Text: white, semibold
+
+Secondary button:
+- Outline style
+- Same height
+- Same radius
+
+-------------------------------------
+9. ZOEKBUDDY SCREEN
+-------------------------------------
+
+- Remove duplicate/old screen (only keep one version)
+- Always use “Zoekbuddy beheren”
+- Everything inside white card
+- Icons:
+  - Green check (filled)
+  - Red cross (filled)
+- Larger text and spacing
+
+States:
+1. No zoekbuddy:
+   - Input field
+   - Explanation
+2. With zoekbuddy:
+   - Show email
+   - Show actions:
+     - Deel link
+     - Kopieer link
+
+-------------------------------------
+10. REACTIEBRIEF SCREEN (IMPORTANT)
+-------------------------------------
+
+Fix differences vs Rentbird:
+
+- Remove large grey title block
+- Use clean hierarchy
+
+Structure:
+- Title: “Reactiebrief” (bold, black)
+- Subheader row:
+   - “Jouw reactiebrief”
+   - “Standaard herstellen” (right aligned)
+
+Helper text:
+- Black/grey subtle (not dominant)
+
+Text area:
+- Larger padding
+- Better line height
+- Paragraph spacing (NOT compact blocks)
+- Must feel like a real letter (story, not list)
+
+-------------------------------------
+11. AI GENERATION OUTPUT
+-------------------------------------
+
+Fix generation style:
+
+Current issue:
+- Too list-like
+- Too robotic
+
+New requirement:
+- Write as a natural story
+- Smooth paragraphs
+- Human tone
+- Slight warmth
+- No bullet structure
+
+-------------------------------------
+12. NAVIGATION FIX
+-------------------------------------
+
+Fix:
+- “Nieuwe AI reactiebrief maken” MUST navigate to flow
+- NOT save the letter
+
+-------------------------------------
+13. FINAL RULE
+-------------------------------------
+
+Do NOT partially apply changes.
+
+Refactor ALL screens to follow:
+- same spacing
+- same typography
+- same input styling
+- same button system
+
+Everything must feel like ONE consistent premium product.
+
+-------------------------------------
+END
+-------------------------------------
