@@ -102,19 +102,19 @@ export default function PreferencesPage() {
         <div className="bg-white rounded-[12px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden">
 
           {/* TAAL section */}
-          <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-4 pt-4 pb-2">
+          <p className="text-[18px] font-bold text-[#111111] px-4 pt-5 pb-3">
             {t("settings.sectionLanguage")}
           </p>
 
           <div className="px-4 pb-4">
             <button
               onClick={() => setShowLangSheet(true)}
-              className="w-full flex items-center justify-between px-4 h-[50px] text-left bg-white border border-[#D1D5DB] rounded-[8px] active:bg-[#F9FAFB] transition-colors"
+              className="w-full flex items-center justify-between px-4 h-[60px] text-left bg-white border border-[#D1D5DB] rounded-[8px] active:bg-[#F9FAFB] transition-colors"
               data-testid="button-pref-language"
             >
-              <span className="text-[15px] font-semibold text-[#111111]">{t("profile.language")}</span>
+              <span className="text-[15px] font-medium text-[#374151]">{t("profile.language")}</span>
               <div className="flex items-center gap-2">
-                <span className="text-[15px] font-medium text-[#4B5563]">{currentLangLabel}</span>
+                <span className="text-[15px] font-normal text-[#6B7280]">{currentLangLabel}</span>
                 <ChevronRight className="w-[16px] h-[16px] text-[#9CA3AF] flex-shrink-0" />
               </div>
             </button>
@@ -124,13 +124,13 @@ export default function PreferencesPage() {
           <div className="h-px bg-[#F3F4F6]" />
 
           {/* NOTIFICATIES section */}
-          <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-4 pt-4 pb-1">
+          <p className="text-[18px] font-bold text-[#111111] px-4 pt-5 pb-3">
             {t("settings.sectionNotifications")}
           </p>
 
           {/* Push row */}
           <div className="flex items-center px-4 h-[52px]">
-            <span className="text-[15px] font-semibold text-[#111111] flex-1">{t("profile.pushNotifications")}</span>
+            <span className="text-[15px] font-medium text-[#374151] flex-1">{t("profile.pushNotifications")}</span>
             <button
               onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
               disabled={loading || notifUpdating === "push_enabled"}
@@ -145,7 +145,7 @@ export default function PreferencesPage() {
 
           {/* Email row */}
           <div className="flex items-center px-4 h-[52px]">
-            <span className="text-[15px] font-semibold text-[#111111] flex-1">{t("profile.emailNotifications")}</span>
+            <span className="text-[15px] font-medium text-[#374151] flex-1">{t("profile.emailNotifications")}</span>
             <button
               onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}
               disabled={loading || notifUpdating === "email_enabled"}

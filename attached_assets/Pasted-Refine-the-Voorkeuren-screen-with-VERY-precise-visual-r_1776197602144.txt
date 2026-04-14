@@ -1,0 +1,156 @@
+Refine the "Voorkeuren" screen with VERY precise visual rules.
+
+IMPORTANT:
+Do NOT interpret loosely.
+Do NOT approximate.
+Apply EXACT styling changes described below.
+
+This is a pixel-level refinement to match a premium settings UI (Rentbird style).
+
+==================================================
+1. SECTION TITLES — MUST BE CLEARLY DOMINANT
+==================================================
+
+Fix ALL section titles:
+
+Affected:
+- "TAAL"
+- "HOE WIL JE WONINGMATCHES ONTVANGEN?"
+
+Current issue:
+They are too light, too small, and not visually dominant.
+
+REQUIRED:
+
+- Color: near-black (#111111 or similar)
+- Font weight: bold (600–700)
+- Font size: clearly larger than all other text on the screen
+- Must visually stand out as section headers
+
+STRICT RULE:
+Section titles must be:
+- darker
+- bigger
+- bolder
+
+than:
+- "Taal"
+- "Nederlands"
+- "Push notificaties"
+- "E-mail notificaties"
+
+No exceptions.
+
+==================================================
+2. BODY TEXT — MUST BE LIGHTER & NOT BOLD
+==================================================
+
+All non-title text:
+
+- "Taal"
+- "Nederlands"
+- "Push notificaties"
+- "E-mail notificaties"
+
+MUST:
+
+- NOT be bold
+- Use regular font weight (400–500)
+- Be slightly lighter than titles
+
+Goal:
+Clear visual hierarchy:
+TITLE > LABELS > VALUES
+
+==================================================
+3. LANGUAGE DROPDOWN — FIX VERTICAL SPACING (CRITICAL)
+==================================================
+
+Current issue:
+The dropdown field is too compressed vertically.
+
+REQUIRED CHANGE:
+
+Increase vertical padding SIGNIFICANTLY.
+
+This is NOT a small tweak.
+
+Apply:
+
+- padding-top: increase clearly
+- padding-bottom: increase clearly
+
+Target feeling:
+The row should feel tall, breathable, and premium.
+
+Think:
+- iOS settings row height
+- NOT a web form input
+
+IMPORTANT:
+If current height ≈ 40–48px → increase toward ~56–64px
+
+The text should NOT sit close to the borders.
+
+==================================================
+4. LANGUAGE ROW LAYOUT
+==================================================
+
+Keep structure:
+
+LEFT:
+- "Taal"
+
+RIGHT:
+- "Nederlands"
+- chevron icon
+
+Ensure:
+- perfect vertical centering
+- enough breathing space above and below
+
+==================================================
+5. KEEP BORDER + SHAPE CLEAN
+==================================================
+
+- Border color: #D1D5DB
+- Border width: 1px
+- Border radius: 8px (NOT more rounded)
+
+Do NOT:
+- increase rounding
+- make it pill-shaped
+
+==================================================
+6. DO NOT TOUCH
+==================================================
+
+Do NOT change:
+- toggles
+- layout structure
+- navigation
+- functionality
+
+Only fix:
+- typography hierarchy
+- vertical spacing
+- dropdown proportions
+
+==================================================
+7. OUTPUT (MANDATORY)
+==================================================
+
+Return:
+
+1. Exact font sizes used for:
+   - section titles
+   - labels
+   - values
+
+2. Exact font weights used
+
+3. Exact padding values (top & bottom) for the language row
+
+4. Final computed height of the language dropdown row
+
+5. Confirmation that titles are now visually dominant over all other text
