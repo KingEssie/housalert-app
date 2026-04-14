@@ -1,0 +1,160 @@
+Redesign the Profile screen completely to match the structure and UX of Rentbird.
+
+IMPORTANT:
+- This screen will now be called "Account"
+- It must feel clean, structured, and premium
+- Follow the Rentbird layout exactly (NOT card-based UI)
+
+==================================================
+1. NAVIGATION BAR CHANGE
+==================================================
+
+- Rename bottom tab:
+  "Profiel" → "Account"
+
+- Keep same icon (user icon)
+
+==================================================
+2. PAGE STRUCTURE
+==================================================
+
+The Account page consists of 2 main parts:
+
+1. Header (profile section)
+2. Settings list (menu items)
+
+==================================================
+3. HEADER (TOP PROFILE SECTION)
+==================================================
+
+Design like Rentbird (image 2 reference):
+
+- Full-width colored header background (soft curve or simple block)
+- Centered circular avatar (initials, e.g. "ME")
+- Below avatar:
+  - User name (bold, large)
+  - Subtext:
+    "Lid sinds [month year]" (e.g. maart 2026)
+
+IMPORTANT:
+- Remove settings gear icon
+- Keep it clean and centered
+- Add spacing between avatar and name
+
+==================================================
+4. SETTINGS LIST (MAIN CONTENT)
+==================================================
+
+Below the header → create a structured list
+
+NO CARDS PER ITEM  
+→ Everything sits inside ONE white container
+
+Container:
+- white background
+- rounded corners
+- subtle shadow
+- full width with margin
+
+==================================================
+5. MENU STRUCTURE (EXACT ITEMS)
+==================================================
+
+Use EXACT same structure as Rentbird:
+
+----------------------
+ACCOUNT
+----------------------
+- Voorkeuren
+- Wachtwoord
+- Abonnement
+
+----------------------
+PERSOONLIJKE GEGEVENS
+----------------------
+- Mijn gegevens
+- Woonsituatie
+
+----------------------
+ZOEKEN EN REAGEREN
+----------------------
+- Zoekbuddy beheren
+- Reactiebrief
+
+----------------------
+HELP
+----------------------
+- Veelgestelde vragen
+- Contacteer ons
+
+----------------------
+VOORWAARDEN
+----------------------
+- Algemene voorwaarden
+- Privacybeleid
+
+==================================================
+6. ITEM DESIGN
+==================================================
+
+Each row:
+- Left: label text
+- Right: chevron OR external link icon
+
+Rules:
+- Internal pages → chevron (>)
+- External links → external icon
+
+Spacing:
+- comfortable vertical spacing
+- thin divider line between items
+
+Section titles:
+- smaller
+- light grey
+- uppercase style feeling
+
+==================================================
+7. PROFILE INFO ROW (TOP OF LIST)
+==================================================
+
+Above all sections, include:
+
+User block:
+- avatar (small)
+- name
+- email
+
+Same style as Rentbird:
+- compact row
+- aligned left
+
+==================================================
+8. REMOVE OLD UI
+==================================================
+
+Remove:
+- old card-based profile layout
+- old buttons
+- any duplicated sections
+
+==================================================
+9. VISUAL STYLE
+==================================================
+
+- Background page: light grey
+- Container: white
+- Text:
+  - Primary: black
+  - Secondary: grey
+- Dividers: subtle
+
+==================================================
+10. OUTPUT
+==================================================
+
+Return:
+1. component structure of the page
+2. list of sections + items implemented
+3. confirmation that layout matches Rentbird style
+4. confirmation that navigation label changed to "Account"

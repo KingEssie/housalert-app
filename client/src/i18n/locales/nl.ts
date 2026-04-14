@@ -37,7 +37,7 @@ export const nl: Record<string, any> = {
     filters: "Filters",
     favorites: "Favorieten",
     search: "Zoek",
-    profile: "Profiel",
+    profile: "Account",
   },
 
   freshness: {
