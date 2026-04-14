@@ -1,0 +1,72 @@
+Redesign the Matches page structure to follow Rentbird more closely.
+
+IMPORTANT:
+Keep our branding and current functionality, but update the page structure and card styling to match Rentbird more closely.
+
+CHANGES:
+
+1. Remove the large standalone page title
+- Remove the big "Matches" heading at the top of the page
+
+2. Use a Rentbird-style top tab navigation instead
+- At the top of the page show only the 2 tabs:
+  - Matches
+  - Gereageerd
+- These tabs should visually behave like the Rentbird example
+- This becomes the main page header
+- No extra large title above it
+
+3. White content container below the tabs
+- Under the tabs, start a large white rounded content area
+- background: #ffffff
+- rounded top corners / clean container look
+- this white container holds:
+  - the search bar
+  - the optional sort/filter button
+  - the list of match cards
+
+4. Search bar placement
+- The search bar should NOT float separately under a sticky hero/header
+- It should sit directly inside the white content container, at the top
+- Same visual hierarchy as Rentbird:
+  - search input on the left
+  - sort/filter button on the right if present
+
+5. Listing card feature row
+Update the 4 features under each listing so they look more like Rentbird:
+
+Show these 4 items:
+- place
+- bedrooms
+- size
+- price
+
+Style requirements:
+- each feature should sit inside its own small white rounded pill/box
+- each pill should contain:
+  - an icon on the left
+  - text on the right
+- pills should wrap neatly on mobile if needed
+- keep spacing consistent and clean
+
+6. Keep the rest of the listing hierarchy:
+- image
+- title
+- time + source
+- feature pills
+
+7. Goal
+The page should feel much closer to Rentbird:
+- tabs directly at top
+- white content area below
+- search bar integrated into the white section
+- feature info in white icon pills
+- cleaner and more structured overall
+
+OUTPUT:
+Return:
+1. which files were changed
+2. how the top tab structure was updated
+3. how the white content container was implemented
+4. how the feature pills were styled
+5. confirmation that the large standalone page title was removed
