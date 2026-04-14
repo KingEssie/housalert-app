@@ -1,0 +1,120 @@
+Refine the Matches page UI to match Rentbird even more closely.
+
+IMPORTANT:
+Do NOT redesign everything again.
+Only adjust the tabs, listing cards, and visual details described below.
+
+==================================================
+1. TOP TABS — EXACT RENTBIRD STYLE
+==================================================
+
+Replace the current pill-style tabs ("Matches" / "Gereageerd") with a Rentbird-style tab bar.
+
+Requirements:
+- Tabs are text-based (no pills, no filled backgrounds)
+- Active tab:
+  - darker text
+  - underline indicator (thin line below)
+- Inactive tab:
+  - lighter grey text
+- Layout:
+  - horizontally aligned
+  - spaced evenly
+- Clean, minimal, flat design (no rounded backgrounds)
+
+This should look like a native tab navigation, not buttons.
+
+==================================================
+2. REMOVE "NIEUW" BADGE
+==================================================
+
+In listing images:
+- Remove the "Nieuw" badge completely
+- No replacement needed
+
+==================================================
+3. TITLE BEHAVIOR (IMPORTANT)
+==================================================
+
+Limit the listing title to maximum 2 lines.
+
+Requirements:
+- Use line-clamp (2 lines)
+- If text exceeds → truncate with ellipsis (...)
+- Keep strong readability
+- Do NOT let titles push the layout down
+
+==================================================
+4. FEATURE PILLS — SHAPE & STYLE
+==================================================
+
+Adjust the 4 feature pills (location, bedrooms, size, price):
+
+Shape:
+- Less rounded than now
+- Use border-radius: ~10–12px (not full pill)
+
+Layout:
+- Keep all 4 in ONE row
+
+==================================================
+5. ICONS — MAKE THEM STRONGER (VERY IMPORTANT)
+==================================================
+
+Icons inside the feature pills must be:
+- Noticeably larger (closer to Rentbird)
+- More prominent than now
+
+Suggested:
+- Increase icon size by ~20–30%
+- Keep them clean and sharp
+- Color: dark (e.g. #111111 or slightly muted dark grey)
+
+Spacing:
+- Icon left, text right
+- Tight but readable gap
+
+==================================================
+6. FEATURE TEXT STYLE
+==================================================
+
+Keep current simplifications:
+- Location → only city
+- Bedrooms → only number
+
+Additionally:
+- Make text slightly larger
+- Font-weight: medium (500–600)
+- Color: #111111 (black)
+
+==================================================
+7. KEEP EXISTING STRUCTURE
+==================================================
+
+Do NOT change:
+- Card background (#def2e9)
+- Image placement
+- Meta line structure
+
+Only refine visuals.
+
+==================================================
+GOAL
+==================================================
+
+The page should now feel:
+- much closer to Rentbird
+- cleaner and flatter
+- less “button-heavy”
+- more native / premium
+
+==================================================
+OUTPUT
+==================================================
+
+Return:
+1. which files were changed
+2. how the tabs were converted to underline-style navigation
+3. how title clamping was implemented
+4. how icon sizes were increased
+5. confirmation that "Nieuw" badge is removed

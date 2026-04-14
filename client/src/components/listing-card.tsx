@@ -121,15 +121,6 @@ export function ListingCardFull({
           </div>
         )}
 
-        {isNew && (
-          <span
-            className="absolute top-3 left-3 text-[11px] font-semibold bg-white text-[#111111] px-2.5 py-[5px] rounded-full"
-            style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}
-            data-testid={`badge-new-${match.listing_id}`}
-          >
-            {t("freshness.new") || "Nieuw"}
-          </span>
-        )}
 
         <button
           onClick={handleHeartClick}
@@ -150,7 +141,7 @@ export function ListingCardFull({
 
       <div className="p-4 flex flex-col gap-1.5">
         <h3
-          className="text-[16px] font-bold text-[#111111] leading-snug"
+          className="text-[16px] font-bold text-[#111111] leading-snug line-clamp-2"
           data-testid={`text-match-title-${match.listing_id}`}
         >
           {match.title}
@@ -165,35 +156,35 @@ export function ListingCardFull({
         <div className="flex flex-nowrap gap-1 mt-0.5 overflow-hidden" data-testid={`detail-meta-${match.listing_id}`}>
           {address && (
             <span
-              className="inline-flex items-center gap-[5px] bg-white text-[13px] font-medium text-[#111111] px-2 py-[3px] rounded-[8px] min-w-0 shrink"
+              className="inline-flex items-center gap-[5px] bg-white text-[13px] font-medium text-[#111111] px-2 py-[3px] rounded-[10px] min-w-0 shrink"
               style={{ boxShadow: "0 1px 2px rgba(0,0,0,0.06)" }}
               data-testid={`detail-city-${match.listing_id}`}
             >
-              <MapPin className="w-[10px] h-[10px] flex-shrink-0 text-[#334855]" strokeWidth={2} />
+              <MapPin className="w-[13px] h-[13px] flex-shrink-0 text-[#111111]" strokeWidth={2} />
               <span className="truncate">{address}</span>
             </span>
           )}
           {hasBedrooms && (
             <span
-              className="inline-flex items-center gap-[5px] bg-white text-[13px] font-medium text-[#111111] px-2 py-[3px] rounded-[8px] shrink-0"
+              className="inline-flex items-center gap-[5px] bg-white text-[13px] font-medium text-[#111111] px-2 py-[3px] rounded-[10px] shrink-0"
               style={{ boxShadow: "0 1px 2px rgba(0,0,0,0.06)" }}
             >
-              <BedDouble className="w-[10px] h-[10px] flex-shrink-0 text-[#334855]" strokeWidth={2} />
+              <BedDouble className="w-[13px] h-[13px] flex-shrink-0 text-[#111111]" strokeWidth={2} />
               {match.bedrooms}
             </span>
           )}
           {hasSize && (
             <span
-              className="inline-flex items-center gap-[5px] bg-white text-[13px] font-medium text-[#111111] px-2 py-[3px] rounded-[8px] shrink-0"
+              className="inline-flex items-center gap-[5px] bg-white text-[13px] font-medium text-[#111111] px-2 py-[3px] rounded-[10px] shrink-0"
               style={{ boxShadow: "0 1px 2px rgba(0,0,0,0.06)" }}
             >
-              <Maximize2 className="w-[10px] h-[10px] flex-shrink-0 text-[#334855]" strokeWidth={2} />
+              <Maximize2 className="w-[13px] h-[13px] flex-shrink-0 text-[#111111]" strokeWidth={2} />
               {match.size_m2} m²
             </span>
           )}
           {match.price > 0 && (
             <span
-              className="inline-flex items-center gap-[5px] bg-white text-[13px] font-semibold text-[#111111] px-2 py-[3px] rounded-[8px] shrink-0"
+              className="inline-flex items-center gap-[5px] bg-white text-[13px] font-semibold text-[#111111] px-2 py-[3px] rounded-[10px] shrink-0"
               style={{ boxShadow: "0 1px 2px rgba(0,0,0,0.06)" }}
               data-testid={`badge-price-${match.listing_id}`}
             >
