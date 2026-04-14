@@ -1,0 +1,130 @@
+Refactor the “Mijn gegevens” (Personal details) screen to match a premium, clean, production-level UI similar to Rentbird.
+
+This is NOT a small tweak. This requires improving layout structure, spacing system, input components, and typography hierarchy across the entire screen.
+
+-------------------------------------
+1. TYPOGRAPHY (STRICT HIERARCHY)
+-------------------------------------
+
+- All field labels (e.g. Voornaam, Achternaam, E-mail, etc.):
+  - color: #000000 (pure black)
+  - font-weight: 600
+  - font-size: 16px–17px
+  - margin-bottom: 8px
+
+- Input text:
+  - color: #000000
+  - font-weight: 400
+  - font-size: 16px
+
+- Remove ALL light grey labels → no secondary-looking labels allowed
+
+-------------------------------------
+2. INPUT FIELDS (GLOBAL FIX)
+-------------------------------------
+
+Update ALL input fields across this screen:
+
+- Border radius: 8px (reduce rounding globally)
+- Border: 1px solid #D1D5DB (slightly sharper, not too soft)
+- Padding: reduce by ~15% from current (more compact)
+- Height: consistent across all inputs
+- Background: white (#FFFFFF)
+
+- Input text MUST be vertically centered perfectly
+
+- Remove oversized / “puffy” feeling → inputs must feel tight and premium
+
+-------------------------------------
+3. SPACING SYSTEM (VERY IMPORTANT)
+-------------------------------------
+
+Apply a consistent vertical rhythm:
+
+- Label → input: 8px
+- Input → next label: 20–24px
+- Section padding (container): 20–24px
+
+NO random spacing. Everything must follow this system.
+
+-------------------------------------
+4. DATE OF BIRTH (CRITICAL FIX)
+-------------------------------------
+
+Replace the current full-width date selector.
+
+Instead:
+
+- Create 3 separate inputs in one row:
+  - Day (DD) → small width
+  - Month (MM) → small width
+  - Year (YYYY) → larger width
+
+Layout:
+- horizontal row
+- equal spacing between inputs (8–12px gap)
+
+Each field:
+- same styling as other inputs
+- centered text
+- numeric input only
+
+Example layout:
+[ 05 ] [ 02 ] [ 1987 ]
+
+This must feel clean, minimal, and structured.
+
+DO NOT use one large combined field.
+
+-------------------------------------
+5. DROPDOWN (GESLACHT)
+-------------------------------------
+
+- Same styling as inputs
+- Border radius: 8px
+- Compact height
+- Chevron icon right aligned
+- Text left aligned
+
+-------------------------------------
+6. CTA BUTTON (OPSLAAN)
+-------------------------------------
+
+- Full width button
+- Slightly increase vertical padding (more presence)
+- Font-weight: 600
+- Color: keep brand pink
+- Border radius: same system (8–10px max)
+
+Button should feel strong, not flat.
+
+-------------------------------------
+7. REMOVE VISUAL NOISE
+-------------------------------------
+
+- Remove ALL unnecessary backgrounds behind icons (no pink boxes, no grey icon containers)
+- No rounded badges around icons
+- Keep everything minimal and clean
+
+-------------------------------------
+8. CONSISTENCY RULE (GLOBAL)
+-------------------------------------
+
+Apply these changes consistently:
+- Same border radius across ALL inputs
+- Same spacing everywhere
+- Same typography hierarchy
+
+No one-off styles allowed.
+
+-------------------------------------
+GOAL
+-------------------------------------
+
+The screen should feel:
+- tighter
+- cleaner
+- more structured
+- more premium
+
+Comparable to a polished production app like Rentbird.

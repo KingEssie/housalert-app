@@ -17,13 +17,15 @@ interface ProfileData {
   gender?: string | null;
 }
 
+const FIELD_LABEL = "text-[15px] font-semibold text-[#000000] mb-2 block";
+const INPUT_CLS = "w-full h-[52px] px-4 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] font-normal text-[#000000] placeholder:text-[#9CA3AF] outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/20";
+
 export default function ProfileDetailsPage() {
   const { user, session } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const { t } = useTranslation();
 
-  const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -31,8 +33,11 @@ export default function ProfileDetailsPage() {
   const [lastName, setLastName] = useState("");
   const [emailValue, setEmailValue] = useState("");
   const [phone, setPhone] = useState("");
-  const [birthDate, setBirthDate] = useState("");
   const [gender, setGender] = useState("");
+
+  const [birthDay, setBirthDay] = useState("");
+  const [birthMonth, setBirthMonth] = useState("");
+  const [birthYear, setBirthYear] = useState("");
 
   useEffect(() => {
     if (!session?.access_token) return;
@@ -41,14 +46,18 @@ export default function ProfileDetailsPage() {
         if (!r.ok) throw new Error(`Status ${r.status}`);
         return r.json();
       })
-      .then(pd => {
-        setProfileData(pd);
+      .then((pd: ProfileData) => {
         setFirstName(pd.first_name || "");
         setLastName(pd.last_name || "");
         setPhone(pd.phone || "");
-        setBirthDate(pd.birth_date || "");
         setGender(pd.gender || "");
         setEmailValue(user?.email || "");
+        if (pd.birth_date) {
+          const [y, m, d] = pd.birth_date.split("-");
+          setBirthYear(y || "");
+          setBirthMonth(m ? String(parseInt(m, 10)) : "");
+          setBirthDay(d ? String(parseInt(d, 10)) : "");
+        }
         setLoading(false);
       })
       .catch(() => {
@@ -65,6 +74,14 @@ export default function ProfileDetailsPage() {
     { value: "prefer_not_to_say", label: t("profileDetails.genderPreferNot") },
   ];
 
+  function composeBirthDate(): string | null {
+    if (!birthYear || !birthMonth || !birthDay) return null;
+    const y = birthYear.padStart(4, "0");
+    const m = birthMonth.padStart(2, "0");
+    const d = birthDay.padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+
   async function handleSave() {
     if (!session?.access_token) return;
     setSaving(true);
@@ -76,7 +93,7 @@ export default function ProfileDetailsPage() {
           first_name: firstName.trim() || null,
           last_name: lastName.trim() || null,
           phone: phone.trim() || null,
-          birth_date: birthDate || null,
+          birth_date: composeBirthDate(),
           gender: gender || null,
         }),
       });
@@ -110,53 +127,55 @@ export default function ProfileDetailsPage() {
     }
   }
 
-  const labelClass = "text-field-label mb-2 block";
-
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#eaeaeb" }}>
       <AppHeader title={t("profileDetails.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
 
-      <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
+      <div className="max-w-[480px] mx-auto px-4 py-5 pb-10">
         {loading ? (
           <div className="flex items-center justify-center py-24">
-            <Loader2 className="w-6 h-6 animate-spin text-ha-icon-secondary" />
+            <Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF]" />
           </div>
         ) : (
-          <div className="flex flex-col gap-5">
-            <div className="app-card">
+          <div className="flex flex-col gap-3">
+            <div className="app-card !p-5">
               <div className="flex flex-col gap-5">
-                <div>
-                  <label className={labelClass}>{t("profileDetails.firstName")}</label>
-                  <input
-                    type="text"
-                    value={firstName}
-                    onChange={e => setFirstName(e.target.value)}
-                    placeholder={t("profileDetails.firstNamePlaceholder")}
-                    className="app-input"
-                    data-testid="input-first-name"
-                  />
+
+                {/* Voornaam + Achternaam — side by side */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className={FIELD_LABEL}>{t("profileDetails.firstName")}</label>
+                    <input
+                      type="text"
+                      value={firstName}
+                      onChange={e => setFirstName(e.target.value)}
+                      placeholder={t("profileDetails.firstNamePlaceholder")}
+                      className={INPUT_CLS}
+                      data-testid="input-first-name"
+                    />
+                  </div>
+                  <div>
+                    <label className={FIELD_LABEL}>{t("profileDetails.lastName")}</label>
+                    <input
+                      type="text"
+                      value={lastName}
+                      onChange={e => setLastName(e.target.value)}
+                      placeholder={t("profileDetails.lastNamePlaceholder")}
+                      className={INPUT_CLS}
+                      data-testid="input-last-name"
+                    />
+                  </div>
                 </div>
 
+                {/* E-mail */}
                 <div>
-                  <label className={labelClass}>{t("profileDetails.lastName")}</label>
-                  <input
-                    type="text"
-                    value={lastName}
-                    onChange={e => setLastName(e.target.value)}
-                    placeholder={t("profileDetails.lastNamePlaceholder")}
-                    className="app-input"
-                    data-testid="input-last-name"
-                  />
-                </div>
-
-                <div>
-                  <label className={labelClass}>{t("profileDetails.email")}</label>
+                  <label className={FIELD_LABEL}>{t("profileDetails.email")}</label>
                   <input
                     type="email"
                     value={emailValue}
                     onChange={e => setEmailValue(e.target.value)}
                     placeholder={t("profileDetails.emailPlaceholder")}
-                    className="app-input"
+                    className={INPUT_CLS}
                     data-testid="input-email"
                   />
                   {emailValue && emailValue !== user?.email && (
@@ -171,52 +190,82 @@ export default function ProfileDetailsPage() {
                   )}
                 </div>
 
+                {/* Telefoonnummer */}
                 <div>
-                  <label className={labelClass}>{t("profileDetails.phone")}</label>
+                  <label className={FIELD_LABEL}>{t("profileDetails.phone")}</label>
                   <input
                     type="tel"
                     value={phone}
                     onChange={e => setPhone(e.target.value)}
                     placeholder={t("profileDetails.phonePlaceholder")}
-                    className="app-input"
+                    className={INPUT_CLS}
                     data-testid="input-phone"
                   />
                 </div>
 
+                {/* Geboortedatum — 3 losse inputs */}
                 <div>
-                  <label className={labelClass}>{t("profileDetails.birthDate")}</label>
-                  <input
-                    type="date"
-                    value={birthDate}
-                    onChange={e => setBirthDate(e.target.value)}
-                    className="app-input"
-                    data-testid="input-birth-date"
-                  />
+                  <label className={FIELD_LABEL}>{t("profileDetails.birthDate")}</label>
+                  <div className="flex items-center gap-2.5">
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={2}
+                      value={birthDay}
+                      onChange={e => setBirthDay(e.target.value.replace(/\D/g, ""))}
+                      placeholder="DD"
+                      className={`${INPUT_CLS} w-[72px] flex-shrink-0 text-center`}
+                      data-testid="input-birth-day"
+                    />
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={2}
+                      value={birthMonth}
+                      onChange={e => setBirthMonth(e.target.value.replace(/\D/g, ""))}
+                      placeholder="MM"
+                      className={`${INPUT_CLS} w-[72px] flex-shrink-0 text-center`}
+                      data-testid="input-birth-month"
+                    />
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={4}
+                      value={birthYear}
+                      onChange={e => setBirthYear(e.target.value.replace(/\D/g, ""))}
+                      placeholder="JJJJ"
+                      className={`${INPUT_CLS} flex-1 text-center`}
+                      data-testid="input-birth-year"
+                    />
+                  </div>
                 </div>
 
+                {/* Geslacht — select with chevron */}
                 <div>
-                  <label className={labelClass}>{t("profileDetails.gender")}</label>
+                  <label className={FIELD_LABEL}>{t("profileDetails.gender")}</label>
                   <div className="relative">
                     <select
                       value={gender}
                       onChange={e => setGender(e.target.value)}
-                      className={`app-select ${gender ? "" : "text-ha-icon-secondary"}`}
+                      className={`${INPUT_CLS} appearance-none pr-10 ${!gender ? "text-[#9CA3AF]" : "text-[#000000]"}`}
                       data-testid="select-gender"
                     >
                       {GENDER_OPTIONS.map(opt => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
                       ))}
                     </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#111111] pointer-events-none" />
+                    <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#000000] pointer-events-none" strokeWidth={2} />
                   </div>
                 </div>
+
               </div>
             </div>
 
+            {/* Opslaan CTA */}
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full h-[48px] rounded-[6px] bg-ha-primary text-white text-[15px] font-semibold transition-colors hover:bg-ha-primary-hover active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-[52px] rounded-[10px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
               data-testid="button-save-details"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
