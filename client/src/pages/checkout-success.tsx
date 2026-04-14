@@ -114,7 +114,7 @@ export default function CheckoutSuccessPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#edf2f7] flex items-center justify-center px-5" data-testid="page-checkout-success">
+    <div className="min-h-screen bg-[#eaeaeb] flex items-center justify-center px-5" data-testid="page-checkout-success">
       <div className="text-center max-w-sm">
         <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: status === "error" ? "#FEE2E2" : "rgba(217,26,104,0.08)" }}>
           {status === "loading" && <Loader2 className="w-8 h-8 animate-spin" style={{ color: "rgb(var(--ha-primary))" }} />}

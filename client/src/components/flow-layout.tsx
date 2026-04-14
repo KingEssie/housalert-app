@@ -39,7 +39,7 @@ export function FlowLayout({
   const isLastStep = currentStep === totalSteps - 1;
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#edf2f7] flex flex-col" data-testid="flow-layout">
+    <div className="fixed inset-0 z-50 bg-[#eaeaeb] flex flex-col" data-testid="flow-layout">
       <div className="bg-white">
         <div className="flex items-center justify-between px-5 h-[64px]">
           <div className="flex-1 min-w-0">

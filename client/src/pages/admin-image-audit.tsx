@@ -148,7 +148,7 @@ export default function AdminImageAuditPage() {
   useEffect(() => { fetchAudit(); fetchPipelineStatus(); }, []);
 
   return (
-    <div className="min-h-screen bg-[#edf2f7]">
+    <div className="min-h-screen bg-[#eaeaeb]">
       <header className="sticky top-0 z-30 bg-white border-b border-[#E5E7EB]">
         <div className="max-w-4xl mx-auto flex items-center h-[56px] px-4 gap-3">
           <button onClick={() => navigate("/admin/portal")} className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#F9FAFB]" data-testid="button-back">

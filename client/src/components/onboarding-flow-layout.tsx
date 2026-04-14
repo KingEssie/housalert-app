@@ -46,7 +46,7 @@ export function OnboardingFlowLayout({
   const progress = totalSteps > 0 ? ((currentStep) / totalSteps) * 100 : 0;
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#edf2f7] flex flex-col" data-testid={screenTestId || "onboarding-flow-layout"}>
+    <div className="fixed inset-0 z-50 bg-[#eaeaeb] flex flex-col" data-testid={screenTestId || "onboarding-flow-layout"}>
       <div className="bg-white" style={{ paddingTop: "max(0px, env(safe-area-inset-top))" }}>
         <div className="flex items-center justify-between px-5 h-[64px]">
           <div className="flex-1 min-w-0">

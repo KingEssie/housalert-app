@@ -844,7 +844,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
       )}
 
       {confirmDeleteId && (
-        <div className="fixed inset-0 z-50 bg-[#edf2f7] flex flex-col">
+        <div className="fixed inset-0 z-50 bg-[#eaeaeb] flex flex-col">
           <header className="sticky top-0 z-10">
             <div className="max-w-lg mx-auto flex items-center h-[48px] px-4">
               <button
@@ -1560,7 +1560,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
   const { t } = useTranslation();
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#edf2f7] flex flex-col">
+    <div className="fixed inset-0 z-50 bg-[#eaeaeb] flex flex-col">
       <header className="sticky top-0 z-10">
         <div className="max-w-lg mx-auto flex items-center h-[48px] px-4">
           <button
@@ -2097,7 +2097,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
 
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-[#edf2f7]">
+    <div className="min-h-[calc(100vh-80px)] bg-[#eaeaeb]">
       <div className="px-5 pt-8 pb-3">
         <h1 className="text-page-title" data-testid="text-profile-title">{t("profile.title")}</h1>
       </div>
@@ -2371,7 +2371,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       )}
 
       {showLogoutConfirm && (
-        <div className="fixed inset-0 z-50 bg-[#edf2f7] flex flex-col">
+        <div className="fixed inset-0 z-50 bg-[#eaeaeb] flex flex-col">
           <header className="sticky top-0 z-10">
             <div className="max-w-lg mx-auto flex items-center h-[48px] px-4">
               <button
@@ -2533,7 +2533,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#edf2f7] flex items-center justify-center">
+      <div className="min-h-screen bg-[#eaeaeb] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 rounded-[6px] bg-white animate-pulse" />
           <p className="text-[#111111]/70 text-sm">{t("common.loading")}</p>
@@ -2554,7 +2554,7 @@ export default function DashboardPage() {
     : (apiMatchesQuery.data?.canonicalStats?.applied ?? 0);
 
   return (
-    <div className="min-h-screen bg-[#edf2f7] flex flex-col">
+    <div className="min-h-screen bg-[#eaeaeb] flex flex-col">
       {inBuddyMode && activeBuddyRel && (
         <div className="bg-[#2D3748] px-4 py-3 flex items-center gap-3 max-w-xl mx-auto w-full" data-testid="banner-buddy-mode">
           <Users className="w-5 h-5 text-white/80 flex-shrink-0" />

@@ -249,7 +249,7 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
             { icon: Sliders, label: "Settings", tab: "settings" as TabId },
             { icon: Settings, label: "System", tab: "system" as TabId },
           ].map(({ icon: Icon, label, tab }) => (
-            <button key={tab} onClick={() => onNavigate(tab)} className={`${CARD} p-3 flex flex-col items-center gap-1.5 hover:bg-[#edf2f7] transition-colors`} data-testid={`quick-${tab}`}>
+            <button key={tab} onClick={() => onNavigate(tab)} className={`${CARD} p-3 flex flex-col items-center gap-1.5 hover:bg-[#eaeaeb] transition-colors`} data-testid={`quick-${tab}`}>
               <Icon className="w-5 h-5 text-[#111]" />
               <span className="text-[11px] font-medium text-[#334855]">{label}</span>
             </button>
@@ -1206,7 +1206,7 @@ function UsersTab() {
       {loading ? <LoadingState /> : (
         <div className={`${CARD} divide-y divide-[#F7F7F7]`}>
           {users.map(u => (
-            <button key={u.user_id} onClick={() => openUser(u.user_id)} className="w-full px-4 py-3 flex items-center gap-3 text-left hover:bg-[#edf2f7] transition-colors" data-testid={`user-card-${u.user_id}`}>
+            <button key={u.user_id} onClick={() => openUser(u.user_id)} className="w-full px-4 py-3 flex items-center gap-3 text-left hover:bg-[#eaeaeb] transition-colors" data-testid={`user-card-${u.user_id}`}>
               <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-[13px] font-bold ${u.has_profile_data === false ? "bg-[#F7F7F7] text-[#334855]" : "bg-[#F7F7F7] text-ha-primary"}`}>
                 {(u.first_name || u.email || "?")[0]?.toUpperCase()}
               </div>
@@ -1735,11 +1735,11 @@ export default function AdminPortalPage() {
       });
   }, [user]);
 
-  if (checking) return <div className="min-h-screen bg-[#edf2f7] flex items-center justify-center"><Loader2 className="w-7 h-7 text-ha-primary animate-spin" /></div>;
+  if (checking) return <div className="min-h-screen bg-[#eaeaeb] flex items-center justify-center"><Loader2 className="w-7 h-7 text-ha-primary animate-spin" /></div>;
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#edf2f7] flex items-center justify-center px-5">
+      <div className="min-h-screen bg-[#eaeaeb] flex items-center justify-center px-5">
         <div className="text-center max-w-sm">
           <h1 className="text-[20px] font-bold text-[#111] mb-2">Not authenticated</h1>
           <p className="text-[13px] text-[#334855] mb-4">Please log in to access the admin portal.</p>
@@ -1755,7 +1755,7 @@ export default function AdminPortalPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#edf2f7] flex">
+    <div className="min-h-screen bg-[#eaeaeb] flex">
       {sidebarOpen && (
         <div className="fixed inset-0 bg-black/30 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
@@ -1776,7 +1776,7 @@ export default function AdminPortalPage() {
               <button
                 key={id}
                 onClick={() => { setActiveTab(id); setSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium mb-0.5 transition-colors ${active ? "bg-[#F7F7F7] text-[#111]" : "text-[#334855] hover:bg-[#edf2f7] hover:text-[#111]"}`}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium mb-0.5 transition-colors ${active ? "bg-[#F7F7F7] text-[#111]" : "text-[#334855] hover:bg-[#eaeaeb] hover:text-[#111]"}`}
                 data-testid={`nav-${id}`}
               >
                 <Icon className={`w-[18px] h-[18px] ${active ? "text-ha-primary" : ""}`} />
@@ -1789,7 +1789,7 @@ export default function AdminPortalPage() {
         <div className="px-3 py-3 border-t border-[#F0F0F0]">
           <button
             onClick={() => navigate("/")}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-[#334855] hover:bg-[#edf2f7] hover:text-[#111] transition-colors"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-[#334855] hover:bg-[#eaeaeb] hover:text-[#111] transition-colors"
             data-testid="link-back-app"
           >
             <ArrowLeft className="w-[18px] h-[18px]" />

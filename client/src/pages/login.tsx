@@ -98,7 +98,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "#edf2f7" }}>
+    <div className="min-h-screen flex flex-col" style={{ background: "#eaeaeb" }}>
       <div
         className="relative w-full flex-shrink-0"
         style={{

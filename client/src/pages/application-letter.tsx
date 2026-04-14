@@ -273,7 +273,7 @@ export default function ApplicationLetterPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#edf2f7" }}>
+      <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
         <AppHeader title="Reactiebrief" onBack={() => navigate("/dashboard?tab=home")} />
         <div className="flex-1 flex items-center justify-center">
           <Loader2 className="w-6 h-6 animate-spin text-ha-icon-secondary" />
@@ -283,7 +283,7 @@ export default function ApplicationLetterPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#edf2f7" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
       <AppHeader title="Reactiebrief" onBack={handleBack} />
 
       <main className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-32">

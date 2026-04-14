@@ -8,7 +8,7 @@
   --opaque-button-border-intensity: -8;
   --elevate-1: rgba(0,0,0, .03);
   --elevate-2: rgba(0,0,0, .08);
-  --background: 210 39% 95%;
+  --background: 240 3% 92%;
   --foreground: 0 0% 7%;
   --border: 220 13% 91%;
   --card: 0 0% 100%;
@@ -43,7 +43,7 @@
   --chart-4: 0 72% 51%;
   --chart-5: 260 60% 50%;
 
-  --ha-bg: 237 242 247;
+  --ha-bg: 234 234 235;
   --ha-card: 255 255 255;
   --ha-card-border: 229 231 235;
   --ha-card-hover: 249 250 251;
@@ -125,7 +125,7 @@
 
   body {
     @apply font-sans antialiased;
-    background-color: #edf2f7;
+    background-color: #eaeaeb;
     color: var(--ha-text);
   }
 

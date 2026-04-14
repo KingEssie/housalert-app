@@ -219,7 +219,7 @@ export default function TipsFlowPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#edf2f7" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
       <header className="sticky top-0 z-10 bg-white border-b border-[rgba(15,23,42,0.04)]">
         <div className="max-w-[480px] mx-auto flex items-center h-[48px] px-4">
           <button

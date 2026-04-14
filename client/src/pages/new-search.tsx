@@ -336,7 +336,7 @@ export default function NewSearchPage() {
 
   if (loading || (isEditMode && !editLoaded)) {
     return (
-      <div className="min-h-screen bg-[#edf2f7] flex items-center justify-center">
+      <div className="min-h-screen bg-[#eaeaeb] flex items-center justify-center">
         <div className="w-8 h-8 rounded-full border-2 border-ha-primary border-t-transparent animate-spin" />
       </div>
     );
@@ -346,8 +346,8 @@ export default function NewSearchPage() {
 
   if (atLimit) {
     return (
-      <div className="min-h-screen bg-[#edf2f7] flex flex-col">
-        <header className="fixed top-0 left-0 right-0 z-50 bg-[#edf2f7]/80 backdrop-blur-md" style={{ paddingTop: "env(safe-area-inset-top)" }}>
+      <div className="min-h-screen bg-[#eaeaeb] flex flex-col">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-[#eaeaeb]/80 backdrop-blur-md" style={{ paddingTop: "env(safe-area-inset-top)" }}>
           <div className="max-w-lg mx-auto flex items-center justify-between h-[60px] px-5">
             <button
               onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=home")}
@@ -383,8 +383,8 @@ export default function NewSearchPage() {
   const perWeekRaw = estimateQuery.data?.perWeekEstimate ?? 0;
 
   return (
-    <div className="min-h-screen bg-[#edf2f7] flex flex-col">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#edf2f7]/80 backdrop-blur-md" style={{ paddingTop: "env(safe-area-inset-top)" }}>
+    <div className="min-h-screen bg-[#eaeaeb] flex flex-col">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#eaeaeb]/80 backdrop-blur-md" style={{ paddingTop: "env(safe-area-inset-top)" }}>
         <div className="max-w-lg mx-auto flex items-center justify-between h-[64px] px-5">
           <button
             onClick={goBack}

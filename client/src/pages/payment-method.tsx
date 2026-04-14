@@ -42,7 +42,7 @@ export default function PaymentMethodPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#edf2f7" }} data-testid="page-payment-method">
+    <div className="min-h-screen" style={{ backgroundColor: "#eaeaeb" }} data-testid="page-payment-method">
       <AppHeader title={t("paymentMethodPage.title")} />
 
       <div className="max-w-xl mx-auto p-4 space-y-4 pb-8">

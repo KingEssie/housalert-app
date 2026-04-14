@@ -145,7 +145,7 @@ export default function WelcomePage() {
   return (
     <div
       className="h-[100dvh] flex flex-col overflow-auto"
-      style={{ background: "#edf2f7" }}
+      style={{ background: "#eaeaeb" }}
       data-testid="welcome-page"
     >
       <header className="flex items-center justify-between px-5 pt-[max(env(safe-area-inset-top),16px)] pb-0">
