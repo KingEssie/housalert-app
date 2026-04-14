@@ -1,0 +1,220 @@
+Refactor the bottom action area on edit/settings screens and fully redesign the Zoekbuddy beheren screen with one consistent premium style.
+
+IMPORTANT:
+Do NOT partially apply this.
+Do NOT create loose floating white cards.
+Use one clear, intentional bottom action bar and one consistent white-panel content structure.
+
+==================================================
+PART 1 — BOTTOM SAVE AREA (GLOBAL FIX)
+==================================================
+
+Problem:
+The white save area at the bottom is currently a loose floating white block.
+This looks disconnected.
+
+Fix this globally for all detail/edit screens that end with a save button.
+
+Affected screens include at least:
+- Mijn gegevens
+- Woonsituatie
+- Zoekbuddy beheren
+- other account detail/edit screens with an Opslaan button
+
+REQUIRED BEHAVIOR:
+- Create a bottom action bar that is fixed/sticky to the bottom
+- It spans the FULL width of the screen
+- Background: white
+- It must feel like a real anchored bottom bar, not a loose card
+- Add subtle top border or soft separation from the page background
+- Inside this bar: one centered full-width primary button
+
+STYLE:
+- bottom bar background: #FFFFFF
+- full width
+- left/right padding consistent with app
+- safe-area aware
+- top border: 1px solid #E5E7EB or similar
+- button sits inside with our current premium pink style
+- button radius: follow app system (not too rounded)
+- no outer floating-card look
+
+GOAL:
+The bottom save area should feel like a proper native sticky action bar.
+
+==================================================
+PART 2 — ZOEKBUDDY BEHEREN HEADER
+==================================================
+
+Problem:
+The current Zoekbuddy screen is missing the correct header title.
+
+Fix this:
+- Header title must be: "Zoekbuddy beheren"
+- Use the same header style as the other account detail screens
+- Left back arrow
+- Strong black title
+- No oversized center title block in the content
+- Keep it clean and native
+
+==================================================
+PART 3 — ZOEKBUDDY SCREEN LAYOUT
+==================================================
+
+The Zoekbuddy screen must always use the same premium account-detail design system:
+
+- page background: light grey
+- content sits inside white rounded panels
+- no loose floating elements
+- black titles
+- black body text
+- reduced corner radius consistent with the rest of the app
+- no icons inside pink or grey boxes
+- no circular icon backgrounds
+- icons standalone if used
+
+==================================================
+PART 4 — EMPTY STATE (NO ZOEKBUDDY SET)
+==================================================
+
+If no buddy is configured, the screen should follow the same CONTENT STRUCTURE as the Rentbird-like version, but styled in our premium design language.
+
+Required structure:
+- white content panel
+- title: strong black
+- short explanatory text underneath
+- permissions/ability list clearly visible
+
+Use this content structure:
+- title:
+  "Samen wonen? Samen zoeken!"
+- short intro:
+  "Je zoekbuddy kan:"
+- allowed items
+- not allowed items
+
+Allowed items:
+- Woningalerts ontvangen via de app
+- Woningen markeren als favoriet
+- Reageren op woningen
+
+Not allowed items:
+- Zoekopdrachten beheren
+- Reactiebrief beheren
+
+IMPORTANT:
+- Use clean standalone check and X icons
+- NO circles around check icons
+- NO circles around X icons
+- Icon color:
+  - green for allowed
+  - red for not allowed
+- Text black
+- Keep spacing premium and readable
+
+Below this white panel:
+- sticky bottom action bar (from Part 1)
+- primary button: "Uitnodigen"
+- secondary action in same bottom area or directly above it:
+  - "Link kopiëren"
+
+But keep both actions visually premium and intentional.
+
+==================================================
+PART 5 — CONNECTED STATE (BUDDY EXISTS)
+==================================================
+
+If a buddy is already configured, redesign the screen into a premium connected-state management view.
+
+Use one white content panel with:
+
+TOP:
+- title:
+  "Zoekbuddy verbonden"
+- optional short status line:
+  "Je zoekbuddy is gekoppeld en kan meezoeken in de app."
+
+Then show the buddy info clearly:
+- invited/connected email address
+- connection state if relevant
+
+Then show actions in a premium layout:
+- Deel link
+- Link kopiëren
+
+REQUIRED ACTION BEHAVIOR:
+- one action should share the invite link directly
+- the other should copy the link directly
+
+Design:
+- use our premium account-detail style
+- black titles
+- black descriptions
+- no oversized empty grey space
+- no loose random input field if the buddy is already connected
+- if buddy email is shown, present it cleanly inside the white panel
+
+OPTIONAL:
+If relevant, include a subtle destructive/remove option lower in hierarchy,
+but only if it already exists functionally.
+Do not make it visually dominant.
+
+==================================================
+PART 6 — NO-BUDDY VS CONNECTED STATE RULES
+==================================================
+
+The screen must clearly support two states:
+
+STATE A — no buddy
+- explanatory / invite-focused layout
+- permission list
+- invite + copy actions
+
+STATE B — buddy connected
+- connected management layout
+- email visible
+- share + copy actions
+- clean premium status presentation
+
+Do NOT mix both states visually.
+
+==================================================
+PART 7 — BUTTON / ACTION DESIGN
+==================================================
+
+For Zoekbuddy actions:
+- Primary pink button = strongest action
+- Secondary action = text button or outlined button, depending on existing design system
+- Keep it clean and premium
+- No clumsy stacked random controls
+
+If using two actions in the bottom bar area:
+- primary full-width pink button
+- secondary action either just above it or as a secondary inline/text action
+- both should feel intentional
+
+==================================================
+PART 8 — KEEP CONSISTENCY
+==================================================
+
+Use the same rules already established across the app:
+- labels/titles black
+- descriptions black but smaller
+- no washed-out grey text
+- no icon backgrounds
+- reduced border radius
+- proper spacing
+- fixed bottom white action bar
+- white content panels on grey background
+
+==================================================
+PART 9 — OUTPUT
+==================================================
+
+Return:
+1. which files were changed
+2. which screens now use the full-width sticky white bottom action bar
+3. confirmation that Zoekbuddy beheren now has the correct header title
+4. how the empty state is structured
+5. how the connected state is structured
+6. which action shares the link and which action copies the link

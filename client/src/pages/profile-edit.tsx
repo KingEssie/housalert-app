@@ -184,12 +184,12 @@ export default function ProfileEditPage() {
       </div>
 
       {!loading && (
-        <div className="sticky bottom-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 px-5" style={{ background: "linear-gradient(to top, #F9FAFB, #F9FAFB 80%, transparent)" }}>
+        <div className="sticky bottom-0 bg-white border-t border-[#E5E7EB] px-5 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
           <div className="max-w-xl mx-auto">
             <button
               onClick={handleSave}
               disabled={saving}
-              className={`w-full h-[52px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold flex items-center justify-center transition-colors disabled:opacity-50 active:scale-[0.97]`}
+              className="w-full h-[52px] rounded-[10px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold flex items-center justify-center transition-colors disabled:opacity-50 active:scale-[0.98]"
               data-testid="button-save-field"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : t("common.save")}

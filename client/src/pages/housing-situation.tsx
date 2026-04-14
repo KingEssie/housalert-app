@@ -148,10 +148,10 @@ export default function HousingSituationPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#eaeaeb" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
       <AppHeader title={t("settings.housingSituation")} onBack={() => navigate("/dashboard?tab=profiel")} />
 
-      <div className="max-w-[480px] mx-auto px-4 py-5 pb-10">
+      <div className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-4">
         {loading ? (
           <div className="flex items-center justify-center py-16">
             <Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF]" />
@@ -202,21 +202,25 @@ export default function HousingSituationPage() {
               </div>
             </div>
 
-            {/* Opslaan — white anchored container */}
-            <div className="app-card !p-4">
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                className="w-full h-[52px] rounded-[10px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
-                data-testid="button-housing-save"
-              >
-                {saving && <Loader2 className="w-4 h-4 animate-spin" />}
-                {t("settings.save")}
-              </button>
-            </div>
           </div>
         )}
       </div>
+
+      {!loading && (
+        <div className="sticky bottom-0 bg-white border-t border-[#E5E7EB] px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+          <div className="max-w-[480px] mx-auto">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="w-full h-[52px] rounded-[10px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              data-testid="button-housing-save"
+            >
+              {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+              {t("settings.save")}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

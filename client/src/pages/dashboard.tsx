@@ -1031,7 +1031,7 @@ function HomeTab({
           const hasBuddy = !!(pd?.search_buddy_email?.trim()) && pd?.search_buddy_status !== "revoked_by_buddy";
           return (
             <button
-              onClick={() => navigate("/profile/edit/search_buddy_email")}
+              onClick={() => navigate("/profile/search-buddy")}
               className="w-full text-left bg-white rounded-[12px] p-5 flex flex-col gap-3 active:scale-[0.985] transition-transform"
               style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}
               data-testid="card-zoekbuddy-status"

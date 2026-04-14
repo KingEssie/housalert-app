@@ -151,22 +151,19 @@ export default function ChangePasswordPage() {
       </div>
 
       {/* Sticky CTA */}
-      <div
-        className="sticky bottom-0 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-4 px-5"
-        style={{ background: "linear-gradient(to top, #eaeaeb, #eaeaeb 80%, transparent)" }}
-      >
+      <div className="sticky bottom-0 bg-white border-t border-[#E5E7EB] px-5 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
         <div className="max-w-xl mx-auto">
           <button
             onClick={handleSubmit}
             disabled={!canSubmit}
             className={`w-full h-[52px] rounded-[10px] font-semibold text-[15px] transition-all flex items-center justify-center ${
               canSubmit
-                ? "bg-ha-primary text-white hover:bg-ha-primary-hover"
+                ? "bg-ha-primary text-white hover:bg-ha-primary-hover active:scale-[0.98]"
                 : "bg-ha-primary/30 text-white cursor-not-allowed"
             }`}
             data-testid="button-submit-password"
           >
-            {submitting ? "Opslaan..." : "Opslaan"}
+            {submitting ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Opslaan...</> : "Opslaan"}
           </button>
         </div>
       </div>
