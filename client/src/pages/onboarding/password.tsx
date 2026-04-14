@@ -329,6 +329,7 @@ export default function OnboardingPassword() {
                   placeholder="Minimaal 8 tekens"
                   className="w-full ha-field-web"
                   style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text, paddingRight: "44px" }}
+                  autoComplete="new-password"
                   data-testid="input-password"
                 />
                 <button
@@ -356,6 +357,7 @@ export default function OnboardingPassword() {
                   placeholder="Herhaal je wachtwoord"
                   className="w-full ha-field-web"
                   style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text, paddingRight: "44px" }}
+                  autoComplete="new-password"
                   data-testid="input-confirm-password"
                 />
                 <button
@@ -476,6 +478,7 @@ export default function OnboardingPassword() {
             placeholder={t("onboarding.password.placeholder") || "Minimaal 8 tekens"}
             className="w-full h-[56px] border border-[#D1D5DB] rounded-[8px] bg-white px-4 pr-12 text-[15px] text-[#111111] placeholder:text-[#9CA3AF] outline-none transition-all focus:border-ha-primary"
             autoFocus
+            autoComplete="new-password"
             data-testid="input-password"
           />
           <button
@@ -501,6 +504,7 @@ export default function OnboardingPassword() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder="Herhaal je wachtwoord"
             className="w-full h-[56px] border border-[#D1D5DB] rounded-[8px] bg-white px-4 pr-12 text-[15px] text-[#111111] placeholder:text-[#9CA3AF] outline-none transition-all focus:border-ha-primary"
+            autoComplete="new-password"
             data-testid="input-confirm-password"
           />
           <button
@@ -541,7 +545,7 @@ export default function OnboardingPassword() {
               placeholder={t("referral.inputPlaceholder") || "ABC123"}
               value={referralCode}
               onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-              className="w-full h-[56px] pl-12 pr-4 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+              className="w-full h-[56px] pl-12 pr-4 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
               autoCapitalize="characters"
               data-testid="input-referral-code"
             />

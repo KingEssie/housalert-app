@@ -90,7 +90,7 @@ export default function OnboardingName() {
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   placeholder={t("onboarding.name.firstNamePlaceholder") || "Jan"}
-                  className="w-full h-[56px] pl-12 pr-4 rounded-[16px] text-[16px] font-medium ha-field"
+                  className="w-full h-[56px] pl-12 pr-4 text-[16px] font-medium ha-field"
                   style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
                   autoFocus
                   data-testid="input-first-name"
@@ -108,7 +108,7 @@ export default function OnboardingName() {
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   placeholder={t("onboarding.name.lastNamePlaceholder") || "Jansen"}
-                  className="w-full h-[56px] pl-12 pr-4 rounded-[16px] text-[16px] font-medium ha-field"
+                  className="w-full h-[56px] pl-12 pr-4 text-[16px] font-medium ha-field"
                   style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
                   data-testid="input-last-name"
                 />
@@ -145,7 +145,7 @@ export default function OnboardingName() {
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             placeholder={t("onboarding.name.firstNamePlaceholder") || "Jan"}
-            className="w-full h-[56px] pl-12 pr-4 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+            className="w-full h-[56px] pl-12 pr-4 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
             autoFocus
             data-testid="input-first-name"
           />
@@ -162,7 +162,7 @@ export default function OnboardingName() {
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
             placeholder={t("onboarding.name.lastNamePlaceholder") || "Jansen"}
-            className="w-full h-[56px] pl-12 pr-4 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+            className="w-full h-[56px] pl-12 pr-4 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
             data-testid="input-last-name"
           />
         </div>

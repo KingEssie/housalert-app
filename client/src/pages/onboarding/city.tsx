@@ -305,7 +305,7 @@ export default function OnboardingCity() {
             if (selectedCity) setSelectedCity(null);
           }}
           placeholder="Zoek stad..."
-          className="w-full h-[56px] rounded-[16px] border border-[#E5E7EB] bg-white px-4 pr-12 text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+          className="w-full h-[56px] rounded-[8px] border border-[#D1D5DB] bg-white px-4 pr-12 text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
           autoFocus
           data-testid="input-city-search"
         />

@@ -761,7 +761,7 @@ function ToggleSwitch({
   testId: string;
 }) {
   return (
-    <label className="flex items-center gap-3.5 cursor-pointer rounded-[16px] bg-white border border-[#DADDE3] px-4 py-4" data-testid={testId}>
+    <label className="flex items-center gap-3.5 cursor-pointer rounded-[12px] bg-white border border-[#DADDE3] px-4 py-4" data-testid={testId}>
       <div
         className="w-[48px] h-[28px] rounded-full p-[2px] transition-colors shrink-0 cursor-pointer"
         style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "#D1D5DB" }}
@@ -794,7 +794,7 @@ function CheckboxRow({
     <button
       type="button"
       onClick={onToggle}
-      className={`w-full flex items-center gap-4 px-4 min-h-[72px] py-4 rounded-[16px] border-2 transition-all text-left ${
+      className={`w-full flex items-center gap-4 px-4 min-h-[72px] py-4 rounded-[12px] border-2 transition-all text-left ${
         selected
           ? "border-[rgb(var(--ha-primary))] bg-[#FFF1F4]"
           : "border-[#E5E7EB] bg-white hover:bg-[#FAFAFA]"
@@ -1003,7 +1003,7 @@ function StepReview({
 
       <div className="space-y-5">
         {!estimateLoading && (
-          <div className="rounded-[16px] bg-[#F5F0EB] p-6 flex items-center gap-4" data-testid="card-review-estimate">
+          <div className="rounded-[12px] bg-[#F5F0EB] p-6 flex items-center gap-4" data-testid="card-review-estimate">
             <div className="flex-shrink-0">
               <Sparkles className="w-[32px] h-[32px] text-[#111111]" strokeWidth={1.6} />
             </div>
@@ -1022,7 +1022,7 @@ function StepReview({
           </div>
         )}
 
-        <div className="bg-white rounded-[16px] border border-[#E5E7EB] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div className="bg-white rounded-[8px] border border-[#D1D5DB] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
           <ReviewRow label={t("newSearch.step5.location")} value={locationLabel} onEdit={() => onEdit(1)} />
           {locationData.tab === "wijken" && (
             <ReviewRow label={t("newSearch.step5.districts")} value={districtsLabel} onEdit={() => onEdit(1)} />
@@ -1041,7 +1041,7 @@ function StepReview({
           <Button
             onClick={onSubmit}
             disabled={submitting}
-            className="w-full h-[56px] rounded-[16px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[17px] font-bold disabled:opacity-40 shadow-[0_4px_20px_rgba(217,26,104,0.3)]"
+            className="w-full h-[56px] rounded-[10px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[17px] font-bold disabled:opacity-40 shadow-[0_4px_20px_rgba(217,26,104,0.3)]"
             data-testid="button-wizard-submit"
           >
             {submitting ? (

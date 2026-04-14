@@ -6,10 +6,10 @@ export default {
   theme: {
     extend: {
       borderRadius: {
-        lg: "16px",
-        md: "12px",
+        lg: "12px",
+        md: "10px",
         sm: "8px",
-        xl: "20px",
+        xl: "16px",
         pill: "999px",
       },
       colors: {

@@ -5,7 +5,12 @@ import { supabase } from "@/lib/supabase";
 import { setRecoveryMode } from "@/lib/auth";
 import { useTranslation } from "@/i18n";
 import { useToast } from "@/hooks/use-toast";
-import { Eye, EyeOff, Lock, CheckCircle2, Loader2 } from "lucide-react";
+import { Eye, EyeOff, CheckCircle2, Loader2 } from "lucide-react";
+import { validatePassword, isPasswordValid } from "@/lib/password-validation";
+import { PasswordRules } from "@/components/password-rules";
+
+const INPUT_CLASS =
+  "w-full h-[56px] border border-[#D1D5DB] rounded-[8px] bg-white px-4 pr-12 text-[15px] text-[#111111] placeholder:text-[#9CA3AF] outline-none transition-all focus:border-ha-primary";
 
 export default function ResetPasswordPage() {
   const [, navigate] = useLocation();
@@ -53,9 +58,11 @@ export default function ResetPasswordPage() {
     });
   }, []);
 
-  const tooShort = password.length > 0 && password.length < 8;
+  const v = validatePassword(password);
+  const passwordOk = isPasswordValid(v);
   const mismatch = confirm.length > 0 && password !== confirm;
-  const canSubmit = password.length >= 8 && password === confirm && !loading;
+  const confirmOk = confirm.length > 0 && password === confirm;
+  const canSubmit = passwordOk && confirmOk && !loading;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -91,7 +98,7 @@ export default function ResetPasswordPage() {
         </p>
         <button
           onClick={() => { setRecoveryMode(false); navigate("/forgot-password"); }}
-          className="h-[48px] px-8 rounded-[6px] text-[15px] font-semibold text-white bg-ha-primary hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
+          className="h-[48px] px-8 rounded-[10px] text-[15px] font-semibold text-white bg-ha-primary hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
           data-testid="button-try-again"
         >
           {t("resetPassword.tryAgain")}
@@ -111,8 +118,8 @@ export default function ResetPasswordPage() {
   if (success) {
     return (
       <div className="h-[100dvh] flex flex-col items-center justify-center px-8 text-center" style={{ backgroundColor: "#eaeaeb" }} data-testid="page-reset-success">
-        <div className="w-16 h-16 rounded-full bg-ha-success/10 flex items-center justify-center mb-6">
-          <CheckCircle2 className="w-8 h-8 text-[#111111]" />
+        <div className="w-16 h-16 rounded-full bg-[#DCFCE7] flex items-center justify-center mb-6">
+          <CheckCircle2 className="w-8 h-8 text-[#16A34A]" />
         </div>
         <h1 className="text-[24px] font-semibold text-[#111111] tracking-[-0.02em] mb-3" data-testid="text-success-title">
           {t("resetPassword.successTitle")}
@@ -122,7 +129,7 @@ export default function ResetPasswordPage() {
         </p>
         <button
           onClick={() => navigate("/")}
-          className="h-[48px] px-8 rounded-[6px] text-[15px] font-semibold text-white bg-ha-primary hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
+          className="h-[48px] px-8 rounded-[10px] text-[15px] font-semibold text-white bg-ha-primary hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
           data-testid="button-go-login"
         >
           {t("resetPassword.goToLogin")}
@@ -144,78 +151,71 @@ export default function ResetPasswordPage() {
           className="text-[26px] font-semibold text-[#111111] leading-[1.15] tracking-[-0.03em] mb-3 text-center"
           data-testid="text-reset-title"
         >
-          {t("resetPassword.title")}
+          Wachtwoord
         </h1>
 
         <p className="text-[15px] text-ha-text-muted leading-[1.55] text-center max-w-[340px] mx-auto mb-8">
           {t("resetPassword.description")}
         </p>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div>
-            <label className="text-field-label mb-2 block">
-              {t("resetPassword.newPassword")}
+            <label className="block text-[15px] font-semibold text-[#111111] mb-2">
+              Wachtwoord
             </label>
             <div className="relative">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                <Lock className="w-[18px] h-[18px] text-ha-icon-secondary" />
-              </div>
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="app-input !pl-11 !pr-12"
+                placeholder="Minimaal 8 tekens"
+                className={INPUT_CLASS}
+                autoComplete="new-password"
+                autoFocus
                 data-testid="input-new-password"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#6B7280] transition-colors"
                 data-testid="button-toggle-password"
               >
                 {showPassword
-                  ? <EyeOff className="w-[18px] h-[18px] text-ha-icon-secondary" />
-                  : <Eye className="w-[18px] h-[18px] text-ha-icon-secondary" />}
+                  ? <EyeOff className="w-[18px] h-[18px]" />
+                  : <Eye className="w-[18px] h-[18px]" />}
               </button>
             </div>
-            {tooShort && (
-              <p className="text-[13px] mt-1.5 text-[#111111]" data-testid="text-error-short">
-                {t("resetPassword.minLength")}
-              </p>
-            )}
+            <PasswordRules password={password} />
           </div>
 
           <div>
-            <label className="text-field-label mb-2 block">
-              {t("resetPassword.confirmPassword")}
+            <label className="block text-[15px] font-semibold text-[#111111] mb-2">
+              Wachtwoord bevestigen
             </label>
             <div className="relative">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                <Lock className="w-[18px] h-[18px] text-ha-icon-secondary" />
-              </div>
               <input
                 type={showConfirm ? "text" : "password"}
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
-                placeholder="••••••••"
-                className="app-input !pl-11 !pr-12"
+                placeholder="Herhaal je wachtwoord"
+                className={INPUT_CLASS}
+                autoComplete="new-password"
                 data-testid="input-confirm-password"
               />
               <button
                 type="button"
                 onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute right-4 top-1/2 -translate-y-1/2"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#6B7280] transition-colors"
                 data-testid="button-toggle-confirm"
               >
                 {showConfirm
-                  ? <EyeOff className="w-[18px] h-[18px] text-ha-icon-secondary" />
-                  : <Eye className="w-[18px] h-[18px] text-ha-icon-secondary" />}
+                  ? <EyeOff className="w-[18px] h-[18px]" />
+                  : <Eye className="w-[18px] h-[18px]" />}
               </button>
             </div>
             {mismatch && (
-              <p className="text-[13px] mt-1.5 text-[#111111]" data-testid="text-error-mismatch">
-                {t("resetPassword.mismatch")}
+              <p className="text-[13px] mt-2 text-[#E11D48]" data-testid="text-error-mismatch">
+                Wachtwoorden komen niet overeen
               </p>
             )}
           </div>
@@ -223,14 +223,17 @@ export default function ResetPasswordPage() {
           <button
             type="submit"
             disabled={!canSubmit}
-            className={`w-full h-[48px] rounded-[6px] text-[15px] font-semibold transition-colors active:scale-[0.97] ${
+            className={`w-full h-[52px] rounded-[10px] text-[15px] font-semibold transition-all active:scale-[0.97] flex items-center justify-center ${
               canSubmit
                 ? "bg-ha-primary hover:bg-ha-primary-hover text-white"
-                : "bg-[#E5E7EB] text-ha-icon-secondary cursor-not-allowed"
+                : "bg-ha-primary/30 text-white cursor-not-allowed"
             }`}
             data-testid="button-submit"
           >
-            {loading ? t("common.loading") : t("resetPassword.submit")}
+            {loading
+              ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Opslaan...</>
+              : "Opslaan"
+            }
           </button>
         </form>
       </div>

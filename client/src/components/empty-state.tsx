@@ -41,7 +41,7 @@ export function EmptyState({ illustration, title, description, ctaLabel, onCtaCl
       {ctaLabel && onCtaClick && (
         <button
           onClick={onCtaClick}
-          className="py-[14px] px-8 rounded-[16px] bg-transparent border-2 border-ha-primary text-ha-primary text-[16px] font-semibold hover:bg-ha-primary/5 transition-colors active:scale-[0.97]"
+          className="py-[14px] px-8 rounded-[10px] bg-transparent border-2 border-ha-primary text-ha-primary text-[16px] font-semibold hover:bg-ha-primary/5 transition-colors active:scale-[0.97]"
           data-testid="button-empty-cta"
         >
           {ctaLabel}

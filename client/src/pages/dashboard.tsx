@@ -484,7 +484,7 @@ function BuddyInline({ accessToken }: { accessToken: string | undefined }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("profileEdit.searchBuddyPlaceholder")}
-          className="w-full h-[56px] rounded-[16px] border border-[#E5E7EB] bg-white px-4 text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all pr-10"
+          className="w-full h-[56px] rounded-[8px] border border-[#D1D5DB] bg-white px-4 text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all pr-10"
           data-testid="inline-buddy-email"
         />
         {email && (
@@ -589,7 +589,7 @@ function LetterModal({ accessToken, open, onClose }: { accessToken: string | und
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center" onClick={onClose}>
       <div
-        className="bg-white w-full max-w-[480px] max-h-[85vh] rounded-t-[20px] sm:rounded-[20px] flex flex-col animate-in slide-in-from-bottom-4 duration-200"
+        className="bg-white w-full max-w-[480px] max-h-[85vh] rounded-t-[12px] sm:rounded-[12px] flex flex-col animate-in slide-in-from-bottom-4 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-5 pt-5 pb-3">
@@ -615,7 +615,7 @@ function LetterModal({ accessToken, open, onClose }: { accessToken: string | und
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
                 placeholder={t("applicationLetter.placeholderText")}
-                className="w-full min-h-[220px] rounded-[16px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-[16px] text-[#111111] leading-relaxed resize-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all"
+                className="w-full min-h-[220px] rounded-[8px] border border-[#D1D5DB] bg-[#F9FAFB] px-4 py-3 text-[16px] text-[#111111] leading-relaxed resize-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all"
                 data-testid="modal-letter-textarea"
               />
               {template.length > 0 && template.trim().length < 20 && (
@@ -750,7 +750,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
   return (
     <div
       data-testid="section-zoekopdrachten"
-      className="bg-white rounded-[20px] p-5"
+      className="bg-white rounded-[12px] p-5"
       style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}
     >
       <div className="flex items-center gap-2.5 mb-1.5">
@@ -782,7 +782,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
             return (
               <div
                 key={p.id}
-                className="rounded-[16px] bg-[#f3f4f6] p-4 flex items-center cursor-pointer active:opacity-80 transition-all"
+                className="rounded-[10px] bg-[#f3f4f6] p-4 flex items-center cursor-pointer active:opacity-80 transition-all"
                 onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
                 data-testid={`row-zoekopdracht-${p.id}`}
               >
@@ -829,7 +829,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
           })}
         </div>
       ) : (
-        <div className="rounded-[16px] bg-white border border-[#E5E7EB] p-7 flex flex-col items-center justify-center text-center min-h-[calc(100dvh-260px)]" data-testid="card-zoekopdrachten-empty">
+        <div className="rounded-[12px] bg-white border border-[#E5E7EB] p-7 flex flex-col items-center justify-center text-center min-h-[calc(100dvh-260px)]" data-testid="card-zoekopdrachten-empty">
           <img src={EMPTY_STATE_IMAGES.createSearch} alt="" className="w-[72px] max-h-[72px] h-auto mb-5 object-contain" draggable={false} />
           <p className="text-[20px] font-bold text-[#000000] mb-2">Maak je eerste zoekprofiel aan</p>
           <p className="text-[16px] text-[#334855] mb-6 leading-relaxed max-w-[280px]">Stel je voorkeuren in en ontvang direct nieuwe woningen.</p>
@@ -846,7 +846,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
       {profiles.length > 0 && profiles.length < MAX_PROFILES && (
         <button
           onClick={() => navigate("/dashboard/searches/new")}
-          className="w-full mt-4 py-[14px] rounded-[16px] bg-transparent border-2 border-ha-primary text-[16px] font-semibold text-ha-primary hover:bg-ha-primary/5 transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
+          className="w-full mt-4 py-[14px] rounded-[10px] bg-transparent border-2 border-ha-primary text-[16px] font-semibold text-ha-primary hover:bg-ha-primary/5 transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
           data-testid="button-add-zoekopdracht"
         >
           + {t("home.addZoekopdracht")}
@@ -873,7 +873,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
             </div>
           </header>
           <main className="flex-1 flex flex-col items-center justify-center px-4">
-            <div className="w-16 h-16 rounded-[16px] bg-ha-primary flex items-center justify-center mb-6">
+            <div className="w-16 h-16 rounded-[10px] bg-ha-primary flex items-center justify-center mb-6">
               <Trash2 className="w-8 h-8 text-white" />
             </div>
             <h2 className="text-[22px] font-semibold text-[#111111] mb-3 text-center" data-testid="text-delete-title">
@@ -997,7 +997,7 @@ function HomeTab({
           return (
             <button
               onClick={() => navigate("/application-letter")}
-              className="w-full text-left bg-white rounded-[20px] p-5 flex flex-col gap-3 active:scale-[0.985] transition-transform"
+              className="w-full text-left bg-white rounded-[12px] p-5 flex flex-col gap-3 active:scale-[0.985] transition-transform"
               style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}
               data-testid="card-reactiebrief-status"
             >
@@ -1032,7 +1032,7 @@ function HomeTab({
           return (
             <button
               onClick={() => navigate("/profile/edit/search_buddy_email")}
-              className="w-full text-left bg-white rounded-[20px] p-5 flex flex-col gap-3 active:scale-[0.985] transition-transform"
+              className="w-full text-left bg-white rounded-[12px] p-5 flex flex-col gap-3 active:scale-[0.985] transition-transform"
               style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}
               data-testid="card-zoekbuddy-status"
             >
@@ -1190,10 +1190,10 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
 
       <div className="px-5 pt-3">
         {favLoading ? (
-          <div className="bg-white rounded-[20px] p-4 flex flex-col gap-4" style={cardStyle}>
+          <div className="bg-white rounded-[12px] p-4 flex flex-col gap-4" style={cardStyle}>
             {[1, 2].map((i) => (
               <div key={i} className="animate-pulse">
-                <div className="bg-[#F3F4F6] rounded-[16px]" style={{ aspectRatio: "16/9" }} />
+                <div className="bg-[#F3F4F6] rounded-[10px]" style={{ aspectRatio: "16/9" }} />
                 <div className="pt-3 flex flex-col gap-2">
                   <div className="h-4 bg-[#F3F4F6] rounded-full w-3/4" />
                   <div className="h-3 bg-[#F3F4F6] rounded-full w-1/2" />
@@ -1205,7 +1205,7 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
             ))}
           </div>
         ) : favoriteListings.length === 0 ? (
-          <div className="bg-white rounded-[20px]" style={cardStyle}>
+          <div className="bg-white rounded-[12px]" style={cardStyle}>
             <EmptyState
               illustration={EMPTY_STATE_IMAGES.noFavorites}
               title="Nog geen favorieten"
@@ -1215,7 +1215,7 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
             />
           </div>
         ) : (
-          <div className="bg-white rounded-[20px] p-4 flex flex-col gap-4" style={cardStyle}>
+          <div className="bg-white rounded-[12px] p-4 flex flex-col gap-4" style={cardStyle}>
             {favoriteListings.map((m) => (
               <ListingCardFull
                 key={m.listing_id}
@@ -1489,7 +1489,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
 
       <div className="px-5 pt-3">
         {topTab === "matches" && (
-          <div className="bg-white rounded-[20px] p-4 flex flex-col gap-4" style={cardStyle}>
+          <div className="bg-white rounded-[12px] p-4 flex flex-col gap-4" style={cardStyle}>
             <div className="relative">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[17px] h-[17px] text-[#9CA3AF] pointer-events-none" />
               <input
@@ -1505,7 +1505,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
             {apiMatchesQuery.isLoading ? (
               <div className="flex flex-col gap-4">
                 {[1, 2].map((i) => (
-                  <div key={i} className="animate-pulse rounded-[16px] overflow-hidden bg-[#def2e9]">
+                  <div key={i} className="animate-pulse rounded-[10px] overflow-hidden bg-[#def2e9]">
                     <div className="bg-[#cee8da]" style={{ aspectRatio: "16/9" }} />
                     <div className="p-4 flex flex-col gap-2">
                       <div className="h-4 bg-[#cee8da] rounded-full w-3/4" />
@@ -1564,7 +1564,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
         {topTab === "gereageerd" && (
           <>
             {appliedListings.length === 0 ? (
-              <div className="bg-white rounded-[20px]" style={cardStyle}>
+              <div className="bg-white rounded-[12px]" style={cardStyle}>
                 <EmptyState
                   illustration={EMPTY_STATE_IMAGES.noApplications}
                   title="Nog niet gereageerd"
@@ -1574,7 +1574,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
                 />
               </div>
             ) : (
-              <div className="bg-white rounded-[20px] p-4 flex flex-col gap-4" style={cardStyle}>
+              <div className="bg-white rounded-[12px] p-4 flex flex-col gap-4" style={cardStyle}>
                 {appliedListings.map((m) => (
                   <ListingCardFull
                     key={m.listing_id}
@@ -1795,7 +1795,7 @@ function BuddyNotifPrefsSection() {
     <div>
       <SectionTitle>{t("buddyV2.prefsTitle")}</SectionTitle>
       <p className="text-[13px] text-[#334855] mb-3 px-1">{t("buddyV2.prefsSubtitle")}</p>
-      <div className="rounded-[16px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
+      <div className="rounded-[12px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
         <ToggleRow
           label={t("buddyV2.prefsPush")}
           checked={pushOn}
@@ -1863,7 +1863,7 @@ function BuddyV2Section({ subscription }: { subscription: { isActive: boolean; i
   return (
     <div>
       <SectionTitle>{t("buddyV2.ownerSection")}</SectionTitle>
-      <div className="rounded-[16px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
+      <div className="rounded-[12px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
         {currentBuddy ? (
           <div className="px-5 py-4">
             <div className="flex items-center gap-3.5">
@@ -2041,7 +2041,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       <div className="px-4 pt-6 pb-8 max-w-[480px] mx-auto">
 
         {/* Single white container */}
-        <div className="bg-white rounded-[20px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden mb-4">
+        <div className="bg-white rounded-[12px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden mb-4">
 
           {/* Profile row */}
           <div className="flex items-center gap-3 px-4 py-4" data-testid="row-account-profile">
@@ -2142,7 +2142,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             </div>
           </header>
           <main className="flex-1 flex flex-col items-center justify-center px-4">
-            <div className="w-16 h-16 rounded-[16px] bg-[#F3F4F6] flex items-center justify-center mb-6">
+            <div className="w-16 h-16 rounded-[10px] bg-[#F3F4F6] flex items-center justify-center mb-6">
               <LogOut className="w-8 h-8 text-[#334855]" />
             </div>
             <h2 className="text-[22px] font-semibold text-[#111111] mb-3 text-center">{t("profile.logoutConfirm")}</h2>

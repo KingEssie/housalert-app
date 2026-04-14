@@ -160,7 +160,7 @@ export default function TipsPage({ navigate }: { navigate: (path: string) => voi
           <h2 className="text-[18px] font-semibold text-[#111111] mb-3" data-testid="text-guides-title">
             {t("tips.guidesTitle")}
           </h2>
-          <div className="rounded-[16px] bg-white border border-[#E5E7EB] overflow-hidden">
+          <div className="rounded-[12px] bg-white border border-[#E5E7EB] overflow-hidden">
             {guides.map((guide, idx) => {
               const isRead = isTipCompleted(guide.id, readSet);
               const GuideIcon = guide.icon;

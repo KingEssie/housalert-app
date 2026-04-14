@@ -99,7 +99,7 @@ export function ListingCardFull({
 
   return (
     <div
-      className="cursor-pointer active:scale-[0.985] transition-transform duration-200 rounded-[16px] overflow-hidden"
+      className="cursor-pointer active:scale-[0.985] transition-transform duration-200 rounded-[12px] overflow-hidden"
       style={{ backgroundColor: "#def2e9", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
       onClick={onCardClick}
       data-testid={`card-match-${match.listing_id}`}
@@ -235,7 +235,7 @@ export function ListingCardCompact({ match, onCardClick }: ListingCardCompactPro
     <div
       role="button"
       tabIndex={0}
-      className="flex-shrink-0 w-[72vw] max-w-[280px] cursor-pointer transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-ha-primary/40 rounded-[16px]"
+      className="flex-shrink-0 w-[72vw] max-w-[280px] cursor-pointer transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-ha-primary/40 rounded-[12px]"
       onClick={onCardClick}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -245,7 +245,7 @@ export function ListingCardCompact({ match, onCardClick }: ListingCardCompactPro
       }}
       data-testid={`card-recent-match-${match.listing_id}`}
     >
-      <div className="relative overflow-hidden rounded-[16px]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
+      <div className="relative overflow-hidden rounded-[12px]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
         {hasImage ? (
           <img
             src={match.image_url!}
@@ -300,7 +300,7 @@ export function ListingCardMini({ match, onCardClick }: ListingCardMiniProps) {
     <div
       role="button"
       tabIndex={0}
-      className="flex-shrink-0 w-[28vw] max-w-[130px] cursor-pointer snap-start transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-ha-primary/40 rounded-[16px]"
+      className="flex-shrink-0 w-[28vw] max-w-[130px] cursor-pointer snap-start transition-all duration-200 active:scale-[0.985] outline-none focus-visible:ring-2 focus-visible:ring-ha-primary/40 rounded-[12px]"
       onClick={onCardClick}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -310,7 +310,7 @@ export function ListingCardMini({ match, onCardClick }: ListingCardMiniProps) {
       }}
       data-testid={`card-recently-viewed-${match.listing_id}`}
     >
-      <div className="relative overflow-hidden rounded-[16px]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
+      <div className="relative overflow-hidden rounded-[12px]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
         {hasImage ? (
           <img
             src={match.image_url!}

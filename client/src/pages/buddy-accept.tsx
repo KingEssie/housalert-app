@@ -267,7 +267,7 @@ export default function BuddyAcceptPage() {
           <h1 className="text-[22px] font-bold text-[#111111] mb-2">{errorMsg}</h1>
           <button
             onClick={() => navigate("/home")}
-            className="mt-6 h-[48px] px-8 rounded-[16px] bg-ha-primary text-white text-[15px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
+            className="mt-6 h-[48px] px-8 rounded-[10px] bg-ha-primary text-white text-[15px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
             data-testid="button-accept-go-home"
           >
             {t("common.back")}
@@ -296,7 +296,7 @@ export default function BuddyAcceptPage() {
             )}
           </div>
 
-          <div className="rounded-[16px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] p-5 mb-5">
+          <div className="rounded-[12px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] p-5 mb-5">
             <div className="space-y-3">
               <div>
                 <div className="relative">
@@ -305,7 +305,7 @@ export default function BuddyAcceptPage() {
                     type="email"
                     value={inviteInfo.invite_email}
                     readOnly
-                    className="w-full h-[56px] pl-11 pr-4 rounded-[16px] border border-[#D1D5DB] bg-[#F3F4F6] text-[15px] text-[#6B7280] cursor-not-allowed"
+                    className="w-full h-[56px] pl-11 pr-4 rounded-[10px] border border-[#D1D5DB] bg-[#F3F4F6] text-[15px] text-[#6B7280] cursor-not-allowed"
                     data-testid="input-buddy-email"
                   />
                 </div>
@@ -320,7 +320,7 @@ export default function BuddyAcceptPage() {
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
                       placeholder={t("buddyV2.authFirstNamePlaceholder")}
-                      className="w-full h-[56px] pl-11 pr-4 rounded-[16px] border border-[#D1D5DB] bg-white text-[15px] text-[#111111] placeholder:text-[#334855] focus:outline-none focus:ring-2 focus:ring-ha-primary/20 focus:border-ha-primary transition-colors"
+                      className="w-full h-[56px] pl-11 pr-4 rounded-[10px] border border-[#D1D5DB] bg-white text-[15px] text-[#111111] placeholder:text-[#334855] focus:outline-none focus:ring-2 focus:ring-ha-primary/20 focus:border-ha-primary transition-colors"
                       data-testid="input-buddy-firstname"
                     />
                   </div>
@@ -335,7 +335,7 @@ export default function BuddyAcceptPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder={t("buddyV2.authPasswordPlaceholder")}
-                    className="w-full h-[56px] pl-11 pr-12 rounded-[16px] border border-[#D1D5DB] bg-white text-[15px] text-[#111111] placeholder:text-[#334855] focus:outline-none focus:ring-2 focus:ring-ha-primary/20 focus:border-ha-primary transition-colors"
+                    className="w-full h-[56px] pl-11 pr-12 rounded-[10px] border border-[#D1D5DB] bg-white text-[15px] text-[#111111] placeholder:text-[#334855] focus:outline-none focus:ring-2 focus:ring-ha-primary/20 focus:border-ha-primary transition-colors"
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         isLogin ? handleLogin() : handleSignup();
@@ -363,7 +363,7 @@ export default function BuddyAcceptPage() {
           <button
             onClick={isLogin ? handleLogin : handleSignup}
             disabled={authSubmitting}
-            className="w-full h-[56px] rounded-[16px] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
+            className="w-full h-[56px] rounded-[10px] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
             data-testid="button-buddy-auth-submit"
           >
             {authSubmitting ? (
@@ -407,7 +407,7 @@ export default function BuddyAcceptPage() {
         <button
           onClick={doAccept}
           disabled={acceptMutation.isPending}
-          className="w-full h-[56px] rounded-[16px] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
+          className="w-full h-[56px] rounded-[10px] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
           data-testid="button-accept-invite"
         >
           {acceptMutation.isPending ? (

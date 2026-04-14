@@ -572,7 +572,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
   onSkip: () => void;
   t: (k: string, p?: Record<string, any>) => string;
 }) {
-  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
+  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
   const [showForm, setShowForm] = useState(false);
 
   const genderOptions = [
@@ -699,7 +699,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
             <select
               value={personalData.gender}
               onChange={(e) => onChange({ gender: e.target.value })}
-              className={`w-full h-[56px] px-4 pr-10 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] appearance-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all ${!personalData.gender ? "text-[#334855] opacity-55" : ""}`}
+              className={`w-full h-[56px] px-4 pr-10 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] text-[#111111] appearance-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all ${!personalData.gender ? "text-[#334855] opacity-55" : ""}`}
               data-testid="input-gender"
             >
               <option value="">{t("onboardingFlow.letterPersonal.genderPlaceholder") || "Selecteer geslacht"}</option>
@@ -757,7 +757,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
     { value: "other", label: t("onboardingFlow.letterLiving.moveOptions.other") },
   ];
 
-  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
+  const INPUT_CLS = "w-full h-[56px] px-4 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
 
   return (
     <LightShell step="letter-living" showBack onBack={onBack}>
@@ -774,7 +774,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
             <select
               value={livingData.livingWith}
               onChange={(e) => onChange({ livingWith: e.target.value })}
-              className={`w-full h-[56px] px-4 pr-10 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] appearance-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all ${!livingData.livingWith ? "text-[#334855] opacity-55" : ""}`}
+              className={`w-full h-[56px] px-4 pr-10 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] text-[#111111] appearance-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all ${!livingData.livingWith ? "text-[#334855] opacity-55" : ""}`}
               data-testid="select-living-with"
             >
               <option value="">{t("onboardingFlow.letterLiving.selectPlaceholder") || "Selecteer..."}</option>
@@ -794,7 +794,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
             <select
               value={livingData.workStatus}
               onChange={(e) => onChange({ workStatus: e.target.value })}
-              className={`w-full h-[56px] px-4 pr-10 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] appearance-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all ${!livingData.workStatus ? "text-[#334855] opacity-55" : ""}`}
+              className={`w-full h-[56px] px-4 pr-10 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] text-[#111111] appearance-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all ${!livingData.workStatus ? "text-[#334855] opacity-55" : ""}`}
               data-testid="select-work-status"
             >
               <option value="">{t("onboardingFlow.letterLiving.selectPlaceholder") || "Selecteer..."}</option>
@@ -814,7 +814,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
             <select
               value={livingData.moveReason}
               onChange={(e) => onChange({ moveReason: e.target.value })}
-              className={`w-full h-[56px] px-4 pr-10 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] appearance-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all ${!livingData.moveReason ? "text-[#334855] opacity-55" : ""}`}
+              className={`w-full h-[56px] px-4 pr-10 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] text-[#111111] appearance-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all ${!livingData.moveReason ? "text-[#334855] opacity-55" : ""}`}
               data-testid="select-move-reason"
             >
               <option value="">{t("onboardingFlow.letterLiving.selectPlaceholder") || "Selecteer..."}</option>
@@ -976,7 +976,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
             value={buddyEmail}
             onChange={(e) => onBuddyEmailChange(e.target.value)}
             placeholder={t("onboardingFlow.searchBuddy.emailPlaceholder")}
-            className="w-full h-[56px] px-4 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all"
+            className="w-full h-[56px] px-4 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all"
             data-testid="input-buddy-email"
           />
         </div>

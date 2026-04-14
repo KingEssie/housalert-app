@@ -19,7 +19,7 @@ export function HighlightCard({ icon: Icon, title, subtitle, overline, ctaLabel,
     return (
       <button
         onClick={onClick}
-        className="w-full rounded-[16px] p-4 text-left transition-colors"
+        className="w-full rounded-[12px] p-4 text-left transition-colors"
         style={{
           backgroundColor: bg,
           boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
@@ -49,7 +49,7 @@ export function HighlightCard({ icon: Icon, title, subtitle, overline, ctaLabel,
   return (
     <button
       onClick={onClick}
-      className="w-full rounded-[16px] p-4 text-center transition-colors"
+      className="w-full rounded-[12px] p-4 text-center transition-colors"
       style={{
         backgroundColor: bg,
         boxShadow: "0 2px 8px rgba(0,0,0,0.04)",

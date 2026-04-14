@@ -12,7 +12,7 @@ import { useTranslation } from "@/i18n";
 import { apiFetch } from "@/lib/api-base";
 import { useEmbedded } from "@/hooks/use-embedded";
 
-const INPUT_CLS = "w-full h-[56px] pl-11 pr-4 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 placeholder:font-normal focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25 outline-none transition-all";
+const INPUT_CLS = "w-full h-[56px] pl-11 pr-4 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 placeholder:font-normal focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25 outline-none transition-all";
 
 export default function SignupPage() {
   const [, navigate] = useLocation();

@@ -306,7 +306,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
               onChange={(e) => handleCityInput(e.target.value)}
               onFocus={() => { if (hasCityResults && !value.place) setCityOpen(true); }}
               placeholder={t("location.searchCity")}
-              className={`w-full min-h-[56px] rounded-[16px] bg-ha-surface border px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-secondary ${
+              className={`w-full min-h-[56px] rounded-[8px] bg-ha-surface border px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-secondary ${
                 value.place ? "border-ha-primary bg-ha-surface/30" : "border-ha-card-border"
               }`}
               data-testid="input-city-search"
@@ -397,7 +397,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
             <select
               value={value.radiusKm}
               onChange={(e) => onChange({ ...value, radiusKm: parseInt(e.target.value) })}
-              className="w-full h-[56px] pl-11 pr-4 rounded-[16px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text-muted cursor-pointer appearance-none"
+              className="w-full h-[56px] pl-11 pr-4 rounded-[8px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text-muted cursor-pointer appearance-none"
               data-testid="select-radius"
             >
               <option value="2">2 km</option>
@@ -423,7 +423,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
                 onChange={(e) => handleDestInput(e.target.value)}
                 onFocus={() => { if (hasDestResults && value.commuteLat == null) setDestOpen(true); }}
                 placeholder={t("location.searchAddress")}
-                className={`w-full min-h-[56px] rounded-[16px] bg-ha-surface border px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-secondary ${
+                className={`w-full min-h-[56px] rounded-[8px] bg-ha-surface border px-11 text-[16px] text-ha-text-muted placeholder:text-ha-text-secondary ${
                   value.commuteLat != null ? "border-ha-primary bg-ha-surface/30" : "border-ha-card-border"
                 }`}
                 data-testid="input-commute-destination"
@@ -518,7 +518,7 @@ export default function LocationModeSelector({ value, onChange, segmentedTabs, a
               <select
                 value={value.commuteMinutes}
                 onChange={(e) => onChange({ ...value, commuteMinutes: parseInt(e.target.value) })}
-                className="w-full h-[56px] pl-11 pr-4 rounded-[16px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text-muted cursor-pointer appearance-none"
+                className="w-full h-[56px] pl-11 pr-4 rounded-[8px] border border-transparent bg-ha-surface text-[16px] font-medium text-ha-text-muted cursor-pointer appearance-none"
                 data-testid="select-commute-minutes"
               >
                 <option value="15">15 min</option>
@@ -582,7 +582,7 @@ function DistrictMultiSelect({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between min-h-[56px] px-4 rounded-[16px] bg-ha-surface border border-ha-card-border text-[15px] text-ha-text-muted hover:bg-ha-surface transition-colors"
+        className="w-full flex items-center justify-between min-h-[56px] px-4 rounded-[8px] bg-ha-surface border border-ha-card-border text-[15px] text-ha-text-muted hover:bg-ha-surface transition-colors"
         data-testid="button-district-dropdown"
       >
         <span className={selected.length > 0 ? "font-medium" : "text-ha-text-secondary"}>

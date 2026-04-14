@@ -49,9 +49,9 @@ export default function ChangePasswordPage() {
   if (success) {
     return (
       <div className="min-h-screen bg-[#eaeaeb]" data-testid="page-password-success">
-        <AppHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
+        <AppHeader title="Wachtwoord" onBack={() => navigate("/dashboard?tab=profiel")} />
         <div className="max-w-xl mx-auto p-4 pb-8">
-          <div className="bg-white rounded-[16px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-6 text-center">
+          <div className="bg-white rounded-[12px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-6 text-center">
             <div className="flex items-center justify-center mb-5">
               <div className="w-14 h-14 rounded-full bg-[#DCFCE7] flex items-center justify-center">
                 <CheckCircle2 className="w-7 h-7 text-[#16A34A]" />
@@ -65,7 +65,7 @@ export default function ChangePasswordPage() {
             </p>
             <button
               onClick={() => navigate("/dashboard?tab=profiel")}
-              className="w-full h-[52px] bg-ha-primary text-white rounded-[8px] font-semibold text-[15px] transition-colors hover:bg-ha-primary-hover"
+              className="w-full h-[52px] bg-ha-primary text-white rounded-[10px] font-semibold text-[15px] transition-colors hover:bg-ha-primary-hover"
               data-testid="button-back-to-account"
             >
               {t("changePassword.backToAccount")}
@@ -78,25 +78,26 @@ export default function ChangePasswordPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#eaeaeb]" data-testid="page-change-password">
-      <AppHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
+      <AppHeader title="Wachtwoord" onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="flex-1 max-w-xl mx-auto w-full px-4 pt-5 pb-8">
 
-        <div className="bg-white rounded-[16px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-5 flex flex-col gap-5">
+        <div className="bg-white rounded-[12px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-5 flex flex-col gap-5">
 
           {/* Wachtwoord */}
           <div>
             <label className="block text-[15px] font-semibold text-[#111111] mb-2">
-              {t("changePassword.new")}
+              Wachtwoord
             </label>
             <div className="relative">
               <input
                 type={showNew ? "text" : "password"}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder={t("changePassword.newPlaceholder")}
+                placeholder="Minimaal 8 tekens"
                 className={INPUT_CLASS}
                 autoFocus
+                autoComplete="new-password"
                 data-testid="input-new-password"
               />
               <button
@@ -116,15 +117,16 @@ export default function ChangePasswordPage() {
           {/* Wachtwoord bevestigen */}
           <div>
             <label className="block text-[15px] font-semibold text-[#111111] mb-2">
-              {t("changePassword.confirmLabel")}
+              Wachtwoord bevestigen
             </label>
             <div className="relative">
               <input
                 type={showConfirm ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder={t("changePassword.confirmPlaceholder")}
+                placeholder="Herhaal je wachtwoord"
                 className={INPUT_CLASS}
+                autoComplete="new-password"
                 data-testid="input-confirm-password"
               />
               <button
@@ -140,7 +142,7 @@ export default function ChangePasswordPage() {
             </div>
             {mismatch && (
               <p className="text-[13px] mt-2 text-[#E11D48]" data-testid="text-error-mismatch">
-                {t("changePassword.mismatch")}
+                Wachtwoorden komen niet overeen
               </p>
             )}
           </div>
@@ -157,14 +159,14 @@ export default function ChangePasswordPage() {
           <button
             onClick={handleSubmit}
             disabled={!canSubmit}
-            className={`w-full h-[52px] rounded-[8px] font-semibold text-[15px] transition-all flex items-center justify-center ${
+            className={`w-full h-[52px] rounded-[10px] font-semibold text-[15px] transition-all flex items-center justify-center ${
               canSubmit
                 ? "bg-ha-primary text-white hover:bg-ha-primary-hover"
                 : "bg-ha-primary/30 text-white cursor-not-allowed"
             }`}
             data-testid="button-submit-password"
           >
-            {submitting ? t("changePassword.changing") : t("changePassword.submit")}
+            {submitting ? "Opslaan..." : "Opslaan"}
           </button>
         </div>
       </div>
