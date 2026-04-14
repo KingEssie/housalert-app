@@ -13,7 +13,7 @@ import {
   ArrowLeft,
   BedDouble,
   Copy,
-  Euro,
+  Tag,
   Heart,
   MapPin,
   Maximize2,
@@ -434,41 +434,41 @@ export default function ApplyPage() {
           <div className="flex flex-nowrap gap-1.5 mt-3 overflow-hidden">
             {listing.city && (
               <span
-                className="inline-flex items-center gap-[6px] bg-[#F9FAFB] text-[13px] font-medium text-[#111111] px-2.5 py-[5px] rounded-[8px] min-w-0 shrink"
+                className="inline-flex items-center gap-[6px] bg-[#F9FAFB] text-[13px] font-medium text-[#111111] px-3 py-[6px] rounded-[8px] min-w-0 shrink"
                 style={pillStyle}
                 data-testid="detail-city-apply"
               >
-                <MapPin className="w-[17px] h-[17px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
+                <MapPin className="w-[19px] h-[19px] flex-shrink-0 text-[#111111]" strokeWidth={1.7} />
                 <span className="truncate">{listing.city}</span>
               </span>
             )}
             {listing.bedrooms != null && listing.bedrooms > 0 && (
               <span
-                className="inline-flex items-center gap-[6px] bg-[#F9FAFB] text-[13px] font-medium text-[#111111] px-2.5 py-[5px] rounded-[8px] shrink-0"
+                className="inline-flex items-center gap-[6px] bg-[#F9FAFB] text-[13px] font-medium text-[#111111] px-3 py-[6px] rounded-[8px] shrink-0"
                 style={pillStyle}
                 data-testid="detail-bedrooms-apply"
               >
-                <BedDouble className="w-[17px] h-[17px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
+                <BedDouble className="w-[19px] h-[19px] flex-shrink-0 text-[#111111]" strokeWidth={1.7} />
                 {listing.bedrooms}
               </span>
             )}
             {listing.size_m2 != null && listing.size_m2 > 0 && (
               <span
-                className="inline-flex items-center gap-[6px] bg-[#F9FAFB] text-[13px] font-medium text-[#111111] px-2.5 py-[5px] rounded-[8px] shrink-0"
+                className="inline-flex items-center gap-[6px] bg-[#F9FAFB] text-[13px] font-medium text-[#111111] px-3 py-[6px] rounded-[8px] shrink-0"
                 style={pillStyle}
                 data-testid="detail-size-apply"
               >
-                <Maximize2 className="w-[17px] h-[17px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
+                <Maximize2 className="w-[19px] h-[19px] flex-shrink-0 text-[#111111]" strokeWidth={1.7} />
                 {listing.size_m2} m²
               </span>
             )}
             {listing.price > 0 && (
               <span
-                className="inline-flex items-center gap-[6px] bg-[#F9FAFB] text-[13px] font-semibold text-[#111111] px-2.5 py-[5px] rounded-[8px] shrink-0"
+                className="inline-flex items-center gap-[6px] bg-[#F9FAFB] text-[13px] font-semibold text-[#111111] px-3 py-[6px] rounded-[8px] shrink-0"
                 style={pillStyle}
                 data-testid="detail-price-apply"
               >
-                <Euro className="w-[17px] h-[17px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
+                <Tag className="w-[19px] h-[19px] flex-shrink-0 text-[#111111]" strokeWidth={1.7} />
                 {listing.price}
               </span>
             )}

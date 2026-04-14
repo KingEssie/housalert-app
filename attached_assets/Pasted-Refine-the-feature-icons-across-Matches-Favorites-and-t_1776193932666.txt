@@ -1,0 +1,84 @@
+Refine the feature icons across Matches, Favorites, and the Detail page.
+
+GOAL:
+1. Replace the price icon with a tag/label icon
+2. Increase icon size slightly again for a stronger visual hierarchy
+
+IMPORTANT:
+Keep everything else unchanged.
+
+==================================================
+1. REPLACE PRICE ICON WITH TAG ICON
+==================================================
+
+Update the price/rent feature icon:
+
+- Replace the current euro (€) icon with a tag/label icon
+  (e.g. price tag style icon)
+
+Requirements:
+- icon should visually communicate "price", not currency
+- must match the style of the other icons (line style, weight, etc.)
+- apply this consistently in:
+  - Matches cards
+  - Favorites cards
+  - Detail page
+
+==================================================
+2. INCREASE ICON SIZE AGAIN (SLIGHTLY)
+==================================================
+
+Make all feature icons slightly larger than current state.
+
+Targets:
+- location icon
+- bedrooms icon
+- size icon
+- price (tag) icon
+
+Requirements:
+- increase size subtly (another ~10–15%)
+- icons should feel clearly visible at a glance
+- maintain balance with text (not oversized)
+
+==================================================
+3. ADJUST SPACING IF NEEDED
+==================================================
+
+Because icons are larger:
+- slightly increase horizontal padding inside pills if needed
+- maintain clean spacing between icon and text
+- avoid cramped look
+
+==================================================
+4. KEEP CONSISTENCY
+==================================================
+
+Ensure:
+- all icons have same size and visual weight
+- same spacing rules across:
+  - Matches
+  - Favorites
+  - Detail
+
+==================================================
+5. DO NOT CHANGE
+==================================================
+
+Do NOT change:
+- pill shape
+- colors
+- layout structure
+- typography
+
+Only update icons and spacing.
+
+==================================================
+6. OUTPUT
+==================================================
+
+Return:
+1. which files were changed
+2. which icon library/icon was used for the price tag
+3. final icon size used
+4. confirmation that all pages now use identical icon styling
