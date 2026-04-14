@@ -3,12 +3,11 @@ import { useState, useEffect } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
-import { useSubscription } from "@/lib/subscription";
 import { useTranslation } from "@/i18n";
 import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/track-event";
 import { queryClient } from "@/lib/queryClient";
-import { MapPin, BedDouble, Ruler, Clock, Globe, Zap, ArrowLeft, Info, Lock, Heart, ShieldBan } from "lucide-react";
+import { MapPin, BedDouble, Ruler, Clock, Globe, Zap, ArrowLeft, Info, Heart, ShieldBan } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ListingFallback, isValidImageUrl } from "@/components/listing-fallback";
 
@@ -110,8 +109,6 @@ export default function ListingDetailPage() {
   const [match, params] = useRoute("/listing/:id");
   const id = params?.id;
   const { session } = useAuth();
-  const sub = useSubscription();
-  const hasAccess = sub.isActive || sub.isTrial;
   const { t } = useTranslation();
   const { toast } = useToast();
   const [imgError, setImgError] = useState(false);
@@ -246,15 +243,14 @@ export default function ListingDetailPage() {
   const style = FRESH_BADGE_STYLES[listing.fresh_label] ?? FRESH_BADGE_STYLES.ouder;
   const hasImage = isValidImageUrl(listing.image_url);
 
-  const detailItems: { icon: typeof BedDouble; label: string; value: string; color?: string; locked?: boolean }[] = [];
+  const detailItems: { icon: typeof BedDouble; label: string; value: string; color?: string }[] = [];
   if (listing.bedrooms > 0) detailItems.push({ icon: BedDouble, label: t("listing.bedrooms"), value: String(listing.bedrooms) });
   if (listing.size_m2 > 0) detailItems.push({ icon: Ruler, label: t("listing.area"), value: `${listing.size_m2} m²` });
   detailItems.push({
     icon: Globe,
     label: t("listing.source"),
-    value: hasAccess ? formatSourceDisplay(listing.source) : t("listing.sourceHidden"),
-    color: hasAccess ? "text-ha-primary" : undefined,
-    locked: !hasAccess,
+    value: formatSourceDisplay(listing.source),
+    color: "text-ha-primary",
   });
 
   return (
@@ -265,33 +261,28 @@ export default function ListingDetailPage() {
         <button
           onClick={handleToggleFavorite}
           disabled={favLoading}
-          className={`w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-all duration-200 ${
-            isFavorited
-              ? "bg-ha-primary"
-              : "bg-black/35 backdrop-blur-sm"
-          }`}
-          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}
+          className="w-[38px] h-[38px] flex items-center justify-center transition-all duration-150 active:scale-110"
           aria-label="Favorite"
           data-testid="button-favorite-detail"
         >
           <Heart
-            className="w-[18px] h-[18px] text-white"
-            fill={isFavorited ? "white" : "none"}
-            strokeWidth={2}
+            className="w-[22px] h-[22px] transition-all duration-150"
+            fill={isFavorited ? "#FF385C" : "none"}
+            stroke={isFavorited ? "#FF385C" : "#ffffff"}
+            strokeWidth={2.5}
+            style={{ filter: "drop-shadow(0 1px 4px rgba(0,0,0,0.55))" }}
           />
         </button>
 
-        {hasAccess && (
-          <button
-            onClick={() => setShowBlockModal(true)}
-            className="w-9 h-9 rounded-full bg-black/35 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform duration-200"
-            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}
-            aria-label="Block source"
-            data-testid="button-block-source"
-          >
-            <ShieldBan className="w-[18px] h-[18px] text-white" strokeWidth={2} />
-          </button>
-        )}
+        <button
+          onClick={() => setShowBlockModal(true)}
+          className="w-9 h-9 rounded-full bg-black/35 backdrop-blur-sm flex items-center justify-center active:scale-90 transition-transform duration-200"
+          style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}
+          aria-label="Block source"
+          data-testid="button-block-source"
+        >
+          <ShieldBan className="w-[18px] h-[18px] text-white" strokeWidth={2} />
+        </button>
       </div>
 
       <div className="relative">
@@ -346,7 +337,7 @@ export default function ListingDetailPage() {
         <div className="flex items-center gap-4 mt-5 text-[13px] text-[#334855]">
           {detailItems.map((item, i) => (
             <div key={i} className="flex items-center gap-1.5">
-              {item.locked ? <Lock className="w-3.5 h-3.5 text-[#C4C4C4]" /> : <item.icon className="w-4 h-4 text-[#334855]" />}
+              <item.icon className="w-4 h-4 text-[#334855]" />
               <span className={`font-semibold ${item.color || "text-[#111111]"} capitalize`} data-testid={`text-detail-${i}`}>
                 {item.value}
               </span>
@@ -401,27 +392,15 @@ export default function ListingDetailPage() {
 
       <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-[#F0F0F0] px-5 pt-3 z-10" style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))" }}>
         <div className="max-w-xl mx-auto">
-          {hasAccess ? (
-            <Button
-              onClick={() => navigate(`/apply/${listing.id}`)}
-              className="w-full h-[48px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold flex items-center justify-center gap-2"
-              style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}
-              data-testid="button-reageer-detail"
-            >
-              <Zap className="w-4 h-4" />
-              {t("listing.applyDirect")}
-            </Button>
-          ) : (
-            <Button
-              onClick={() => navigate("/paywall")}
-              className="w-full h-[48px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold flex items-center justify-center gap-2"
-              style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}
-              data-testid="button-upgrade-detail"
-            >
-              <Lock className="w-4 h-4" />
-              {t("listing.upgradeCta")}
-            </Button>
-          )}
+          <Button
+            onClick={() => navigate(`/apply/${listing.id}`)}
+            className="w-full h-[48px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold flex items-center justify-center gap-2"
+            style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }}
+            data-testid="button-reageer-detail"
+          >
+            <Zap className="w-4 h-4" />
+            {t("listing.applyDirect")}
+          </Button>
         </div>
       </div>
 

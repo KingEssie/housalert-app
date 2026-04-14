@@ -1,0 +1,113 @@
+Redesign the listing detail page to follow the Rentbird-style structure more closely, while keeping our own branding and listing data.
+
+IMPORTANT:
+Do not redesign unrelated screens.
+Only update the listing detail page layout and UI.
+
+==================================================
+1. STICKY FLOATING HEADER
+==================================================
+
+Replace the current top area with a Rentbird-style sticky floating header.
+
+Requirements:
+- White header background
+- Sticky at top while scrolling
+- Left side:
+  - round back button
+- Title:
+  - "Is dit jouw droomhuis?"
+- Right side:
+  - keep subtle action/menu button only if already supported
+- Clean spacing, minimal design, same visual feeling as the Rentbird example
+
+The header should feel detached from the content, like a real top navigation bar.
+
+==================================================
+2. FIRST SECTION = SAME VISUAL LANGUAGE AS LISTING CARD
+==================================================
+
+The first content section on the detail page should visually match the listing card style from the matches page.
+
+Structure:
+- Large image at top
+- Favorite heart on image
+- Below image:
+  - listing title
+  - meta line: "[time] • [source]"
+  - 4 feature pills:
+    - place
+    - bedrooms
+    - size
+    - price
+
+Style:
+- Same color system and spacing as the current match cards
+- Same feature pill style
+- Same typography hierarchy
+- This should feel like the detail page starts with an expanded version of the listing card
+
+==================================================
+3. REMOVE ALL NO-SUBSCRIPTION UI
+==================================================
+
+Remove everything related to not having a subscription.
+
+Remove:
+- “je hebt geen actief abonnement”
+- lock messages
+- upgrade warning blocks
+- upgrade CTA blocks inside the detail content
+- anything that visually blocks the page because of subscription
+
+We do NOT want the Rentbird-style locked state.
+
+==================================================
+4. REACTIEBRIEF DIRECT UNDER THE LISTING SECTION
+==================================================
+
+Under the first listing section, show the reactiebrief immediately.
+
+Structure:
+- Title: "Reactiebrief"
+- Optional very short subtitle only if useful
+- White rounded content box containing the generated reaction letter
+- Good readability
+- Keep it visually clean and premium
+
+Do not bury the reaction letter far down the page.
+
+==================================================
+5. KEEP CTA CLEAN
+==================================================
+
+If there is a bottom CTA like "Kopiëren en reageren", keep it only if it fits the new layout cleanly.
+
+Requirements:
+- It should feel intentional
+- Do not let it clash with the new sticky header
+- No upgrade CTA should remain
+
+==================================================
+6. OVERALL PAGE GOAL
+==================================================
+
+The detail page should now feel like this:
+
+1. Sticky floating header
+2. Listing detail block that visually matches the matches card
+3. Reactiebrief directly below
+4. Clean, premium, Rentbird-like layout
+
+The page should feel much more structured and much less cluttered.
+
+==================================================
+7. OUTPUT
+==================================================
+
+Return:
+1. which files were changed
+2. how the sticky header was implemented
+3. what no-subscription UI was removed
+4. how the first detail section now matches the listing card style
+5. where the reactiebrief now appears

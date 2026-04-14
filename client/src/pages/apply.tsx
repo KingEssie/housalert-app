@@ -1,7 +1,6 @@
 import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth";
-import { useSubscription } from "@/lib/subscription";
 import { useQuery } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -12,13 +11,14 @@ import { trackEvent } from "@/lib/track-event";
 import { useLocation, useRoute } from "wouter";
 import {
   ArrowLeft,
+  BedDouble,
   Copy,
   Heart,
-  Lock,
+  MapPin,
+  Maximize2,
   ShieldBan,
 } from "lucide-react";
 import { ListingFallback, isValidImageUrl } from "@/components/listing-fallback";
-
 
 function useRelativeTime() {
   const { t } = useTranslation();
@@ -80,13 +80,32 @@ interface ListingData {
   first_seen_at?: string | null;
 }
 
+const SOURCE_DISPLAY: Record<string, string> = {
+  immowelt: "immowelt.de",
+  kleinanzeigen: "kleinanzeigen.de",
+  "wg-gesucht": "wg-gesucht.de",
+  wohnungsboerse: "wohnungsboerse.net",
+  immoscout: "immobilienscout24.de",
+  immonet: "immonet.de",
+  rentola: "rentola.de",
+  nestpick: "nestpick.com",
+  pararius: "pararius.nl",
+  funda: "funda.nl",
+  kamernet: "kamernet.nl",
+};
+
+function formatSourceDisplay(source: string): string {
+  const s = (source || "").trim().toLowerCase();
+  return SOURCE_DISPLAY[s] || s;
+}
+
+const pillStyle: React.CSSProperties = { boxShadow: "0 1px 2px rgba(0,0,0,0.06)" };
+
 export default function ApplyPage() {
   const [, navigate] = useLocation();
   const [, params] = useRoute("/apply/:id");
   const listingId = params?.id;
   const { user, session } = useAuth();
-  const sub = useSubscription();
-  const hasAccess = sub.isActive || sub.isTrial;
   const { toast } = useToast();
   const { t, locale } = useTranslation();
   const [marked, setMarked] = useState(false);
@@ -162,12 +181,6 @@ export default function ApplyPage() {
     }
   }
 
-  function formatSourceDisplay(source: string): string {
-    return source
-      .replace(/[-_]/g, " ")
-      .replace(/\b\w/g, (c) => c.toUpperCase());
-  }
-
   async function handleBlockSource() {
     if (!listing || !accessToken || blockLoading) return;
     setBlockLoading(true);
@@ -227,62 +240,45 @@ export default function ApplyPage() {
     }
   }
 
-  if (!sub.loading && !hasAccess) {
-    return (
-      <div className="min-h-screen flex flex-col relative bg-white">
-        <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] left-4 z-30">
-          <button onClick={handleBack} className="w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center active:scale-95 transition-transform" style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }} aria-label="Back" data-testid="button-back-apply">
-            <ArrowLeft className="w-[18px] h-[18px] text-[#111111]" />
-          </button>
-        </div>
-        <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-20">
-          <div className="app-card text-center py-10">
-            <div className="w-16 h-16 rounded-full bg-[#F9FAFB] flex items-center justify-center mx-auto mb-5">
-              <Lock className="w-7 h-7 text-ha-text-muted" />
-            </div>
-            <h2 className="text-[18px] font-semibold text-[#111111] mb-2" data-testid="text-apply-locked-title">
-              {t("listing.upgradeCta")}
-            </h2>
-            <p className="text-[14px] text-ha-text-muted mb-6 leading-relaxed max-w-[280px] mx-auto" data-testid="text-apply-locked-desc">
-              {t("listing.lockedHint")}
-            </p>
-            <Button
-              onClick={() => navigate("/paywall")}
-              className="w-full max-w-[280px] h-[48px] rounded-[6px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold flex items-center justify-center gap-2"
-              data-testid="button-apply-upgrade"
-            >
-              <Lock className="w-4 h-4" />
-              {t("listing.upgradeCta")}
-            </Button>
-          </div>
-        </main>
+  const StickyHeader = ({ children }: { children?: React.ReactNode }) => (
+    <div className="sticky top-0 z-30 bg-white border-b border-[#E5E7EB]" style={{ paddingTop: "env(safe-area-inset-top)" }}>
+      <div className="flex items-center h-[52px] px-4">
+        <button
+          onClick={handleBack}
+          className="w-9 h-9 rounded-full flex items-center justify-center active:scale-95 transition-transform shrink-0"
+          style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.1)" }}
+          aria-label="Back"
+          data-testid="button-back-apply"
+        >
+          <ArrowLeft className="w-[18px] h-[18px] text-[#111111]" />
+        </button>
+        <span className="flex-1 text-center text-[16px] font-semibold text-[#111111] mx-3 truncate">
+          Is dit jouw droomhuis?
+        </span>
+        {children}
       </div>
-    );
-  }
+    </div>
+  );
 
   if (listingLoading || !listing) {
     return (
-      <div className="min-h-screen flex flex-col relative bg-white">
-        <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] left-4 z-30">
-          <button onClick={handleBack} className="w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center active:scale-95 transition-transform" style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }} aria-label="Back" data-testid="button-back-apply">
-            <ArrowLeft className="w-[18px] h-[18px] text-[#111111]" />
-          </button>
-        </div>
+      <div className="min-h-screen flex flex-col bg-white">
+        <StickyHeader />
         <div className="animate-pulse">
-          <div className="w-full bg-[#E5E7EB]" style={{ aspectRatio: "4/3" }} />
-          <div className="max-w-xl mx-auto w-full px-5 -mt-6 relative z-10">
-            <div className="bg-white rounded-t-[20px] px-5 pt-6 pb-4 space-y-3">
-              <div className="h-5 bg-[#F3F4F6] rounded-md w-4/5" />
-              <div className="h-4 bg-[#F3F4F6] rounded-md w-3/5" />
-              <div className="h-3.5 bg-[#F3F4F6] rounded-md w-2/5" />
-              <div className="h-px bg-[#F0F0F0] my-4" />
-              <div className="h-4 bg-[#F3F4F6] rounded w-28" />
-              <div className="space-y-2 mt-2">
-                <div className="h-3.5 bg-[#F3F4F6] rounded w-full" />
-                <div className="h-3.5 bg-[#F3F4F6] rounded w-5/6" />
-                <div className="h-3.5 bg-[#F3F4F6] rounded w-4/6" />
-              </div>
+          <div className="w-full bg-[#E5E7EB]" style={{ aspectRatio: "16/9" }} />
+          <div className="bg-[#F9FAFB] px-5 pt-4 pb-5 space-y-3">
+            <div className="h-5 bg-[#E5E7EB] rounded-md w-4/5" />
+            <div className="h-4 bg-[#E5E7EB] rounded-md w-3/5" />
+            <div className="flex gap-1.5 mt-3">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="h-[29px] bg-[#E5E7EB] rounded-[8px] w-16" />
+              ))}
             </div>
+          </div>
+          <div className="px-5 pt-5 space-y-3">
+            <div className="h-5 bg-[#F3F4F6] rounded w-32" />
+            <div className="h-3.5 bg-[#F3F4F6] rounded w-56" />
+            <div className="h-[220px] bg-[#F3F4F6] rounded-[16px]" />
           </div>
         </div>
       </div>
@@ -361,137 +357,153 @@ export default function ApplyPage() {
   };
 
   const hasImage = isValidImageUrl(listing.image_url);
-
-  const propertyType = t("listingDetail.propertyFallback");
-  const subtitle = `${propertyType} ${t("listingDetail.subtitleIn")} ${listing.city}, ${t("listingDetail.country")}`;
-
-  const detailParts: string[] = [];
-  if (listing.bedrooms && listing.bedrooms > 0) {
-    detailParts.push(`${listing.bedrooms} ${listing.bedrooms === 1 ? t("common.bedroom") : t("common.bedrooms")}`);
-  }
-  if (listing.size_m2 && listing.size_m2 > 0) {
-    detailParts.push(`${listing.size_m2} m²`);
-  }
-  const detailLine = detailParts.join(" · ");
+  const timeAgoLabel = relativeTime(listing.first_seen_at);
+  const sourceLabel = listing.source ? formatSourceDisplay(listing.source) : null;
+  const metaLine = [timeAgoLabel, sourceLabel].filter(Boolean).join(" · ");
   const postedLabel = listing.first_seen_at ? postedTime(listing.first_seen_at) : "";
 
   return (
-    <div className="min-h-screen flex flex-col relative bg-white">
-      {/* Floating back button */}
-      <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] left-4 z-30">
-        <button onClick={handleBack} className="w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center active:scale-95 transition-transform" style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }} aria-label="Back" data-testid="button-back-apply">
-          <ArrowLeft className="w-[18px] h-[18px] text-[#111111]" />
-        </button>
-      </div>
-
-      {/* Floating action icons — top-right on image */}
-      <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] right-4 z-30 flex items-center gap-2.5">
-        <button
-          onClick={handleToggleFavorite}
-          disabled={favLoading}
-          className={`w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-transform duration-150 ${
-            isFavorited ? "bg-ha-primary" : hasImage && !imgError ? "" : "bg-black/35 backdrop-blur-sm"
-          }`}
-          style={!isFavorited && !(hasImage && !imgError) ? { boxShadow: "0 2px 6px rgba(0,0,0,0.08)" } : undefined}
-          aria-label="Favorite"
-          data-testid="button-favorite-apply"
-        >
-          <Heart
-            className={`w-[18px] h-[18px] transition-colors duration-200 text-white ${isFavorited ? "scale-110" : ""}`}
-            fill={isFavorited ? "currentColor" : "none"}
-            strokeWidth={2}
-            style={hasImage && !imgError && !isFavorited ? { filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.5))" } : undefined}
-          />
-        </button>
-
+    <div className="min-h-screen flex flex-col bg-white">
+      {/* Sticky white header */}
+      <StickyHeader>
         {listing.source && (
           <button
             onClick={() => setShowBlockModal(true)}
-            className={`w-9 h-9 rounded-full flex items-center justify-center active:scale-90 transition-transform duration-150 ${
-              hasImage && !imgError ? "" : "bg-black/35 backdrop-blur-sm"
-            }`}
-            style={!(hasImage && !imgError) ? { boxShadow: "0 2px 6px rgba(0,0,0,0.08)" } : undefined}
+            className="w-9 h-9 rounded-full flex items-center justify-center active:scale-95 transition-transform shrink-0"
+            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.1)" }}
             aria-label="Block source"
             data-testid="button-block-source-apply"
           >
-            <ShieldBan
-              className="w-[18px] h-[18px] text-white"
-              strokeWidth={2}
-              style={hasImage && !imgError ? { filter: "drop-shadow(0 1px 3px rgba(0,0,0,0.5))" } : undefined}
-            />
+            <ShieldBan className="w-[18px] h-[18px] text-[#111111]" strokeWidth={2} />
           </button>
         )}
-      </div>
+      </StickyHeader>
 
-      {/* Hero image */}
+      {/* Image with floating heart */}
       <div className="relative">
         {hasImage && !imgError ? (
           <img
             src={listing.image_url!}
             alt={listing.title}
             className="w-full object-cover"
-            style={{ aspectRatio: "4/3" }}
+            style={{ aspectRatio: "16/9" }}
             onError={() => setImgError(true)}
             referrerPolicy="no-referrer"
             data-testid="img-apply-hero"
           />
         ) : (
-          <div className="w-full" style={{ aspectRatio: "4/3" }}>
+          <div className="w-full" style={{ aspectRatio: "16/9" }}>
             <ListingFallback title={listing.title} source={listing.source || undefined} city={listing.city} size="hero" />
           </div>
         )}
+        <button
+          onClick={handleToggleFavorite}
+          disabled={favLoading}
+          className="absolute top-3 right-3 w-[38px] h-[38px] flex items-center justify-center transition-all duration-150 active:scale-110"
+          aria-label="Favorite"
+          data-testid="button-favorite-apply"
+        >
+          <Heart
+            className="w-[22px] h-[22px] transition-all duration-150"
+            fill={isFavorited ? "#FF385C" : "none"}
+            stroke={isFavorited ? "#FF385C" : "#ffffff"}
+            strokeWidth={2.5}
+            style={{ filter: "drop-shadow(0 1px 4px rgba(0,0,0,0.55))" }}
+          />
+        </button>
       </div>
 
-      {/* Overlapping white content sheet */}
-      <main className="flex-1 max-w-xl mx-auto w-full pb-[120px] -mt-6 relative z-10">
-        <div className="bg-white rounded-t-[20px] px-5 pt-6">
-          {/* Title */}
-          <h1
-            className="text-[22px] font-semibold text-[#111111] leading-[1.3] tracking-[-0.01em] line-clamp-2 text-center"
-            data-testid="text-apply-title"
-          >
-            {listing.title}
-          </h1>
-
-          {/* Subtitle + details — same size and color */}
-          <p className="text-[14px] text-[#334855] mt-2 leading-[1.5] text-center" data-testid="text-apply-subtitle">
-            {subtitle}
+      {/* Listing info section — matches card visual language */}
+      <div className="bg-[#F9FAFB] px-5 pt-4 pb-5">
+        <h2
+          className="text-[18px] font-bold text-[#111111] leading-snug line-clamp-2"
+          data-testid="text-apply-title"
+        >
+          {listing.title}
+        </h2>
+        {metaLine && (
+          <p className="text-[13px] text-[#111111] mt-1" data-testid="text-apply-meta">
+            {metaLine}
           </p>
-          {detailLine && (
-            <p className="text-[14px] text-[#334855] mt-0.5 leading-[1.5] text-center" data-testid="text-apply-details">
-              {detailLine}
-            </p>
+        )}
+        <div className="flex flex-nowrap gap-1.5 mt-3 overflow-hidden">
+          {listing.city && (
+            <span
+              className="inline-flex items-center gap-[6px] bg-white text-[13px] font-medium text-[#111111] px-2.5 py-[5px] rounded-[8px] min-w-0 shrink"
+              style={pillStyle}
+              data-testid="detail-city-apply"
+            >
+              <MapPin className="w-[15px] h-[15px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
+              <span className="truncate">{listing.city}</span>
+            </span>
           )}
-
-          {/* Divider */}
-          <div className="h-px bg-[#E5E7EB] my-5" />
-
-          {/* Reaction letter section */}
-          <h2 className="text-[16px] font-semibold text-[#111111] mb-1" data-testid="text-letter-title">{t("applySheet.applicationLetter")}</h2>
-          <p className="text-[12px] text-[#334855] mb-3" data-testid="text-letter-helper">
-            {t("applySheet.autoGenerated") || "Automatisch gegenereerd op basis van jouw profiel"}
-          </p>
-          <textarea
-            className="w-full min-h-[220px] leading-[1.75] bg-white border border-[#E5E7EB] rounded-[16px] p-4 text-[16px] text-[#111111] outline-none resize-vertical focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25 transition-all"
-            value={editedLetter ?? filledLetter}
-            onChange={(e) => setEditedLetter(e.target.value)}
-            data-testid="apply-letter-preview"
-            autoComplete="off"
-            autoCorrect="on"
-          />
+          {listing.bedrooms != null && listing.bedrooms > 0 && (
+            <span
+              className="inline-flex items-center gap-[6px] bg-white text-[13px] font-medium text-[#111111] px-2.5 py-[5px] rounded-[8px] shrink-0"
+              style={pillStyle}
+              data-testid="detail-bedrooms-apply"
+            >
+              <BedDouble className="w-[15px] h-[15px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
+              {listing.bedrooms}
+            </span>
+          )}
+          {listing.size_m2 != null && listing.size_m2 > 0 && (
+            <span
+              className="inline-flex items-center gap-[6px] bg-white text-[13px] font-medium text-[#111111] px-2.5 py-[5px] rounded-[8px] shrink-0"
+              style={pillStyle}
+              data-testid="detail-size-apply"
+            >
+              <Maximize2 className="w-[15px] h-[15px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
+              {listing.size_m2} m²
+            </span>
+          )}
+          {listing.price > 0 && (
+            <span
+              className="inline-flex items-center gap-[6px] bg-white text-[13px] font-semibold text-[#111111] px-2.5 py-[5px] rounded-[8px] shrink-0"
+              style={pillStyle}
+              data-testid="detail-price-apply"
+            >
+              €{listing.price}
+            </span>
+          )}
         </div>
+      </div>
+
+      {/* Reactiebrief */}
+      <main className="flex-1 px-5 pt-5 pb-[120px]">
+        <h2 className="text-[18px] font-semibold text-[#111111] mb-1" data-testid="text-letter-title">
+          {t("applySheet.applicationLetter")}
+        </h2>
+        <p className="text-[12px] text-[#334855] mb-3" data-testid="text-letter-helper">
+          {t("applySheet.autoGenerated") || "Automatisch gegenereerd op basis van jouw profiel"}
+        </p>
+        <textarea
+          className="w-full min-h-[220px] leading-[1.75] bg-white border border-[#E5E7EB] rounded-[16px] p-4 text-[16px] text-[#111111] outline-none resize-vertical focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25 transition-all"
+          value={editedLetter ?? filledLetter}
+          onChange={(e) => setEditedLetter(e.target.value)}
+          data-testid="apply-letter-preview"
+          autoComplete="off"
+          autoCorrect="on"
+        />
       </main>
 
       {/* Sticky bottom CTA */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] z-10 pb-[env(safe-area-inset-bottom)]">
         <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-4">
-          {listing.price > 0 && (
+          {listing.price > 0 ? (
             <div className="flex flex-col" data-testid="text-sticky-price">
-              <span className="text-[20px] font-semibold text-[#111111]">€{listing.price}<span className="text-[13px] font-normal text-[#334855] ml-1">{t("common.perMonthShort")}</span></span>
+              <span className="text-[20px] font-semibold text-[#111111]">
+                €{listing.price}
+                <span className="text-[13px] font-normal text-[#334855] ml-1">{t("common.perMonthShort")}</span>
+              </span>
               {postedLabel && (
-                <span className="text-[11px] font-normal text-[#334855] leading-none mt-0.5" data-testid="text-footer-posted">{postedLabel}</span>
+                <span className="text-[11px] text-[#334855] leading-none mt-0.5" data-testid="text-footer-posted">
+                  {postedLabel}
+                </span>
               )}
             </div>
+          ) : (
+            <div />
           )}
           <Button
             onClick={handleCopyAndRespond}
