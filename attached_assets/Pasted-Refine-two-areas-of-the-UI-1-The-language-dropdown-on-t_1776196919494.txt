@@ -1,0 +1,107 @@
+Refine two areas of the UI:
+1. The language dropdown on the Voorkeuren screen
+2. The vertical spacing of menu items on the Account screen
+
+IMPORTANT:
+Do not redesign the screens again.
+Only apply the exact refinements below.
+
+==================================================
+1. LANGUAGE DROPDOWN FIELD — CLOSER TO RENTBIRD
+==================================================
+
+The current language dropdown field is too softly styled.
+
+Adjust it to feel closer to Rentbird:
+
+A. BORDER
+- Make the border more clearly visible
+- Use a medium-light grey border with stronger contrast than now
+- It should be easy to see without looking heavy
+
+Suggested:
+- border color around #D1D5DB or similar
+- 1px solid, clearly visible
+
+B. CORNER RADIUS
+- Reduce the border radius significantly
+- The field should feel much less rounded
+- Closer to Rentbird’s flatter settings input style
+
+Suggested:
+- border-radius around 8px–10px max
+
+C. KEEP IT CLEAN
+- Keep the field white
+- Keep the selected value aligned like a settings control
+- Keep the dropdown arrow on the right
+
+==================================================
+2. LANGUAGE DROPDOWN SHEET / OPTIONS
+==================================================
+
+The selected language styling in the open dropdown is wrong.
+
+Fix this:
+
+A. REMOVE PINK BACKGROUND
+- Do NOT show a pink highlight box behind the selected language
+
+B. SELECTED STATE
+- The selected language should only have:
+  - pink text
+- No pink background block
+- No filled badge look
+
+C. REMOVE EXTRA TITLE
+- Do NOT show the title "Taal" inside the dropdown sheet/modal
+- The sheet should open directly with the language options list, like Rentbird
+
+Goal:
+The dropdown should feel cleaner, flatter, and more native.
+
+==================================================
+3. ACCOUNT PAGE MENU SPACING
+==================================================
+
+On the main Account page:
+- Reduce the vertical spacing between menu items
+- The current rows feel too tall / too airy
+
+Adjust:
+- slightly reduce row height
+- slightly reduce top/bottom padding within each menu item
+- keep readability good
+- keep divider lines
+- make it feel denser and closer to Rentbird
+
+Do NOT make it cramped.
+Just tighter and more efficient.
+
+==================================================
+4. KEEP EVERYTHING ELSE THE SAME
+==================================================
+
+Do not change:
+- menu labels
+- menu structure
+- icons
+- navigation
+- screen layout
+
+Only update:
+- dropdown border/radius
+- dropdown selected state
+- remove dropdown title
+- account menu row spacing
+
+==================================================
+5. OUTPUT
+==================================================
+
+Return:
+1. which files were changed
+2. what border color/radius was used for the language dropdown
+3. confirmation that selected language now uses pink text only
+4. confirmation that the dropdown sheet no longer shows the title "Taal"
+5. what row spacing/padding was reduced on the Account menu

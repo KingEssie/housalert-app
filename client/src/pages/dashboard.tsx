@@ -2013,7 +2013,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       <button
         type="button"
         onClick={onClick}
-        className="w-full flex items-center justify-between px-4 h-[52px] text-left active:bg-[#F9FAFB] transition-colors"
+        className="w-full flex items-center justify-between px-4 h-[46px] text-left active:bg-[#F9FAFB] transition-colors"
         data-testid={`menu-item-${label.toLowerCase().replace(/\s+/g, "-")}`}
       >
         <span className="text-[15px] font-semibold text-[#111111]">{label}</span>
