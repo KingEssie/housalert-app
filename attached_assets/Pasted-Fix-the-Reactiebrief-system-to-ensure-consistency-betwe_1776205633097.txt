@@ -1,0 +1,97 @@
+Fix the Reactiebrief system to ensure consistency between UI, placeholders, and behavior.
+
+IMPORTANT:
+Do NOT partially fix this.
+Everything must be consistent across UI, backend, and AI output.
+
+==================================================
+1. REMOVE INVALID PLACEHOLDER
+==================================================
+
+Remove all references to [STAD].
+
+Reason:
+- It is not used in the generated letter
+- It is not replaced dynamically
+- It creates confusion
+
+Update helper text to:
+
+"Wijzig [ADRES] niet — dit wordt automatisch ingevuld per woning."
+
+==================================================
+2. UNIFY PLACEHOLDER FORMAT
+==================================================
+
+Current issue:
+- UI uses [ADRES]
+- Letter uses [[ADRES]]
+
+Fix:
+- Use ONLY: [ADRES]
+
+Apply everywhere:
+- UI helper text
+- AI generated text
+- backend replacement logic
+
+No double brackets allowed.
+
+==================================================
+3. FIX BUTTON BEHAVIOR
+==================================================
+
+Button: "Nieuwe AI reactiebrief maken"
+
+Current:
+- incorrectly triggers save
+
+Fix:
+- must navigate to AI generation flow
+
+Expected behavior:
+onClick → navigate("/reactiebrief/ai-flow")
+
+==================================================
+4. AI FLOW INTEGRATION
+==================================================
+
+After AI flow completes:
+- generated letter should replace textarea content
+- user returns to editor screen
+
+Do NOT auto-save immediately.
+
+==================================================
+5. UPDATE AI PROMPT
+==================================================
+
+Ensure AI always includes:
+- [ADRES] exactly (single brackets)
+- natural integration in sentence
+
+Example:
+"...uw woning aan [ADRES]..."
+
+AI must NOT:
+- remove placeholder
+- duplicate brackets
+- change formatting
+
+==================================================
+6. BACKEND REPLACEMENT LOGIC
+==================================================
+
+Ensure:
+- [ADRES] is replaced dynamically when sending application
+- not before
+
+==================================================
+7. OUTPUT
+==================================================
+
+Return:
+1. all files updated (UI + backend)
+2. where placeholder logic is handled
+3. confirmation that [STAD] is removed
+4. confirmation that AI button now routes to flow

@@ -450,7 +450,7 @@ export default function ApplicationLetterPage() {
 
               {/* Helper text */}
               <p className="text-[13px] text-[#6B7280] mb-3 leading-snug">
-                Wijzig <strong>[ADRES]</strong> en <strong>[STAD]</strong> niet — die worden automatisch ingevuld bij elke woning.
+                Wijzig <strong>[ADRES]</strong> niet — dit wordt automatisch ingevuld per woning.
               </p>
 
               {/* Textarea */}
@@ -502,33 +502,10 @@ export default function ApplicationLetterPage() {
             </button>
 
             <button
-              onClick={async () => {
-                setSaving(true);
-                try {
-                  await saveProfileFields({
-                    living_with: livingWith || profileData?.living_with || null,
-                    work_status: workStatus || profileData?.work_status || null,
-                    move_reason: moveReason || profileData?.move_reason || null,
-                    monthly_income: monthlyIncome || profileData?.monthly_income || null,
-                    pets_count: petsCount !== "" ? Number(petsCount) : (profileData?.pets_count ?? null),
-                    phone: phone.trim() || profileData?.phone || null,
-                    birth_date: birthDate || profileData?.birth_date || null,
-                    gender: gender || profileData?.gender || null,
-                  });
-                  const letter = generatePersonalLetter();
-                  setTemplate(letter);
-                  toast({ title: "Nieuwe brief gegenereerd", description: "Je kunt de brief hieronder aanpassen." });
-                } catch {
-                  toast({ title: t("common.error"), variant: "destructive" });
-                } finally {
-                  setSaving(false);
-                }
-              }}
-              disabled={saving}
-              className="w-full h-[48px] rounded-[10px] border border-ha-primary text-ha-primary text-[15px] font-semibold hover:bg-ha-primary/5 transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              onClick={() => setStep(2)}
+              className="w-full h-[48px] rounded-[10px] border border-ha-primary text-ha-primary text-[15px] font-semibold hover:bg-ha-primary/5 transition-colors active:scale-[0.98] flex items-center justify-center gap-2"
               data-testid="button-regenerate-letter"
             >
-              {saving && <Loader2 className="w-4 h-4 animate-spin" />}
               Nieuwe AI reactiebrief maken
             </button>
           </div>
