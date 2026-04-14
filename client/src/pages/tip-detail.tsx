@@ -25,7 +25,7 @@ export default function TipDetailPage() {
 
   if (!tip) {
     return (
-      <div className="min-h-screen bg-[#F9FAFB] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F5F6F8] flex items-center justify-center">
         <p className="text-[#334855]">{t("tips.notFound")}</p>
       </div>
     );
@@ -59,8 +59,8 @@ export default function TipDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] flex flex-col">
-      <header className="sticky top-0 z-10 bg-[#F9FAFB] border-b border-[#E5E7EB]">
+    <div className="min-h-screen bg-[#F5F6F8] flex flex-col">
+      <header className="sticky top-0 z-10 bg-[#F5F6F8] border-b border-[#E5E7EB]">
         <div className="max-w-xl mx-auto flex items-center h-[48px] px-5">
           <button
             onClick={() => navigate("/dashboard?tab=tips")}
@@ -114,7 +114,7 @@ export default function TipDetailPage() {
         </button>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-[#F9FAFB] border-t border-[#E5E7EB] p-4 pb-5 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-[#F5F6F8] border-t border-[#E5E7EB] p-4 pb-5 z-10">
         <div className="max-w-xl mx-auto flex gap-3">
           <Button
             onClick={handleMarkRead}

@@ -116,7 +116,7 @@ export default function AdminMatchAudit() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F7F7F7] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F5F6F8] flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-ha-primary" />
       </div>
     );
@@ -124,7 +124,7 @@ export default function AdminMatchAudit() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#F7F7F7]" data-testid="page-admin-audit">
+      <div className="min-h-screen bg-[#F5F6F8]" data-testid="page-admin-audit">
         <AppHeader title="Match Audit" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
         <div className="p-4 pt-6 text-center">
           <AlertTriangle className="w-12 h-12 text-ha-danger mx-auto mb-3" />
@@ -140,7 +140,7 @@ export default function AdminMatchAudit() {
   const { stats, timing, recent_matches, fetch_runs } = data;
 
   return (
-    <div className="min-h-screen bg-[#F7F7F7]" data-testid="page-admin-audit">
+    <div className="min-h-screen bg-[#F5F6F8]" data-testid="page-admin-audit">
       <AppHeader title="Match Audit" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <div className="max-w-xl mx-auto px-4 pb-32 space-y-5">
@@ -195,7 +195,7 @@ export default function AdminMatchAudit() {
             </button>
             <button
               onClick={loadData}
-              className="flex items-center gap-2 px-4 py-2.5 bg-[#F7F7F7] text-[#111111] rounded-xl text-[13px] font-semibold"
+              className="flex items-center gap-2 px-4 py-2.5 bg-[#F5F6F8] text-[#111111] rounded-xl text-[13px] font-semibold"
               data-testid="button-refresh"
             >
               <RefreshCw className="w-4 h-4" />

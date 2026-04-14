@@ -72,7 +72,7 @@ export default function SubscriptionDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: "#F9FAFB" }}>
+      <div className="min-h-screen" style={{ backgroundColor: "#F5F6F8" }}>
         <AppHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
         <div className="max-w-lg mx-auto px-4 pt-4">
           <div className="app-card animate-pulse">
@@ -124,7 +124,7 @@ export default function SubscriptionDetailPage() {
   ];
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#F9FAFB" }} data-testid="page-subscription-detail">
+    <div className="min-h-screen" style={{ backgroundColor: "#F5F6F8" }} data-testid="page-subscription-detail">
       <AppHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="max-w-lg mx-auto px-4 pt-2 pb-12 flex flex-col gap-4">

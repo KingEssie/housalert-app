@@ -82,7 +82,7 @@ export default function ResetPasswordPage() {
 
   if (sessionError) {
     return (
-      <div className="h-[100dvh] flex flex-col items-center justify-center px-8 text-center" style={{ backgroundColor: "#F9FAFB" }} data-testid="page-reset-error">
+      <div className="h-[100dvh] flex flex-col items-center justify-center px-8 text-center" style={{ backgroundColor: "#F5F6F8" }} data-testid="page-reset-error">
         <h1 className="text-[30px] font-semibold text-[#111111] mb-3" data-testid="text-error-title">
           {t("resetPassword.expiredTitle")}
         </h1>
@@ -102,7 +102,7 @@ export default function ResetPasswordPage() {
 
   if (!ready) {
     return (
-      <div className="h-[100dvh] flex flex-col items-center justify-center" style={{ backgroundColor: "#F9FAFB" }}>
+      <div className="h-[100dvh] flex flex-col items-center justify-center" style={{ backgroundColor: "#F5F6F8" }}>
         <Loader2 className="w-8 h-8 animate-spin text-[#111111]" />
       </div>
     );
@@ -110,7 +110,7 @@ export default function ResetPasswordPage() {
 
   if (success) {
     return (
-      <div className="h-[100dvh] flex flex-col items-center justify-center px-8 text-center" style={{ backgroundColor: "#F9FAFB" }} data-testid="page-reset-success">
+      <div className="h-[100dvh] flex flex-col items-center justify-center px-8 text-center" style={{ backgroundColor: "#F5F6F8" }} data-testid="page-reset-success">
         <div className="w-16 h-16 rounded-full bg-ha-success/10 flex items-center justify-center mb-6">
           <CheckCircle2 className="w-8 h-8 text-[#111111]" />
         </div>
@@ -132,7 +132,7 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: "#F9FAFB" }} data-testid="page-reset-password">
+    <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: "#F5F6F8" }} data-testid="page-reset-password">
       <div className="pt-[max(env(safe-area-inset-top),8px)]" />
 
       <div className="flex-1 flex flex-col px-7">

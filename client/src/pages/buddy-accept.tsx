@@ -224,7 +224,7 @@ export default function BuddyAcceptPage() {
 
   if (inviteLoading || authLoading || status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]">
+      <div className="min-h-screen flex items-center justify-center bg-[#F5F6F8]">
         <Loader2 className="w-8 h-8 animate-spin text-ha-primary" />
       </div>
     );
@@ -232,7 +232,7 @@ export default function BuddyAcceptPage() {
 
   if (status === "accepting") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB]">
+      <div className="min-h-screen flex items-center justify-center bg-[#F5F6F8]">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin text-ha-primary mx-auto mb-4" />
           <p className="text-[15px] text-[#334855]">{t("buddyV2.acceptingInvite")}</p>
@@ -243,7 +243,7 @@ export default function BuddyAcceptPage() {
 
   if (status === "accepted") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB] px-5">
+      <div className="min-h-screen flex items-center justify-center bg-[#F5F6F8] px-5">
         <div className="w-full max-w-[400px] text-center">
           <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="w-8 h-8 text-green-600" />
@@ -259,7 +259,7 @@ export default function BuddyAcceptPage() {
 
   if (status === "error") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB] px-5">
+      <div className="min-h-screen flex items-center justify-center bg-[#F5F6F8] px-5">
         <div className="w-full max-w-[400px] text-center">
           <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-6">
             <XCircle className="w-8 h-8 text-red-500" />
@@ -280,7 +280,7 @@ export default function BuddyAcceptPage() {
   if (status === "auth" && inviteInfo) {
     const isLogin = authMode === "login";
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB] px-5">
+      <div className="min-h-screen flex items-center justify-center bg-[#F5F6F8] px-5">
         <div className="w-full max-w-[400px]">
           <div className="text-center mb-8">
             <div className="w-16 h-16 rounded-full bg-[#2D3748] flex items-center justify-center mx-auto mb-6">
@@ -388,7 +388,7 @@ export default function BuddyAcceptPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB] px-5">
+    <div className="min-h-screen flex items-center justify-center bg-[#F5F6F8] px-5">
       <div className="w-full max-w-[400px]">
         <div className="text-center mb-8">
           <div className="w-16 h-16 rounded-full bg-[#2D3748] flex items-center justify-center mx-auto mb-6">

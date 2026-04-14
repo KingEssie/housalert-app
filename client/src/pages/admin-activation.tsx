@@ -89,7 +89,7 @@ export default function AdminActivationPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-[#F7F7F7] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F5F6F8] flex items-center justify-center">
         <Loader2 className="w-6 h-6 animate-spin text-[#334855]" />
       </div>
     );
@@ -97,7 +97,7 @@ export default function AdminActivationPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#F7F7F7] p-6">
+      <div className="min-h-screen bg-[#F5F6F8] p-6">
         <div className="max-w-2xl mx-auto">
           <div className="bg-ha-danger/5 text-ha-danger rounded-xl p-4">{error}</div>
         </div>
@@ -108,7 +108,7 @@ export default function AdminActivationPage() {
   const maxCount = data ? Math.max(data.totalTrackedUsers, 1) : 1;
 
   return (
-    <div className="min-h-screen bg-[#F7F7F7]">
+    <div className="min-h-screen bg-[#F5F6F8]">
       <div className="max-w-2xl mx-auto p-6">
         <div className="flex items-center gap-3 mb-6">
           <button
@@ -126,7 +126,7 @@ export default function AdminActivationPage() {
 
         <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 mb-6" data-testid="card-total-users">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-[#F7F7F7] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-[#F5F6F8] flex items-center justify-center">
               <Users className="w-5 h-5 text-ha-primary" />
             </div>
             <div>
@@ -151,7 +151,7 @@ export default function AdminActivationPage() {
                     </div>
                     <span className="text-[13px] font-bold text-[#111111]">{count}</span>
                   </div>
-                  <div className="h-2 bg-[#F7F7F7] rounded-full overflow-hidden">
+                  <div className="h-2 bg-[#F5F6F8] rounded-full overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{ width: `${pct}%`, backgroundColor: color }}
@@ -176,7 +176,7 @@ export default function AdminActivationPage() {
                 { label: "With Trial", value: data.sourceOfTruth.withTrial, color: "#334855" },
                 { label: "Active Sub", value: data.sourceOfTruth.withActiveSubscription, color: "#334855" },
               ].map(({ label, value, color }) => (
-                <div key={label} className="bg-[#F7F7F7] rounded-xl p-3" data-testid={`sot-${label.toLowerCase().replace(/\s/g, "-")}`}>
+                <div key={label} className="bg-[#F5F6F8] rounded-xl p-3" data-testid={`sot-${label.toLowerCase().replace(/\s/g, "-")}`}>
                   <p className="text-[11px] font-medium text-[#334855]">{label}</p>
                   <p className="text-[22px] font-bold" style={{ color }}>{value ?? "—"}</p>
                 </div>
@@ -195,7 +195,7 @@ export default function AdminActivationPage() {
               { label: "Not found", value: cancelStats?.notFound ?? 0, Icon: Search, color: "#334855" },
               { label: "Other reason", value: cancelStats?.other ?? 0, Icon: HelpCircle, color: "#334855" },
             ].map(({ label, value, Icon, color }) => (
-              <div key={label} className="bg-[#F7F7F7] rounded-xl p-3" data-testid={`cancel-${label.toLowerCase().replace(/\s/g, "-")}`}>
+              <div key={label} className="bg-[#F5F6F8] rounded-xl p-3" data-testid={`cancel-${label.toLowerCase().replace(/\s/g, "-")}`}>
                 <div className="flex items-center gap-1.5 mb-1">
                   <Icon className="w-3.5 h-3.5" style={{ color }} />
                   <p className="text-[11px] font-medium text-[#334855]">{label}</p>
@@ -205,7 +205,7 @@ export default function AdminActivationPage() {
             ))}
           </div>
           {cancelStats && cancelStats.total > 0 && cancelStats.foundViaHousalert > 0 && (
-            <div className="mt-3 bg-[#F7F7F7] rounded-xl px-4 py-2.5">
+            <div className="mt-3 bg-[#F5F6F8] rounded-xl px-4 py-2.5">
               <p className="text-[13px] text-[#16A34A] font-medium">
                 {Math.round((cancelStats.foundViaHousalert / cancelStats.total) * 100)}% found their home via HousAlert
               </p>

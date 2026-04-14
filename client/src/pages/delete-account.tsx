@@ -62,7 +62,7 @@ export default function DeleteAccountPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F9FAFB" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F5F6F8" }}>
       <AppHeader title={t("deleteAccount.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
 
       <main className="flex-1 flex flex-col items-center justify-center px-6">

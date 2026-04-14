@@ -108,7 +108,7 @@ export default function ProfileEditPage() {
   const isBuddyField = field === "search_buddy_email";
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F9FAFB" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#F5F6F8" }}>
       <AppHeader title={isBuddyField ? "" : config.question} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="flex-1 max-w-xl mx-auto px-5 w-full">
