@@ -99,7 +99,7 @@ export default function PreferencesPage() {
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
 
         {/* ONE white panel */}
-        <div className="bg-white rounded-[14px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden">
+        <div className="bg-white rounded-[12px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden">
 
           {/* TAAL section */}
           <p className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wider px-4 pt-4 pb-2">
@@ -109,13 +109,13 @@ export default function PreferencesPage() {
           <div className="px-4 pb-4">
             <button
               onClick={() => setShowLangSheet(true)}
-              className="w-full flex items-center justify-between px-3 h-[42px] text-left bg-white border border-[#D1D5DB] rounded-[8px] active:bg-[#F9FAFB] transition-colors"
+              className="w-full flex items-center justify-between px-4 h-[50px] text-left bg-white border border-[#D1D5DB] rounded-[8px] active:bg-[#F9FAFB] transition-colors"
               data-testid="button-pref-language"
             >
               <span className="text-[15px] font-semibold text-[#111111]">{t("profile.language")}</span>
-              <div className="flex items-center gap-1.5">
-                <span className="text-[14px] text-[#6B7280]">{currentLangLabel}</span>
-                <ChevronRight className="w-[15px] h-[15px] text-[#D1D5DB] flex-shrink-0" />
+              <div className="flex items-center gap-2">
+                <span className="text-[15px] font-medium text-[#4B5563]">{currentLangLabel}</span>
+                <ChevronRight className="w-[16px] h-[16px] text-[#9CA3AF] flex-shrink-0" />
               </div>
             </button>
           </div>
@@ -163,21 +163,21 @@ export default function PreferencesPage() {
       {/* Language bottom sheet */}
       {showLangSheet && (
         <div
-          className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4"
+          className="fixed inset-0 z-50 bg-black/40 flex items-end justify-center"
           onClick={() => setShowLangSheet(false)}
         >
           <div
-            className="bg-white w-full max-w-[400px] rounded-t-[14px] sm:rounded-[14px] px-5 pt-4 pb-6 animate-in slide-in-from-bottom-4 duration-200"
+            className="bg-white w-full rounded-t-[14px] px-5 pt-5 pb-8 animate-in slide-in-from-bottom-4 duration-200"
             onClick={e => e.stopPropagation()}
           >
             {LANG_OPTIONS.map(lang => (
               <button
                 key={lang.code}
                 onClick={() => handleLanguageChange(lang.code)}
-                className="w-full flex items-center justify-between py-3.5 px-3 rounded-[10px] text-left active:bg-[#F9FAFB] transition-colors"
+                className="w-full flex items-center justify-between py-4 px-2 text-left border-b border-[#F3F4F6] last:border-0 transition-colors active:bg-[#F9FAFB]"
                 data-testid={`button-lang-${lang.code}`}
               >
-                <span className={`text-[15px] font-semibold ${locale === lang.code ? "text-ha-primary" : "text-[#111111]"}`}>{lang.label}</span>
+                <span className={`text-[16px] font-semibold ${locale === lang.code ? "text-ha-primary" : "text-[#111111]"}`}>{lang.label}</span>
                 {locale === lang.code && <Check className="w-5 h-5 text-ha-primary" />}
               </button>
             ))}

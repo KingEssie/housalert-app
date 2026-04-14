@@ -1,0 +1,124 @@
+Refine the "Voorkeuren" screen so it matches Rentbird much more closely.
+
+IMPORTANT:
+Do not redesign unrelated screens.
+Do not change functionality.
+Only improve the visual structure and spacing of the preferences/settings UI.
+
+GOAL:
+Make this screen feel like a native, premium settings screen like Rentbird, not like a form screen.
+
+==================================================
+1. REMOVE DUPLICATE "TAAL" FEEL
+==================================================
+
+The current language area feels too much like a form field.
+
+Make the language section feel more like a settings row.
+
+Keep the section label:
+- "TAAL" as the small grey section label
+
+But the actual control underneath should visually feel like a clean settings control, not a chunky form input.
+
+==================================================
+2. LANGUAGE CONTROL — MORE LIKE RENTBIRD
+==================================================
+
+Refine the language selector to look closer to Rentbird:
+
+- Keep the field white
+- Keep a visible but subtle border
+- Border color should be clearly visible:
+  - around #D1D5DB
+- Reduce the rounded corners:
+  - around 8px radius
+- Make the overall shape flatter and more native
+
+==================================================
+3. INCREASE INTERNAL SPACING OF THE LANGUAGE DROPDOWN
+==================================================
+
+The current language dropdown field feels too tight.
+
+Increase the internal spacing so it matches Rentbird more closely:
+
+- More horizontal padding inside the field
+- More vertical breathing room
+- The selected language value should not feel cramped
+- The dropdown arrow should also have comfortable space from the edge
+
+Goal:
+The field should feel roomy and premium, like Rentbird, not compressed.
+
+==================================================
+4. OPEN DROPDOWN / SHEET SHOULD USE FULL WIDTH
+==================================================
+
+When the language dropdown is opened:
+
+- The dropdown/options panel should span the full available width of the screen/container
+- It should not appear as a narrow or inset popup
+- It should feel like a full-width bottom sheet / full-width options panel
+- Keep the selected language styling clean:
+  - selected option = pink text only
+  - no pink background box
+
+IMPORTANT:
+- Do NOT show a "Taal" title inside the opened dropdown
+- Open directly into the language options list
+
+==================================================
+5. OVERALL SETTINGS PANEL
+==================================================
+
+Refine the whole white panel so it matches Rentbird better:
+
+- one white panel
+- less rounded than now
+- cleaner structure
+- labels and rows aligned better
+- keep the toggle section inside the same panel
+- spacing between rows should feel more intentional and premium
+
+==================================================
+6. KEEP TEXT DARK
+==================================================
+
+Make sure these stay strong and dark:
+- "Voorkeuren"
+- "Taal"
+- selected language value
+- "Hoe wil je woningmatches ontvangen?"
+- "Push notificaties"
+- "E-mail notificaties"
+
+Use near-black, not washed-out grey.
+
+==================================================
+7. DO NOT CHANGE
+==================================================
+
+Do not change:
+- toggles functionality
+- language switching logic
+- page navigation
+- screen purpose
+
+Only improve:
+- settings-row feel
+- spacing
+- border/radius
+- dropdown open state width
+
+==================================================
+8. OUTPUT
+==================================================
+
+Return:
+1. which files were changed
+2. what border color and radius were used
+3. what padding/spacing values were increased in the language control
+4. confirmation that the opened dropdown now uses full width
+5. confirmation that the selected language uses pink text only
+6. confirmation that no title is shown inside the opened language dropdown
