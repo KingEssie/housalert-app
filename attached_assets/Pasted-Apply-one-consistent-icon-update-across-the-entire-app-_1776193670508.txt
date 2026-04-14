@@ -1,0 +1,79 @@
+Apply one consistent icon update across the entire app for listing feature rows/cards.
+
+GOAL:
+In Matches, Favorites, and the Detail page:
+1. Add an icon in front of the rent/price value
+2. Make all feature icons noticeably larger and more prominent
+
+IMPORTANT:
+Do not redesign the cards.
+Only update the feature icon system consistently.
+
+==================================================
+1. ADD PRICE ICON
+==================================================
+
+For the rent/price feature, add a clear icon before the value.
+
+Examples:
+- a price tag icon
+- or another clean rent/price-related icon that fits the existing icon set
+
+Requirements:
+- icon must appear before the price text everywhere
+- keep visual consistency with the other feature icons
+- do this in:
+  - Matches listing cards
+  - Favorites listing cards
+  - Listing detail page
+
+==================================================
+2. MAKE ALL FEATURE ICONS BIGGER
+==================================================
+
+Increase the size of ALL icons used in the feature row/pills:
+- place/location
+- bedrooms
+- size
+- price
+
+Requirements:
+- make them clearly larger than now
+- they should feel more like Rentbird / premium app scale
+- keep them balanced with the text
+- do not make the pills feel cramped
+
+Suggested:
+- increase icon size by about 10–20%
+- slightly adjust spacing/padding if needed so the bigger icons still look clean
+
+==================================================
+3. KEEP VISUAL CONSISTENCY
+==================================================
+
+Use the same icon scale and spacing everywhere:
+- Matches
+- Favorites
+- Detail page
+
+The feature pills/rows should feel like one unified design system.
+
+==================================================
+4. DO NOT CHANGE
+==================================================
+
+Do not change:
+- page structure
+- card colors
+- title hierarchy
+- pill layout unless small spacing adjustments are needed because of larger icons
+
+==================================================
+5. OUTPUT
+==================================================
+
+Return:
+1. which files were changed
+2. where the price icon was added
+3. what icon size changes were made
+4. confirmation that Matches, Favorites, and Detail all now use the same icon styling

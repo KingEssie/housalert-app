@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Heart, Lock, CheckCircle2, BedDouble, Maximize2, MapPin } from "lucide-react";
+import { Heart, Lock, CheckCircle2, BedDouble, Maximize2, MapPin, Euro } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import type { ApiMatch } from "@/lib/listings";
 import { ListingFallback, isValidImageUrl } from "@/components/listing-fallback";
@@ -158,7 +158,7 @@ export function ListingCardFull({
               style={{ boxShadow: "0 1px 2px rgba(0,0,0,0.06)" }}
               data-testid={`detail-city-${match.listing_id}`}
             >
-              <MapPin className="w-[15px] h-[15px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
+              <MapPin className="w-[17px] h-[17px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
               <span className="truncate">{address}</span>
             </span>
           )}
@@ -167,7 +167,7 @@ export function ListingCardFull({
               className="inline-flex items-center gap-[6px] bg-white text-[13px] font-medium text-[#111111] px-2.5 py-[5px] rounded-[8px] shrink-0"
               style={{ boxShadow: "0 1px 2px rgba(0,0,0,0.06)" }}
             >
-              <BedDouble className="w-[15px] h-[15px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
+              <BedDouble className="w-[17px] h-[17px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
               {match.bedrooms}
             </span>
           )}
@@ -176,7 +176,7 @@ export function ListingCardFull({
               className="inline-flex items-center gap-[6px] bg-white text-[13px] font-medium text-[#111111] px-2.5 py-[5px] rounded-[8px] shrink-0"
               style={{ boxShadow: "0 1px 2px rgba(0,0,0,0.06)" }}
             >
-              <Maximize2 className="w-[15px] h-[15px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
+              <Maximize2 className="w-[17px] h-[17px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
               {match.size_m2} m²
             </span>
           )}
@@ -186,6 +186,7 @@ export function ListingCardFull({
               style={{ boxShadow: "0 1px 2px rgba(0,0,0,0.06)" }}
               data-testid={`badge-price-${match.listing_id}`}
             >
+              <Euro className="w-[17px] h-[17px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
               {formatPrice(match.price, locale)}
             </span>
           )}

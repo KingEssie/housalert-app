@@ -13,6 +13,7 @@ import {
   ArrowLeft,
   BedDouble,
   Copy,
+  Euro,
   Heart,
   MapPin,
   Maximize2,
@@ -437,7 +438,7 @@ export default function ApplyPage() {
                 style={pillStyle}
                 data-testid="detail-city-apply"
               >
-                <MapPin className="w-[15px] h-[15px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
+                <MapPin className="w-[17px] h-[17px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
                 <span className="truncate">{listing.city}</span>
               </span>
             )}
@@ -447,7 +448,7 @@ export default function ApplyPage() {
                 style={pillStyle}
                 data-testid="detail-bedrooms-apply"
               >
-                <BedDouble className="w-[15px] h-[15px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
+                <BedDouble className="w-[17px] h-[17px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
                 {listing.bedrooms}
               </span>
             )}
@@ -457,7 +458,7 @@ export default function ApplyPage() {
                 style={pillStyle}
                 data-testid="detail-size-apply"
               >
-                <Maximize2 className="w-[15px] h-[15px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
+                <Maximize2 className="w-[17px] h-[17px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
                 {listing.size_m2} m²
               </span>
             )}
@@ -467,7 +468,8 @@ export default function ApplyPage() {
                 style={pillStyle}
                 data-testid="detail-price-apply"
               >
-                €{listing.price}
+                <Euro className="w-[17px] h-[17px] flex-shrink-0 text-[#111111]" strokeWidth={1.8} />
+                {listing.price}
               </span>
             )}
           </div>
