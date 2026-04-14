@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { useTranslation } from "@/i18n";
 import { HousAlertLogo } from "@/components/housalert-logo";
-import { ChevronLeft, Lock, Loader2, Eye, EyeOff, Gift, MapPin } from "lucide-react";
+import { ChevronLeft, Loader2, Eye, EyeOff, Gift, MapPin } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { clearAllUserData } from "@/lib/queryClient";
 import { createSearchProfile } from "@/lib/search-profiles";
@@ -11,6 +11,8 @@ import { useToast } from "@/hooks/use-toast";
 import { apiFetch } from "@/lib/api-base";
 import { OB, OBW, OBStickyBar, OBWebHeader, OBInfoBox, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 import { OnboardingFlowLayout } from "@/components/onboarding-flow-layout";
+import { validatePassword, isPasswordValid } from "@/lib/password-validation";
+import { PasswordRules } from "@/components/password-rules";
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -36,6 +38,8 @@ export default function OnboardingPassword() {
   const [email, setEmail] = useState(params.get("email") || "");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const storedRef = typeof window !== "undefined" ? localStorage.getItem("ha_referral_code") : null;
   const [referralCode, setReferralCode] = useState(storedRef || "");
   const [showReferral, setShowReferral] = useState(!!storedRef);
@@ -80,7 +84,8 @@ export default function OnboardingPassword() {
   }
 
   async function handleCreateAccount() {
-    if (!email || !password || password.length < 6) return;
+    const pwOk = isPasswordValid(validatePassword(password));
+    if (!email || !pwOk || password !== confirmPassword) return;
     if (w && !firstName.trim()) return;
     if (loading || submittingRef.current) return;
     submittingRef.current = true;
@@ -212,9 +217,12 @@ export default function OnboardingPassword() {
     navigate("/");
   }
 
+  const pwStrength = validatePassword(password);
+  const passwordOk = isPasswordValid(pwStrength);
+  const confirmOk = confirmPassword.length > 0 && password === confirmPassword;
   const canSubmit = w
-    ? (firstName.trim() && isValidEmail(email) && password.length >= 6 && !loading)
-    : (password.length >= 6 && email && !loading);
+    ? (firstName.trim() && isValidEmail(email) && passwordOk && confirmOk && !loading)
+    : (passwordOk && confirmOk && !!email && !loading);
 
   const roomsLabel = minRooms === "0" ? "Studio+" : `${minRooms}+`;
 
@@ -318,8 +326,7 @@ export default function OnboardingPassword() {
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Minimaal 6 tekens"
-                  minLength={6}
+                  placeholder="Minimaal 8 tekens"
                   className="w-full ha-field-web"
                   style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text, paddingRight: "44px" }}
                   data-testid="input-password"
@@ -334,9 +341,36 @@ export default function OnboardingPassword() {
                   {showPassword ? <EyeOff className="w-[16px] h-[16px]" /> : <Eye className="w-[16px] h-[16px]" />}
                 </button>
               </div>
-              {password.length > 0 && password.length < 6 && (
-                <p className="text-[12px] mt-1.5 text-ha-danger" data-testid="text-password-hint">
-                  Minimaal 6 tekens vereist
+              <PasswordRules password={password} />
+            </div>
+
+            <div>
+              <label className="text-[14px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
+                Wachtwoord bevestigen
+              </label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Herhaal je wachtwoord"
+                  className="w-full ha-field-web"
+                  style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text, paddingRight: "44px" }}
+                  data-testid="input-confirm-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors"
+                  style={{ color: "#334855" }}
+                  data-testid="button-toggle-confirm-password"
+                >
+                  {showConfirmPassword ? <EyeOff className="w-[16px] h-[16px]" /> : <Eye className="w-[16px] h-[16px]" />}
+                </button>
+              </div>
+              {confirmPassword.length > 0 && password !== confirmPassword && (
+                <p className="text-[12px] mt-1.5 text-ha-danger" data-testid="text-confirm-mismatch">
+                  Wachtwoorden komen niet overeen
                 </p>
               )}
             </div>
@@ -431,33 +465,56 @@ export default function OnboardingPassword() {
   const passwordFormContent = (
     <div className="flex flex-col gap-5">
       <div>
-        <label className="text-[14px] font-medium mb-1.5 block text-[#334855]">
+        <label className="text-[15px] font-semibold mb-2 block text-[#111111]">
           {t("onboarding.password.label") || "Wachtwoord"}
         </label>
         <div className="relative">
-          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
           <input
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder={t("onboarding.password.placeholder") || "Minimaal 6 tekens"}
-            minLength={6}
-            className="w-full h-[56px] pl-12 pr-12 rounded-[16px] border border-[#E5E7EB] bg-white text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+            placeholder={t("onboarding.password.placeholder") || "Minimaal 8 tekens"}
+            className="w-full h-[56px] border border-[#D1D5DB] rounded-[8px] bg-white px-4 pr-12 text-[15px] text-[#111111] placeholder:text-[#9CA3AF] outline-none transition-all focus:border-ha-primary"
             autoFocus
             data-testid="input-password"
           />
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors text-[#334855]"
+            className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors text-[#9CA3AF] hover:text-[#6B7280]"
             data-testid="button-toggle-password"
           >
             {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
           </button>
         </div>
-        {password.length > 0 && password.length < 6 && (
-          <p className="text-[12px] mt-1.5 text-ha-danger" data-testid="text-password-hint">
-            {t("onboarding.password.tooShort") || "Minimaal 6 tekens vereist"}
+        <PasswordRules password={password} />
+      </div>
+
+      <div>
+        <label className="text-[15px] font-semibold mb-2 block text-[#111111]">
+          Wachtwoord bevestigen
+        </label>
+        <div className="relative">
+          <input
+            type={showConfirmPassword ? "text" : "password"}
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Herhaal je wachtwoord"
+            className="w-full h-[56px] border border-[#D1D5DB] rounded-[8px] bg-white px-4 pr-12 text-[15px] text-[#111111] placeholder:text-[#9CA3AF] outline-none transition-all focus:border-ha-primary"
+            data-testid="input-confirm-password"
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors text-[#9CA3AF] hover:text-[#6B7280]"
+            data-testid="button-toggle-confirm-password"
+          >
+            {showConfirmPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
+          </button>
+        </div>
+        {confirmPassword.length > 0 && password !== confirmPassword && (
+          <p className="text-[13px] mt-2 text-[#E11D48]" data-testid="text-confirm-mismatch">
+            Wachtwoorden komen niet overeen
           </p>
         )}
       </div>
