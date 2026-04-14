@@ -1011,34 +1011,46 @@ function HomeTab({
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="px-5 pt-8 pb-4" data-testid="section-welcome">
+      <div
+        className="px-5 pb-10"
+        style={{
+          backgroundColor: "#22336b",
+          borderBottomLeftRadius: 24,
+          borderBottomRightRadius: 24,
+          paddingTop: 32,
+        }}
+        data-testid="section-welcome"
+      >
         <div className="flex items-center justify-between mb-6">
-          <span className="text-[16px] font-semibold text-[#334855] tracking-[-0.01em]" data-testid="text-brand">HousAlert</span>
+          <span className="text-[16px] font-semibold tracking-[-0.01em]" style={{ color: "rgba(255,255,255,0.8)" }} data-testid="text-brand">HousAlert</span>
           <button
             onClick={() => navigate("/settings/preferences")}
-            className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-[#F3F4F6] transition-colors"
+            className="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
+            style={{ background: "rgba(255,255,255,0.12)" }}
             data-testid="button-help"
           >
-            <HelpCircle className="w-[22px] h-[22px] text-[#111111]" />
+            <HelpCircle className="w-[22px] h-[22px] text-white" />
           </button>
         </div>
-        <h1 className="text-[34px] font-semibold text-[#111111] tracking-[-0.025em] leading-[1.15]" data-testid="text-greeting">
+        <h1 className="text-[34px] font-semibold tracking-[-0.025em] leading-[1.15] text-white" data-testid="text-greeting">
           {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")} 👋
         </h1>
-        <p className="text-[17px] text-[#334855] mt-2 leading-relaxed" data-testid="text-welcome-subtitle">
+        <p className="text-[17px] mt-2 leading-relaxed" style={{ color: "rgba(255,255,255,0.8)" }} data-testid="text-welcome-subtitle">
           {t("home.welcomeSubtitle")}
         </p>
       </div>
 
-      <div className="flex flex-col gap-8 px-5 pt-2">
-        <HighlightCard
-          icon={Send}
-          title="Geef een vriend 25% korting"
-          subtitle="Deel je persoonlijke link. Jij en je vriend krijgen korting op de eerste betaling."
-          ctaLabel="Deel je link"
-          onClick={handleReferralShare}
-          testId="card-home-referral"
-        />
+      <div className="flex flex-col gap-8 px-5 pt-0">
+        <div className="relative z-10" style={{ marginTop: -16 }}>
+          <HighlightCard
+            icon={Send}
+            title="Geef een vriend 25% korting"
+            subtitle="Deel je persoonlijke link. Jij en je vriend krijgen korting op de eerste betaling."
+            ctaLabel="Deel je link"
+            onClick={handleReferralShare}
+            testId="card-home-referral"
+          />
+        </div>
 
         <div data-testid="section-gamification">
           <h2 className="text-[18px] font-semibold text-[#111111] mb-4" data-testid="text-gamification-title">
