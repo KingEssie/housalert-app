@@ -1,0 +1,182 @@
+Refine the subscription screen UI to match a clean, premium, minimal style with strict visual rules.
+
+IMPORTANT:
+Do NOT make subjective design decisions.
+Follow the rules below EXACTLY.
+No soft interpretations.
+
+==================================================
+1. TEXT STYLING — FORCE BLACK + HIERARCHY
+==================================================
+
+ALL text in this screen must follow this:
+
+A. TITLES
+- color: pure black (#000000)
+- font-weight: bold (600–700)
+- size: clearly larger than other text
+
+Used for:
+- "Premium Maandelijks"
+- section titles
+- action titles (e.g. "Betaalmethode beheren")
+
+B. BODY / DESCRIPTION TEXT
+- color: black (#000000)
+- font-weight: normal (400–500)
+- slightly smaller than titles
+
+Used for:
+- metadata labels
+- descriptions
+- helper text
+
+C. REMOVE:
+- light grey text
+- faded text
+- low contrast text
+
+Everything must be readable and strong.
+
+==================================================
+2. ICONS — CLEAN, NO BACKGROUNDS
+==================================================
+
+Fix ALL icons on this screen:
+
+- icon color: black (#000000)
+- size: increase by ~20–30%
+- NO background shapes behind icons
+- NO pink squares
+- NO grey circles
+- NO containers
+
+Icons must be:
+→ standalone
+→ clean
+→ minimal
+
+Also:
+- check icons and X icons must NOT have circles around them
+- remove all circular icon containers
+
+==================================================
+3. REMOVE ALL DECORATIVE BACKGROUNDS
+==================================================
+
+Remove:
+- pink icon backgrounds
+- grey icon backgrounds
+- colored icon containers
+
+Only allowed:
+- white cards
+- light grey page background
+
+Nothing else.
+
+==================================================
+4. CARD STYLE
+==================================================
+
+Cards should be:
+
+- background: white (#FFFFFF)
+- border-radius: 10–12px (NOT overly rounded)
+- no excessive shadow
+- clean separation via spacing, not decoration
+
+==================================================
+5. TOP SUBSCRIPTION CARD — CLEAN PREMIUM
+==================================================
+
+Top section must be:
+
+- "Premium Maandelijks" → bold, black, largest text
+- "Actief" badge → subtle green, small, clean
+- Renewal line:
+  "Volgende verlenging op [date]" → black text, slightly smaller
+
+NO icons with backgrounds in this section.
+
+==================================================
+6. ACTION ROWS
+==================================================
+
+For rows like:
+- Betaalmethode beheren
+- Abonnement opzeggen
+
+Use:
+
+LEFT:
+- icon (black, no background)
+- title (bold black)
+
+RIGHT:
+- chevron icon
+
+OPTIONAL:
+- small description under title (black, smaller text)
+
+==================================================
+7. REMOVE “SOFT DESIGN”
+==================================================
+
+Do NOT use:
+- faded greys for text
+- pastel backgrounds
+- soft UI decorations
+- playful elements
+
+This must feel:
+→ strong
+→ premium
+→ minimal
+
+==================================================
+8. GLOBAL ICON RULE (VERY IMPORTANT)
+==================================================
+
+Apply this rule across this screen:
+
+❌ NOT ALLOWED:
+- icon inside circle
+- icon inside square
+- icon inside colored background
+
+✅ ONLY:
+- icon alone
+- clean
+- black
+
+==================================================
+9. FINAL RESULT REQUIREMENT
+==================================================
+
+The screen must feel:
+
+- strong contrast
+- minimal
+- premium
+- no visual noise
+- no unnecessary decoration
+
+It should feel closer to:
+→ Apple settings style
+→ high-end SaaS UI
+
+NOT:
+→ playful startup UI
+→ Dribbble-style overdesign
+
+==================================================
+10. OUTPUT
+==================================================
+
+Return:
+1. which icon containers were removed
+2. which text styles were updated to black
+3. which components had backgrounds removed
+4. confirmation that ALL icons are now standalone (no circles/squares)
+5. confirmation that titles are bold and larger than body text

@@ -62,7 +62,7 @@ export default function SubscriptionDetailPage() {
 
   function getStatusBadgeClass(): string {
     if (subscription?.isExpired) return "bg-red-50 text-red-700";
-    if (isCanceled && subscription?.isActive) return "bg-[#F3F4F6] text-[#374151]";
+    if (isCanceled && subscription?.isActive) return "bg-[#F3F4F6] text-[#111111]";
     if (subscription?.isTrial) return "bg-ha-primary/10 text-ha-primary";
     return "bg-[#ECFDF5] text-[#065F46]";
   }
@@ -122,50 +122,48 @@ export default function SubscriptionDetailPage() {
     },
   ];
 
-  const renewalLabel = subscription?.isTrial
-    ? t("subscription.trialEnds")
-    : isCanceled
-      ? t("subscription.endsAt")
-      : t("subscription.nextRenewal");
-
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#eaeaeb" }} data-testid="page-subscription-detail">
       <AppHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="max-w-lg mx-auto px-4 pt-2 pb-12 flex flex-col gap-3">
 
-        {/* ── Premium membership card ── */}
+        {/* ── Top membership card ── */}
         <div className="app-card !p-0 overflow-hidden" data-testid="card-subscription-info">
 
-          {/* Top summary block */}
+          {/* Hero block */}
           <div className="px-5 pt-6 pb-5">
-            {/* Crown + status badge row */}
-            <div className="flex items-center justify-between mb-4">
-              <div className="w-10 h-10 rounded-[8px] bg-ha-primary/10 flex items-center justify-center">
-                <Crown className="w-[20px] h-[20px] text-ha-primary" strokeWidth={1.8} />
-              </div>
-              <span
-                className={`inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-wide uppercase px-2.5 py-[5px] rounded-[6px] ${getStatusBadgeClass()}`}
-                data-testid="badge-subscription-status"
-              >
-                {subscription?.isActive && !subscription?.isExpired && (
-                  <span className="w-[6px] h-[6px] rounded-full bg-current opacity-80 flex-shrink-0" />
-                )}
-                {getStatusLabel()}
-              </span>
-            </div>
 
-            {/* Plan name — hero text */}
+            {/* Crown icon — standalone, no background */}
+            <Crown
+              className="w-[26px] h-[26px] text-[#000000] mb-4"
+              strokeWidth={1.8}
+            />
+
+            {/* Plan name — bold black, largest text */}
             <p
-              className="text-[22px] font-bold text-[#111111] leading-tight mb-1"
+              className="text-[22px] font-bold text-[#000000] leading-tight"
               data-testid="text-plan-summary"
             >
               {subscription?.isTrial ? t("subscription.status.trial") : getPlanLabel(subscription?.plan)}
             </p>
 
-            {/* Renewal / expiry message */}
+            {/* Status badge — inline after plan name */}
+            <div className="mt-2 flex items-center gap-2">
+              <span
+                className={`inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-wide uppercase px-2.5 py-[5px] rounded-[6px] ${getStatusBadgeClass()}`}
+                data-testid="badge-subscription-status"
+              >
+                {subscription?.isActive && !subscription?.isExpired && (
+                  <span className="w-[5px] h-[5px] rounded-full bg-current opacity-90 flex-shrink-0" />
+                )}
+                {getStatusLabel()}
+              </span>
+            </div>
+
+            {/* Renewal message — black, no fade */}
             {renewalDate && (
-              <p className="text-[14px] text-[#374151] font-medium mt-1" data-testid="text-renewal-hero">
+              <p className="text-[14px] font-medium text-[#000000] mt-3" data-testid="text-renewal-hero">
                 {isCanceled
                   ? `${t("subscription.endsAt")} ${formatDate(renewalDate)}`
                   : subscription?.isTrial
@@ -174,11 +172,14 @@ export default function SubscriptionDetailPage() {
               </p>
             )}
 
-            {/* Value line — subtle, premium */}
+            {/* Value confirmation line — no icon container */}
             {subscription?.isActive && !subscription?.isExpired && (
-              <div className="flex items-center gap-1.5 mt-3">
-                <CheckCircle2 className="w-[14px] h-[14px] text-[#059669] flex-shrink-0" strokeWidth={2} />
-                <p className="text-[13px] text-[#374151]">
+              <div className="flex items-center gap-2 mt-3">
+                <CheckCircle2
+                  className="w-[15px] h-[15px] text-[#059669] flex-shrink-0"
+                  strokeWidth={2}
+                />
+                <p className="text-[13px] font-normal text-[#000000]">
                   Je ontvangt direct nieuwe woningmatches
                 </p>
               </div>
@@ -188,21 +189,18 @@ export default function SubscriptionDetailPage() {
           {/* Divider */}
           <div className="h-px bg-[#F3F4F6] mx-5" />
 
-          {/* Detail rows */}
-          <div className="px-5">
+          {/* Detail rows — labels black, values bold black */}
+          <div className="px-5 pb-1">
             {rows.map((row, idx) => (
               <div
                 key={row.testId}
                 className={`flex items-center justify-between py-[13px] ${idx < rows.length - 1 ? "border-b border-[#F3F4F6]" : ""}`}
               >
-                <p className="text-[13px] text-[#6B7280]">{row.label}</p>
-                <p className="text-[13px] text-[#111111] font-semibold" data-testid={row.testId}>{row.value}</p>
+                <p className="text-[13px] font-normal text-[#000000]">{row.label}</p>
+                <p className="text-[13px] font-semibold text-[#000000]" data-testid={row.testId}>{row.value}</p>
               </div>
             ))}
           </div>
-
-          {/* Bottom padding */}
-          <div className="pb-1" />
         </div>
 
         {/* ── Management actions ── */}
@@ -211,37 +209,42 @@ export default function SubscriptionDetailPage() {
           {/* Primary: manage payment */}
           <button
             onClick={() => navigate("/account/payment-method")}
-            className="w-full flex items-center gap-4 px-5 py-[17px] text-left active:bg-[#F9FAFB] transition-colors"
+            className="w-full flex items-center gap-4 px-5 py-[16px] text-left active:bg-[#F9FAFB] transition-colors"
             data-testid="button-manage-payment"
           >
-            <div className="w-9 h-9 rounded-[8px] bg-[#F3F4F6] flex items-center justify-center flex-shrink-0">
-              <CreditCard className="w-[18px] h-[18px] text-[#374151]" strokeWidth={1.8} />
-            </div>
+            {/* Icon standalone — no background */}
+            <CreditCard
+              className="w-[22px] h-[22px] text-[#000000] flex-shrink-0"
+              strokeWidth={1.8}
+            />
             <div className="flex-1 min-w-0">
-              <p className="text-[15px] text-[#111111] font-semibold leading-snug">
+              <p className="text-[15px] font-bold text-[#000000] leading-snug">
                 {t("subscription.managePayment")}
               </p>
-              <p className="text-[12px] text-[#6B7280] mt-[2px]">
+              <p className="text-[12px] font-normal text-[#000000] mt-[2px] opacity-60">
                 Werk je betaalgegevens bij
               </p>
             </div>
-            <ChevronRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+            <ChevronRight className="w-[18px] h-[18px] text-[#000000] opacity-30 flex-shrink-0" />
           </button>
 
-          {/* Destructive: cancel */}
+          {/* Destructive: cancel — clearly red, no icon container */}
           {!isCanceled && (
             <>
               <div className="h-px bg-[#F3F4F6] mx-5" />
               <button
                 onClick={() => navigate("/account/subscription/cancel")}
-                className="w-full flex items-center gap-4 px-5 py-[14px] text-left active:bg-red-50/50 transition-colors"
+                className="w-full flex items-center gap-4 px-5 py-[14px] text-left active:bg-red-50/60 transition-colors"
                 data-testid="button-cancel-subscription"
               >
-                <XCircle className="w-[18px] h-[18px] text-[#EF4444] flex-shrink-0 ml-[5px]" strokeWidth={1.8} />
-                <p className="text-[14px] text-[#EF4444] flex-1">
+                <XCircle
+                  className="w-[20px] h-[20px] text-[#DC2626] flex-shrink-0"
+                  strokeWidth={1.8}
+                />
+                <p className="text-[14px] font-medium text-[#DC2626] flex-1">
                   {t("subscription.cancelSubscription")}
                 </p>
-                <ChevronRight className="w-4 h-4 text-[#9CA3AF] flex-shrink-0" />
+                <ChevronRight className="w-[16px] h-[16px] text-[#DC2626] opacity-40 flex-shrink-0" />
               </button>
             </>
           )}
@@ -251,12 +254,14 @@ export default function SubscriptionDetailPage() {
         {subscription?.isExpired && (
           <div className="app-card" data-testid="card-expired-cta">
             <div className="flex items-start gap-3 mb-4">
-              <div className="w-10 h-10 rounded-[8px] bg-ha-primary/10 flex items-center justify-center flex-shrink-0">
-                <AlertCircle className="w-5 h-5 text-ha-primary" />
-              </div>
+              {/* AlertCircle standalone — no container */}
+              <AlertCircle
+                className="w-[22px] h-[22px] text-[#000000] flex-shrink-0 mt-0.5"
+                strokeWidth={1.8}
+              />
               <div>
-                <p className="text-[15px] font-semibold text-[#111111]">{t("subscription.expiredTitle")}</p>
-                <p className="text-[13px] text-[#6B7280] mt-0.5">{t("subscription.expiredDesc")}</p>
+                <p className="text-[15px] font-bold text-[#000000]">{t("subscription.expiredTitle")}</p>
+                <p className="text-[13px] font-normal text-[#000000] mt-0.5 opacity-60">{t("subscription.expiredDesc")}</p>
               </div>
             </div>
             <button
