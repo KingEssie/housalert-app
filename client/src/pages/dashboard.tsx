@@ -1049,10 +1049,12 @@ function HomeTab({
         <HighlightCard
           icon={Send}
           title="Geef een vriend 25% korting"
+          subtitle="Deel je persoonlijke link. Jij en je vriend krijgen korting op de eerste betaling."
           ctaLabel="Deel je link"
           onClick={handleReferralShare}
           testId="card-home-referral"
           bgColor="#f2f6ff"
+          layout="horizontal"
         />
 
         <ZoekopdrachtenSection profiles={profiles} navigate={navigate} />

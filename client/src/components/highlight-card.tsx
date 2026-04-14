@@ -9,10 +9,42 @@ interface HighlightCardProps {
   onClick?: () => void;
   testId?: string;
   bgColor?: string;
+  layout?: "centered" | "horizontal";
 }
 
-export function HighlightCard({ icon: Icon, title, subtitle, overline, ctaLabel, onClick, testId, bgColor }: HighlightCardProps) {
+export function HighlightCard({ icon: Icon, title, subtitle, overline, ctaLabel, onClick, testId, bgColor, layout = "centered" }: HighlightCardProps) {
   const bg = bgColor ?? "#F5F0EB";
+
+  if (layout === "horizontal") {
+    return (
+      <button
+        onClick={onClick}
+        className="w-full rounded-[16px] p-4 text-left transition-colors"
+        style={{
+          backgroundColor: bg,
+          boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+          border: "1px solid #E5E7EB",
+        }}
+        data-testid={testId}
+      >
+        <div className="flex items-center gap-3 mb-2">
+          <Icon className="w-[26px] h-[26px] shrink-0 text-[#111111]" strokeWidth={1.6} />
+          <p className="text-[17px] font-semibold text-[#111111] leading-snug">{title}</p>
+        </div>
+        {subtitle && (
+          <p className="text-[14px] text-[#334855] leading-relaxed mb-3">{subtitle}</p>
+        )}
+        {ctaLabel && (
+          <span
+            className="inline-flex h-[40px] px-5 rounded-full bg-white text-[#111111] text-[14px] font-semibold items-center transition-colors"
+            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}
+          >
+            {ctaLabel}
+          </span>
+        )}
+      </button>
+    );
+  }
 
   return (
     <button
