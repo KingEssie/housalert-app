@@ -748,10 +748,24 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
     : null;
 
   return (
-    <div data-testid="section-zoekopdrachten">
-      <h2 className="text-[18px] font-semibold text-[#111111] mb-1.5" data-testid="text-zoekopdrachten-title">
-        {t("home.zoekopdrachtenTitle")}
-      </h2>
+    <div
+      data-testid="section-zoekopdrachten"
+      className="bg-white rounded-[20px] p-5"
+      style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}
+    >
+      <div className="flex items-center gap-2 mb-1.5">
+        <h2 className="text-[21px] font-semibold text-[#111111] flex-1" data-testid="text-zoekopdrachten-title">
+          {t("home.zoekopdrachtenTitle")}
+        </h2>
+        {profiles.length > 0 && (
+          <span
+            className="text-[12px] font-medium px-[10px] py-[4px] rounded-full"
+            style={{ backgroundColor: "#e6f0f7", color: "#4b7b94" }}
+          >
+            {profiles.length}
+          </span>
+        )}
+      </div>
       <p className="text-[15px] text-[#334855] mb-4" data-testid="text-filters-expected">
         {estimatedCount
           ? t("home.filtersExpected", { count: estimatedCount })
@@ -767,16 +781,16 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
             return (
               <div
                 key={p.id}
-                className="rounded-[16px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] py-4 px-5 flex items-center cursor-pointer hover:border-[#D1D5DB] active:bg-[#FAFAFA] transition-all"
+                className="rounded-[16px] bg-[#f3f4f6] p-4 flex items-center cursor-pointer active:opacity-80 transition-all"
                 onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
                 data-testid={`row-zoekopdracht-${p.id}`}
               >
-                <div className="w-2 h-2 rounded-full bg-ha-success flex-shrink-0 mr-3.5" />
+                <div className="w-[11px] h-[11px] rounded-full flex-shrink-0 mr-3.5" style={{ backgroundColor: "#22c55e", boxShadow: "0 0 0 3px rgba(34,197,94,0.15)" }} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[15px] font-semibold text-[#111111] truncate">{title}</p>
-                  <p className="text-[14px] text-[#334855] mt-0.5 truncate">{priceLine}</p>
+                  <p className="text-[18px] font-semibold text-[#111111] truncate">{title}</p>
+                  <p className="text-[14px] text-[#6B7280] mt-1 truncate">{priceLine}</p>
                   {locationLine && (
-                    <p className="text-[14px] text-[#334855] mt-0.5 truncate">{locationLine}</p>
+                    <p className="text-[14px] text-[#6B7280] mt-0.5 truncate">{locationLine}</p>
                   )}
                 </div>
                 <DropdownMenu>
@@ -784,7 +798,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
                     <button
                       onClick={(e) => e.stopPropagation()}
                       onPointerDown={(e) => e.stopPropagation()}
-                      className="w-9 h-9 rounded-full flex items-center justify-center text-[#334855] hover:bg-[#F3F4F6] active:bg-[#E5E7EB] transition-colors flex-shrink-0 ml-2"
+                      className="w-10 h-10 rounded-full flex items-center justify-center text-[#6B7280] hover:bg-white/70 active:bg-white transition-colors flex-shrink-0 ml-2"
                       data-testid={`button-menu-${p.id}`}
                     >
                       <MoreVertical className="w-[18px] h-[18px]" />
@@ -831,7 +845,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
       {profiles.length > 0 && profiles.length < MAX_PROFILES && (
         <button
           onClick={() => navigate("/dashboard/searches/new")}
-          className="w-full mt-3 h-[48px] rounded-[12px] bg-ha-primary/10 text-[14px] font-semibold text-ha-primary hover:bg-ha-primary/15 transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
+          className="w-full mt-4 py-[14px] rounded-[16px] bg-transparent border-2 border-ha-primary text-[16px] font-semibold text-ha-primary hover:bg-ha-primary/5 transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
           data-testid="button-add-zoekopdracht"
         >
           + {t("home.addZoekopdracht")}
