@@ -980,9 +980,9 @@ function HomeTab({
 
         <HighlightCard
           icon={Send}
-          title={t("home.referralTitle")}
-          subtitle={t("home.referralSubtitle")}
-          ctaLabel={t("home.referralShareCta")}
+          title={t("tips.referralTitle")}
+          subtitle={t("tips.referralSubtitle")}
+          ctaLabel={t("tips.referralShareCta")}
           onClick={handleReferralShare}
           testId="card-home-referral"
           bgColor="#f2f6ff"

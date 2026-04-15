@@ -1,0 +1,213 @@
+Perform a strict localization bug-fix pass for the user-facing app.
+
+IMPORTANT:
+Do NOT do another broad redesign or i18n rewrite.
+This is a targeted repair pass to fix mixed-language UI, missing keys, and incorrect fallback behavior.
+
+Admin portal must remain Dutch and untouched.
+
+==================================================
+GOAL
+==================================================
+
+The app is currently set to English, but multiple screens still show:
+- German text
+- raw translation keys
+- mixed English/German UI
+
+Fix all of this so that:
+- when language = English, the entire user-facing app is English
+- no German strings appear
+- no raw translation keys appear
+- fallback goes to English only
+- admin remains Dutch
+
+==================================================
+1. FIX I18N FALLBACK CONFIGURATION
+==================================================
+
+Inspect the i18n configuration and fix fallback behavior.
+
+Required behavior:
+- active language "en" must always render English text
+- if an English translation key is missing, fallback must be English first, never Dutch
+- German must never appear as fallback when English is selected unless explicitly intended for that language
+
+Verify and fix:
+- fallbackLng configuration
+- default language initialization
+- language persistence / hydration
+- any code paths overriding locale incorrectly
+
+Add temporary debug logging if needed, but remove it afterward.
+
+==================================================
+2. REMOVE REMAINING HARDCODED GERMAN / MIXED-LANGUAGE STRINGS
+==================================================
+
+Search the full user-facing frontend for remaining hardcoded non-English strings, especially German ones.
+
+Examples already visible in screenshots:
+- "Standort"
+- "Anforderungen"
+- "Extra Eigenschaften"
+- "Stadtteile"
+- "Radius"
+- "Pendelzeit"
+- "Schlafzimmer"
+- "Fläche"
+- "Keine Präferenz"
+- "Keine Auswahl"
+- "Suchauftrag speichern"
+
+Replace ALL of these with translation keys.
+
+Also search for any remaining hardcoded Dutch or German in:
+- onboarding flow
+- filters / search setup flow
+- home dashboard
+- settings/account
+- Reactiebrief flow
+- modals
+- buttons
+- helper text
+- empty states
+
+==================================================
+3. FIX RAW TRANSLATION KEYS SHOWING IN UI
+==================================================
+
+The following are visible as raw keys in the UI and must be fixed:
+- home.referralTitle
+- home.referralSubtitle
+- home.referralShareCta
+
+Requirements:
+- verify these keys exist in all required locale files
+- especially ensure they exist in en.ts
+- ensure the namespace is loaded correctly where these keys are used
+- ensure the component uses the correct t() scope / namespace
+
+After fix:
+- no raw translation keys should be visible anywhere
+
+==================================================
+4. COMPLETE MISSING ENGLISH TRANSLATIONS
+==================================================
+
+Audit all user-facing English locale files and add any missing keys that currently cause:
+- German fallback
+- raw key display
+- mixed-language screens
+
+Focus especially on:
+- home / referral card
+- onboarding location/setup steps
+- search criteria flow
+- filters / requirements
+- step titles
+- save / next / previous buttons
+- helper labels
+- summary screen
+
+English copy must be natural, concise, and app-quality.
+
+==================================================
+5. ENSURE COMPONENTS USE THE CORRECT TRANSLATION NAMESPACE
+==================================================
+
+For all affected screens/components:
+- verify useTranslation() is called correctly
+- verify the correct namespace is used
+- verify t("...") paths match the actual locale file structure
+- fix any components reading wrong keys or wrong namespaces
+
+Do NOT leave silent failures.
+
+==================================================
+6. HIGH-PRIORITY SCREENS TO FIX NOW
+==================================================
+
+Based on current screenshots, prioritize and fully fix these screens first:
+
+A. Password screen
+- "Passwort ändern" must become English if app language is English
+- Save button must become "Save" only if English is active
+
+B. Settings / Account screen
+- all section headers and menu items must be English when English is selected
+- remove any remaining mixed language
+- "Delete account" etc. should remain consistent
+
+C. Home screen
+- referral card must not show raw keys
+- all labels must be English when English is active
+
+D. Onboarding / search setup flow
+- all step titles, tabs, labels, chips, helper text, and buttons must be English
+- no German strings in step screens
+- examples from screenshots:
+  - Standort
+  - Anforderungen
+  - Extra Eigenschaften
+  - Stadtteile
+  - Radius
+  - Pendelzeit
+  - Schlafzimmer
+  - Fläche
+  - Keine Präferenz
+  - Keine Auswahl
+  - Suchauftrag speichern
+
+E. Summary/review screen
+- all section labels and CTA button must be English
+
+==================================================
+7. CONSISTENCY RULE
+==================================================
+
+When English is selected:
+- EVERYTHING user-facing must be English
+- no German
+- no Dutch
+- no raw keys
+
+When German is selected:
+- everything user-facing must be German
+
+Admin portal:
+- stays Dutch
+
+==================================================
+8. QA CHECK AFTER FIX
+==================================================
+
+After making the fixes, run a strict QA pass and report the result for these screens:
+
+- password screen
+- settings/account screen
+- home dashboard
+- onboarding/search setup step 1
+- onboarding/search setup step 2
+- onboarding/search setup step 3
+- onboarding/search setup step 4
+- onboarding/search setup summary
+- referral card
+
+For each, confirm:
+- no hardcoded German/Dutch
+- no raw keys
+- correct English rendering when EN is active
+
+==================================================
+9. OUTPUT
+==================================================
+
+Return:
+1. all files changed
+2. all hardcoded strings removed
+3. all missing English translation keys added
+4. exact i18n fallback configuration after fix
+5. confirmation that English no longer falls back to German
+6. confirmation that raw keys no longer appear
+7. a screen-by-screen QA summary for the high-priority screens
