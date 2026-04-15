@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { Zap, Layers, MousePointerClick, Gift, Loader2, ArrowRight } from "lucide-react";
 import { apiFetch } from "@/lib/api-base";
+import { useTranslation } from "@/i18n";
 
 const HA_PRIMARY = "rgb(var(--ha-primary))";
 
@@ -16,6 +17,7 @@ export default function ReferralLandingPage() {
   const [info, setInfo] = useState<ReferralInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const { t } = useTranslation();
 
   const urlParams = new URLSearchParams(window.location.search);
   const refCode = urlParams.get("ref") || "";
@@ -64,9 +66,9 @@ export default function ReferralLandingPage() {
   }
 
   const benefits = [
-    { icon: Zap, text: "Sneller dan andere zoekers" },
-    { icon: Layers, text: "Alle bronnen op één plek" },
-    { icon: MousePointerClick, text: "Direct reageren" },
+    { icon: Zap, text: t("referralLanding.benefit1") },
+    { icon: Layers, text: t("referralLanding.benefit2") },
+    { icon: MousePointerClick, text: t("referralLanding.benefit3") },
   ];
 
   return (
@@ -81,7 +83,7 @@ export default function ReferralLandingPage() {
             className="text-[30px] font-semibold leading-[1.2] text-[#111]"
             data-testid="text-referral-title"
           >
-            Vind sneller een woning met HousAlert
+            {t("referralLanding.title")}
           </h1>
 
           {info?.firstName && (
@@ -89,7 +91,7 @@ export default function ReferralLandingPage() {
               className="text-[16px] text-[#334855] mt-3"
               data-testid="text-referral-inviter"
             >
-              Uitgenodigd door <span className="font-semibold text-[#111]">{info.firstName}</span>
+              {t("referralLanding.invitedBy", { name: info.firstName })}
             </p>
           )}
         </div>
@@ -108,10 +110,10 @@ export default function ReferralLandingPage() {
             </div>
             <div>
               <p className="text-[16px] font-semibold text-[#111]">
-                25% korting op je eerste betaling
+                {t("referralLanding.discountTitle")}
               </p>
               <p className="text-[13px] text-[#334855] mt-0.5">
-                Automatisch toegepast bij afrekenen
+                {t("referralLanding.discountSubtitle")}
               </p>
             </div>
           </div>
@@ -137,18 +139,18 @@ export default function ReferralLandingPage() {
           }}
           data-testid="button-start-referral"
         >
-          Start gratis en ontvang korting
+          {t("referralLanding.cta")}
           <ArrowRight className="w-5 h-5" />
         </button>
 
         <p className="text-[12px] text-[#334855] text-center mt-4">
-          Geen creditcard nodig · Gratis proefperiode
+          {t("referralLanding.noCard")}
         </p>
       </main>
 
       <footer className="px-6 py-6 text-center">
         <p className="text-[11px] text-[#334855]">
-          © {new Date().getFullYear()} HousAlert · Alle rechten voorbehouden
+          © {new Date().getFullYear()} HousAlert · {t("referralLanding.copyright")}
         </p>
       </footer>
     </div>

@@ -233,7 +233,7 @@ export default function OnboardingCity() {
 
               {presetMatches.length === 0 && geocoder.results.length === 0 && !geocoder.loading && search.trim().length >= 3 && (
                 <p className="text-[13px] text-center py-4" style={{ color: OBW.textSecondary }}>
-                  Geen resultaten
+                  {t("onboardingLocation.noResults")}
                 </p>
               )}
             </div>
@@ -243,7 +243,7 @@ export default function OnboardingCity() {
             <>
               <div style={{ marginTop: "4px" }}>
                 <label className="text-[13px] font-semibold mb-2 block" style={{ color: OBW.textSecondary }}>
-                  Straal rondom {selectedCity.name}
+                  {t("onboardingLocation.radiusAround", { city: selectedCity.name })}
                 </label>
                 <div className="flex gap-2 overflow-x-auto no-scrollbar" data-testid="select-radius">
                   {RADIUS_OPTIONS.map((km) => {
@@ -279,7 +279,7 @@ export default function OnboardingCity() {
 
               <div className="mt-3">
                 <OBInfoBox>
-                  We doorzoeken alle huurwoningen in een straal van {radiusKm} km rondom {selectedCity.name}. Je ontvangt direct een bericht bij nieuwe woningen.
+                  {t("onboardingLocation.radiusInfo").replace("{km}", String(radiusKm)).replace("{city}", selectedCity.name)}
                 </OBInfoBox>
               </div>
             </>
@@ -359,7 +359,7 @@ export default function OnboardingCity() {
 
           {presetMatches.length === 0 && geocoder.results.length === 0 && !geocoder.loading && search.trim().length >= 3 && (
             <p className="text-[13px] text-center py-4 text-[#334855]">
-              Geen resultaten
+              {t("onboardingLocation.noResults")}
             </p>
           )}
         </div>

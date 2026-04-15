@@ -33,7 +33,7 @@ const MAX_PROFILES = 4;
 const TOTAL_STEPS = 5;
 
 const BEDROOM_OPTIONS = [
-  { value: 0, label: "Geen voorkeur" },
+  { value: 0, labelKey: "newSearch.step2.noPref" },
   { value: 1, label: "1+" },
   { value: 2, label: "2+" },
   { value: 3, label: "3+" },

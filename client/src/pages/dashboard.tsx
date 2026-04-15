@@ -728,7 +728,7 @@ function ProfileTipsCompletionCard({ navigate }: { navigate: (path: string) => v
   );
 }
 
-function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile[]; navigate: (path: string) => void }) {
+function ZoekopdrachtenSection({ profiles, navigate, buddyMode }: { profiles: SearchProfile[]; navigate: (path: string) => void; buddyMode?: boolean }) {
   const { t, locale } = useTranslation();
   const { toast } = useToast();
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
@@ -783,8 +783,8 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
             return (
               <div
                 key={p.id}
-                className="rounded-[10px] bg-[#f3f4f6] p-4 flex items-center cursor-pointer active:opacity-80 transition-all"
-                onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
+                className={`rounded-[10px] bg-[#f3f4f6] p-4 flex items-center ${buddyMode ? "cursor-default" : "cursor-pointer active:opacity-80"} transition-all`}
+                onClick={buddyMode ? undefined : () => navigate(`/dashboard/searches/edit/${p.id}`)}
                 data-testid={`row-zoekopdracht-${p.id}`}
               >
                 <div className="w-[11px] h-[11px] rounded-full flex-shrink-0 mr-3.5" style={{ backgroundColor: "#22c55e", boxShadow: "0 0 0 3px rgba(34,197,94,0.15)" }} />
@@ -795,36 +795,38 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
                     <p className="text-[14px] text-[#6B7280] mt-0.5 truncate">{locationLine}</p>
                   )}
                 </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      onClick={(e) => e.stopPropagation()}
-                      onPointerDown={(e) => e.stopPropagation()}
-                      className="w-10 h-10 rounded-full flex items-center justify-center text-[#6B7280] hover:bg-white/70 active:bg-white transition-colors flex-shrink-0 ml-2"
-                      data-testid={`button-menu-${p.id}`}
-                    >
-                      <MoreVertical className="w-[18px] h-[18px]" />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="min-w-[140px]" onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
-                    <DropdownMenuItem
-                      onClick={(e) => { e.stopPropagation(); navigate(`/dashboard/searches/edit/${p.id}`); }}
-                      className="flex items-center gap-2.5 cursor-pointer"
-                      data-testid={`menu-edit-${p.id}`}
-                    >
-                      <Pencil className="w-4 h-4 text-[#334855]" />
-                      {t("home.menuEdit")}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(p.id); }}
-                      className="flex items-center gap-2.5 text-ha-danger focus:text-ha-danger cursor-pointer"
-                      data-testid={`menu-delete-${p.id}`}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      {t("home.menuDelete")}
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                {!buddyMode && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        onClick={(e) => e.stopPropagation()}
+                        onPointerDown={(e) => e.stopPropagation()}
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-[#6B7280] hover:bg-white/70 active:bg-white transition-colors flex-shrink-0 ml-2"
+                        data-testid={`button-menu-${p.id}`}
+                      >
+                        <MoreVertical className="w-[18px] h-[18px]" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="min-w-[140px]" onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
+                      <DropdownMenuItem
+                        onClick={(e) => { e.stopPropagation(); navigate(`/dashboard/searches/edit/${p.id}`); }}
+                        className="flex items-center gap-2.5 cursor-pointer"
+                        data-testid={`menu-edit-${p.id}`}
+                      >
+                        <Pencil className="w-4 h-4 text-[#334855]" />
+                        {t("home.menuEdit")}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(p.id); }}
+                        className="flex items-center gap-2.5 text-ha-danger focus:text-ha-danger cursor-pointer"
+                        data-testid={`menu-delete-${p.id}`}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        {t("home.menuDelete")}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </div>
             );
           })}
@@ -832,19 +834,21 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
       ) : (
         <div className="rounded-[12px] bg-white border border-[#E5E7EB] p-7 flex flex-col items-center justify-center text-center min-h-[calc(100dvh-260px)]" data-testid="card-zoekopdrachten-empty">
           <img src={EMPTY_STATE_IMAGES.createSearch} alt="" className="w-[72px] max-h-[72px] h-auto mb-5 object-contain" draggable={false} />
-          <p className="text-[20px] font-bold text-[#000000] mb-2">Maak je eerste zoekprofiel aan</p>
-          <p className="text-[16px] text-[#334855] mb-6 leading-relaxed max-w-[280px]">Stel je voorkeuren in en ontvang direct nieuwe woningen.</p>
-          <button
-            onClick={() => navigate("/dashboard/searches/new")}
-            className="h-[48px] px-8 rounded-[12px] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
-            data-testid="button-create-first-profile"
-          >
-            {t("home.createProfile")}
-          </button>
+          <p className="text-[20px] font-bold text-[#000000] mb-2">{t("home.emptyTitle")}</p>
+          <p className="text-[16px] text-[#334855] mb-6 leading-relaxed max-w-[280px]">{t("home.emptySubtitle")}</p>
+          {!buddyMode && (
+            <button
+              onClick={() => navigate("/dashboard/searches/new")}
+              className="h-[48px] px-8 rounded-[12px] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
+              data-testid="button-create-first-profile"
+            >
+              {t("home.createProfile")}
+            </button>
+          )}
         </div>
       )}
 
-      {profiles.length > 0 && profiles.length < MAX_PROFILES && (
+      {!buddyMode && profiles.length > 0 && profiles.length < MAX_PROFILES && (
         <button
           onClick={() => navigate("/dashboard/searches/new")}
           className="w-full mt-4 py-[14px] rounded-[10px] bg-transparent border-2 border-ha-primary text-[16px] font-semibold text-ha-primary hover:bg-ha-primary/5 transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
@@ -853,7 +857,7 @@ function ZoekopdrachtenSection({ profiles, navigate }: { profiles: SearchProfile
           + {t("home.addZoekopdracht")}
         </button>
       )}
-      {profiles.length >= MAX_PROFILES && (
+      {!buddyMode && profiles.length >= MAX_PROFILES && (
         <p className="mt-3 text-[12px] text-[#C4C4C4] text-center" data-testid="text-zoek-max-reached">
           {t("searchProfiles.maxReached")}
         </p>
@@ -917,6 +921,7 @@ function HomeTab({
   setActiveTab,
   subscription,
   accessToken,
+  buddyMode,
 }: {
   user: any;
   profiles: SearchProfile[];
@@ -924,6 +929,7 @@ function HomeTab({
   setActiveTab: (tab: TabKey) => void;
   subscription: { isTrial: boolean; isExpired: boolean; isActive: boolean; trialEndsAt: string | null };
   accessToken: string | undefined;
+  buddyMode?: boolean;
 }) {
   const { t } = useTranslation();
   const { toast } = useToast();
@@ -973,23 +979,27 @@ function HomeTab({
       </div>
 
       <div className="flex flex-col gap-5 px-5 pt-0">
-        <div className="flex flex-col gap-3.5" style={{ marginTop: 20 }} data-testid="section-gamification">
-          <TaskFlowCard accessToken={accessToken} flow={ACCOUNT_FLOW} taskSource="tasks" navigate={navigate} testId="card-account-completion" searchProfileCount={profiles.length} />
-          <TaskFlowCard accessToken={accessToken} flow={SEARCH_PREP_FLOW} taskSource="prepTasks" navigate={navigate} testId="card-prep-completion" />
-        </div>
+        {!buddyMode && (
+          <div className="flex flex-col gap-3.5" style={{ marginTop: 20 }} data-testid="section-gamification">
+            <TaskFlowCard accessToken={accessToken} flow={ACCOUNT_FLOW} taskSource="tasks" navigate={navigate} testId="card-account-completion" searchProfileCount={profiles.length} />
+            <TaskFlowCard accessToken={accessToken} flow={SEARCH_PREP_FLOW} taskSource="prepTasks" navigate={navigate} testId="card-prep-completion" />
+          </div>
+        )}
 
-        <HighlightCard
-          icon={Send}
-          title={t("tips.referralTitle")}
-          subtitle={t("tips.referralSubtitle")}
-          ctaLabel={t("tips.referralShareCta")}
-          onClick={handleReferralShare}
-          testId="card-home-referral"
-          bgColor="#f2f6ff"
-          layout="horizontal"
-        />
+        {!buddyMode && (
+          <HighlightCard
+            icon={Send}
+            title={t("tips.referralTitle")}
+            subtitle={t("tips.referralSubtitle")}
+            ctaLabel={t("tips.referralShareCta")}
+            onClick={handleReferralShare}
+            testId="card-home-referral"
+            bgColor="#f2f6ff"
+            layout="horizontal"
+          />
+        )}
 
-        <ZoekopdrachtenSection profiles={profiles} navigate={navigate} />
+        <ZoekopdrachtenSection profiles={profiles} navigate={navigate} buddyMode={buddyMode} />
 
         {/* Reactiebrief status card */}
         {(() => {
@@ -1005,9 +1015,11 @@ function HomeTab({
               <div className="flex items-center gap-2.5">
                 <FileText className="w-[20px] h-[20px] text-ha-primary flex-shrink-0" />
                 <h2 className="text-[21px] font-semibold text-[#111111] flex-1">{t("profile.reactionLetter2")}</h2>
-                <span className="text-[14px] font-medium" style={{ color: "#0891B2" }}>
-                  {hasLetter ? t("common.manage") : t("common.generate")}
-                </span>
+                {!buddyMode && (
+                  <span className="text-[14px] font-medium" style={{ color: "#0891B2" }}>
+                    {hasLetter ? t("common.manage") : t("common.generate")}
+                  </span>
+                )}
               </div>
               <div className="flex items-center gap-2 pl-[30px]">
                 {hasLetter ? (
@@ -1026,8 +1038,8 @@ function HomeTab({
           );
         })()}
 
-        {/* Zoekbuddy status card */}
-        {(() => {
+        {/* Zoekbuddy status card — hidden for buddy */}
+        {!buddyMode && (() => {
           const pd = profileDataQuery.data;
           const hasBuddy = !!(pd?.search_buddy_email?.trim()) && pd?.search_buddy_status !== "revoked_by_buddy";
           return (
@@ -2067,22 +2079,20 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
           <SectionInline title={t("settings.sectionAccount")}>
             <MenuItem label={t("settings.preferences")} onClick={() => navigate("/settings/preferences")} />
             <MenuItem label={t("settings.password")} onClick={() => navigate("/account/change-password")} />
-            <MenuItem label={t("settings.subscription")} onClick={() => navigate("/account/subscription")} last />
+            {!buddyMode && <MenuItem label={t("settings.subscription")} onClick={() => navigate("/account/subscription")} last />}
           </SectionInline>
 
           {/* PERSOONLIJKE GEGEVENS */}
           <SectionInline title={t("settings.sectionPersonal")}>
             <MenuItem label={t("settings.myDetails")} onClick={() => navigate("/profile/details")} />
-            <MenuItem label={t("settings.housingSituation")} onClick={() => navigate("/settings/housing")} last />
+            {!buddyMode && <MenuItem label={t("settings.housingSituation")} onClick={() => navigate("/settings/housing")} last />}
           </SectionInline>
 
           {/* ZOEKEN EN REAGEREN */}
-          {!buddyMode && (
-            <SectionInline title={t("settings.sectionSearchReact")}>
-              <MenuItem label={t("settings.zoekbuddy")} onClick={() => navigate("/profile/search-buddy")} />
-              <MenuItem label={t("settings.reactionLetter")} onClick={() => navigate("/application-letter")} last />
-            </SectionInline>
-          )}
+          <SectionInline title={t("settings.sectionSearchReact")}>
+            {!buddyMode && <MenuItem label={t("settings.zoekbuddy")} onClick={() => navigate("/profile/search-buddy")} />}
+            <MenuItem label={t("settings.reactionLetter")} onClick={() => navigate("/application-letter")} last />
+          </SectionInline>
 
           {/* HELP */}
           <SectionInline title={t("settings.sectionHelp")}>
@@ -2101,13 +2111,6 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
         </div>
 
         <div className="flex flex-col items-center gap-3 pt-4 pb-4">
-          <button
-            onClick={() => navigate("/account/delete")}
-            className="text-[13px] text-[#334855] active:opacity-70 transition-opacity"
-            data-testid="button-profile-delete-account"
-          >
-            {t("profile.deleteAccount")}
-          </button>
           <p className="text-[13px] text-[#D1D5DB]">HousAlert v1.0.0</p>
         </div>
 
@@ -2316,6 +2319,7 @@ export default function DashboardPage() {
             setActiveTab={setActiveTab}
             subscription={{ isTrial: sub.isTrial, isExpired: sub.isExpired, isActive: sub.isActive, trialEndsAt: sub.trialEndsAt }}
             accessToken={accessToken}
+            buddyMode={inBuddyMode}
           />
         )}
         {activeTab === "matches" && (

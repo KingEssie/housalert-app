@@ -197,7 +197,7 @@ export default function ResetPasswordPage() {
                 type={showConfirm ? "text" : "password"}
                 value={confirm}
                 onChange={(e) => setConfirm(e.target.value)}
-                placeholder="Herhaal je wachtwoord"
+                placeholder={t("changePassword.confirmPlaceholder")}
                 className={INPUT_CLASS}
                 autoComplete="new-password"
                 data-testid="input-confirm-password"

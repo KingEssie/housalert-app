@@ -322,7 +322,7 @@ export default function OnboardingLocation() {
               <Check className="w-5 h-5 text-ha-primary" />
             </div>
             <p className="text-[14px] leading-relaxed text-[#334855]">
-              {`We zoeken in heel ${city} naar passende woningen.`}
+              {t("onboardingLocation.searchingInCity").replace("{city}", city)}
             </p>
           </div>
           <div className="mt-4" data-testid="location-map">

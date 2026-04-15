@@ -7,6 +7,7 @@ import { apiFetch } from "@/lib/api-base";
 import { queryClient } from "@/lib/queryClient";
 import { Loader2, ChevronDown } from "lucide-react";
 import { AppHeader } from "@/components/ui/app-header";
+import { useBuddyConnections, isBuddyMode } from "@/lib/buddy";
 
 interface HousingData {
   living_with: string;

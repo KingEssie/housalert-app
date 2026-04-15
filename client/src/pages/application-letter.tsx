@@ -7,7 +7,8 @@ import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { useTranslation } from "@/i18n";
 import { generateOnboardingLetter, type OnboardingLetterData } from "@/lib/application-letter";
-import { RotateCcw, Loader2, ChevronDown } from "lucide-react";
+import { useBuddyConnections, isBuddyMode } from "@/lib/buddy";
+import { RotateCcw, Loader2, ChevronDown, Lock } from "lucide-react";
 import { AppHeader } from "@/components/ui/app-header";
 import elisePhoto from "@assets/A5C2A5AD-87B0-4076-94E3-D2ED9BAC419E_1774778653522.png";
 
@@ -48,6 +49,8 @@ export default function ApplicationLetterPage() {
   const { session, user } = useAuth();
   const { toast } = useToast();
   const { t, locale } = useTranslation();
+  const buddyConns = useBuddyConnections();
+  const isBuddy = isBuddyMode(buddyConns.data);
 
   const returnPath = (() => {
     try {
@@ -100,6 +103,8 @@ export default function ApplicationLetterPage() {
       const existing = profileData.application_template;
       if (existing && existing.trim().length > 0) {
         setTemplate(existing);
+        setStep(4);
+      } else if (isBuddy) {
         setStep(4);
       }
       setInitialized(true);
@@ -199,6 +204,7 @@ export default function ApplicationLetterPage() {
   };
 
   function handleBack() {
+    if (isBuddy) { navigate(returnPath); return; }
     if (step === 1) navigate(returnPath);
     else if (step === 4 && profileData?.application_template && profileData.application_template.trim().length > 0) navigate(returnPath);
     else setStep((step - 1) as Step);
@@ -489,53 +495,70 @@ export default function ApplicationLetterPage() {
 
         {step === 4 && (
           <div className="flex flex-col gap-4" data-testid="step-preview">
+            {isBuddy && (
+              <div className="flex items-center gap-2 px-1 py-2 bg-[#F3F4F6] rounded-[8px]">
+                <Lock className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
+                <p className="text-[13px] text-[#6B7280]">{t("applicationLetter.readOnlyBuddy")}</p>
+              </div>
+            )}
             <div className="bg-white rounded-[12px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-5">
               {/* Card header */}
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[16px] font-semibold text-[#000000]">
                   {t("applicationLetter.yourLetter")}
                 </span>
-                <button
-                  onClick={handleReset}
-                  className="flex items-center gap-1.5 text-[14px] text-[#6B7280] hover:text-[#374151] transition-colors active:scale-95"
-                  data-testid="button-reset-template"
-                >
-                  <RotateCcw className="w-[14px] h-[14px]" strokeWidth={2} />
-                  {t("applicationLetter.resetDefault")}
-                </button>
+                {!isBuddy && (
+                  <button
+                    onClick={handleReset}
+                    className="flex items-center gap-1.5 text-[14px] text-[#6B7280] hover:text-[#374151] transition-colors active:scale-95"
+                    data-testid="button-reset-template"
+                  >
+                    <RotateCcw className="w-[14px] h-[14px]" strokeWidth={2} />
+                    {t("applicationLetter.resetDefault")}
+                  </button>
+                )}
               </div>
 
               {/* Helper text */}
-              <p className="text-[13px] text-[#6B7280] mb-3 leading-snug">
-                {t("applicationLetter.addressHelper")}
-              </p>
+              {!isBuddy && (
+                <p className="text-[13px] text-[#6B7280] mb-3 leading-snug">
+                  {t("applicationLetter.addressHelper")}
+                </p>
+              )}
 
-              {/* Textarea */}
-              <textarea
-                value={template}
-                onChange={e => setTemplate(e.target.value)}
-                placeholder={t("applicationLetter.placeholderText")}
-                style={{
-                  width: "100%",
-                  minHeight: "340px",
-                  border: "1px solid #C7CDD4",
-                  borderRadius: "8px",
-                  padding: "16px",
-                  fontSize: "16px",
-                  lineHeight: "1.65",
-                  color: "#000000",
-                  background: "#FFFFFF",
-                  outline: "none",
-                  resize: "vertical",
-                  fontFamily: "inherit",
-                  boxSizing: "border-box",
-                  transition: "border-color 0.15s ease",
-                }}
-                onFocus={e => { e.currentTarget.style.borderColor = "rgb(217,26,104)"; }}
-                onBlur={e => { e.currentTarget.style.borderColor = "#C7CDD4"; }}
-                data-testid="input-template"
-              />
-              {template.length > 0 && template.trim().length < 20 && (
+              {/* Textarea — read-only for buddy */}
+              {template ? (
+                <textarea
+                  value={template}
+                  onChange={isBuddy ? undefined : e => setTemplate(e.target.value)}
+                  readOnly={isBuddy}
+                  placeholder={t("applicationLetter.placeholderText")}
+                  style={{
+                    width: "100%",
+                    minHeight: "340px",
+                    border: "1px solid #C7CDD4",
+                    borderRadius: "8px",
+                    padding: "16px",
+                    fontSize: "16px",
+                    lineHeight: "1.65",
+                    color: "#000000",
+                    background: isBuddy ? "#F9FAFB" : "#FFFFFF",
+                    outline: "none",
+                    resize: isBuddy ? "none" : "vertical",
+                    fontFamily: "inherit",
+                    boxSizing: "border-box",
+                    cursor: isBuddy ? "default" : "text",
+                  }}
+                  onFocus={isBuddy ? undefined : e => { e.currentTarget.style.borderColor = "rgb(217,26,104)"; }}
+                  onBlur={isBuddy ? undefined : e => { e.currentTarget.style.borderColor = "#C7CDD4"; }}
+                  data-testid="input-template"
+                />
+              ) : (
+                isBuddy && (
+                  <p className="text-[15px] text-[#9CA3AF] py-8 text-center">{t("applicationLetter.noLetterBuddy")}</p>
+                )
+              )}
+              {!isBuddy && template.length > 0 && template.trim().length < 20 && (
                 <p className="text-[12px] text-[#9CA3AF] mt-2">{t("applicationLetter.minChars")}</p>
               )}
             </div>
@@ -544,8 +567,8 @@ export default function ApplicationLetterPage() {
 
       </main>
 
-      {/* Sticky bottom bar — only for step 4 */}
-      {step === 4 && (
+      {/* Sticky bottom bar — only for step 4 and non-buddy users */}
+      {step === 4 && !isBuddy && (
         <div className="sticky bottom-0 bg-white border-t border-[#E5E7EB] px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
           <div className="max-w-[480px] mx-auto flex flex-col gap-3">
             <button

@@ -427,96 +427,40 @@ function RegionAccordion({ regions }: { regions: RegionData[] }) {
   );
 }
 
-const TIP_CONTENT: Record<string, () => React.ReactNode> = {
+type TFn = (key: string, params?: Record<string, string | number>) => string;
+
+function getTipContent(t: TFn): Record<string, () => React.ReactNode> {
+  const tArr = (key: string): string[] => (t as any)(key) as string[];
+  type Region = { name: string; platforms: { label: string; url: string }[] };
+  const tRegions = (key: string): Region[] => (t as any)(key) as Region[];
+  return {
   tip_documents: () => (
     <TipBody>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Verhuurders in Duitsland hechten veel waarde aan documenten waarmee jij laat zien dat je een betrouwbare huurder bent. Zorg dat je alles alvast klaar hebt, zodat je direct kunt reageren.</p>
-      <TipSection title="Als je in loondienst werkt" items={[
-        "Kopie ID / paspoort",
-        "Laatste 3 loonstroken",
-        "Arbeidscontract (indien beschikbaar)",
-        "Werkgeversverklaring (optioneel, maar sterk)",
-        "SCHUFA-rapport (zeer belangrijk in Duitsland)",
-        "Bankafschriften van de laatste 3 maanden",
-      ]} />
-      <TipSection title="Als je al een huurwoning hebt" items={[
-        "Verhuurdersverklaring (Mietschuldenfreiheitsbescheinigung)",
-        "Bewijs van huurbetalingen (laatste 3 maanden)",
-      ]} />
-      <TipSection title="Als je zelfstandig ondernemer bent" items={[
-        "Kopie ID / paspoort",
-        "Uittreksel Kamer van Koophandel (Handelsregisterauszug)",
-        "Winst- en verliesrekening (laatste 2–3 jaar)",
-        "Belastingaangiften / inkomstenoverzicht",
-        "SCHUFA-rapport",
-        "Bankafschriften",
-      ]} />
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_documents.intro")}</p>
+      <TipSection title={t("flowPage.tips.tip_documents.section1Title")} items={tArr("flowPage.tips.tip_documents.section1Items")} />
+      <TipSection title={t("flowPage.tips.tip_documents.section2Title")} items={tArr("flowPage.tips.tip_documents.section2Items")} />
+      <TipSection title={t("flowPage.tips.tip_documents.section3Title")} items={tArr("flowPage.tips.tip_documents.section3Items")} />
     </TipBody>
   ),
   tip_finances: () => (
     <TipBody>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">De inkomenseis in Duitsland ligt meestal tussen 3x en 3,5x de kale huurprijs. In populaire steden kan dit zelfs oplopen tot 4x.</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Met andere woorden: voor een woning van €1.000 moet je inkomen meestal minimaal €3.000 – €4.000 bruto per maand zijn.</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Bij de meeste advertenties staat de inkomenseis vermeld, zodat je snel kunt zien of een woning haalbaar is.</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Reageren op woningen boven jouw budget heeft vaak geen zin. Verhuurders selecteren streng en kiezen kandidaten die direct aan de eisen voldoen.</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Bepaal daarom vooraf tot welke huurprijs jij realistisch kunt reageren.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_finances.para1")}</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_finances.para2")}</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_finances.para3")}</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_finances.para4")}</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_finances.para5")}</p>
     </TipBody>
   ),
   tip_landlord_accounts: () => (
     <TipBody>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Veel woningen in Duitsland worden direct via verhuurders aangeboden en verschijnen niet altijd op grote platforms. Door je vooraf in te schrijven bij deze partijen vergroot je je kans aanzienlijk.</p>
-      <RegionAccordion regions={[
-        { name: "Berlijn", platforms: [
-          { label: "Gewobag – grote woningcorporatie in Berlijn", url: "https://www.gewobag.de" },
-          { label: "Degewo – één van de grootste verhuurders in Berlijn", url: "https://www.degewo.de" },
-          { label: "Howoge – veel appartementen in Berlijn", url: "https://www.howoge.de" },
-          { label: "Stadt und Land – sociale huur en middenhuur", url: "https://www.stadtundland.de" },
-          { label: "Berlinovo – betaalbare huurwoningen", url: "https://www.berlinovo.de" },
-        ]},
-        { name: "Beieren (Bayern)", platforms: [
-          { label: "BayernHeim – betaalbare huurprojecten", url: "https://bayernheim.de" },
-          { label: "Dawonia – grote private verhuurder", url: "https://www.dawonia.de" },
-          { label: "GWG München – woningen in München", url: "https://www.gwg-muenchen.de" },
-          { label: "GEWOFAG – sociale en middenhuur München", url: "https://www.gewofag.de" },
-          { label: "Patrizia Immobilien – grote vastgoedpartij", url: "https://www.patrizia.ag" },
-        ]},
-        { name: "Noordrijn-Westfalen", platforms: [
-          { label: "LEG Immobilien – één van de grootste van Duitsland", url: "https://www.leg-wohnen.de" },
-          { label: "Vonovia – grootste verhuurder van Duitsland", url: "https://www.vonovia.de" },
-          { label: "Vivawest – actief in NRW", url: "https://www.vivawest.de" },
-          { label: "GAG Immobilien Köln – regio Keulen", url: "https://www.gag-koeln.de" },
-          { label: "Düsseldorfer Wohnungsgenossenschaften", url: "https://www.dwgn.de" },
-        ]},
-        { name: "Baden-Württemberg", platforms: [
-          { label: "SWSG Stuttgart – woningcorporatie Stuttgart", url: "https://www.swsg.de" },
-          { label: "GBG Mannheim – woningen in Mannheim", url: "https://www.gbg-mannheim.de" },
-          { label: "Vonovia", url: "https://www.vonovia.de" },
-          { label: "LEG Immobilien", url: "https://www.leg-wohnen.de" },
-        ]},
-        { name: "Hessen", platforms: [
-          { label: "Nassauische Heimstätte – grote corporatie", url: "https://www.naheimst.de" },
-          { label: "ABG Frankfurt Holding – Frankfurt", url: "https://www.abg.de" },
-          { label: "Vonovia", url: "https://www.vonovia.de" },
-          { label: "LEG Immobilien", url: "https://www.leg-wohnen.de" },
-        ]},
-        { name: "Hamburg", platforms: [
-          { label: "SAGA Hamburg – grootste verhuurder", url: "https://www.saga.hamburg" },
-          { label: "Vonovia", url: "https://www.vonovia.de" },
-          { label: "LEG Immobilien", url: "https://www.leg-wohnen.de" },
-        ]},
-        { name: "Overig Duitsland", platforms: [
-          { label: "Vonovia – landelijk actief", url: "https://www.vonovia.de" },
-          { label: "LEG Immobilien", url: "https://www.leg-wohnen.de" },
-          { label: "Deutsche Wohnen (onderdeel Vonovia)", url: "https://www.deutsche-wohnen.com" },
-          { label: "TAG Immobilien", url: "https://www.tag-ag.com" },
-        ]},
-      ]} />
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_landlord_accounts.intro")}</p>
+      <RegionAccordion regions={tRegions("flowPage.tips.tip_landlord_accounts.regions")} />
     </TipBody>
   ),
   tip_facebook_groups: () => (
     <TipBody>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Veel particuliere verhuurders en huurders gebruiken in Duitsland Facebook-groepen om woningen of kamers te delen. Vooral in grote steden en bij gedeeld wonen (WG) komt hier veel aanbod voorbij.</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Zoek en word lid van actieve groepen in jouw regio, zodat je snel kunt reageren op nieuwe woningen.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_facebook_groups.para1")}</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_facebook_groups.para2")}</p>
       <a
         href="https://www.facebook.com/search/groups/?q=wohnung%20mieten"
         target="_blank"
@@ -526,23 +470,23 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
       >
         » Rooms &amp; Apartments in Berlin, Munich, Hamburg, Frankfurt, Cologne
       </a>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Speur ook zelf naar Facebook-groepen die woningen delen in jouw stad of regio.</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Gebruik in Facebook zoekopdrachten zoals:</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_facebook_groups.para3")}</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_facebook_groups.searchIntro")}</p>
       <ul className="flex flex-col gap-1.5 pl-1">
-        <li className="flex items-start gap-2 text-[14px] text-[#1F2937] leading-snug"><span className="text-[#334855] mt-1.5 text-[7px]">●</span><span>Wohnung + stad</span></li>
-        <li className="flex items-start gap-2 text-[14px] text-[#1F2937] leading-snug"><span className="text-[#334855] mt-1.5 text-[7px]">●</span><span>WG Zimmer + stad</span></li>
-        <li className="flex items-start gap-2 text-[14px] text-[#1F2937] leading-snug"><span className="text-[#334855] mt-1.5 text-[7px]">●</span><span>Wohnung mieten + stad</span></li>
+        {tArr("flowPage.tips.tip_facebook_groups.searchItems").map((item, i) => (
+          <li key={i} className="flex items-start gap-2 text-[14px] text-[#1F2937] leading-snug"><span className="text-[#334855] mt-1.5 text-[7px]">●</span><span>{item}</span></li>
+        ))}
       </ul>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Word lid van meerdere groepen en zet meldingen aan, zodat je direct op de hoogte bent van nieuw aanbod.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_facebook_groups.para4")}</p>
     </TipBody>
   ),
   tip_new_build: () => (
     <TipBody>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Wil je het liefst in een nieuw appartement wonen of kansen vroeg ontdekken? Houd dan nieuwbouwprojecten in jouw regio goed in de gaten.</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">In Duitsland worden veel woningen al toegewezen vóór oplevering. Wie er vroeg bij is, heeft vaak een groot voordeel.</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Projecten worden soms maanden of zelfs jaren vooraf aangekondigd. Vaak kun je je inschrijven voordat de woningen beschikbaar zijn.</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Door dit actief te volgen, vergroot je je kansen aanzienlijk.</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Bekijk actuele en toekomstige nieuwbouwprojecten op:</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_new_build.para1")}</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_new_build.para2")}</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_new_build.para3")}</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_new_build.para4")}</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_new_build.para5")}</p>
       <a
         href="https://www.neubaukompass.de"
         target="_blank"
@@ -556,46 +500,47 @@ const TIP_CONTENT: Record<string, () => React.ReactNode> = {
   ),
   tip_network: () => (
     <TipBody>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Hoe meer mensen weten dat jij een woning zoekt, hoe groter je kans. In Duitsland gaat veel aanbod via via, nog vóór het online komt.</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Laat daarom op je social media weten dat je op zoek bent naar een woning. Deel het met vrienden, familie, collega's en kennissen.</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Vraag ook actief rond op werk of bij lokale contacten. Misschien kent iemand iemand die binnenkort iets verhuurt.</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Soms komt de beste kans uit onverwachte hoek. Zorg dat mensen aan jou denken zodra er iets vrijkomt.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_network.para1")}</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_network.para2")}</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_network.para3")}</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_network.para4")}</p>
     </TipBody>
   ),
   tip_viewings: () => (
     <TipBody>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Een bezichtiging draait niet alleen om de woning. In Duitsland wordt er vaak ook gekeken of jij een betrouwbare huurder bent. Maak daarom een sterke eerste indruk.</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Vier manieren om een positieve indruk te maken:</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_viewings.intro")}</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_viewings.intro2")}</p>
       <div className="flex flex-col gap-4">
         <div>
-          <p className="text-[14px] font-semibold text-[#111111]">1. Wees op tijd</p>
-          <p className="text-[14px] text-[#1F2937] leading-relaxed mt-1">In Duitsland wordt punctualiteit serieus genomen. Kom liever iets te vroeg dan te laat.</p>
+          <p className="text-[14px] font-semibold text-[#111111]">{t("flowPage.tips.tip_viewings.item1Title")}</p>
+          <p className="text-[14px] text-[#1F2937] leading-relaxed mt-1">{t("flowPage.tips.tip_viewings.item1Body")}</p>
         </div>
         <div>
-          <p className="text-[14px] font-semibold text-[#111111]">2. Kom verzorgd en rustig over</p>
-          <p className="text-[14px] text-[#1F2937] leading-relaxed mt-1">Verhuurders zoeken iemand die netjes en stabiel oogt. Houd het simpel en professioneel.</p>
+          <p className="text-[14px] font-semibold text-[#111111]">{t("flowPage.tips.tip_viewings.item2Title")}</p>
+          <p className="text-[14px] text-[#1F2937] leading-relaxed mt-1">{t("flowPage.tips.tip_viewings.item2Body")}</p>
         </div>
         <div>
-          <p className="text-[14px] font-semibold text-[#111111]">3. Stel een paar gerichte vragen</p>
-          <p className="text-[14px] text-[#1F2937] leading-relaxed mt-1">Laat zien dat je echt interesse hebt. Vraag bijvoorbeeld naar het gebouw, de buren of de huurvoorwaarden.</p>
+          <p className="text-[14px] font-semibold text-[#111111]">{t("flowPage.tips.tip_viewings.item3Title")}</p>
+          <p className="text-[14px] text-[#1F2937] leading-relaxed mt-1">{t("flowPage.tips.tip_viewings.item3Body")}</p>
         </div>
         <div>
-          <p className="text-[14px] font-semibold text-[#111111]">4. Laat direct je interesse zien</p>
-          <p className="text-[14px] text-[#1F2937] leading-relaxed mt-1">Ben je enthousiast? Geef dit meteen aan. In Duitsland wordt vaak snel gekozen uit meerdere kandidaten.</p>
+          <p className="text-[14px] font-semibold text-[#111111]">{t("flowPage.tips.tip_viewings.item4Title")}</p>
+          <p className="text-[14px] text-[#1F2937] leading-relaxed mt-1">{t("flowPage.tips.tip_viewings.item4Body")}</p>
         </div>
       </div>
     </TipBody>
   ),
   tip_followup: () => (
     <TipBody>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Na een bezichtiging ben je er nog niet. In Duitsland is het gebruikelijk om een Mietbewerbung (huurpitch) te sturen. Dit is vaak het moment waarop verhuurders hun keuze maken — en het verschil tussen wel of niet uitgekozen worden.</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Een huurpitch is een kort, persoonlijk bericht aan de verhuurder. Je laat zien wie je bent, waarom je betrouwbaar bent en waarom juist deze woning bij je past. Verhuurders ontvangen soms tientallen reacties — een goede pitch helpt je om eruit te springen.</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Vertel kort iets over jezelf — je naam, leeftijd en situatie. Benoem je werk en inkomen, en leg uit waarom juist deze woning bij je past. Laat merken dat je een rustige, betrouwbare huurder bent. Vermeld eventueel de samenstelling van je huishouden.</p>
-      <TipHighlight text="Houd het kort en persoonlijk. Geen standaardtekst — schrijf het alsof je iemand aanspreekt. Stuur het dezelfde dag en combineer het met je documenten (SCHUFA, inkomen)." />
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">Ben je zeker? Stuur je pitch direct na de bezichtiging. Twijfel je? Slaap er één nacht over — maar wacht niet te lang. Snelheid telt.</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_followup.para1")}</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_followup.para2")}</p>
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_followup.para3")}</p>
+      <TipHighlight text={t("flowPage.tips.tip_followup.highlight")} />
+      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_followup.para4")}</p>
     </TipBody>
   ),
-};
+  };
+}
 
 function FlowStepContent({ flow, step, accessToken, userEmail }: { flow: TaskFlow; step: TaskFlowStep; accessToken: string; userEmail: string }) {
   const { t } = useTranslation();
@@ -611,7 +556,8 @@ function FlowStepContent({ flow, step, accessToken, userEmail }: { flow: TaskFlo
     }
   }
 
-  const tipRenderer = TIP_CONTENT[step.id];
+  const tipContent = getTipContent(t);
+  const tipRenderer = tipContent[step.id];
   if (tipRenderer) return <>{tipRenderer()}</>;
 
   const stepLabels: Record<string, string> = {

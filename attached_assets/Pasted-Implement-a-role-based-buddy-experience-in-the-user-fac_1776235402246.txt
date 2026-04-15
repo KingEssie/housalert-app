@@ -1,0 +1,182 @@
+Implement a role-based buddy experience in the user-facing app.
+
+IMPORTANT:
+This is not just a permissions change.
+This must change both:
+1. UI visibility
+2. interaction/behavior
+
+We now have two user roles in the app:
+- owner (main account holder)
+- buddy (search buddy account)
+
+The buddy has their own account and can log in, but must have a restricted experience.
+
+==================================================
+1. DEFINE ROLE-BASED UI MODE
+==================================================
+
+Detect whether the logged-in user is:
+- owner
+- buddy
+
+Use the existing buddy relationship / role logic already in the app.
+Do not invent a fake flag if role data already exists.
+
+The UI must render differently for buddy vs owner.
+
+==================================================
+2. ACCOUNT SCREEN — BUDDY RESTRICTIONS
+==================================================
+
+When user role = buddy:
+
+REMOVE these menu items completely:
+- Abonnement
+- Woonsituatie
+
+Also REMOVE:
+- account delete / “Delete account” action
+
+Buddy should still see:
+- Voorkeuren
+- Wachtwoord
+- Mijn gegevens
+- Zoekbuddy beheren
+- Reactiebrief
+- FAQ
+- Contact
+- Voorwaarden
+- Privacy
+- Uitloggen
+
+When user role = owner:
+- keep the normal menu
+- but also remove the delete account action for owner as requested
+
+So:
+Delete account must be removed for BOTH owner and buddy.
+
+==================================================
+3. HOME SCREEN — BUDDY VERSION
+==================================================
+
+Create a dedicated buddy home experience.
+
+When user role = buddy:
+
+REMOVE these sections:
+- Rond je account af
+- Zoekbuddy card
+
+KEEP visible:
+- Zoekopdrachten card
+- Reactiebrief card
+
+But with restricted behavior:
+
+A. Zoekopdrachten
+- buddy may SEE the owner's search profiles
+- buddy may NOT add a new search profile
+- buddy may NOT edit search profiles
+- buddy may NOT open menu actions for search profiles
+
+So:
+- hide add button
+- hide edit icons
+- hide 3-dot menus / actions
+- card is read-only
+
+B. Reactiebrief
+- buddy may SEE the owner’s reaction letter
+- buddy may NOT generate a new one
+- buddy may NOT edit or manage it
+- display read-only state only
+
+C. Keep visual design consistent with the current premium home dashboard
+
+==================================================
+4. SEARCH PROFILE CARD — BUDDY MODE
+==================================================
+
+In buddy mode:
+- show existing search profiles
+- do not show:
+  - “Nieuwe zoekopdracht”
+  - add button
+  - edit pencil
+  - 3-dot action menus
+- card should clearly function as read-only
+
+==================================================
+5. REACTIEBRIEF CARD — BUDDY MODE
+==================================================
+
+In buddy mode:
+- show reaction letter status / preview card
+- but remove all management actions
+- no generate button
+- no edit/manage CTA
+- if the user opens it, it should open a read-only view only
+
+==================================================
+6. READ-ONLY REACTIEBRIEF VIEW FOR BUDDY
+==================================================
+
+If buddy opens the Reactiebrief screen:
+- allow reading only
+- disable editing
+- disable saving
+- disable generating a new AI letter
+- disable reset/restore actions
+- disable text changes
+
+This screen should feel intentionally read-only, not broken.
+
+==================================================
+7. REMOVE DELETE ACCOUNT ACTION GLOBALLY
+==================================================
+
+Remove the delete account button/action from:
+- owner account screen
+- buddy account screen
+
+It should no longer be visible anywhere in the user-facing app.
+
+==================================================
+8. DO NOT RELY ONLY ON UI
+==================================================
+
+Apply both:
+- UI restrictions
+- route / action restrictions
+
+A buddy must not be able to access forbidden actions via direct link or hidden buttons.
+
+Protect at least:
+- add search profile
+- edit search profile
+- subscription access
+- housing situation access
+- reaction letter editing/generation
+
+==================================================
+9. KEEP OWNER EXPERIENCE INTACT
+==================================================
+
+For owner:
+- keep existing normal home/account functionality
+- only remove delete account action as requested
+
+==================================================
+10. OUTPUT
+==================================================
+
+Return:
+1. which files were changed
+2. how owner vs buddy role is detected
+3. which account menu items are hidden for buddy
+4. how buddy home differs from owner home
+5. how search profiles are made read-only for buddy
+6. how reaction letter is made read-only for buddy
+7. confirmation that delete account is removed for both owner and buddy

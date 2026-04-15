@@ -1424,6 +1424,8 @@ export const de: Record<string, any> = {
       income: "Dein monatliches Einkommen",
       price: "Mietpreis der Wohnung",
     },
+    readOnlyBuddy: "Du siehst dies als Suchbuddy. Das Bewerbungsschreiben ist schreibgeschützt.",
+    noLetterBuddy: "Es wurde noch kein Bewerbungsschreiben erstellt.",
   },
 
   legal: {
@@ -1476,6 +1478,7 @@ export const de: Record<string, any> = {
     copyOnly: "Nur kopieren",
     applied: "Beworben",
     markApplied: "Als beworben markieren",
+    pageTitle: "Ist das dein Traumzuhause?",
   },
 
   cityPicker: {
@@ -1519,6 +1522,10 @@ export const de: Record<string, any> = {
     estimateLoading: "Schätzung wird geladen...",
     estimateText: "Mit diesem Suchauftrag kannst du etwa {low}–{high} Matches pro Woche erwarten.",
     nextStep: "Nächster Schritt",
+    noResults: "Keine Ergebnisse",
+    radiusAround: "Radius um {city}",
+    searchingInCity: "Wir suchen in ganz {city} nach passenden Wohnungen.",
+    radiusInfo: "Wir durchsuchen alle Mietwohnungen in einem Umkreis von {km} km um {city}. Du erhältst sofort eine Benachrichtigung bei neuen Wohnungen.",
   },
 
   onboardingFilters: {
@@ -2262,6 +2269,11 @@ export const de: Record<string, any> = {
     profileQualified: "Qualified Referrals",
     profileRewarded: "Rewarded Referrals",
     profileHelperText: "Teile deinen Code mit Freunden. Wenn sie HousAlert nutzen, erhältst auch du eine Belohnung.",
+    nativeShareTitle: "HousAlert — Schneller eine Wohnung finden",
+    rewardText: "🎁 25% Rabatt auf deine erste Zahlung",
+    rewardSub: "Für dich und deinen Freund / deine Freundin",
+    linkLabel: "Dein persönlicher Link",
+    copyLink: "Link kopieren",
   },
   searchProfiles: {
     sectionTitle: "Suchprofile",
@@ -2289,6 +2301,7 @@ export const de: Record<string, any> = {
   },
 
   onboardingFlow: {
+    trustpilotRating: "★ 4,6 von 5",
     stepLocation: "Wo suchst du?",
     stepLocationSub: "Wähle deine Stadt oder suche nach einem Ort",
     popularCities: "Beliebte Städte",
@@ -2754,6 +2767,146 @@ export const de: Record<string, any> = {
     followup: {
       title: "Überzeugendes Follow-up senden",
       body: "Nach einer Besichtigung kann ein gutes Follow-up den Unterschied machen. Sende eine kurze Bestätigung und optional dein Bewerbungsschreiben.\n\n• Bekräftige dein Interesse an der Wohnung\n• Füge deine Unterlagen bei\n• Sei schnell — sende dein Follow-up noch am selben Tag\n\nEin schnelles und professionelles Follow-up zeigt, dass du motiviert und zuverlässig bist.",
+    },
+  },
+
+  referralLanding: {
+    title: "Finde schneller eine Wohnung mit HousAlert",
+    invitedBy: "Eingeladen von {name}",
+    discountTitle: "25% Rabatt auf deine erste Zahlung",
+    discountSubtitle: "Wird automatisch an der Kasse angewendet",
+    benefit1: "Schneller als andere Suchende",
+    benefit2: "Alle Quellen an einem Ort",
+    benefit3: "Direkt bewerben",
+    cta: "Kostenlos starten und Rabatt sichern",
+    noCard: "Keine Kreditkarte erforderlich · Kostenlose Testphase",
+    copyright: "Alle Rechte vorbehalten",
+  },
+
+  flowPage: {
+    tips: {
+      tip_documents: {
+        intro: "Vermieter in Deutschland legen großen Wert auf Unterlagen, mit denen du zeigst, dass du ein zuverlässiger Mieter bist. Halte alles bereit, damit du sofort reagieren kannst.",
+        section1Title: "Wenn du angestellt bist",
+        section1Items: [
+          "Kopie Personalausweis / Reisepass",
+          "Letzte 3 Gehaltsabrechnungen",
+          "Arbeitsvertrag (falls vorhanden)",
+          "Arbeitgeberbestätigung (optional, aber hilfreich)",
+          "SCHUFA-Auskunft (sehr wichtig in Deutschland)",
+          "Kontoauszüge der letzten 3 Monate",
+        ],
+        section2Title: "Wenn du bereits zur Miete wohnst",
+        section2Items: [
+          "Vermieterbestätigung (Mietschuldenfreiheitsbescheinigung)",
+          "Nachweis der Mietzahlungen (letzte 3 Monate)",
+        ],
+        section3Title: "Wenn du selbstständig bist",
+        section3Items: [
+          "Kopie Personalausweis / Reisepass",
+          "Gewerbeanmeldung oder Handelsregisterauszug",
+          "Gewinn- und Verlustrechnung (letzte 2–3 Jahre)",
+          "Steuererklärungen / Einkommensübersicht",
+          "SCHUFA-Auskunft",
+          "Kontoauszüge",
+        ],
+      },
+      tip_finances: {
+        para1: "Die Einkommensanforderung in Deutschland liegt meist zwischen dem 3- und 3,5-Fachen der Kaltmiete. In beliebten Städten kann es sogar das 4-Fache sein.",
+        para2: "Das bedeutet: Für eine Wohnung mit 1.000 € Miete brauchst du in der Regel ein Bruttogehalt von mindestens 3.000–4.000 € pro Monat.",
+        para3: "Bei den meisten Inseraten ist die Einkommensanforderung angegeben, sodass du schnell erkennen kannst, ob eine Wohnung realistisch ist.",
+        para4: "Bewerbungen für Wohnungen über deinem Budget lohnen sich selten. Vermieter wählen streng und bevorzugen Kandidaten, die die Anforderungen direkt erfüllen.",
+        para5: "Entscheide daher im Voraus, bis zu welcher Miethöhe du realistisch reagieren kannst.",
+      },
+      tip_landlord_accounts: {
+        intro: "Viele Wohnungen in Deutschland werden direkt über Vermieter angeboten und erscheinen nicht immer auf großen Plattformen. Wenn du dich im Voraus bei diesen Parteien registrierst, erhöhst du deine Chancen erheblich.",
+        regions: [
+          { name: "Berlin", platforms: [
+            { label: "Gewobag – große Wohnungsbaugesellschaft Berlin", url: "https://www.gewobag.de" },
+            { label: "Degewo – einer der größten Vermieter Berlins", url: "https://www.degewo.de" },
+            { label: "Howoge – viele Wohnungen in Berlin", url: "https://www.howoge.de" },
+            { label: "Stadt und Land – Sozial- und Mittelstandswohnen", url: "https://www.stadtundland.de" },
+            { label: "Berlinovo – günstige Mietwohnungen", url: "https://www.berlinovo.de" },
+          ]},
+          { name: "Bayern", platforms: [
+            { label: "BayernHeim – günstige Wohnprojekte", url: "https://bayernheim.de" },
+            { label: "Dawonia – großer privater Vermieter", url: "https://www.dawonia.de" },
+            { label: "GWG München – Wohnungen in München", url: "https://www.gwg-muenchen.de" },
+            { label: "GEWOFAG – Sozial- und Mittelstandswohnen München", url: "https://www.gewofag.de" },
+            { label: "Patrizia Immobilien – großes Immobilienunternehmen", url: "https://www.patrizia.ag" },
+          ]},
+          { name: "Nordrhein-Westfalen", platforms: [
+            { label: "LEG Immobilien – einer der größten in Deutschland", url: "https://www.leg-wohnen.de" },
+            { label: "Vonovia – größter Vermieter Deutschlands", url: "https://www.vonovia.de" },
+            { label: "Vivawest – aktiv in NRW", url: "https://www.vivawest.de" },
+            { label: "GAG Immobilien Köln – Region Köln", url: "https://www.gag-koeln.de" },
+            { label: "Düsseldorfer Wohnungsgenossenschaften", url: "https://www.dwgn.de" },
+          ]},
+          { name: "Baden-Württemberg", platforms: [
+            { label: "SWSG Stuttgart – Wohnungsbaugesellschaft Stuttgart", url: "https://www.swsg.de" },
+            { label: "GBG Mannheim – Wohnungen in Mannheim", url: "https://www.gbg-mannheim.de" },
+            { label: "Vonovia", url: "https://www.vonovia.de" },
+            { label: "LEG Immobilien", url: "https://www.leg-wohnen.de" },
+          ]},
+          { name: "Hessen", platforms: [
+            { label: "Nassauische Heimstätte – große Genossenschaft", url: "https://www.naheimst.de" },
+            { label: "ABG Frankfurt Holding – Frankfurt", url: "https://www.abg.de" },
+            { label: "Vonovia", url: "https://www.vonovia.de" },
+            { label: "LEG Immobilien", url: "https://www.leg-wohnen.de" },
+          ]},
+          { name: "Hamburg", platforms: [
+            { label: "SAGA Hamburg – größter Vermieter", url: "https://www.saga.hamburg" },
+            { label: "Vonovia", url: "https://www.vonovia.de" },
+            { label: "LEG Immobilien", url: "https://www.leg-wohnen.de" },
+          ]},
+          { name: "Übriges Deutschland", platforms: [
+            { label: "Vonovia – bundesweit aktiv", url: "https://www.vonovia.de" },
+            { label: "LEG Immobilien", url: "https://www.leg-wohnen.de" },
+            { label: "Deutsche Wohnen (Teil von Vonovia)", url: "https://www.deutsche-wohnen.com" },
+            { label: "TAG Immobilien", url: "https://www.tag-ag.com" },
+          ]},
+        ],
+      },
+      tip_facebook_groups: {
+        para1: "Viele private Vermieter und Mieter in Deutschland nutzen Facebook-Gruppen, um Wohnungen oder Zimmer anzubieten. Besonders in Großstädten und für Wohngemeinschaften (WG) gibt es viel Angebot.",
+        para2: "Tritt aktiven Gruppen in deiner Region bei, damit du schnell auf neue Inserate reagieren kannst.",
+        para3: "Suche auch selbst nach Facebook-Gruppen, die Wohnungen in deiner Stadt oder Region teilen.",
+        searchIntro: "Verwende Suchbegriffe in Facebook wie:",
+        searchItems: ["Wohnung + Stadt", "WG Zimmer + Stadt", "Wohnung mieten + Stadt"],
+        para4: "Tritt mehreren Gruppen bei und aktiviere Benachrichtigungen, damit du sofort über neue Inserate informiert wirst.",
+      },
+      tip_new_build: {
+        para1: "Möchtest du in einer neuen Wohnung leben oder früh Chancen entdecken? Behalte Neubauprojekte in deiner Region im Blick.",
+        para2: "In Deutschland werden viele Wohnungen bereits vor der Fertigstellung vergeben. Frühzeitig dabei zu sein gibt dir oft einen großen Vorteil.",
+        para3: "Projekte werden manchmal Monate oder sogar Jahre im Voraus angekündigt. Du kannst dich oft registrieren, bevor die Wohnungen verfügbar sind.",
+        para4: "Indem du das aktiv verfolgst, erhöhst du deine Chancen erheblich.",
+        para5: "Aktuelle und kommende Neubauprojekte findest du bei:",
+      },
+      tip_network: {
+        para1: "Je mehr Menschen wissen, dass du eine Wohnung suchst, desto größer deine Chancen. In Deutschland läuft viel Angebot über persönliche Kontakte, bevor es online erscheint.",
+        para2: "Lass es in sozialen Medien wissen, dass du eine Wohnung suchst. Teile es mit Freunden, Familie, Kollegen und Bekannten.",
+        para3: "Frage auch aktiv bei der Arbeit oder über lokale Kontakte nach. Vielleicht kennt jemand jemanden, der bald etwas vermieten wird.",
+        para4: "Manchmal kommt die beste Gelegenheit aus einer unerwarteten Richtung. Sorge dafür, dass die Menschen an dich denken, sobald etwas frei wird.",
+      },
+      tip_viewings: {
+        intro: "Bei einer Besichtigung geht es nicht nur um die Wohnung. In Deutschland achten Vermieter auch darauf, ob du als zuverlässiger Mieter wirkst. Hinterlasse einen starken ersten Eindruck.",
+        intro2: "Vier Wege, um einen positiven Eindruck zu hinterlassen:",
+        item1Title: "1. Pünktlich sein",
+        item1Body: "In Deutschland wird Pünktlichkeit ernst genommen. Komme lieber etwas früher als zu spät.",
+        item2Title: "2. Gepflegt und ruhig auftreten",
+        item2Body: "Vermieter suchen jemanden, der ordentlich und stabil wirkt. Halte es einfach und professionell.",
+        item3Title: "3. Gezielte Fragen stellen",
+        item3Body: "Zeige echtes Interesse. Frage zum Beispiel nach dem Gebäude, den Nachbarn oder den Mietkonditionen.",
+        item4Title: "4. Interesse sofort zeigen",
+        item4Body: "Bist du begeistert? Sag es direkt. In Deutschland wird oft schnell aus mehreren Kandidaten ausgewählt.",
+      },
+      tip_followup: {
+        para1: "Nach einer Besichtigung bist du noch nicht fertig. In Deutschland ist es üblich, eine Mietbewerbung zu senden. Das ist oft der Moment, in dem Vermieter ihre Wahl treffen — und der Unterschied zwischen Auswahl und Ablehnung.",
+        para2: "Eine Mietbewerbung ist eine kurze, persönliche Nachricht an den Vermieter. Du zeigst, wer du bist, warum du zuverlässig bist und warum gerade diese Wohnung zu dir passt. Vermieter erhalten manchmal Dutzende Bewerbungen — eine gute Bewerbung hilft dir, herauszustechen.",
+        para3: "Erzähle kurz etwas über dich — deinen Namen, dein Alter und deine Situation. Nenne deine Arbeit und dein Einkommen und erkläre, warum gerade diese Wohnung zu dir passt. Zeige, dass du ein ruhiger, zuverlässiger Mieter bist. Erwähne gegebenenfalls die Zusammensetzung deines Haushalts.",
+        highlight: "Halte es kurz und persönlich. Kein Standardtext — schreib, als würdest du jemanden direkt ansprechen. Sende es noch am selben Tag und kombiniere es mit deinen Unterlagen (SCHUFA, Einkommen).",
+        para4: "Bist du sicher? Sende deine Bewerbung direkt nach der Besichtigung. Unsicher? Schlafe eine Nacht darüber — aber warte nicht zu lange. Schnelligkeit zählt.",
+      },
     },
   },
 };

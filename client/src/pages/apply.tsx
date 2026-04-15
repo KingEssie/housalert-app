@@ -254,7 +254,7 @@ export default function ApplyPage() {
           <ArrowLeft className="w-[18px] h-[18px] text-[#111111]" />
         </button>
         <span className="flex-1 text-center text-[16px] font-semibold text-[#111111] mx-3 truncate">
-          Is dit jouw droomhuis?
+          {t("applySheet.pageTitle")}
         </span>
         {children}
       </div>

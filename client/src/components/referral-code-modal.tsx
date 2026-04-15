@@ -38,7 +38,7 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "HousAlert — Vind sneller een woning",
+          title: t("referral.nativeShareTitle"),
           text: t("referral.modalBody"),
           url: referralUrl,
         });
@@ -68,13 +68,13 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
         </p>
 
         <div className="mt-4 bg-ha-surface rounded-[6px] px-4 py-3" data-testid="text-referral-reward">
-          <p className="text-[14px] font-medium text-ha-text">🎁 25% korting op eerste betaling</p>
-          <p className="text-[12px] text-ha-text-secondary mt-0.5">Voor jou én je vriend(in)</p>
+          <p className="text-[14px] font-medium text-ha-text">{t("referral.rewardText")}</p>
+          <p className="text-[12px] text-ha-text-secondary mt-0.5">{t("referral.rewardSub")}</p>
         </div>
 
         <div className="mt-4">
           <p className="text-[12px] font-medium text-ha-text-secondary tracking-wide mb-2">
-            Jouw persoonlijke link
+            {t("referral.linkLabel")}
           </p>
           <div className="bg-ha-surface rounded-[6px] px-4 py-3 flex items-center justify-center" data-testid="text-referral-code">
             {loading ? (
@@ -102,7 +102,7 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
             ) : (
               <>
                 <Copy className="w-4 h-4" />
-                Kopieer link
+                {t("referral.copyLink")}
               </>
             )}
           </button>

@@ -1215,6 +1215,8 @@ export const en: Record<string, any> = {
       income: "Your monthly income",
       price: "Rent price of the apartment",
     },
+    readOnlyBuddy: "You are viewing this as a search buddy. The application letter is read-only.",
+    noLetterBuddy: "No application letter has been set up yet.",
   },
 
   notFound: {
@@ -1596,6 +1598,11 @@ export const en: Record<string, any> = {
     profileQualified: "Qualified referrals",
     profileRewarded: "Rewarded referrals",
     profileHelperText: "Share your code with friends. When they use HousAlert, you'll also receive a reward.",
+    nativeShareTitle: "HousAlert — Find your home faster",
+    rewardText: "🎁 25% off your first payment",
+    rewardSub: "For you and your friend",
+    linkLabel: "Your personal link",
+    copyLink: "Copy link",
   },
   forgotPassword: {
     title: "Forgot password",
@@ -1776,6 +1783,7 @@ export const en: Record<string, any> = {
   },
 
   onboardingFlow: {
+    trustpilotRating: "★ 4.6 out of 5",
     stepLocation: "Where are you looking?",
     stepLocationSub: "Choose your city or search for a location",
     popularCities: "Popular cities",
@@ -2345,6 +2353,7 @@ export const en: Record<string, any> = {
     copyOnly: "Copy only",
     applied: "Applied",
     markApplied: "Mark as applied",
+    pageTitle: "Is this your dream home?",
   },
 
   validation: {
@@ -2382,6 +2391,10 @@ export const en: Record<string, any> = {
     estimateLoading: "Loading estimate...",
     estimateText: "With this search you can expect about {low}–{high} matches per week.",
     nextStep: "Next step",
+    noResults: "No results",
+    radiusAround: "Radius around {city}",
+    searchingInCity: "We're searching all of {city} for suitable listings.",
+    radiusInfo: "We search all rental listings within a {km} km radius of {city}. You'll get instant notifications for new listings.",
   },
 
   onboardingFilters: {
@@ -2714,5 +2727,145 @@ export const en: Record<string, any> = {
     completeYourProfile: "Complete your profile",
     saveFailed: "Error",
     saveFailedDesc: "Data could not be saved. Please try again.",
+  },
+
+  referralLanding: {
+    title: "Find your home faster with HousAlert",
+    invitedBy: "Invited by {name}",
+    discountTitle: "25% off your first payment",
+    discountSubtitle: "Applied automatically at checkout",
+    benefit1: "Faster than other searchers",
+    benefit2: "All sources in one place",
+    benefit3: "Apply directly",
+    cta: "Start free and claim your discount",
+    noCard: "No credit card required · Free trial",
+    copyright: "All rights reserved",
+  },
+
+  flowPage: {
+    tips: {
+      tip_documents: {
+        intro: "Landlords in Germany place great value on documents that show you are a reliable tenant. Have everything ready so you can apply immediately.",
+        section1Title: "If you are an employee",
+        section1Items: [
+          "Copy of ID / passport",
+          "Last 3 pay slips",
+          "Employment contract (if available)",
+          "Employer's declaration (optional but strong)",
+          "SCHUFA credit report (very important in Germany)",
+          "Bank statements from the last 3 months",
+        ],
+        section2Title: "If you already rent a property",
+        section2Items: [
+          "Landlord declaration (Mietschuldenfreiheitsbescheinigung)",
+          "Proof of rental payments (last 3 months)",
+        ],
+        section3Title: "If you are self-employed",
+        section3Items: [
+          "Copy of ID / passport",
+          "Chamber of Commerce extract (Handelsregisterauszug)",
+          "Profit and loss statement (last 2–3 years)",
+          "Tax returns / income overview",
+          "SCHUFA credit report",
+          "Bank statements",
+        ],
+      },
+      tip_finances: {
+        para1: "In Germany, the income requirement is usually between 3x and 3.5x the net rent. In popular cities it can even reach 4x.",
+        para2: "In other words: for an apartment at €1,000 you typically need a gross income of at least €3,000–€4,000 per month.",
+        para3: "Most listings state the income requirement, so you can quickly tell whether an apartment is within your reach.",
+        para4: "Applying for apartments above your budget is rarely worthwhile. Landlords select strictly and choose candidates who meet the requirements directly.",
+        para5: "Decide in advance up to which rent price you can realistically apply.",
+      },
+      tip_landlord_accounts: {
+        intro: "Many properties in Germany are offered directly by landlords and do not always appear on major platforms. By registering with these parties in advance you significantly increase your chances.",
+        regions: [
+          { name: "Berlin", platforms: [
+            { label: "Gewobag – major housing cooperative in Berlin", url: "https://www.gewobag.de" },
+            { label: "Degewo – one of the largest landlords in Berlin", url: "https://www.degewo.de" },
+            { label: "Howoge – many apartments in Berlin", url: "https://www.howoge.de" },
+            { label: "Stadt und Land – social and mid-range housing", url: "https://www.stadtundland.de" },
+            { label: "Berlinovo – affordable rental housing", url: "https://www.berlinovo.de" },
+          ]},
+          { name: "Bavaria (Bayern)", platforms: [
+            { label: "BayernHeim – affordable housing projects", url: "https://bayernheim.de" },
+            { label: "Dawonia – large private landlord", url: "https://www.dawonia.de" },
+            { label: "GWG München – housing in Munich", url: "https://www.gwg-muenchen.de" },
+            { label: "GEWOFAG – social and mid-range housing Munich", url: "https://www.gewofag.de" },
+            { label: "Patrizia Immobilien – major real estate company", url: "https://www.patrizia.ag" },
+          ]},
+          { name: "North Rhine-Westphalia", platforms: [
+            { label: "LEG Immobilien – one of the largest in Germany", url: "https://www.leg-wohnen.de" },
+            { label: "Vonovia – largest landlord in Germany", url: "https://www.vonovia.de" },
+            { label: "Vivawest – active in NRW", url: "https://www.vivawest.de" },
+            { label: "GAG Immobilien Köln – Cologne region", url: "https://www.gag-koeln.de" },
+            { label: "Düsseldorfer Wohnungsgenossenschaften", url: "https://www.dwgn.de" },
+          ]},
+          { name: "Baden-Württemberg", platforms: [
+            { label: "SWSG Stuttgart – housing cooperative Stuttgart", url: "https://www.swsg.de" },
+            { label: "GBG Mannheim – housing in Mannheim", url: "https://www.gbg-mannheim.de" },
+            { label: "Vonovia", url: "https://www.vonovia.de" },
+            { label: "LEG Immobilien", url: "https://www.leg-wohnen.de" },
+          ]},
+          { name: "Hessen", platforms: [
+            { label: "Nassauische Heimstätte – large cooperative", url: "https://www.naheimst.de" },
+            { label: "ABG Frankfurt Holding – Frankfurt", url: "https://www.abg.de" },
+            { label: "Vonovia", url: "https://www.vonovia.de" },
+            { label: "LEG Immobilien", url: "https://www.leg-wohnen.de" },
+          ]},
+          { name: "Hamburg", platforms: [
+            { label: "SAGA Hamburg – largest landlord", url: "https://www.saga.hamburg" },
+            { label: "Vonovia", url: "https://www.vonovia.de" },
+            { label: "LEG Immobilien", url: "https://www.leg-wohnen.de" },
+          ]},
+          { name: "Rest of Germany", platforms: [
+            { label: "Vonovia – active nationwide", url: "https://www.vonovia.de" },
+            { label: "LEG Immobilien", url: "https://www.leg-wohnen.de" },
+            { label: "Deutsche Wohnen (part of Vonovia)", url: "https://www.deutsche-wohnen.com" },
+            { label: "TAG Immobilien", url: "https://www.tag-ag.com" },
+          ]},
+        ],
+      },
+      tip_facebook_groups: {
+        para1: "Many private landlords and tenants in Germany use Facebook groups to share apartments or rooms. Especially in large cities and for shared living (WG) there is a lot of supply.",
+        para2: "Join active groups in your region so you can respond quickly to new listings.",
+        para3: "Also search yourself for Facebook groups that share housing in your city or region.",
+        searchIntro: "Use search terms in Facebook such as:",
+        searchItems: ["Wohnung + city", "WG Zimmer + city", "Wohnung mieten + city"],
+        para4: "Join multiple groups and turn on notifications so you are immediately informed of new listings.",
+      },
+      tip_new_build: {
+        para1: "Want to live in a new apartment or discover opportunities early? Keep an eye on new-build projects in your region.",
+        para2: "In Germany many homes are allocated before completion. Being there early often gives you a big advantage.",
+        para3: "Projects are sometimes announced months or even years in advance. You can often register before the homes are available.",
+        para4: "By actively following this you significantly increase your chances.",
+        para5: "View current and upcoming new-build projects at:",
+      },
+      tip_network: {
+        para1: "The more people know you are looking for a home, the greater your chances. In Germany a lot of supply goes through personal connections, before it appears online.",
+        para2: "Let your social media know you are looking for a home. Share it with friends, family, colleagues and acquaintances.",
+        para3: "Also ask actively at work or through local contacts. Maybe someone knows someone who will soon be renting something out.",
+        para4: "Sometimes the best opportunity comes from an unexpected direction. Make sure people think of you as soon as something becomes available.",
+      },
+      tip_viewings: {
+        intro: "A viewing is not only about the apartment. In Germany landlords often also look at whether you are a reliable tenant. Make a strong first impression.",
+        intro2: "Four ways to make a positive impression:",
+        item1Title: "1. Be on time",
+        item1Body: "In Germany punctuality is taken seriously. Arrive a little early rather than late.",
+        item2Title: "2. Look well-presented and calm",
+        item2Body: "Landlords look for someone who appears neat and stable. Keep it simple and professional.",
+        item3Title: "3. Ask a few targeted questions",
+        item3Body: "Show that you are genuinely interested. Ask about the building, the neighbours or the rental conditions.",
+        item4Title: "4. Show your interest immediately",
+        item4Body: "Are you enthusiastic? Say so right away. In Germany a decision is often made quickly from multiple candidates.",
+      },
+      tip_followup: {
+        para1: "After a viewing you are not done yet. In Germany it is common to send a Mietbewerbung (rental pitch). This is often the moment when landlords make their choice — and the difference between being selected or not.",
+        para2: "A rental pitch is a short, personal message to the landlord. You show who you are, why you are reliable, and why this particular apartment suits you. Landlords sometimes receive dozens of applications — a good pitch helps you stand out.",
+        para3: "Tell a little about yourself — your name, age and situation. Mention your work and income, and explain why this apartment is right for you. Show that you are a quiet, reliable tenant. Mention the composition of your household if relevant.",
+        highlight: "Keep it short and personal. No boilerplate — write as if you are addressing someone directly. Send it the same day and combine it with your documents (SCHUFA, income).",
+        para4: "Are you certain? Send your pitch immediately after the viewing. Unsure? Sleep on it — but don't wait too long. Speed matters.",
+      },
+    },
   },
 };

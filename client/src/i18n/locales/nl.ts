@@ -1431,6 +1431,8 @@ export const nl: Record<string, any> = {
       income: "Je maandelijks inkomen",
       price: "Huurprijs van de woning",
     },
+    readOnlyBuddy: "Je bekijkt dit als zoekbuddy. De reactiebrief is alleen-lezen.",
+    noLetterBuddy: "Er is nog geen reactiebrief opgesteld.",
   },
 
   legal: {
@@ -1483,6 +1485,7 @@ export const nl: Record<string, any> = {
     copyOnly: "Alleen kopiëren",
     applied: "Gereageerd",
     markApplied: "Als gereageerd markeren",
+    pageTitle: "Is dit jouw droomhuis?",
   },
 
   cityPicker: {
@@ -1530,6 +1533,10 @@ export const nl: Record<string, any> = {
     nextStep: "Volgende stap",
     helperText: "Tip: Je kunt later altijd je locatie aanpassen of extra zoekprofielen toevoegen voor andere steden.",
     lowMatchHint: "Tip: vergroot je radius of verhoog je budget voor meer resultaten.",
+    noResults: "Geen resultaten",
+    radiusAround: "Straal rondom {city}",
+    searchingInCity: "We zoeken in heel {city} naar passende woningen.",
+    radiusInfo: "We doorzoeken alle huurwoningen in een straal van {km} km rondom {city}. Je ontvangt direct een bericht bij nieuwe woningen.",
   },
 
   onboardingFilters: {
@@ -2312,6 +2319,11 @@ export const nl: Record<string, any> = {
     profileQualified: "Qualified referrals",
     profileRewarded: "Rewarded referrals",
     profileHelperText: "Deel je code met vrienden. Als zij HousAlert gebruiken, krijg jij ook een beloning.",
+    nativeShareTitle: "HousAlert — Vind sneller een woning",
+    rewardText: "🎁 25% korting op je eerste betaling",
+    rewardSub: "Voor jou én je vriend(in)",
+    linkLabel: "Jouw persoonlijke link",
+    copyLink: "Kopieer link",
   },
   searchProfiles: {
     sectionTitle: "Zoekprofielen",
@@ -2463,6 +2475,7 @@ export const nl: Record<string, any> = {
   },
 
   onboardingFlow: {
+    trustpilotRating: "★ 4,6 uit 5",
     stepLocation: "Waar zoek je?",
     stepLocationSub: "Kies je stad of zoek een locatie",
     popularCities: "Populaire steden",
@@ -2804,6 +2817,146 @@ export const nl: Record<string, any> = {
     followup: {
       title: "Stuur een sterke follow-up",
       body: "Na een bezichtiging kan een goede follow-up het verschil maken. Stuur een korte bevestiging en eventueel je reactiebrief.\n\n• Herhaal je interesse in de woning\n• Voeg je documenten toe als bijlage\n• Wees snel — stuur je follow-up dezelfde dag nog\n\nEen snelle en professionele opvolging laat zien dat je gemotiveerd en betrouwbaar bent.",
+    },
+  },
+
+  referralLanding: {
+    title: "Vind sneller een woning met HousAlert",
+    invitedBy: "Uitgenodigd door {name}",
+    discountTitle: "25% korting op je eerste betaling",
+    discountSubtitle: "Automatisch toegepast bij afrekenen",
+    benefit1: "Sneller dan andere zoekers",
+    benefit2: "Alle bronnen op één plek",
+    benefit3: "Direct reageren",
+    cta: "Start gratis en ontvang korting",
+    noCard: "Geen creditcard nodig · Gratis proefperiode",
+    copyright: "Alle rechten voorbehouden",
+  },
+
+  flowPage: {
+    tips: {
+      tip_documents: {
+        intro: "Verhuurders in Duitsland hechten veel waarde aan documenten waarmee jij laat zien dat je een betrouwbare huurder bent. Zorg dat je alles alvast klaar hebt, zodat je direct kunt reageren.",
+        section1Title: "Als je in loondienst werkt",
+        section1Items: [
+          "Kopie ID / paspoort",
+          "Laatste 3 loonstroken",
+          "Arbeidscontract (indien beschikbaar)",
+          "Werkgeversverklaring (optioneel, maar sterk)",
+          "SCHUFA-rapport (zeer belangrijk in Duitsland)",
+          "Bankafschriften van de laatste 3 maanden",
+        ],
+        section2Title: "Als je al een huurwoning hebt",
+        section2Items: [
+          "Verhuurdersverklaring (Mietschuldenfreiheitsbescheinigung)",
+          "Bewijs van huurbetalingen (laatste 3 maanden)",
+        ],
+        section3Title: "Als je zelfstandig ondernemer bent",
+        section3Items: [
+          "Kopie ID / paspoort",
+          "Uittreksel Kamer van Koophandel (Handelsregisterauszug)",
+          "Winst- en verliesrekening (laatste 2–3 jaar)",
+          "Belastingaangiften / inkomstenoverzicht",
+          "SCHUFA-rapport",
+          "Bankafschriften",
+        ],
+      },
+      tip_finances: {
+        para1: "De inkomenseis in Duitsland ligt meestal tussen 3x en 3,5x de kale huurprijs. In populaire steden kan dit zelfs oplopen tot 4x.",
+        para2: "Met andere woorden: voor een woning van €1.000 moet je inkomen meestal minimaal €3.000–€4.000 bruto per maand zijn.",
+        para3: "Bij de meeste advertenties staat de inkomenseis vermeld, zodat je snel kunt zien of een woning haalbaar is.",
+        para4: "Reageren op woningen boven jouw budget heeft vaak geen zin. Verhuurders selecteren streng en kiezen kandidaten die direct aan de eisen voldoen.",
+        para5: "Bepaal daarom vooraf tot welke huurprijs jij realistisch kunt reageren.",
+      },
+      tip_landlord_accounts: {
+        intro: "Veel woningen in Duitsland worden direct via verhuurders aangeboden en verschijnen niet altijd op grote platforms. Door je vooraf in te schrijven bij deze partijen vergroot je je kans aanzienlijk.",
+        regions: [
+          { name: "Berlijn", platforms: [
+            { label: "Gewobag – grote woningcorporatie in Berlijn", url: "https://www.gewobag.de" },
+            { label: "Degewo – één van de grootste verhuurders in Berlijn", url: "https://www.degewo.de" },
+            { label: "Howoge – veel appartementen in Berlijn", url: "https://www.howoge.de" },
+            { label: "Stadt und Land – sociale huur en middenhuur", url: "https://www.stadtundland.de" },
+            { label: "Berlinovo – betaalbare huurwoningen", url: "https://www.berlinovo.de" },
+          ]},
+          { name: "Beieren (Bayern)", platforms: [
+            { label: "BayernHeim – betaalbare huurprojecten", url: "https://bayernheim.de" },
+            { label: "Dawonia – grote private verhuurder", url: "https://www.dawonia.de" },
+            { label: "GWG München – woningen in München", url: "https://www.gwg-muenchen.de" },
+            { label: "GEWOFAG – sociale en middenhuur München", url: "https://www.gewofag.de" },
+            { label: "Patrizia Immobilien – grote vastgoedpartij", url: "https://www.patrizia.ag" },
+          ]},
+          { name: "Noordrijn-Westfalen", platforms: [
+            { label: "LEG Immobilien – één van de grootste van Duitsland", url: "https://www.leg-wohnen.de" },
+            { label: "Vonovia – grootste verhuurder van Duitsland", url: "https://www.vonovia.de" },
+            { label: "Vivawest – actief in NRW", url: "https://www.vivawest.de" },
+            { label: "GAG Immobilien Köln – regio Keulen", url: "https://www.gag-koeln.de" },
+            { label: "Düsseldorfer Wohnungsgenossenschaften", url: "https://www.dwgn.de" },
+          ]},
+          { name: "Baden-Württemberg", platforms: [
+            { label: "SWSG Stuttgart – woningcorporatie Stuttgart", url: "https://www.swsg.de" },
+            { label: "GBG Mannheim – woningen in Mannheim", url: "https://www.gbg-mannheim.de" },
+            { label: "Vonovia", url: "https://www.vonovia.de" },
+            { label: "LEG Immobilien", url: "https://www.leg-wohnen.de" },
+          ]},
+          { name: "Hessen", platforms: [
+            { label: "Nassauische Heimstätte – grote corporatie", url: "https://www.naheimst.de" },
+            { label: "ABG Frankfurt Holding – Frankfurt", url: "https://www.abg.de" },
+            { label: "Vonovia", url: "https://www.vonovia.de" },
+            { label: "LEG Immobilien", url: "https://www.leg-wohnen.de" },
+          ]},
+          { name: "Hamburg", platforms: [
+            { label: "SAGA Hamburg – grootste verhuurder", url: "https://www.saga.hamburg" },
+            { label: "Vonovia", url: "https://www.vonovia.de" },
+            { label: "LEG Immobilien", url: "https://www.leg-wohnen.de" },
+          ]},
+          { name: "Rest van Duitsland", platforms: [
+            { label: "Vonovia – actief door heel Duitsland", url: "https://www.vonovia.de" },
+            { label: "LEG Immobilien", url: "https://www.leg-wohnen.de" },
+            { label: "Deutsche Wohnen (onderdeel van Vonovia)", url: "https://www.deutsche-wohnen.com" },
+            { label: "TAG Immobilien", url: "https://www.tag-ag.com" },
+          ]},
+        ],
+      },
+      tip_facebook_groups: {
+        para1: "Veel private verhuurders en huurders in Duitsland gebruiken Facebook-groepen om woningen of kamers aan te bieden. Vooral in grote steden en voor gedeeld wonen (WG) is er veel aanbod.",
+        para2: "Sluit je aan bij actieve groepen in jouw regio, zodat je snel kunt reageren op nieuwe aanbiedingen.",
+        para3: "Zoek zelf ook naar Facebook-groepen die woningen delen in jouw stad of regio.",
+        searchIntro: "Gebruik zoektermen in Facebook zoals:",
+        searchItems: ["Wohnung + stad", "WG Zimmer + stad", "Wohnung mieten + stad"],
+        para4: "Word lid van meerdere groepen en zet notificaties aan, zodat je direct op de hoogte bent van nieuwe aanbiedingen.",
+      },
+      tip_new_build: {
+        para1: "Wil je in een nieuw appartement wonen of vroeg kansen ontdekken? Houd nieuwbouwprojecten in jouw regio in de gaten.",
+        para2: "In Duitsland worden veel woningen al vóór oplevering verdeeld. Er vroeg bij zijn geeft je vaak een groot voordeel.",
+        para3: "Projecten worden soms maanden of zelfs jaren van tevoren aangekondigd. Je kunt je vaak al inschrijven voordat de woningen beschikbaar zijn.",
+        para4: "Door dit actief te volgen vergroot je je kansen aanzienlijk.",
+        para5: "Bekijk huidige en komende nieuwbouwprojecten via:",
+      },
+      tip_network: {
+        para1: "Hoe meer mensen weten dat jij een woning zoekt, hoe groter je kansen. In Duitsland gaat veel aanbod via persoonlijke contacten, voordat het online verschijnt.",
+        para2: "Laat via social media weten dat je een woning zoekt. Deel het met vrienden, familie, collega's en kennissen.",
+        para3: "Vraag ook actief op je werk of via lokale contacten. Misschien weet iemand iemand die binnenkort iets gaat verhuren.",
+        para4: "Soms komt de beste kans uit een onverwachte hoek. Zorg dat mensen aan jou denken zodra er iets vrijkomt.",
+      },
+      tip_viewings: {
+        intro: "Een bezichtiging gaat niet alleen over de woning. In Duitsland kijken verhuurders ook of jij een betrouwbare huurder lijkt. Maak een sterke eerste indruk.",
+        intro2: "Vier manieren om een positieve indruk te maken:",
+        item1Title: "1. Wees op tijd",
+        item1Body: "In Duitsland wordt punctualiteit serieus genomen. Kom liever iets te vroeg dan te laat.",
+        item2Title: "2. Kom verzorgd en rustig over",
+        item2Body: "Verhuurders zoeken iemand die netjes en stabiel oogt. Houd het simpel en professioneel.",
+        item3Title: "3. Stel een paar gerichte vragen",
+        item3Body: "Laat zien dat je echt interesse hebt. Vraag bijvoorbeeld naar het gebouw, de buren of de huurvoorwaarden.",
+        item4Title: "4. Laat direct je interesse zien",
+        item4Body: "Ben je enthousiast? Geef dit meteen aan. In Duitsland wordt vaak snel gekozen uit meerdere kandidaten.",
+      },
+      tip_followup: {
+        para1: "Na een bezichtiging ben je er nog niet. In Duitsland is het gebruikelijk om een Mietbewerbung (huurpitch) te sturen. Dit is vaak het moment waarop verhuurders hun keuze maken — en het verschil tussen wel of niet uitgekozen worden.",
+        para2: "Een huurpitch is een kort, persoonlijk bericht aan de verhuurder. Je laat zien wie je bent, waarom je betrouwbaar bent en waarom juist deze woning bij je past. Verhuurders ontvangen soms tientallen reacties — een goede pitch helpt je om eruit te springen.",
+        para3: "Vertel kort iets over jezelf — je naam, leeftijd en situatie. Benoem je werk en inkomen, en leg uit waarom juist deze woning bij je past. Laat merken dat je een rustige, betrouwbare huurder bent. Vermeld eventueel de samenstelling van je huishouden.",
+        highlight: "Houd het kort en persoonlijk. Geen standaardtekst — schrijf het alsof je iemand aanspreekt. Stuur het dezelfde dag en combineer het met je documenten (SCHUFA, inkomen).",
+        para4: "Ben je zeker? Stuur je pitch direct na de bezichtiging. Twijfel je? Slaap er één nacht over — maar wacht niet te lang. Snelheid telt.",
+      },
     },
   },
 };

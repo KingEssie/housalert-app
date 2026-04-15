@@ -310,7 +310,7 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
       <div className="flex items-center justify-between mb-6">
         <HousAlertLogo size={24} />
         <div className="text-right">
-          <p className="text-[13px] font-semibold" style={{ color: "#00b67a" }}>★ 4,6 uit 5</p>
+          <p className="text-[13px] font-semibold" style={{ color: "#00b67a" }}>{t("onboardingFlow.trustpilotRating")}</p>
           <p className="text-[11px]" style={{ color: "#334855" }}>Trustpilot</p>
         </div>
       </div>

@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import { useLocation } from "wouter";
 import { Crown, CreditCard, ChevronRight, AlertCircle, XCircle, CheckCircle2 } from "lucide-react";
 import { AppHeader } from "@/components/ui/app-header";
 import { useSubscription } from "@/lib/subscription";
 import { useTranslation } from "@/i18n";
+import { useBuddyConnections, isBuddyMode } from "@/lib/buddy";
 
 function formatDate(dateStr: string | null | undefined): string {
   if (!dateStr) return "\u2014";
@@ -16,6 +18,12 @@ function formatDate(dateStr: string | null | undefined): string {
 export default function SubscriptionDetailPage() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
+  const buddyConns = useBuddyConnections();
+  const isBuddy = isBuddyMode(buddyConns.data);
+
+  useEffect(() => {
+    if (isBuddy) navigate("/dashboard");
+  }, [isBuddy]);
 
   const sub = useSubscription();
   const isLoading = sub.loading;
@@ -222,7 +230,7 @@ export default function SubscriptionDetailPage() {
                 {t("subscription.managePayment")}
               </p>
               <p className="text-[12px] font-normal text-[#000000] mt-[2px] opacity-60">
-                Werk je betaalgegevens bij
+                {t("subscription.updatePaymentDesc")}
               </p>
             </div>
             <ChevronRight className="w-[18px] h-[18px] text-[#000000] opacity-30 flex-shrink-0" />
