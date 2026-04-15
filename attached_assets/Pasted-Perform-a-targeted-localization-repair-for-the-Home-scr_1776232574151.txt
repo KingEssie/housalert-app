@@ -1,0 +1,112 @@
+Perform a targeted localization repair for the Home screen only.
+
+IMPORTANT:
+Do NOT do a broad app-wide refactor.
+Only fix the remaining mixed-language issues on the Home dashboard when English is selected.
+
+GOAL:
+When app language = English, the entire Home screen must be fully English.
+No German strings may remain.
+
+==================================================
+1. FIX REMAINING GERMAN TEXT ON HOME SCREEN
+==================================================
+
+The following visible strings are still showing in German while English is active:
+
+- "Lass uns deine neue Wohnung finden"
+- "Suchprofile"
+- "Du kannst 16 Matches pro Woche erwarten"
+- "Suchprofil hinzufügen"
+
+Find where these are coming from and fix them properly.
+
+==================================================
+2. DETERMINE ROOT CAUSE
+==================================================
+
+For each of the strings above, check whether the issue is caused by:
+
+- hardcoded German text in the component
+- missing English translation key
+- wrong translation namespace
+- fallback to German
+- stale/cached locale state
+
+Do not guess — inspect the actual source.
+
+==================================================
+3. HOME HEADER / HERO
+==================================================
+
+Fix the subtitle under:
+- "Hello, Martin 👋"
+
+Currently:
+- German subtitle appears
+
+Required English copy:
+- "Let’s find your new home"
+
+Use translation keys and ensure English is loaded correctly.
+
+==================================================
+4. SEARCH PROFILE CARD
+==================================================
+
+Fix the full search profile card so all text is English when EN is active.
+
+This includes at least:
+
+- card title:
+  currently "Suchprofile"
+  should be English, e.g. "Search profiles"
+
+- helper line:
+  currently "Du kannst 16 Matches pro Woche erwarten"
+  should be English, e.g. "You can expect 16 matches per week"
+
+- add button:
+  currently "Suchprofil hinzufügen"
+  should be English, e.g. "Add search profile"
+
+Also verify any other related strings in that card.
+
+==================================================
+5. CHECK DASHBOARD TRANSLATION KEYS
+==================================================
+
+Inspect the Home / dashboard translation keys and verify that:
+- English keys exist
+- correct key names are used
+- no key points to the German locale accidentally
+- no fallback to German happens when English keys are missing
+
+If the current namespace is messy, clean it up only for this Home/dashboard section.
+
+==================================================
+6. VERIFY ALL HOME CARDS
+==================================================
+
+While fixing the Home screen, verify these cards are fully English when EN is active:
+
+- greeting / hero section
+- account completion card
+- boost your chances card
+- referral card
+- search profiles card
+- application letter card
+- search buddy card
+
+No German text may remain anywhere on this screen.
+
+==================================================
+7. OUTPUT
+==================================================
+
+Return:
+1. which files were changed
+2. root cause for each German string that was still visible
+3. which translation keys were added or corrected
+4. confirmation that the Home screen is now fully English when EN is active
+5. confirmation that no German remains on the Home dashboard
