@@ -947,6 +947,18 @@ function HomeTab({
   const firstName = profileDataQuery.data?.first_name?.trim() || null;
   const { handleReferralShare } = useReferralShare();
 
+  const ownerLetterQuery = useQuery<{ application_template: string | null; first_name: string | null }>({
+    queryKey: ["/api/buddy/owner-profile-data"],
+    queryFn: async () => {
+      const res = await apiFetch("/api/buddy/owner-profile-data", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (!res.ok) return { application_template: null, first_name: null };
+      return res.json();
+    },
+    enabled: !!accessToken && !!buddyMode,
+  });
+
   return (
     <div className="flex flex-col pb-8">
       <div
@@ -1003,7 +1015,7 @@ function HomeTab({
 
         {/* Reactiebrief status card */}
         {(() => {
-          const pd = profileDataQuery.data;
+          const pd = buddyMode ? ownerLetterQuery.data : profileDataQuery.data;
           const hasLetter = !!(pd?.application_template?.trim());
           return (
             <button
@@ -2201,7 +2213,19 @@ export default function DashboardPage() {
   const profilesQuery = useQuery<SearchProfile[]>({
     queryKey: ["/search-profiles"],
     queryFn: getSearchProfiles,
-    enabled: !!user,
+    enabled: !!user && !inBuddyMode,
+  });
+
+  const ownerProfilesQuery = useQuery<SearchProfile[]>({
+    queryKey: ["/api/buddy/owner-profiles"],
+    queryFn: async () => {
+      const res = await apiFetch("/api/buddy/owner-profiles", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (!res.ok) return [];
+      return res.json();
+    },
+    enabled: !!user && !!accessToken && inBuddyMode,
   });
 
   const hasActiveSub = sub.isActive || sub.isTrial;
@@ -2218,11 +2242,6 @@ export default function DashboardPage() {
     }
   }, [user, loading, navigate]);
 
-  useEffect(() => {
-    if (inBuddyMode && activeTab === "home") {
-      setActiveTab("matches");
-    }
-  }, [inBuddyMode, activeTab]);
 
   useEffect(() => {
     if (user) {
@@ -2268,7 +2287,7 @@ export default function DashboardPage() {
 
   if (!user) return null;
 
-  const profiles = profilesQuery.data ?? [];
+  const profiles = inBuddyMode ? (ownerProfilesQuery.data ?? []) : (profilesQuery.data ?? []);
   const matchCount = apiMatchesQuery.data?.totalCount ?? 0;
   const newCount = apiMatchesQuery.data?.newCount ?? 0;
 
@@ -2344,10 +2363,7 @@ export default function DashboardPage() {
 
       <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#E5E7EB]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
         <nav className="max-w-xl mx-auto flex h-[72px]" data-testid="bottom-nav">
-          {TAB_CONFIG.filter(({ key }) => {
-            if (inBuddyMode && key === "home") return false;
-            return true;
-          }).map(({ key, labelKey, Icon }) => {
+          {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
             const isActive = activeTab === key;
             const isProfileWithPhoto = key === "profiel" && !!tabPhotoUrl;
             return (

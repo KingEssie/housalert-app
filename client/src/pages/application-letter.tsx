@@ -86,10 +86,33 @@ export default function ApplicationLetterPage() {
       if (!res.ok) throw new Error("Failed");
       return res.json();
     },
-    enabled: !!session?.access_token,
+    enabled: !!session?.access_token && !isBuddy,
+  });
+
+  const { data: ownerProfileData, isLoading: ownerLoading } = useQuery<{ application_template: string | null; first_name: string | null }>({
+    queryKey: ["/api/buddy/owner-profile-data"],
+    queryFn: async () => {
+      const res = await apiFetch("/api/buddy/owner-profile-data", {
+        headers: { Authorization: `Bearer ${session?.access_token}` },
+      });
+      if (!res.ok) return { application_template: null, first_name: null };
+      return res.json();
+    },
+    enabled: !!session?.access_token && isBuddy,
   });
 
   useEffect(() => {
+    if (isBuddy) {
+      if (ownerProfileData !== undefined && !initialized) {
+        const existing = ownerProfileData.application_template;
+        if (existing && existing.trim().length > 0) {
+          setTemplate(existing);
+        }
+        setStep(4);
+        setInitialized(true);
+      }
+      return;
+    }
     if (profileData && !initialized) {
       setPhone(profileData.phone || "");
       setBirthDate(profileData.birth_date || "");
@@ -104,12 +127,10 @@ export default function ApplicationLetterPage() {
       if (existing && existing.trim().length > 0) {
         setTemplate(existing);
         setStep(4);
-      } else if (isBuddy) {
-        setStep(4);
       }
       setInitialized(true);
     }
-  }, [profileData, initialized]);
+  }, [profileData, ownerProfileData, initialized, isBuddy]);
 
   function generatePersonalLetter(): string {
     const data: OnboardingLetterData = {
@@ -288,7 +309,7 @@ export default function ApplicationLetterPage() {
 
   const labelClass = "text-field-label mb-2 block";
 
-  if (isLoading) {
+  if (isLoading || ownerLoading) {
     return (
       <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
         <AppHeader title={t("applicationLetter.title")} onBack={() => navigate("/dashboard?tab=home")} />

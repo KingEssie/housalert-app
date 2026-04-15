@@ -640,6 +640,51 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/buddy/owner-profiles", async (req, res) => {
+    try {
+      const auth = await authenticateRequest(req);
+      if (!auth) return res.status(401).json({ error: "Unauthorized" });
+
+      const asBuddy = await getBuddyRelationsForUser(auth.user.id);
+      if (asBuddy.length === 0) return res.status(403).json({ error: "Not a buddy" });
+
+      const ownerId = asBuddy[0].owner_user_id;
+      const { data: profiles, error } = await supabase
+        .from("search_profiles")
+        .select("*")
+        .eq("user_id", ownerId)
+        .order("created_at", { ascending: false });
+
+      if (error) return res.status(500).json({ error: error.message });
+      return res.json(profiles ?? []);
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/buddy/owner-profile-data", async (req, res) => {
+    try {
+      const auth = await authenticateRequest(req);
+      if (!auth) return res.status(401).json({ error: "Unauthorized" });
+
+      const asBuddy = await getBuddyRelationsForUser(auth.user.id);
+      if (asBuddy.length === 0) return res.status(403).json({ error: "Not a buddy" });
+
+      const ownerId = asBuddy[0].owner_user_id;
+      const { rows } = await pgPool.query(
+        "SELECT application_template, first_name FROM user_profile_data WHERE user_id = $1 LIMIT 1",
+        [ownerId]
+      );
+      const row = rows[0];
+      return res.json({
+        application_template: row?.application_template ?? null,
+        first_name: row?.first_name ?? null,
+      });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   // ── End Buddy V2 API ──────────────────────────────────────────────
 
   const missingStripeVars: string[] = [];

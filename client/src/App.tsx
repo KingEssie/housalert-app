@@ -10,6 +10,7 @@ import { I18nProvider } from "@/i18n";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { apiFetch } from "@/lib/api-base";
 import { isNativePlatform } from "@/lib/capacitor";
+import { useBuddyConnections, isBuddyMode } from "@/lib/buddy";
 
 const IS_NATIVE = isNativePlatform();
 import WelcomePage from "@/pages/welcome";
@@ -111,6 +112,15 @@ function ProtectedRoute({ component: Component, skipOnboardingCheck }: { compone
   return <Component />;
 }
 
+function BuddyProtectedRoute({ component: Component, skipOnboardingCheck }: { component: React.ComponentType; skipOnboardingCheck?: boolean }) {
+  const buddyConns = useBuddyConnections();
+  const inBuddyMode = isBuddyMode(buddyConns.data);
+
+  if (buddyConns.isLoading) return null;
+  if (inBuddyMode) return <Redirect to="/home" />;
+  return <ProtectedRoute component={Component} skipOnboardingCheck={skipOnboardingCheck} />;
+}
+
 function RootRoute() {
   const { user, loading } = useAuth();
 
@@ -193,8 +203,8 @@ function Router() {
       <Route path="/embed-success" component={EmbedSuccessPage} />
       <Route path="/home" component={() => <ProtectedRoute component={DashboardPage} />} />
       <Route path="/dashboard" component={() => <ProtectedRoute component={DashboardPage} />} />
-      <Route path="/dashboard/searches/new" component={() => <ProtectedRoute component={NewSearchPage} />} />
-      <Route path="/dashboard/searches/edit/:id" component={() => <ProtectedRoute component={NewSearchPage} />} />
+      <Route path="/dashboard/searches/new" component={() => <BuddyProtectedRoute component={NewSearchPage} />} />
+      <Route path="/dashboard/searches/edit/:id" component={() => <BuddyProtectedRoute component={NewSearchPage} />} />
       <Route path="/listing/:id" component={() => <ProtectedRoute component={ListingDetailPage} />} />
       <Route path="/apply/:id" component={() => <ProtectedRoute component={ApplyPage} />} />
       <Route path="/flow/:flowId/:stepId" component={() => <ProtectedRoute component={FlowPage} />} />
@@ -211,11 +221,11 @@ function Router() {
       <Route path="/tips/netwerk" component={() => <ProtectedRoute component={NetwerkGuidePage} />} />
       <Route path="/settings" component={() => <ProtectedRoute component={SettingsPage} />} />
       <Route path="/settings/preferences" component={() => <ProtectedRoute component={PreferencesPage} />} />
-      <Route path="/settings/housing" component={() => <ProtectedRoute component={HousingSituationPage} />} />
-      <Route path="/account/subscription" component={() => <ProtectedRoute component={SubscriptionDetailPage} />} />
-      <Route path="/account/subscription/cancel" component={() => <ProtectedRoute component={SubscriptionCancelConfirmPage} />} />
-      <Route path="/account/subscription/cancelled" component={() => <ProtectedRoute component={SubscriptionCancelledPage} />} />
-      <Route path="/account/payment-method" component={() => <ProtectedRoute component={PaymentMethodPage} />} />
+      <Route path="/settings/housing" component={() => <BuddyProtectedRoute component={HousingSituationPage} />} />
+      <Route path="/account/subscription" component={() => <BuddyProtectedRoute component={SubscriptionDetailPage} />} />
+      <Route path="/account/subscription/cancel" component={() => <BuddyProtectedRoute component={SubscriptionCancelConfirmPage} />} />
+      <Route path="/account/subscription/cancelled" component={() => <BuddyProtectedRoute component={SubscriptionCancelledPage} />} />
+      <Route path="/account/payment-method" component={() => <BuddyProtectedRoute component={PaymentMethodPage} />} />
       <Route path="/account/change-password" component={() => <ProtectedRoute component={ChangePasswordPage} />} />
       <Route path="/account/delete" component={() => <ProtectedRoute component={DeleteAccountPage} />} />
       <Route path="/admin/portal" component={() => <ProtectedRoute component={AdminPortalPage} skipOnboardingCheck />} />
@@ -223,7 +233,7 @@ function Router() {
       <Route path="/admin/match-audit" component={() => <ProtectedRoute component={AdminMatchAuditPage} />} />
       <Route path="/admin/activation" component={() => <ProtectedRoute component={AdminActivationPage} />} />
       <Route path="/admin/image-audit" component={() => <ProtectedRoute component={AdminImageAuditPage} />} />
-      <Route path="/profile/search-buddy" component={() => <ProtectedRoute component={ZoekbuddyPage} />} />
+      <Route path="/profile/search-buddy" component={() => <BuddyProtectedRoute component={ZoekbuddyPage} />} />
       <Route path="/buddy/accept" component={BuddyAcceptPage} />
       <Route path="/impressum" component={ImpressumPage} />
       <Route path="/datenschutz" component={DatenschutzPage} />

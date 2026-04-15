@@ -1,0 +1,190 @@
+Fix the buddy experience so the search buddy has a proper dedicated home/dashboard and can see the reaction letter and search profiles in read-only mode.
+
+IMPORTANT:
+Do NOT partially patch this.
+Implement the buddy experience structurally.
+
+==================================================
+GOAL
+==================================================
+
+The buddy account must have its own adjusted home/dashboard experience.
+
+Current problem:
+- buddy lands on Matches instead of a dedicated buddy home
+- buddy does not see the intended read-only dashboard with search profiles and reaction letter
+- reaction letter exists as a separate page, but not as part of the buddy home
+- buddy home logic is incomplete
+
+==================================================
+1. BUDDY DEFAULT LANDING ROUTE
+==================================================
+
+When logged-in user role = buddy:
+
+- do NOT default to Matches
+- route the user to a dedicated buddy home/dashboard screen
+
+This can be:
+- a dedicated /buddy-home route
+OR
+- the normal home route rendered in buddy mode
+
+But the result must be:
+- buddy lands on buddy home first
+- not on Matches
+
+==================================================
+2. BUDDY HOME SCREEN CONTENT
+==================================================
+
+Build the buddy home/dashboard with these exact rules:
+
+REMOVE:
+- "Rond je account af"
+- Zoekbuddy card
+- any owner-only setup cards
+- any account-completion prompts
+- any owner-only CTA sections
+
+SHOW:
+A. Search profiles card
+- visible
+- read-only
+- shows owner's existing search profiles
+- NO add button
+- NO edit button
+- NO 3-dot action menu
+- NO create flow access
+
+B. Reaction letter card
+- visible
+- read-only
+- if a letter exists: show status / summary and allow opening read-only view
+- if no letter exists: show a read-only empty state
+- NO generate button
+- NO manage/edit button
+- NO AI generation flow access
+
+Optional:
+- keep overall premium dashboard style consistent with owner home
+
+==================================================
+3. BUDDY REACTION LETTER CARD BEHAVIOR
+==================================================
+
+On buddy home:
+- Add a proper "Reactiebrief" card
+- This card must be visible even for buddy
+- It must open the existing read-only reaction letter screen
+
+If no reaction letter exists:
+- show a clear empty state inside the card
+- still read-only
+- no create/generate CTA
+
+==================================================
+4. BUDDY SEARCH PROFILES CARD BEHAVIOR
+==================================================
+
+On buddy home:
+- Add a proper "Zoekopdrachten" card
+- show existing owner search profiles
+- read-only only
+
+Hide:
+- add button
+- edit icons
+- overflow menus
+- create/edit actions
+
+==================================================
+5. BUDDY BOTTOM NAVIGATION
+==================================================
+
+Buddy should have a coherent navigation model.
+
+If buddy has a buddy home/dashboard, then buddy bottom nav must include:
+- Home
+- Matches
+- Favorieten
+- Account
+
+Ensure:
+- Home tab routes to buddy home/dashboard
+- Matches tab routes to buddy matches
+- no broken tab state
+- active tab highlighting works correctly
+
+Do NOT leave buddy stuck with Matches as the pseudo-home.
+
+==================================================
+6. ACCOUNT MENU RESTRICTIONS (VERIFY AGAIN)
+==================================================
+
+For buddy:
+- hide Abonnement
+- hide Woonsituatie
+- remove delete account action
+
+For owner:
+- remove delete account action too
+
+Verify this is actually working in rendered UI.
+
+==================================================
+7. ROUTE PROTECTION
+==================================================
+
+Even if buddy can see read-only cards:
+- block buddy from accessing:
+  - create search profile
+  - edit search profile
+  - AI reaction letter generation
+  - reaction letter editing
+  - subscription pages
+  - housing situation pages
+
+If buddy reaches restricted routes directly:
+- redirect to buddy home
+OR
+- show read-only state if appropriate
+
+==================================================
+8. QA CHECK REQUIRED
+==================================================
+
+After implementation, verify these exact flows:
+
+A. Buddy login
+- lands on buddy home, not Matches
+
+B. Buddy home
+- shows Zoekopdrachten card read-only
+- shows Reactiebrief card read-only
+- does NOT show account completion card
+- does NOT show Zoekbuddy card
+
+C. Buddy account
+- does NOT show Abonnement
+- does NOT show Woonsituatie
+- does NOT show delete account
+
+D. Buddy reaction letter
+- opens read-only screen correctly
+
+E. Buddy search profiles
+- visible but not editable
+
+==================================================
+9. OUTPUT
+==================================================
+
+Return:
+1. which files were changed
+2. how buddy default route is now determined
+3. what buddy home contains
+4. how reaction letter card was added to buddy home
+5. how search profiles are rendered read-only
+6. how bottom nav now behaves for buddy
+7. confirmation that account menu restrictions now render correctly
