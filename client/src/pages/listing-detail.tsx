@@ -27,7 +27,7 @@ function FloatingBackButton({ navigate }: { navigate: (to: string) => void }) {
   }
   return (
     <div className="fixed top-[max(0.75rem,env(safe-area-inset-top))] left-4 z-30">
-      <button onClick={handleBack} className="w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center active:scale-95 transition-transform" style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.08)" }} aria-label="Back" data-testid="button-back"><ArrowLeft className="w-[18px] h-[18px] text-[#111111]" /></button>
+      <button onClick={handleBack} className="w-10 h-10 rounded-full bg-white hover:bg-[#F3F4F6] active:bg-[#E5E7EB] backdrop-blur-sm flex items-center justify-center transition-colors" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.12)" }} aria-label="Back" data-testid="button-back"><ArrowLeft className="w-5 h-5 text-[#374151]" /></button>
     </div>
   );
 }

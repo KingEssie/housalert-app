@@ -398,14 +398,14 @@ export default function PaywallPage() {
 
   return (
     <div className="min-h-screen bg-ha-bg flex flex-col">
-      <header className="w-full bg-ha-bg sticky top-0 z-20 border-b border-ha-card-border">
+      <header className="w-full bg-ha-bg sticky top-0 z-20 border-b border-ha-card-border" style={{ paddingTop: "env(safe-area-inset-top)" }}>
         <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center gap-3">
           <button
             onClick={() => navigate("/dashboard")}
-            className="w-9 h-9 rounded-full bg-ha-card flex items-center justify-center active:scale-95 transition-transform"
+            className="w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors"
             data-testid="button-paywall-back"
           >
-            <ArrowLeft className="w-4 h-4 text-ha-text-secondary" />
+            <ArrowLeft className="w-5 h-5 text-[#374151]" />
           </button>
           <HousAlertLogo size={28} />
           <div className="ml-auto flex items-center gap-1.5">

@@ -177,24 +177,24 @@ export default function TipsFlowPage() {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
-      <header className="sticky top-0 z-10 bg-white border-b border-[rgba(15,23,42,0.04)]">
-        <div className="max-w-[480px] mx-auto flex items-center h-[48px] px-4">
+      <header className="sticky top-0 z-10 bg-white border-b border-[#E5E7EB]" style={{ paddingTop: "env(safe-area-inset-top)" }}>
+        <div className="max-w-[480px] mx-auto flex items-center h-12 px-4">
           <button
             onClick={handleBack}
-            className="w-9 h-9 rounded-full flex items-center justify-center active:bg-[#F9FAFB] transition-colors"
+            className="w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors"
             data-testid="button-tips-back"
           >
-            <ArrowLeft className="w-5 h-5 text-[#111111]" />
+            <ArrowLeft className="w-5 h-5 text-[#374151]" />
           </button>
-          <h1 className="flex-1 text-center text-[16px] font-semibold text-[#111111] truncate px-2">
+          <h1 className="flex-1 text-center text-[16px] font-semibold text-[#111111]">
             {t("tipsFlow.pageTitle")}
           </h1>
           <button
             onClick={handleClose}
-            className="w-9 h-9 rounded-full flex items-center justify-center active:bg-[#F9FAFB] transition-colors"
+            className="w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors"
             data-testid="button-tips-close"
           >
-            <X className="w-5 h-5 text-[#111111]" />
+            <X className="w-5 h-5 text-[#374151]" />
           </button>
         </div>
 

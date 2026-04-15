@@ -351,10 +351,10 @@ export default function NewSearchPage() {
           <div className="max-w-lg mx-auto flex items-center justify-between h-[60px] px-5">
             <button
               onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=home")}
-              className="w-11 h-11 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
+              className="w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors"
               data-testid="button-wizard-header-back"
             >
-              <ArrowLeft className="w-5 h-5 text-[#334855]" />
+              <ArrowLeft className="w-5 h-5 text-[#374151]" />
             </button>
           </div>
         </header>
@@ -388,10 +388,10 @@ export default function NewSearchPage() {
         <div className="max-w-lg mx-auto flex items-center justify-between h-[64px] px-5">
           <button
             onClick={goBack}
-            className="w-10 h-10 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-95 transition-transform"
+            className="w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors"
             data-testid="button-wizard-header-back"
           >
-            <ArrowLeft className="w-5 h-5 text-[#334855]" />
+            <ArrowLeft className="w-5 h-5 text-[#374151]" />
           </button>
           <div className="flex items-center gap-1.5">
             {Array.from({ length: TOTAL_STEPS }).map((_, i) => (

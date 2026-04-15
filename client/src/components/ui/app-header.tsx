@@ -25,23 +25,28 @@ export function AppHeader({ title, onBack, closeButton, trailing }: AppHeaderPro
 
   return (
     <div
-      className="sticky top-0 z-30 flex items-center gap-3 px-4 bg-white"
-      style={{ paddingTop: "max(16px, env(safe-area-inset-top))" }}
+      className="sticky top-0 z-30 bg-white border-b border-[#E5E7EB]"
+      style={{ paddingTop: "env(safe-area-inset-top)" }}
       data-testid="app-header"
     >
-      <button
-        onClick={handleBack}
-        className="w-10 h-10 flex items-center justify-center rounded-full active:bg-[#F9FAFB] transition-colors shrink-0"
-        aria-label={closeButton ? "Close" : "Back"}
-        data-testid="button-back"
-      >
-        <Icon className="w-5 h-5 text-[#111111]" strokeWidth={2} />
-      </button>
-      <h1 className="text-[18px] font-semibold text-[#111111] flex-1 min-w-0 truncate" data-testid="text-page-title">
-        {title}
-      </h1>
-      {trailing && <div className="shrink-0">{trailing}</div>}
-      <div className="absolute bottom-0 left-0 right-0" />
+      <div className="flex items-center h-12 px-4">
+        <button
+          onClick={handleBack}
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] transition-colors shrink-0"
+          aria-label={closeButton ? "Close" : "Back"}
+          data-testid="button-back"
+        >
+          <Icon className="w-5 h-5 text-[#374151]" strokeWidth={2} />
+        </button>
+        <h1 className="flex-1 text-center text-[17px] font-semibold text-[#111111]" data-testid="text-page-title">
+          {title}
+        </h1>
+        {trailing ? (
+          <div className="w-10 shrink-0 flex justify-end">{trailing}</div>
+        ) : (
+          <div className="w-10 shrink-0" />
+        )}
+      </div>
     </div>
   );
 }

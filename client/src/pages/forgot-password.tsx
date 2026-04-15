@@ -59,11 +59,11 @@ export default function ForgotPasswordPage() {
         <div className="pt-[max(env(safe-area-inset-top),8px)] px-5">
           <button
             onClick={() => navigate("/")}
-            className="mt-3 w-10 h-10 rounded-full flex items-center justify-center hover:bg-white transition-colors"
+            className="mt-3 w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors"
             data-testid="button-back"
             aria-label="Back"
           >
-            <ArrowLeft className="w-5 h-5 text-[#111111]" />
+            <ArrowLeft className="w-5 h-5 text-[#374151]" />
           </button>
         </div>
 
@@ -97,11 +97,11 @@ export default function ForgotPasswordPage() {
       <div className="pt-[max(env(safe-area-inset-top),8px)] px-5">
         <button
           onClick={() => navigate("/")}
-          className="mt-3 w-10 h-10 rounded-full flex items-center justify-center hover:bg-white transition-colors"
+          className="mt-3 w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors"
           data-testid="button-back"
           aria-label="Back"
         >
-          <ArrowLeft className="w-5 h-5 text-[#111111]" />
+          <ArrowLeft className="w-5 h-5 text-[#374151]" />
         </button>
       </div>
 

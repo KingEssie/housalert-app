@@ -243,15 +243,14 @@ export default function ApplyPage() {
 
   const StickyHeader = ({ children }: { children?: React.ReactNode }) => (
     <div className="sticky top-0 z-30 bg-white border-b border-[#E5E7EB]" style={{ paddingTop: "env(safe-area-inset-top)" }}>
-      <div className="flex items-center h-[52px] px-4">
+      <div className="flex items-center h-12 px-4">
         <button
           onClick={handleBack}
-          className="w-9 h-9 rounded-full flex items-center justify-center active:scale-95 transition-transform shrink-0"
-          style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.1)" }}
+          className="w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors shrink-0"
           aria-label="Back"
           data-testid="button-back-apply"
         >
-          <ArrowLeft className="w-[18px] h-[18px] text-[#111111]" />
+          <ArrowLeft className="w-5 h-5 text-[#374151]" />
         </button>
         <span className="flex-1 text-center text-[16px] font-semibold text-[#111111] mx-3 truncate">
           {t("applySheet.pageTitle")}

@@ -172,14 +172,14 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen bg-ha-bg flex flex-col">
       {!isEmbedded && (
-        <header className="w-full bg-ha-bg sticky top-0 z-20 border-b border-ha-card-border">
+        <header className="w-full bg-ha-bg sticky top-0 z-20 border-b border-ha-card-border" style={{ paddingTop: "env(safe-area-inset-top)" }}>
           <div className={`${containerClass} mx-auto px-5 h-[56px] flex items-center gap-3`}>
             <button
               onClick={handleBack}
-              className="w-10 h-10 rounded-full bg-ha-card flex items-center justify-center active:scale-95 transition-transform"
+              className="w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors"
               data-testid="button-back-signup"
             >
-              <ChevronLeft className="w-5 h-5 text-ha-text-secondary" />
+              <ChevronLeft className="w-5 h-5 text-[#374151]" />
             </button>
             <HousAlertLogo size={28} />
           </div>

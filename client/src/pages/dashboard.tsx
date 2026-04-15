@@ -869,12 +869,13 @@ function ZoekopdrachtenSection({ profiles, navigate, buddyMode }: { profiles: Se
             <div className="max-w-lg mx-auto flex items-center h-[48px] px-4">
               <button
                 onClick={() => setConfirmDeleteId(null)}
-                className="w-9 h-9 rounded-full flex items-center justify-center active:scale-95 transition-transform"
+                className="w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors"
                 data-testid="button-delete-back"
               >
-                <ArrowLeft className="w-4 h-4 text-[#111111]/80" />
+                <ArrowLeft className="w-5 h-5 text-[#374151]" />
               </button>
-              <h1 className="text-[17px] font-semibold text-[#111111] flex-1 text-center pr-9">{t("home.deleteTitle")}</h1>
+              <h1 className="text-[17px] font-semibold text-[#111111] flex-1 text-center">{t("home.deleteTitle")}</h1>
+              <div className="w-10 shrink-0" />
             </div>
           </header>
           <main className="flex-1 flex flex-col items-center justify-center px-4">
@@ -967,7 +968,7 @@ function HomeTab({
           backgroundColor: "#22336b",
           borderBottomLeftRadius: 24,
           borderBottomRightRadius: 24,
-          paddingTop: 32,
+          paddingTop: "max(env(safe-area-inset-top), 32px)",
         }}
         data-testid="section-welcome"
       >
@@ -990,7 +991,7 @@ function HomeTab({
         </p>
       </div>
 
-      <div className="flex flex-col gap-5 px-5 pt-0">
+      <div className="flex flex-col gap-5 px-5 pt-5">
         {!buddyMode && (
           <div className="flex flex-col gap-3.5" style={{ marginTop: 20 }} data-testid="section-gamification">
             <TaskFlowCard accessToken={accessToken} flow={ACCOUNT_FLOW} taskSource="tasks" navigate={navigate} testId="card-account-completion" searchProfileCount={profiles.length} />
@@ -1173,7 +1174,7 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
   if (!hasAccess) {
     return (
       <div className="flex flex-col pb-8" data-testid="favorieten-locked">
-        <div className="sticky top-0 z-10 bg-white px-5 pt-6 pb-4 border-b border-[#E5E7EB]">
+        <div className="sticky top-0 z-10 bg-white px-5 pb-4 border-b border-[#E5E7EB]" style={{ paddingTop: "max(env(safe-area-inset-top), 24px)" }}>
           <h1 className="text-[22px] font-bold text-[#111111]">{t("nav.favorites")}</h1>
         </div>
         <div className="px-5 pt-16">
@@ -1202,7 +1203,7 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="sticky top-0 z-10 bg-white px-5 pt-6 pb-4 border-b border-[#E5E7EB]">
+      <div className="sticky top-0 z-10 bg-white px-5 pb-4 border-b border-[#E5E7EB]" style={{ paddingTop: "max(env(safe-area-inset-top), 24px)" }}>
         <div className="flex items-center gap-2.5">
           <h1 className="text-[22px] font-bold text-[#111111]">{t("nav.favorites")}</h1>
           {favoriteListings.length > 0 && (
@@ -1457,7 +1458,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
   if (!hasAccess) {
     return (
       <div className="flex flex-col pb-8" data-testid="matches-locked">
-        <div className="sticky top-0 z-10 bg-white px-5 pt-8 pb-4">
+        <div className="sticky top-0 z-10 bg-white px-5 pb-4" style={{ paddingTop: "max(env(safe-area-inset-top), 32px)" }}>
           <h1 className="text-page-title">{t("matches.title")}</h1>
         </div>
 
@@ -1489,7 +1490,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="sticky top-0 z-10 bg-white pt-6 pb-0 border-b border-[#E5E7EB]">
+      <div className="sticky top-0 z-10 bg-white pb-0 border-b border-[#E5E7EB]" style={{ paddingTop: "max(env(safe-area-inset-top), 24px)" }}>
         <div className="flex w-full" data-testid="matches-top-tabs">
           {topTabs.map(({ key, label }) => {
             const isActive = topTab === key;
@@ -1634,12 +1635,13 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
         <div className="max-w-lg mx-auto flex items-center h-[48px] px-4">
           <button
             onClick={onCancel}
-            className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center mr-3 active:scale-95 transition-transform"
+            className="w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors"
             data-testid="button-delete-back"
           >
-            <ArrowLeft className="w-4 h-4 text-[#111111]/80" />
+            <ArrowLeft className="w-5 h-5 text-[#374151]" />
           </button>
-          <h1 className="text-[17px] text-title text-[#111111] flex-1 tracking-wide">{t("filters.deleteTitle")}</h1>
+          <h1 className="text-[17px] text-title text-[#111111] flex-1 text-center">{t("filters.deleteTitle")}</h1>
+          <div className="w-10 shrink-0" />
         </div>
       </header>
 
@@ -2063,7 +2065,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
     <div className="min-h-[calc(100vh-80px)] bg-[#eaeaeb]">
 
       {/* ── MAIN PANEL ── */}
-      <div className="px-4 pt-6 pb-8 max-w-[480px] mx-auto">
+      <div className="px-4 pb-8 max-w-[480px] mx-auto" style={{ paddingTop: "max(env(safe-area-inset-top), 24px)" }}>
 
         {/* Single white container */}
         <div className="bg-white rounded-[12px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden mb-4">
@@ -2156,7 +2158,7 @@ function ZoekTab({ profiles, navigate }: { profiles: SearchProfile[]; navigate: 
   const canAdd = profiles.length < MAX_PROFILES;
   return (
     <div className="flex flex-col pb-8">
-      <div className="sticky top-0 z-10 bg-white px-5 pt-8 pb-5 flex items-center">
+      <div className="sticky top-0 z-10 bg-white px-5 pb-5 flex items-center" style={{ paddingTop: "max(env(safe-area-inset-top), 32px)" }}>
         <h1 className="text-page-title flex-1">{t("nav.search")}</h1>
         {canAdd && profiles.length > 0 && (
           <button

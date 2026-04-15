@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useRoute, useLocation } from "wouter";
 import { useTranslation } from "@/i18n";
-import { ArrowLeft, Check, ChevronRight } from "lucide-react";
+import { Check, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AppHeader } from "@/components/ui/app-header";
 import { getTipConfig, TIP_IDS, getTipsReadSet, markTipRead, type TipId } from "./tips";
 
 export default function TipDetailPage() {
@@ -60,20 +61,10 @@ export default function TipDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#eaeaeb] flex flex-col">
-      <header className="sticky top-0 z-10 bg-[#eaeaeb] border-b border-[#E5E7EB]">
-        <div className="max-w-xl mx-auto flex items-center h-[48px] px-5">
-          <button
-            onClick={() => navigate("/dashboard?tab=tips")}
-            className="w-9 h-9 rounded-full bg-white flex items-center justify-center mr-3 active:scale-95 transition-transform"
-            data-testid="button-back-tip"
-          >
-            <ArrowLeft className="w-4 h-4 text-[#334855]" />
-          </button>
-          <h1 className="text-[17px] font-medium text-[#111111] flex-1 tracking-wide">
-            {t("tips.tipLabel")} {currentIndex + 1}/{TIP_IDS.length}
-          </h1>
-        </div>
-      </header>
+      <AppHeader
+        title={`${t("tips.tipLabel")} ${currentIndex + 1}/${TIP_IDS.length}`}
+        onBack={() => navigate("/dashboard?tab=tips")}
+      />
 
       <div className="max-w-xl mx-auto w-full px-5 pt-3">
         <div className="w-full bg-[#F9FAFB] rounded-full h-1.5" data-testid="progress-bar">
