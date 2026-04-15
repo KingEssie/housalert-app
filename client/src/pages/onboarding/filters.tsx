@@ -848,7 +848,7 @@ export default function OnboardingFilters() {
         <OBWebFooter
           onBack={handleBack}
           onNext={handleNext}
-          nextLabel={isSearchOnlyMode ? (t("newSearch.save") || "Opslaan") : "Volgende"}
+          nextLabel={isSearchOnlyMode ? (t("newSearch.save") || "Opslaan") : t("common.next")}
           saving={saving}
           backTestId="button-filters-back"
           nextTestId="button-filters-next"

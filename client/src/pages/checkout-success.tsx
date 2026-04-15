@@ -3,6 +3,7 @@ import { useLocation } from "wouter";
 import { apiFetch } from "@/lib/api-base";
 import { supabase } from "@/lib/supabase";
 import { queryClient } from "@/lib/queryClient";
+import { useTranslation } from "@/i18n";
 import { CheckCircle, Loader2, AlertCircle, RotateCw } from "lucide-react";
 
 type Status = "loading" | "success" | "error";
@@ -10,6 +11,7 @@ const MAX_RETRIES = 8;
 
 export default function CheckoutSuccessPage() {
   const [, navigate] = useLocation();
+  const { t } = useTranslation();
   const [status, setStatus] = useState<Status>("loading");
   const [errorMsg, setErrorMsg] = useState("");
   const retriesRef = useRef(0);
@@ -27,7 +29,7 @@ export default function CheckoutSuccessPage() {
 
     if (!sessionId) {
       setStatus("error");
-      setErrorMsg("Geen sessie gevonden. Probeer het opnieuw.");
+      setErrorMsg(t("checkoutSuccess.noSession"));
       return;
     }
 
@@ -50,7 +52,7 @@ export default function CheckoutSuccessPage() {
         retriesRef.current++;
         if (retriesRef.current >= MAX_RETRIES) {
           setStatus("error");
-          setErrorMsg("Betaling wordt nog verwerkt. Probeer over een minuut opnieuw.");
+          setErrorMsg(t("checkoutSuccess.stillProcessing"));
           return;
         }
         await new Promise((r) => setTimeout(r, 3000));
@@ -93,10 +95,10 @@ export default function CheckoutSuccessPage() {
       }
 
       setStatus("error");
-      setErrorMsg(data.error || "Er ging iets mis. Probeer het opnieuw.");
+      setErrorMsg(data.error || t("checkoutSuccess.genericError"));
     } catch {
       setStatus("error");
-      setErrorMsg("Verbinding mislukt. Controleer je internet en probeer opnieuw.");
+      setErrorMsg(t("checkoutSuccess.connectionFailed"));
     }
   }
 
@@ -123,14 +125,14 @@ export default function CheckoutSuccessPage() {
         </div>
 
         <h1 className="text-[30px] font-semibold text-[#111] mb-2" data-testid="text-checkout-title">
-          {status === "loading" && "Betaling bevestigen..."}
-          {status === "success" && "Betaling gelukt!"}
-          {status === "error" && "Er ging iets mis"}
+          {status === "loading" && t("checkoutSuccess.loading")}
+          {status === "success" && t("checkoutSuccess.success")}
+          {status === "error" && t("checkoutSuccess.error")}
         </h1>
 
         <p className="text-[15px] text-[#334855]" data-testid="text-checkout-subtitle">
-          {status === "loading" && "Even geduld, we activeren je account."}
-          {status === "success" && "Je wordt doorgestuurd naar de app..."}
+          {status === "loading" && t("checkoutSuccess.loadingSubtitle")}
+          {status === "success" && t("checkoutSuccess.successSubtitle")}
           {status === "error" && errorMsg}
         </p>
 
@@ -143,14 +145,14 @@ export default function CheckoutSuccessPage() {
               data-testid="button-retry-checkout"
             >
               <RotateCw className="w-4 h-4" />
-              Opnieuw proberen
+              {t("checkoutSuccess.retry")}
             </button>
             <button
               onClick={() => navigate("/home")}
               className="h-[44px] rounded-[10px] text-[15px] font-medium text-[#334855] hover:bg-[#F9FAFB] transition-colors"
               data-testid="button-go-home"
             >
-              Ga naar de app
+              {t("checkoutSuccess.goToApp")}
             </button>
           </div>
         )}

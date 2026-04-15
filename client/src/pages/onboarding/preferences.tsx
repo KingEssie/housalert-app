@@ -3,20 +3,22 @@ import { useLocation } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { Check } from "lucide-react";
 import { OBW, OBWebHeader, OBWebFooter, OBInfoBox, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
-
-const PREFERENCE_OPTIONS = [
-  { value: "balcony", label: "Balkon" },
-  { value: "garden", label: "Tuin" },
-  { value: "bath", label: "Badkuip / bad" },
-  { value: "energy_c", label: "Energielabel C of beter" },
-  { value: "rooftop", label: "Dakterras" },
-];
+import { useTranslation } from "@/i18n";
 
 export default function OnboardingPreferences() {
+  const { t } = useTranslation();
   const [, navigate] = useLocation();
   const searchString = useHashSearch();
   const w = useWebsiteMode();
   const params = new URLSearchParams(searchString);
+
+  const PREFERENCE_OPTIONS = [
+    { value: "balcony", label: t("amenities.balcony") },
+    { value: "garden", label: t("amenities.garden") },
+    { value: "bath", label: t("amenities.bath") },
+    { value: "energy_c", label: t("amenities.energyC") },
+    { value: "rooftop", label: t("amenities.rooftop") },
+  ];
 
   const [amenities, setAmenities] = useState<string[]>(() => {
     const a = params.get("amenities");
@@ -98,15 +100,15 @@ export default function OnboardingPreferences() {
           style={{ color: OBW.text }}
           data-testid="text-preferences-title"
         >
-          Specifieke woonwensen
+          {t("onboarding.filters.specificWishesTitle")}
         </h2>
         <p className="text-[13px] mb-4 leading-relaxed" style={{ color: OBW.textSecondary }}>
-          Optioneel: geef aan welke extra's je belangrijk vindt.
+          {t("onboarding.filters.specificWishesSubtitle")}
         </p>
 
         <div className="mb-4">
           <OBInfoBox>
-            Hoe meer wensen je selecteert, hoe minder resultaten je ontvangt. Selecteer alleen wat echt belangrijk is.
+            {t("onboarding.filters.specificWishesWarning")}
           </OBInfoBox>
         </div>
 
@@ -157,7 +159,7 @@ export default function OnboardingPreferences() {
             />
           </div>
           <span className="text-[13px] leading-snug" style={{ color: OBW.text }}>
-            Stuur ook woningen waarvan mijn criteria niet duidelijk zijn
+            {t("onboarding.filters.sendUnclear")}
           </span>
         </label>
       </main>
@@ -165,7 +167,7 @@ export default function OnboardingPreferences() {
       <OBWebFooter
         onBack={handleBack}
         onNext={handleNext}
-        nextLabel="Volgende"
+        nextLabel={t("common.next")}
         backTestId="button-preferences-back"
         nextTestId="button-preferences-next"
       />

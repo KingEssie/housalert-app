@@ -215,7 +215,7 @@ export default function ProfileDetailsPage() {
                         className={`${INPUT_CLS} appearance-none text-center px-2 pr-6 ${!birthDay ? "text-[#9CA3AF]" : "text-[#000000]"}`}
                         data-testid="select-birth-day"
                       >
-                        <option value="">Dag</option>
+                        <option value="">{t("profileDetails.birthDay")}</option>
                         {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
                           <option key={d} value={String(d)}>{d}</option>
                         ))}
@@ -230,11 +230,8 @@ export default function ProfileDetailsPage() {
                         className={`${INPUT_CLS} appearance-none text-left px-3 pr-7 ${!birthMonth ? "text-[#9CA3AF]" : "text-[#000000]"}`}
                         data-testid="select-birth-month"
                       >
-                        <option value="">Maand</option>
-                        {[
-                          "Januari","Februari","Maart","April","Mei","Juni",
-                          "Juli","Augustus","September","Oktober","November","December"
-                        ].map((name, i) => (
+                        <option value="">{t("profileDetails.birthMonth")}</option>
+                        {(t("profileDetails.months") as unknown as string[]).map((name, i) => (
                           <option key={i + 1} value={String(i + 1)}>{name}</option>
                         ))}
                       </select>
@@ -248,7 +245,7 @@ export default function ProfileDetailsPage() {
                         className={`${INPUT_CLS} appearance-none text-center px-2 pr-6 ${!birthYear ? "text-[#9CA3AF]" : "text-[#000000]"}`}
                         data-testid="select-birth-year"
                       >
-                        <option value="">Jaar</option>
+                        <option value="">{t("profileDetails.birthYear")}</option>
                         {Array.from({ length: new Date().getFullYear() - 1939 }, (_, i) => new Date().getFullYear() - i).map(y => (
                           <option key={y} value={String(y)}>{y}</option>
                         ))}

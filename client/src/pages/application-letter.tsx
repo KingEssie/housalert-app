@@ -212,7 +212,7 @@ export default function ApplicationLetterPage() {
     setBirthDate(parts.join("-"));
   }
 
-  const MONTHS_NL = ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"];
+  const MONTHS_NL = t("profileDetails.months") as unknown as string[];
   const [bYear = "", bMonth = "", bDay = ""] = birthDate ? birthDate.split("-") : [];
 
   const GENDER_OPTIONS = [
@@ -285,7 +285,7 @@ export default function ApplicationLetterPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
-        <AppHeader title="Reactiebrief" onBack={() => navigate("/dashboard?tab=home")} />
+        <AppHeader title={t("applicationLetter.title")} onBack={() => navigate("/dashboard?tab=home")} />
         <div className="flex-1 flex items-center justify-center">
           <Loader2 className="w-6 h-6 animate-spin text-ha-icon-secondary" />
         </div>
@@ -295,20 +295,20 @@ export default function ApplicationLetterPage() {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
-      <AppHeader title="Reactiebrief" onBack={handleBack} />
+      <AppHeader title={t("applicationLetter.title")} onBack={handleBack} />
 
       <main className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-32">
 
         {step === 1 && (
           <div className="flex flex-col gap-4" data-testid="step-intro">
             <h1 className="text-[28px] font-bold text-[#000000] px-1" data-testid="text-intro-heading">
-              AI Reactiebrief genereren
+              {t("applicationLetter.introHeading")}
             </h1>
 
             <div className="ha-card">
               <div className="rounded-[--ha-card-inner-radius] bg-[#F9FAFB] px-4 py-4 mb-5" data-testid="card-speech-bubble">
                 <p className="text-[15px] text-[#111111] leading-relaxed">
-                  Een reactiebrief helpt je sneller te reageren op woningen. Met onze AI-generator maak je in een paar stappen een professionele brief die je direct kunt kopiëren en gebruiken. In de volgende stappen verzamelen we de informatie die nodig is.
+                  {t("applicationLetter.introBody")}
                 </p>
               </div>
 
@@ -332,7 +332,7 @@ export default function ApplicationLetterPage() {
               className="w-full h-[48px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
               data-testid="button-intro-next"
             >
-              Volgende
+              {t("common.next")}
             </button>
           </div>
         )}
@@ -340,16 +340,16 @@ export default function ApplicationLetterPage() {
         {step === 2 && (
           <div className="flex flex-col gap-4" data-testid="step-personal">
             <div className="px-1">
-              <p className="text-[13px] font-medium text-[#6B7280] mb-1" data-testid="text-step-indicator">Stap 1 van 2</p>
+              <p className="text-[13px] font-medium text-[#6B7280] mb-1" data-testid="text-step-indicator">{t("applicationLetter.step1of2")}</p>
               <h1 className="text-[28px] font-bold text-[#000000]" data-testid="text-personal-heading">
-                Persoonlijke gegevens
+                {t("applicationLetter.personalDataHeading")}
               </h1>
             </div>
 
             <div className="ha-card">
               <div className="flex flex-col gap-5">
                 <div>
-                  <label className={labelClass}>Telefoonnummer</label>
+                  <label className={labelClass}>{t("applicationLetter.phoneLabel")}</label>
                   <input
                     type="tel"
                     value={phone}
@@ -361,7 +361,7 @@ export default function ApplicationLetterPage() {
                 </div>
 
                 <div>
-                  <label className={labelClass}>Geboortedatum</label>
+                  <label className={labelClass}>{t("applicationLetter.birthDateLabel")}</label>
                   <div className="grid grid-cols-[1fr_2fr_1fr] gap-2" data-testid="input-birthdate-group">
                     {/* Day */}
                     <div className="relative">
@@ -371,7 +371,7 @@ export default function ApplicationLetterPage() {
                         className={`app-select ${bDay ? "" : "text-ha-icon-secondary"}`}
                         data-testid="select-birth-day"
                       >
-                        <option value="">Dag</option>
+                        <option value="">{t("profileDetails.birthDay")}</option>
                         {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
                           <option key={d} value={String(d).padStart(2, "0")}>{d}</option>
                         ))}
@@ -386,7 +386,7 @@ export default function ApplicationLetterPage() {
                         className={`app-select ${bMonth ? "" : "text-ha-icon-secondary"}`}
                         data-testid="select-birth-month"
                       >
-                        <option value="">Maand</option>
+                        <option value="">{t("profileDetails.birthMonth")}</option>
                         {MONTHS_NL.map((m, i) => (
                           <option key={i} value={String(i + 1).padStart(2, "0")}>{m}</option>
                         ))}
@@ -401,7 +401,7 @@ export default function ApplicationLetterPage() {
                         className={`app-select ${bYear ? "" : "text-ha-icon-secondary"}`}
                         data-testid="select-birth-year"
                       >
-                        <option value="">Jaar</option>
+                        <option value="">{t("profileDetails.birthYear")}</option>
                         {Array.from({ length: 80 }, (_, i) => new Date().getFullYear() - 18 - i).map(y => (
                           <option key={y} value={String(y)}>{y}</option>
                         ))}
@@ -412,7 +412,7 @@ export default function ApplicationLetterPage() {
                 </div>
 
                 <div>
-                  <label className={labelClass}>Geslacht</label>
+                  <label className={labelClass}>{t("applicationLetter.genderLabel")}</label>
                   {renderSelect(gender, GENDER_OPTIONS, setGender, "select-gender")}
                 </div>
               </div>
@@ -425,7 +425,7 @@ export default function ApplicationLetterPage() {
               data-testid="button-personal-next"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
-              Volgende
+              {t("common.next")}
             </button>
           </div>
         )}
@@ -433,9 +433,9 @@ export default function ApplicationLetterPage() {
         {step === 3 && (
           <div className="flex flex-col gap-4" data-testid="step-housing">
             <div className="px-1">
-              <p className="text-[13px] font-medium text-[#6B7280] mb-1" data-testid="text-step-indicator-3">Stap 2 van 2</p>
+              <p className="text-[13px] font-medium text-[#6B7280] mb-1" data-testid="text-step-indicator-3">{t("applicationLetter.step2of2")}</p>
               <h1 className="text-[28px] font-bold text-[#000000]" data-testid="text-housing-heading">
-                Woonsituatie
+                {t("applicationLetter.housingHeading")}
               </h1>
             </div>
 
@@ -482,7 +482,7 @@ export default function ApplicationLetterPage() {
               data-testid="button-generate-letter"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
-              Volgende
+              {t("common.next")}
             </button>
           </div>
         )}
@@ -493,7 +493,7 @@ export default function ApplicationLetterPage() {
               {/* Card header */}
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[16px] font-semibold text-[#000000]">
-                  Jouw reactiebrief
+                  {t("applicationLetter.yourLetter")}
                 </span>
                 <button
                   onClick={handleReset}
@@ -501,13 +501,13 @@ export default function ApplicationLetterPage() {
                   data-testid="button-reset-template"
                 >
                   <RotateCcw className="w-[14px] h-[14px]" strokeWidth={2} />
-                  Standaard herstellen
+                  {t("applicationLetter.resetDefault")}
                 </button>
               </div>
 
               {/* Helper text */}
               <p className="text-[13px] text-[#6B7280] mb-3 leading-snug">
-                Wijzig <strong>[ADRES]</strong> niet — dit wordt automatisch ingevuld per woning.
+                {t("applicationLetter.addressHelper")}
               </p>
 
               {/* Textarea */}
@@ -555,7 +555,7 @@ export default function ApplicationLetterPage() {
               data-testid="button-save-template"
             >
               {saveMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
-              {saveMutation.isPending ? t("applicationLetter.saving") : "Brief opslaan"}
+              {saveMutation.isPending ? t("applicationLetter.saving") : t("applicationLetter.saveLetter")}
             </button>
 
             <button
@@ -563,7 +563,7 @@ export default function ApplicationLetterPage() {
               className="w-full h-[48px] rounded-[10px] border border-ha-primary text-ha-primary text-[15px] font-semibold hover:bg-ha-primary/5 transition-colors active:scale-[0.98] flex items-center justify-center gap-2"
               data-testid="button-regenerate-letter"
             >
-              Nieuwe AI reactiebrief maken
+              {t("applicationLetter.regenerate")}
             </button>
           </div>
         </div>

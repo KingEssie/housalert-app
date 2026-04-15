@@ -7,6 +7,7 @@ import { OBW, OBWebHeader, OBWebFooter, OBInfoBox, useWebsiteMode, appendWebsite
 import { OnboardingFlowLayout } from "@/components/onboarding-flow-layout";
 import MapView from "@/components/map-view";
 import { useGeocoderSearch } from "@/hooks/use-geocoder-search";
+import { useTranslation } from "@/i18n";
 
 const TOP_CITIES = defaultCities.slice(0, 5);
 const RADIUS_OPTIONS = [2, 5, 10, 15, 25, 50];
@@ -40,6 +41,7 @@ function getInitialSearchFromQuery(searchString: string): string {
 }
 
 export default function OnboardingCity() {
+  const { t } = useTranslation();
   const [, navigate] = useLocation();
   const searchString = useHashSearch();
   const w = useWebsiteMode();
@@ -179,7 +181,7 @@ export default function OnboardingCity() {
                 setSearch(e.target.value);
                 if (selectedCity) setSelectedCity(null);
               }}
-              placeholder="Zoek stad..."
+              placeholder={t("onboarding.location.searchPlaceholder")}
               className="w-full ha-field-web"
               style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text, paddingLeft: "40px", paddingRight: "44px" }}
               autoFocus
@@ -286,7 +288,7 @@ export default function OnboardingCity() {
 
         <OBWebFooter
           onNext={handleNext}
-          nextLabel="Volgende"
+          nextLabel={t("common.next")}
           nextDisabled={!selectedCity}
           nextTestId="button-city-next"
         />
@@ -304,7 +306,7 @@ export default function OnboardingCity() {
             setSearch(e.target.value);
             if (selectedCity) setSelectedCity(null);
           }}
-          placeholder="Zoek stad..."
+          placeholder={t("onboarding.location.searchPlaceholder")}
           className="w-full h-[56px] rounded-[8px] border border-[#D1D5DB] bg-white px-4 pr-12 text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
           autoFocus
           data-testid="input-city-search"
@@ -385,15 +387,15 @@ export default function OnboardingCity() {
 
   return (
     <OnboardingFlowLayout
-      flowTitle="Zoekopdracht maken"
+      flowTitle={t("onboarding.filters.headerTitle")}
       currentStep={1}
       totalSteps={3}
-      stepTitle="Kies je locatie"
-      stepDescription="Zoek de stad waar je een woning zoekt."
+      stepTitle={t("onboarding.location.cityStepTitle")}
+      stepDescription={t("onboarding.location.cityStepDesc")}
       onBack={handleBack}
       onNext={handleNext}
       onClose={handleClose}
-      nextLabel="Volgende"
+      nextLabel={t("common.next")}
       nextDisabled={!selectedCity}
       backTestId="button-city-back"
       nextTestId="button-city-next"

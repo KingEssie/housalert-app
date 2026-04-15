@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "@/i18n";
 import { apiFetch } from "@/lib/api-base";
 import { queryClient } from "@/lib/queryClient";
 import { useBuddyConnections } from "@/lib/buddy";
@@ -30,20 +31,11 @@ function buildInviteLink(token: string) {
 const INPUT_CLS =
   "w-full h-[52px] px-4 rounded-[8px] border border-[#C7CDD4] bg-white text-[16px] font-normal text-[#000000] placeholder:text-[#9CA3AF] outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/20";
 
-const ALLOWED_ITEMS = [
-  "Woningalerts ontvangen via de app",
-  "Woningen markeren als favoriet",
-  "Reageren op woningen",
-];
-const NOT_ALLOWED_ITEMS = [
-  "Zoekopdrachten beheren",
-  "Reactiebrief beheren",
-];
-
 export default function ZoekbuddyPage() {
   const { session } = useAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const { data: connections, isLoading } = useBuddyConnections();
 
@@ -70,12 +62,12 @@ export default function ZoekbuddyPage() {
         body: JSON.stringify({ email: emailInput.trim() }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Uitnodiging mislukt");
+      if (!res.ok) throw new Error(data.error || t("zoekbuddyPage.inviteError"));
       queryClient.invalidateQueries({ queryKey: ["/api/buddy/connections"] });
-      toast({ title: "Uitnodiging verstuurd" });
+      toast({ title: t("zoekbuddyPage.inviteSentToast") });
       setEmailInput("");
     } catch (err: any) {
-      toast({ title: err.message || "Fout bij uitnodigen", variant: "destructive" });
+      toast({ title: err.message || t("zoekbuddyPage.inviteError"), variant: "destructive" });
     } finally {
       setInviting(false);
     }
@@ -93,11 +85,11 @@ export default function ZoekbuddyPage() {
         },
         body: JSON.stringify({ relationId: asOwner.id }),
       });
-      if (!res.ok) throw new Error("Verwijderen mislukt");
+      if (!res.ok) throw new Error(t("zoekbuddyPage.removeError"));
       queryClient.invalidateQueries({ queryKey: ["/api/buddy/connections"] });
-      toast({ title: "Zoekbuddy verwijderd" });
+      toast({ title: t("zoekbuddyPage.removedToast") });
     } catch {
-      toast({ title: "Fout bij verwijderen", variant: "destructive" });
+      toast({ title: t("zoekbuddyPage.removeError"), variant: "destructive" });
     } finally {
       setRevoking(false);
     }
@@ -107,9 +99,9 @@ export default function ZoekbuddyPage() {
     if (!inviteLink) return;
     try {
       await navigator.clipboard.writeText(inviteLink);
-      toast({ title: "Link gekopieerd" });
+      toast({ title: t("zoekbuddyPage.linkCopied") });
     } catch {
-      toast({ title: "Kon link niet kopiëren", variant: "destructive" });
+      toast({ title: t("zoekbuddyPage.linkCopyFailed"), variant: "destructive" });
     }
   }
 
@@ -117,16 +109,26 @@ export default function ZoekbuddyPage() {
     if (!inviteLink) return;
     if (navigator.share) {
       try {
-        await navigator.share({ title: "HousAlert Zoekbuddy", url: inviteLink });
+        await navigator.share({ title: t("zoekbuddyPage.shareAppTitle"), url: inviteLink });
       } catch {}
     } else {
       await handleCopyLink();
     }
   }
 
+  const ALLOWED_ITEMS = [
+    t("zoekbuddyPage.allow1"),
+    t("zoekbuddyPage.allow2"),
+    t("zoekbuddyPage.allow3"),
+  ];
+  const NOT_ALLOWED_ITEMS = [
+    t("zoekbuddyPage.deny1"),
+    t("zoekbuddyPage.deny2"),
+  ];
+
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
-      <AppHeader title="Zoekbuddy beheren" onBack={() => navigate("/dashboard?tab=profiel")} />
+      <AppHeader title={t("zoekbuddyPage.pageTitle")} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-4">
         {isLoading ? (
@@ -137,9 +139,9 @@ export default function ZoekbuddyPage() {
           /* ── STATE B: CONNECTED ── */
           <div className="flex flex-col gap-3">
             <div className="app-card !p-5">
-              <h2 className="text-[21px] font-bold text-[#000000] mb-1">Zoekbuddy verbonden</h2>
+              <h2 className="text-[21px] font-bold text-[#000000] mb-1">{t("zoekbuddyPage.connectedTitle")}</h2>
               <p className="text-[16px] text-[#000000] mb-5 leading-snug">
-                Je zoekbuddy is gekoppeld en kan meezoeken in de app.
+                {t("zoekbuddyPage.connectedDesc")}
               </p>
 
               {/* Buddy email row */}
@@ -159,7 +161,7 @@ export default function ZoekbuddyPage() {
                     data-testid="button-share-link"
                   >
                     <Share2 className="w-[19px] h-[19px] text-[#000000] flex-shrink-0" strokeWidth={1.8} />
-                    <span className="text-[16px] text-[#000000] font-medium">Deel link</span>
+                    <span className="text-[16px] text-[#000000] font-medium">{t("zoekbuddyPage.shareLink")}</span>
                   </button>
 
                   <button
@@ -168,7 +170,7 @@ export default function ZoekbuddyPage() {
                     data-testid="button-copy-link-connected"
                   >
                     <Copy className="w-[19px] h-[19px] text-[#000000] flex-shrink-0" strokeWidth={1.8} />
-                    <span className="text-[16px] text-[#000000] font-medium">Link kopiëren</span>
+                    <span className="text-[16px] text-[#000000] font-medium">{t("zoekbuddyPage.copyLink")}</span>
                   </button>
                 </>
               )}
@@ -184,7 +186,7 @@ export default function ZoekbuddyPage() {
                   ? <Loader2 className="w-[18px] h-[18px] animate-spin text-[#9CA3AF] flex-shrink-0" />
                   : <UserMinus className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0" strokeWidth={1.8} />
                 }
-                <span className="text-[14px] text-[#9CA3AF]">Zoekbuddy verwijderen</span>
+                <span className="text-[14px] text-[#9CA3AF]">{t("zoekbuddyPage.removeLabel")}</span>
               </button>
             </div>
           </div>
@@ -196,9 +198,9 @@ export default function ZoekbuddyPage() {
               <div className="app-card !p-4 flex items-start gap-3">
                 <Clock className="w-[19px] h-[19px] text-[#F59E0B] flex-shrink-0 mt-0.5" strokeWidth={2} />
                 <div>
-                  <p className="text-[15px] font-semibold text-[#000000]">Uitnodiging verstuurd</p>
+                  <p className="text-[15px] font-semibold text-[#000000]">{t("zoekbuddyPage.pendingTitle")}</p>
                   <p className="text-[14px] font-medium text-[#000000] leading-snug mt-0.5">
-                    Wachtend op acceptatie van <strong>{asOwner?.invite_email}</strong>
+                    {t("zoekbuddyPage.waitingFor").replace("{email}", asOwner?.invite_email || "")}
                   </p>
                 </div>
               </div>
@@ -206,16 +208,14 @@ export default function ZoekbuddyPage() {
 
             {/* Info panel */}
             <div className="app-card !p-5">
-              {/* Panel title — 21px bold black */}
               <h2 className="text-[21px] font-bold text-[#000000] mb-2">
-                Samen wonen? Samen zoeken!
+                {t("zoekbuddyPage.introTitle")}
               </h2>
-              {/* Intro — 16px medium black */}
               <p className="text-[16px] font-medium text-[#000000] mb-4 leading-snug">
-                Je zoekbuddy kan:
+                {t("zoekbuddyPage.introSubtitle")}
               </p>
 
-              {/* Permission list — 16px, filled icons, no icon containers */}
+              {/* Permission list */}
               <div className="flex flex-col gap-3 mb-5">
                 {ALLOWED_ITEMS.map(item => (
                   <div key={item} className="flex items-center gap-3">
@@ -244,16 +244,15 @@ export default function ZoekbuddyPage() {
               {/* Email input — only when no pending invite */}
               {!isPending && (
                 <div>
-                  {/* Label — 16px semibold black */}
                   <label className="text-[16px] font-semibold text-[#000000] mb-2 block">
-                    E-mailadres zoekbuddy
+                    {t("zoekbuddyPage.emailLabel")}
                   </label>
                   <input
                     type="email"
                     inputMode="email"
                     value={emailInput}
                     onChange={e => setEmailInput(e.target.value)}
-                    placeholder="naam@voorbeeld.nl"
+                    placeholder={t("zoekbuddyPage.emailPlaceholder")}
                     className={INPUT_CLS}
                     data-testid="input-buddy-email"
                   />
@@ -268,7 +267,7 @@ export default function ZoekbuddyPage() {
                   data-testid="button-copy-link-pending"
                 >
                   <Copy className="w-[19px] h-[19px] text-[#000000] flex-shrink-0" strokeWidth={1.8} />
-                  <span className="text-[16px] font-medium text-[#000000]">Link kopiëren</span>
+                  <span className="text-[16px] font-medium text-[#000000]">{t("zoekbuddyPage.copyLink")}</span>
                 </button>
               )}
             </div>
@@ -287,7 +286,7 @@ export default function ZoekbuddyPage() {
                 data-testid="button-share-link-bottom"
               >
                 <Share2 className="w-4 h-4" strokeWidth={2} />
-                Deel uitnodigingslink
+                {t("zoekbuddyPage.shareInviteLink")}
               </button>
             ) : isPending ? (
               <>
@@ -297,7 +296,7 @@ export default function ZoekbuddyPage() {
                   data-testid="button-share-pending"
                 >
                   <Share2 className="w-4 h-4" strokeWidth={2} />
-                  Deel uitnodigingslink
+                  {t("zoekbuddyPage.shareInviteLink")}
                 </button>
                 <button
                   onClick={handleRevoke}
@@ -305,7 +304,7 @@ export default function ZoekbuddyPage() {
                   className="w-full h-[44px] rounded-[10px] border border-[#E5E7EB] bg-white text-[14px] text-[#9CA3AF] font-medium transition-colors hover:bg-[#F9FAFB] active:scale-[0.98] flex items-center justify-center gap-2"
                   data-testid="button-cancel-invite"
                 >
-                  {revoking ? <Loader2 className="w-4 h-4 animate-spin" /> : "Uitnodiging annuleren"}
+                  {revoking ? <Loader2 className="w-4 h-4 animate-spin" /> : t("zoekbuddyPage.cancelInvite")}
                 </button>
               </>
             ) : (
@@ -316,7 +315,7 @@ export default function ZoekbuddyPage() {
                 data-testid="button-invite-buddy"
               >
                 {inviting && <Loader2 className="w-4 h-4 animate-spin" />}
-                Uitnodigen
+                {t("zoekbuddyPage.invite")}
               </button>
             )}
           </div>

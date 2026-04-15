@@ -231,8 +231,8 @@ export default function ResetPasswordPage() {
             data-testid="button-submit"
           >
             {loading
-              ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Opslaan...</>
-              : "Opslaan"
+              ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />{t("common.save")}...</>
+              : t("common.save")
             }
           </button>
         </form>

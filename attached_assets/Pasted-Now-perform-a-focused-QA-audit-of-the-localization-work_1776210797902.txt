@@ -1,0 +1,102 @@
+Now perform a focused QA audit of the localization work you just completed.
+
+IMPORTANT:
+Do not make new broad refactors first.
+First inspect the current result screen by screen and report issues clearly.
+
+GOAL:
+Check whether the user-facing app is now fully and correctly localized, and identify any remaining problems before further changes.
+
+==================================================
+1. AUDIT SCOPE
+==================================================
+
+Audit these high-priority user-facing areas first:
+
+1. Account / settings menu
+2. Voorkeuren
+3. Wachtwoord screen(s)
+4. Abonnement screen
+5. Mijn gegevens
+6. Woonsituatie
+7. Zoekbuddy beheren
+8. Reactiebrief flow
+9. Onboarding flow
+10. Logout modal
+11. Empty states
+12. Matches / Favorieten / Detail screens where relevant text appears
+
+Admin portal must be ignored and remain Dutch.
+
+==================================================
+2. CHECK FOR THESE PROBLEMS
+==================================================
+
+For each screen above, inspect and report:
+
+A. Hardcoded Dutch still visible
+- any Dutch strings still showing when German or English is selected
+
+B. Mixed language screens
+- e.g. title in German but button in Dutch
+
+C. Missing translation keys
+- raw translation keys visible
+- blank text
+- fallback issues
+
+D. Unnatural localization
+- German or English text that sounds literal, robotic, or Google-Translate-like
+- awkward product wording
+- overly formal or unnatural phrasing
+
+E. UI breakage caused by translation length
+- wrapped buttons
+- overflowing labels
+- broken spacing
+- clipped titles
+
+F. Placeholder / template bugs
+- placeholders like [ADRES], [[ADRES]], etc. rendered incorrectly
+- translated placeholders that should remain dynamic
+
+==================================================
+3. LANGUAGE QA
+==================================================
+
+Test at least:
+- German
+- English
+- Dutch
+
+For German and English, confirm:
+- app feels fully translated
+- no Dutch remains in user-facing app
+- text sounds natural and app-native
+
+==================================================
+4. OUTPUT FORMAT
+==================================================
+
+Return the audit in a structured list by screen:
+
+For each screen:
+- Screen name
+- Status: OK / Issues found
+- Exact issues found
+- Severity: Critical / Medium / Minor
+- Suggested fix
+
+Then provide:
+
+1. Total number of remaining issues
+2. List of all critical issues
+3. List of all mixed-language screens
+4. List of all hardcoded strings still found
+5. List of copy that sounds unnatural in German
+6. List of copy that sounds unnatural in English
+7. Recommended next fixes in priority order
+
+IMPORTANT:
+Do NOT say “everything looks good” unless you have actually checked each screen above.
+Be strict and specific.

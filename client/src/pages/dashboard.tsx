@@ -708,7 +708,7 @@ function TaskFlowCard({
 function ProfileTipsCompletionCard({ navigate }: { navigate: (path: string) => void }) {
   const { t } = useTranslation();
 
-  const flowSteps = getFlowTipSteps();
+  const flowSteps = getFlowTipSteps(t);
   const readSet = getTipsReadSet();
 
   const steps: CompletionStep[] = flowSteps.map((tip) => ({

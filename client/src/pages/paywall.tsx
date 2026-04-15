@@ -71,11 +71,6 @@ interface WebsitePlan {
   popular: boolean;
 }
 
-const WEBSITE_PLANS: WebsitePlan[] = [
-  { id: "three_month", label: "3 maanden", perMonth: "€15,00 per maand", discount: "40% korting", popular: false },
-  { id: "two_month", label: "2 maanden", perMonth: "€17,50 per maand", discount: "30% korting", popular: true },
-  { id: "monthly", label: "1 maand", perMonth: "€24,99 per maand", discount: "", popular: false },
-];
 
 function WebsitePaywall({
   selectedPlan,
@@ -90,11 +85,18 @@ function WebsitePaywall({
   handleCheckout: () => void;
   queryParams: URLSearchParams;
 }) {
+  const { t } = useTranslation();
   const city = queryParams.get("city") || "";
   const maxPrice = queryParams.get("maxPrice") || "";
   const minRooms = queryParams.get("minRooms") || "";
   const radiusKm = queryParams.get("radiusKm") || "";
   const roomsLabel = (!minRooms || minRooms === "0") ? "Studio+" : `${minRooms}+`;
+
+  const WEBSITE_PLANS: WebsitePlan[] = [
+    { id: "three_month", label: t("paywall.website.plans.threeMonth.label"), perMonth: t("paywall.website.plans.threeMonth.perMonth"), discount: t("paywall.website.plans.threeMonth.discount"), popular: false },
+    { id: "two_month", label: t("paywall.website.plans.twoMonth.label"), perMonth: t("paywall.website.plans.twoMonth.perMonth"), discount: t("paywall.website.plans.twoMonth.discount"), popular: true },
+    { id: "monthly", label: t("paywall.website.plans.monthly.label"), perMonth: t("paywall.website.plans.monthly.perMonth"), discount: t("paywall.website.plans.monthly.discount"), popular: false },
+  ];
 
   return (
     <div
@@ -110,10 +112,10 @@ function WebsitePaywall({
           style={{ color: OBW.text }}
           data-testid="text-paywall-title"
         >
-          Selecteer je pakket
+          {t("paywall.website.title")}
         </h2>
         <p className="text-[13px] mb-5 leading-relaxed" style={{ color: OBW.textSecondary }}>
-          Kies een abonnement en ontvang direct woningmatches.
+          {t("paywall.website.subtitle")}
         </p>
 
         {city && (
@@ -131,7 +133,7 @@ function WebsitePaywall({
                 {city}{radiusKm && radiusKm !== "0" ? ` · ${radiusKm} km` : ""}
               </p>
               <p className="text-[12px]" style={{ color: OBW.textSecondary }}>
-                max €{maxPrice} · {roomsLabel} kamers
+                max €{maxPrice} · {roomsLabel} {t("paywall.website.rooms")}
               </p>
             </div>
           </div>
@@ -141,7 +143,7 @@ function WebsitePaywall({
           className="text-[16px] font-semibold mb-3"
           style={{ color: OBW.text }}
         >
-          Selecteer jouw kortingsperiode
+          {t("paywall.website.selectPeriod")}
         </p>
 
         <div
@@ -164,7 +166,7 @@ function WebsitePaywall({
                       style={{ backgroundColor: "rgb(var(--ha-success))", color: "#ffffff" }}
                       data-testid="badge-popular"
                     >
-                      Meest gekozen
+                      {t("paywall.website.mostChosen")}
                     </span>
                   </div>
                 )}
@@ -230,7 +232,7 @@ function WebsitePaywall({
             <Loader2 className="w-5 h-5 animate-spin" />
           ) : (
             <>
-              Activeer woonalerts
+              {t("paywall.website.activateAlerts")}
               <CircleArrowRight className="w-[18px] h-[18px]" />
             </>
           )}
@@ -245,7 +247,7 @@ function WebsitePaywall({
               <Check className="w-3 h-3 text-white" />
             </div>
             <p className="text-[13px] leading-[1.5]" style={{ color: OBW.text }}>
-              <strong>Bespaar tijd (en stress):</strong> wij vinden woningmatches die bij je passen
+              <strong>{t("paywall.website.benefit1Bold")}</strong>{t("paywall.website.benefit1Rest")}
             </p>
           </div>
           <div className="flex items-start gap-2.5">
@@ -256,7 +258,7 @@ function WebsitePaywall({
               <Check className="w-3 h-3 text-white" />
             </div>
             <p className="text-[13px] leading-[1.5]" style={{ color: OBW.text }}>
-              <strong>Ongelimiteerd woningmatches</strong> direct via de HousAlert app
+              <strong>{t("paywall.website.benefit2Bold")}</strong>{t("paywall.website.benefit2Rest")}
             </p>
           </div>
           <div className="flex items-start gap-2.5">
@@ -267,7 +269,7 @@ function WebsitePaywall({
               <Check className="w-3 h-3 text-white" />
             </div>
             <p className="text-[13px] leading-[1.5]" style={{ color: OBW.text }}>
-              De meeste HousAlert-gebruikers vinden in <strong>4–8 weken</strong> een huurwoning
+              {t("paywall.website.benefit3Pre")}<strong>{t("paywall.website.benefit3Weeks")}</strong>{t("paywall.website.benefit3Post")}
             </p>
           </div>
         </div>
@@ -277,10 +279,10 @@ function WebsitePaywall({
           style={{ backgroundColor: "#F9FAFB" }}
         >
           <p className="text-[15px] font-semibold mb-1" style={{ color: "#111111" }}>
-            Probeer HousAlert zonder risico!
+            {t("paywall.website.guaranteeTitle")}
           </p>
           <p className="text-[13px] leading-[1.55]" style={{ color: "#334855" }}>
-            Ben je binnen 14 dagen niet tevreden over HousAlert? Dan krijg jij het volledige bedrag terug. Zonder fratsen.
+            {t("paywall.website.guaranteeBody")}
           </p>
         </div>
       </main>

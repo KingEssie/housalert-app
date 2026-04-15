@@ -49,7 +49,7 @@ export default function ChangePasswordPage() {
   if (success) {
     return (
       <div className="min-h-screen bg-[#eaeaeb]" data-testid="page-password-success">
-        <AppHeader title="Wachtwoord" onBack={() => navigate("/dashboard?tab=profiel")} />
+        <AppHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
         <div className="max-w-xl mx-auto p-4 pb-8">
           <div className="bg-white rounded-[12px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-6 text-center">
             <div className="flex items-center justify-center mb-5">
@@ -78,23 +78,23 @@ export default function ChangePasswordPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#eaeaeb]" data-testid="page-change-password">
-      <AppHeader title="Wachtwoord" onBack={() => navigate("/dashboard?tab=profiel")} />
+      <AppHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
 
       <div className="flex-1 max-w-xl mx-auto w-full px-4 pt-5 pb-8">
 
         <div className="bg-white rounded-[12px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-5 flex flex-col gap-5">
 
-          {/* Wachtwoord */}
+          {/* Password field */}
           <div>
             <label className="block text-[15px] font-semibold text-[#111111] mb-2">
-              Wachtwoord
+              {t("changePassword.new")}
             </label>
             <div className="relative">
               <input
                 type={showNew ? "text" : "password"}
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Minimaal 8 tekens"
+                placeholder={t("changePassword.newPlaceholder")}
                 className={INPUT_CLASS}
                 autoFocus
                 autoComplete="new-password"
@@ -114,17 +114,17 @@ export default function ChangePasswordPage() {
             <PasswordRules password={newPassword} />
           </div>
 
-          {/* Wachtwoord bevestigen */}
+          {/* Confirm password */}
           <div>
             <label className="block text-[15px] font-semibold text-[#111111] mb-2">
-              Wachtwoord bevestigen
+              {t("changePassword.confirm")}
             </label>
             <div className="relative">
               <input
                 type={showConfirm ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Herhaal je wachtwoord"
+                placeholder={t("changePassword.confirmPlaceholder")}
                 className={INPUT_CLASS}
                 autoComplete="new-password"
                 data-testid="input-confirm-password"
@@ -142,7 +142,7 @@ export default function ChangePasswordPage() {
             </div>
             {mismatch && (
               <p className="text-[13px] mt-2 text-[#E11D48]" data-testid="text-error-mismatch">
-                Wachtwoorden komen niet overeen
+                {t("changePassword.mismatch")}
               </p>
             )}
           </div>
@@ -163,7 +163,7 @@ export default function ChangePasswordPage() {
             }`}
             data-testid="button-submit-password"
           >
-            {submitting ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Opslaan...</> : "Opslaan"}
+            {submitting ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />{t("common.save")}...</> : t("common.save")}
           </button>
         </div>
       </div>

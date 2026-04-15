@@ -5,6 +5,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { apiFetch } from "@/lib/api-base";
 import { useAuth } from "@/lib/auth";
+import { useTranslation } from "@/i18n";
 
 export const FLOW_TIP_IDS = [
   "dokumente",
@@ -41,92 +42,41 @@ interface TipStepContent {
   sections?: { heading: string; items: string[] }[];
 }
 
-const STEPS: TipStepContent[] = [
-  {
-    id: "dokumente",
-    title: "Verzamel je documenten",
-    body: "Verhuurders in Duitsland hechten veel waarde aan een complete en professionele aanvraag. Zorg dat je deze documenten alvast klaar hebt staan.",
-    sections: [
-      {
-        heading: "Als je in loondienst werkt:",
-        items: [
-          "Kopie ID / paspoort",
-          "Arbeitsvertrag (arbeidsovereenkomst)",
-          "Laatste 3 loonstroken",
-          "SCHUFA-Auskunft (zeer belangrijk in Duitsland)",
-          "Mietschuldenfreiheitsbescheinigung (verklaring vorige verhuurder)",
-          "Bankafschriften (optioneel)",
-        ],
-      },
-      {
-        heading: "Als je zelfstandig bent:",
-        items: [
-          "Kopie ID / paspoort",
-          "Gewerbeanmeldung (uittreksel bedrijfsregistratie)",
-          "Inkomensoverzicht / belastingaangifte laatste 2–3 jaar",
-          "SCHUFA-Auskunft",
-        ],
-      },
-    ],
-  },
-  {
-    id: "finanzen",
-    title: "Check je financiële situatie",
-    body: "De meeste verhuurders in Duitsland hanteren een inkomenseis van minimaal 3x de kale huurprijs.\n\nBijvoorbeeld: bij een huur van €1.000 per maand heb je een netto-inkomen van minimaal €3.000 nodig. Sommige verhuurders hanteren 2,5x tot 3,5x de huur.\n\nControleer vooraf of je aan deze eis voldoet, zodat je gerichter kunt zoeken en teleurstellingen voorkomt.",
-  },
-  {
-    id: "reaktion",
-    title: "Zorg voor een sterke reactie",
-    body: "In Duitsland reageren verhuurders vaak op basis van wie het meest professioneel en compleet reageert. Gebruik een duidelijke en persoonlijke reactiebrief.\n\nZorg ervoor dat je brief bevat:\n• Een korte introductie over jezelf\n• Je werk- en inkomenssituatie\n• Een blijk van betrouwbaarheid\n• Eventueel: dat je geen huisdieren hebt (indien relevant)",
-  },
-  {
-    id: "plattformen",
-    title: "Meld je aan voor lokale groepen",
-    body: "In Duitsland worden veel woningen gedeeld via platforms en communities.\n\nBelangrijke platforms:\n• Facebook-groepen (zoek op: \"Wohnung Berlin\", \"Wohnung München\", \"WG Zimmer Hamburg\")\n• WG-Gesucht — dé website voor gedeelde woningen en kamers\n• Kleinanzeigen.de — voorheen eBay Kleinanzeigen, veel particuliere aanbiedingen\n\nMeld je aan bij zoveel mogelijk relevante groepen in jouw stad.",
-  },
-  {
-    id: "neubau",
-    title: "Houd nieuwbouwprojecten in de gaten",
-    body: "Neubauprojekte bieden vaak kansen omdat er minder concurrentie is dan bij bestaande woningen.\n\nBekijk nieuwbouwprojecten via ImmobilienScout24 of projectwebsites van lokale projectontwikkelaars. Veel nieuwbouwprojecten worden maanden van tevoren aangekondigd, dus vroeg aanmelden vergroot je kansen.",
-  },
-  {
-    id: "netzwerk",
-    title: "Gebruik je netwerk",
-    body: "In Duitsland worden veel woningen via via verhuurd. Laat je netwerk weten dat je op zoek bent.\n\nVertel collega's, vrienden en kennissen dat je een woning zoekt. Plaats een bericht op social media. Vraag je werkgever of zij een relocation service of contacten hebben. Veel woningen worden verhuurd voordat ze openbaar worden aangeboden.",
-  },
-  {
-    id: "besichtigung",
-    title: "Maak een sterke indruk bij bezichtigingen",
-    body: "Een bezichtiging is je kans om je als ideale huurder te presenteren.\n\n• Kom op tijd — liefst 5 minuten eerder\n• Kleed je netjes en verzorgd\n• Stel slimme vragen over het gebouw, de buurt of de servicekosten\n• Laat zien dat je serieus bent: neem je documenten mee\n• Wees vriendelijk en professioneel tegen de verhuurder of makelaar",
-  },
-  {
-    id: "followup",
-    title: "Stuur een sterke follow-up",
-    body: "Na een bezichtiging kan een goede follow-up het verschil maken. Stuur een korte bevestiging en eventueel je reactiebrief.\n\n• Herhaal je interesse in de woning\n• Voeg je documenten toe als bijlage\n• Wees snel — stuur je follow-up dezelfde dag nog\n\nEen snelle en professionele opvolging laat zien dat je gemotiveerd en betrouwbaar bent.",
-  },
-];
-
-const FLOW_TIP_TITLES: Record<FlowTipId, string> = {
-  dokumente: "Verzamel je documenten",
-  finanzen: "Check je financiële situatie",
-  reaktion: "Zorg voor een sterke reactie",
-  plattformen: "Meld je aan voor lokale groepen",
-  neubau: "Houd nieuwbouwprojecten in de gaten",
-  netzwerk: "Gebruik je netwerk",
-  besichtigung: "Maak een sterke indruk bij bezichtigingen",
-  followup: "Stuur een sterke follow-up",
-};
-
-export function getFlowTipSteps(): { id: string; title: string }[] {
-  return FLOW_TIP_IDS.map((id) => ({ id, title: FLOW_TIP_TITLES[id] }));
+export function getFlowTipSteps(t?: (key: string) => any): { id: string; title: string }[] {
+  return FLOW_TIP_IDS.map((id) => ({
+    id,
+    title: t ? t(`tipsFlow.${id}.title`) : id,
+  }));
 }
 
 export default function TipsFlowPage() {
   const [, navigate] = useLocation();
   const { session } = useAuth();
+  const { t } = useTranslation();
   const accessToken = session?.access_token;
   const [currentStep, setCurrentStep] = useState(0);
   const [checkedSteps, setCheckedSteps] = useState<Set<string>>(new Set());
+
+  const STEPS: TipStepContent[] = FLOW_TIP_IDS.map((id) => {
+    const base: TipStepContent = {
+      id,
+      title: t(`tipsFlow.${id}.title`),
+      body: t(`tipsFlow.${id}.body`),
+    };
+    if (id === "dokumente") {
+      base.sections = [
+        {
+          heading: t("tipsFlow.dokumente.s0Heading"),
+          items: t("tipsFlow.dokumente.s0Items") as unknown as string[],
+        },
+        {
+          heading: t("tipsFlow.dokumente.s1Heading"),
+          items: t("tipsFlow.dokumente.s1Items") as unknown as string[],
+        },
+      ];
+    }
+    return base;
+  });
 
   const strengthQuery = useQuery<{ prepTasks: { id: string; completed: boolean }[] }>({
     queryKey: ["/api/profile-strength"],
@@ -218,6 +168,13 @@ export default function TipsFlowPage() {
     navigate("/dashboard?tab=home");
   }
 
+  const stepOfLabel = t("tipsFlow.stepOf")
+    .replace("{current}", String(currentStep + 1))
+    .replace("{total}", String(STEPS.length));
+
+  const completedLabel = t("tipsFlow.completed")
+    .replace("{percent}", String(progressPercent));
+
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
       <header className="sticky top-0 z-10 bg-white border-b border-[rgba(15,23,42,0.04)]">
@@ -230,7 +187,7 @@ export default function TipsFlowPage() {
             <ArrowLeft className="w-5 h-5 text-[#111111]" />
           </button>
           <h1 className="flex-1 text-center text-[16px] font-semibold text-[#111111] truncate px-2">
-            Vergroot je kansen met deze tips!
+            {t("tipsFlow.pageTitle")}
           </h1>
           <button
             onClick={handleClose}
@@ -251,10 +208,10 @@ export default function TipsFlowPage() {
           </div>
           <div className="flex items-center justify-between mt-1.5">
             <span className="text-[12px] text-ha-text-muted">
-              Stap {currentStep + 1} van {STEPS.length}
+              {stepOfLabel}
             </span>
             <span className="text-[12px] font-semibold text-ha-success">
-              {progressPercent}% voltooid
+              {completedLabel}
             </span>
           </div>
         </div>
@@ -309,7 +266,7 @@ export default function TipsFlowPage() {
             data-testid="button-mark-complete"
           >
             {isChecked && <Check className="w-4 h-4" />}
-            {isChecked ? "Voltooid" : "Markeer als voltooid"}
+            {isChecked ? t("tipsFlow.markedComplete") : t("tipsFlow.markComplete")}
           </button>
 
           <button
@@ -317,7 +274,7 @@ export default function TipsFlowPage() {
             className="w-full h-[48px] rounded-[--ha-btn-radius] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98]"
             data-testid="button-tips-next"
           >
-            {isLastStep ? "Afronden" : "Volgende"}
+            {isLastStep ? t("tipsFlow.finish") : t("tipsFlow.next")}
           </button>
         </div>
       </div>

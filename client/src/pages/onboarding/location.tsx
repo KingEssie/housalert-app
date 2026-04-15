@@ -6,12 +6,14 @@ import { cityDistricts } from "../../../../config/market";
 import { OB, OBW, ONBOARDING_TOTAL_STEPS, OBFooter, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 import { OnboardingFlowLayout } from "@/components/onboarding-flow-layout";
 import MapView from "@/components/map-view";
+import { useTranslation } from "@/i18n";
 
 type LocationMode = "city" | "districts" | "radius";
 
 const RADIUS_OPTIONS = [2, 5, 10, 15, 25, 50];
 
 export default function OnboardingLocation() {
+  const { t } = useTranslation();
   const [, navigate] = useLocation();
   const searchString = useHashSearch();
   const w = useWebsiteMode();
@@ -67,17 +69,20 @@ export default function OnboardingLocation() {
   }
 
   const TAB_OPTIONS: { value: LocationMode; label: string }[] = [
-    ...(hasDistricts ? [{ value: "districts" as LocationMode, label: "Buurten" }] : []),
-    { value: "radius" as LocationMode, label: "Straal" },
-    { value: "city" as LocationMode, label: "Gehele woonplaats" },
+    ...(hasDistricts ? [{ value: "districts" as LocationMode, label: t("onboarding.location.neighborhoodsTab") }] : []),
+    { value: "radius" as LocationMode, label: t("onboarding.location.radiusTab") },
+    { value: "city" as LocationMode, label: t("onboarding.location.wholePlaceTab") },
   ];
 
+  const n = selectedDistricts.length;
   const districtSummary =
-    selectedDistricts.length === 0
-      ? "Alle buurten geselecteerd"
-      : selectedDistricts.length === districtList.length
-        ? "Alle buurten geselecteerd"
-        : `${selectedDistricts.length} buurt${selectedDistricts.length === 1 ? "" : "en"} geselecteerd`;
+    n === 0
+      ? t("onboarding.location.allNeighborhoodsSelected")
+      : n === districtList.length
+        ? t("onboarding.location.allNeighborhoodsSelected")
+        : n === 1
+          ? t("onboarding.location.neighborhoodsSelected").replace("{n}", String(n))
+          : t("onboarding.location.neighborhoodsPluralSelected").replace("{n}", String(n));
 
   if (w) {
     return (
@@ -171,13 +176,13 @@ export default function OnboardingLocation() {
         <OBFooter
           onBack={handleBack}
           onNext={handleNext}
-          nextLabel="Volgende"
+          nextLabel={t("common.next")}
           backTestId="button-location-back"
           nextTestId="button-location-next"
           websiteMode={w}
           topContent={
             <div>
-              <p className="text-[13px] font-medium" style={{ color: T.textMuted }}>Geschatte matches</p>
+              <p className="text-[13px] font-medium" style={{ color: T.textMuted }}>{t("onboarding.location.estimatedMatches")}</p>
               <p className="text-[15px] font-semibold" style={{ color: T.text }}>121 per week 🔥</p>
             </div>
           }
@@ -337,15 +342,15 @@ export default function OnboardingLocation() {
 
   return (
     <OnboardingFlowLayout
-      flowTitle="Zoekopdracht maken"
+      flowTitle={t("onboarding.filters.headerTitle")}
       currentStep={2}
       totalSteps={3}
-      stepTitle="Stel je locatie in"
-      stepDescription="Kies hoe breed je wilt zoeken rondom je stad."
+      stepTitle={t("onboarding.location.radiusStepTitle")}
+      stepDescription={t("onboarding.location.radiusStepDesc")}
       onBack={handleBack}
       onNext={handleNext}
       onClose={handleClose}
-      nextLabel="Volgende"
+      nextLabel={t("common.next")}
       backTestId="button-location-back"
       nextTestId="button-location-next"
       closeTestId="button-location-close"

@@ -180,7 +180,7 @@ export default function SubscriptionDetailPage() {
                   strokeWidth={2}
                 />
                 <p className="text-[13px] font-normal text-[#000000]">
-                  Je ontvangt direct nieuwe woningmatches
+                  {t("subscription.matchesNowActive")}
                 </p>
               </div>
             )}
