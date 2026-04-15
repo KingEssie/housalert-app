@@ -241,7 +241,7 @@ export default function OnboardingPassword() {
             style={{ color: OBW.text }}
             data-testid="text-password-title"
           >
-            Waar kunnen we je matches heen sturen?
+            {t("onboarding.password.web.title")}
           </h2>
           {city && (
             <div
@@ -258,7 +258,7 @@ export default function OnboardingPassword() {
                   {city}{radiusKm ? ` · ${radiusKm} km` : ""}
                 </p>
                 <p className="text-[12px]" style={{ color: OBW.textSecondary }}>
-                  €{minPrice}–€{maxPrice} · {roomsLabel} kamers
+                  €{minPrice}–€{maxPrice} · {roomsLabel} {t("onboarding.password.web.apartments")}
                 </p>
               </div>
             </div>
@@ -266,14 +266,14 @@ export default function OnboardingPassword() {
 
           <div className="mb-4">
             <OBInfoBox>
-              Er waren afgelopen week <strong>121 woningen</strong> beschikbaar in {city || "jouw regio"}. Maak een account aan om ze niet te missen!
+              {t("onboarding.password.web.infoBox").replace("{city}", city || t("onboarding.password.web.yourRegion"))}
             </OBInfoBox>
           </div>
 
           <div className="flex flex-col gap-2.5">
             <div>
               <label className="text-[14px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
-                Voornaam
+                {t("onboarding.name.firstNameLabel")}
               </label>
               <input
                 type="text"
@@ -289,7 +289,7 @@ export default function OnboardingPassword() {
 
             <div>
               <label className="text-[14px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
-                Achternaam
+                {t("onboarding.name.lastNameLabel")}
               </label>
               <input
                 type="text"
@@ -304,13 +304,13 @@ export default function OnboardingPassword() {
 
             <div>
               <label className="text-[14px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
-                E-mailadres
+                {t("onboarding.email.label")}
               </label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="jouw@email.de"
+                placeholder={t("onboarding.email.placeholder")}
                 className="w-full ha-field-web"
                 style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
                 data-testid="input-email"
@@ -319,14 +319,14 @@ export default function OnboardingPassword() {
 
             <div>
               <label className="text-[14px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
-                Wachtwoord
+                {t("onboarding.password.label")}
               </label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Minimaal 8 tekens"
+                  placeholder={t("onboarding.password.web.passwordPlaceholder")}
                   className="w-full ha-field-web"
                   style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text, paddingRight: "44px" }}
                   autoComplete="new-password"
@@ -347,14 +347,14 @@ export default function OnboardingPassword() {
 
             <div>
               <label className="text-[14px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
-                Wachtwoord bevestigen
+                {t("onboarding.password.confirmLabel")}
               </label>
               <div className="relative">
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Herhaal je wachtwoord"
+                  placeholder={t("onboarding.password.confirmPlaceholder")}
                   className="w-full ha-field-web"
                   style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text, paddingRight: "44px" }}
                   autoComplete="new-password"
@@ -372,7 +372,7 @@ export default function OnboardingPassword() {
               </div>
               {confirmPassword.length > 0 && password !== confirmPassword && (
                 <p className="text-[12px] mt-1.5 text-ha-danger" data-testid="text-confirm-mismatch">
-                  Wachtwoorden komen niet overeen
+                  {t("onboarding.password.passwordMismatch")}
                 </p>
               )}
             </div>
@@ -386,12 +386,12 @@ export default function OnboardingPassword() {
                 data-testid="button-show-referral"
               >
                 <Gift className="w-4 h-4" />
-                Empfehlungscode eingeben
+                {t("referral.inputLabel") || "Empfehlungscode eingeben"}
               </button>
             ) : (
               <div>
                 <label className="text-[14px] font-semibold mb-1.5 block" style={{ color: OBW.text }}>
-                  Empfehlungscode
+                  {t("referral.inputLabel") || "Empfehlungscode"}
                 </label>
                 <input
                   type="text"
@@ -404,7 +404,7 @@ export default function OnboardingPassword() {
                   data-testid="input-referral-code"
                 />
                 <p className="text-[12px] mt-1 ml-1" style={{ color: OBW.textMuted }}>
-                  Optioneel
+                  {t("onboarding.password.web.optional")}
                 </p>
               </div>
             )}
@@ -435,27 +435,27 @@ export default function OnboardingPassword() {
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Wordt aangemaakt...
+                    {t("onboarding.password.creating")}
                   </>
                 ) : (
-                  "Account aanmaken"
+                  t("onboarding.password.cta")
                 )}
               </button>
             </div>
 
             <p className="text-center text-[10px] leading-relaxed" style={{ color: OBW.textMuted }}>
-              Met de registratie accepteer je onze Nutzungsbedingungen en Datenschutzrichtlinie.
+              {t("onboarding.password.terms")}
             </p>
 
             <p className="text-center text-[12px] mt-1" style={{ color: OBW.textSecondary }}>
-              Heb je al een account?{" "}
+              {t("auth.signup.hasAccount")}{" "}
               <button
                 onClick={() => navigate("/")}
                 className="font-semibold hover:underline"
                 style={{ color: OB.pink }}
                 data-testid="link-login"
               >
-                Inloggen
+                {t("auth.signup.loginLink")}
               </button>
             </p>
           </div>
@@ -495,14 +495,14 @@ export default function OnboardingPassword() {
 
       <div>
         <label className="text-[15px] font-semibold mb-2 block text-[#111111]">
-          Wachtwoord bevestigen
+          {t("onboarding.password.confirmLabel")}
         </label>
         <div className="relative">
           <input
             type={showConfirmPassword ? "text" : "password"}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Herhaal je wachtwoord"
+            placeholder={t("onboarding.password.confirmPlaceholder")}
             className="w-full h-[56px] border border-[#D1D5DB] rounded-[8px] bg-white px-4 pr-12 text-[15px] text-[#111111] placeholder:text-[#9CA3AF] outline-none transition-all focus:border-ha-primary"
             autoComplete="new-password"
             data-testid="input-confirm-password"
@@ -518,7 +518,7 @@ export default function OnboardingPassword() {
         </div>
         {confirmPassword.length > 0 && password !== confirmPassword && (
           <p className="text-[13px] mt-2 text-[#E11D48]" data-testid="text-confirm-mismatch">
-            Wachtwoorden komen niet overeen
+            {t("onboarding.password.passwordMismatch")}
           </p>
         )}
       </div>
@@ -578,7 +578,7 @@ export default function OnboardingPassword() {
 
   return (
     <OnboardingFlowLayout
-      flowTitle="Account aanmaken"
+      flowTitle={t("onboarding.accountCreate.flowTitle")}
       currentStep={3}
       totalSteps={3}
       stepTitle={t("onboarding.password.title") || "Kies een wachtwoord"}

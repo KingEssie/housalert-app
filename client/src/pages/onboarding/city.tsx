@@ -163,13 +163,13 @@ export default function OnboardingCity() {
             style={{ color: OBW.text }}
             data-testid="text-city-title"
           >
-            Waar wil je wonen?
+            {t("onboarding.location.title")}
           </h2>
           <p
             className="text-[13px] mb-4 leading-relaxed"
             style={{ color: OBW.textSecondary }}
           >
-            Kies je stad en zoekradius.
+            {t("onboarding.location.subtitle")}
           </p>
 
           <div className="relative mb-2.5">

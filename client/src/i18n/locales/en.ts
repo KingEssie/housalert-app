@@ -116,6 +116,7 @@ export const en: Record<string, any> = {
     listingCount: "{count} {label}",
     listingSingular: "listing",
     listingPlural: "listings",
+    noSearchResults: "No apartments found for \"{query}\"",
     subtabs: {
       new: "New",
       viewed: "Viewed",
@@ -767,7 +768,21 @@ export const en: Record<string, any> = {
       tooShort: "At least 6 characters required",
       cta: "Create account",
       creating: "Creating account...",
-      terms: "By signing up you accept our terms of service and privacy policy.",
+      terms: "By signing up you agree to our terms of service and privacy policy.",
+      confirmLabel: "Confirm password",
+      confirmPlaceholder: "Repeat your password",
+      passwordMismatch: "Passwords don't match",
+      web: {
+        title: "Where should we send your matches?",
+        apartments: "apartments",
+        infoBox: "Last week, 121 apartments were available in {city}. Create an account and don't miss them!",
+        yourRegion: "your area",
+        passwordPlaceholder: "At least 8 characters",
+        optional: "Optional",
+      },
+    },
+    accountCreate: {
+      flowTitle: "Create account",
     },
     welcome: {
       title: "Find rental apartments faster than anyone",

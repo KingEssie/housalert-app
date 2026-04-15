@@ -1,4 +1,5 @@
 import { X, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { useTranslation } from "@/i18n";
 
 interface OnboardingFlowLayoutProps {
   flowTitle: string;
@@ -43,6 +44,7 @@ export function OnboardingFlowLayout({
   closeTestId,
   screenTestId,
 }: OnboardingFlowLayoutProps) {
+  const { t } = useTranslation();
   const progress = totalSteps > 0 ? ((currentStep) / totalSteps) * 100 : 0;
 
   return (
@@ -124,7 +126,7 @@ export function OnboardingFlowLayout({
               data-testid={backTestId || "button-ob-flow-prev"}
             >
               <ChevronLeft className="w-4 h-4" />
-              {backLabel || "Terug"}
+              {backLabel || t("common.back")}
             </button>
           ) : (
             <div />

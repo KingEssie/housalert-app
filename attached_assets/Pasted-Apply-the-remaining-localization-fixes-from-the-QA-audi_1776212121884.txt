@@ -1,0 +1,163 @@
+Apply the remaining localization fixes from the QA audit only.
+
+IMPORTANT:
+Do NOT do another broad i18n refactor.
+Only fix the exact remaining issues listed below.
+
+GOAL:
+Resolve all remaining user-facing Dutch strings and fallback issues in the user app.
+Admin portal must remain Dutch and untouched.
+
+==================================================
+1. DASHBOARD HOME TAB — REACTIEBRIEF CARD
+==================================================
+
+Replace these hardcoded Dutch strings in dashboard.tsx with translation keys:
+- "Reactiebrief"
+- "Beheren"
+- "Genereren"
+- "Reactiebrief ingesteld"
+- "Nog geen reactiebrief"
+
+Create appropriate translation keys under a structured namespace, for example:
+dashboard.applicationLetter.title
+dashboard.applicationLetter.manage
+dashboard.applicationLetter.generate
+dashboard.applicationLetter.configured
+dashboard.applicationLetter.notConfigured
+
+==================================================
+2. DASHBOARD HOME TAB — ZOEKBUDDY CARD
+==================================================
+
+Replace these hardcoded Dutch strings in dashboard.tsx with translation keys:
+- "Zoekbuddy"
+- "Beheren"
+- "Zoekbuddy verbonden"
+- "Nog geen zoekbuddy"
+- "Zoek je met een partner of huisgenoot? Voeg deze als zoekbuddy toe en ontvang beide matches!"
+
+Create structured keys, for example:
+dashboard.searchBuddy.title
+dashboard.searchBuddy.manage
+dashboard.searchBuddy.connected
+dashboard.searchBuddy.notConfigured
+dashboard.searchBuddy.promo
+
+==================================================
+3. DASHBOARD MATCHES TAB — SEARCH EMPTY STATE
+==================================================
+
+Replace the hardcoded Dutch string:
+- `Geen woningen gevonden voor "{searchQuery}"`
+
+Use a translation key with interpolation, for example:
+matches.noSearchResults
+
+Examples:
+- nl: `Geen woningen gevonden voor "{query}"`
+- en: `No apartments found for "{query}"`
+- de: `Keine Wohnungen für "{query}" gefunden`
+
+==================================================
+4. ONBOARDING PASSWORD.TSX — WEBSITE MODE FORM (CRITICAL)
+==================================================
+
+This whole website-mode registration form still contains hardcoded Dutch and one mixed Dutch/German sentence.
+
+Fix ALL remaining strings in this branch using translation keys:
+
+- info box text:
+  "Er waren afgelopen week 121 woningen beschikbaar in {city || "jouw regio"}. Maak een account aan om ze niet te missen!"
+
+- labels:
+  "Voornaam"
+  "Achternaam"
+  "E-mailadres"
+  "Wachtwoord"
+  "Wachtwoord bevestigen"
+
+- placeholders:
+  "Minimaal 8 tekens"
+  "Herhaal je wachtwoord"
+
+- CTA:
+  "Wordt aangemaakt..."
+  "Account aanmaken"
+
+- login helper:
+  "Heb je al een account?"
+  "Inloggen"
+
+- inline summary:
+  `{roomsLabel} kamers`
+
+- legal text:
+  currently mixed Dutch/German
+  replace with fully localized strings in all locales
+
+Use proper interpolation where needed.
+
+==================================================
+5. ONBOARDING FLOW TITLES
+==================================================
+
+Replace hardcoded:
+- flowTitle="Account aanmaken"
+
+In:
+- password.tsx
+- name.tsx
+- email.tsx
+
+Use translation key(s), for example:
+onboarding.accountCreate.flowTitle
+
+==================================================
+6. ONBOARDING FLOW LAYOUT BACK BUTTON
+==================================================
+
+Replace:
+- `{backLabel || "Terug"}`
+
+With:
+- `{backLabel || t("common.back")}`
+
+Add `common.back` to locale files if needed:
+- nl: "Terug"
+- en: "Back"
+- de: "Zurück"
+
+==================================================
+7. ACCESSIBILITY FIX
+==================================================
+
+Replace the Dutch aria-label on the logout icon button:
+- "Uitloggen"
+
+with a translation key, for example:
+common.logout
+
+This is minor but should be cleaned up now.
+
+==================================================
+8. LANGUAGE QUALITY
+==================================================
+
+For German and English:
+- keep the translations natural and product-quality
+- no literal Dutch phrasing
+- no mixed-language strings
+
+==================================================
+9. OUTPUT
+==================================================
+
+Return:
+1. all files changed
+2. all remaining hardcoded strings that were fixed
+3. all translation keys added
+4. confirmation that the website-mode onboarding form is now fully localized
+5. confirmation that dashboard home cards are now localized
+6. confirmation that the matches empty state is now localized
+7. confirmation that the back button fallback is no longer Dutch-only

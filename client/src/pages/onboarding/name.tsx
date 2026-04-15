@@ -172,7 +172,7 @@ export default function OnboardingName() {
 
   return (
     <OnboardingFlowLayout
-      flowTitle="Account aanmaken"
+      flowTitle={t("onboarding.accountCreate.flowTitle")}
       currentStep={1}
       totalSteps={3}
       stepTitle={t("onboarding.name.title") || "Hoe heet je?"}

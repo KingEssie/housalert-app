@@ -78,7 +78,7 @@ export default function SettingsPage() {
     <button
       onClick={() => setShowLogoutConfirm(true)}
       className="w-10 h-10 flex items-center justify-center rounded-full bg-[#E5E7EB] active:bg-[#D1D5DB] transition-colors"
-      aria-label="Uitloggen"
+      aria-label={t("profile.logout")}
       data-testid="button-logout-icon"
     >
       <LogOut className="w-[20px] h-[20px] text-[#111111]" strokeWidth={2} />

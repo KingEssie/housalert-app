@@ -137,7 +137,7 @@ export default function OnboardingLocation() {
 
           {mode === "radius" && (
             <div className="flex-1 flex flex-col min-h-0">
-              <p className="text-[14px] font-medium mb-3 shrink-0" style={{ color: T.textSecondary }}>Straal</p>
+              <p className="text-[14px] font-medium mb-3 shrink-0" style={{ color: T.textSecondary }}>{t("onboarding.location.radiusTab")}</p>
               <div className="flex flex-wrap gap-2 shrink-0" data-testid="radius-options">
                 {RADIUS_OPTIONS.map((km) => {
                   const active = radiusKm === km;
@@ -225,7 +225,7 @@ export default function OnboardingLocation() {
 
       {mode === "districts" && hasDistricts && (
         <div>
-          <p className="text-[14px] font-medium mb-2 text-[#334855]">Buurten</p>
+          <p className="text-[14px] font-medium mb-2 text-[#334855]">{t("onboarding.location.neighborhoodsTab")}</p>
           <button
             onClick={() => setShowDistrictPicker(!showDistrictPicker)}
             className="w-full flex items-center justify-between h-[56px] rounded-[8px] border border-[#D1D5DB] bg-white px-4"
@@ -280,7 +280,7 @@ export default function OnboardingLocation() {
 
       {mode === "radius" && (
         <div>
-          <p className="text-[14px] font-medium mb-3 text-[#334855]">Straal</p>
+          <p className="text-[14px] font-medium mb-3 text-[#334855]">{t("onboarding.location.radiusTab")}</p>
           <div className="flex flex-wrap gap-2" data-testid="radius-options">
             {RADIUS_OPTIONS.map((km) => {
               const active = radiusKm === km;

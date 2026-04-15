@@ -181,6 +181,7 @@ export const nl: Record<string, any> = {
     listingCount: "{count} {label}",
     listingSingular: "woning",
     listingPlural: "woningen",
+    noSearchResults: "Geen woningen gevonden voor \"{query}\"",
     subtabs: {
       new: "Nieuw",
       viewed: "Bekeken",
@@ -822,6 +823,20 @@ export const nl: Record<string, any> = {
       cta: "Account aanmaken",
       creating: "Account wordt aangemaakt...",
       terms: "Door je aan te melden ga je akkoord met onze gebruiksvoorwaarden en privacybeleid.",
+      confirmLabel: "Wachtwoord bevestigen",
+      confirmPlaceholder: "Herhaal je wachtwoord",
+      passwordMismatch: "Wachtwoorden komen niet overeen",
+      web: {
+        title: "Waar kunnen we je matches heen sturen?",
+        apartments: "woningen",
+        infoBox: "Er waren afgelopen week 121 woningen beschikbaar in {city}. Maak een account aan om ze niet te missen!",
+        yourRegion: "jouw regio",
+        passwordPlaceholder: "Minimaal 8 tekens",
+        optional: "Optioneel",
+      },
+    },
+    accountCreate: {
+      flowTitle: "Account aanmaken",
     },
     welcome: {
       title: "Vind huurwoningen sneller dan iedereen",

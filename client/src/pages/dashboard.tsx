@@ -1004,21 +1004,21 @@ function HomeTab({
             >
               <div className="flex items-center gap-2.5">
                 <FileText className="w-[20px] h-[20px] text-ha-primary flex-shrink-0" />
-                <h2 className="text-[21px] font-semibold text-[#111111] flex-1">Reactiebrief</h2>
+                <h2 className="text-[21px] font-semibold text-[#111111] flex-1">{t("profile.reactionLetter2")}</h2>
                 <span className="text-[14px] font-medium" style={{ color: "#0891B2" }}>
-                  {hasLetter ? "Beheren" : "Genereren"}
+                  {hasLetter ? t("common.manage") : t("common.generate")}
                 </span>
               </div>
               <div className="flex items-center gap-2 pl-[30px]">
                 {hasLetter ? (
                   <>
                     <Check className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "#16A34A" }} />
-                    <span className="text-[13px] font-medium" style={{ color: "#16A34A" }}>Reactiebrief ingesteld</span>
+                    <span className="text-[13px] font-medium" style={{ color: "#16A34A" }}>{t("home.reactionLetterConfigured")}</span>
                   </>
                 ) : (
                   <>
                     <X className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "#DC2626" }} />
-                    <span className="text-[13px] font-medium" style={{ color: "#DC2626" }}>Nog geen reactiebrief</span>
+                    <span className="text-[13px] font-medium" style={{ color: "#DC2626" }}>{t("home.reactionLetterMissing")}</span>
                   </>
                 )}
               </div>
@@ -1039,25 +1039,25 @@ function HomeTab({
             >
               <div className="flex items-center gap-2.5">
                 <Users className="w-[20px] h-[20px] text-ha-primary flex-shrink-0" />
-                <h2 className="text-[21px] font-semibold text-[#111111] flex-1">Zoekbuddy</h2>
-                <span className="text-[14px] font-medium" style={{ color: "#0891B2" }}>Beheren</span>
+                <h2 className="text-[21px] font-semibold text-[#111111] flex-1">{t("profile.searchBuddy")}</h2>
+                <span className="text-[14px] font-medium" style={{ color: "#0891B2" }}>{t("common.manage")}</span>
               </div>
               <div className="flex items-center gap-2 pl-[30px]">
                 {hasBuddy ? (
                   <>
                     <Check className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "#16A34A" }} />
-                    <span className="text-[13px] font-medium" style={{ color: "#16A34A" }}>Zoekbuddy verbonden</span>
+                    <span className="text-[13px] font-medium" style={{ color: "#16A34A" }}>{t("home.zoekbuddyConfigured")}</span>
                   </>
                 ) : (
                   <>
                     <X className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "#DC2626" }} />
-                    <span className="text-[13px] font-medium" style={{ color: "#DC2626" }}>Nog geen zoekbuddy</span>
+                    <span className="text-[13px] font-medium" style={{ color: "#DC2626" }}>{t("home.zoekbuddyMissing")}</span>
                   </>
                 )}
               </div>
               {!hasBuddy && (
                 <p className="text-[13px] leading-snug pl-[30px]" style={{ color: "#6B7280" }}>
-                  Zoek je met een partner of huisgenoot? Voeg deze als zoekbuddy toe en ontvang beide matches!
+                  {t("profile.buddyDescription")}
                 </p>
               )}
             </button>
@@ -1541,7 +1541,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
               />
             ) : filteredMatches.length === 0 ? (
               <p className="text-center text-[15px] text-[#6B7280] py-8" data-testid="text-no-search-results">
-                Geen woningen gevonden voor "{searchQuery}"
+                {t("matches.noSearchResults").replace("{query}", searchQuery)}
               </p>
             ) : (
               filteredMatches.map((m) => (
@@ -2056,7 +2056,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             <button
               onClick={() => setShowLogoutConfirm(true)}
               className="w-10 h-10 flex items-center justify-center rounded-full bg-[#E5E7EB] active:bg-[#D1D5DB] transition-colors shrink-0"
-              aria-label="Uitloggen"
+              aria-label={t("profile.logout")}
               data-testid="button-logout-icon"
             >
               <LogOut className="w-[20px] h-[20px] text-[#111111]" strokeWidth={2} />

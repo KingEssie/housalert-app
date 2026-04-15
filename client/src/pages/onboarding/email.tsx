@@ -138,7 +138,7 @@ export default function OnboardingEmail() {
 
   return (
     <OnboardingFlowLayout
-      flowTitle="Account aanmaken"
+      flowTitle={t("onboarding.accountCreate.flowTitle")}
       currentStep={2}
       totalSteps={3}
       stepTitle={t("onboarding.email.title") || "Wat is je e-mailadres?"}

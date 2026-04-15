@@ -175,6 +175,7 @@ export const de: Record<string, any> = {
     listingCount: "{count} {label}",
     listingSingular: "Wohnung",
     listingPlural: "Wohnungen",
+    noSearchResults: "Keine Wohnungen für \"{query}\" gefunden",
     subtabs: {
       new: "Neu",
       viewed: "Angesehen",
@@ -815,6 +816,20 @@ export const de: Record<string, any> = {
       cta: "Konto erstellen",
       creating: "Konto wird erstellt...",
       terms: "Mit der Registrierung akzeptierst du unsere Nutzungsbedingungen und Datenschutzrichtlinie.",
+      confirmLabel: "Passwort bestätigen",
+      confirmPlaceholder: "Passwort wiederholen",
+      passwordMismatch: "Passwörter stimmen nicht überein",
+      web: {
+        title: "Wohin sollen wir deine Matches schicken?",
+        apartments: "Wohnungen",
+        infoBox: "Letzte Woche waren 121 Wohnungen in {city} verfügbar. Erstelle ein Konto und verpasse keine!",
+        yourRegion: "deiner Region",
+        passwordPlaceholder: "Mindestens 8 Zeichen",
+        optional: "Optional",
+      },
+    },
+    accountCreate: {
+      flowTitle: "Konto erstellen",
     },
     welcome: {
       title: "Finde Mietwohnungen schneller als alle anderen",
