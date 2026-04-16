@@ -249,7 +249,39 @@ export async function registerRoutes(
       if (shouldSendEmail && result.relation) {
         const ownerProfile = await getOwnerNameForBuddy(auth.user.id);
         const inviterName = ownerProfile ? `${ownerProfile.first_name || ""} ${ownerProfile.last_name || ""}`.trim() : "Someone";
-        const lang = detectLanguageFromHeader(req.headers["accept-language"]);
+
+        // Resolve invitation email language:
+        // 1. If buddy already has an account → use buddy's stored language
+        // 2. If buddy has no account or no stored language → use owner's stored language from DB
+        // 3. Never use the transient Accept-Language request header
+        let lang: import("./i18n").ServerLocale = "en";
+        try {
+          const adminSb = getSupabaseAdmin();
+          const { data: buddyLookup } = await adminSb.auth.admin.listUsers({ filter: `email.eq.${email.toLowerCase().trim()}` });
+          const buddyUserId = buddyLookup?.users?.[0]?.id;
+          if (buddyUserId) {
+            const buddyStoredLang = await getBuddyLanguage(buddyUserId);
+            if (isValidLocale(buddyStoredLang)) {
+              lang = buddyStoredLang;
+              log(`[BUDDY INVITE] Lang resolved from buddy account — buddyUserId=${buddyUserId.substring(0, 8)}... lang=${lang}`);
+            } else {
+              const ownerStoredLang = await getBuddyLanguage(auth.user.id);
+              if (isValidLocale(ownerStoredLang)) lang = ownerStoredLang;
+              log(`[BUDDY INVITE] Buddy has account but no stored lang — using owner stored lang=${lang}`);
+            }
+          } else {
+            const ownerStoredLang = await getBuddyLanguage(auth.user.id);
+            if (isValidLocale(ownerStoredLang)) lang = ownerStoredLang;
+            log(`[BUDDY INVITE] No buddy account — using owner stored lang=${lang}`);
+          }
+        } catch {
+          try {
+            const ownerStoredLang = await getBuddyLanguage(auth.user.id);
+            if (isValidLocale(ownerStoredLang)) lang = ownerStoredLang;
+          } catch {}
+          log(`[BUDDY INVITE] Lang lookup failed — using lang=${lang}`);
+        }
+
         log(`[BUDDY INVITE] Sending email — to=${email} inviter="${inviterName}" lang=${lang} token=${result.relation.invite_token?.substring(0, 8)}...`);
         try {
           const emailResult = await sendBuddyInvitationEmail(email, inviterName, lang, result.relation.invite_token);
@@ -3558,13 +3590,39 @@ export async function registerRoutes(
         const newBuddyEmail = rows[0]?.search_buddy_email?.trim() || null;
         if (newBuddyEmail && newBuddyEmail.toLowerCase() !== (oldBuddyEmail || "").toLowerCase()) {
           const inviterName = rows[0]?.first_name || user.email?.split("@")[0] || "Someone";
-          const userLang = rows[0]?.language || "nl";
-          import("./email").then(({ sendBuddyInvitationEmail }) => {
-            sendBuddyInvitationEmail(newBuddyEmail, inviterName, userLang as any).catch(err => {
+          const ownerStoredLang = rows[0]?.language;
+          // Fire-and-forget: resolve buddy language then send invite
+          (async () => {
+            // Language priority:
+            // 1. Buddy's stored language (if they have an account)
+            // 2. Owner's stored language from DB
+            // 3. "en" fallback — never "nl" default or request header
+            let lang: import("./i18n").ServerLocale = "en";
+            try {
+              const { data: buddyLookup } = await getSupabaseAdmin().auth.admin.listUsers({ filter: `email.eq.${newBuddyEmail.toLowerCase().trim()}` });
+              const buddyUserId = buddyLookup?.users?.[0]?.id;
+              if (buddyUserId) {
+                const buddyStoredLang = await getBuddyLanguage(buddyUserId);
+                if (isValidLocale(buddyStoredLang)) {
+                  lang = buddyStoredLang;
+                  log(`[profile-data] Invite lang from buddy account — lang=${lang}`);
+                } else if (isValidLocale(ownerStoredLang)) {
+                  lang = ownerStoredLang;
+                  log(`[profile-data] Invite lang from owner (buddy has account, no lang) — lang=${lang}`);
+                }
+              } else if (isValidLocale(ownerStoredLang)) {
+                lang = ownerStoredLang;
+                log(`[profile-data] Invite lang from owner (no buddy account) — lang=${lang}`);
+              }
+            } catch {
+              if (isValidLocale(ownerStoredLang)) lang = ownerStoredLang;
+              log(`[profile-data] Invite lang lookup failed — lang=${lang}`);
+            }
+            console.log(`[profile-data] Buddy invite email for ${newBuddyEmail} (inviter: ${inviterName}, lang: ${lang})`);
+            sendBuddyInvitationEmail(newBuddyEmail, inviterName, lang).catch(err => {
               console.error(`[profile-data] Buddy invite email failed: ${err.message}`);
             });
-          }).catch(() => {});
-          console.log(`[profile-data] Buddy invite email queued for ${newBuddyEmail} (inviter: ${inviterName}, lang: ${userLang})`);
+          })();
         }
       }
 

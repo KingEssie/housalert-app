@@ -400,14 +400,16 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
     try {
       const v2Buddy = await getOwnerBuddyRelation(userId);
       if (v2Buddy && v2Buddy.invite_status === "accepted" && v2Buddy.buddy_user_id) {
+        const buddyLang = await getUserLanguage(v2Buddy.buddy_user_id);
+        log(`[BUDDY V2] flush: buddyUserId=${v2Buddy.buddy_user_id.substring(0, 8)}... buddyLang=${buddyLang} ownerLang=${userLang}`);
         if (v2Buddy.push_notifications_enabled) {
           const pushListings: PushMatchListing[] = verified.map((l) => ({
             listing_id: l.listing_id,
             city: l.city,
           }));
           try {
-            log(`[NOTIF] v2-buddy webpush buddyUserId=${v2Buddy.buddy_user_id.substring(0, 8)}... count=${verified.length} path=${source}`);
-            await sendMatchPushNotifications(v2Buddy.buddy_user_id, pushListings, supabase, userLang);
+            log(`[NOTIF] v2-buddy webpush buddyUserId=${v2Buddy.buddy_user_id.substring(0, 8)}... count=${verified.length} path=${source} lang=${buddyLang}`);
+            await sendMatchPushNotifications(v2Buddy.buddy_user_id, pushListings, supabase, buddyLang);
           } catch (e: any) {
             log(`[BUDDY V2] flush push error for buddy ${v2Buddy.buddy_user_id.substring(0, 8)}...: ${e.message}`);
           }
@@ -418,8 +420,8 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
             const adminClient = getSupabaseAdmin();
             const { data: { user: buddyAuthUser } } = await adminClient.auth.admin.getUserById(v2Buddy.buddy_user_id);
             if (buddyAuthUser?.email) {
-              log(`[NOTIF] v2-buddy email buddyEmail=${buddyAuthUser.email} count=${buddyCapped.length} path=${source}`);
-              await sendBatchMatchAlert(buddyAuthUser.email, buddyCapped, userLang);
+              log(`[NOTIF] v2-buddy email buddyEmail=${buddyAuthUser.email} count=${buddyCapped.length} path=${source} lang=${buddyLang}`);
+              await sendBatchMatchAlert(buddyAuthUser.email, buddyCapped, buddyLang);
             }
           } catch (e: any) {
             log(`[BUDDY V2] flush email error for buddy ${v2Buddy.buddy_user_id.substring(0, 8)}...: ${e.message}`);
@@ -640,14 +642,16 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
   try {
     const v2Buddy = await getOwnerBuddyRelation(userId);
     if (v2Buddy && v2Buddy.invite_status === "accepted" && v2Buddy.buddy_user_id) {
+      const buddyLang = await getUserLanguage(v2Buddy.buddy_user_id);
+      log(`[BUDDY V2] backfill: buddyUserId=${v2Buddy.buddy_user_id.substring(0, 8)}... buddyLang=${buddyLang} ownerLang=${backfillLang}`);
       if (v2Buddy.push_notifications_enabled) {
         const pushListings: PushMatchListing[] = verified.map((l) => ({
           listing_id: l.listing_id,
           city: l.city,
         }));
         try {
-          log(`[NOTIF] v2-buddy webpush buddyUserId=${v2Buddy.buddy_user_id.substring(0, 8)}... count=${verified.length} path=backfill`);
-          await sendMatchPushNotifications(v2Buddy.buddy_user_id, pushListings, supabase, backfillLang);
+          log(`[NOTIF] v2-buddy webpush buddyUserId=${v2Buddy.buddy_user_id.substring(0, 8)}... count=${verified.length} path=backfill lang=${buddyLang}`);
+          await sendMatchPushNotifications(v2Buddy.buddy_user_id, pushListings, supabase, buddyLang);
         } catch (e: any) {
           log(`[BUDDY V2] push error for buddy ${v2Buddy.buddy_user_id.substring(0, 8)}...: ${e.message}`);
         }
@@ -658,8 +662,8 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
           const adminClient = getSupabaseAdmin();
           const { data: { user: buddyAuthUser } } = await adminClient.auth.admin.getUserById(v2Buddy.buddy_user_id);
           if (buddyAuthUser?.email) {
-            log(`[NOTIF] v2-buddy email buddyEmail=${buddyAuthUser.email} count=${buddyCapped.length} path=backfill`);
-            await sendBatchMatchAlert(buddyAuthUser.email, buddyCapped, backfillLang);
+            log(`[NOTIF] v2-buddy email buddyEmail=${buddyAuthUser.email} count=${buddyCapped.length} path=backfill lang=${buddyLang}`);
+            await sendBatchMatchAlert(buddyAuthUser.email, buddyCapped, buddyLang);
           }
         } catch (e: any) {
           log(`[BUDDY V2] email error for buddy ${v2Buddy.buddy_user_id.substring(0, 8)}...: ${e.message}`);

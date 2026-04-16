@@ -1,0 +1,114 @@
+Apply the remaining buddy email language fixes based on the audit.
+
+IMPORTANT:
+This is not a broad i18n task.
+Implement only the concrete language fixes identified in the audit.
+
+==================================================
+1. FIX BUDDY MATCH ALERT EMAIL LANGUAGE
+==================================================
+
+File:
+server/notifications/buffer.ts
+
+Current bug:
+Buddy match alert emails and push notifications are sent using the OWNER's language.
+
+This is incorrect.
+
+Required fix:
+Whenever sending alerts or push notifications to a buddy, fetch the BUDDY's own language from user_profile_data using the buddy's user ID.
+
+Do this in BOTH code paths:
+- flush path
+- backfill path
+
+Specifically fix:
+- sendBatchMatchAlert(...) for buddy recipients
+- sendMatchPushNotifications(...) for buddy recipients
+
+Logic:
+- owner alerts use owner language
+- buddy alerts use buddy language
+
+If buddy has no stored language:
+- fall back to English first if that is the app fallback standard
+- otherwise use the existing centralized locale fallback logic
+- do NOT fall back to owner language for buddy alerts
+
+==================================================
+2. FIX BUDDY INVITATION EMAIL LANGUAGE WHEN BUDDY ALREADY HAS AN ACCOUNT
+==================================================
+
+Files:
+- server/routes.ts (POST /api/buddy/invite)
+- any other invitation call sites
+
+Current bug:
+Invitation email currently uses:
+- owner's request Accept-Language
+OR
+- owner's stored language
+
+This is wrong when the invited buddy already has an account.
+
+Required behavior:
+If invited email belongs to an existing user account:
+- fetch that user's stored language
+- send invitation email in that buddy's language
+
+If invited email does NOT belong to an existing user account:
+- use owner's STORED language from DB as fallback
+- do NOT use transient Accept-Language request header
+
+==================================================
+3. DO NOT CHANGE DISCONNECTION EMAILS
+==================================================
+
+The audit confirmed:
+- buddy disconnection emails are already correct
+
+Leave those code paths unchanged.
+
+==================================================
+4. QA / VERIFICATION
+==================================================
+
+After applying the fix, verify these scenarios:
+
+Scenario A:
+- owner = NL
+- buddy = DE
+Result:
+- buddy invitation email = DE if buddy account exists
+- buddy match alert email = DE
+- buddy push notification = DE
+
+Scenario B:
+- owner = EN
+- buddy = NL
+Result:
+- buddy invitation email = NL if buddy account exists
+- buddy match alert email = NL
+- buddy push notification = NL
+
+Scenario C:
+- buddy has no existing account / no stored language
+Result:
+- invitation email uses owner STORED language
+- not request header
+- match alerts are irrelevant until buddy exists as a real user
+
+==================================================
+5. OUTPUT
+==================================================
+
+Return:
+1. exact files changed
+2. exact lines / functions changed
+3. how buddy language is now resolved for:
+   - invitation emails
+   - match alert emails
+   - push notifications
+4. confirmation that owner language is no longer reused for buddy match alerts
+5. confirmation that request-header language is no longer used as invitation fallback when owner stored language exists
