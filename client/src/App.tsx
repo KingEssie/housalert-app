@@ -235,6 +235,8 @@ function Router() {
       <Route path="/admin/image-audit" component={() => <ProtectedRoute component={AdminImageAuditPage} />} />
       <Route path="/profile/search-buddy" component={() => <BuddyProtectedRoute component={ZoekbuddyPage} />} />
       <Route path="/buddy/accept" component={BuddyAcceptPage} />
+      <Route path="/subscription" component={() => <Redirect to="/account/subscription" />} />
+      <Route path="/housing-situation" component={() => <Redirect to="/settings/housing" />} />
       <Route path="/impressum" component={ImpressumPage} />
       <Route path="/datenschutz" component={DatenschutzPage} />
       <Route path="/terms" component={TermsPage} />

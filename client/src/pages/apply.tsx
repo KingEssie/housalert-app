@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "@/i18n";
 import { trackEvent } from "@/lib/track-event";
 import { useLocation, useRoute } from "wouter";
+import { useBuddyConnections, isBuddyMode } from "@/lib/buddy";
 import {
   ArrowLeft,
   BedDouble,
@@ -109,6 +110,8 @@ export default function ApplyPage() {
   const { user, session } = useAuth();
   const { toast } = useToast();
   const { t, locale } = useTranslation();
+  const buddyConns = useBuddyConnections();
+  const inBuddyMode = isBuddyMode(buddyConns.data);
   const [marked, setMarked] = useState(false);
   const [editedLetter, setEditedLetter] = useState<string | null>(null);
   const [imgError, setImgError] = useState(false);
@@ -486,41 +489,44 @@ export default function ApplyPage() {
         <textarea
           className="w-full min-h-[220px] leading-[1.75] bg-[#F9FAFB] border border-[#D1D5DB] rounded-[8px] p-4 text-[16px] text-[#111111] outline-none resize-vertical focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25 transition-all"
           value={editedLetter ?? filledLetter}
-          onChange={(e) => setEditedLetter(e.target.value)}
+          onChange={(e) => !inBuddyMode && setEditedLetter(e.target.value)}
+          readOnly={inBuddyMode}
           data-testid="apply-letter-preview"
           autoComplete="off"
           autoCorrect="on"
         />
       </div>
 
-      {/* Sticky bottom CTA */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] z-10 pb-[env(safe-area-inset-bottom)]">
-        <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-4">
-          {listing.price > 0 ? (
-            <div className="flex flex-col" data-testid="text-sticky-price">
-              <span className="text-[20px] font-semibold text-[#111111]">
-                €{listing.price}
-                <span className="text-[13px] font-normal text-[#334855] ml-1">{t("common.perMonthShort")}</span>
-              </span>
-              {postedLabel && (
-                <span className="text-[11px] text-[#334855] leading-none mt-0.5" data-testid="text-footer-posted">
-                  {postedLabel}
+      {/* Sticky bottom CTA — hidden for buddy (read-only mode) */}
+      {!inBuddyMode && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] z-10 pb-[env(safe-area-inset-bottom)]">
+          <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-4">
+            {listing.price > 0 ? (
+              <div className="flex flex-col" data-testid="text-sticky-price">
+                <span className="text-[20px] font-semibold text-[#111111]">
+                  €{listing.price}
+                  <span className="text-[13px] font-normal text-[#334855] ml-1">{t("common.perMonthShort")}</span>
                 </span>
-              )}
-            </div>
-          ) : (
-            <div />
-          )}
-          <Button
-            onClick={handleCopyAndRespond}
-            className={`ha-btn bg-ha-primary hover:bg-ha-primary-hover text-white font-semibold ${listing.price > 0 ? "" : "w-full"}`}
-            data-testid="button-copy-and-respond"
-          >
-            <Copy className="w-4 h-4 mr-2" />
-            {t("applySheet.copyAndApply")}
-          </Button>
+                {postedLabel && (
+                  <span className="text-[11px] text-[#334855] leading-none mt-0.5" data-testid="text-footer-posted">
+                    {postedLabel}
+                  </span>
+                )}
+              </div>
+            ) : (
+              <div />
+            )}
+            <Button
+              onClick={handleCopyAndRespond}
+              className={`ha-btn bg-ha-primary hover:bg-ha-primary-hover text-white font-semibold ${listing.price > 0 ? "" : "w-full"}`}
+              data-testid="button-copy-and-respond"
+            >
+              <Copy className="w-4 h-4 mr-2" />
+              {t("applySheet.copyAndApply")}
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Block source modal */}
       {showBlockModal && listing?.source && (

@@ -1,0 +1,72 @@
+Fix the remaining buddy access bugs found in QA.
+
+IMPORTANT:
+Do not do unrelated refactors.
+Fix only these two concrete bugs.
+
+==================================================
+BUG 1 — RESTRICTED BUDDY ROUTES STILL GO TO 404
+==================================================
+
+Current issue:
+As buddy user:
+- /subscription goes to "Pagina niet gevonden"
+- /housing-situation goes to "Pagina niet gevonden"
+
+Expected behavior:
+Restricted buddy access must always redirect cleanly to /home.
+Never to a 404 page.
+
+Task:
+- inspect all route definitions and buddy route guards
+- find why /subscription and /housing-situation fall through to not-found
+- make behavior consistent with /dashboard/searches/new, which already redirects correctly
+- ensure all restricted buddy routes redirect to /home
+
+Return:
+- exact routes that were mismatched
+- why they were falling into 404
+- exact fix applied
+
+==================================================
+BUG 2 — BUDDY CAN STILL EDIT REACTIEBRIEF ON DETAIL PAGE
+==================================================
+
+Current issue:
+Buddy cannot edit the reaction letter from the main reaction-letter page,
+but on the detail page the buddy can still edit it.
+
+Expected behavior:
+Buddy must be fully read-only everywhere.
+No edit capability anywhere.
+
+Task:
+- inspect all detail/listing pages where the reaction letter appears
+- find where buddy mode is not respected
+- remove all editability for buddy on the detail page
+- hide save/generate/edit controls for buddy
+- add backend protection if a mutation endpoint is still reachable
+
+Return:
+- exact file/component where the leak exists
+- exact UI controls removed or disabled
+- whether backend protection was added
+
+==================================================
+QA RETEST
+==================================================
+
+Verify:
+1. Buddy visits /subscription → redirected to /home
+2. Buddy visits /housing-situation → redirected to /home
+3. Buddy opens reaction letter on detail page → fully read-only
+4. No edit/save/generate controls visible for buddy
+
+==================================================
+OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. bug-by-bug fix summary
+3. confirmation of all 4 retest checks
