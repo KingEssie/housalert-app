@@ -108,7 +108,7 @@ function ProtectedRoute({ component: Component, skipOnboardingCheck }: { compone
     return <Redirect to="/" />;
   }
   if (!skipOnboardingCheck && checking) return null;
-  if (!skipOnboardingCheck && needsOnboarding) return <Redirect to="/onboarding/intro" />;
+  if (!skipOnboardingCheck && needsOnboarding) return <Redirect to="/onboarding/setup" />;
   return <Component />;
 }
 
@@ -157,11 +157,42 @@ function GuestRoute({ component: Component }: { component: React.ComponentType }
       .then((res) => res.json())
       .then((data) => {
         const completed = data.onboarding_completed === true || data.post_paywall_onboarding_completed === true;
-        setDestination(completed ? "/home" : "/onboarding/intro");
+        setDestination(completed ? "/home" : "/onboarding/setup");
         setChecking(false);
       })
       .catch(() => {
         setDestination("/home");
+        setChecking(false);
+      });
+  }, [user, session, loading]);
+
+  if (loading || (user && checking)) return null;
+  if (user && destination) return <Redirect to={destination} />;
+  return <Component />;
+}
+
+function WebFunnelRoute({ component: Component }: { component: React.ComponentType }) {
+  const { user, session, loading } = useAuth();
+  const [checking, setChecking] = useState(true);
+  const [destination, setDestination] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (loading) return;
+    if (!user || !session?.access_token) {
+      setChecking(false);
+      return;
+    }
+    apiFetch("/api/onboarding-status", {
+      headers: { Authorization: `Bearer ${session.access_token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const completed = data.onboarding_completed === true || data.post_paywall_onboarding_completed === true;
+        setDestination(completed ? "/home" : "/onboarding/setup");
+        setChecking(false);
+      })
+      .catch(() => {
+        setDestination("/onboarding/setup");
         setChecking(false);
       });
   }, [user, session, loading]);
@@ -184,18 +215,18 @@ function Router() {
       <Route path="/reset-password" component={ResetPasswordPage} />
       <Route path="/onboarding-embed" component={OnboardingEmbedPage} />
       <Route path="/continue" component={ContinueDraftPage} />
-      <Route path="/onboarding/intro" component={OnboardingIntroNew} />
-      <Route path="/onboarding/city" component={OnboardingCityNew} />
-      <Route path="/onboarding/location" component={OnboardingLocationNew} />
-      <Route path="/onboarding/filters" component={OnboardingFiltersNew} />
-      <Route path="/onboarding/name" component={OnboardingNameNew} />
-      <Route path="/onboarding/email" component={OnboardingEmailNew} />
-      <Route path="/onboarding/password" component={OnboardingPasswordNew} />
+      <Route path="/onboarding/intro" component={() => <WebFunnelRoute component={OnboardingIntroNew} />} />
+      <Route path="/onboarding/city" component={() => <WebFunnelRoute component={OnboardingCityNew} />} />
+      <Route path="/onboarding/location" component={() => <WebFunnelRoute component={OnboardingLocationNew} />} />
+      <Route path="/onboarding/filters" component={() => <WebFunnelRoute component={OnboardingFiltersNew} />} />
+      <Route path="/onboarding/name" component={() => <WebFunnelRoute component={OnboardingNameNew} />} />
+      <Route path="/onboarding/email" component={() => <WebFunnelRoute component={OnboardingEmailNew} />} />
+      <Route path="/onboarding/password" component={() => <WebFunnelRoute component={OnboardingPasswordNew} />} />
+      <Route path="/onboarding/preferences" component={() => <WebFunnelRoute component={OnboardingPreferencesNew} />} />
       <Route path="/onboarding/setup" component={() => <ProtectedRoute component={OnboardingSetup} skipOnboardingCheck />} />
       <Route path="/onboarding/continue" component={() => <Redirect to="/onboarding/setup" />} />
-      <Route path="/onboarding/estimate" component={() => <Redirect to="/onboarding/intro" />} />
-      <Route path="/onboarding/preferences" component={OnboardingPreferencesNew} />
-      <Route path="/onboarding/value" component={() => <Redirect to="/onboarding/intro" />} />
+      <Route path="/onboarding/estimate" component={() => <Redirect to="/onboarding/setup" />} />
+      <Route path="/onboarding/value" component={() => <Redirect to="/onboarding/setup" />} />
       <Route path="/onboarding" component={() => <Redirect to="/onboarding/intro" />} />
       <Route path="/paywall" component={PaywallPage} />
       <Route path="/subscription-success" component={() => <ProtectedRoute component={SubscriptionSuccessPage} skipOnboardingCheck />} />
