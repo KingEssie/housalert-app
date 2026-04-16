@@ -201,6 +201,36 @@ export default function ZoekbuddyPage() {
               </div>
             )}
 
+            {/* Inline unlink confirmation card (pending state) */}
+            {isPending && showUnlinkConfirm && (
+              <div className="app-card !p-5 border border-[#FCA5A5]">
+                <p className="text-[17px] font-bold text-[#111827] mb-1">{t("zoekbuddyPage.unlinkTitle")}</p>
+                <p className="text-[15px] text-[#6B7280] leading-snug mb-5">{t("zoekbuddyPage.unlinkDesc")}</p>
+                <div className="flex flex-col gap-2">
+                  <button
+                    onClick={handleRevoke}
+                    disabled={revoking}
+                    className="w-full h-[48px] rounded-[10px] bg-[#EF4444] hover:bg-[#DC2626] text-white text-[15px] font-semibold transition-colors active:scale-[0.98] flex items-center justify-center gap-2"
+                    data-testid="button-confirm-unlink"
+                  >
+                    {revoking
+                      ? <Loader2 className="w-4 h-4 animate-spin" />
+                      : <Link2Off className="w-4 h-4" strokeWidth={2} />
+                    }
+                    {t("zoekbuddyPage.unlinkConfirm")}
+                  </button>
+                  <button
+                    onClick={() => setShowUnlinkConfirm(false)}
+                    disabled={revoking}
+                    className="w-full h-[44px] rounded-[10px] border border-[#E5E7EB] bg-white text-[14px] text-[#374151] font-medium transition-colors hover:bg-[#F9FAFB] active:scale-[0.98]"
+                    data-testid="button-cancel-unlink"
+                  >
+                    {t("zoekbuddyPage.unlinkCancel")}
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Info panel */}
             <div className="app-card !p-5">
               <h2 className="text-[21px] font-bold text-[#000000] mb-2">
@@ -287,24 +317,25 @@ export default function ZoekbuddyPage() {
                 </button>
               ) : null
             ) : isPending ? (
-              <>
-                <button
-                  onClick={handleShareLink}
-                  className="w-full h-[52px] rounded-[10px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98] flex items-center justify-center gap-2"
-                  data-testid="button-share-pending"
-                >
-                  <Share2 className="w-4 h-4" strokeWidth={2} />
-                  {t("zoekbuddyPage.shareInviteLink")}
-                </button>
-                <button
-                  onClick={handleRevoke}
-                  disabled={revoking}
-                  className="w-full h-[44px] rounded-[10px] border border-[#E5E7EB] bg-white text-[14px] text-[#9CA3AF] font-medium transition-colors hover:bg-[#F9FAFB] active:scale-[0.98] flex items-center justify-center gap-2"
-                  data-testid="button-cancel-invite"
-                >
-                  {revoking ? <Loader2 className="w-4 h-4 animate-spin" /> : t("zoekbuddyPage.cancelInvite")}
-                </button>
-              </>
+              !showUnlinkConfirm ? (
+                <>
+                  <button
+                    onClick={handleShareLink}
+                    className="w-full h-[52px] rounded-[10px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98] flex items-center justify-center gap-2"
+                    data-testid="button-share-pending"
+                  >
+                    <Share2 className="w-4 h-4" strokeWidth={2} />
+                    {t("zoekbuddyPage.shareInviteLink")}
+                  </button>
+                  <button
+                    onClick={() => setShowUnlinkConfirm(true)}
+                    className="w-full h-[44px] rounded-[10px] border border-[#E5E7EB] bg-white text-[14px] text-[#9CA3AF] font-medium transition-colors hover:bg-[#F9FAFB] active:scale-[0.98] flex items-center justify-center gap-2"
+                    data-testid="button-cancel-invite"
+                  >
+                    {t("zoekbuddyPage.cancelInvite")}
+                  </button>
+                </>
+              ) : null
             ) : (
               <button
                 onClick={handleInvite}

@@ -1944,6 +1944,7 @@ function BuddyV2Section({ subscription }: { subscription: { isActive: boolean; i
             </div>
             {showRevokeConfirm ? (
               <div className="mt-4 pt-4 border-t border-[#F3F4F6]">
+                <p className="text-[13px] font-semibold text-[#111827] mb-1">{t("buddyV2.revokeTitle")}</p>
                 <p className="text-[13px] text-[#334855] mb-3">{t("buddyV2.revokeDesc")}</p>
                 <div className="flex gap-2">
                   <button
@@ -1969,7 +1970,7 @@ function BuddyV2Section({ subscription }: { subscription: { isActive: boolean; i
                 className="mt-3 text-[13px] text-red-500 font-semibold active:opacity-70 transition-opacity"
                 data-testid="button-buddy-revoke"
               >
-                {t("buddyV2.revokeConfirm")}
+                {t("buddyV2.revokeButton")}
               </button>
             )}
           </div>
