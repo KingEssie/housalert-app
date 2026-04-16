@@ -60,7 +60,7 @@ import { ListingCardFull, ListingCardMini } from "@/components/listing-card";
 import {
   useBuddyConnections, useInviteBuddy, useRevokeBuddy,
   useUpdateBuddyPreferences, isBuddyMode, getActiveBuddyRelation,
-  isOwnerSubActive, type BuddyConnections,
+  isOwnerSubActive, type BuddyConnections, type BuddyRelation,
 } from "@/lib/buddy";
 import { LogoutBottomSheet } from "@/components/ui/logout-bottom-sheet";
 
@@ -2012,10 +2012,13 @@ function BuddyV2Section({ subscription }: { subscription: { isActive: boolean; i
   );
 }
 
-function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canonicalStats, computedAppliedCount, buddyMode }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null; currentPeriodEndsAt: string | null; cancelAtPeriodEnd: boolean }; setActiveTab: (tab: TabKey) => void; canonicalStats?: CanonicalStats; computedAppliedCount: number; buddyMode?: boolean }) {
+function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canonicalStats, computedAppliedCount, buddyMode, activeBuddyRel }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null; currentPeriodEndsAt: string | null; cancelAtPeriodEnd: boolean }; setActiveTab: (tab: TabKey) => void; canonicalStats?: CanonicalStats; computedAppliedCount: number; buddyMode?: boolean; activeBuddyRel?: BuddyRelation | null }) {
   const [signingOut, setSigningOut] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [showBuddyDisconnectConfirm, setShowBuddyDisconnectConfirm] = useState(false);
   const { t, locale, setLocale } = useTranslation();
+  const { toast } = useToast();
+  const revokeBuddyMutation = useRevokeBuddy();
 
   const handleLogout = async () => {
     setSigningOut(true);
@@ -2134,6 +2137,58 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             {!buddyMode && <MenuItem label={t("settings.zoekbuddy")} onClick={() => navigate("/profile/search-buddy")} />}
             <MenuItem label={t("settings.reactionLetter")} onClick={() => navigate("/application-letter")} last />
           </SectionInline>
+
+          {/* ZOEKBUDDY DISCONNECT (buddy mode only) */}
+          {buddyMode && activeBuddyRel && (
+            <div>
+              <div className="h-px bg-[#F3F4F6]" />
+              <p className="text-[11px] font-semibold text-[#9CA3AF] px-4 pt-4 pb-1">{t("buddyV2.modeBadge")}</p>
+              {showBuddyDisconnectConfirm ? (
+                <div className="mx-4 mb-3 bg-red-50 border border-red-100 rounded-[10px] p-4">
+                  <p className="text-[14px] font-semibold text-[#111111] mb-1">
+                    {t("buddyV2.buddyDisconnectTitle").replace("{name}", activeBuddyRel.owner_name || "")}
+                  </p>
+                  <div className="flex gap-2 mt-3">
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          await revokeBuddyMutation.mutateAsync(activeBuddyRel.id);
+                          toast({ title: t("buddyV2.buddyDisconnected") });
+                        } catch {
+                          toast({ title: t("buddyV2.inviteError"), variant: "destructive" });
+                        }
+                        setShowBuddyDisconnectConfirm(false);
+                      }}
+                      disabled={revokeBuddyMutation.isPending}
+                      className="flex-1 flex items-center justify-center gap-2 h-10 rounded-[8px] bg-red-600 text-white text-[14px] font-semibold active:scale-[0.98] transition-transform disabled:opacity-60"
+                      data-testid="button-buddy-disconnect-confirm"
+                    >
+                      {revokeBuddyMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : t("buddyV2.buddyDisconnectConfirm")}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowBuddyDisconnectConfirm(false)}
+                      className="flex-1 h-10 rounded-[8px] bg-white border border-[#E5E7EB] text-[14px] font-semibold text-[#374151] active:scale-[0.98] transition-transform"
+                      data-testid="button-buddy-disconnect-cancel"
+                    >
+                      {t("buddyV2.buddyDisconnectCancel")}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowBuddyDisconnectConfirm(true)}
+                  className="w-full flex items-center justify-between px-4 h-[42px] text-left active:bg-[#F9FAFB] transition-colors"
+                  data-testid="button-buddy-disconnect"
+                >
+                  <span className="text-[15px] font-semibold text-red-600">{t("buddyV2.buddyDisconnectLabel")}</span>
+                  <Link2Off className="w-[16px] h-[16px] text-red-400 flex-shrink-0" />
+                </button>
+              )}
+            </div>
+          )}
 
           {/* HELP */}
           <SectionInline title={t("settings.sectionHelp")}>
@@ -2403,6 +2458,7 @@ export default function DashboardPage() {
             canonicalStats={apiMatchesQuery.data?.canonicalStats}
             computedAppliedCount={computedAppliedCount}
             buddyMode={inBuddyMode}
+            activeBuddyRel={activeBuddyRel}
           />
         )}
       </main>

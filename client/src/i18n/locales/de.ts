@@ -2666,6 +2666,11 @@ export const de: Record<string, any> = {
     authAccountExists: "Es gibt bereits ein Konto mit dieser E-Mail-Adresse. Bitte melde dich an.",
     authSignupFailed: "Account-Erstellung fehlgeschlagen",
     authLoginFailed: "Anmeldung fehlgeschlagen. Überprüfe dein Passwort.",
+    buddyDisconnectLabel: "Verknüpfung trennen",
+    buddyDisconnectTitle: "Möchtest du die Verknüpfung mit {name} trennen?",
+    buddyDisconnectConfirm: "Trennen",
+    buddyDisconnectCancel: "Abbrechen",
+    buddyDisconnected: "Du wurdest als Suchbuddy getrennt",
   },
 
   checkoutSuccess: {

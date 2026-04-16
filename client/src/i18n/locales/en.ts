@@ -2024,6 +2024,11 @@ export const en: Record<string, any> = {
     authAccountExists: "An account with this email already exists. Please log in.",
     authSignupFailed: "Account creation failed",
     authLoginFailed: "Login failed. Please check your password.",
+    buddyDisconnectLabel: "Disconnect from buddy",
+    buddyDisconnectTitle: "Do you want to disconnect from {name}?",
+    buddyDisconnectConfirm: "Disconnect",
+    buddyDisconnectCancel: "Cancel",
+    buddyDisconnected: "You have been disconnected as a search buddy",
   },
 
   checkoutSuccess: {

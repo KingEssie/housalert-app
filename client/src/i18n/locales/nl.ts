@@ -2716,6 +2716,11 @@ export const nl: Record<string, any> = {
     authAccountExists: "Er bestaat al een account met dit e-mailadres. Log in.",
     authSignupFailed: "Account aanmaken mislukt",
     authLoginFailed: "Inloggen mislukt. Controleer je wachtwoord.",
+    buddyDisconnectLabel: "Koppeling verbreken",
+    buddyDisconnectTitle: "Je wilt de koppeling verbreken met {name}?",
+    buddyDisconnectConfirm: "Koppeling verbreken",
+    buddyDisconnectCancel: "Annuleren",
+    buddyDisconnected: "Je bent losgekoppeld als zoekbuddy",
   },
 
   checkoutSuccess: {

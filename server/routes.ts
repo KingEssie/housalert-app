@@ -25,7 +25,7 @@ import {
 import { log } from "./log";
 import { validateBuddyUnsubscribeToken, sendBuddyInvitationEmail, sendBuddyCollaborationEmail, sendBuddyRevokedEmail } from "./email";
 import {
-  inviteBuddy, acceptInvite, revokeBuddy,
+  inviteBuddy, acceptInvite, revokeBuddy, revokeBuddyAsBuddy,
   getOwnerBuddyRelation, getBuddyRelationsForUser, getPendingInvitesForEmail,
   getRelationById, updateBuddyPreferences, recordBuddyAction,
   getBuddyActionsForListing, getBuddyActionsForListings,
@@ -347,8 +347,8 @@ export async function registerRoutes(
 
       const relation = await getRelationById(relationId);
 
-      const ok = await revokeBuddy(auth.user.id, relationId);
-      if (!ok) return res.status(404).json({ error: "Not found or not owner" });
+      const ok = await revokeBuddy(auth.user.id, relationId) || await revokeBuddyAsBuddy(auth.user.id, relationId);
+      if (!ok) return res.status(404).json({ error: "Not found or not authorized" });
 
       if (relation?.invite_email && relation.invite_status === "accepted") {
         const ownerProfile = await getOwnerNameForBuddy(auth.user.id);

@@ -191,6 +191,17 @@ export async function revokeBuddy(ownerUserId: string, relationId: string): Prom
   return (result.rowCount || 0) > 0;
 }
 
+export async function revokeBuddyAsBuddy(buddyUserId: string, relationId: string): Promise<boolean> {
+  const result = await pgPool.query(
+    `UPDATE search_profile_buddies
+     SET invite_status = 'revoked'
+     WHERE id = $1 AND buddy_user_id = $2
+     RETURNING id`,
+    [relationId, buddyUserId]
+  );
+  return (result.rowCount || 0) > 0;
+}
+
 export async function getOwnerBuddyRelation(ownerUserId: string): Promise<BuddyRelation | null> {
   const result = await pgPool.query(
     `SELECT * FROM search_profile_buddies
