@@ -1,0 +1,97 @@
+I want a precise step-by-step explanation of the CURRENT implemented buddy unlink logic in the app.
+
+IMPORTANT:
+Do not describe intended behavior or ideal behavior.
+Describe only the behavior that is ACTUALLY implemented right now in the codebase.
+
+Please explain both scenarios in detail:
+
+==================================================
+SCENARIO A — OWNER DISCONNECTS THE BUDDY
+==================================================
+
+Explain step by step:
+
+1. Where in the UI the owner does this
+2. What the owner sees before clicking
+3. What happens after clicking the disconnect action
+4. Whether there is a confirmation modal/bottom sheet
+5. What text/buttons are shown in that confirmation step
+6. What backend endpoint/action is called
+7. What database fields/records change exactly
+8. Whether the buddy account is deleted or not
+9. What happens to the buddy relationship record/status
+10. What happens to owner UI immediately after success
+11. Whether the owner gets a toast/message and what it says
+12. What happens to the buddy on their next app open
+13. Whether the buddy gets a modal and exactly what it says
+14. Where the buddy is redirected afterward
+15. What access the former buddy loses
+16. Whether any emails are sent and in which language
+17. Whether any localStorage/session flags are used and how
+
+==================================================
+SCENARIO B — BUDDY DISCONNECTS THEMSELVES
+==================================================
+
+Explain step by step:
+
+1. Where in the UI the buddy does this
+2. What the buddy sees before clicking
+3. What action/button is available
+4. Whether there is a confirmation modal/bottom sheet
+5. Exact title, description, and CTA labels shown
+6. What backend endpoint/action is called
+7. What database fields/records change exactly
+8. Whether the buddy account is deleted or not
+9. What happens to the buddy relationship record/status
+10. What happens to the buddy immediately after success
+11. What standalone mode/dashboard they land on
+12. Whether they can still log in afterward
+13. What happens to the owner UI after the buddy disconnects
+14. Whether the owner gets a toast/message and what it says
+15. Whether any emails are sent and in which language
+16. Whether any localStorage/session flags are used and how
+
+==================================================
+ACCOUNT / DATA CONSEQUENCES
+==================================================
+
+Then answer these very clearly:
+
+1. After unlink, does the buddy account still exist?
+2. Can the former buddy still log in with the same email/password?
+3. Does the former buddy become a normal standalone user?
+4. Can the former buddy create their own search profile afterward?
+5. Can the former buddy create their own reaction letter afterward?
+6. What owner data is no longer accessible after unlink?
+7. Which backend endpoints return 403 after unlink?
+8. Is anything deleted permanently besides the buddy relationship itself?
+
+==================================================
+OUTPUT FORMAT
+==================================================
+
+Please structure the answer as:
+
+- Scenario A: Owner disconnects buddy
+  - Step 1
+  - Step 2
+  - Step 3
+  - etc.
+
+- Scenario B: Buddy disconnects themselves
+  - Step 1
+  - Step 2
+  - Step 3
+  - etc.
+
+- Account/data consequences
+  - bullet list
+
+Also include:
+- exact file names involved
+- exact endpoint names involved
+- exact DB field names/status changes involved
+
+Again: explain only what is ACTUALLY implemented right now in the codebase.
