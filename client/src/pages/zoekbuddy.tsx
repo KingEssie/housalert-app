@@ -13,7 +13,7 @@ import {
   XCircle,
   Copy,
   Share2,
-  UserMinus,
+  Link2Off,
   Clock,
   Mail,
 } from "lucide-react";
@@ -42,6 +42,7 @@ export default function ZoekbuddyPage() {
   const [emailInput, setEmailInput] = useState("");
   const [inviting, setInviting] = useState(false);
   const [revoking, setRevoking] = useState(false);
+  const [showUnlinkConfirm, setShowUnlinkConfirm] = useState(false);
 
   const asOwner = connections?.asOwner ?? null;
   const isConnected = asOwner?.invite_status === "accepted";
@@ -87,6 +88,7 @@ export default function ZoekbuddyPage() {
       });
       if (!res.ok) throw new Error(t("zoekbuddyPage.removeError"));
       queryClient.invalidateQueries({ queryKey: ["/api/buddy/connections"] });
+      setShowUnlinkConfirm(false);
       toast({ title: t("zoekbuddyPage.removedToast") });
     } catch {
       toast({ title: t("zoekbuddyPage.removeError"), variant: "destructive" });
@@ -136,7 +138,7 @@ export default function ZoekbuddyPage() {
             <Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF]" />
           </div>
         ) : isConnected ? (
-          /* ── STATE B: CONNECTED ── */
+          /* ── STATE B: CONNECTED — clean management state, no invite actions ── */
           <div className="flex flex-col gap-3">
             <div className="app-card !p-5">
               <h2 className="text-[21px] font-bold text-[#000000] mb-1">{t("zoekbuddyPage.connectedTitle")}</h2>
@@ -151,47 +153,40 @@ export default function ZoekbuddyPage() {
                   {asOwner?.invite_email}
                 </span>
               </div>
-
-              {/* Action rows */}
-              {inviteLink && (
-                <>
-                  <button
-                    onClick={handleShareLink}
-                    className="flex items-center gap-3 w-full py-3 border-t border-[#E5E7EB] text-left"
-                    data-testid="button-share-link"
-                  >
-                    <Share2 className="w-[19px] h-[19px] text-[#000000] flex-shrink-0" strokeWidth={1.8} />
-                    <span className="text-[16px] text-[#000000] font-medium">{t("zoekbuddyPage.shareLink")}</span>
-                  </button>
-
-                  <button
-                    onClick={handleCopyLink}
-                    className="flex items-center gap-3 w-full py-3 border-t border-[#E5E7EB] text-left"
-                    data-testid="button-copy-link-connected"
-                  >
-                    <Copy className="w-[19px] h-[19px] text-[#000000] flex-shrink-0" strokeWidth={1.8} />
-                    <span className="text-[16px] text-[#000000] font-medium">{t("zoekbuddyPage.copyLink")}</span>
-                  </button>
-                </>
-              )}
-
-              {/* Subtle revoke — intentionally de-emphasised */}
-              <button
-                onClick={handleRevoke}
-                disabled={revoking}
-                className="flex items-center gap-3 w-full py-3 border-t border-[#E5E7EB] text-left mt-1"
-                data-testid="button-revoke-buddy"
-              >
-                {revoking
-                  ? <Loader2 className="w-[18px] h-[18px] animate-spin text-[#9CA3AF] flex-shrink-0" />
-                  : <UserMinus className="w-[18px] h-[18px] text-[#9CA3AF] flex-shrink-0" strokeWidth={1.8} />
-                }
-                <span className="text-[14px] text-[#9CA3AF]">{t("zoekbuddyPage.removeLabel")}</span>
-              </button>
             </div>
+
+            {/* Inline unlink confirmation card */}
+            {showUnlinkConfirm && (
+              <div className="app-card !p-5 border border-[#FCA5A5]">
+                <p className="text-[17px] font-bold text-[#111827] mb-1">{t("zoekbuddyPage.unlinkTitle")}</p>
+                <p className="text-[15px] text-[#6B7280] leading-snug mb-5">{t("zoekbuddyPage.unlinkDesc")}</p>
+                <div className="flex flex-col gap-2">
+                  <button
+                    onClick={handleRevoke}
+                    disabled={revoking}
+                    className="w-full h-[48px] rounded-[10px] bg-[#EF4444] hover:bg-[#DC2626] text-white text-[15px] font-semibold transition-colors active:scale-[0.98] flex items-center justify-center gap-2"
+                    data-testid="button-confirm-unlink"
+                  >
+                    {revoking
+                      ? <Loader2 className="w-4 h-4 animate-spin" />
+                      : <Link2Off className="w-4 h-4" strokeWidth={2} />
+                    }
+                    {t("zoekbuddyPage.unlinkConfirm")}
+                  </button>
+                  <button
+                    onClick={() => setShowUnlinkConfirm(false)}
+                    disabled={revoking}
+                    className="w-full h-[44px] rounded-[10px] border border-[#E5E7EB] bg-white text-[14px] text-[#374151] font-medium transition-colors hover:bg-[#F9FAFB] active:scale-[0.98]"
+                    data-testid="button-cancel-unlink"
+                  >
+                    {t("zoekbuddyPage.unlinkCancel")}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
-          /* ── STATE A: NO BUDDY (or pending) ── */
+          /* ── STATE A: NO BUDDY (or pending) — invite state ── */
           <div className="flex flex-col gap-3">
             {/* Pending status banner */}
             {isPending && (
@@ -280,14 +275,17 @@ export default function ZoekbuddyPage() {
         <div className="sticky bottom-0 bg-white border-t border-[#E5E7EB] px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
           <div className="max-w-[480px] mx-auto flex flex-col gap-2">
             {isConnected ? (
-              <button
-                onClick={handleShareLink}
-                className="w-full h-[52px] rounded-[10px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98] flex items-center justify-center gap-2"
-                data-testid="button-share-link-bottom"
-              >
-                <Share2 className="w-4 h-4" strokeWidth={2} />
-                {t("zoekbuddyPage.shareInviteLink")}
-              </button>
+              /* Connected: only unlink action — no share or invite buttons */
+              !showUnlinkConfirm ? (
+                <button
+                  onClick={() => setShowUnlinkConfirm(true)}
+                  className="w-full h-[52px] rounded-[10px] border border-[#FECACA] bg-[#FFF5F5] hover:bg-[#FEE2E2] text-[16px] font-semibold text-[#EF4444] transition-colors active:scale-[0.98] flex items-center justify-center gap-2"
+                  data-testid="button-unlink-buddy"
+                >
+                  <Link2Off className="w-[18px] h-[18px]" strokeWidth={2} />
+                  {t("zoekbuddyPage.removeLabel")}
+                </button>
+              ) : null
             ) : isPending ? (
               <>
                 <button

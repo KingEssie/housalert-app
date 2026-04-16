@@ -44,6 +44,7 @@ import {
   Users,
   UserCheck,
   ExternalLink,
+  Link2Off,
 } from "lucide-react";
 import { ExpandableCompletionCard, type CompletionStep } from "@/components/expandable-completion-card";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
@@ -923,6 +924,8 @@ function HomeTab({
   subscription,
   accessToken,
   buddyMode,
+  showBuddyUnlinked,
+  onDismissBuddyUnlinked,
 }: {
   user: any;
   profiles: SearchProfile[];
@@ -931,6 +934,8 @@ function HomeTab({
   subscription: { isTrial: boolean; isExpired: boolean; isActive: boolean; trialEndsAt: string | null };
   accessToken: string | undefined;
   buddyMode?: boolean;
+  showBuddyUnlinked?: boolean;
+  onDismissBuddyUnlinked?: () => void;
 }) {
   const { t } = useTranslation();
   const { toast } = useToast();
@@ -962,6 +967,28 @@ function HomeTab({
 
   return (
     <div className="flex flex-col pb-8">
+      {/* Former buddy transition modal */}
+      {showBuddyUnlinked && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]" data-testid="modal-buddy-unlinked">
+          <div className="bg-white rounded-[20px] w-full max-w-[420px] p-6 flex flex-col gap-4 shadow-xl">
+            <div className="w-12 h-12 rounded-full bg-[#F3F4F6] flex items-center justify-center mx-auto">
+              <Link2Off className="w-6 h-6 text-[#6B7280]" strokeWidth={1.8} />
+            </div>
+            <div className="text-center">
+              <h2 className="text-[19px] font-bold text-[#111827] mb-2">{t("buddyUnlinked.title")}</h2>
+              <p className="text-[15px] text-[#6B7280] leading-snug">{t("buddyUnlinked.body")}</p>
+            </div>
+            <button
+              onClick={() => { setActiveTab("home"); onDismissBuddyUnlinked?.(); }}
+              className="w-full h-[52px] rounded-[12px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98]"
+              data-testid="button-buddy-unlinked-cta"
+            >
+              {t("buddyUnlinked.cta")}
+            </button>
+          </div>
+        </div>
+      )}
+
       <div
         className="px-5 pb-10"
         style={{
@@ -2212,6 +2239,21 @@ export default function DashboardPage() {
   const activeBuddyRel = getActiveBuddyRelation(buddyConns.data);
   const ownerSubActive = isOwnerSubActive(buddyConns.data);
 
+  // Detect when former buddy transitions to standalone user
+  const [showBuddyUnlinkedModal, setShowBuddyUnlinkedModal] = useState(false);
+  useEffect(() => {
+    if (buddyConns.isLoading || !buddyConns.data) return;
+    if (inBuddyMode) {
+      localStorage.setItem("ha_buddy_was_active", "1");
+    } else {
+      const wasBuddy = localStorage.getItem("ha_buddy_was_active") === "1";
+      if (wasBuddy) {
+        localStorage.removeItem("ha_buddy_was_active");
+        setShowBuddyUnlinkedModal(true);
+      }
+    }
+  }, [buddyConns.data, buddyConns.isLoading, inBuddyMode]);
+
   const profilesQuery = useQuery<SearchProfile[]>({
     queryKey: ["/search-profiles"],
     queryFn: getSearchProfiles,
@@ -2341,6 +2383,8 @@ export default function DashboardPage() {
             subscription={{ isTrial: sub.isTrial, isExpired: sub.isExpired, isActive: sub.isActive, trialEndsAt: sub.trialEndsAt }}
             accessToken={accessToken}
             buddyMode={inBuddyMode}
+            showBuddyUnlinked={showBuddyUnlinkedModal}
+            onDismissBuddyUnlinked={() => setShowBuddyUnlinkedModal(false)}
           />
         )}
         {activeTab === "matches" && (

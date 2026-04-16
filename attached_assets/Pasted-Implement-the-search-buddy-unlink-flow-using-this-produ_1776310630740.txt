@@ -1,0 +1,194 @@
+Implement the search buddy unlink flow using this product model:
+
+IMPORTANT:
+A search buddy is NOT a permanent account type.
+A search buddy is a temporary relationship between two accounts.
+
+When the owner disconnects the buddy:
+- DO NOT delete the buddy account
+- ONLY remove the buddy relationship
+- The former buddy account must continue to exist
+- The former buddy must become a normal standalone user
+
+==================================================
+1. DATA MODEL / BEHAVIOR
+==================================================
+
+Use this logic:
+
+- owner account remains unchanged
+- buddy account remains unchanged
+- the buddy relationship is what gets removed
+
+If there is a buddy relation:
+- user is in buddy mode
+
+If there is no buddy relation:
+- user is a normal standalone user
+
+Do NOT permanently store “buddy” as a fixed account type if it depends on the relationship.
+Role should come from the active relationship state.
+
+==================================================
+2. CONNECTED STATE UI
+==================================================
+
+When a buddy is already connected:
+
+Owner should see:
+- connected status
+- buddy email
+- one main destructive/secondary action:
+  - "Zoekbuddy ontkoppelen" / "Koppeling verbreken"
+
+Owner should NOT see:
+- share invite link
+- copy invite link
+- invite CTA
+- any “invite new buddy” actions
+
+So the connected state must be a clean management state, not an invitation state.
+
+==================================================
+3. EMPTY STATE UI
+==================================================
+
+When NO buddy is connected:
+
+Owner should see:
+- explanation of the feature
+- invite actions
+- share link
+- copy link
+- invite CTA
+
+This state must only appear when there is no active buddy relation.
+
+==================================================
+4. UNLINK FLOW
+==================================================
+
+Implement the unlink action for owner:
+
+Action:
+- owner clicks “Zoekbuddy ontkoppelen” / “Koppeling verbreken”
+
+Behavior:
+- remove the buddy relationship from the database
+- do NOT delete the buddy user record
+- do NOT delete the buddy login credentials
+- do NOT delete buddy favorites/history unless explicitly needed elsewhere
+
+After unlink:
+
+Owner:
+- returns to no-buddy empty state
+- can invite a new buddy
+
+Former buddy:
+- loses access to owner search profiles
+- loses access to owner reaction letter
+- loses buddy-mode restrictions/view
+- becomes a normal standalone user
+
+==================================================
+5. FORMER BUDDY EXPERIENCE
+==================================================
+
+After unlink, the former buddy must become a standard normal user.
+
+That means:
+- normal home screen
+- normal account screen
+- can create their own search profiles
+- can set up their own reaction letter
+- can use the app independently
+
+Do NOT leave them in a broken half-buddy state.
+
+If needed, on first app open after unlink, show a clear transition message like:
+
+Title:
+- "Je bent niet langer gekoppeld als zoekbuddy"
+
+Body:
+- "Je kunt nu zelf op zoek naar een woning."
+
+CTA:
+- "Start je eigen zoekopdracht"
+
+This can be a modal, banner, or onboarding-style state.
+
+==================================================
+6. ACCESS CONTROL AFTER UNLINK
+==================================================
+
+As soon as the buddy relation is removed:
+
+Former buddy must no longer be able to access:
+- owner search profiles
+- owner reaction letter
+- owner-only shared dashboard data
+
+Make sure backend endpoints that expose owner data now fail safely when the relation no longer exists.
+
+==================================================
+7. ROUTE / UI REFRESH
+==================================================
+
+After unlink:
+- refresh user role/mode immediately
+- do not require a hard reload if avoidable
+- app should re-render with the correct standalone user experience
+
+==================================================
+8. TERMINOLOGY
+==================================================
+
+Replace wording that implies account deletion.
+
+Preferred wording:
+- "Zoekbuddy ontkoppelen"
+- "Koppeling verbreken"
+
+Avoid:
+- "Zoekbuddy verwijderen" if that sounds like deleting the person/account
+
+==================================================
+9. QA REQUIRED
+==================================================
+
+Verify these flows:
+
+A. Owner with connected buddy
+- no invite CTA visible
+- no share/copy link visible
+- only unlink/manage state visible
+
+B. Owner unlinks buddy
+- relationship removed
+- owner sees empty buddy state again
+- owner can invite a new buddy
+
+C. Former buddy after unlink
+- can still log in
+- lands in normal standalone experience
+- no longer sees owner data
+- can create own search profile
+- can set up own reaction letter
+
+D. Security
+- former buddy cannot call owner-data endpoints anymore after unlink
+
+==================================================
+10. OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. how the buddy relationship is stored/checked
+3. how unlink works
+4. how former buddy becomes a normal user
+5. how owner UI differs between connected vs no-buddy state
+6. confirmation that no buddy account is deleted
+7. confirmation that former buddy cannot access owner data anymore

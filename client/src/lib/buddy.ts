@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api-base";
 import { useAuth } from "@/lib/auth";
 
@@ -223,4 +224,39 @@ export function getActiveBuddyRelation(connections: BuddyConnections | undefined
 export function isOwnerSubActive(connections: BuddyConnections | undefined): boolean {
   const rel = getActiveBuddyRelation(connections);
   return rel?.owner_sub_active ?? false;
+}
+
+const BUDDY_ACTIVE_KEY = "ha_buddy_was_active";
+
+/**
+ * Detects when a user transitions from buddy mode → standalone.
+ * While the user is in buddy mode, we store a flag in localStorage.
+ * When connections load and the user is no longer in buddy mode,
+ * but the flag exists, we surface `wasUnlinked = true` once.
+ */
+export function useBuddyUnlinkedDetection(): { wasUnlinked: boolean; dismiss: () => void } {
+  const { data: connections, isLoading } = useBuddyConnections();
+  const [wasUnlinked, setWasUnlinked] = useState(false);
+
+  useEffect(() => {
+    if (isLoading || !connections) return;
+    const inBuddyMode = isBuddyMode(connections);
+    if (inBuddyMode) {
+      // User is currently a buddy — set the flag
+      localStorage.setItem(BUDDY_ACTIVE_KEY, "1");
+    } else {
+      // User is not a buddy — check if they were recently
+      const wasBuddy = localStorage.getItem(BUDDY_ACTIVE_KEY) === "1";
+      if (wasBuddy) {
+        localStorage.removeItem(BUDDY_ACTIVE_KEY);
+        setWasUnlinked(true);
+      }
+    }
+  }, [connections, isLoading]);
+
+  function dismiss() {
+    setWasUnlinked(false);
+  }
+
+  return { wasUnlinked, dismiss };
 }
