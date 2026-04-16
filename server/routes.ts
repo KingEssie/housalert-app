@@ -43,7 +43,7 @@ import { getBlockedSources, addBlockedSource, removeBlockedSource, normalizeSour
 import { getReferralSummary, applyReferralCode, validateReferralCode, ensureUserHasReferralCode } from "./referrals";
 import { initWebPush, sendPushToUser } from "./notifications/push";
 import { sendExpoTestPush } from "./notifications/expo-push";
-import { getSupabaseAdmin } from "./supabase-admin";
+import { getSupabaseAdmin, lookupSupabaseUserByEmail } from "./supabase-admin";
 import { markViewed, markApplied, markSaved, getUserMatchStats, getRecentUserMatches, getMatchCountForUser, getCanonicalMatchStates, getRecentFetchRuns, backfillFromSupabaseMatches, upsertUserMatch } from "./user-matches";
 
 const TEN_MIN = 10 * 60 * 1000;
@@ -194,12 +194,10 @@ export async function registerRoutes(
       const ownerProfile = await getOwnerNameForBuddy(invite.owner_user_id);
       const ownerName = ownerProfile ? `${ownerProfile.first_name || ""} ${ownerProfile.last_name || ""}`.trim() : null;
 
-      let accountExists = false;
-      try {
-        const sb = getSupabaseAdmin();
-        const { data } = await sb.auth.admin.listUsers({ filter: `email.eq.${invite.invite_email}` });
-        accountExists = (data?.users?.length || 0) > 0;
-      } catch {}
+      // Use direct GoTrue REST API — the JS SDK listUsers() silently ignores
+      // the filter param and returns all users, making this check always true.
+      const existingUser = await lookupSupabaseUserByEmail(invite.invite_email);
+      const accountExists = !!existingUser;
 
       return res.json({
         invite_email: invite.invite_email,
@@ -256,9 +254,8 @@ export async function registerRoutes(
         // 3. Never use the transient Accept-Language request header
         let lang: import("./i18n").ServerLocale = "en";
         try {
-          const adminSb = getSupabaseAdmin();
-          const { data: buddyLookup } = await adminSb.auth.admin.listUsers({ filter: `email.eq.${email.toLowerCase().trim()}` });
-          const buddyUserId = buddyLookup?.users?.[0]?.id;
+          const buddyAccount = await lookupSupabaseUserByEmail(email);
+          const buddyUserId = buddyAccount?.id;
           if (buddyUserId) {
             const buddyStoredLang = await getBuddyLanguage(buddyUserId);
             if (isValidLocale(buddyStoredLang)) {
@@ -3600,8 +3597,8 @@ export async function registerRoutes(
             // 3. "en" fallback — never "nl" default or request header
             let lang: import("./i18n").ServerLocale = "en";
             try {
-              const { data: buddyLookup } = await getSupabaseAdmin().auth.admin.listUsers({ filter: `email.eq.${newBuddyEmail.toLowerCase().trim()}` });
-              const buddyUserId = buddyLookup?.users?.[0]?.id;
+              const buddyAccount = await lookupSupabaseUserByEmail(newBuddyEmail);
+              const buddyUserId = buddyAccount?.id;
               if (buddyUserId) {
                 const buddyStoredLang = await getBuddyLanguage(buddyUserId);
                 if (isValidLocale(buddyStoredLang)) {
