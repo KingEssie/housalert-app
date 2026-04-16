@@ -54,6 +54,7 @@ export function useBuddyConnections() {
     },
     enabled: !!session?.access_token,
     staleTime: 30_000,
+    refetchInterval: 30_000,
   });
 }
 

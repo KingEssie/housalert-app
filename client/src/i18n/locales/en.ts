@@ -2024,11 +2024,13 @@ export const en: Record<string, any> = {
     authAccountExists: "An account with this email already exists. Please log in.",
     authSignupFailed: "Account creation failed",
     authLoginFailed: "Login failed. Please check your password.",
-    buddyDisconnectLabel: "Disconnect from buddy",
-    buddyDisconnectTitle: "Do you want to disconnect from {name}?",
+    buddyDisconnectLabel: "Stop being a search buddy",
+    buddyDisconnectTitle: "Stop being a search buddy",
+    buddyDisconnectDesc: "You will lose access to this user's searches and matches. You can then start your own search.",
     buddyDisconnectConfirm: "Disconnect",
     buddyDisconnectCancel: "Cancel",
-    buddyDisconnected: "You have been disconnected as a search buddy",
+    buddyDisconnected: "You are no longer connected as a search buddy",
+    ownerBuddyLeft: "Your search buddy has disconnected",
   },
 
   checkoutSuccess: {

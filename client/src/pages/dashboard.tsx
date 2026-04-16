@@ -63,6 +63,7 @@ import {
   isOwnerSubActive, type BuddyConnections, type BuddyRelation,
 } from "@/lib/buddy";
 import { LogoutBottomSheet } from "@/components/ui/logout-bottom-sheet";
+import { BuddyDisconnectSheet } from "@/components/ui/buddy-disconnect-sheet";
 
 const MAX_PROFILES = 4;
 
@@ -979,7 +980,7 @@ function HomeTab({
               <p className="text-[15px] text-[#6B7280] leading-snug">{t("buddyUnlinked.body")}</p>
             </div>
             <button
-              onClick={() => { setActiveTab("home"); onDismissBuddyUnlinked?.(); }}
+              onClick={() => { onDismissBuddyUnlinked?.(); navigate("/dashboard/searches/new"); }}
               className="w-full h-[52px] rounded-[12px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98]"
               data-testid="button-buddy-unlinked-cta"
             >
@@ -2143,51 +2144,34 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
             <div>
               <div className="h-px bg-[#F3F4F6]" />
               <p className="text-[11px] font-semibold text-[#9CA3AF] px-4 pt-4 pb-1">{t("buddyV2.modeBadge")}</p>
-              {showBuddyDisconnectConfirm ? (
-                <div className="mx-4 mb-3 bg-red-50 border border-red-100 rounded-[10px] p-4">
-                  <p className="text-[14px] font-semibold text-[#111111] mb-1">
-                    {t("buddyV2.buddyDisconnectTitle").replace("{name}", activeBuddyRel.owner_name || "")}
-                  </p>
-                  <div className="flex gap-2 mt-3">
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        try {
-                          await revokeBuddyMutation.mutateAsync(activeBuddyRel.id);
-                          toast({ title: t("buddyV2.buddyDisconnected") });
-                        } catch {
-                          toast({ title: t("buddyV2.inviteError"), variant: "destructive" });
-                        }
-                        setShowBuddyDisconnectConfirm(false);
-                      }}
-                      disabled={revokeBuddyMutation.isPending}
-                      className="flex-1 flex items-center justify-center gap-2 h-10 rounded-[8px] bg-red-600 text-white text-[14px] font-semibold active:scale-[0.98] transition-transform disabled:opacity-60"
-                      data-testid="button-buddy-disconnect-confirm"
-                    >
-                      {revokeBuddyMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : t("buddyV2.buddyDisconnectConfirm")}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShowBuddyDisconnectConfirm(false)}
-                      className="flex-1 h-10 rounded-[8px] bg-white border border-[#E5E7EB] text-[14px] font-semibold text-[#374151] active:scale-[0.98] transition-transform"
-                      data-testid="button-buddy-disconnect-cancel"
-                    >
-                      {t("buddyV2.buddyDisconnectCancel")}
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setShowBuddyDisconnectConfirm(true)}
-                  className="w-full flex items-center justify-between px-4 h-[42px] text-left active:bg-[#F9FAFB] transition-colors"
-                  data-testid="button-buddy-disconnect"
-                >
-                  <span className="text-[15px] font-semibold text-red-600">{t("buddyV2.buddyDisconnectLabel")}</span>
-                  <Link2Off className="w-[16px] h-[16px] text-red-400 flex-shrink-0" />
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={() => setShowBuddyDisconnectConfirm(true)}
+                className="w-full flex items-center justify-between px-4 h-[42px] text-left active:bg-[#F9FAFB] transition-colors"
+                data-testid="button-buddy-disconnect"
+              >
+                <span className="text-[15px] font-semibold text-red-600">{t("buddyV2.buddyDisconnectLabel")}</span>
+                <Link2Off className="w-[16px] h-[16px] text-red-400 flex-shrink-0" />
+              </button>
             </div>
+          )}
+
+          {/* BUDDY DISCONNECT BOTTOM SHEET */}
+          {activeBuddyRel && (
+            <BuddyDisconnectSheet
+              open={showBuddyDisconnectConfirm}
+              onClose={() => setShowBuddyDisconnectConfirm(false)}
+              onConfirm={async () => {
+                try {
+                  await revokeBuddyMutation.mutateAsync(activeBuddyRel.id);
+                  setShowBuddyDisconnectConfirm(false);
+                } catch {
+                  toast({ title: t("buddyV2.inviteError"), variant: "destructive" });
+                  setShowBuddyDisconnectConfirm(false);
+                }
+              }}
+              loading={revokeBuddyMutation.isPending}
+            />
           )}
 
           {/* HELP */}
@@ -2308,6 +2292,22 @@ export default function DashboardPage() {
       }
     }
   }, [buddyConns.data, buddyConns.isLoading, inBuddyMode]);
+
+  // Detect when the owner's connected buddy disconnects themselves → show toast
+  const prevOwnerStatusRef = useRef<string | null | undefined>(undefined);
+  useEffect(() => {
+    if (buddyConns.isLoading || !buddyConns.data) return;
+    const currentStatus = buddyConns.data.asOwner?.invite_status ?? null;
+    const prev = prevOwnerStatusRef.current;
+    if (prev === undefined) {
+      prevOwnerStatusRef.current = currentStatus;
+      return;
+    }
+    if (prev === "accepted" && currentStatus !== "accepted") {
+      toast({ title: t("buddyV2.ownerBuddyLeft") });
+    }
+    prevOwnerStatusRef.current = currentStatus;
+  }, [buddyConns.data, buddyConns.isLoading]);
 
   const profilesQuery = useQuery<SearchProfile[]>({
     queryKey: ["/search-profiles"],

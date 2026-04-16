@@ -2716,11 +2716,13 @@ export const nl: Record<string, any> = {
     authAccountExists: "Er bestaat al een account met dit e-mailadres. Log in.",
     authSignupFailed: "Account aanmaken mislukt",
     authLoginFailed: "Inloggen mislukt. Controleer je wachtwoord.",
-    buddyDisconnectLabel: "Koppeling verbreken",
-    buddyDisconnectTitle: "Je wilt de koppeling verbreken met {name}?",
+    buddyDisconnectLabel: "Stoppen als zoekbuddy",
+    buddyDisconnectTitle: "Stoppen als zoekbuddy",
+    buddyDisconnectDesc: "Je verliest toegang tot de zoekopdrachten en matches van deze gebruiker. Je kunt daarna zelf een zoekopdracht starten.",
     buddyDisconnectConfirm: "Koppeling verbreken",
     buddyDisconnectCancel: "Annuleren",
-    buddyDisconnected: "Je bent losgekoppeld als zoekbuddy",
+    buddyDisconnected: "Je bent niet langer gekoppeld als zoekbuddy",
+    ownerBuddyLeft: "Je zoekbuddy heeft de koppeling verbroken",
   },
 
   checkoutSuccess: {

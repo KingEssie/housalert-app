@@ -1,0 +1,189 @@
+We have just added the feature where a buddy can disconnect themselves from the owner.
+
+Now we need to properly finish this feature from a UX, product, and conversion perspective.
+
+IMPORTANT:
+This is not just a technical feature — this is a critical user transition moment.
+We must make it clear, safe, and use it as a conversion opportunity.
+
+==================================================
+1. BUDDY DISCONNECT UX (REPLACE CURRENT BUTTON)
+==================================================
+
+Do NOT allow a one-click disconnect.
+
+Replace the buddy-side disconnect action with a confirmation flow.
+
+UI requirements:
+
+When buddy clicks disconnect:
+
+Show a modal or bottom-sheet with:
+
+Title:
+"Stoppen als zoekbuddy"
+
+Description:
+"Je verliest toegang tot de zoekopdrachten en matches van deze gebruiker.
+Je kunt daarna zelf een zoekopdracht starten."
+
+Primary CTA (destructive styled):
+"Koppeling verbreken"
+
+Secondary CTA:
+"Annuleren"
+
+Styling:
+- Same style as logout confirmation modal
+- Clear visual hierarchy
+- Destructive action should have red tint
+
+==================================================
+2. OWNER SIDE UPDATE (REAL-TIME FEEDBACK)
+==================================================
+
+When the buddy disconnects themselves:
+
+Owner must immediately:
+- lose the buddy connection
+- return to empty buddy state
+
+Add feedback:
+- show a toast:
+"Je zoekbuddy heeft de koppeling verbroken"
+
+Ensure:
+- no stale UI
+- no need for manual refresh
+
+==================================================
+3. FORMER BUDDY TRANSITION (CRITICAL)
+==================================================
+
+After disconnect:
+
+The buddy becomes a normal standalone user.
+
+We already have a flag:
+ha_buddy_was_active
+
+Use it to show a one-time transition modal.
+
+Modal content:
+
+Title:
+"Je bent niet langer gekoppeld als zoekbuddy"
+
+Body:
+"Je kunt nu zelf op zoek naar een woning."
+
+CTA:
+"Start je eigen zoekopdracht"
+
+Behavior:
+- dismiss modal
+- redirect to dashboard/home
+- user is now in normal mode
+
+==================================================
+4. PAYWALL / CONVERSION LOGIC (VERY IMPORTANT)
+==================================================
+
+This is a key monetization moment.
+
+After buddy becomes standalone:
+
+If user has NO active subscription:
+
+When they try to:
+- create a search profile
+- start searching
+
+→ show paywall
+
+BUT also add a soft conversion hook directly after unlink:
+
+Option A (preferred):
+Show an extra section or button:
+
+"Start je eigen zoekopdracht"
+
+When clicked:
+→ go to search creation flow
+→ trigger paywall if needed
+
+Option B (optional enhancement):
+In the transition modal, subtly hint:
+
+"Start je eigen zoekopdracht"
+
+→ leads into funnel
+
+==================================================
+5. ACCESS CONTROL (SECURITY)
+==================================================
+
+After disconnect:
+
+Former buddy MUST NOT access:
+- owner search profiles
+- owner matches
+- owner reaction letter
+
+Ensure all endpoints:
+- /api/buddy/*
+return 403 if no active relationship
+
+==================================================
+6. CLEAN ROLE HANDLING
+==================================================
+
+Do NOT treat buddy as permanent role.
+
+Logic:
+
+IF buddy relation exists:
+→ user is in buddy mode
+
+IF no relation:
+→ user is normal user
+
+UI must react immediately after disconnect.
+
+==================================================
+7. QA CHECKLIST (MUST PASS)
+==================================================
+
+A. Buddy clicks disconnect
+- sees confirmation modal
+- cannot accidentally disconnect
+
+B. After confirm
+- buddy loses access to owner data
+- buddy lands in standalone experience
+
+C. Owner
+- immediately sees no buddy
+- sees correct empty state
+- sees toast feedback
+
+D. Former buddy
+- can create own search
+- hits paywall if needed
+
+E. Security
+- no owner data accessible after unlink
+
+==================================================
+8. OUTPUT
+==================================================
+
+Return:
+
+1. Files changed
+2. How confirmation modal is implemented
+3. How owner UI updates after buddy disconnect
+4. How transition modal works
+5. Where paywall is triggered
+6. Confirmation that buddy account is NOT deleted
+7. Confirmation that access to owner data is fully blocked
