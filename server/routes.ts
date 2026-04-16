@@ -282,6 +282,7 @@ export async function registerRoutes(
           log(`[BUDDY INVITE] Lang lookup failed — using lang=${lang}`);
         }
 
+
         log(`[BUDDY INVITE] Sending email — to=${email} inviter="${inviterName}" lang=${lang} token=${result.relation.invite_token?.substring(0, 8)}...`);
         try {
           const emailResult = await sendBuddyInvitationEmail(email, inviterName, lang, result.relation.invite_token);
