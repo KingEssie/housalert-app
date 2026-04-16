@@ -235,8 +235,8 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
         </div>
         <div className="flex flex-col items-center text-center py-6 px-2">
           <img src={EMPTY_STATE_IMAGES.createSearch} alt="" className="w-[72px] max-h-[72px] h-auto mb-5 object-contain" draggable={false} />
-          <p className="text-[16px] font-bold text-[#000000] mb-1" data-testid="text-empty-title">Maak je eerste zoekprofiel aan</p>
-          <p className="text-[14px] text-[#334855] mb-5 leading-relaxed max-w-[260px]" data-testid="text-empty-subtitle">Stel je voorkeuren in en ontvang direct nieuwe woningen.</p>
+          <p className="text-[16px] font-bold text-[#000000] mb-1" data-testid="text-empty-title">{t("searchProfiles.emptyTitle")}</p>
+          <p className="text-[14px] text-[#334855] mb-5 leading-relaxed max-w-[260px]" data-testid="text-empty-subtitle">{t("searchProfiles.emptySubtitle")}</p>
           <button
             onClick={() => navigate("/dashboard/searches/new")}
             className="w-full h-[48px] rounded-full bg-ha-primary text-white font-semibold text-[16px] hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"

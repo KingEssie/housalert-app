@@ -1,0 +1,143 @@
+Unify the owner and buddy disconnect UX into one consistent premium pattern.
+
+Right now:
+- Buddy disconnect uses a proper bottom sheet (BuddyDisconnectSheet)
+- Owner disconnect (zoekbuddy.tsx) still uses an inline confirmation card
+
+This is inconsistent and feels less polished.
+
+==================================================
+GOAL
+==================================================
+
+Make BOTH flows use the SAME bottom-sheet confirmation UX.
+
+Owner disconnect should feel identical to buddy disconnect:
+- Same interaction pattern
+- Same visual hierarchy
+- Same safety (no accidental taps)
+- Same animation style
+
+==================================================
+TASKS
+==================================================
+
+1. REMOVE inline confirmation card (owner side)
+
+File:
+client/src/pages/zoekbuddy.tsx
+
+Remove:
+- The inline red bordered confirmation block (border-[#FCA5A5])
+- Any conditional UI based on showUnlinkConfirm rendering inside the page
+
+Keep only a clean management view + trigger button.
+
+--------------------------------------------------
+
+2. REUSE existing bottom sheet component
+
+Buddy already uses:
+client/src/components/ui/buddy-disconnect-sheet.tsx
+
+Create a reusable version:
+- Either generalize BuddyDisconnectSheet
+OR
+- Create OwnerDisconnectSheet based on the same structure
+
+--------------------------------------------------
+
+3. Implement OwnerDisconnectSheet
+
+Behavior:
+- Triggered by clicking "Koppeling verbreken" button
+- Appears as a bottom sheet with backdrop
+- Dismissable by tapping outside
+
+--------------------------------------------------
+
+4. Copy (owner version)
+
+Use separate i18n keys (do NOT reuse buddy keys)
+
+Add new keys:
+
+NL:
+ownerDisconnectTitle: "Zoekbuddy ontkoppelen"
+ownerDisconnectDesc: "Je zoekbuddy verliest toegang tot jouw zoekopdrachten en reactiebrief. Het account blijft bestaan."
+ownerDisconnectConfirm: "Koppeling verbreken"
+ownerDisconnectCancel: "Annuleren"
+
+EN:
+ownerDisconnectTitle: "Disconnect search buddy"
+ownerDisconnectDesc: "Your buddy will lose access to your searches and application letter. Their account will remain active."
+ownerDisconnectConfirm: "Disconnect"
+ownerDisconnectCancel: "Cancel"
+
+DE:
+ownerDisconnectTitle: "Suchbuddy trennen"
+ownerDisconnectDesc: "Dein Suchbuddy verliert den Zugriff auf deine Suchprofile und dein Anschreiben. Das Konto bleibt bestehen."
+ownerDisconnectConfirm: "Verbindung trennen"
+ownerDisconnectCancel: "Abbrechen"
+
+--------------------------------------------------
+
+5. Hook up action
+
+On confirm:
+- Call existing mutation: POST /api/buddy/revoke
+- Use same relationId
+
+On success:
+- Close sheet
+- Invalidate ['connections']
+- UI returns to empty invite state
+
+--------------------------------------------------
+
+6. Add success feedback (NEW)
+
+After successful unlink:
+Show toast:
+
+NL: "Koppeling verbroken"
+EN: "Buddy disconnected"
+DE: "Verbindung getrennt"
+
+--------------------------------------------------
+
+7. Visual consistency requirements
+
+Bottom sheet must match buddy version:
+- backdrop: bg-black/40
+- rounded top corners
+- spacing identical
+- primary button red (#EF4444)
+- secondary neutral button
+- slide-up animation
+
+--------------------------------------------------
+
+8. DO NOT change backend logic
+
+- Keep invite_status = 'revoked'
+- Do not delete records
+- Do not modify endpoints
+
+==================================================
+EXPECTED RESULT
+==================================================
+
+- Owner and buddy both use identical bottom sheet UX
+- No inline confirmation cards remain
+- Interaction feels consistent across the app
+- Safer (no accidental clicks)
+- More premium experience
+
+==================================================
+IMPORTANT
+==================================================
+
+Do not introduce regressions:
+- Pending invite flow must still work
+- Invite/share UI must remain unchanged when no buddy is connected
