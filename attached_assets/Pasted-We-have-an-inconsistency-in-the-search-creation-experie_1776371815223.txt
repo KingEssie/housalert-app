@@ -1,0 +1,127 @@
+We have an inconsistency in the search creation experience.
+
+IMPORTANT:
+Do NOT do a broad redesign first.
+First identify and unify the flow architecture.
+
+GOAL:
+There must be exactly ONE canonical search creation flow in the app, with ONE consistent UI/UX design.
+All entry points must use the same flow and the same component structure.
+
+==================================================
+PROBLEM
+==================================================
+
+Right now, different users/entry points see different search creation flows.
+
+Observed:
+- In onboarding and from the owner account, the search creation flow has the correct newer design
+- But when a former buddy continues as a standalone user and starts their own search, they see a different / older / less polished flow
+
+This suggests one of the following:
+1. Different routes are being used
+2. Different components are being rendered
+3. A route has multiple UI branches depending on state
+4. An older flow is still reachable
+
+==================================================
+TASK 1 — MAP ALL ENTRY POINTS
+==================================================
+
+Identify every entry point in the app that can lead to "create a search profile".
+
+At minimum inspect:
+- Home dashboard CTA(s)
+- Owner search profile add button
+- Onboarding flow
+- Former buddy transition CTA after unlink
+- Any direct route like /dashboard/searches/new
+- Any onboarding/setup route that eventually creates a search
+- Any hidden or legacy route still in router config
+
+For each entry point, report:
+- exact route navigated to
+- exact component/page rendered
+- whether it uses the new design or old design
+
+==================================================
+TASK 2 — IDENTIFY THE CANONICAL FLOW
+==================================================
+
+Determine which search creation flow is the intended newer premium flow (the one already seen in onboarding / owner account).
+
+That flow must become the ONLY canonical implementation.
+
+Return:
+- canonical route
+- canonical page/component
+- canonical sub-steps if applicable
+
+==================================================
+TASK 3 — REMOVE / BYPASS OLD FLOW
+==================================================
+
+Any old or alternate search creation flow must be:
+- removed from normal navigation
+OR
+- redirected into the canonical flow
+OR
+- refactored so it renders the same canonical UI
+
+Do not leave parallel versions alive.
+
+==================================================
+TASK 4 — FORMER BUDDY MUST USE SAME FLOW
+==================================================
+
+The former buddy standalone activation flow must use the exact same search creation UX as normal users / owner users.
+
+That means:
+- same screens
+- same layout
+- same field styling
+- same header design
+- same spacing
+- same buttons
+- same progress behavior
+
+No downgraded or legacy flow for ex-buddies.
+
+==================================================
+TASK 5 — UNIFY VISUAL DESIGN
+==================================================
+
+If there are currently multiple search-creation components that overlap in purpose:
+- consolidate them
+- or have one wrapper call the same shared flow component
+
+The search creation experience must feel identical regardless of where the user came from.
+
+==================================================
+TASK 6 — QA CHECK
+==================================================
+
+After unifying, verify these exact paths all land in the SAME flow:
+
+1. Owner from home/dashboard → add search profile
+2. Owner from onboarding/setup → search creation
+3. Former buddy after unlink → "Start je eigen zoekopdracht"
+4. Any direct route /dashboard/searches/new
+5. Any CTA from account or dashboard that starts search creation
+
+For each, confirm:
+- same route or same underlying flow
+- same visual design
+- same field layout
+- no legacy screen appears
+
+==================================================
+OUTPUT
+==================================================
+
+Return:
+1. all entry points found
+2. route + component used by each entry point
+3. which one was the old/incorrect flow
+4. what was changed to unify them
+5. confirmation that all paths now use the same canonical search creation flow
