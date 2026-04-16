@@ -50,7 +50,7 @@ export default function ApplicationLetterPage() {
   const { toast } = useToast();
   const { t, locale } = useTranslation();
   const buddyConns = useBuddyConnections();
-  const isBuddy = isBuddyMode(buddyConns.data);
+  const isBuddy = buddyConns.isLoading ? false : isBuddyMode(buddyConns.data);
 
   const returnPath = (() => {
     try {
@@ -86,7 +86,7 @@ export default function ApplicationLetterPage() {
       if (!res.ok) throw new Error("Failed");
       return res.json();
     },
-    enabled: !!session?.access_token && !isBuddy,
+    enabled: !!session?.access_token && !buddyConns.isLoading && !isBuddy,
   });
 
   const { data: ownerProfileData, isLoading: ownerLoading } = useQuery<{ application_template: string | null; first_name: string | null }>({
@@ -98,10 +98,11 @@ export default function ApplicationLetterPage() {
       if (!res.ok) return { application_template: null, first_name: null };
       return res.json();
     },
-    enabled: !!session?.access_token && isBuddy,
+    enabled: !!session?.access_token && !buddyConns.isLoading && isBuddy,
   });
 
   useEffect(() => {
+    if (buddyConns.isLoading) return;
     if (isBuddy) {
       if (ownerProfileData !== undefined && !initialized) {
         const existing = ownerProfileData.application_template;
@@ -130,7 +131,7 @@ export default function ApplicationLetterPage() {
       }
       setInitialized(true);
     }
-  }, [profileData, ownerProfileData, initialized, isBuddy]);
+  }, [profileData, ownerProfileData, initialized, isBuddy, buddyConns.isLoading]);
 
   function generatePersonalLetter(): string {
     const data: OnboardingLetterData = {

@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useLocation, useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
+import { useSubscription } from "@/lib/subscription";
 import { createSearchProfile, updateSearchProfile, getSearchProfile, getSearchProfiles } from "@/lib/search-profiles";
 import { supabase } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
@@ -117,6 +118,7 @@ export default function NewSearchPage() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const { t } = useTranslation();
+  const sub = useSubscription();
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [locationData, setLocationData] = useState<LocationData>({ ...DEFAULT_BERLIN });
@@ -143,6 +145,13 @@ export default function NewSearchPage() {
     queryFn: getSearchProfiles,
     enabled: !!user,
   });
+
+  useEffect(() => {
+    if (loading || sub.loading) return;
+    if (user && !sub.isActive) {
+      navigate("/paywall");
+    }
+  }, [loading, sub.loading, sub.isActive, user, navigate]);
 
   useEffect(() => {
     if (!editId || editLoaded) return;
@@ -658,7 +667,7 @@ function Step2Requirements({
         <section>
           <label className="text-[15px] font-medium text-[#111111] mb-3 flex items-center gap-2.5">
             <span className="w-5 h-5 flex items-center justify-center text-[#334855]"><Euro className="w-[18px] h-[18px]" /></span>
-            {t("onboarding.filters.rentLabel") || "Huurprijs"}
+            {}
           </label>
           <DualSlider
             min={0}

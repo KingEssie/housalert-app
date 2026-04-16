@@ -1,0 +1,136 @@
+Update the former-buddy post-unlink flow to use the normal standalone onboarding / activation flow instead of sending them directly into a free search flow or immediately into a hard paywall.
+
+IMPORTANT:
+We are changing the intended product behavior.
+
+CURRENT DIRECTION TO REPLACE:
+After unlink, former buddy clicks "Start je eigen zoekopdracht" and is pushed directly toward search creation / paywall.
+
+NEW REQUIRED BEHAVIOR:
+After unlink, the former buddy should become a normal standalone user and enter the normal onboarding / activation flow for independent users.
+
+==================================================
+GOAL
+==================================================
+
+When a buddy is disconnected (by owner or by themselves), they should:
+
+1. keep their account
+2. lose access to owner data
+3. become a normal standalone user
+4. be guided through the normal onboarding / activation flow
+5. see known account/profile fields prefilled
+6. still be able to edit those fields
+7. only hit the paywall when they reach the point where an active subscription is actually required
+
+==================================================
+REQUIRED FLOW
+==================================================
+
+After unlink:
+- show the existing former-buddy transition modal
+- keep title/body as is
+- CTA remains:
+  "Start je eigen zoekopdracht"
+
+BUT:
+The CTA must no longer send the user directly into a raw search creation flow.
+
+Instead:
+- send the user into the normal standalone onboarding / activation flow
+
+Use the same flow structure normal users go through when preparing their account for searching.
+
+==================================================
+PREFILLED DATA
+==================================================
+
+All data already known for the former buddy should be prefilled where applicable:
+- first name
+- last name
+- email
+- phone number
+- birth date
+- gender
+- language
+- any personal profile data already belonging to the buddy account
+
+IMPORTANT:
+These fields must remain editable.
+Do NOT lock them.
+
+==================================================
+DO NOT CARRY OVER OWNER DATA
+==================================================
+
+After unlink, the former buddy must NOT inherit or continue using owner data such as:
+- owner search profiles
+- owner reaction letter
+- owner housing preferences
+- owner matches
+
+Only the former buddy's own account/profile data may remain.
+
+==================================================
+PAYWALL LOGIC
+==================================================
+
+Do NOT hard-stop the former buddy immediately after unlink.
+
+Instead:
+- let them go through the normal standalone activation flow
+- only trigger paywall / subscription gate at the same point where a normal standalone user would need a subscription
+- for example: when activating or saving their own search profile, or when entering premium-only search functionality
+
+The former buddy should not get a special broken shortcut or free bypass.
+
+==================================================
+ROUTING
+==================================================
+
+Inspect the current former-buddy CTA destination and replace it with the correct standalone onboarding/activation entry point.
+
+Make sure:
+- no loops
+- no redirect to owner-only routes
+- no broken not-found behavior
+
+==================================================
+QA REQUIRED
+==================================================
+
+Verify these cases:
+
+1. Owner disconnects buddy
+- buddy sees the "not linked anymore" modal
+- CTA sends them into normal standalone onboarding/activation flow
+
+2. Buddy disconnects themselves
+- same standalone onboarding/activation flow starts
+
+3. Prefilled values appear
+- name/email/etc are filled in when already known
+
+4. Prefilled values are editable
+- user can still change them
+
+5. Owner data is gone
+- no owner search profiles
+- no owner reaction letter
+- no owner preferences
+
+6. Paywall only appears at the correct standalone premium step
+- not immediately on modal CTA
+- not bypassed entirely
+
+==================================================
+OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. which route the former buddy now enters after unlink
+3. which fields are prefilled
+4. how editability is preserved
+5. confirmation that owner data is no longer carried over
+6. where the paywall now triggers in the standalone flow

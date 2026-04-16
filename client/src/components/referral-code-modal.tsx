@@ -26,7 +26,7 @@ export function ReferralCodeModal({ open, onClose, code, loading }: ReferralCode
     try {
       await navigator.clipboard.writeText(referralUrl);
       setCopied(true);
-      toast({ title: "Link gekopieerd", description: t("referral.copiedDesc") });
+      toast({ title: t("referral.copied"), description: t("referral.copiedDesc") });
       setTimeout(() => setCopied(false), 2000);
     } catch {
       toast({ title: t("referral.copyFailed"), description: t("referral.copyFailedDesc"), variant: "destructive" });

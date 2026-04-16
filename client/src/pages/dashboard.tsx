@@ -2422,7 +2422,7 @@ export default function DashboardPage() {
             <p className="text-[12px] text-amber-700">{t("subscription.pastDue.desc")}</p>
           </div>
           <button
-            onClick={() => navigate("/subscription")}
+            onClick={() => navigate("/account/subscription")}
             className="px-3 py-1.5 rounded-full bg-amber-600 text-white text-[12px] font-semibold flex-shrink-0 active:scale-[0.97] transition-transform"
             data-testid="button-fix-payment"
           >

@@ -29,9 +29,9 @@ export default function OnboardingPassword() {
 
   const city = params.get("city") || "";
   const radiusKm = params.get("radiusKm") || "";
-  const minPrice = params.get("minPrice") || "0";
-  const maxPrice = params.get("maxPrice") || "0";
-  const minRooms = params.get("minRooms") || "0";
+  const minPrice = params.ge;
+  const maxPrice = params.ge;
+  const minRooms = params.ge;
 
   const [firstName, setFirstName] = useState(params.get("firstName") || "");
   const [lastName, setLastName] = useState(params.get("lastName") || "");
@@ -47,17 +47,17 @@ export default function OnboardingPassword() {
   const submittingRef = useRef(false);
 
   async function saveSearchProfile(userId: string) {
-    const spMinPrice = parseInt(params.get("minPrice") || "0") || 0;
-    const spMaxPrice = parseInt(params.get("maxPrice") || "0") || 0;
-    const bedroomsMin = parseInt(params.get("minRooms") || "0") || 0;
-    const sizeMin = parseInt(params.get("minSize") || "0") || 0;
+    const spMinPrice = parseInt(params.ge) || 0;
+    const spMaxPrice = parseInt(params.ge) || 0;
+    const bedroomsMin = parseInt(params.ge) || 0;
+    const sizeMin = parseInt(params.ge) || 0;
     const furnished = params.get("furnished") || undefined;
     const propertyTypes = params.get("propertyTypes")?.split(",").filter(Boolean) || undefined;
     const locationMode = params.get("locationMode") as any || undefined;
     const districts = params.get("districts")?.split(",").filter(Boolean) || undefined;
-    const spRadiusKm = parseInt(params.get("radiusKm") || "0") || undefined;
-    const lat = parseFloat(params.get("lat") || "0") || undefined;
-    const lng = parseFloat(params.get("lng") || "0") || undefined;
+    const spRadiusKm = parseInt(params.ge) || undefined;
+    const lat = parseFloat(params.ge) || undefined;
+    const lng = parseFloat(params.ge) || undefined;
     const amenities = params.get("amenities")?.split(",").filter(Boolean) || undefined;
     const sendUnclear = params.get("sendUnclear") !== "false";
     const priceFlexible = params.get("priceFlexible") === "true";
@@ -106,9 +106,9 @@ export default function OnboardingPassword() {
 
       if (!res.ok) {
         const msg = result.error === "user_exists"
-          ? (t("auth.signup.emailExists") || "Diese E-Mail wird bereits verwendet.")
-          : (result.message || result.error || t("auth.signup.failed") || "Registrierung fehlgeschlagen.");
-        toast({ title: t("auth.signup.failed") || "Fehler", description: msg, variant: "destructive" });
+          ? t("common.authAccountExists")
+          : (result.message || result.error || t("auth.signup.failed"));
+        toast({ title: t("auth.signup.failed"), description: msg, variant: "destructive" });
         setLoading(false);
         submittingRef.current = false;
         return;
@@ -120,7 +120,7 @@ export default function OnboardingPassword() {
       });
 
       if (signInError) {
-        toast({ title: t("auth.signup.failed") || "Fehler", description: signInError.message, variant: "destructive" });
+        toast({ title: , description: signInError.message, variant: "destructive" });
         setLoading(false);
         submittingRef.current = false;
         return;
@@ -194,7 +194,7 @@ export default function OnboardingPassword() {
         navigate("/onboarding/setup");
       }
     } catch (err: any) {
-      toast({ title: t("common.error") || "Fehler", description: err.message, variant: "destructive" });
+      toast({ title: , description: err.message, variant: "destructive" });
     } finally {
       setLoading(false);
       submittingRef.current = false;
@@ -386,12 +386,12 @@ export default function OnboardingPassword() {
                 data-testid="button-show-referral"
               >
                 <Gift className="w-4 h-4" />
-                {t("referral.inputLabel") || "Empfehlungscode eingeben"}
+                {}
               </button>
             ) : (
               <div>
                 <label className="text-[14px] font-semibold mb-1.5 block" style={{ color: OBW.text }}>
-                  {t("referral.inputLabel") || "Empfehlungscode"}
+                  {}
                 </label>
                 <input
                   type="text"
@@ -468,14 +468,14 @@ export default function OnboardingPassword() {
     <div className="flex flex-col gap-5">
       <div>
         <label className="text-[15px] font-semibold mb-2 block text-[#111111]">
-          {t("onboarding.password.label") || "Wachtwoord"}
+          {}
         </label>
         <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder={t("onboarding.password.placeholder") || "Minimaal 8 tekens"}
+            placeholder={}
             className="w-full h-[56px] border border-[#D1D5DB] rounded-[8px] bg-white px-4 pr-12 text-[15px] text-[#111111] placeholder:text-[#9CA3AF] outline-none transition-all focus:border-ha-primary"
             autoFocus
             autoComplete="new-password"
@@ -531,18 +531,18 @@ export default function OnboardingPassword() {
           data-testid="button-show-referral"
         >
           <Gift className="w-4 h-4" />
-          {t("referral.inputLabel") || "Aanbevelingscode invoeren"}
+          {}
         </button>
       ) : (
         <div>
           <label className="text-[14px] font-medium mb-1.5 block text-[#334855]">
-            {t("referral.inputLabel") || "Aanbevelingscode"}
+            {}
           </label>
           <div className="relative">
             <Gift className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
             <input
               type="text"
-              placeholder={t("referral.inputPlaceholder") || "ABC123"}
+              placeholder={}
               value={referralCode}
               onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
               className="w-full h-[56px] pl-12 pr-4 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
@@ -551,7 +551,7 @@ export default function OnboardingPassword() {
             />
           </div>
           <p className="text-[12px] mt-1 ml-1 text-[#334855]">
-            {t("referral.inputHelper") || "Optioneel"}
+            {}
           </p>
         </div>
       )}
@@ -561,16 +561,16 @@ export default function OnboardingPassword() {
   const footerTerms = (
     <div className="text-center">
       <p className="text-[12px] leading-relaxed text-[#334855]">
-        {t("onboarding.password.terms") || "Met registratie accepteer je onze voorwaarden en privacybeleid."}
+        {}
       </p>
       <p className="text-[14px] mt-2 text-[#334855]">
-        {t("auth.signup.hasAccount") || "Heb je al een account?"}{" "}
+        {}{" "}
         <button
           onClick={() => navigate("/")}
           className="font-medium hover:underline text-ha-primary"
           data-testid="link-login"
         >
-          {t("auth.signup.loginLink") || "Inloggen"}
+          {}
         </button>
       </p>
     </div>
@@ -581,14 +581,14 @@ export default function OnboardingPassword() {
       flowTitle={t("onboarding.accountCreate.flowTitle")}
       currentStep={3}
       totalSteps={3}
-      stepTitle={t("onboarding.password.title") || "Kies een wachtwoord"}
-      stepDescription={t("onboarding.password.subtitle") || "Minimaal 6 tekens om je account te beveiligen."}
+      stepTitle={}
+      stepDescription={}
       onBack={handleBack}
       onNext={handleCreateAccount}
       onClose={handleClose}
       nextLabel={loading
-        ? (t("onboarding.password.creating") || "Wordt aangemaakt...")
-        : (t("onboarding.password.cta") || "Account aanmaken")}
+        ? ()
+        : ()}
       nextDisabled={!canSubmit}
       saving={loading}
       footerExtra={footerTerms}

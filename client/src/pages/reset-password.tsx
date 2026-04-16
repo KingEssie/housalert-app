@@ -151,7 +151,7 @@ export default function ResetPasswordPage() {
           className="text-[26px] font-semibold text-[#111111] leading-[1.15] tracking-[-0.03em] mb-3 text-center"
           data-testid="text-reset-title"
         >
-          Wachtwoord
+          {t("resetPassword.title")}
         </h1>
 
         <p className="text-[15px] text-ha-text-muted leading-[1.55] text-center max-w-[340px] mx-auto mb-8">
@@ -161,14 +161,14 @@ export default function ResetPasswordPage() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div>
             <label className="block text-[15px] font-semibold text-[#111111] mb-2">
-              Wachtwoord
+              {t("resetPassword.newPassword")}
             </label>
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Minimaal 8 tekens"
+                placeholder={t("changePassword.newPlaceholder")}
                 className={INPUT_CLASS}
                 autoComplete="new-password"
                 autoFocus
@@ -190,7 +190,7 @@ export default function ResetPasswordPage() {
 
           <div>
             <label className="block text-[15px] font-semibold text-[#111111] mb-2">
-              Wachtwoord bevestigen
+              {t("resetPassword.confirmPassword")}
             </label>
             <div className="relative">
               <input
@@ -215,7 +215,7 @@ export default function ResetPasswordPage() {
             </div>
             {mismatch && (
               <p className="text-[13px] mt-2 text-[#E11D48]" data-testid="text-error-mismatch">
-                Wachtwoorden komen niet overeen
+                {t("resetPassword.mismatch")}
               </p>
             )}
           </div>

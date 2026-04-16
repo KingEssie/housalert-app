@@ -1,0 +1,117 @@
+Fix the issues found in the Buddy Flow QA before continuing with Scenario D.
+
+IMPORTANT:
+Do not do broad unrelated refactors.
+Only fix the concrete bugs found in QA.
+
+==================================================
+BUG 1 — RESTRICTED ROUTES SOMETIMES GO TO 404
+==================================================
+
+Expected behavior:
+When a buddy tries to access restricted owner-only pages, they should always be redirected cleanly to /home (or the normal dashboard home), never to a "Pagina niet gevonden" screen.
+
+Current issue:
+- /dashboard/searches/new redirects correctly to home
+- /subscription and /housing-situation currently go to a not-found page instead
+
+Task:
+- inspect all buddy-protected routes
+- make route protection consistent
+- ensure restricted buddy access always redirects to /home
+- remove any path mismatch or incorrect route names causing 404
+
+Return:
+- which routes were wrong
+- why they fell through to not-found
+- how this was fixed
+
+==================================================
+BUG 2 — BUDDY CAN STILL EDIT THE APPLICATION LETTER
+==================================================
+
+Expected behavior:
+Buddy may only view the owner's reaction letter in read-only mode.
+Buddy must NOT be able to:
+- edit the text
+- save changes
+- trigger AI generation
+- access editable controls
+
+Current issue:
+Buddy can still react and can also edit the application letter, which is not allowed.
+
+Task:
+- inspect all application-letter pages/components
+- remove all edit capabilities for buddy mode
+- ensure buddy only sees read-only content
+- block save / mutate endpoints if needed as backend safety
+
+Return:
+- where the edit capability was still leaking through
+- what was changed in UI
+- whether backend protection was added
+
+==================================================
+BUG 3 — EX-BUDDY CAN USE OWN FLOW FOR FREE
+==================================================
+
+Expected behavior:
+When a former buddy becomes a normal standalone user and clicks:
+"Start je eigen zoekopdracht"
+they should be sent into the normal search creation flow,
+BUT if they do not have an active subscription, the paywall / SubscriptionGate must stop them.
+
+Current issue:
+Former buddy can continue and use the product for free.
+
+Task:
+- inspect the CTA flow after unlink
+- inspect /dashboard/searches/new and the subscription gate logic
+- ensure former buddies without subscription hit the paywall before they can actually use the search creation flow
+- do not allow free unrestricted usage
+
+Return:
+- why the paywall did not trigger
+- what was changed
+- where the subscription check now occurs
+
+==================================================
+BUG 4 — RE-INVITING THE SAME BUDDY
+==================================================
+
+Expected behavior:
+If the same buddy is invited again after unlink:
+- invite can be sent again
+- since that buddy account already exists, clicking the invite email should go to the LOGIN variant, not signup
+
+Task:
+- verify that this is now the actual behavior
+- if not, fix it
+- ensure invite-info correctly returns account_exists = true for already registered buddies
+- ensure invite accept route renders login flow for them
+
+Return:
+- whether this flow was already correct
+- if not, what was fixed
+
+==================================================
+QA RETEST CHECKLIST
+==================================================
+
+After fixes, verify:
+
+1. Buddy tries /subscription → redirected to /home, no 404
+2. Buddy tries /housing-situation → redirected to /home, no 404
+3. Buddy opens reaction letter → read-only only, no edit possible
+4. Former buddy clicks "Start je eigen zoekopdracht" without subscription → paywall triggers
+5. Re-invited existing buddy clicks invite link → sees login-and-accept flow, not signup
+
+==================================================
+OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. bug-by-bug explanation
+3. confirmation of all 5 retest items

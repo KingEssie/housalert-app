@@ -702,7 +702,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
               className={`w-full h-[56px] px-4 pr-10 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] text-[#111111] appearance-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all ${!personalData.gender ? "text-[#334855] opacity-55" : ""}`}
               data-testid="input-gender"
             >
-              <option value="">{t("onboardingFlow.letterPersonal.genderPlaceholder") || "Selecteer geslacht"}</option>
+              <option value="">{t("onboardingFlow.letterPersonal.genderPlaceholder")}</option>
               {genderOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
@@ -777,7 +777,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
               className={`w-full h-[56px] px-4 pr-10 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] text-[#111111] appearance-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all ${!livingData.livingWith ? "text-[#334855] opacity-55" : ""}`}
               data-testid="select-living-with"
             >
-              <option value="">{t("onboardingFlow.letterLiving.selectPlaceholder") || "Selecteer..."}</option>
+              <option value="">{t("onboardingFlow.letterLiving.selectPlaceholder")}</option>
               {livingOptions.map((o) => (
                 <option key={o.value} value={o.value}>{o.label}</option>
               ))}
@@ -797,7 +797,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
               className={`w-full h-[56px] px-4 pr-10 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] text-[#111111] appearance-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all ${!livingData.workStatus ? "text-[#334855] opacity-55" : ""}`}
               data-testid="select-work-status"
             >
-              <option value="">{t("onboardingFlow.letterLiving.selectPlaceholder") || "Selecteer..."}</option>
+              <option value="">{t("onboardingFlow.letterLiving.selectPlaceholder")}</option>
               {workOptions.map((o) => (
                 <option key={o.value} value={o.value}>{o.label}</option>
               ))}
@@ -817,7 +817,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
               className={`w-full h-[56px] px-4 pr-10 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] text-[#111111] appearance-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all ${!livingData.moveReason ? "text-[#334855] opacity-55" : ""}`}
               data-testid="select-move-reason"
             >
-              <option value="">{t("onboardingFlow.letterLiving.selectPlaceholder") || "Selecteer..."}</option>
+              <option value="">{t("onboardingFlow.letterLiving.selectPlaceholder")}</option>
               {moveOptions.map((o) => (
                 <option key={o.value} value={o.value}>{o.label}</option>
               ))}
