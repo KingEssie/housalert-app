@@ -1,0 +1,149 @@
+Adjust the former-buddy post-unlink flow to follow Option B.
+
+IMPORTANT:
+The current implementation is close, but still not correct for the intended product behavior.
+
+CURRENT IMPLEMENTATION:
+After unlink, former buddy clicks CTA and is routed to:
+/onboarding/setup?from=buddy_unlinked
+
+The flow currently starts directly at the paywall step.
+This is NOT what we want.
+
+==================================================
+NEW REQUIRED BEHAVIOR
+==================================================
+
+Former buddies should enter the NORMAL standalone setup / onboarding flow first.
+
+That means:
+1. They keep their account
+2. They lose access to owner data
+3. They become a normal standalone user
+4. They go through the normal standalone setup flow
+5. Known fields are prefilled
+6. Fields remain editable
+7. The paywall should appear only later, at the point where a normal standalone user actually needs premium access
+
+DO NOT send them directly to the paywall step.
+
+==================================================
+DESIRED FLOW
+==================================================
+
+After unlink modal CTA ("Start je eigen zoekopdracht"):
+
+Route the former buddy into the same standalone onboarding/setup flow a normal user would follow before activating their own housing search.
+
+Examples of allowed early steps:
+- personal details
+- housing situation
+- application letter
+- search preferences
+- search setup
+
+The exact order should match the normal standalone flow already used in the app.
+
+The former buddy should NOT skip straight to paywall.
+
+==================================================
+PREFILLED DATA
+==================================================
+
+Prefill any data already known from the former buddy's own account/profile:
+- first name
+- last name
+- email
+- phone number
+- birth date
+- gender
+- language
+- living situation
+- work situation
+- move reason
+- monthly income
+- pets
+- own application template if it exists
+
+All prefilled fields must remain editable.
+
+==================================================
+OWNER DATA MUST NOT CARRY OVER
+==================================================
+
+Former buddy must not inherit:
+- owner search profiles
+- owner application letter
+- owner housing preferences
+- owner matches
+
+Only the former buddy's own data may remain.
+
+==================================================
+PAYWALL LOGIC
+==================================================
+
+The paywall must now trigger at the same stage where a normal standalone user would need premium.
+
+Examples:
+- when activating or saving their first own search profile
+- when entering premium-only search functionality
+- wherever the standard standalone subscription gate already belongs
+
+The modal CTA itself must NOT jump directly to paywall.
+
+==================================================
+TECHNICAL ADJUSTMENT
+==================================================
+
+Inspect the current /onboarding/setup?from=buddy_unlinked implementation.
+
+Right now:
+- from=buddy_unlinked skips the post_paywall_onboarding_completed redirect
+- but still starts at the paywall step
+
+Change this so that:
+- the former buddy enters the start of the normal standalone setup flow
+- not the paywall step
+- while still preventing bad redirects back to /home
+
+Make sure the former buddy can complete the flow like a normal user.
+
+==================================================
+QA REQUIRED
+==================================================
+
+Verify all of these:
+
+1. Owner disconnects buddy
+- buddy sees unlink modal
+- CTA sends them into standalone setup flow
+- not directly to paywall
+
+2. Buddy disconnects themselves
+- same standalone setup flow starts
+- not directly to paywall
+
+3. Prefilled values appear where available
+- and are editable
+
+4. Owner data is completely gone
+
+5. Paywall appears only later at the normal premium activation point
+
+6. No redirect loops
+7. No accidental routing to /home before setup is done
+8. No free bypass of premium-only search activation
+
+==================================================
+OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. what route and first screen the former buddy now sees after unlink
+3. how you changed the flow so it starts at the normal setup beginning instead of paywall
+4. which fields are prefilled
+5. confirmation they are editable
+6. confirmation owner data is excluded
+7. exact point where paywall now triggers

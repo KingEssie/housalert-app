@@ -1121,9 +1121,11 @@ export default function OnboardingSetup() {
           if (d.push_test_completed === true) setPushState("granted");
           else if (d.push_test_completed === false) setPushState("denied");
 
-          // Former buddies starting their own standalone flow always begin at paywall
+          // Former buddies skip the paywall screen in setup; they start at "welcome"
+          // and encounter the subscription gate later in new-search.tsx
           if (fromBuddyUnlinked) {
-            setStep("paywall");
+            saveProfileField({ paywall_completed: true, onboarding_current_step: "welcome" });
+            setStep("welcome");
           } else {
             if (d.post_paywall_onboarding_completed) {
               navigate("/home");
