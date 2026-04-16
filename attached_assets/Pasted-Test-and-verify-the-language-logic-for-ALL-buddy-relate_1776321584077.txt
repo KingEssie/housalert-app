@@ -1,0 +1,99 @@
+Test and verify the language logic for ALL buddy-related emails.
+
+IMPORTANT:
+Do not assume it is correct.
+Inspect the actual code paths and report what is REALLY happening right now.
+
+GOAL:
+Determine whether each email type is rendered in the correct language for the actual recipient.
+
+==================================================
+EMAIL TYPES TO CHECK
+==================================================
+
+1. Buddy invitation email
+2. Buddy disconnection email
+3. Match alert emails sent to buddy users
+
+==================================================
+WHAT TO VERIFY FOR EACH EMAIL TYPE
+==================================================
+
+For each email type, report:
+
+1. Which file/function sends the email
+2. Which recipient gets the email
+3. Which language is used to render the template
+4. Where that language is determined in code
+5. Whether it uses:
+   - recipient language
+   - owner language
+   - browser/request language
+   - fallback language
+6. Whether this is correct or incorrect
+7. If incorrect, explain the exact bug
+
+==================================================
+TEST SCENARIOS
+==================================================
+
+Use these logical scenarios while inspecting:
+
+Scenario A:
+- Owner language = Dutch
+- Buddy language = German
+
+Scenario B:
+- Owner language = English
+- Buddy language = Dutch
+
+Scenario C:
+- Buddy has no saved language in user_profile_data
+
+For each scenario, explain what language each email would currently use.
+
+==================================================
+SPECIAL FOCUS
+==================================================
+
+Pay special attention to match alert emails.
+We already fixed buddy disconnection emails to use the buddy's own language.
+Now verify whether match alert emails sent to buddies still incorrectly use the owner's language.
+
+==================================================
+OUTPUT FORMAT
+==================================================
+
+Return:
+
+- Invitation email
+  - sender function/file
+  - recipient
+  - language source
+  - status: correct / incorrect
+
+- Disconnection email
+  - sender function/file
+  - recipient
+  - language source
+  - status: correct / incorrect
+
+- Match alert email
+  - sender function/file
+  - recipient
+  - language source
+  - status: correct / incorrect
+
+Then provide:
+
+1. Final verdict:
+   - which email types are already correct
+   - which are still wrong
+
+2. If any are wrong:
+   - exact file(s) to change
+   - exact logic that should be used
+
+Again:
+Do not fix yet unless needed.
+First inspect and explain the current behavior precisely.
