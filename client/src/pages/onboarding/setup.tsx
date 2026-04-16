@@ -1071,6 +1071,9 @@ export default function OnboardingSetup() {
   const { t, locale } = useTranslation();
   const { toast } = useToast();
 
+  const fromBuddyUnlinked = typeof window !== "undefined"
+    && new URLSearchParams(window.location.search).get("from") === "buddy_unlinked";
+
   const [step, setStep] = useState<FlowStep>("paywall");
   const [profileLoaded, setProfileLoaded] = useState(false);
 
@@ -1118,21 +1121,26 @@ export default function OnboardingSetup() {
           if (d.push_test_completed === true) setPushState("granted");
           else if (d.push_test_completed === false) setPushState("denied");
 
-          if (d.post_paywall_onboarding_completed) {
-            navigate("/home");
-            return;
-          }
-
-          const paywallDone = d.paywall_completed === true;
-
-          let savedStep = d.onboarding_current_step;
-          if (savedStep === "push-test") savedStep = "letter-personal";
-          if (savedStep && RESUMABLE_STEPS.includes(savedStep as FlowStep)) {
-            setStep(savedStep as FlowStep);
-          } else if (paywallDone) {
-            setStep("welcome");
-          } else {
+          // Former buddies starting their own standalone flow always begin at paywall
+          if (fromBuddyUnlinked) {
             setStep("paywall");
+          } else {
+            if (d.post_paywall_onboarding_completed) {
+              navigate("/home");
+              return;
+            }
+
+            const paywallDone = d.paywall_completed === true;
+
+            let savedStep = d.onboarding_current_step;
+            if (savedStep === "push-test") savedStep = "letter-personal";
+            if (savedStep && RESUMABLE_STEPS.includes(savedStep as FlowStep)) {
+              setStep(savedStep as FlowStep);
+            } else if (paywallDone) {
+              setStep("welcome");
+            } else {
+              setStep("paywall");
+            }
           }
         }
       } catch (err) {

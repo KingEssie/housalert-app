@@ -389,6 +389,15 @@ export async function registerRoutes(
       const buddyRevoked = ownerRevoked ? false : await revokeBuddyAsBuddy(auth.user.id, relationId);
       if (!ownerRevoked && !buddyRevoked) return res.status(404).json({ error: "Not found or not authorized" });
 
+      // Reset the former buddy's activation state so they re-enter the normal standalone onboarding flow
+      const buddyUserId = ownerRevoked ? relation?.buddy_user_id : auth.user.id;
+      if (buddyUserId) {
+        await pgPool.query(
+          `UPDATE user_profile_data SET post_paywall_onboarding_completed = false, paywall_completed = false, onboarding_current_step = NULL WHERE user_id = $1`,
+          [buddyUserId]
+        ).catch((err: any) => log(`[BUDDY] Failed to reset buddy activation state: ${err.message}`));
+      }
+
       if (relation?.invite_email && relation.invite_status === "accepted") {
         if (ownerRevoked) {
           const ownerProfile = await getOwnerNameForBuddy(auth.user.id);

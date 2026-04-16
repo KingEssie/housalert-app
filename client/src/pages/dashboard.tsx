@@ -980,7 +980,7 @@ function HomeTab({
               <p className="text-[15px] text-[#6B7280] leading-snug">{t("buddyUnlinked.body")}</p>
             </div>
             <button
-              onClick={() => { onDismissBuddyUnlinked?.(); navigate("/dashboard/searches/new"); }}
+              onClick={() => { onDismissBuddyUnlinked?.(); navigate("/onboarding/setup?from=buddy_unlinked"); }}
               className="w-full h-[52px] rounded-[12px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98]"
               data-testid="button-buddy-unlinked-cta"
             >
