@@ -1,0 +1,272 @@
+Perform a strict end-to-end QA audit of the CURRENT buddy flow implementation.
+
+IMPORTANT:
+Do NOT build new features first.
+Do NOT describe intended behavior.
+Inspect and verify the ACTUAL current implementation and report pass/fail clearly.
+
+GOAL:
+Determine whether the buddy flow is now fully correct and ready, or which exact issues still remain.
+
+==================================================
+SCOPE
+==================================================
+
+Audit these buddy flow scenarios:
+
+1. Invite flow — new buddy without existing account
+2. Invite flow — buddy with existing account
+3. Buddy mode permissions
+4. Buddy route protection
+5. Owner disconnect flow
+6. Buddy self-disconnect flow
+7. Former buddy standalone onboarding flow
+8. Trial / paywall gating after former buddy setup
+9. Re-invite existing former buddy
+10. Data / access control after unlink
+
+==================================================
+1. INVITE FLOW — NEW ACCOUNT
+==================================================
+
+Verify:
+- owner invites a completely new email address
+- clicking the invite email link shows the SIGNUP accept flow, not login
+- email is readonly
+- first name field exists
+- last name field exists
+- password field exists
+- confirm password field exists
+- CTA is the signup accept CTA
+- after submit:
+  - account is created
+  - invite is accepted automatically
+  - user lands in buddy mode
+
+Return pass/fail and exact reason.
+
+==================================================
+2. INVITE FLOW — EXISTING ACCOUNT
+==================================================
+
+Verify:
+- owner invites an email that already has an account
+- clicking the invite email link shows the LOGIN accept flow, not signup
+- email is readonly
+- password field only
+- CTA is login-and-accept
+- after submit:
+  - invite is accepted
+  - user lands in buddy mode
+
+Return pass/fail and exact reason.
+
+==================================================
+3. BUDDY MODE PERMISSIONS
+==================================================
+
+Verify that while in buddy mode:
+
+Home:
+- owner search profiles visible
+- cannot add search profile
+- cannot edit search profile
+
+Reaction letter:
+- readable
+- not editable
+- no save
+- no AI generate
+
+Apply/detail page:
+- reaction letter read-only
+- no copy-and-apply CTA
+- buddy cannot mark owner's listing as applied
+
+Account menu:
+- no subscription item
+- no housing situation item
+- no zoekbuddy manage item
+- no delete account item
+
+Return pass/fail item by item.
+
+==================================================
+4. BUDDY ROUTE PROTECTION
+==================================================
+
+Verify buddy access to these routes:
+
+- /dashboard/searches/new
+- /subscription
+- /housing-situation
+- /account/subscription
+- /settings/housing
+
+Expected:
+- all redirect to /home
+- none go to 404
+- none show restricted owner-only content
+
+Return pass/fail per route.
+
+==================================================
+5. OWNER DISCONNECT FLOW
+==================================================
+
+Verify:
+- owner can disconnect buddy from Zoekbuddy beheren
+- owner sees bottom sheet confirmation
+- confirm works
+- buddy relation becomes revoked
+- owner UI returns to empty invite state
+- no stale connected UI remains
+
+Return pass/fail and exact behavior.
+
+==================================================
+6. BUDDY SELF-DISCONNECT FLOW
+==================================================
+
+Verify:
+- buddy can choose stop/disconnect from profile
+- buddy sees confirmation bottom sheet
+- confirm works
+- buddy exits buddy mode
+- former-buddy transition modal appears
+- owner receives the expected feedback/toast
+
+Return pass/fail and exact behavior.
+
+==================================================
+7. FORMER BUDDY STANDALONE FLOW
+==================================================
+
+Verify after unlink modal CTA:
+
+- route becomes /onboarding/setup?from=buddy_unlinked
+- first screen is welcome
+- not direct paywall
+- not direct search creation
+- no owner data remains
+
+Verify prefill from buddy's own profile:
+- phone
+- birth date
+- gender
+- living situation
+- work status
+- move reason
+- income
+- pets
+- own application letter
+
+Verify fields remain editable and persist when changed.
+
+Return pass/fail and exact issues if any.
+
+==================================================
+8. TRIAL / PAYWALL GATING
+==================================================
+
+This is critical.
+
+Verify the CURRENT actual behavior for a former buddy / standalone user:
+
+- what happens when they complete setup
+- what happens when they try to activate their first own search profile
+- whether a 14-day trial is automatically started
+- whether premium access is blocked after the trial ends
+- whether they continue receiving matches after trial expiry
+- whether they must subscribe after the trial
+
+IMPORTANT:
+If trial expiry behavior is NOT actually enforced/tested in code, say that clearly instead of guessing.
+
+Return:
+- current real gating behavior
+- whether it is fully safe
+- whether there is any revenue leak
+
+==================================================
+9. RE-INVITE EXISTING FORMER BUDDY
+==================================================
+
+Verify:
+- owner disconnects buddy
+- later invites the same buddy again
+- invite can be sent
+- clicking invite link shows LOGIN flow (because account already exists)
+- not signup flow
+
+Return pass/fail and exact behavior.
+
+==================================================
+10. DATA / ACCESS CONTROL AFTER UNLINK
+==================================================
+
+Verify after unlink:
+- buddy account still exists
+- former buddy can still log in
+- former buddy is now normal standalone user
+- owner data is no longer accessible
+- /api/buddy/* owner-data endpoints are blocked or return empty/not authorized
+- no owner search profiles / owner reaction letter leak into former buddy flow
+
+Return pass/fail and exact behavior.
+
+==================================================
+OUTPUT FORMAT
+==================================================
+
+Return the results in this exact structure:
+
+1. Invite flow — new account
+- PASS / FAIL
+- findings
+
+2. Invite flow — existing account
+- PASS / FAIL
+- findings
+
+3. Buddy mode permissions
+- itemized pass/fail
+
+4. Buddy route protection
+- route-by-route pass/fail
+
+5. Owner disconnect flow
+- PASS / FAIL
+- findings
+
+6. Buddy self-disconnect flow
+- PASS / FAIL
+- findings
+
+7. Former buddy standalone flow
+- PASS / FAIL
+- findings
+
+8. Trial / paywall gating
+- PASS / FAIL / NOT FULLY VERIFIED
+- findings
+
+9. Re-invite existing former buddy
+- PASS / FAIL
+- findings
+
+10. Data / access control after unlink
+- PASS / FAIL
+- findings
+
+Then provide:
+
+A. Final verdict:
+- buddy flow is launch-ready / not launch-ready
+
+B. If not launch-ready:
+- exact remaining blockers only
+
+Be strict.
+Do not say PASS unless it is clearly verified.
+Do not assume untested behavior.
