@@ -132,13 +132,21 @@ export async function registerRoutes(
       const { ownerUserId, buddyEmail } = parsed;
       log(`[BUDDY UNSUB] POST token valid — ownerUserId=${ownerUserId.substring(0, 8)}... buddyEmail=${buddyEmail}`);
 
-      const result = await pgPool.query(
-        `UPDATE user_profile_data SET search_buddy_enabled = false, search_buddy_status = 'revoked_by_buddy', search_buddy_removed_at = NOW(), search_buddy_email = NULL WHERE user_id = $1 AND lower(trim(search_buddy_email)) = $2 AND search_buddy_status = 'active'`,
-        [ownerUserId, buddyEmail]
-      );
+      const [legacyResult, v2Result] = await Promise.all([
+        pgPool.query(
+          `UPDATE user_profile_data SET search_buddy_enabled = false, search_buddy_status = 'revoked_by_buddy', search_buddy_removed_at = NOW(), search_buddy_email = NULL WHERE user_id = $1 AND lower(trim(search_buddy_email)) = $2 AND search_buddy_status = 'active'`,
+          [ownerUserId, buddyEmail]
+        ),
+        pgPool.query(
+          `UPDATE search_profile_buddies SET invite_status = 'revoked' WHERE owner_user_id = $1 AND lower(trim(invite_email)) = $2 AND invite_status != 'revoked' RETURNING id`,
+          [ownerUserId, buddyEmail]
+        ),
+      ]);
 
-      if (result.rowCount === 0) {
-        log(`[BUDDY UNSUB] no active buddy matched — userId=${ownerUserId.substring(0, 8)}... buddyEmail=${buddyEmail}`);
+      log(`[BUDDY UNSUB] legacy rowsUpdated=${legacyResult.rowCount} v2RowsUpdated=${v2Result.rowCount} — userId=${ownerUserId.substring(0, 8)}... buddyEmail=${buddyEmail}`);
+
+      if ((legacyResult.rowCount || 0) === 0 && (v2Result.rowCount || 0) === 0) {
+        log(`[BUDDY UNSUB] no active buddy matched in either table — userId=${ownerUserId.substring(0, 8)}... buddyEmail=${buddyEmail}`);
         return res.status(200).send(`
           <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>HousAlert</title></head>
           <body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:480px;margin:40px auto;text-align:center;padding:20px;">
