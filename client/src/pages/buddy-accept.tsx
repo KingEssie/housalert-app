@@ -34,9 +34,15 @@ export default function BuddyAcceptPage() {
   const [errorMsg, setErrorMsg] = useState("");
 
   const [authMode, setAuthMode] = useState<"signup" | "login">("signup");
+
+  // Signup fields
   const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [authSubmitting, setAuthSubmitting] = useState(false);
   const [authError, setAuthError] = useState("");
   const autoAcceptingRef = useRef(false);
@@ -132,12 +138,21 @@ export default function BuddyAcceptPage() {
 
   async function handleSignup() {
     if (!inviteInfo || authSubmitting) return;
+
     if (!firstName.trim()) {
       setAuthError(t("buddyV2.authFirstNameRequired"));
       return;
     }
+    if (!lastName.trim()) {
+      setAuthError(t("buddyV2.authLastNameRequired"));
+      return;
+    }
     if (password.length < 6) {
       setAuthError(t("buddyV2.authPasswordTooShort"));
+      return;
+    }
+    if (password !== confirmPassword) {
+      setAuthError(t("buddyV2.authPasswordMismatch"));
       return;
     }
 
@@ -146,7 +161,7 @@ export default function BuddyAcceptPage() {
     clearAllUserData();
 
     try {
-      const fullName = firstName.trim();
+      const fullName = `${firstName.trim()} ${lastName.trim()}`;
       const res = await apiFetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -189,6 +204,7 @@ export default function BuddyAcceptPage() {
           });
         } catch {}
       }
+      // Auth state update will trigger useEffect → doAccept() automatically
     } catch (err: any) {
       setAuthError(err.message || t("buddyV2.authSignupFailed"));
       setAuthSubmitting(false);
@@ -216,6 +232,7 @@ export default function BuddyAcceptPage() {
         setAuthSubmitting(false);
         return;
       }
+      // Auth state update will trigger useEffect → doAccept() automatically
     } catch (err: any) {
       setAuthError(err.message || t("buddyV2.authLoginFailed"));
       setAuthSubmitting(false);
@@ -280,7 +297,7 @@ export default function BuddyAcceptPage() {
   if (status === "auth" && inviteInfo) {
     const isLogin = authMode === "login";
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#eaeaeb] px-5">
+      <div className="min-h-screen flex items-center justify-center bg-[#eaeaeb] px-5 py-8">
         <div className="w-full max-w-[400px]">
           <div className="text-center mb-8">
             <div className="w-16 h-16 rounded-full bg-[#2D3748] flex items-center justify-center mx-auto mb-6">
@@ -289,30 +306,32 @@ export default function BuddyAcceptPage() {
             <h1 className="text-[24px] font-bold text-[#111111] mb-2 leading-tight" data-testid="text-accept-title">
               {t("buddyV2.acceptTitle")}
             </h1>
-            {inviteInfo.owner_name && (
-              <p className="text-[15px] text-[#334855]" data-testid="text-accept-owner">
-                {t("buddyV2.acceptBodyShort").replace("{name}", inviteInfo.owner_name)}
-              </p>
-            )}
+            <p className="text-[15px] text-[#334855] leading-relaxed" data-testid="text-accept-body">
+              {isLogin
+                ? inviteInfo.owner_name
+                  ? t("buddyV2.acceptBodyShort").replace("{name}", inviteInfo.owner_name)
+                  : t("buddyV2.acceptBodyShort").replace("{name}", "").trim()
+                : t("buddyV2.acceptBodySignup")}
+            </p>
           </div>
 
           <div className="rounded-[12px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] p-5 mb-5">
             <div className="space-y-3">
-              <div>
-                <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
-                  <input
-                    type="email"
-                    value={inviteInfo.invite_email}
-                    readOnly
-                    className="w-full h-[56px] pl-11 pr-4 rounded-[10px] border border-[#D1D5DB] bg-[#F3F4F6] text-[15px] text-[#6B7280] cursor-not-allowed"
-                    data-testid="input-buddy-email"
-                  />
-                </div>
+              {/* Email — always readonly */}
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
+                <input
+                  type="email"
+                  value={inviteInfo.invite_email}
+                  readOnly
+                  className="w-full h-[56px] pl-11 pr-4 rounded-[10px] border border-[#D1D5DB] bg-[#F3F4F6] text-[15px] text-[#6B7280] cursor-not-allowed"
+                  data-testid="input-buddy-email"
+                />
               </div>
 
+              {/* Signup-only: first name + last name */}
               {!isLogin && (
-                <div>
+                <>
                   <div className="relative">
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
                     <input
@@ -320,39 +339,75 @@ export default function BuddyAcceptPage() {
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
                       placeholder={t("buddyV2.authFirstNamePlaceholder")}
-                      className="w-full h-[56px] pl-11 pr-4 rounded-[10px] border border-[#D1D5DB] bg-white text-[15px] text-[#111111] placeholder:text-[#334855] focus:outline-none focus:ring-2 focus:ring-ha-primary/20 focus:border-ha-primary transition-colors"
+                      className="w-full h-[56px] pl-11 pr-4 rounded-[10px] border border-[#D1D5DB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/20 focus:border-ha-primary transition-colors"
                       data-testid="input-buddy-firstname"
                     />
                   </div>
-                </div>
+                  <div className="relative">
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
+                    <input
+                      type="text"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      placeholder={t("buddyV2.authLastNamePlaceholder")}
+                      className="w-full h-[56px] pl-11 pr-4 rounded-[10px] border border-[#D1D5DB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/20 focus:border-ha-primary transition-colors"
+                      data-testid="input-buddy-lastname"
+                    />
+                  </div>
+                </>
               )}
 
-              <div>
+              {/* Password */}
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder={t("buddyV2.authPasswordPlaceholder")}
+                  className="w-full h-[56px] pl-11 pr-12 rounded-[10px] border border-[#D1D5DB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/20 focus:border-ha-primary transition-colors"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      isLogin ? handleLogin() : handleSignup();
+                    }
+                  }}
+                  data-testid="input-buddy-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#334855] hover:text-[#111111]"
+                  data-testid="button-toggle-password"
+                >
+                  {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
+                </button>
+              </div>
+
+              {/* Signup-only: confirm password */}
+              {!isLogin && (
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
                   <input
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder={t("buddyV2.authPasswordPlaceholder")}
-                    className="w-full h-[56px] pl-11 pr-12 rounded-[10px] border border-[#D1D5DB] bg-white text-[15px] text-[#111111] placeholder:text-[#334855] focus:outline-none focus:ring-2 focus:ring-ha-primary/20 focus:border-ha-primary transition-colors"
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder={t("buddyV2.authConfirmPasswordPlaceholder")}
+                    className="w-full h-[56px] pl-11 pr-12 rounded-[10px] border border-[#D1D5DB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/20 focus:border-ha-primary transition-colors"
                     onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        isLogin ? handleLogin() : handleSignup();
-                      }
+                      if (e.key === "Enter") handleSignup();
                     }}
-                    data-testid="input-buddy-password"
+                    data-testid="input-buddy-confirm-password"
                   />
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-[#334855] hover:text-[#111111]"
-                    data-testid="button-toggle-password"
+                    data-testid="button-toggle-confirm-password"
                   >
-                    {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
+                    {showConfirmPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
                   </button>
                 </div>
-              </div>
+              )}
             </div>
 
             {authError && (

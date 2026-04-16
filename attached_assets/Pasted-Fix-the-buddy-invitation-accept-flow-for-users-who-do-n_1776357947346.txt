@@ -1,0 +1,109 @@
+Fix the buddy invitation accept flow for users who do not yet have an account.
+
+CURRENT BUG
+When a user clicks "uitnodiging accepteren" from the buddy invite email, they land on a screen with:
+- email prefilled
+- password field
+- CTA: "Inloggen & accepteren"
+
+This breaks for invited buddies who do NOT yet have an account, because they have no password yet.
+
+GOAL
+The accept-invite flow must branch correctly based on whether the invited email already belongs to an existing account.
+
+==================================================
+REQUIRED BEHAVIOR
+==================================================
+
+1. If the invited email already belongs to an existing user account:
+- show login accept flow
+- email prefilled and readonly
+- password field
+- CTA: "Inloggen en accepteren"
+
+2. If the invited email does NOT belong to an existing account:
+- show signup accept flow instead
+- email prefilled and readonly
+- fields:
+  - first name
+  - last name
+  - password
+  - confirm password
+- enforce normal password rules
+- CTA: "Account aanmaken en accepteren"
+
+After successful signup:
+- automatically accept the buddy invite
+- log the user in
+- send them into buddy mode
+- do not require a second manual accept step
+
+==================================================
+IMPLEMENTATION REQUIREMENTS
+==================================================
+
+1. Determine account existence using the invited email tied to the invite token / relation
+2. Do this check before rendering the form
+3. Render the correct form variant based on:
+   - existing account
+   - new account
+
+4. Keep the invitation context visible:
+- title remains buddy invitation related
+- show owner name
+- explain that the user will help the owner search
+
+5. For the signup variant:
+- reuse existing signup validation where possible
+- password must follow the same complexity rules as elsewhere in the app
+- confirm password mismatch must be handled correctly
+
+6. After signup success:
+- create account
+- accept invite
+- establish buddy relation
+- redirect into buddy dashboard/home
+
+7. For existing-account flow:
+- keep current login-and-accept behavior
+- but make sure only real existing users see this variant
+
+==================================================
+UX COPY
+==================================================
+
+Existing account:
+Title:
+"Je bent uitgenodigd als zoekbuddy"
+Body:
+"Je helpt {ownerName} met het zoeken naar woningen."
+CTA:
+"Inloggen en accepteren"
+
+New account:
+Title:
+"Je bent uitgenodigd als zoekbuddy"
+Body:
+"Maak eerst een account aan om de uitnodiging te accepteren en mee te zoeken."
+CTA:
+"Account aanmaken en accepteren"
+
+==================================================
+IMPORTANT
+==================================================
+
+Do not force new invited users into a login flow.
+Do not require two separate steps (signup first, then accept later).
+It must be one seamless accept flow.
+
+==================================================
+OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. how account existence is determined
+3. what the existing-user flow is
+4. what the new-user flow is
+5. what happens after signup success
+6. confirmation that the buddy can now accept an invite without already having a password
