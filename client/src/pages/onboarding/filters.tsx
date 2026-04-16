@@ -319,9 +319,9 @@ export default function OnboardingFilters() {
   const isSearchOnlyMode = w ? false : !!user;
 
   const city = incomingParams.get("city") || "";
-  const lat = incomingParams.ge;
-  const lng = incomingParams.ge;
-  const locationMode = incomingParams.ge;
+  const lat = incomingParams.get("lat") || "";
+  const lng = incomingParams.get("lng") || "";
+  const locationMode = incomingParams.get("locationMode") || "";
   const districts = incomingParams.get("districts") || "";
   const radiusKm = incomingParams.get("radiusKm") || "";
 
@@ -331,15 +331,15 @@ export default function OnboardingFilters() {
       const minSizeVal = rawMinSize !== null ? parseInt(rawMinSize) : INITIAL_FILTERS.minSize;
       const rawMinRooms = incomingParams.get("minRooms");
       return {
-        minPrice: parseInt(incomingParams.ge) || 0,
-        maxPrice: parseInt(incomingParams.ge) || INITIAL_FILTERS.maxPrice,
+        minPrice: parseInt(incomingParams.get("minPrice") || "") || 0,
+        maxPrice: parseInt(incomingParams.get("maxPrice") || "") || INITIAL_FILTERS.maxPrice,
         priceFlexible: incomingParams.get("priceFlexible") === "true",
-        propertyType: incomingParams.ge,
+        propertyType: incomingParams.get("propertyTypes") || "any",
         includeRooms: incomingParams.get("includeRooms") === "true",
         minRooms: (!rawMinRooms || rawMinRooms === "0") ? "any" : rawMinRooms,
         minSize: minSizeVal || 0,
         sizeNA: minSizeVal === 0,
-        furnished: incomingParams.ge,
+        furnished: incomingParams.get("furnished") || "any",
         amenities: incomingParams.get("amenities")?.split(",").filter(Boolean) || [],
         sendUnclear: incomingParams.get("sendUnclear") !== "false",
       };
@@ -456,7 +456,7 @@ export default function OnboardingFilters() {
   }
 
   const ROOM_OPTIONS = [
-    { value: "any", label:  },
+    { value: "any", label: t("onboarding.filters.doesntMatter") },
     { value: "1", label: "1+" },
     { value: "2", label: "2+" },
     { value: "3", label: "3+" },
@@ -465,15 +465,15 @@ export default function OnboardingFilters() {
   ];
 
   const PROPERTY_OPTIONS = [
-    { value: "any", label:  },
-    { value: "apartment", label:  },
-    { value: "house", label:  },
+    { value: "any", label: t("onboarding.filters.doesntMatter") },
+    { value: "apartment", label: t("onboarding.propertyType.apartment") },
+    { value: "house", label: t("newSearch.filters.house") },
   ];
 
   const FURNISHED_OPTIONS = [
-    { value: "any", label:  },
-    { value: "furnished", label:  },
-    { value: "unfurnished", label:  },
+    { value: "any", label: t("newSearch.filters.furnishedAny") },
+    { value: "furnished", label: t("newSearch.filters.furnishedYes") },
+    { value: "unfurnished", label: t("newSearch.filters.furnishedNo") },
   ];
 
   const sLabel = w ? "text-[15px] font-semibold mb-3 block" : "text-[13px] font-semibold mb-3 block";
@@ -482,7 +482,7 @@ export default function OnboardingFilters() {
     <div className="flex flex-col gap-6">
       <section>
         <label className={sLabel} style={{ color: T.text }}>
-          {}
+          {t("newSearch.filters.rentLabel")}
         </label>
         <DualRangeSlider
           min={0}
@@ -500,7 +500,7 @@ export default function OnboardingFilters() {
           <Toggle
             checked={f.priceFlexible}
             onChange={(v) => update({ priceFlexible: v })}
-            label={}
+            label={t("newSearch.filters.priceFlexible")}
             testId="toggle-price-flexible"
             theme={T}
           />
@@ -511,7 +511,7 @@ export default function OnboardingFilters() {
 
       <section>
         <label className={sLabel} style={{ color: T.text }}>
-          {}
+          {t("newSearch.filters.propertyTypeLabel")}
         </label>
         <SegmentedControl
           options={PROPERTY_OPTIONS}
@@ -524,7 +524,7 @@ export default function OnboardingFilters() {
           <Toggle
             checked={f.includeRooms}
             onChange={(v) => update({ includeRooms: v })}
-            label={}
+            label={t("newSearch.filters.includeRooms")}
             testId="toggle-include-rooms"
             theme={T}
           />
@@ -535,7 +535,7 @@ export default function OnboardingFilters() {
 
       <section>
         <label className={sLabel} style={{ color: T.text }}>
-          {}
+          {t("onboarding.filters.bedrooms")}
         </label>
         <div
           className="flex gap-2 overflow-x-auto no-scrollbar"
@@ -566,7 +566,7 @@ export default function OnboardingFilters() {
       <section>
         <div className="flex items-center justify-between mb-3">
           <label className="text-[13px] font-semibold" style={{ color: T.text }}>
-            {}
+            {t("newSearch.filters.minSizeLabel")}
           </label>
           <button
             onClick={() => update({ sizeNA: !f.sizeNA, minSize: f.sizeNA ? 30 : 0 })}
@@ -599,7 +599,7 @@ export default function OnboardingFilters() {
 
       <section>
         <label className={sLabel} style={{ color: T.text }}>
-          {}
+          {t("newSearch.filters.furnishedLabel")}
         </label>
         <SegmentedControl
           options={FURNISHED_OPTIONS}
@@ -614,7 +614,7 @@ export default function OnboardingFilters() {
 
       <section>
         <label className={sLabel} style={{ color: T.text }}>
-          {}
+          {t("newSearch.filters.amenitiesLabel")}
         </label>
         <div className="flex flex-wrap gap-2" data-testid="amenity-chips">
           {AMENITY_OPTIONS.map(({ value, labelKey, fallback, icon: Icon }) => {
@@ -646,7 +646,7 @@ export default function OnboardingFilters() {
         <Toggle
           checked={f.sendUnclear}
           onChange={(v) => update({ sendUnclear: v })}
-          label={}
+          label={t("newSearch.filters.sendUnclear")}
           testId="toggle-send-unclear"
           theme={T}
         />
@@ -669,16 +669,16 @@ export default function OnboardingFilters() {
             style={{ color: OBW.text }}
             data-testid="text-filters-title"
           >
-            {}
+            {t("newSearch.filters.title")}
           </h2>
           <p className="text-[14px] mb-7 leading-relaxed" style={{ color: OBW.textSecondary }}>
-            {}
+            {t("newSearch.filters.subtitle")}
           </p>
 
           <div className="flex flex-col gap-6">
             <section>
               <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
-                {}
+                {t("newSearch.filters.rentLabel")}
               </label>
               <DualRangeSlider
                 min={0}
@@ -696,7 +696,7 @@ export default function OnboardingFilters() {
                 <WebToggle
                   checked={f.priceFlexible}
                   onChange={(v) => update({ priceFlexible: v })}
-                  label={}
+                  label={t("newSearch.filters.priceFlexible")}
                   testId="toggle-price-flexible"
                 />
               </div>
@@ -706,7 +706,7 @@ export default function OnboardingFilters() {
 
             <section>
               <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
-                {}
+                {t("newSearch.filters.propertyTypeLabel")}
               </label>
               <WebPillGroup
                 options={PROPERTY_OPTIONS}
@@ -718,7 +718,7 @@ export default function OnboardingFilters() {
                 <WebToggle
                   checked={f.includeRooms}
                   onChange={(v) => update({ includeRooms: v })}
-                  label={}
+                  label={t("newSearch.filters.includeRooms")}
                   testId="toggle-include-rooms"
                 />
               </div>
@@ -728,7 +728,7 @@ export default function OnboardingFilters() {
 
             <section>
               <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
-                {}
+                {t("onboarding.filters.bedrooms")}
               </label>
               <div
                 className="flex gap-2 overflow-x-auto no-scrollbar"
@@ -759,7 +759,7 @@ export default function OnboardingFilters() {
             <section>
               <div className="flex items-center justify-between mb-3">
                 <label className="text-[15px] font-semibold" style={{ color: OBW.text }}>
-                  {}
+                  {t("newSearch.filters.minSizeLabel")}
                 </label>
                 <button
                   onClick={() => update({ sizeNA: !f.sizeNA, minSize: f.sizeNA ? 30 : 0 })}
@@ -792,7 +792,7 @@ export default function OnboardingFilters() {
 
             <section>
               <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
-                {}
+                {t("newSearch.filters.furnishedLabel")}
               </label>
               <WebPillGroup
                 options={FURNISHED_OPTIONS}
@@ -806,7 +806,7 @@ export default function OnboardingFilters() {
 
             <section>
               <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
-                {}
+                {t("newSearch.filters.amenitiesLabel")}
               </label>
               <div className="flex flex-wrap gap-2" data-testid="amenity-chips">
                 {AMENITY_OPTIONS.map(({ value, labelKey, fallback, icon: Icon }) => {
@@ -838,7 +838,7 @@ export default function OnboardingFilters() {
               <WebToggle
                 checked={f.sendUnclear}
                 onChange={(v) => update({ sendUnclear: v })}
-                label={}
+                label={t("newSearch.filters.sendUnclear")}
                 testId="toggle-send-unclear"
               />
             </section>
@@ -848,7 +848,7 @@ export default function OnboardingFilters() {
         <OBWebFooter
           onBack={handleBack}
           onNext={handleNext}
-          nextLabel={isSearchOnlyMode ? () : t("common.next")}
+          nextLabel={isSearchOnlyMode ? t("common.save") : t("common.next")}
           saving={saving}
           backTestId="button-filters-back"
           nextTestId="button-filters-next"
@@ -862,14 +862,12 @@ export default function OnboardingFilters() {
       flowTitle={t("newSearch.filters.headerTitle")}
       currentStep={3}
       totalSteps={3}
-      stepTitle={}
-      stepDescription={}
+      stepTitle={t("newSearch.filters.title")}
+      stepDescription={t("newSearch.filters.subtitle")}
       onBack={handleBack}
       onNext={handleNext}
       onClose={handleClose}
-      nextLabel={isSearchOnlyMode
-        ? ()
-        : ()}
+      nextLabel={isSearchOnlyMode ? t("common.save") : t("common.next")}
       saving={saving}
       nextDisabled={false}
       backTestId="button-filters-back"

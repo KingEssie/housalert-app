@@ -75,15 +75,15 @@ export default function OnboardingEmail() {
             style={{ color: T.text }}
             data-testid="text-email-title"
           >
-            {}
+            {t("onboarding.email.title")}
           </h1>
           <p className="text-[14px] mb-6 leading-relaxed" style={{ color: T.textSecondary }}>
-            {}
+            {t("onboarding.email.subtitle")}
           </p>
 
           <div>
             <label className="text-[13px] font-medium mb-1.5 block" style={{ color: T.textSecondary }}>
-              {}
+              {t("onboarding.email.label")}
             </label>
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#334855" }} />
@@ -91,7 +91,7 @@ export default function OnboardingEmail() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder={}
+                placeholder={t("onboarding.email.placeholder")}
                 className="w-full h-[56px] pl-12 pr-4 text-[16px] font-medium ha-field"
                 style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
                 autoFocus
@@ -109,7 +109,7 @@ export default function OnboardingEmail() {
             style={{ background: T.pink, boxShadow: isValidEmail(email) ? T.pinkShadow : "none" }}
             data-testid="button-email-next"
           >
-            {}
+            {t("common.next")}
           </button>
         </OBStickyBar>
       </div>
@@ -119,7 +119,7 @@ export default function OnboardingEmail() {
   const emailFormContent = (
     <div>
       <label className="text-[13px] font-medium mb-1.5 block text-[#334855]">
-        {}
+        {t("onboarding.email.label")}
       </label>
       <div className="relative">
         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
@@ -127,7 +127,7 @@ export default function OnboardingEmail() {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder={}
+          placeholder={t("onboarding.email.placeholder")}
           className="w-full h-[56px] pl-12 pr-4 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
           autoFocus
           data-testid="input-email"
@@ -141,12 +141,12 @@ export default function OnboardingEmail() {
       flowTitle={t("onboarding.accountCreate.flowTitle")}
       currentStep={2}
       totalSteps={3}
-      stepTitle={}
-      stepDescription={}
+      stepTitle={t("onboarding.email.title")}
+      stepDescription={t("onboarding.email.subtitle")}
       onBack={handleBack}
       onNext={handleNext}
       onClose={handleClose}
-      nextLabel={}
+      nextLabel={t("common.next")}
       nextDisabled={!isValidEmail(email)}
       backTestId="button-email-back"
       nextTestId="button-email-next"
