@@ -1,0 +1,112 @@
+Perform a strict visual QA / final polish audit of the user-facing app.
+
+IMPORTANT:
+Do NOT start broad refactors immediately.
+First inspect the current UI screen by screen and report visual inconsistencies clearly.
+
+GOAL:
+Identify the remaining visual polish issues that make the app feel less premium or inconsistent.
+
+Admin portal must be ignored.
+
+==================================================
+1. AUDIT SCOPE
+==================================================
+
+Inspect these high-priority user-facing screens:
+
+1. Home
+2. Matches
+3. Favorieten
+4. Listing detail
+5. Account
+6. Voorkeuren
+7. Mijn gegevens
+8. Woonsituatie
+9. Zoekbuddy beheren
+10. Reactiebrief
+11. Subscription
+12. Buddy home / buddy account if role-based UI differs
+
+==================================================
+2. CHECK FOR THESE VISUAL ISSUES
+==================================================
+
+For each screen, inspect and report:
+
+A. Spacing consistency
+- cards too close to headers
+- inconsistent gaps between sections
+- inconsistent vertical rhythm
+
+B. Header consistency
+- title not perfectly vertically centered
+- back button style inconsistent
+- header height inconsistent
+- safe-area/notch spacing inconsistent
+
+C. Card styling consistency
+- inconsistent border radius
+- inconsistent padding
+- cards floating awkwardly on background
+- inconsistent shadow/border usage
+
+D. Button consistency
+- different heights
+- different radius
+- weak primary/secondary hierarchy
+- destructive buttons inconsistent
+
+E. Typography hierarchy
+- titles too small / too light
+- labels too grey
+- descriptions not clearly smaller than titles
+- inconsistent font weights/sizes
+
+F. Icon consistency
+- icon size inconsistent
+- icons too light
+- icon backgrounds appearing where they should not
+- outlined vs filled inconsistency
+
+G. Form field consistency
+- fields too rounded
+- border too light
+- vertical spacing too tight or too loose
+- dropdowns inconsistent
+- elements overflowing containers
+
+H. Empty state quality
+- weak hierarchy
+- poor CTA placement
+- inconsistent layout
+
+I. Role-based UI consistency
+- owner vs buddy differences not visually clean
+- buddy read-only states not obvious enough
+- hidden actions still leaving awkward spacing/gaps
+
+==================================================
+3. OUTPUT FORMAT
+==================================================
+
+Return the audit as a structured list by screen.
+
+For each screen include:
+- Screen name
+- Status: OK / Issues found
+- Exact issues found
+- Severity: Critical / Medium / Minor
+- Suggested visual fix
+
+Then give:
+
+1. Top 10 highest-impact visual polish fixes across the app
+2. Which fixes can be solved globally (design system level)
+3. Which fixes are screen-specific
+4. Recommended fix order for the biggest perceived quality improvement
+
+IMPORTANT:
+Be strict.
+Do NOT say “looks good” unless it is truly polished.
+Focus on premium feel, consistency, and trustworthiness.

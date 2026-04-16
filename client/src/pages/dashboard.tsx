@@ -2062,10 +2062,11 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
   const displayName = firstName || lastName
     ? [firstName, lastName].filter(Boolean).join(" ")
     : user?.email || "";
+  const intlLocale = locale === "de" ? "de-DE" : locale === "en" ? "en-GB" : "nl-NL";
   const memberSince = user?.created_at
-    ? new Date(user.created_at).toLocaleDateString("nl-NL", { month: "long", year: "numeric" })
+    ? new Date(user.created_at).toLocaleDateString(intlLocale, { month: "long", year: "numeric" })
     : "";
-  const memberSinceLabel = memberSince ? `Lid sinds ${memberSince}` : "";
+  const memberSinceLabel = memberSince ? `${t("profile.memberSincePrefix")} ${memberSince}` : "";
 
   const MenuItem = ({ label, onClick, external = false, last = false }: { label: string; onClick: () => void; external?: boolean; last?: boolean }) => (
     <>

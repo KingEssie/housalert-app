@@ -6,9 +6,10 @@ import { useSubscription } from "@/lib/subscription";
 import { useTranslation } from "@/i18n";
 import { useBuddyConnections, isBuddyMode } from "@/lib/buddy";
 
-function formatDate(dateStr: string | null | undefined): string {
+function formatDate(dateStr: string | null | undefined, locale?: string): string {
   if (!dateStr) return "\u2014";
-  return new Date(dateStr).toLocaleDateString("nl-NL", {
+  const intlLocale = locale === "de" ? "de-DE" : locale === "en" ? "en-GB" : "nl-NL";
+  return new Date(dateStr).toLocaleDateString(intlLocale, {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -17,7 +18,7 @@ function formatDate(dateStr: string | null | undefined): string {
 
 export default function SubscriptionDetailPage() {
   const [, navigate] = useLocation();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const buddyConns = useBuddyConnections();
   const isBuddy = isBuddyMode(buddyConns.data);
 
@@ -106,7 +107,7 @@ export default function SubscriptionDetailPage() {
     }] : []),
     {
       label: t("subscription.startDate"),
-      value: formatDate(startDate),
+      value: formatDate(startDate, locale),
       testId: "text-start-date",
     },
     {
@@ -115,7 +116,7 @@ export default function SubscriptionDetailPage() {
         : isCanceled
           ? t("subscription.endsAt")
           : t("subscription.nextRenewal"),
-      value: formatDate(renewalDate),
+      value: formatDate(renewalDate, locale),
       testId: "text-renewal-date",
     },
     {
@@ -173,10 +174,10 @@ export default function SubscriptionDetailPage() {
             {renewalDate && (
               <p className="text-[14px] font-medium text-[#000000] mt-3" data-testid="text-renewal-hero">
                 {isCanceled
-                  ? `${t("subscription.endsAt")} ${formatDate(renewalDate)}`
+                  ? `${t("subscription.endsAt")} ${formatDate(renewalDate, locale)}`
                   : subscription?.isTrial
-                    ? `${t("subscription.trialEnds")} ${formatDate(renewalDate)}`
-                    : `${t("subscription.nextRenewal")} ${formatDate(renewalDate)}`}
+                    ? `${t("subscription.trialEnds")} ${formatDate(renewalDate, locale)}`
+                    : `${t("subscription.nextRenewal")} ${formatDate(renewalDate, locale)}`}
               </p>
             )}
 
