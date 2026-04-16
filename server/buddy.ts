@@ -184,7 +184,7 @@ export async function revokeBuddy(ownerUserId: string, relationId: string): Prom
   const result = await pgPool.query(
     `UPDATE search_profile_buddies
      SET invite_status = 'revoked'
-     WHERE id = $1 AND owner_user_id = $2
+     WHERE id = $1 AND owner_user_id = $2 AND invite_status != 'revoked'
      RETURNING id`,
     [relationId, ownerUserId]
   );

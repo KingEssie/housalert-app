@@ -737,3 +737,109 @@ export async function sendControlledTestEmail(
   log(`[ADMIN TEST EMAIL] SUCCESS — resend_id=${resendId} from="${config.from}" reply_to="${config.replyTo}" to="${toEmail}" — Resend accepted the send`);
   return { success: true, from: config.from, replyTo: config.replyTo, to: toEmail, resendId };
 }
+
+export async function sendBuddyRevokedEmail(
+  buddyEmail: string,
+  ownerName: string,
+  lang: ServerLocale = "nl"
+): Promise<boolean> {
+  try {
+    const client = await getResendClient();
+    const baseUrl = getAppBaseUrl();
+
+    const subjects: Record<ServerLocale, string> = {
+      nl: `Je Zoekbuddy-koppeling met ${ownerName} is beëindigd`,
+      de: `Deine Suchbuddy-Verbindung mit ${ownerName} wurde beendet`,
+      en: `Your Search Buddy connection with ${ownerName} has ended`,
+    };
+
+    const htmlBodies: Record<ServerLocale, string> = {
+      nl: `
+<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.text};line-height:1.3;font-family:${FONT_STACK};">Zoekbuddy beëindigd</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">
+  <strong>${escapeHtml(ownerName)}</strong> heeft de Zoekbuddy-koppeling met jou beëindigd.
+</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
+  Je bent nu een zelfstandige gebruiker op HousAlert. Je hebt geen toegang meer tot de zoekopdrachten en woningen van ${escapeHtml(ownerName)}.
+</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
+  <tr><td align="center">
+    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:16px;font-weight:600;text-decoration:none;padding:17px 32px;border-radius:18px;font-family:${FONT_STACK};">Ga naar HousAlert</a>
+  </td></tr>
+</table>
+<p style="margin:0;font-size:13px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
+  Veel succes met je eigen zoektocht!
+</p>`,
+      de: `
+<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.text};line-height:1.3;font-family:${FONT_STACK};">Suchbuddy beendet</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">
+  <strong>${escapeHtml(ownerName)}</strong> hat die Suchbuddy-Verbindung mit dir beendet.
+</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
+  Du bist nun ein eigenständiger Nutzer bei HousAlert. Du hast keinen Zugriff mehr auf die Suchen und Wohnungen von ${escapeHtml(ownerName)}.
+</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
+  <tr><td align="center">
+    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:16px;font-weight:600;text-decoration:none;padding:17px 32px;border-radius:18px;font-family:${FONT_STACK};">Zu HousAlert</a>
+  </td></tr>
+</table>
+<p style="margin:0;font-size:13px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
+  Viel Erfolg bei deiner eigenen Wohnungssuche!
+</p>`,
+      en: `
+<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.text};line-height:1.3;font-family:${FONT_STACK};">Search Buddy connection ended</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">
+  <strong>${escapeHtml(ownerName)}</strong> has ended the Search Buddy connection with you.
+</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
+  You are now a standalone user on HousAlert. You no longer have access to ${escapeHtml(ownerName)}'s searches and listings.
+</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
+  <tr><td align="center">
+    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:16px;font-weight:600;text-decoration:none;padding:17px 32px;border-radius:18px;font-family:${FONT_STACK};">Go to HousAlert</a>
+  </td></tr>
+</table>
+<p style="margin:0;font-size:13px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
+  Good luck with your own search!
+</p>`,
+    };
+
+    const textBodies: Record<ServerLocale, string> = {
+      nl: `Zoekbuddy beëindigd\n\n${ownerName} heeft de Zoekbuddy-koppeling met jou beëindigd.\n\nJe bent nu een zelfstandige gebruiker op HousAlert en hebt geen toegang meer tot de zoekopdrachten van ${ownerName}.\n\nGa naar HousAlert: ${baseUrl}\n\nVeel succes!`,
+      de: `Suchbuddy beendet\n\n${ownerName} hat die Suchbuddy-Verbindung mit dir beendet.\n\nDu bist nun ein eigenständiger Nutzer bei HousAlert und hast keinen Zugriff mehr auf die Suchen von ${ownerName}.\n\nZu HousAlert: ${baseUrl}\n\nViel Erfolg!`,
+      en: `Search Buddy connection ended\n\n${ownerName} has ended the Search Buddy connection with you.\n\nYou are now a standalone user on HousAlert and no longer have access to ${ownerName}'s searches.\n\nGo to HousAlert: ${baseUrl}\n\nGood luck!`,
+    };
+
+    const preheaders: Record<ServerLocale, string> = {
+      nl: `${ownerName} heeft de Zoekbuddy-koppeling beëindigd`,
+      de: `${ownerName} hat die Suchbuddy-Verbindung beendet`,
+      en: `${ownerName} has ended the Search Buddy connection`,
+    };
+
+    const subject = sanitizeSubject(subjects[lang] || subjects.en);
+    const htmlContent = htmlBodies[lang] || htmlBodies.en;
+    const textBody = textBodies[lang] || textBodies.en;
+    const preheader = preheaders[lang] || preheaders.en;
+
+    const senderConfig = await getEmailConfigAsync();
+    log(`[EMAIL SEND] buddy-revoked from="${senderConfig.from}" reply_to="${senderConfig.replyTo}" to="${buddyEmail}" owner="${ownerName}" lang=${lang}`);
+
+    const { data, error } = await finalEmailDispatch(client, {
+      to: buddyEmail,
+      subject,
+      text: textBody,
+      html: emailWrapper(htmlContent, preheader, lang),
+    }, "buddy-revoked");
+
+    if (error) {
+      log(`[EMAIL FAIL] buddy-revoked to=${buddyEmail} error=${error.message}`);
+      return false;
+    }
+
+    log(`[EMAIL OK] buddy-revoked to=${buddyEmail} id=${(data as any)?.id || "N/A"}`);
+    return true;
+  } catch (err: any) {
+    log(`[EMAIL ERROR] buddy-revoked to=${buddyEmail} err=${err.message}`);
+    return false;
+  }
+}

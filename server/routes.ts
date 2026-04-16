@@ -23,7 +23,7 @@ import {
   findUserByStripeCustomerId,
 } from "./subscriptions";
 import { log } from "./log";
-import { validateBuddyUnsubscribeToken, sendBuddyInvitationEmail, sendBuddyCollaborationEmail } from "./email";
+import { validateBuddyUnsubscribeToken, sendBuddyInvitationEmail, sendBuddyCollaborationEmail, sendBuddyRevokedEmail } from "./email";
 import {
   inviteBuddy, acceptInvite, revokeBuddy,
   getOwnerBuddyRelation, getBuddyRelationsForUser, getPendingInvitesForEmail,
@@ -345,8 +345,21 @@ export async function registerRoutes(
       const { relationId } = req.body;
       if (!relationId) return res.status(400).json({ error: "Relation ID required" });
 
+      const relation = await getRelationById(relationId);
+
       const ok = await revokeBuddy(auth.user.id, relationId);
       if (!ok) return res.status(404).json({ error: "Not found or not owner" });
+
+      if (relation?.invite_email && relation.invite_status === "accepted") {
+        const ownerProfile = await getOwnerNameForBuddy(auth.user.id);
+        const ownerName = ownerProfile
+          ? [ownerProfile.first_name, ownerProfile.last_name].filter(Boolean).join(" ") || "HousAlert"
+          : "HousAlert";
+        const lang = detectLanguage(req);
+        sendBuddyRevokedEmail(relation.invite_email, ownerName, lang).catch((err: any) => {
+          log(`[BUDDY] revoke email error: ${err.message}`);
+        });
+      }
 
       return res.json({ ok: true });
     } catch (err: any) {
