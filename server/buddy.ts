@@ -347,3 +347,16 @@ export async function getOwnerNameForBuddy(ownerUserId: string): Promise<{ first
     return null;
   }
 }
+
+export async function getBuddyLanguage(buddyUserId: string): Promise<string | null> {
+  try {
+    const result = await pgPool.query(
+      `SELECT language FROM user_profile_data WHERE user_id = $1`,
+      [buddyUserId]
+    );
+    const lang = result.rows[0]?.language;
+    return lang || null;
+  } catch {
+    return null;
+  }
+}

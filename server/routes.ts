@@ -29,10 +29,10 @@ import {
   getOwnerBuddyRelation, getBuddyRelationsForUser, getPendingInvitesForEmail,
   getRelationById, updateBuddyPreferences, recordBuddyAction,
   getBuddyActionsForListing, getBuddyActionsForListings,
-  isOwnerSubscriptionActive, getRelationByOwnerAndBuddy, getOwnerNameForBuddy, lookupInviteByToken,
+  isOwnerSubscriptionActive, getRelationByOwnerAndBuddy, getOwnerNameForBuddy, lookupInviteByToken, getBuddyLanguage,
   type BuddyRelation,
 } from "./buddy";
-import { detectLanguage } from "./i18n";
+import { detectLanguage, isValidLocale } from "./i18n";
 import { computeMatchScore, getMatchReasons, computeHybridFilters } from "../shared/match-score";
 import { normalizeCity } from "../shared/city-normalize";
 import { pool as pgPool } from "./pg-pool";
@@ -355,7 +355,14 @@ export async function registerRoutes(
         const ownerName = ownerProfile
           ? [ownerProfile.first_name, ownerProfile.last_name].filter(Boolean).join(" ") || "HousAlert"
           : "HousAlert";
-        const lang = detectLanguage(req);
+        const ownerLang = detectLanguage(req);
+        let lang = ownerLang;
+        if (relation.buddy_user_id) {
+          const buddyStoredLang = await getBuddyLanguage(relation.buddy_user_id);
+          if (isValidLocale(buddyStoredLang)) {
+            lang = buddyStoredLang;
+          }
+        }
         sendBuddyRevokedEmail(relation.invite_email, ownerName, lang).catch((err: any) => {
           log(`[BUDDY] revoke email error: ${err.message}`);
         });
