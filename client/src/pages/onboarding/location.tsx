@@ -107,7 +107,7 @@ export default function OnboardingLocation() {
               {`${w ? "1" : "2"}/${w ? "2" : ONBOARDING_TOTAL_STEPS}`}
             </span>
             <span className="text-[20px] font-semibold" style={{ color: T.text }}>
-              Zoekopdracht maken
+              {t("newSearch.filters.headerTitle")}
             </span>
             <button
               onClick={handleClose}
@@ -122,7 +122,7 @@ export default function OnboardingLocation() {
 
         <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pb-[140px] min-h-0">
           <p className="text-[14px] font-medium" style={{ color: T.textSecondary, marginTop: "20px", marginBottom: "8px" }}>
-            Woonplaats
+            {t("onboarding.location.cityLabel")}
           </p>
           <button
             onClick={() => navigate(appendWebsiteParams("/onboarding/city", searchString))}

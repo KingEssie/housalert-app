@@ -467,13 +467,13 @@ export default function OnboardingFilters() {
   const PROPERTY_OPTIONS = [
     { value: "any", label: t("onboarding.propertyType.any") || "Egal" },
     { value: "apartment", label: t("onboarding.propertyType.apartment") || "Wohnung" },
-    { value: "house", label: t("onboarding.filters.house") || "Haus" },
+    { value: "house", label: t("newSearch.filters.house") || "Haus" },
   ];
 
   const FURNISHED_OPTIONS = [
-    { value: "any", label: t("onboarding.filters.furnishedAny") || "Egal" },
-    { value: "furnished", label: t("onboarding.filters.furnishedYes") || "Ja" },
-    { value: "unfurnished", label: t("onboarding.filters.furnishedNo") || "Nein" },
+    { value: "any", label: t("newSearch.filters.furnishedAny") || "Egal" },
+    { value: "furnished", label: t("newSearch.filters.furnishedYes") || "Ja" },
+    { value: "unfurnished", label: t("newSearch.filters.furnishedNo") || "Nein" },
   ];
 
   const sLabel = w ? "text-[15px] font-semibold mb-3 block" : "text-[13px] font-semibold mb-3 block";
@@ -482,7 +482,7 @@ export default function OnboardingFilters() {
     <div className="flex flex-col gap-6">
       <section>
         <label className={sLabel} style={{ color: T.text }}>
-          {t("onboarding.filters.rentLabel") || "Huurprijs"}
+          {t("newSearch.filters.rentLabel") || "Huurprijs"}
         </label>
         <DualRangeSlider
           min={0}
@@ -500,7 +500,7 @@ export default function OnboardingFilters() {
           <Toggle
             checked={f.priceFlexible}
             onChange={(v) => update({ priceFlexible: v })}
-            label={t("onboarding.filters.priceFlexible") || "Stuur ook iets duurdere perfecte matches"}
+            label={t("newSearch.filters.priceFlexible") || "Stuur ook iets duurdere perfecte matches"}
             testId="toggle-price-flexible"
             theme={T}
           />
@@ -511,7 +511,7 @@ export default function OnboardingFilters() {
 
       <section>
         <label className={sLabel} style={{ color: T.text }}>
-          {t("onboarding.filters.propertyTypeLabel") || "Woningtype"}
+          {t("newSearch.filters.propertyTypeLabel") || "Woningtype"}
         </label>
         <SegmentedControl
           options={PROPERTY_OPTIONS}
@@ -524,7 +524,7 @@ export default function OnboardingFilters() {
           <Toggle
             checked={f.includeRooms}
             onChange={(v) => update({ includeRooms: v })}
-            label={t("onboarding.filters.includeRooms") || "Zoek ook kamers / onzelfstandige woonruimte"}
+            label={t("newSearch.filters.includeRooms") || "Zoek ook kamers / onzelfstandige woonruimte"}
             testId="toggle-include-rooms"
             theme={T}
           />
@@ -535,7 +535,7 @@ export default function OnboardingFilters() {
 
       <section>
         <label className={sLabel} style={{ color: T.text }}>
-          {t("onboarding.filters.bedroomsLabel") || "Slaapkamers"}
+          {t("newSearch.filters.bedroomsLabel") || "Slaapkamers"}
         </label>
         <div
           className="flex gap-2 overflow-x-auto no-scrollbar"
@@ -566,7 +566,7 @@ export default function OnboardingFilters() {
       <section>
         <div className="flex items-center justify-between mb-3">
           <label className="text-[13px] font-semibold" style={{ color: T.text }}>
-            {t("onboarding.filters.minSizeLabel") || "Minimale oppervlakte"}
+            {t("newSearch.filters.minSizeLabel") || "Minimale oppervlakte"}
           </label>
           <button
             onClick={() => update({ sizeNA: !f.sizeNA, minSize: f.sizeNA ? 30 : 0 })}
@@ -578,7 +578,7 @@ export default function OnboardingFilters() {
             }}
             data-testid="button-size-na"
           >
-            n.v.t.
+            {t("common.na")}
           </button>
         </div>
         {!f.sizeNA && (
@@ -599,7 +599,7 @@ export default function OnboardingFilters() {
 
       <section>
         <label className={sLabel} style={{ color: T.text }}>
-          {t("onboarding.filters.furnishedLabel") || "Gemeubileerd"}
+          {t("newSearch.filters.furnishedLabel") || "Gemeubileerd"}
         </label>
         <SegmentedControl
           options={FURNISHED_OPTIONS}
@@ -614,7 +614,7 @@ export default function OnboardingFilters() {
 
       <section>
         <label className={sLabel} style={{ color: T.text }}>
-          {t("onboarding.filters.amenitiesLabel") || "Extra wensen"}
+          {t("newSearch.filters.amenitiesLabel") || "Extra wensen"}
         </label>
         <div className="flex flex-wrap gap-2" data-testid="amenity-chips">
           {AMENITY_OPTIONS.map(({ value, labelKey, fallback, icon: Icon }) => {
@@ -646,7 +646,7 @@ export default function OnboardingFilters() {
         <Toggle
           checked={f.sendUnclear}
           onChange={(v) => update({ sendUnclear: v })}
-          label={t("onboarding.filters.sendUnclear") || "Stuur ook woningen waarvan de criteria onduidelijk zijn"}
+          label={t("newSearch.filters.sendUnclear") || "Stuur ook woningen waarvan de criteria onduidelijk zijn"}
           testId="toggle-send-unclear"
           theme={T}
         />
@@ -678,7 +678,7 @@ export default function OnboardingFilters() {
           <div className="flex flex-col gap-6">
             <section>
               <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
-                {t("onboarding.filters.rentLabel") || "Huurprijs"}
+                {t("newSearch.filters.rentLabel") || "Huurprijs"}
               </label>
               <DualRangeSlider
                 min={0}
@@ -696,7 +696,7 @@ export default function OnboardingFilters() {
                 <WebToggle
                   checked={f.priceFlexible}
                   onChange={(v) => update({ priceFlexible: v })}
-                  label={t("onboarding.filters.priceFlexible") || "Stuur ook iets duurdere perfecte matches"}
+                  label={t("newSearch.filters.priceFlexible") || "Stuur ook iets duurdere perfecte matches"}
                   testId="toggle-price-flexible"
                 />
               </div>
@@ -706,7 +706,7 @@ export default function OnboardingFilters() {
 
             <section>
               <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
-                {t("onboarding.filters.propertyTypeLabel") || "Woningtype"}
+                {t("newSearch.filters.propertyTypeLabel") || "Woningtype"}
               </label>
               <WebPillGroup
                 options={PROPERTY_OPTIONS}
@@ -718,7 +718,7 @@ export default function OnboardingFilters() {
                 <WebToggle
                   checked={f.includeRooms}
                   onChange={(v) => update({ includeRooms: v })}
-                  label={t("onboarding.filters.includeRooms") || "Zoek ook kamers / onzelfstandige woonruimte"}
+                  label={t("newSearch.filters.includeRooms") || "Zoek ook kamers / onzelfstandige woonruimte"}
                   testId="toggle-include-rooms"
                 />
               </div>
@@ -728,7 +728,7 @@ export default function OnboardingFilters() {
 
             <section>
               <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
-                {t("onboarding.filters.bedroomsLabel") || "Slaapkamers"}
+                {t("newSearch.filters.bedroomsLabel") || "Slaapkamers"}
               </label>
               <div
                 className="flex gap-2 overflow-x-auto no-scrollbar"
@@ -759,7 +759,7 @@ export default function OnboardingFilters() {
             <section>
               <div className="flex items-center justify-between mb-3">
                 <label className="text-[15px] font-semibold" style={{ color: OBW.text }}>
-                  {t("onboarding.filters.minSizeLabel") || "Minimale oppervlakte"}
+                  {t("newSearch.filters.minSizeLabel") || "Minimale oppervlakte"}
                 </label>
                 <button
                   onClick={() => update({ sizeNA: !f.sizeNA, minSize: f.sizeNA ? 30 : 0 })}
@@ -771,7 +771,7 @@ export default function OnboardingFilters() {
                   }}
                   data-testid="button-size-na"
                 >
-                  n.v.t.
+                  {t("common.na")}
                 </button>
               </div>
               {!f.sizeNA && (
@@ -792,7 +792,7 @@ export default function OnboardingFilters() {
 
             <section>
               <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
-                {t("onboarding.filters.furnishedLabel") || "Gemeubileerd"}
+                {t("newSearch.filters.furnishedLabel") || "Gemeubileerd"}
               </label>
               <WebPillGroup
                 options={FURNISHED_OPTIONS}
@@ -806,7 +806,7 @@ export default function OnboardingFilters() {
 
             <section>
               <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
-                {t("onboarding.filters.amenitiesLabel") || "Extra wensen"}
+                {t("newSearch.filters.amenitiesLabel") || "Extra wensen"}
               </label>
               <div className="flex flex-wrap gap-2" data-testid="amenity-chips">
                 {AMENITY_OPTIONS.map(({ value, labelKey, fallback, icon: Icon }) => {
@@ -838,7 +838,7 @@ export default function OnboardingFilters() {
               <WebToggle
                 checked={f.sendUnclear}
                 onChange={(v) => update({ sendUnclear: v })}
-                label={t("onboarding.filters.sendUnclear") || "Stuur ook woningen waarvan de criteria onduidelijk zijn"}
+                label={t("newSearch.filters.sendUnclear") || "Stuur ook woningen waarvan de criteria onduidelijk zijn"}
                 testId="toggle-send-unclear"
               />
             </section>
@@ -859,7 +859,7 @@ export default function OnboardingFilters() {
 
   return (
     <OnboardingFlowLayout
-      flowTitle={t("onboarding.filters.headerTitle") || "Zoekopdracht maken"}
+      flowTitle={t("newSearch.filters.headerTitle")}
       currentStep={3}
       totalSteps={3}
       stepTitle={t("onboarding.filters.title") || "Stel je voorkeuren in"}

@@ -1,5 +1,6 @@
 export const nl: Record<string, any> = {
   common: {
+    na: "n.v.t.",
     loading: "Laden...",
     save: "Opslaan",
     cancel: "Annuleren",
@@ -662,6 +663,7 @@ export const nl: Record<string, any> = {
       },
     },
     location: {
+      cityLabel: "Woonplaats",
       headerTitle: "Locatie",
       title: "Waar zoek je?",
       subtitle: "Kies je stad en stel de zoekradius in.",

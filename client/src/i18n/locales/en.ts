@@ -1,5 +1,6 @@
 export const en: Record<string, any> = {
   common: {
+    na: "N/A",
     loading: "Loading...",
     save: "Save",
     cancel: "Cancel",
@@ -656,6 +657,7 @@ export const en: Record<string, any> = {
       },
     },
     location: {
+      cityLabel: "City",
       headerTitle: "Location",
       title: "Where are you looking?",
       subtitle: "Choose your city and set the search radius.",
