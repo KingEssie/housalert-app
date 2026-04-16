@@ -23,7 +23,7 @@ import {
   findUserByStripeCustomerId,
 } from "./subscriptions";
 import { log } from "./log";
-import { validateBuddyUnsubscribeToken, sendBuddyInvitationEmail, sendBuddyCollaborationEmail, sendBuddyRevokedEmail } from "./email";
+import { validateBuddyUnsubscribeToken, sendBuddyInvitationEmail, sendBuddyCollaborationEmail, sendBuddyRevokedEmail, sendBuddyRevokedOwnerEmail } from "./email";
 import {
   inviteBuddy, acceptInvite, revokeBuddy, revokeBuddyAsBuddy,
   getOwnerBuddyRelation, getBuddyRelationsForUser, getPendingInvitesForEmail,
@@ -347,25 +347,49 @@ export async function registerRoutes(
 
       const relation = await getRelationById(relationId);
 
-      const ok = await revokeBuddy(auth.user.id, relationId) || await revokeBuddyAsBuddy(auth.user.id, relationId);
-      if (!ok) return res.status(404).json({ error: "Not found or not authorized" });
+      const ownerRevoked = await revokeBuddy(auth.user.id, relationId);
+      const buddyRevoked = ownerRevoked ? false : await revokeBuddyAsBuddy(auth.user.id, relationId);
+      if (!ownerRevoked && !buddyRevoked) return res.status(404).json({ error: "Not found or not authorized" });
 
       if (relation?.invite_email && relation.invite_status === "accepted") {
-        const ownerProfile = await getOwnerNameForBuddy(auth.user.id);
-        const ownerName = ownerProfile
-          ? [ownerProfile.first_name, ownerProfile.last_name].filter(Boolean).join(" ") || "HousAlert"
-          : "HousAlert";
-        const ownerLang = detectLanguage(req);
-        let lang = ownerLang;
-        if (relation.buddy_user_id) {
-          const buddyStoredLang = await getBuddyLanguage(relation.buddy_user_id);
-          if (isValidLocale(buddyStoredLang)) {
-            lang = buddyStoredLang;
+        if (ownerRevoked) {
+          const ownerProfile = await getOwnerNameForBuddy(auth.user.id);
+          const ownerName = ownerProfile
+            ? [ownerProfile.first_name, ownerProfile.last_name].filter(Boolean).join(" ") || "HousAlert"
+            : "HousAlert";
+          const ownerLang = detectLanguage(req);
+          let lang = ownerLang;
+          if (relation.buddy_user_id) {
+            const buddyStoredLang = await getBuddyLanguage(relation.buddy_user_id);
+            if (isValidLocale(buddyStoredLang)) {
+              lang = buddyStoredLang;
+            }
           }
+          sendBuddyRevokedEmail(relation.invite_email, ownerName, lang).catch((err: any) => {
+            log(`[BUDDY] revoke email error: ${err.message}`);
+          });
+        } else {
+          (async () => {
+            try {
+              const adminSb = getSupabaseAdmin();
+              const { data: ownerAuthData } = await adminSb.auth.admin.getUserById(relation.owner_user_id);
+              const ownerEmail = ownerAuthData?.user?.email;
+              if (!ownerEmail) {
+                log(`[BUDDY] buddy-revoked-owner: no email found for owner ${relation.owner_user_id.substring(0, 8)}...`);
+                return;
+              }
+              const buddyProfile = await getOwnerNameForBuddy(auth.user.id);
+              const buddyName = buddyProfile
+                ? [buddyProfile.first_name, buddyProfile.last_name].filter(Boolean).join(" ") || relation.invite_email
+                : relation.invite_email;
+              const ownerStoredLang = await getBuddyLanguage(relation.owner_user_id);
+              const lang = isValidLocale(ownerStoredLang) ? ownerStoredLang : "nl";
+              await sendBuddyRevokedOwnerEmail(ownerEmail, buddyName, lang);
+            } catch (err: any) {
+              log(`[BUDDY] buddy-revoked-owner email error: ${err.message}`);
+            }
+          })();
         }
-        sendBuddyRevokedEmail(relation.invite_email, ownerName, lang).catch((err: any) => {
-          log(`[BUDDY] revoke email error: ${err.message}`);
-        });
       }
 
       return res.json({ ok: true });

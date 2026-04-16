@@ -843,3 +843,100 @@ export async function sendBuddyRevokedEmail(
     return false;
   }
 }
+
+export async function sendBuddyRevokedOwnerEmail(
+  ownerEmail: string,
+  buddyName: string,
+  lang: ServerLocale = "nl"
+): Promise<boolean> {
+  try {
+    const client = await getResendClient();
+    const baseUrl = getAppBaseUrl();
+
+    const subjects: Record<ServerLocale, string> = {
+      nl: `${buddyName} heeft zichzelf ontkoppeld als jouw Zoekbuddy`,
+      de: `${buddyName} hat sich als dein Suchbuddy getrennt`,
+      en: `${buddyName} has disconnected themselves as your Search Buddy`,
+    };
+
+    const htmlBodies: Record<ServerLocale, string> = {
+      nl: `
+<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.text};line-height:1.3;font-family:${FONT_STACK};">Zoekbuddy verbroken</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">
+  <strong>${escapeHtml(buddyName)}</strong> heeft zichzelf ontkoppeld als jouw Zoekbuddy.
+</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
+  Je hebt momenteel geen actieve Zoekbuddy meer. Je kunt een nieuwe uitnodiging sturen via je profielinstellingen.
+</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
+  <tr><td align="center">
+    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:16px;font-weight:600;text-decoration:none;padding:17px 32px;border-radius:18px;font-family:${FONT_STACK};">Ga naar HousAlert</a>
+  </td></tr>
+</table>`,
+      de: `
+<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.text};line-height:1.3;font-family:${FONT_STACK};">Suchbuddy getrennt</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">
+  <strong>${escapeHtml(buddyName)}</strong> hat sich als dein Suchbuddy getrennt.
+</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
+  Du hast derzeit keinen aktiven Suchbuddy. Du kannst eine neue Einladung über deine Profileinstellungen senden.
+</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
+  <tr><td align="center">
+    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:16px;font-weight:600;text-decoration:none;padding:17px 32px;border-radius:18px;font-family:${FONT_STACK};">Zu HousAlert</a>
+  </td></tr>
+</table>`,
+      en: `
+<p style="margin:0 0 6px;font-size:22px;font-weight:700;color:${C.text};line-height:1.3;font-family:${FONT_STACK};">Search Buddy disconnected</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.text};line-height:1.6;font-family:${FONT_STACK};">
+  <strong>${escapeHtml(buddyName)}</strong> has disconnected themselves as your Search Buddy.
+</p>
+<p style="margin:0 0 16px;font-size:15px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
+  You no longer have an active Search Buddy. You can send a new invitation from your profile settings.
+</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:24px 0;">
+  <tr><td align="center">
+    <a href="${baseUrl}" target="_blank" style="display:inline-block;background-color:${C.primary};color:${C.white} !important;font-size:16px;font-weight:600;text-decoration:none;padding:17px 32px;border-radius:18px;font-family:${FONT_STACK};">Go to HousAlert</a>
+  </td></tr>
+</table>`,
+    };
+
+    const textBodies: Record<ServerLocale, string> = {
+      nl: `Zoekbuddy verbroken\n\n${buddyName} heeft zichzelf ontkoppeld als jouw Zoekbuddy.\n\nJe hebt momenteel geen actieve Zoekbuddy meer. Je kunt een nieuwe uitnodiging sturen via je profielinstellingen.\n\nGa naar HousAlert: ${baseUrl}`,
+      de: `Suchbuddy getrennt\n\n${buddyName} hat sich als dein Suchbuddy getrennt.\n\nDu hast derzeit keinen aktiven Suchbuddy. Du kannst eine neue Einladung über deine Profileinstellungen senden.\n\nZu HousAlert: ${baseUrl}`,
+      en: `Search Buddy disconnected\n\n${buddyName} has disconnected themselves as your Search Buddy.\n\nYou no longer have an active Search Buddy. You can send a new invitation from your profile settings.\n\nGo to HousAlert: ${baseUrl}`,
+    };
+
+    const preheaders: Record<ServerLocale, string> = {
+      nl: `${buddyName} heeft zichzelf ontkoppeld als jouw Zoekbuddy`,
+      de: `${buddyName} hat sich als dein Suchbuddy getrennt`,
+      en: `${buddyName} has disconnected themselves as your Search Buddy`,
+    };
+
+    const subject = sanitizeSubject(subjects[lang] || subjects.en);
+    const htmlContent = htmlBodies[lang] || htmlBodies.en;
+    const textBody = textBodies[lang] || textBodies.en;
+    const preheader = preheaders[lang] || preheaders.en;
+
+    const senderConfig = await getEmailConfigAsync();
+    log(`[EMAIL SEND] buddy-revoked-owner from="${senderConfig.from}" reply_to="${senderConfig.replyTo}" to="${ownerEmail}" buddy="${buddyName}" lang=${lang}`);
+
+    const { data, error } = await finalEmailDispatch(client, {
+      to: ownerEmail,
+      subject,
+      text: textBody,
+      html: emailWrapper(htmlContent, preheader, lang),
+    }, "buddy-revoked-owner");
+
+    if (error) {
+      log(`[EMAIL FAIL] buddy-revoked-owner to=${ownerEmail} error=${error.message}`);
+      return false;
+    }
+
+    log(`[EMAIL OK] buddy-revoked-owner to=${ownerEmail} id=${(data as any)?.id || "N/A"}`);
+    return true;
+  } catch (err: any) {
+    log(`[EMAIL ERROR] buddy-revoked-owner to=${ownerEmail} err=${err.message}`);
+    return false;
+  }
+}
