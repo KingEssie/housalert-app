@@ -109,7 +109,7 @@ export default function OnboardingPreferences() {
           {t("onboarding.filters.specificWishesSubtitle")}
         </p>
 
-        <div className="mb-6">
+        <div className="mb-8">
           <OBInfoBox>
             {t("onboarding.filters.specificWishesWarning")}
           </OBInfoBox>
@@ -122,13 +122,13 @@ export default function OnboardingPreferences() {
               <button
                 key={opt.value}
                 onClick={() => toggleAmenity(opt.value)}
-                className="w-full flex items-center justify-between py-4 text-left transition-colors"
+                className="w-full flex items-center justify-between py-5 text-left transition-colors"
                 style={{
                   borderBottom: i < PREFERENCE_OPTIONS.length - 1 ? `1px solid ${OBW.divider}` : "none",
                 }}
                 data-testid={`preference-${opt.value}`}
               >
-                <span className="text-[14px]" style={{ color: OBW.text }}>
+                <span className="text-[15px]" style={{ color: OBW.text }}>
                   {opt.label}
                 </span>
                 <div
@@ -145,10 +145,10 @@ export default function OnboardingPreferences() {
           })}
         </div>
 
-        <div className="h-px my-5" style={{ backgroundColor: OBW.divider }} />
+        <div className="h-px my-8" style={{ backgroundColor: OBW.divider }} />
 
         <label
-          className="flex items-center gap-3 cursor-pointer py-2"
+          className="flex items-center gap-3 cursor-pointer py-3"
           data-testid="toggle-send-unclear"
           onClick={() => setSendUnclear(!sendUnclear)}
         >
@@ -161,7 +161,7 @@ export default function OnboardingPreferences() {
               style={{ transform: sendUnclear ? "translateX(18px)" : "translateX(0)" }}
             />
           </div>
-          <span className="text-[13px] leading-snug" style={{ color: OBW.text }}>
+          <span className="text-[14px] leading-snug" style={{ color: OBW.text }}>
             {t("onboarding.filters.sendUnclear")}
           </span>
         </label>

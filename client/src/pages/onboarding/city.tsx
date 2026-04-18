@@ -159,20 +159,20 @@ export default function OnboardingCity() {
 
         <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[100px] overflow-y-auto">
           <h2
-            className="text-[30px] font-semibold tracking-[-0.025em] mb-1"
+            className="text-[30px] font-semibold tracking-[-0.025em] mb-2"
             style={{ color: OBW.text }}
             data-testid="text-city-title"
           >
             {t("onboarding.location.title")}
           </h2>
           <p
-            className="text-[13px] mb-4 leading-relaxed"
+            className="text-[15px] mb-5 leading-relaxed"
             style={{ color: OBW.textSecondary }}
           >
             {t("onboarding.location.subtitle")}
           </p>
 
-          <div className="relative mb-2.5">
+          <div className="relative mb-4">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[16px] h-[16px]" style={{ color: OBW.textMuted }} />
             <input
               type="text"
@@ -198,15 +198,15 @@ export default function OnboardingCity() {
                 <button
                   key={city.name}
                   onClick={() => selectPresetCity(city)}
-                  className="w-full flex items-center gap-2.5 text-left transition-colors hover:bg-[#F7F7F7]"
+                  className="w-full flex items-center gap-3 text-left transition-colors hover:bg-[#F7F7F7]"
                   style={{
-                    padding: "10px 0",
+                    padding: "14px 0",
                     borderBottom: i < presetMatches.length - 1 ? `1px solid ${OBW.divider}` : "none",
                   }}
                   data-testid={`city-option-${city.name}`}
                 >
-                  <MapPin className="w-[16px] h-[16px] shrink-0" style={{ color: OBW.pink }} />
-                  <span className="text-[14px] font-medium" style={{ color: OBW.text }}>{city.name}</span>
+                  <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.pink }} />
+                  <span className="text-[16px] font-medium" style={{ color: OBW.text }}>{city.name}</span>
                 </button>
               ))}
 
@@ -214,25 +214,25 @@ export default function OnboardingCity() {
                   <button
                     key={r.placeId || i}
                     onClick={() => selectGeocoderCity(r)}
-                    className="w-full flex items-center gap-2.5 text-left transition-colors hover:bg-[#F7F7F7]"
+                    className="w-full flex items-center gap-3 text-left transition-colors hover:bg-[#F7F7F7]"
                     style={{
-                      padding: "10px 0",
+                      padding: "14px 0",
                       borderBottom: `1px solid ${OBW.divider}`,
                     }}
                     data-testid={`city-nominatim-${i}`}
                   >
-                    <MapPin className="w-[16px] h-[16px] shrink-0" style={{ color: OBW.pink }} />
+                    <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.pink }} />
                     <div>
-                      <span className="text-[14px] font-medium block" style={{ color: OBW.text }}>{r.city}</span>
+                      <span className="text-[16px] font-medium block" style={{ color: OBW.text }}>{r.city}</span>
                       {r.label !== r.city && (
-                        <span className="text-[12px]" style={{ color: OBW.textSecondary }}>{r.label.replace(`${r.city}, `, "")}</span>
+                        <span className="text-[13px]" style={{ color: OBW.textSecondary }}>{r.label.replace(`${r.city}, `, "")}</span>
                       )}
                     </div>
                   </button>
               ))}
 
               {presetMatches.length === 0 && geocoder.results.length === 0 && !geocoder.loading && search.trim().length >= 3 && (
-                <p className="text-[13px] text-center py-4" style={{ color: OBW.textSecondary }}>
+                <p className="text-[15px] text-center py-5" style={{ color: OBW.textSecondary }}>
                   {t("onboardingLocation.noResults")}
                 </p>
               )}

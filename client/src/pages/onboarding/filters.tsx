@@ -47,7 +47,7 @@ function WebToggle({
           }}
         />
       </div>
-      <span className="text-[13px] leading-snug" style={{ color: OBW.text }}>{label}</span>
+      <span className="text-[14px] leading-snug" style={{ color: OBW.text }}>{label}</span>
     </label>
   );
 }
@@ -718,7 +718,7 @@ export default function OnboardingFilters() {
                 testId="slider-rent-price"
                 theme={OBW}
               />
-              <div className="mt-3">
+              <div className="mt-5">
                 <WebToggle
                   checked={f.priceFlexible}
                   onChange={(v) => update({ priceFlexible: v })}
@@ -740,7 +740,7 @@ export default function OnboardingFilters() {
                 onChange={(v) => update({ propertyType: v })}
                 testId="property-type"
               />
-              <div className="mt-4">
+              <div className="mt-6">
                 <WebToggle
                   checked={f.includeRooms}
                   onChange={(v) => update({ includeRooms: v })}
@@ -767,7 +767,7 @@ export default function OnboardingFilters() {
             <div className="h-px bg-[#F0F0F0]" />
 
             <section>
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-4">
                 <label className="text-[15px] font-semibold" style={{ color: OBW.text }}>
                   {t("onboarding.filters.minSizeLabel")}
                 </label>

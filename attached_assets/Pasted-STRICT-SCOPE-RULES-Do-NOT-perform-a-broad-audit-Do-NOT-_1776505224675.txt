@@ -1,0 +1,76 @@
+STRICT SCOPE RULES:
+- Do NOT perform a broad audit
+- Do NOT inspect all locale files
+- Do NOT do a full i18n review
+- Do NOT review unrelated pages
+- Do NOT change routing or onboarding architecture
+- Do NOT touch paywall logic
+- Do NOT make extra improvements outside this request
+- Work only in the files listed below
+- If another file is absolutely required, stop and report it first
+- Apply the smallest possible safe UI changes
+- Keep token/cost usage minimal
+
+Task:
+Refine the mobile UI of the website onboarding flow based on visual feedback.
+
+Work ONLY in these files:
+- client/src/pages/onboarding/city.tsx
+- client/src/pages/onboarding/filters.tsx
+- client/src/pages/onboarding/preferences.tsx
+- client/src/components/onboarding-ui.tsx
+
+Scope:
+- Website mode only wherever possible
+- Do not change app-direct flow unless a shared spacing/text-size style requires a very safe isolated tweak
+
+Requested UI changes:
+
+1. GLOBAL TEXT SIZE INCREASE
+- Increase text size across the website onboarding screens
+- This applies especially to:
+  - list items in step 1 city list
+  - grey helper/subtitle text
+  - labels above fields
+  - option text inside fields/dropdowns
+  - body copy inside info boxes
+- Keep headings strong, but make supporting text more readable on mobile
+
+2. GLOBAL VERTICAL SPACING INCREASE
+- Increase vertical spacing throughout the website onboarding screens
+- Add more space:
+  - between heading and subtitle
+  - between subtitle and first field
+  - between fields/sections
+  - between labels and their inputs
+  - between list rows in step 1
+  - between preference rows in step 3
+- Goal: less cramped, more premium, easier to scan on mobile
+
+3. STEP 1 — CITY LIST IMPROVEMENTS
+- Make the city row text larger
+- Increase vertical padding on each city row
+- Make the location icons noticeably larger
+- Make the grey placeholder/helper text larger
+- Preserve the current structure and behavior
+
+4. STEP 2 — FILTERS LAYOUT FIXES
+- Keep dropdowns where they already replaced pill controls
+- Move “Stuur ook iets duurdere perfecte matches” clearly lower so it sits as its own row beneath the rent section
+- Move “Zoek ook naar kamers / onzelfstandige woonruimtes” clearly lower so it sits as its own row beneath the relevant dropdown section
+- Make these toggle rows feel separate and not visually jammed into the controls above
+- Increase spacing around sliders, dropdowns, and toggle rows
+- Increase label sizes and field text sizes
+- Preserve all current logic and values
+
+5. STEP 3 — PREFERENCES SPACING
+- Increase vertical spacing between preference rows significantly
+- Add more spacing above and below the pink info box
+- Add more spacing above the final toggle section
+- Improve readability of the list by making row text slightly larger
+- Preserve the current order and logic
+
+6. DO NOT TOUCH THESE
+- Do not change match count yet
+- Do not change copy text content unless absolutely required for layout only
+-
