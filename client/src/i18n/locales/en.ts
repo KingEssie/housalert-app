@@ -758,7 +758,12 @@ export const en: Record<string, any> = {
     balcony: "Balcony",
     garden: "Garden",
     rooftop: "Rooftop terrace",
-    energyC: "Energy label C+",
+    energyC: "Energy class C+",
+  },
+
+  onboardingUI: {
+    estimatedMatches: "Estimated matches",
+    perWeek: "per week",
   },
 
   onboarding: {

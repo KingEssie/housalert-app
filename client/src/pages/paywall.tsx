@@ -323,7 +323,7 @@ export default function PaywallPage() {
 
   async function handleCheckout() {
     if (!user) {
-      navigate(`/signup?plan=${selectedPlan}`);
+      navigate(`/welcome`);
       return;
     }
 

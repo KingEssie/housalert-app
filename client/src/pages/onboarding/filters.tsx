@@ -273,9 +273,9 @@ function DualRangeSlider({
 const AMENITY_OPTIONS = [
   { value: "bath", labelKey: "amenities.bath", fallback: "Bad", icon: Bath },
   { value: "balcony", labelKey: "amenities.balcony", fallback: "Balkon", icon: Sun },
-  { value: "garden", labelKey: "amenities.garden", fallback: "Tuin", icon: Trees },
-  { value: "rooftop", labelKey: "amenities.rooftop", fallback: "Dakterras", icon: Sun },
-  { value: "energy_c", labelKey: "amenities.energyC", fallback: "Energielabel C+", icon: Leaf },
+  { value: "garden", labelKey: "amenities.garden", fallback: "Garten", icon: Trees },
+  { value: "rooftop", labelKey: "amenities.rooftop", fallback: "Dachterrasse", icon: Sun },
+  { value: "energy_c", labelKey: "amenities.energyC", fallback: "Energieklasse C+", icon: Leaf },
 ];
 
 interface FilterData {

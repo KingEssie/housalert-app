@@ -1,4 +1,5 @@
 import { useHashSearch } from "@/lib/hash-search";
+import { useTranslation } from "@/i18n";
 
 export const ONBOARDING_TOTAL_STEPS = 3;
 
@@ -161,6 +162,7 @@ export function OBWebFooter({
   backTestId?: string;
   nextTestId?: string;
 }) {
+  const { t } = useTranslation();
   return (
     <div
       className="fixed bottom-0 left-0 right-0 z-30"
@@ -169,10 +171,10 @@ export function OBWebFooter({
       <div className="max-w-[480px] mx-auto px-5 py-2.5 flex items-center gap-3">
         <div className="flex-1 min-w-0">
           <p className="text-[10px] font-semibold tracking-[0.06em]" style={{ color: OBW.textMuted }}>
-            Geschatte matches
+            {t("onboardingUI.estimatedMatches")}
           </p>
           <p className="text-[16px] font-semibold flex items-center gap-1" style={{ color: OBW.text }}>
-            {matchCount} per week <span className="text-[13px]">🔥</span>
+            {matchCount} {t("onboardingUI.perWeek")} <span className="text-[13px]">🔥</span>
           </p>
         </div>
         {onBack && (

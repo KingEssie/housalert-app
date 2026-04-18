@@ -767,6 +767,11 @@ export const nl: Record<string, any> = {
     energyC: "Energielabel C+",
   },
 
+  onboardingUI: {
+    estimatedMatches: "Geschatte matches",
+    perWeek: "per week",
+  },
+
   onboarding: {
     step: "{step}/{total}",
     intro: {

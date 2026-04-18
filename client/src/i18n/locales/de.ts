@@ -757,7 +757,12 @@ export const de: Record<string, any> = {
     balcony: "Balkon",
     garden: "Garten",
     rooftop: "Dachterrasse",
-    energyC: "Energielabel C+",
+    energyC: "Energieklasse C+",
+  },
+
+  onboardingUI: {
+    estimatedMatches: "Geschätzte Matches",
+    perWeek: "pro Woche",
   },
 
   onboarding: {
