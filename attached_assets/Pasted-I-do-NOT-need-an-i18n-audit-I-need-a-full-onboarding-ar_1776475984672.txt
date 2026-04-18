@@ -1,0 +1,67 @@
+I do NOT need an i18n audit.
+
+I need a full onboarding architecture audit.
+
+Please analyze the current codebase and give me a structured report about onboarding only.
+
+Return the answer in this exact structure:
+
+1. ACTIVE ONBOARDING ROUTES
+- List every onboarding-related route/path currently in use
+- Include page/component file names
+- Mark which routes are active in production flow
+
+2. LEGACY / UNUSED ONBOARDING ROUTES
+- List old, duplicate, unused, or conflicting onboarding routes
+- Include why they appear unused or conflicting
+
+3. ENTRY POINTS INTO ONBOARDING
+- Show every place a user can enter onboarding
+- Website
+- Welcome page
+- Login/signup
+- Protected route redirect
+- Any other entry point
+
+4. EXACT CURRENT FLOW
+- Show the exact current onboarding flow step by step
+- Start from first entry point
+- Include redirects, guards, and branching logic
+- Explain what happens for:
+  a) logged out user
+  b) logged in but incomplete onboarding
+  c) logged in with complete onboarding
+
+5. SOURCE OF TRUTH
+- Which files control onboarding flow and redirect behavior?
+- Which flags/fields determine onboarding progress?
+- Where are those flags stored and updated?
+
+6. STEP PAGES
+- List the actual current step pages in order
+- Show which page is step 1, 2, 3, etc.
+- Include file paths
+
+7. WEBSITE VS APP FLOW
+- Is there currently a separate website onboarding flow and app onboarding flow?
+- If yes, explain the difference clearly
+- Identify duplication or overlap
+
+8. BROKEN OR RISKY LOGIC
+- Any 404 risks
+- Any routes referenced that do not exist
+- Any redirect loops
+- Any stale/old funnel pages still reachable
+
+9. RECOMMENDED CLEAN STRUCTURE
+- Based on the current codebase, recommend the simplest onboarding architecture
+- Clearly state:
+  - what should stay
+  - what should be removed
+  - what should be the single onboarding flow
+
+Important:
+Do not change code yet.
+Do not work on translations.
+Do not summarize broadly.
+I want a precise onboarding architecture report with file names, route paths, and clear conclusions.
