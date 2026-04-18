@@ -436,7 +436,7 @@ function WelcomeStep({ onNext, t }: {
 
       <div className="rounded-[6px] bg-white p-5 border border-[#E5E7EB]" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "#FFFFFF" }}>
-          <p className="text-[17px] font-semibold text-[#111111] mb-3">Welkom!</p>
+          <p className="text-[17px] font-semibold text-[#111111] mb-3">{t("onboardingFlow.welcome.greeting")}</p>
           <p className="text-[16px] leading-[1.65] text-[#111111]" style={{ whiteSpace: "pre-line" }}>
             {t("onboardingFlow.welcome.speechBody")}
           </p>

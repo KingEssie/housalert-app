@@ -1,4 +1,12 @@
 export const nl: Record<string, any> = {
+  passwordRules: {
+    prefix: "Jouw wachtwoord heeft minimaal",
+    chars: "8 karakters",
+    uppercase: "1 hoofdletter",
+    andWord: "en",
+    digit: "1 cijfer",
+    suffix: " nodig",
+  },
   common: {
     na: "n.v.t.",
     loading: "Laden...",
@@ -886,6 +894,7 @@ export const nl: Record<string, any> = {
       house: "Huis",
       includeRooms: "Zoek ook naar kamers / onzelfstandige woonruimtes",
       bedroomsLabel: "Slaapkamers",
+      doesntMatter: "Maakt niet uit",
       minSizeLabel: "Minimale oppervlakte",
       furnishedLabel: "Gemeubileerd",
       furnishedAny: "Maakt niet uit",
@@ -2538,6 +2547,7 @@ export const nl: Record<string, any> = {
       infoDesc: "Geen risico — je kunt altijd opzeggen. Probeer het en ontdek hoe veel sneller je een woning vindt.",
     },
     welcome: {
+      greeting: "Welkom!",
       title: "Laten we samen HousAlert instellen!",
       cooRole: "COO, HousAlert",
       subtitle: "Nog een paar korte stappen en je HousAlert-account is volledig ingesteld.",

@@ -1,0 +1,81 @@
+Please execute Phase 3A onboarding UX fixes for the existing website onboarding flow only.
+
+Scope:
+- website mode only
+- routes starting from /onboarding/city?source=website
+- do not change architecture
+- do not change the overall step order
+- do not touch app-direct flow unless a shared component requires a safe styling fix
+
+Goals:
+1. Replace pill-based selection UI with dropdown/select inputs where requested
+2. Fix untranslated i18n keys that are visibly rendering in the website onboarding flow
+3. Increase vertical spacing and breathing room throughout the website onboarding steps
+4. Improve readability of step 3 specific preferences list
+
+Make the following changes:
+
+1. STEP 1 — CITY / RADIUS
+- In website mode only, replace the radius pill selector with a dropdown/select input
+- Keep the same radius options and behavior
+- Do not change app mode behavior unless necessary
+
+2. STEP 2 — FILTERS
+- In website mode only, replace pill/chip selectors with dropdown/select controls wherever appropriate
+- Specifically review and convert:
+  - property type
+  - bedrooms
+  - furnished
+  - any other pill-based choice that is better represented as a dropdown
+- Keep toggle/switch controls as toggles where that still makes sense
+- Preserve current data handling and query/output structure
+
+3. FIX TRANSLATION KEY RENDERING
+- Find and fix all visible untranslated i18n keys currently showing in the website onboarding flow
+- Examples seen in UI:
+  - newSearch.filters.title
+  - newSearch.filters.subtitle
+  - newSearch.filters.rentLabel
+  - newSearch.filters.propertyTypeLabel
+  - newSearch.filters.house
+  - newSearch.filters.includeRooms
+  - newSearch.filters.minSizeLabel
+  - newSearch.filters.furnishedLabel
+  - newSearch.filters.furnishedAny
+  - newSearch.filters.furnishedYes
+  - newSearch.filters.furnishedNo
+  - newSearch.filters.amenitiesLabel
+  - newSearch.filters.sendUnclear
+  - onboarding.filters.doesntMatter
+  - onboarding.filters.bedrooms
+- Either connect the UI to existing correct translation keys or add the missing keys properly in locale files
+- Ensure DE, EN, and NL all render correctly
+
+4. STEP 3 — PREFERENCES SPACING
+- Increase vertical spacing between preference rows/items
+- Increase spacing around the explanatory info box
+- Increase spacing before the final toggle section
+- Keep the UI clean and mobile-friendly
+
+5. GLOBAL WEBSITE ONBOARDING SPACING
+- Add more vertical spacing across website onboarding pages
+- Increase space between labels and fields
+- Increase section spacing
+- Do this carefully so the flow still fits well on mobile and the sticky footer remains usable
+
+Important constraints:
+- Website mode only wherever possible
+- Do not change routing
+- Do not change onboarding architecture
+- Do not change paywall flow
+- Do not redesign branding/colors
+- Do not touch match count yet
+- Do not add new steps
+
+After changes, return:
+1. files changed
+2. exact components/pages updated
+3. which pill controls were converted to dropdowns
+4. which missing/broken translation keys were fixed
+5. summary of spacing changes
+6. confirmation that website flow logic is unchanged

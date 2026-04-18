@@ -1,4 +1,12 @@
 export const en: Record<string, any> = {
+  passwordRules: {
+    prefix: "Your password needs at least",
+    chars: "8 characters",
+    uppercase: "1 uppercase letter",
+    andWord: "and",
+    digit: "1 digit",
+    suffix: "",
+  },
   common: {
     na: "N/A",
     loading: "Loading...",
@@ -880,6 +888,7 @@ export const en: Record<string, any> = {
       house: "House",
       includeRooms: "Also search for rooms / shared housing",
       bedroomsLabel: "Bedrooms",
+      doesntMatter: "Doesn't matter",
       minSizeLabel: "Minimum area",
       furnishedLabel: "Furnished",
       furnishedAny: "Any",
@@ -1846,6 +1855,7 @@ export const en: Record<string, any> = {
       infoDesc: "No risk — you can cancel anytime. Give it a try and discover how much faster you find a home.",
     },
     welcome: {
+      greeting: "Welcome!",
       title: "Let's set up HousAlert together!",
       cooRole: "COO, HousAlert",
       subtitle: "Just a few more steps and your HousAlert account will be fully set up.",

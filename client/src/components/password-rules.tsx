@@ -1,4 +1,5 @@
 import { validatePassword } from "@/lib/password-validation";
+import { useTranslation } from "@/i18n";
 
 interface PasswordRulesProps {
   password: string;
@@ -6,6 +7,7 @@ interface PasswordRulesProps {
 }
 
 export function PasswordRules({ password, className }: PasswordRulesProps) {
+  const { t } = useTranslation();
   if (password.length === 0) return null;
   const v = validatePassword(password);
   const count = [v.hasLength, v.hasUppercase, v.hasNumber].filter(Boolean).length;
@@ -25,13 +27,13 @@ export function PasswordRules({ password, className }: PasswordRulesProps) {
         />
       </div>
       <p className="text-[12px] leading-snug text-[#6B7280]">
-        Jouw wachtwoord heeft minimaal{" "}
-        <span className="font-medium" style={{ color: v.hasLength ? "#16A34A" : "#E11D48" }}>8 karakters</span>
+        {t("passwordRules.prefix")}{" "}
+        <span className="font-medium" style={{ color: v.hasLength ? "#16A34A" : "#E11D48" }}>{t("passwordRules.chars")}</span>
         {", "}
-        <span className="font-medium" style={{ color: v.hasUppercase ? "#16A34A" : "#E11D48" }}>1 hoofdletter</span>
-        {" en "}
-        <span className="font-medium" style={{ color: v.hasNumber ? "#16A34A" : "#E11D48" }}>1 cijfer</span>
-        {" nodig"}
+        <span className="font-medium" style={{ color: v.hasUppercase ? "#16A34A" : "#E11D48" }}>{t("passwordRules.uppercase")}</span>
+        {" "}{t("passwordRules.andWord")}{" "}
+        <span className="font-medium" style={{ color: v.hasNumber ? "#16A34A" : "#E11D48" }}>{t("passwordRules.digit")}</span>
+        {t("passwordRules.suffix")}
       </p>
     </div>
   );

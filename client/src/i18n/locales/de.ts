@@ -1,4 +1,12 @@
 export const de: Record<string, any> = {
+  passwordRules: {
+    prefix: "Dein Passwort benötigt mindestens",
+    chars: "8 Zeichen",
+    uppercase: "1 Großbuchstaben",
+    andWord: "und",
+    digit: "1 Ziffer",
+    suffix: "",
+  },
   common: {
     na: "Nicht zutreffend",
     loading: "Laden...",
@@ -879,6 +887,7 @@ export const de: Record<string, any> = {
       house: "Haus",
       includeRooms: "Auch Zimmer / unselbständige Wohnräume suchen",
       bedroomsLabel: "Schlafzimmer",
+      doesntMatter: "Egal",
       minSizeLabel: "Mindestfläche",
       furnishedLabel: "Möbliert",
       furnishedAny: "Egal",
@@ -2364,6 +2373,7 @@ export const de: Record<string, any> = {
       infoDesc: "Kein Risiko — du kannst jederzeit kündigen. Probiere es aus und entdecke, wie viel schneller du eine Wohnung findest.",
     },
     welcome: {
+      greeting: "Willkommen!",
       title: "Lass uns HousAlert zusammen einrichten!",
       cooRole: "COO, HousAlert",
       subtitle: "Noch ein paar kurze Schritte und dein HousAlert-Konto ist vollständig eingerichtet.",

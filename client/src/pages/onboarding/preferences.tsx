@@ -99,17 +99,17 @@ export default function OnboardingPreferences() {
 
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[100px] overflow-y-auto">
         <h2
-          className="text-[30px] font-semibold tracking-[-0.025em] mb-1"
+          className="text-[30px] font-semibold tracking-[-0.025em] mb-2"
           style={{ color: OBW.text }}
           data-testid="text-preferences-title"
         >
           {t("onboarding.filters.specificWishesTitle")}
         </h2>
-        <p className="text-[13px] mb-4 leading-relaxed" style={{ color: OBW.textSecondary }}>
+        <p className="text-[14px] mb-6 leading-relaxed" style={{ color: OBW.textSecondary }}>
           {t("onboarding.filters.specificWishesSubtitle")}
         </p>
 
-        <div className="mb-4">
+        <div className="mb-6">
           <OBInfoBox>
             {t("onboarding.filters.specificWishesWarning")}
           </OBInfoBox>
@@ -122,7 +122,7 @@ export default function OnboardingPreferences() {
               <button
                 key={opt.value}
                 onClick={() => toggleAmenity(opt.value)}
-                className="w-full flex items-center justify-between py-2.5 text-left transition-colors"
+                className="w-full flex items-center justify-between py-4 text-left transition-colors"
                 style={{
                   borderBottom: i < PREFERENCE_OPTIONS.length - 1 ? `1px solid ${OBW.divider}` : "none",
                 }}
@@ -145,10 +145,10 @@ export default function OnboardingPreferences() {
           })}
         </div>
 
-        <div className="h-px my-3" style={{ backgroundColor: OBW.divider }} />
+        <div className="h-px my-5" style={{ backgroundColor: OBW.divider }} />
 
         <label
-          className="flex items-center gap-3 cursor-pointer py-1"
+          className="flex items-center gap-3 cursor-pointer py-2"
           data-testid="toggle-send-unclear"
           onClick={() => setSendUnclear(!sendUnclear)}
         >

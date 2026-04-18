@@ -52,6 +52,32 @@ function WebToggle({
   );
 }
 
+function WebSelect({
+  options,
+  value,
+  onChange,
+  testId,
+}: {
+  options: { value: string; label: string }[];
+  value: string;
+  onChange: (v: string) => void;
+  testId: string;
+}) {
+  return (
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="w-full h-[48px] rounded-[8px] border border-[#E5E7EB] bg-white px-4 text-[15px] text-[#111111] outline-none appearance-none cursor-pointer focus:border-[rgb(var(--ha-primary))] focus:ring-1 focus:ring-[rgba(217,26,104,0.15)] transition-all"
+      style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23334855' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 14px center" }}
+      data-testid={testId}
+    >
+      {options.map((opt) => (
+        <option key={opt.value} value={opt.value}>{opt.label}</option>
+      ))}
+    </select>
+  );
+}
+
 function WebPillGroup({
   options,
   value,
@@ -467,13 +493,13 @@ export default function OnboardingFilters() {
   const PROPERTY_OPTIONS = [
     { value: "any", label: t("onboarding.filters.doesntMatter") },
     { value: "apartment", label: t("onboarding.propertyType.apartment") },
-    { value: "house", label: t("newSearch.filters.house") },
+    { value: "house", label: t("onboarding.filters.house") },
   ];
 
   const FURNISHED_OPTIONS = [
-    { value: "any", label: t("newSearch.filters.furnishedAny") },
-    { value: "furnished", label: t("newSearch.filters.furnishedYes") },
-    { value: "unfurnished", label: t("newSearch.filters.furnishedNo") },
+    { value: "any", label: t("onboarding.filters.furnishedAny") },
+    { value: "furnished", label: t("onboarding.filters.furnishedYes") },
+    { value: "unfurnished", label: t("onboarding.filters.furnishedNo") },
   ];
 
   const sLabel = w ? "text-[15px] font-semibold mb-3 block" : "text-[13px] font-semibold mb-3 block";
@@ -482,7 +508,7 @@ export default function OnboardingFilters() {
     <div className="flex flex-col gap-6">
       <section>
         <label className={sLabel} style={{ color: T.text }}>
-          {t("newSearch.filters.rentLabel")}
+          {t("onboarding.filters.rentLabel")}
         </label>
         <DualRangeSlider
           min={0}
@@ -500,7 +526,7 @@ export default function OnboardingFilters() {
           <Toggle
             checked={f.priceFlexible}
             onChange={(v) => update({ priceFlexible: v })}
-            label={t("newSearch.filters.priceFlexible")}
+            label={t("onboarding.filters.priceFlexible")}
             testId="toggle-price-flexible"
             theme={T}
           />
@@ -511,7 +537,7 @@ export default function OnboardingFilters() {
 
       <section>
         <label className={sLabel} style={{ color: T.text }}>
-          {t("newSearch.filters.propertyTypeLabel")}
+          {t("onboarding.filters.propertyTypeLabel")}
         </label>
         <SegmentedControl
           options={PROPERTY_OPTIONS}
@@ -524,7 +550,7 @@ export default function OnboardingFilters() {
           <Toggle
             checked={f.includeRooms}
             onChange={(v) => update({ includeRooms: v })}
-            label={t("newSearch.filters.includeRooms")}
+            label={t("onboarding.filters.includeRooms")}
             testId="toggle-include-rooms"
             theme={T}
           />
@@ -535,7 +561,7 @@ export default function OnboardingFilters() {
 
       <section>
         <label className={sLabel} style={{ color: T.text }}>
-          {t("onboarding.filters.bedrooms")}
+          {t("onboarding.filters.bedroomsLabel")}
         </label>
         <div
           className="flex gap-2 overflow-x-auto no-scrollbar"
@@ -566,7 +592,7 @@ export default function OnboardingFilters() {
       <section>
         <div className="flex items-center justify-between mb-3">
           <label className="text-[13px] font-semibold" style={{ color: T.text }}>
-            {t("newSearch.filters.minSizeLabel")}
+            {t("onboarding.filters.minSizeLabel")}
           </label>
           <button
             onClick={() => update({ sizeNA: !f.sizeNA, minSize: f.sizeNA ? 30 : 0 })}
@@ -599,7 +625,7 @@ export default function OnboardingFilters() {
 
       <section>
         <label className={sLabel} style={{ color: T.text }}>
-          {t("newSearch.filters.furnishedLabel")}
+          {t("onboarding.filters.furnishedLabel")}
         </label>
         <SegmentedControl
           options={FURNISHED_OPTIONS}
@@ -614,7 +640,7 @@ export default function OnboardingFilters() {
 
       <section>
         <label className={sLabel} style={{ color: T.text }}>
-          {t("newSearch.filters.amenitiesLabel")}
+          {t("onboarding.filters.amenitiesLabel")}
         </label>
         <div className="flex flex-wrap gap-2" data-testid="amenity-chips">
           {AMENITY_OPTIONS.map(({ value, labelKey, fallback, icon: Icon }) => {
@@ -646,7 +672,7 @@ export default function OnboardingFilters() {
         <Toggle
           checked={f.sendUnclear}
           onChange={(v) => update({ sendUnclear: v })}
-          label={t("newSearch.filters.sendUnclear")}
+          label={t("onboarding.filters.sendUnclear")}
           testId="toggle-send-unclear"
           theme={T}
         />
@@ -665,20 +691,20 @@ export default function OnboardingFilters() {
 
         <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[120px] overflow-y-auto">
           <h2
-            className="text-[28px] font-semibold tracking-[-0.025em] mb-1"
+            className="text-[30px] font-semibold tracking-[-0.025em] mb-2"
             style={{ color: OBW.text }}
             data-testid="text-filters-title"
           >
-            {t("newSearch.filters.title")}
+            {t("onboarding.filters.title")}
           </h2>
-          <p className="text-[14px] mb-7 leading-relaxed" style={{ color: OBW.textSecondary }}>
-            {t("newSearch.filters.subtitle")}
+          <p className="text-[14px] mb-8 leading-relaxed" style={{ color: OBW.textSecondary }}>
+            {t("onboarding.filters.subtitle")}
           </p>
 
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-8">
             <section>
-              <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
-                {t("newSearch.filters.rentLabel")}
+              <label className="text-[15px] font-semibold mb-4 block" style={{ color: OBW.text }}>
+                {t("onboarding.filters.rentLabel")}
               </label>
               <DualRangeSlider
                 min={0}
@@ -696,7 +722,7 @@ export default function OnboardingFilters() {
                 <WebToggle
                   checked={f.priceFlexible}
                   onChange={(v) => update({ priceFlexible: v })}
-                  label={t("newSearch.filters.priceFlexible")}
+                  label={t("onboarding.filters.priceFlexible")}
                   testId="toggle-price-flexible"
                 />
               </div>
@@ -705,20 +731,20 @@ export default function OnboardingFilters() {
             <div className="h-px bg-[#F0F0F0]" />
 
             <section>
-              <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
-                {t("newSearch.filters.propertyTypeLabel")}
+              <label className="text-[15px] font-semibold mb-4 block" style={{ color: OBW.text }}>
+                {t("onboarding.filters.propertyTypeLabel")}
               </label>
-              <WebPillGroup
+              <WebSelect
                 options={PROPERTY_OPTIONS}
                 value={f.propertyType}
                 onChange={(v) => update({ propertyType: v })}
                 testId="property-type"
               />
-              <div className="mt-3">
+              <div className="mt-4">
                 <WebToggle
                   checked={f.includeRooms}
                   onChange={(v) => update({ includeRooms: v })}
-                  label={t("newSearch.filters.includeRooms")}
+                  label={t("onboarding.filters.includeRooms")}
                   testId="toggle-include-rooms"
                 />
               </div>
@@ -727,31 +753,15 @@ export default function OnboardingFilters() {
             <div className="h-px bg-[#F0F0F0]" />
 
             <section>
-              <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
-                {t("onboarding.filters.bedrooms")}
+              <label className="text-[15px] font-semibold mb-4 block" style={{ color: OBW.text }}>
+                {t("onboarding.filters.bedroomsLabel")}
               </label>
-              <div
-                className="flex gap-2 overflow-x-auto no-scrollbar"
-                data-testid="rooms-selector"
-              >
-                {ROOM_OPTIONS.map((opt) => {
-                  const active = f.minRooms === opt.value;
-                  return (
-                    <button
-                      key={opt.value}
-                      onClick={() => update({ minRooms: opt.value })}
-                      className="h-[40px] px-4 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96] shrink-0"
-                      style={{
-                        backgroundColor: active ? "rgb(var(--ha-primary))" : "#F3F4F6",
-                        color: active ? "#fff" : OBW.textSecondary,
-                      }}
-                      data-testid={`rooms-${opt.value}`}
-                    >
-                      {opt.label}
-                    </button>
-                  );
-                })}
-              </div>
+              <WebSelect
+                options={ROOM_OPTIONS}
+                value={f.minRooms}
+                onChange={(v) => update({ minRooms: v })}
+                testId="rooms-selector"
+              />
             </section>
 
             <div className="h-px bg-[#F0F0F0]" />
@@ -759,7 +769,7 @@ export default function OnboardingFilters() {
             <section>
               <div className="flex items-center justify-between mb-3">
                 <label className="text-[15px] font-semibold" style={{ color: OBW.text }}>
-                  {t("newSearch.filters.minSizeLabel")}
+                  {t("onboarding.filters.minSizeLabel")}
                 </label>
                 <button
                   onClick={() => update({ sizeNA: !f.sizeNA, minSize: f.sizeNA ? 30 : 0 })}
@@ -791,10 +801,10 @@ export default function OnboardingFilters() {
             <div className="h-px bg-[#F0F0F0]" />
 
             <section>
-              <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
-                {t("newSearch.filters.furnishedLabel")}
+              <label className="text-[15px] font-semibold mb-4 block" style={{ color: OBW.text }}>
+                {t("onboarding.filters.furnishedLabel")}
               </label>
-              <WebPillGroup
+              <WebSelect
                 options={FURNISHED_OPTIONS}
                 value={f.furnished}
                 onChange={(v) => update({ furnished: v })}
@@ -806,7 +816,7 @@ export default function OnboardingFilters() {
 
             <section>
               <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
-                {t("newSearch.filters.amenitiesLabel")}
+                {t("onboarding.filters.amenitiesLabel")}
               </label>
               <div className="flex flex-wrap gap-2" data-testid="amenity-chips">
                 {AMENITY_OPTIONS.map(({ value, labelKey, fallback, icon: Icon }) => {
@@ -838,7 +848,7 @@ export default function OnboardingFilters() {
               <WebToggle
                 checked={f.sendUnclear}
                 onChange={(v) => update({ sendUnclear: v })}
-                label={t("newSearch.filters.sendUnclear")}
+                label={t("onboarding.filters.sendUnclear")}
                 testId="toggle-send-unclear"
               />
             </section>
@@ -859,11 +869,11 @@ export default function OnboardingFilters() {
 
   return (
     <OnboardingFlowLayout
-      flowTitle={t("newSearch.filters.headerTitle")}
+      flowTitle={t("onboarding.filters.headerTitle")}
       currentStep={3}
       totalSteps={3}
-      stepTitle={t("newSearch.filters.title")}
-      stepDescription={t("newSearch.filters.subtitle")}
+      stepTitle={t("onboarding.filters.title")}
+      stepDescription={t("onboarding.filters.subtitle")}
       onBack={handleBack}
       onNext={handleNext}
       onClose={handleClose}

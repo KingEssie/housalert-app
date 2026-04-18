@@ -241,29 +241,23 @@ export default function OnboardingCity() {
 
           {selectedCity && (
             <>
-              <div style={{ marginTop: "4px" }}>
-                <label className="text-[13px] font-semibold mb-2 block" style={{ color: OBW.textSecondary }}>
+              <div style={{ marginTop: "8px" }}>
+                <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
                   {t("onboardingLocation.radiusAround", { city: selectedCity.name })}
                 </label>
-                <div className="flex gap-2 overflow-x-auto no-scrollbar" data-testid="select-radius">
-                  {RADIUS_OPTIONS.map((km) => {
-                    const active = radiusKm === km;
-                    return (
-                      <button
-                        key={km}
-                        onClick={() => setRadiusKm(km)}
-                        className="h-[40px] px-4 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96] shrink-0"
-                        style={{
-                          backgroundColor: active ? "rgb(var(--ha-primary))" : "#F3F4F6",
-                          color: active ? "#fff" : "#334855",
-                        }}
-                        data-testid={`radius-${km}`}
-                      >
-                        {km} km
-                      </button>
-                    );
-                  })}
-                </div>
+                <select
+                  value={radiusKm}
+                  onChange={(e) => setRadiusKm(Number(e.target.value))}
+                  className="w-full h-[48px] rounded-[8px] border border-[#E5E7EB] bg-white px-4 text-[15px] text-[#111111] outline-none appearance-none cursor-pointer focus:border-[rgb(var(--ha-primary))] focus:ring-1 focus:ring-[rgba(217,26,104,0.15)] transition-all"
+                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23334855' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 14px center" }}
+                  data-testid="select-radius"
+                >
+                  {RADIUS_OPTIONS.map((km) => (
+                    <option key={km} value={km} data-testid={`radius-${km}`}>
+                      {km} km
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="mt-3" data-testid="location-map">
