@@ -1,0 +1,101 @@
+Implement one central listing-image fallback across the entire product using the provided custom placeholder image.
+
+GOAL:
+Whenever a property/listing has no usable image, the app and emails must show the same dark-blue branded placeholder image instead of an empty box, broken image, or random default.
+
+USE THIS IMAGE AS THE ONLY FALLBACK ASSET
+- Register the provided custom placeholder image as a shared app asset
+- Use a single canonical asset path / reference
+- Do not duplicate multiple placeholder implementations
+
+==================================================
+WHEN TO USE THE FALLBACK
+==================================================
+
+Use the placeholder if:
+1. the listing has no image field
+2. the image array is empty
+3. the primary image is null / undefined / empty string
+4. the image URL fails to load
+5. the email template cannot render a valid listing image
+
+==================================================
+WHERE IT MUST APPLY
+==================================================
+
+Apply the same fallback consistently in all relevant places:
+
+APP
+- matches cards
+- favorites cards
+- discover / search result cards
+- any other listing card components
+- listing detail hero / gallery if no images exist
+- buddy mode listing cards too, if they reuse the same components
+
+EMAILS
+- match alert emails
+- any listing card blocks inside emails
+- any digest / notification email where listing images are shown
+
+==================================================
+IMPLEMENTATION REQUIREMENTS
+==================================================
+
+1. Create or update a shared image-rendering pattern
+Prefer a reusable component/helper such as:
+- ListingImage
+or
+- getListingImageWithFallback()
+
+2. App behavior
+- if listing image exists and loads: show normal image
+- if missing or broken: show the custom placeholder
+
+3. Email behavior
+- if listing image exists and is valid: use it
+- otherwise: use the same placeholder asset URL
+- do not leave empty blank image areas
+
+4. Broken image handling
+In the app, make sure broken remote URLs also switch to the placeholder via onError logic.
+
+5. Visual consistency
+Do not stretch or distort the placeholder.
+Make it fit the same container style as normal property images.
+
+==================================================
+QA CHECKS
+==================================================
+
+Verify all these cases:
+
+1. Listing with valid image
+- normal image renders
+
+2. Listing with no image
+- placeholder renders
+
+3. Listing with empty image array
+- placeholder renders
+
+4. Listing with broken image URL
+- placeholder renders after load failure
+
+5. Email card with no image
+- placeholder renders in email output
+
+6. Listing detail page with no images
+- placeholder is shown cleanly instead of broken gallery/empty state
+
+==================================================
+OUTPUT
+==================================================
+
+Return:
+1. where the placeholder asset was stored
+2. all files/components updated
+3. what shared helper/component was created or reused
+4. confirmation of all app locations covered
+5. confirmation of all email locations covered
+6. confirmation that broken image URLs also fall back correctly

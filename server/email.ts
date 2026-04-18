@@ -249,10 +249,9 @@ function listingCard(listing: ListingInfo, showButton = false, cardNumber?: numb
 
   const fallbackImageHtml = `<tr><td style="padding:0;line-height:0;font-size:0;">
         <a href="${escapeHtml(linkTarget)}" target="_blank" style="text-decoration:none;">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F3F4F6;">
-            <tr><td align="center" style="padding:48px 24px;">
-              <img src="https://app.housalert.com/email-logo-v2.png" alt="HousAlert" width="48" height="48" style="display:block;width:48px;height:48px;border-radius:10px;opacity:0.4;margin:0 auto 12px;" />
-              <p style="margin:0;font-size:13px;color:#9CA3AF;font-family:${FONT_STACK};font-weight:500;">${listing.city ? escapeHtml(listing.city) : "HousAlert"}</p>
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#EDF2F7;">
+            <tr><td align="center" style="padding:20px 0;">
+              <img src="${baseUrl}/listing-placeholder.png" alt="" width="160" style="display:block;width:160px;height:auto;margin:0 auto;" />
             </td></tr>
           </table>
         </a>
