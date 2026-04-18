@@ -67,8 +67,8 @@ function WebSelect({
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full h-[48px] rounded-[8px] border border-[#E5E7EB] bg-white px-4 text-[15px] text-[#111111] outline-none appearance-none cursor-pointer focus:border-[rgb(var(--ha-primary))] focus:ring-1 focus:ring-[rgba(217,26,104,0.15)] transition-all"
-      style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23334855' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 14px center" }}
+      className="w-full ha-select-web"
+      style={{ borderColor: "#E5E7EB", color: "#111111", backgroundColor: "#ffffff" }}
       data-testid={testId}
     >
       {options.map((opt) => (
@@ -718,14 +718,6 @@ export default function OnboardingFilters() {
                 testId="slider-rent-price"
                 theme={OBW}
               />
-              <div className="mt-5">
-                <WebToggle
-                  checked={f.priceFlexible}
-                  onChange={(v) => update({ priceFlexible: v })}
-                  label={t("onboarding.filters.priceFlexible")}
-                  testId="toggle-price-flexible"
-                />
-              </div>
             </section>
 
             <div className="h-px bg-[#F0F0F0]" />
@@ -815,27 +807,30 @@ export default function OnboardingFilters() {
             <div className="h-px bg-[#F0F0F0]" />
 
             <section>
-              <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
+              <label className="text-[15px] font-semibold mb-2 block" style={{ color: OBW.text }}>
                 {t("onboarding.filters.amenitiesLabel")}
               </label>
-              <div className="flex flex-wrap gap-2" data-testid="amenity-chips">
-                {AMENITY_OPTIONS.map(({ value, labelKey, fallback, icon: Icon }) => {
+              <div className="flex flex-col" data-testid="amenity-chips">
+                {AMENITY_OPTIONS.map(({ value, labelKey, fallback }, i) => {
                   const active = f.amenities.includes(value);
                   return (
                     <button
                       key={value}
                       onClick={() => toggleAmenity(value)}
-                      className="flex items-center gap-1.5 h-[40px] px-4 rounded-full text-[13px] font-medium border transition-all active:scale-[0.96]"
-                      style={{
-                        backgroundColor: active ? OB.pink : "#F9FAFB",
-                        borderColor: active ? OB.pink : "#E5E7EB",
-                        color: active ? "#fff" : OBW.textSecondary,
-                      }}
+                      className="w-full flex items-center justify-between py-4 text-left transition-colors"
+                      style={{ borderBottom: i < AMENITY_OPTIONS.length - 1 ? `1px solid ${OBW.divider}` : "none" }}
                       data-testid={`amenity-${value}`}
                     >
-                      {active && <Check className="w-3 h-3" />}
-                      <Icon className="w-3.5 h-3.5" />
-                      {t(labelKey) || fallback}
+                      <span className="text-[15px]" style={{ color: OBW.text }}>{t(labelKey) || fallback}</span>
+                      <div
+                        className="w-[18px] h-[18px] rounded-[3px] flex items-center justify-center shrink-0"
+                        style={{
+                          border: active ? "none" : `1.5px solid ${OBW.chipBorder}`,
+                          backgroundColor: active ? "rgb(var(--ha-primary))" : "transparent",
+                        }}
+                      >
+                        {active && <Check className="w-3 h-3 text-white" />}
+                      </div>
                     </button>
                   );
                 })}
@@ -844,12 +839,12 @@ export default function OnboardingFilters() {
 
             <div className="h-px bg-[#F0F0F0]" />
 
-            <section className="flex flex-col gap-3">
+            <section>
               <WebToggle
-                checked={f.sendUnclear}
-                onChange={(v) => update({ sendUnclear: v })}
-                label={t("onboarding.filters.sendUnclear")}
-                testId="toggle-send-unclear"
+                checked={f.priceFlexible}
+                onChange={(v) => update({ priceFlexible: v })}
+                label={t("onboarding.filters.priceFlexible")}
+                testId="toggle-price-flexible"
               />
             </section>
           </div>

@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { Search, MapPin, Loader2 } from "lucide-react";
 import { defaultCities } from "../../../../config/market";
-import { OBW, OBWebHeader, OBWebFooter, OBInfoBox, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
+import { OBW, OBWebHeader, OBWebFooter, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 import { OnboardingFlowLayout } from "@/components/onboarding-flow-layout";
 import MapView from "@/components/map-view";
 import { useGeocoderSearch } from "@/hooks/use-geocoder-search";
@@ -248,8 +248,8 @@ export default function OnboardingCity() {
                 <select
                   value={radiusKm}
                   onChange={(e) => setRadiusKm(Number(e.target.value))}
-                  className="w-full h-[48px] rounded-[8px] border border-[#E5E7EB] bg-white px-4 text-[15px] text-[#111111] outline-none appearance-none cursor-pointer focus:border-[rgb(var(--ha-primary))] focus:ring-1 focus:ring-[rgba(217,26,104,0.15)] transition-all"
-                  style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23334855' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 14px center" }}
+                  className="w-full ha-select-web"
+                  style={{ borderColor: OBW.inputBorder, color: OBW.text, backgroundColor: OBW.inputBg }}
                   data-testid="select-radius"
                 >
                   {RADIUS_OPTIONS.map((km) => (
@@ -271,11 +271,6 @@ export default function OnboardingCity() {
                 />
               </div>
 
-              <div className="mt-3">
-                <OBInfoBox>
-                  {t("onboardingLocation.radiusInfo").replace("{km}", String(radiusKm)).replace("{city}", selectedCity.name)}
-                </OBInfoBox>
-              </div>
             </>
           )}
         </main>

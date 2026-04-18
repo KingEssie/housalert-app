@@ -1,0 +1,86 @@
+STRICT SCOPE RULES:
+- Do NOT perform a broad audit
+- Do NOT inspect all locale files
+- Do NOT do a full i18n review
+- Do NOT review unrelated pages
+- Do NOT change routing or onboarding architecture
+- Do NOT touch paywall flow logic
+- Do NOT make extra improvements outside this request
+- Work only in the files listed below
+- If another file is absolutely required, stop and report it first
+- Apply the smallest possible safe UI changes
+- Keep token/cost usage minimal
+
+Task:
+Apply the next website onboarding UI fixes based on product feedback.
+
+Work ONLY in these files:
+- client/src/pages/onboarding/city.tsx
+- client/src/pages/onboarding/filters.tsx
+- client/src/pages/onboarding/preferences.tsx
+- client/src/pages/onboarding/password.tsx
+
+Scope:
+- Website mode only wherever possible
+- Do not change app-direct flow unless a shared component requires a very safe isolated tweak
+
+Requested changes:
+
+1. STEP 1 — MAKE INPUTS/DROPDOWNS VISUALLY CONSISTENT
+- Use the city search input as the visual standard for all fields and dropdowns in website onboarding
+- Match the same overall feel as closely as possible:
+  - height
+  - vertical padding
+  - horizontal padding
+  - border radius
+  - font size
+  - visual weight
+- Specifically fix the radius dropdown under “Straal rondom Berlin” so it visually matches the city search field much more closely
+- Apply this consistency to the website-mode dropdowns in later steps too, where appropriate
+
+2. STEP 1 — REMOVE THE TEXT UNDER THE MAP
+- Remove the explanatory text block under the map entirely
+- Preserve all underlying city/radius/map logic
+- This is a layout/content removal only
+
+3. STEP 2 — MOVE “STUUR OOK IETS DUURDERE PERFECTE MATCHES” TO THE BOTTOM
+- Move this toggle row so it appears much lower in the screen as a separate extra option
+- It should not sit directly under the rent slider anymore
+- Place it near the bottom of step 2 where extra options feel more natural
+
+4. STEP 2 — REMOVE THE “STUUR MIJ WONINGEN WAARBIJ MIJN EISEN NIET DUIDELIJK STAAN” TOGGLE
+- Remove this toggle from step 2 entirely
+- It already appears in step 3, so it is duplicate and unnecessary here
+- Do not remove it from step 3
+
+5. STEP 2 — CHANGE “OVERIGE WENSEN” FROM PILLS TO A CHECKBOX LIST
+- Replace the current pill/chip UI for “Overige wensen” with a vertical checkbox list
+- Make it visually consistent with the checkbox list style used in step 3 (“Specifieke woonwensen”)
+- Keep the same options and data behavior
+- This is a presentation/UI change, not a logic change
+
+6. ACCOUNT CREATION SCREEN — IMPROVE THE MATCHES INFO BOX
+- On the website-mode account creation screen, restyle the “Er waren afgelopen week 121 woningen beschikbaar...” message so it feels more like the stronger Rentbird-style summary card shown in the reference
+- Goal:
+  - larger visual impact
+  - clearer hierarchy
+  - more premium and persuasive
+- Keep the same core message and logic
+- Improve layout, spacing, box styling, and emphasis
+- Do not redesign the full page, only improve this summary/info section
+
+7. KEEP THESE CONSTRAINTS
+- Do not touch match count logic yet
+- Do not change step order
+- Do not change field logic or data structure
+- Do not perform unrelated copy rewrites
+- Do not touch translations unless one of these exact files requires a small direct fix for this UI work
+
+After changes, return ONLY:
+1. files changed
+2. exact UI elements changed
+3. what was removed
+4. what was moved
+5. what was restyled
+6. whether any extra file was required
+7. confirmation that no broader audit was done

@@ -264,10 +264,21 @@ export default function OnboardingPassword() {
             </div>
           )}
 
-          <div className="mb-4">
-            <OBInfoBox>
-              {t("onboarding.password.web.infoBox").replace("{city}", city || t("onboarding.password.web.yourRegion"))}
-            </OBInfoBox>
+          <div
+            className="rounded-[10px] overflow-hidden mb-5"
+            style={{ border: "1px solid rgba(217,26,104,0.2)" }}
+            data-testid="match-summary-card"
+          >
+            <div className="px-5 pt-5 pb-4" style={{ background: "linear-gradient(135deg, rgba(217,26,104,0.07) 0%, rgba(217,26,104,0.02) 100%)" }}>
+              <div className="flex items-end gap-2 mb-2">
+                <span className="text-[36px] font-bold leading-none" style={{ color: "rgb(var(--ha-primary))" }}>121</span>
+                <span className="text-[22px] leading-none mb-0.5">🔥</span>
+                <span className="text-[13px] font-semibold pb-1" style={{ color: "rgb(var(--ha-primary))" }}>{t("onboardingUI.perWeek")}</span>
+              </div>
+              <p className="text-[13px] leading-[1.55]" style={{ color: OBW.textSecondary }}>
+                {t("onboarding.password.web.infoBox").replace("{city}", city || t("onboarding.password.web.yourRegion"))}
+              </p>
+            </div>
           </div>
 
           <div className="flex flex-col gap-2.5">
