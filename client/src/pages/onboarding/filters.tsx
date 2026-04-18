@@ -697,13 +697,13 @@ export default function OnboardingFilters() {
           >
             {t("onboarding.filters.title")}
           </h2>
-          <p className="text-[15px] mb-8 leading-relaxed" style={{ color: OBW.textSecondary }}>
+          <p className="text-[15px] mb-6 leading-relaxed" style={{ color: OBW.textSecondary }}>
             {t("onboarding.filters.subtitle")}
           </p>
 
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-6">
             <section>
-              <label className="text-[16px] font-semibold mb-4 block" style={{ color: OBW.text }}>
+              <label className="text-[16px] font-semibold mb-3 block" style={{ color: OBW.text }}>
                 {t("onboarding.filters.rentLabel")}
               </label>
               <DualRangeSlider
@@ -723,7 +723,7 @@ export default function OnboardingFilters() {
             <div className="h-px bg-[#F0F0F0]" />
 
             <section>
-              <label className="text-[16px] font-semibold mb-4 block" style={{ color: OBW.text }}>
+              <label className="text-[16px] font-semibold mb-3 block" style={{ color: OBW.text }}>
                 {t("onboarding.filters.propertyTypeLabel")}
               </label>
               <WebSelect
@@ -737,7 +737,7 @@ export default function OnboardingFilters() {
             <div className="h-px bg-[#F0F0F0]" />
 
             <section>
-              <label className="text-[16px] font-semibold mb-4 block" style={{ color: OBW.text }}>
+              <label className="text-[16px] font-semibold mb-3 block" style={{ color: OBW.text }}>
                 {t("onboarding.filters.bedroomsLabel")}
               </label>
               <WebSelect
@@ -751,7 +751,7 @@ export default function OnboardingFilters() {
             <div className="h-px bg-[#F0F0F0]" />
 
             <section>
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-3">
                 <label className="text-[16px] font-semibold" style={{ color: OBW.text }}>
                   {t("onboarding.filters.minSizeLabel")}
                 </label>
@@ -785,7 +785,7 @@ export default function OnboardingFilters() {
             <div className="h-px bg-[#F0F0F0]" />
 
             <section>
-              <label className="text-[16px] font-semibold mb-4 block" style={{ color: OBW.text }}>
+              <label className="text-[16px] font-semibold mb-3 block" style={{ color: OBW.text }}>
                 {t("onboarding.filters.furnishedLabel")}
               </label>
               <WebSelect
@@ -809,7 +809,7 @@ export default function OnboardingFilters() {
                     <button
                       key={value}
                       onClick={() => toggleAmenity(value)}
-                      className="w-full flex items-center justify-between py-4 text-left transition-colors"
+                      className="w-full flex items-center justify-between py-3 text-left transition-colors"
                       style={{ borderBottom: i < AMENITY_OPTIONS.length - 1 ? `1px solid ${OBW.divider}` : "none" }}
                       data-testid={`amenity-${value}`}
                     >
