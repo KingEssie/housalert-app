@@ -303,7 +303,7 @@ export default function WelcomePage() {
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
             <span className="text-[13px] font-semibold" style={{ color: "#334855" }}>
-              {t("v2.welcome.or") || "OF"}
+              {t("v2.welcome.or")}
             </span>
             <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
           </div>

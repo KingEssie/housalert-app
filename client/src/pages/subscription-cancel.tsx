@@ -3,13 +3,19 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AppHeader } from "@/components/ui/app-header";
 import { AlertCircle, CheckCircle2, MessageSquare } from "lucide-react";
-import { useTranslation } from "@/i18n";
+import { useTranslation, type Locale } from "@/i18n";
 import { apiFetch } from "@/lib/api-base";
 import { supabase } from "@/lib/supabase";
 
-function formatDate(dateStr: string | null | undefined, fallback: string): string {
+function localeToIntl(locale: Locale): string {
+  if (locale === "de") return "de-DE";
+  if (locale === "nl") return "nl-NL";
+  return "en-GB";
+}
+
+function formatDate(dateStr: string | null | undefined, fallback: string, intlLocale: string): string {
   if (!dateStr) return fallback;
-  return new Date(dateStr).toLocaleDateString("de-DE", {
+  return new Date(dateStr).toLocaleDateString(intlLocale, {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -25,7 +31,7 @@ const REASON_OPTIONS = [
 
 export function SubscriptionCancelConfirmPage() {
   const [, navigate] = useLocation();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [step, setStep] = useState<"confirm" | "feedback">("confirm");
   const [selectedReason, setSelectedReason] = useState<string | null>(null);
   const [reasonText, setReasonText] = useState("");
@@ -43,7 +49,7 @@ export function SubscriptionCancelConfirmPage() {
     queryKey: ["/api/subscription/status"],
   });
 
-  const renewalDate = formatDate(subscription?.current_period_ends_at || subscription?.trial_ends_at, t("subscription.futureDate"));
+  const renewalDate = formatDate(subscription?.current_period_ends_at || subscription?.trial_ends_at, t("subscription.futureDate"), localeToIntl(locale));
 
   async function submitFeedback() {
     if (!selectedReason) return;
@@ -185,7 +191,7 @@ export function SubscriptionCancelConfirmPage() {
 
 export function SubscriptionCancelledPage() {
   const [, navigate] = useLocation();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   const { data: subscription } = useQuery<{
     status: string;
@@ -199,7 +205,7 @@ export function SubscriptionCancelledPage() {
     queryKey: ["/api/subscription/status"],
   });
 
-  const renewalDate = formatDate(subscription?.current_period_ends_at || subscription?.trial_ends_at, t("subscription.futureDate"));
+  const renewalDate = formatDate(subscription?.current_period_ends_at || subscription?.trial_ends_at, t("subscription.futureDate"), localeToIntl(locale));
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#eaeaeb" }} data-testid="page-cancelled">

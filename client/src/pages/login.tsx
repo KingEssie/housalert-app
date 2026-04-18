@@ -138,7 +138,7 @@ export default function LoginPage() {
             {t("auth.login.title")}
           </h1>
           <p className="text-[16px] text-white/80 leading-relaxed">
-            {}
+            {t("auth.login.subtitle")}
           </p>
         </div>
       </div>
@@ -234,7 +234,7 @@ export default function LoginPage() {
           <div className="flex items-center gap-3 my-5">
             <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
             <span className="text-[13px] font-semibold" style={{ color: "#334855" }}>
-              {}
+              {t("auth.login.or")}
             </span>
             <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
           </div>
@@ -253,7 +253,7 @@ export default function LoginPage() {
             }}
             data-testid="link-signup"
           >
-            {}
+            {t("auth.login.newToHousAlert")}
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
