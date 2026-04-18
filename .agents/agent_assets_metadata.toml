@@ -1,5 +1,10 @@
 uploads = []
-generated = []
+
+[[generated]]
+id = "D9YgKQ1OAPf3rjLODl5k-"
+uri = "file://attached_assets/listing-placeholder.png"
+type = "image"
+title = "generated_image"
 
 [[outputs]]
 id = "kTDoaE0M-H15JWaPVacLL"
@@ -24,3 +29,9 @@ id = "1U94rBUwPNDCVoPogplQI"
 uri = "file://.local/task-audit.md"
 type = "text"
 title = "Task Flow Audit Report"
+
+[[outputs]]
+id = "aohAMEMXgAtY2MzsOXum1"
+uri = "file://attached_assets/listing-placeholder.png"
+type = "image"
+title = "Listing Placeholder Illustration"

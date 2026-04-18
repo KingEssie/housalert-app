@@ -1,4 +1,5 @@
-import { Home, Building2, BedDouble } from "lucide-react";
+import { BedDouble } from "lucide-react";
+import placeholderImg from "@assets/listing-placeholder.png";
 
 type ListingType = "room" | "apartment" | "house";
 
@@ -39,12 +40,6 @@ function detectListingType(title?: string, source?: string): ListingType {
   return "apartment";
 }
 
-const ICON_MAP: Record<ListingType, typeof Home> = {
-  room: BedDouble,
-  apartment: Building2,
-  house: Home,
-};
-
 interface ListingFallbackProps {
   title?: string;
   source?: string;
@@ -54,38 +49,51 @@ interface ListingFallbackProps {
 
 export function ListingFallback({ title, source, city, size = "full" }: ListingFallbackProps) {
   const type = detectListingType(title, source);
-  const Icon = ICON_MAP[type];
+  const isRoom = type === "room";
 
-  const iconSizes: Record<string, string> = {
-    mini: "w-5 h-5",
-    compact: "w-8 h-8",
-    full: "w-10 h-10",
-    hero: "w-14 h-14",
-  };
-
-  const showLocation = size !== "mini" && city;
-  const showSource = size !== "mini" && source;
-  const showBrand = size === "full" || size === "hero";
+  if (isRoom) {
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-[#F9FAFB] to-[#F1F3F5] select-none" data-testid="listing-fallback">
+        <div className="flex flex-col items-center gap-1.5">
+          <div className="rounded-2xl bg-white/80 p-3 shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
+            <BedDouble
+              className={size === "mini" ? "w-5 h-5" : size === "compact" ? "w-8 h-8" : size === "hero" ? "w-14 h-14" : "w-10 h-10"}
+              strokeWidth={1.5}
+              style={{ color: "#334855" }}
+            />
+          </div>
+          {(size === "full" || size === "hero") && (
+            <span className="text-[10px] font-semibold tracking-[0.04em] text-[#d91a68]/40 uppercase mt-1">HousAlert</span>
+          )}
+          {size !== "mini" && city && (
+            <span className="text-[11px] font-medium text-[#B0B5BE] truncate max-w-[80%]">{city}</span>
+          )}
+          {size !== "mini" && source && (
+            <span className="text-[10px] text-[#C4C8CE] truncate max-w-[80%]">{formatSourceLabel(source)}</span>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-[#F9FAFB] to-[#F1F3F5] select-none" data-testid="listing-fallback">
-      <div className="flex flex-col items-center gap-1.5">
-        <div className="rounded-2xl bg-white/80 p-3 shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
-          <Icon className={`${iconSizes[size]} text-[#334855]`} strokeWidth={1.5} />
+    <div className="w-full h-full relative overflow-hidden select-none bg-[#EDF2F7]" data-testid="listing-fallback">
+      <img
+        src={placeholderImg}
+        alt=""
+        className="w-full h-full object-cover object-center"
+        draggable={false}
+      />
+      {size !== "mini" && (city || source) && (
+        <div className="absolute bottom-0 left-0 right-0 px-3 py-2 bg-gradient-to-t from-[#1a2d45]/40 to-transparent">
+          {city && (
+            <span className="text-[11px] font-medium text-white/80 truncate block">{city}</span>
+          )}
+          {source && (
+            <span className="text-[10px] text-white/55 truncate block">{formatSourceLabel(source)}</span>
+          )}
         </div>
-
-        {showBrand && (
-          <span className="text-[10px] font-semibold tracking-[0.04em] text-[#d91a68]/40 uppercase mt-1">HousAlert</span>
-        )}
-
-        {showLocation && (
-          <span className="text-[11px] font-medium text-[#B0B5BE] truncate max-w-[80%]">{city}</span>
-        )}
-
-        {showSource && (
-          <span className="text-[10px] text-[#C4C8CE] truncate max-w-[80%]">{formatSourceLabel(source!)}</span>
-        )}
-      </div>
+      )}
     </div>
   );
 }
