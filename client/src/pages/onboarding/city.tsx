@@ -378,7 +378,7 @@ export default function OnboardingCity() {
             className="text-[13px] font-medium px-3 py-1.5 rounded-lg transition-colors hover:bg-[#F9FAFB] text-[#334855]"
             data-testid="button-city-change"
           >
-            Wijzig
+            {t("common.edit")}
           </button>
         </div>
       )}
