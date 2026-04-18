@@ -47,7 +47,8 @@ export default function OnboardingPreferences() {
     outParams.set("sendUnclear", String(sendUnclear));
 
     if (w) {
-      const accountUrl = new URL("https://app.housalert.com/onboarding/password");
+      const appBase = import.meta.env.VITE_APP_URL || window.location.origin;
+      const accountUrl = new URL(`${appBase}/onboarding/password`);
       accountUrl.searchParams.set("source", "website");
       accountUrl.searchParams.set("theme", "light");
       outParams.forEach((value, key) => {

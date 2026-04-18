@@ -14,7 +14,6 @@ import { useBuddyConnections, isBuddyMode } from "@/lib/buddy";
 
 const IS_NATIVE = isNativePlatform();
 import WelcomePage from "@/pages/welcome";
-import SignupPage from "@/pages/signup";
 import DashboardPage from "@/pages/dashboard";
 import NewSearchPage from "@/pages/new-search";
 import NotFound from "@/pages/not-found";
@@ -209,7 +208,6 @@ function Router() {
       <Route path="/" component={RootRoute} />
       <Route path="/login" component={() => <GuestRoute component={WelcomePage} />} />
       <Route path="/welcome" component={() => <GuestRoute component={WelcomePage} />} />
-      <Route path="/signup" component={SignupPage} />
       <Route path="/auth/callback" component={AuthCallbackPage} />
       <Route path="/forgot-password" component={ForgotPasswordPage} />
       <Route path="/reset-password" component={ResetPasswordPage} />
@@ -224,9 +222,6 @@ function Router() {
       <Route path="/onboarding/password" component={() => <WebFunnelRoute component={OnboardingPasswordNew} />} />
       <Route path="/onboarding/preferences" component={() => <WebFunnelRoute component={OnboardingPreferencesNew} />} />
       <Route path="/onboarding/setup" component={() => <ProtectedRoute component={OnboardingSetup} skipOnboardingCheck />} />
-      <Route path="/onboarding/continue" component={() => <Redirect to="/onboarding/setup" />} />
-      <Route path="/onboarding/estimate" component={() => <Redirect to="/onboarding/setup" />} />
-      <Route path="/onboarding/value" component={() => <Redirect to="/onboarding/setup" />} />
       <Route path="/onboarding" component={() => <Redirect to="/onboarding/intro" />} />
       <Route path="/paywall" component={PaywallPage} />
       <Route path="/subscription-success" component={() => <ProtectedRoute component={SubscriptionSuccessPage} skipOnboardingCheck />} />

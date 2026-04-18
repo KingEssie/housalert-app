@@ -12,6 +12,8 @@ type LocationMode = "city" | "districts" | "radius";
 
 const RADIUS_OPTIONS = [2, 5, 10, 15, 25, 50];
 
+// App-flow only: this step is skipped in website mode.
+// In website mode, city.tsx bundles the radius selection and navigates directly to /onboarding/filters.
 export default function OnboardingLocation() {
   const { t } = useTranslation();
   const [, navigate] = useLocation();
