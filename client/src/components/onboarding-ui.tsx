@@ -34,11 +34,11 @@ export const OB = {
 export const OBW = {
   gradient: "#ffffff",
   headerBg: "#ffffff",
-  headerBorder: "#E5E7EB",
+  headerBorder: "#D1D5DB",
   card: "#FFFFFF",
-  cardBorder: "#E5E7EB",
+  cardBorder: "#C9CDD2",
   inputBg: "#ffffff",
-  inputBorder: "#E5E7EB",
+  inputBorder: "#C4C8CE",
   text: "#111111",
   textSecondary: "#334855",
   textMuted: "#334855",
@@ -47,7 +47,7 @@ export const OBW = {
   pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #b31556 100%)",
   pinkShadow: "0 4px 15px rgba(217,26,104,0.2)",
   surface: "#FFFFFF",
-  divider: "#E5E7EB",
+  divider: "#D1D5DB",
   progressInactive: "#E5E7EB",
   backBtnBg: "#FFFFFF",
   selectedBg: "rgba(217,26,104,0.08)",
@@ -58,8 +58,8 @@ export const OBW = {
   redBg: "rgba(220,38,38,0.08)",
   redBorder: "rgba(220,38,38,0.2)",
   footerBg: "#ffffff",
-  footerBorder: "#E5E7EB",
-  backBtnBorder: "#E5E7EB",
+  footerBorder: "#D1D5DB",
+  backBtnBorder: "#C9CDD2",
   backBtnColor: "#111111",
   badgeBg: "rgba(217,26,104,0.08)",
   badgeColor: "rgb(var(--ha-primary))",
@@ -69,9 +69,9 @@ export const OBW = {
   tabActiveBg: "#111111",
   tabActiveColor: "#FFFFFF",
   tabInactiveColor: "#334855",
-  chipBorder: "#E5E7EB",
+  chipBorder: "#C4C8CE",
   chipActiveColor: "#ffffff",
-  mapBorder: "#E5E7EB",
+  mapBorder: "#D1D5DB",
 } as const;
 
 export function useWebsiteMode(): boolean {
@@ -206,10 +206,10 @@ export function OBInfoBox({ children }: { children: React.ReactNode }) {
   return (
     <div
       className="rounded-[4px] p-3.5 flex items-start gap-2.5"
-      style={{ backgroundColor: "#FFFFFF", border: "1px solid #E5E7EB" }}
+      style={{ backgroundColor: "#FFFFFF", border: "1px solid #C4C8CE" }}
     >
       <Info className="w-[15px] h-[15px] shrink-0 mt-[1px]" style={{ color: "rgb(var(--ha-primary))" }} />
-      <div className="text-[14px] leading-[1.55]" style={{ color: "rgb(var(--ha-primary))" }}>
+      <div className="text-[15px] leading-[1.55]" style={{ color: "rgb(var(--ha-primary))" }}>
         {children}
       </div>
     </div>

@@ -47,7 +47,7 @@ function WebToggle({
           }}
         />
       </div>
-      <span className="text-[14px] leading-snug" style={{ color: OBW.text }}>{label}</span>
+      <span className="text-[15px] leading-snug" style={{ color: OBW.text }}>{label}</span>
     </label>
   );
 }
@@ -68,7 +68,7 @@ function WebSelect({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className="w-full ha-select-web"
-      style={{ borderColor: "#E5E7EB", color: "#111111", backgroundColor: "#ffffff" }}
+      style={{ borderColor: "#C4C8CE", color: "#111111", backgroundColor: "#ffffff" }}
       data-testid={testId}
     >
       {options.map((opt) => (
@@ -697,13 +697,13 @@ export default function OnboardingFilters() {
           >
             {t("onboarding.filters.title")}
           </h2>
-          <p className="text-[14px] mb-8 leading-relaxed" style={{ color: OBW.textSecondary }}>
+          <p className="text-[15px] mb-8 leading-relaxed" style={{ color: OBW.textSecondary }}>
             {t("onboarding.filters.subtitle")}
           </p>
 
           <div className="flex flex-col gap-8">
             <section>
-              <label className="text-[15px] font-semibold mb-4 block" style={{ color: OBW.text }}>
+              <label className="text-[16px] font-semibold mb-4 block" style={{ color: OBW.text }}>
                 {t("onboarding.filters.rentLabel")}
               </label>
               <DualRangeSlider
@@ -723,7 +723,7 @@ export default function OnboardingFilters() {
             <div className="h-px bg-[#F0F0F0]" />
 
             <section>
-              <label className="text-[15px] font-semibold mb-4 block" style={{ color: OBW.text }}>
+              <label className="text-[16px] font-semibold mb-4 block" style={{ color: OBW.text }}>
                 {t("onboarding.filters.propertyTypeLabel")}
               </label>
               <WebSelect
@@ -732,20 +732,12 @@ export default function OnboardingFilters() {
                 onChange={(v) => update({ propertyType: v })}
                 testId="property-type"
               />
-              <div className="mt-6">
-                <WebToggle
-                  checked={f.includeRooms}
-                  onChange={(v) => update({ includeRooms: v })}
-                  label={t("onboarding.filters.includeRooms")}
-                  testId="toggle-include-rooms"
-                />
-              </div>
             </section>
 
             <div className="h-px bg-[#F0F0F0]" />
 
             <section>
-              <label className="text-[15px] font-semibold mb-4 block" style={{ color: OBW.text }}>
+              <label className="text-[16px] font-semibold mb-4 block" style={{ color: OBW.text }}>
                 {t("onboarding.filters.bedroomsLabel")}
               </label>
               <WebSelect
@@ -760,7 +752,7 @@ export default function OnboardingFilters() {
 
             <section>
               <div className="flex items-center justify-between mb-4">
-                <label className="text-[15px] font-semibold" style={{ color: OBW.text }}>
+                <label className="text-[16px] font-semibold" style={{ color: OBW.text }}>
                   {t("onboarding.filters.minSizeLabel")}
                 </label>
                 <button
@@ -793,7 +785,7 @@ export default function OnboardingFilters() {
             <div className="h-px bg-[#F0F0F0]" />
 
             <section>
-              <label className="text-[15px] font-semibold mb-4 block" style={{ color: OBW.text }}>
+              <label className="text-[16px] font-semibold mb-4 block" style={{ color: OBW.text }}>
                 {t("onboarding.filters.furnishedLabel")}
               </label>
               <WebSelect
@@ -807,7 +799,7 @@ export default function OnboardingFilters() {
             <div className="h-px bg-[#F0F0F0]" />
 
             <section>
-              <label className="text-[15px] font-semibold mb-2 block" style={{ color: OBW.text }}>
+              <label className="text-[16px] font-semibold mb-2 block" style={{ color: OBW.text }}>
                 {t("onboarding.filters.amenitiesLabel")}
               </label>
               <div className="flex flex-col" data-testid="amenity-chips">

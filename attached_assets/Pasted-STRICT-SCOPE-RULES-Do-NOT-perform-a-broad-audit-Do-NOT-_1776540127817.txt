@@ -1,0 +1,86 @@
+STRICT SCOPE RULES:
+- Do NOT perform a broad audit
+- Do NOT inspect all locale files
+- Do NOT do a full i18n review
+- Do NOT review unrelated pages
+- Do NOT change routing or onboarding architecture
+- Do NOT touch paywall flow logic unless explicitly required by the gift/discount issue below
+- Do NOT make extra improvements outside this request
+- Work only in the files listed below
+- If another file is absolutely required, stop and report it first
+- Apply the smallest possible safe UI/UX changes
+- Keep token/cost usage minimal
+
+Task:
+Apply the next website onboarding fixes based on product feedback.
+
+Work ONLY in these files:
+- client/src/pages/onboarding/filters.tsx
+- client/src/pages/onboarding/password.tsx
+- client/src/components/onboarding-ui.tsx
+
+Scope:
+- Website mode only wherever possible
+- Do not change app-direct flow unless a shared component requires a very safe isolated tweak
+
+Requested changes:
+
+1. STEP 2 — REMOVE THE “ZOEK OOK NAAR KAMERS / ONZELFSTANDIGE WOONRUIMTES” TOGGLE
+- Remove this toggle entirely from the website onboarding filters screen
+- It should no longer appear in step 2
+- Preserve all other filter logic
+
+2. ACCOUNT SCREEN — REMOVE PASSWORD CONFIRMATION FIELD
+- In website mode account creation, remove the “Wachtwoord bevestigen” field
+- Require password input only once
+- Preserve signup logic as safely as possible
+- If validation currently depends on confirmation, replace it with the smallest safe alternative (do not redesign the full signup flow)
+
+3. ACCOUNT SCREEN — INVESTIGATE AND FIX THE GIFT/DISCOUNT UX
+- Inspect the visible gift icon below the form
+- Determine whether it is related to the 25% discount / referral / coupon flow
+- If it is currently confusing, inactive, or has no clear input path:
+  - either remove it from the website-mode account screen
+  - or make the discount entry path explicit and usable
+- Prefer the smallest safe fix that removes ambiguity
+- Do not perform a broad referral/coupon audit
+- If another file is absolutely required for this point, stop and report it first
+
+4. INCREASE TEXT SIZE GLOBALLY
+- Increase text sizes across the website onboarding screens in scope
+- Make all text one step larger and more readable on mobile
+- This includes:
+  - labels
+  - helper text
+  - input text
+  - dropdown text
+  - checkbox list labels
+  - info box text
+  - supporting body copy
+- Keep hierarchy intact: headings should still feel larger than body text
+
+5. MAKE BORDERS DARKER / MORE VISIBLE
+- Increase border contrast so fields and check controls are visually clearer
+- Apply to:
+  - input fields
+  - dropdowns
+  - checkbox outlines
+  - toggle containers / rows if applicable
+- Goal: stronger visual definition, still clean and premium
+
+Important constraints:
+- Do not change step order
+- Do not touch match count logic
+- Do not change branding/colors beyond darker border visibility
+- Do not perform unrelated translation work
+- Do not do a broader audit
+
+After changes, return ONLY:
+1. files changed
+2. exact elements removed
+3. whether password confirmation was removed
+4. what was done with the gift/discount element
+5. exact text-size changes made
+6. exact border contrast changes made
+7. whether any extra file was required
+8. confirmation that no broader audit was done

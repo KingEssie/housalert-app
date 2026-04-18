@@ -221,7 +221,7 @@ export default function OnboardingPassword() {
   const passwordOk = isPasswordValid(pwStrength);
   const confirmOk = confirmPassword.length > 0 && password === confirmPassword;
   const canSubmit = w
-    ? (firstName.trim() && isValidEmail(email) && passwordOk && confirmOk && !loading)
+    ? (firstName.trim() && isValidEmail(email) && passwordOk && !loading)
     : (passwordOk && confirmOk && !!email && !loading);
 
   const roomsLabel = minRooms === "0" ? "Studio+" : `${minRooms}+`;
@@ -281,9 +281,9 @@ export default function OnboardingPassword() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-2.5">
+          <div className="flex flex-col gap-3">
             <div>
-              <label className="text-[14px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[15px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
                 {t("onboarding.name.firstNameLabel")}
               </label>
               <input
@@ -299,7 +299,7 @@ export default function OnboardingPassword() {
             </div>
 
             <div>
-              <label className="text-[14px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[15px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
                 {t("onboarding.name.lastNameLabel")}
               </label>
               <input
@@ -314,7 +314,7 @@ export default function OnboardingPassword() {
             </div>
 
             <div>
-              <label className="text-[14px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[15px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
                 {t("onboarding.email.label")}
               </label>
               <input
@@ -329,7 +329,7 @@ export default function OnboardingPassword() {
             </div>
 
             <div>
-              <label className="text-[14px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[15px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
                 {t("onboarding.password.label")}
               </label>
               <div className="relative">
@@ -355,70 +355,6 @@ export default function OnboardingPassword() {
               </div>
               <PasswordRules password={password} />
             </div>
-
-            <div>
-              <label className="text-[14px] font-semibold mb-1 block" style={{ color: OBW.textSecondary }}>
-                {t("onboarding.password.confirmLabel")}
-              </label>
-              <div className="relative">
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder={t("onboarding.password.confirmPlaceholder")}
-                  className="w-full ha-field-web"
-                  style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text, paddingRight: "44px" }}
-                  autoComplete="new-password"
-                  data-testid="input-confirm-password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors"
-                  style={{ color: "#334855" }}
-                  data-testid="button-toggle-confirm-password"
-                >
-                  {showConfirmPassword ? <EyeOff className="w-[16px] h-[16px]" /> : <Eye className="w-[16px] h-[16px]" />}
-                </button>
-              </div>
-              {confirmPassword.length > 0 && password !== confirmPassword && (
-                <p className="text-[12px] mt-1.5 text-ha-danger" data-testid="text-confirm-mismatch">
-                  {t("onboarding.password.passwordMismatch")}
-                </p>
-              )}
-            </div>
-
-            {!showReferral ? (
-              <button
-                type="button"
-                onClick={() => setShowReferral(true)}
-                className="flex items-center gap-2 text-[14px] py-1 transition-colors"
-                style={{ color: OBW.textSecondary }}
-                data-testid="button-show-referral"
-              >
-                <Gift className="w-4 h-4" />
-                {}
-              </button>
-            ) : (
-              <div>
-                <label className="text-[14px] font-semibold mb-1.5 block" style={{ color: OBW.text }}>
-                  {}
-                </label>
-                <input
-                  type="text"
-                  placeholder="ABC123"
-                  value={referralCode}
-                  onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-                  className="w-full ha-field-web"
-                  style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
-                  autoCapitalize="characters"
-                  data-testid="input-referral-code"
-                />
-                <p className="text-[12px] mt-1 ml-1" style={{ color: OBW.textMuted }}>
-                  {t("onboarding.password.web.optional")}
-                </p>
-              </div>
-            )}
           </div>
         </main>
 
