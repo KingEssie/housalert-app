@@ -297,16 +297,18 @@ export default function OnboardingPassword() {
 
               {/* Info card — always visible */}
               <div
-                className="rounded-[10px] flex items-center gap-3 px-4 py-3.5"
-                style={{ backgroundColor: "#E4EDF8", border: "1px solid #BDD0F0" }}
+                className="rounded-[10px] flex items-center gap-3 px-4 py-4"
+                style={{ backgroundColor: "#D8E8F8", border: "1px solid #A8C4E8" }}
                 data-testid="match-summary-card"
               >
-                <span className="text-[20px] leading-none shrink-0">🏠</span>
-                <div className="flex items-baseline gap-1 shrink-0">
-                  <span className="text-[34px] font-bold leading-none" style={{ color: "#1E40AF" }}>121</span>
-                  <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: "#93C5FD" }}>{t("onboardingUI.perWeek")}</span>
+                <span className="text-[22px] leading-none shrink-0">🏠</span>
+                <div className="flex items-baseline gap-[3px] shrink-0">
+                  <span className="text-[38px] font-black leading-none" style={{ color: "#1E40AF" }}>121</span>
+                  <div className="flex flex-col ml-1">
+                    <span className="text-[9px] font-bold uppercase tracking-widest leading-none" style={{ color: "#60A5FA" }}>{t("onboardingUI.perWeek")}</span>
+                  </div>
                 </div>
-                <p className="text-[12px] leading-[1.5] flex-1 font-medium" style={{ color: "#1E3A8A" }}>
+                <p className="text-[12px] leading-[1.5] flex-1 font-semibold" style={{ color: "#1E3A8A" }}>
                   {t("onboarding.password.web.infoBox").replace("{city}", city || t("onboarding.password.web.yourRegion"))}
                 </p>
               </div>
@@ -321,23 +323,23 @@ export default function OnboardingPassword() {
                 transition: "max-height 0.32s cubic-bezier(0.4,0,0.2,1)",
               }}
             >
-              <div className="px-4 pb-4 flex flex-col gap-3">
+              <div className="px-4 pb-4 flex flex-col gap-2.5">
 
                 {/* Grey sub-card: city + filter details */}
                 <div
-                  className="rounded-[12px] p-4 flex flex-col gap-1.5"
-                  style={{ backgroundColor: "#E3E4E8" }}
+                  className="rounded-[12px] px-4 py-3.5 flex flex-col gap-1"
+                  style={{ backgroundColor: "#D4D6DC", border: "1px solid #C8CAD0" }}
                 >
                   <div className="flex items-center gap-2">
                     <span
                       className="w-[8px] h-[8px] rounded-full shrink-0"
                       style={{ backgroundColor: "rgb(var(--ha-primary))" }}
                     />
-                    <span className="text-[15px] font-bold" style={{ color: "#111111" }}>
+                    <span className="text-[15px] font-extrabold tracking-tight" style={{ color: "#0F172A" }}>
                       {searchName}
                     </span>
                   </div>
-                  <p className="text-[12px] pl-[16px]" style={{ color: "#4B5563" }}>
+                  <p className="text-[12px] pl-[16px] font-medium" style={{ color: "#374151" }}>
                     {[
                       minPrice && maxPrice ? `€${minPrice}–€${maxPrice}` : null,
                       roomsLabel ? `${roomsLabel} ${t("onboarding.password.web.apartments")}` : null,
@@ -347,51 +349,48 @@ export default function OnboardingPassword() {
                 </div>
 
                 {/* Caption text */}
-                <p className="text-[12px] font-medium" style={{ color: "#4B5563" }}>
+                <p className="text-[11.5px] font-medium" style={{ color: "#374151" }}>
                   Een voorbeeld van een populaire woning die je recentelijk gemist hebt
                 </p>
 
                 {/* Preview listing card */}
                 <div
                   className="rounded-[10px] overflow-hidden bg-white"
-                  style={{ border: "1px solid #D0D4DC", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+                  style={{ border: "1px solid #C8CDD8", boxShadow: "0 4px 16px rgba(0,0,0,0.13)" }}
                   data-testid="listing-preview-placeholder"
                 >
-                  {/* Image area — soft blur + overlay to signal "locked" */}
-                  <div className="w-full h-[140px] overflow-hidden relative">
-                    {/* Realistic warm-tone property gradient, lightly blurred */}
+                  {/* Image area — real placeholder + light overlay to signal locked */}
+                  <div className="w-full h-[148px] overflow-hidden relative" style={{ backgroundColor: "#EDF2F7" }}>
+                    {/* App's real listing placeholder image */}
+                    <img
+                      src="/listing-placeholder.png"
+                      alt=""
+                      className="w-full h-full object-contain"
+                      draggable={false}
+                    />
+                    {/* Light desaturation + lock overlay — keeps image visible but signals "locked" */}
                     <div
                       className="absolute inset-0"
                       style={{
-                        backgroundImage: "linear-gradient(160deg, #C8B49A 0%, #A89278 30%, #C4B090 55%, #8E9AAA 80%, #A4B0BC 100%)",
-                        filter: "blur(4px)",
-                        transform: "scale(1.06)",
+                        backgroundColor: "rgba(15,23,42,0.38)",
+                        backdropFilter: "blur(1.5px) saturate(60%)",
                       }}
                     />
-                    {/* Soft dark overlay — creates locked feel without destroying image */}
-                    <div
-                      className="absolute inset-0"
-                      style={{ backgroundColor: "rgba(0,0,0,0.28)" }}
-                    />
-                    {/* Building icon centred */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Building2 className="w-[38px] h-[38px]" style={{ color: "#FFFFFF", opacity: 0.55 }} />
-                    </div>
-                    {/* Upgrade pill — top right */}
+                    {/* Upgrade pill — top right, premium dark */}
                     <div
                       className="absolute top-2.5 right-2.5 px-3 py-1.5 rounded-full"
-                      style={{ backgroundColor: "rgba(0,0,0,0.75)", backdropFilter: "blur(8px)" }}
+                      style={{ backgroundColor: "rgba(0,0,0,0.84)", backdropFilter: "blur(10px)" }}
                     >
                       <span className="text-[11px] font-bold text-white tracking-wide">Upgrade om te bekijken</span>
                     </div>
                   </div>
 
-                  {/* Meta row — SHARP, fully readable */}
-                  <div className="flex items-center gap-2.5 px-3 py-3">
+                  {/* Meta row — SHARP and readable, no blur */}
+                  <div className="flex items-center gap-2.5 px-3.5 py-3">
                     <span className="text-[14px] font-bold" style={{ color: "#111111" }}>€850 /mnd</span>
-                    <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
+                    <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#C4C9D4" }} />
                     <span className="text-[12px] font-medium" style={{ color: "#374151" }}>45 m²</span>
-                    <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
+                    <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#C4C9D4" }} />
                     <span className="text-[12px]" style={{ color: "#6B7280" }}>2 dagen geleden</span>
                   </div>
                 </div>

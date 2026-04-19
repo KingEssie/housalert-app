@@ -1,0 +1,106 @@
+STRICT SCOPE:
+- ONLY refine the website account-creation screen search-summary section
+- Do NOT touch other onboarding steps
+- Do NOT touch translations
+- Do NOT refactor unrelated logic
+- Keep HousAlert branding colors, but match Rentbird visual hierarchy and emotional impact
+
+GOAL:
+Make the “Jouw zoekopdracht” block feel as convincing and premium as Rentbird.
+Current issue: it looks structurally similar, but still feels flatter, weaker, and less emotionally compelling.
+
+PRIORITY ORDER:
+1. preview listing realism
+2. stronger visual hierarchy
+3. stronger number emphasis
+4. darker premium CTA overlay
+5. more contrast between layers
+
+APPLY THESE EXACT CHANGES:
+
+1. PREVIEW LISTING — MOST IMPORTANT
+- Replace the current generic blurred gradient feel with a much more realistic locked listing preview
+- The preview must feel like a real housing listing card, not a placeholder component
+
+If a real latest scraped listing exists:
+- show the actual listing image
+- apply ONLY a light blur / light desaturation overlay on the image area
+- keep the bottom meta bar sharp and readable
+- keep the layout clearly recognizable as a real listing card
+
+If NO real listing exists:
+- use the app’s existing housing empty-state / placeholder house illustration instead of the generic blurry gradient
+- do NOT fully blur the placeholder
+- it must still feel like a real preview card
+
+Preview structure must be:
+- top area: image / illustration
+- top-right overlay pill: “Upgrade om te bekijken”
+- bottom meta row (sharp, readable, not blurred):
+  - price
+  - size in m²
+  - recency (for example “2 dagen geleden”)
+
+2. MATCH INFO CARD (“121 per week”)
+- Keep the card, but make the hierarchy much stronger
+- The number must be the visual anchor
+- “per week” must become secondary
+
+Exact hierarchy:
+- number (121): larger and bolder
+- “per week”: smaller, lighter
+- supporting copy: tighter and slightly darker
+
+Do this without changing the basic layout structure.
+
+3. STRONGER VISUAL CONTRAST BETWEEN CARD LAYERS
+Current problem: all blocks feel too similar and too soft.
+
+Use this layer hierarchy:
+- page background: light grey
+- main search-summary card: white
+- city sub-card: slightly darker grey
+- match card: clearer soft-blue accent
+- preview card: strongest visual object in the component
+
+Make sure the component visually reads in layers instead of one flat panel.
+
+4. CITY SUB-CARD
+- Keep it as a separate grey sub-card
+- Increase realism and structure slightly:
+  - stronger city name
+  - tighter price/details line
+  - dot slightly more intentional
+- It must feel like a selected search profile summary, not a plain grey box
+
+5. CTA OVERLAY ON PREVIEW
+- “Upgrade om te bekijken” must feel more premium and more clickable
+- Make the pill darker and more intentional
+- Slightly stronger contrast
+- Slightly stronger typography
+- It should feel like a locked premium feature, not a decorative badge
+
+6. TYPOGRAPHY / CONTRAST
+- Primary text: near black
+- Secondary text: darker grey than now
+- Avoid washed-out look
+- The entire section should feel more premium and less pastel/soft
+
+7. SPACING
+- Keep structure the same, but tighten internal spacing slightly where needed
+- Make the block feel denser and more intentional, not airy and flat
+
+DO NOT CHANGE:
+- overall flow
+- accordion concept
+- header structure outside this section
+- account form logic
+- translations
+- other onboarding screens
+
+RETURN ONLY:
+1. files changed
+2. exact preview listing changes
+3. exact match-card hierarchy changes
+4. exact contrast / color-layer changes
+5. confirmation no extra scope was touched
