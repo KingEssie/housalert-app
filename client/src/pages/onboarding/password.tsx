@@ -266,31 +266,31 @@ export default function OnboardingPassword() {
 
         <main className="flex-1 max-w-[480px] mx-auto w-full px-4 pt-5 pb-8 overflow-y-auto">
 
-          {/* Card 1 — Jouw zoekopdracht (accordion) */}
+          {/* Card 1 — Jouw zoekopdracht (accordion) — single unified grey card */}
           <div
-            className="bg-white rounded-[16px] mb-4 overflow-hidden"
-            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}
+            className="rounded-[16px] mb-4 overflow-hidden"
+            style={{ backgroundColor: "#F0F2F5" }}
             data-testid="search-summary-card"
           >
-            {/* Accordion header — fully clickable */}
+            {/* Header — same background, no divider, unified padding */}
             <button
               onClick={() => setAccordionOpen(!accordionOpen)}
-              className="w-full flex items-center justify-between px-5 py-4 transition-colors hover:bg-gray-50 active:bg-gray-100"
+              className="w-full flex items-center justify-between px-4 pt-4 pb-3 transition-opacity active:opacity-70"
               data-testid="button-accordion-toggle"
             >
-              <span className="text-[15px] font-semibold" style={{ color: "#1F2937" }}>
+              <span className="text-[15px] font-semibold" style={{ color: "#0F172A" }}>
                 Jouw zoekopdracht
               </span>
               <ChevronDown
-                className="w-[18px] h-[18px] transition-transform duration-300"
+                className="w-[17px] h-[17px] transition-transform duration-300"
                 style={{
-                  color: "#9CA3AF",
+                  color: "#94A3B8",
                   transform: accordionOpen ? "rotate(0deg)" : "rotate(-90deg)",
                 }}
               />
             </button>
 
-            {/* Accordion body — animated */}
+            {/* Accordion body — animated, no divider */}
             <div
               style={{
                 maxHeight: accordionOpen ? "600px" : "0px",
@@ -298,72 +298,74 @@ export default function OnboardingPassword() {
                 transition: "max-height 0.32s cubic-bezier(0.4,0,0.2,1)",
               }}
             >
-              <div className="px-5 pb-5" style={{ borderTop: "1px solid #F3F4F6" }}>
+              <div className="px-4 pb-4 flex flex-col gap-3">
 
-                {/* Location row */}
-                <div className="flex items-center gap-2.5 pt-4 mb-3">
-                  <div
-                    className="w-[34px] h-[34px] rounded-full flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: "#F3F4F6" }}
-                  >
-                    <MapPin className="w-[15px] h-[15px]" style={{ color: "#6B7280" }} />
-                  </div>
-                  <div>
-                    <p className="text-[15px] font-bold leading-tight" style={{ color: "#111111" }}>
-                      {searchName}{radiusKm ? ` · ${radiusKm} km` : ""}
-                    </p>
-                    {(minPrice || maxPrice) && (
-                      <p className="text-[13px]" style={{ color: "#6B7280" }}>
-                        €{minPrice}–€{maxPrice} · {roomsLabel} {t("onboarding.password.web.apartments")}
-                      </p>
-                    )}
-                  </div>
+                {/* Location row — inline, compact */}
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-[13px] h-[13px] shrink-0" style={{ color: "#64748B" }} />
+                  <span className="text-[14px] font-semibold" style={{ color: "#0F172A" }}>
+                    {searchName}{radiusKm ? ` · ${radiusKm} km` : ""}
+                  </span>
+                  {(minPrice || maxPrice) && (
+                    <span className="text-[13px]" style={{ color: "#64748B" }}>
+                      · €{minPrice}–€{maxPrice} · {roomsLabel} {t("onboarding.password.web.apartments")}
+                    </span>
+                  )}
                 </div>
 
-                {/* Missed-matches block — neutral blue background, not pink */}
+                {/* Missed-matches block — softer, less saturated */}
                 <div
-                  className="rounded-[10px] flex items-start gap-3.5 px-4 py-4 mb-3"
-                  style={{ backgroundColor: "#EFF6FF", border: "1px solid #BFDBFE" }}
+                  className="rounded-[10px] flex items-center gap-3 px-3.5 py-3"
+                  style={{ backgroundColor: "#E8EEF8", border: "1px solid #D0DCF0" }}
                   data-testid="match-summary-card"
                 >
-                  <span className="text-[20px] leading-none shrink-0 mt-0.5">🏠</span>
-                  <div>
-                    <div className="flex items-baseline gap-1.5 mb-0.5">
-                      <span className="text-[28px] font-bold leading-none" style={{ color: "#1D4ED8" }}>121</span>
-                      <span className="text-[12px] font-medium" style={{ color: "#60A5FA" }}>{t("onboardingUI.perWeek")}</span>
-                    </div>
-                    <p className="text-[12.5px] leading-[1.55]" style={{ color: "#374151" }}>
-                      {t("onboarding.password.web.infoBox").replace("{city}", city || t("onboarding.password.web.yourRegion"))}
-                    </p>
+                  <span className="text-[17px] leading-none shrink-0">🏠</span>
+                  <div className="flex items-baseline gap-1.5 shrink-0">
+                    <span className="text-[24px] font-bold leading-none" style={{ color: "#2563EB" }}>121</span>
+                    <span className="text-[11px] font-medium" style={{ color: "#93C5FD" }}>{t("onboardingUI.perWeek")}</span>
                   </div>
+                  <p className="text-[12px] leading-[1.45] flex-1" style={{ color: "#475569" }}>
+                    {t("onboarding.password.web.infoBox").replace("{city}", city || t("onboarding.password.web.yourRegion"))}
+                  </p>
                 </div>
 
-                {/* Preview listing placeholder */}
+                {/* Preview listing — top image, bottom meta row */}
                 <div
                   className="rounded-[10px] overflow-hidden"
-                  style={{ border: "1px solid #E5E7EB", backgroundColor: "#F9FAFB" }}
+                  style={{ border: "1px solid #D8DCE3" }}
                   data-testid="listing-preview-placeholder"
                 >
-                  <div className="flex items-stretch h-[80px]">
-                    {/* Blurred image area */}
+                  {/* Image area — blurred, clips inside radius */}
+                  <div className="w-full h-[108px] overflow-hidden relative">
                     <div
-                      className="w-[84px] shrink-0 flex items-center justify-center"
-                      style={{ backgroundColor: "#E5E7EB", filter: "blur(3px)" }}
+                      className="absolute inset-0 flex items-center justify-center"
+                      style={{
+                        backgroundColor: "#C8CDD6",
+                        backgroundImage: "linear-gradient(135deg, #C8CDD6 0%, #B0B8C4 100%)",
+                        filter: "blur(8px)",
+                        transform: "scale(1.1)",
+                      }}
                     >
-                      <Building2 className="w-[28px] h-[28px]" style={{ color: "#9CA3AF" }} />
-                    </div>
-                    {/* Skeleton meta */}
-                    <div className="flex flex-col justify-center px-3.5 gap-1.5 flex-1" style={{ filter: "blur(3px)" }}>
-                      <div className="h-3 w-20 rounded-full" style={{ backgroundColor: "#D1D5DB" }} />
-                      <div className="h-2.5 w-28 rounded-full" style={{ backgroundColor: "#E5E7EB" }} />
-                      <div className="h-2.5 w-14 rounded-full" style={{ backgroundColor: "#E5E7EB" }} />
+                      <Building2 className="w-[40px] h-[40px]" style={{ color: "#8896A6", opacity: 0.7 }} />
                     </div>
                   </div>
+
+                  {/* Meta row — real listing layout, blurred */}
                   <div
-                    className="px-4 py-2.5 text-center"
-                    style={{ borderTop: "1px solid #E5E7EB" }}
+                    className="flex items-center gap-3 px-3 py-2.5"
+                    style={{ backgroundColor: "#FFFFFF", filter: "blur(3.5px)" }}
                   >
-                    <p className="text-[11.5px] font-medium" style={{ color: "#9CA3AF" }}>
+                    <span className="text-[13px] font-bold" style={{ color: "#0F172A" }}>€850 /mnd</span>
+                    <span className="text-[12px]" style={{ color: "#64748B" }}>45 m²</span>
+                    <span className="text-[11.5px] ml-auto" style={{ color: "#94A3B8" }}>2 dagen geleden</span>
+                  </div>
+
+                  {/* Caption */}
+                  <div
+                    className="px-3 py-2 text-center"
+                    style={{ backgroundColor: "#F8F9FB", borderTop: "1px solid #E2E6EC" }}
+                  >
+                    <p className="text-[11px] font-medium" style={{ color: "#94A3B8" }}>
                       Nieuwe woningen verschijnen hier zodra je een account aanmaakt
                     </p>
                   </div>
