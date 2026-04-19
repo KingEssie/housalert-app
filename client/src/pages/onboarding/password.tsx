@@ -46,7 +46,8 @@ export default function OnboardingPassword() {
   const [loading, setLoading] = useState(false);
   const submittingRef = useRef(false);
 
-  if (!city || !params.get("email")) return <Redirect to="/onboarding/intro" />;
+  if (!city) return <Redirect to="/onboarding/filters" />;
+  if (!w && !params.get("email")) return <Redirect to="/onboarding/email" />;
 
   async function saveSearchProfile(userId: string) {
     const spMinPrice = parseInt(params.get("minPrice") || "") || 0;

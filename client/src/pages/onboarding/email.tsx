@@ -23,7 +23,8 @@ export default function OnboardingEmail() {
 
   const city = incomingParams.get("city") || "";
   const firstName = incomingParams.get("firstName") || "";
-  if (!city || !firstName) return <Redirect to="/onboarding/intro" />;
+  if (!city) return <Redirect to="/onboarding/filters" />;
+  if (!firstName) return <Redirect to="/onboarding/name" />;
 
   function forwardParams() {
     const out = new URLSearchParams(searchString);

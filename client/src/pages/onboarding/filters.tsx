@@ -377,7 +377,7 @@ export default function OnboardingFilters() {
     return INITIAL_FILTERS;
   });
 
-  if (!city) return <Redirect to="/onboarding/intro" />;
+  if (!city) return <Redirect to="/onboarding/city" />;
 
   function update(partial: Partial<FilterData>) {
     setF((prev) => ({ ...prev, ...partial }));

@@ -20,7 +20,7 @@ export default function OnboardingName() {
   const [lastName, setLastName] = useState(incomingParams.get("lastName") || "");
 
   const city = incomingParams.get("city") || "";
-  if (!city) return <Redirect to="/onboarding/intro" />;
+  if (!city) return <Redirect to="/onboarding/filters" />;
 
   function forwardParams() {
     const out = new URLSearchParams(searchString);

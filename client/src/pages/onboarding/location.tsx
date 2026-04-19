@@ -38,7 +38,7 @@ export default function OnboardingLocation() {
   const [radiusKm, setRadiusKm] = useState(incomingRadius);
   const [showDistrictPicker, setShowDistrictPicker] = useState(false);
 
-  if (!city) return <Redirect to="/onboarding/intro" />;
+  if (!city) return <Redirect to="/onboarding/city" />;
 
   function toggleDistrict(d: string) {
     setSelectedDistricts((prev) =>

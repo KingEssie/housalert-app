@@ -29,7 +29,7 @@ export default function OnboardingPreferences() {
   });
 
   const city = params.get("city") || "";
-  if (!city) return <Redirect to="/onboarding/intro" />;
+  if (!city) return <Redirect to="/onboarding/filters" />;
 
   function toggleAmenity(a: string) {
     setAmenities((prev) =>
