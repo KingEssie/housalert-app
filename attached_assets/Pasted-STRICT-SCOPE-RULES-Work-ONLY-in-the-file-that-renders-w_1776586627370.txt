@@ -1,0 +1,145 @@
+STRICT SCOPE RULES:
+- Work ONLY in the file that renders website onboarding step 2 (the existing 2/4 location-details screen, likely client/src/pages/onboarding/location.tsx)
+- Website mode only
+- Do NOT touch step 1, step 3, paywall, or other onboarding screens
+- Do NOT perform a broad audit
+- Do NOT inspect all locale files
+- Do NOT refactor unrelated code
+- Do NOT change branding colors to match Rentbird
+- Keep token/cost usage minimal
+- If another file is absolutely required, STOP and report it first
+
+TASK:
+Make website onboarding step 2 structurally and functionally match the Rentbird 2/4 screen as closely as possible, while keeping HousAlert colors/branding.
+
+IMPORTANT:
+The flow is now reaching the correct step 2, but the screen is still not correct enough.
+I want the same information, same functionality, and nearly the same layout hierarchy as Rentbird.
+Do NOT reinterpret the screen. Copy the structure closely.
+
+GOALS:
+1. Correct header structure
+2. Correct label and field content
+3. Correct segmented control behavior and layout
+4. Correct neighborhood dropdown section
+5. Correct map meaning for the active tab
+6. Correct footer structure and spacing
+7. No broken translation keys visible anywhere
+
+APPLY THESE EXACT CHANGES:
+
+1. HEADER
+- Keep the current header structure:
+  - step badge on the left
+  - centered title: "Zoekopdracht maken"
+  - close button on the right
+- Keep HousAlert color styling if already intentional
+- Do NOT change the title text
+- Ensure this screen visibly reads as step 2/4
+
+2. FIX BROKEN LABEL TEXT
+- Replace the visible broken translation key above the input
+- It must display a normal readable label, not a key string
+- Use: "Woonplaats"
+- Do NOT trigger a broad i18n task
+- Only fix what is necessary so this screen shows correct readable text
+
+3. WOONPLAATS FIELD
+- Match the Rentbird structure:
+  - label above: "Woonplaats"
+  - input field below
+  - left search icon
+  - selected city visible in the field
+  - clear/remove icon on the right
+- Keep the existing logic
+- Ensure the field hierarchy and spacing visually match Rentbird closely
+
+4. SEGMENTED CONTROL / TABS
+- Keep exactly 3 options:
+  - Buurten
+  - Straal
+  - Gehele woonplaats
+- The segmented control must structurally match Rentbird:
+  - one shared rounded container
+  - active tab clearly highlighted
+  - inactive tabs inside the same control
+- Do NOT redesign the copy
+- Keep current HousAlert colors if needed
+- Ensure spacing, sizing, and proportions feel very close to Rentbird
+
+5. TAB FUNCTIONALITY
+- Tabs must function correctly:
+  - Buurten = neighborhood mode
+  - Straal = radius mode
+  - Gehele woonplaats = whole-city mode
+- Do NOT leave tabs as cosmetic only
+- Switching tabs must update the visible UI meaningfully
+
+6. BUURTEN SECTION
+When "Buurten" is active:
+- show title: "Buurten"
+- show dropdown with:
+  - text equivalent to "Alle buurten geselecteerd"
+  - chevron on the right
+- dropdown must feel like the Rentbird screen structurally:
+  - same position
+  - same role
+  - same hierarchy relative to the map
+
+7. MAP BEHAVIOR
+This is critical.
+
+When "Buurten" is active:
+- the map should not just show a city pin
+- it should visually represent neighborhood selection mode
+- if polygon/area overlay data already exists, use it
+- if real polygon data is not currently available, create the closest safe visual fallback that clearly distinguishes this from simple radius mode
+- the screen must not feel like a generic map under a generic dropdown
+
+When "Straal" is active:
+- show the radius-based version of the screen
+
+When "Gehele woonplaats" is active:
+- show the whole-city version of the screen
+
+8. FOOTER
+Structurally match Rentbird:
+- left block:
+  - "Geschatte matches"
+  - weekly matches count below
+- right block:
+  - secondary back button
+  - primary "Volgende" button
+- Keep current HousAlert colors if desired
+- Focus on matching layout, proportions, and hierarchy
+
+9. SPACING / HIERARCHY
+Make the overall page hierarchy match Rentbird closely:
+- header
+- woonplaats field
+- segmented tabs
+- section title
+- dropdown
+- map
+- footer
+
+Avoid:
+- oversized empty spaces
+- floating unrelated blocks
+- generic form spacing that does not feel like a guided setup step
+
+10. DO NOT CHANGE
+- Do NOT change step order
+- Do NOT change website onboarding routing
+- Do NOT touch other steps
+- Do NOT perform broad translation work
+- Do NOT change app-direct onboarding
+- Do NOT redesign colors to copy Rentbird branding
+
+RETURN ONLY:
+1. exact UI elements changed
+2. exact functionality changes made to the tabs
+3. exact map behavior change for Buurten / Straal / Gehele woonplaats
+4. confirmation that the broken label key is gone and "Woonplaats" is shown
+5. whether any extra file was required
+6. confirmation that no broader audit was done

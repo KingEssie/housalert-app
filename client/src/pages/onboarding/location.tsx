@@ -133,7 +133,7 @@ export default function OnboardingLocation() {
             className="text-[18px] font-semibold mb-2 block"
             style={{ color: OBW.textSecondary }}
           >
-            {t("onboarding.location.cityLabel")}
+            Woonplaats
           </label>
           <button
             onClick={() => navigate(appendWebsiteParams("/onboarding/city", searchString))}
@@ -228,8 +228,9 @@ export default function OnboardingLocation() {
               <MapView
                 lat={parseFloat(lat)}
                 lng={parseFloat(lng)}
-                zoom={12}
+                zoom={13}
                 markers={[{ lat: parseFloat(lat), lng: parseFloat(lng), type: "primary" }]}
+                circles={[{ lat: parseFloat(lat), lng: parseFloat(lng), radiusMeters: 1500 }]}
                 height="clamp(220px, 32vh, 300px)"
                 className="rounded-[12px] overflow-hidden"
               />
