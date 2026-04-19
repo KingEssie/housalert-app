@@ -20,6 +20,8 @@ export default function OnboardingPreferences() {
     { value: "rooftop", label: t("amenities.rooftop") },
   ];
 
+  const city = params.get("city") || "";
+
   const [amenities, setAmenities] = useState<string[]>(() => {
     const a = params.get("amenities");
     return a ? a.split(",").filter(Boolean) : [];
@@ -27,8 +29,10 @@ export default function OnboardingPreferences() {
   const [sendUnclear, setSendUnclear] = useState(() => {
     return params.get("sendUnclear") !== "false";
   });
+  const [searchName, setSearchName] = useState(() => {
+    return params.get("searchName") || city;
+  });
 
-  const city = params.get("city") || "";
   if (!city) return <Redirect to="/onboarding/filters" />;
 
   function toggleAmenity(a: string) {
@@ -48,6 +52,7 @@ export default function OnboardingPreferences() {
       outParams.delete("amenities");
     }
     outParams.set("sendUnclear", String(sendUnclear));
+    outParams.set("searchName", searchName.trim() || city);
 
     if (w) {
       // VITE_APP_URL should be set to the app's base URL in production (e.g. https://app.housalert.com).
@@ -80,6 +85,7 @@ export default function OnboardingPreferences() {
       backParams.delete("amenities");
     }
     backParams.set("sendUnclear", String(sendUnclear));
+    backParams.set("searchName", searchName.trim() || city);
     navigate(appendWebsiteParams(`/onboarding/filters?${backParams.toString()}`, searchString));
   }
 
@@ -100,7 +106,32 @@ export default function OnboardingPreferences() {
     >
       <OBWebHeader step={4} totalSteps={4} onClose={handleClose} />
 
-      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[100px] overflow-y-auto">
+      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-[100px] overflow-y-auto">
+        <div className="mb-5">
+          <label
+            className="block text-[11px] font-semibold tracking-[0.05em] uppercase mb-1.5"
+            style={{ color: OBW.textMuted }}
+            htmlFor="input-search-name"
+          >
+            Naam zoekopdracht
+          </label>
+          <input
+            id="input-search-name"
+            type="text"
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
+            className="w-full ha-field-web"
+            style={{
+              height: 48,
+              backgroundColor: OBW.inputBg,
+              borderColor: OBW.inputBorder,
+              color: OBW.text,
+            }}
+            placeholder={city}
+            data-testid="input-search-name"
+          />
+        </div>
+
         <h2
           className="text-[30px] font-semibold tracking-[-0.025em]"
           style={{ color: OBW.text, marginBottom: 7 }}

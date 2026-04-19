@@ -162,6 +162,7 @@ function localizeCityName(raw: string, locale: string): string {
 }
 
 function getProfileTitle(p: SearchProfile, t: (key: string, params?: Record<string, string | number>) => string, locale: string): string {
+  if (p.search_name) return p.search_name;
   const rawCity = p.city_name || p.city || "";
   const city = localizeCityName(rawCity, locale);
   if (p.location_mode === "commute" && p.commute_destination) {

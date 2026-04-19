@@ -30,6 +30,7 @@ export interface SearchProfile {
   target_categories?: string[];
   send_unclear?: boolean;
   price_flexible?: boolean;
+  search_name?: string;
   created_at: string;
 }
 
@@ -58,6 +59,7 @@ export interface InsertSearchProfileInput {
   target_categories?: string[];
   send_unclear?: boolean;
   price_flexible?: boolean;
+  search_name?: string;
 }
 
 const OPTIONAL_COLUMNS = [
@@ -65,7 +67,7 @@ const OPTIONAL_COLUMNS = [
   "location_mode", "districts", "radius_km",
   "commute_destination", "commute_lat", "commute_lng", "commute_mode", "commute_minutes",
   "furnished", "property_types", "extra_features", "target_categories",
-  "send_unclear", "price_flexible",
+  "send_unclear", "price_flexible", "search_name",
 ] as const;
 
 export async function getSearchProfiles(): Promise<SearchProfile[]> {
@@ -120,6 +122,7 @@ export async function createSearchProfile(
   if (input.target_categories && input.target_categories.length > 0) fullRow.target_categories = input.target_categories;
   if (input.send_unclear != null) fullRow.send_unclear = input.send_unclear;
   if (input.price_flexible != null) fullRow.price_flexible = input.price_flexible;
+  if (input.search_name) fullRow.search_name = input.search_name;
 
   const { data, error } = await supabase
     .from("search_profiles")
@@ -194,6 +197,7 @@ export async function updateSearchProfile(
     target_categories: input.target_categories && input.target_categories.length > 0 ? input.target_categories : null,
     send_unclear: input.send_unclear != null ? input.send_unclear : true,
     price_flexible: input.price_flexible != null ? input.price_flexible : false,
+    search_name: input.search_name || null,
   };
 
   const res = await apiFetch(`/api/search-profiles/${id}`, {

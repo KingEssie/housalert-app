@@ -64,6 +64,7 @@ export default function OnboardingPassword() {
     const amenities = params.get("amenities")?.split(",").filter(Boolean) || undefined;
     const sendUnclear = params.get("sendUnclear") !== "false";
     const priceFlexible = params.get("priceFlexible") === "true";
+    const searchName = params.get("searchName")?.trim() || city;
 
     await createSearchProfile({
       user_id: userId,
@@ -83,6 +84,7 @@ export default function OnboardingPassword() {
       extra_features: amenities && amenities.length > 0 ? amenities : undefined,
       send_unclear: sendUnclear,
       price_flexible: priceFlexible,
+      search_name: searchName,
     });
   }
 
