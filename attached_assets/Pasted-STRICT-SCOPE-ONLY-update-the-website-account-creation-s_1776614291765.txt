@@ -1,0 +1,75 @@
+STRICT SCOPE:
+- ONLY update the website account-creation screen
+- Do NOT touch other onboarding steps
+- Do NOT touch translations
+- Do NOT do a broad audit
+- Keep costs low and stay focused on this screen only
+
+TASK:
+Apply a final structural polish pass to the account creation screen.
+
+IMPORTANT:
+- Keep HousAlert branding
+- Focus on structure, hierarchy, and conversion polish
+- Do NOT rebuild unrelated parts
+
+MAKE THESE EXACT CHANGES:
+
+1. HEADER
+- Remove the title text "Account aanmaken" from the header
+- Keep only:
+  - logo on the left
+  - close/X button on the right
+- Header should feel cleaner and lighter
+
+2. SEARCH SUMMARY BLOCK
+- "Jouw zoekopdracht" title must always stay visible
+- The selected search details must always stay visible:
+  - city
+  - price range / property summary / radius if available
+- ONLY the preview listing section should be collapsible
+- Do NOT collapse the whole search summary card
+
+3. PREVIEW LISTING ACCORDION
+- Keep only the preview listing as expandable/collapsible
+- Accordion toggle should control the preview card only
+- Make the preview feel more like a real listing:
+  - real card structure
+  - blurred image area
+  - meta row underneath
+  - stronger “missed opportunity” feeling
+
+4. INFO CARD
+- Keep the missed-matches card visually attached to the search summary block
+- Tighten spacing and internal hierarchy
+- Refine "121 per week" hierarchy so the number is strongest
+
+5. REMOVE / REPOSITION BACK TEXT
+- Remove the loose "Terug naar vorige stap" text from its current position
+- If a back action already exists elsewhere, do not duplicate it here
+
+6. CTA BUTTON
+- Make the primary CTA slightly stronger and more active-looking
+- Increase contrast subtly so it feels clearly clickable
+
+7. TRUST BLOCK
+- Replace the current bullet-list feeling with 3 strong benefit rows
+- These should feel like clear reassurance lines, not a generic list
+- Keep icon + text layout clean and premium
+- Increase spacing between rows for readability
+
+8. GENERAL POLISH
+- Tighten vertical spacing slightly between:
+  - search summary card
+  - form card
+  - trust card
+- Improve secondary text contrast where still too light
+
+RETURN ONLY:
+1. exact header changes
+2. exact search-summary restructuring
+3. exact accordion behavior change
+4. exact trust-block changes
+5. exact CTA changes
+6. any extra file needed or not
+7. confirmation no broader audit/translation work was done
