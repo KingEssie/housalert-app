@@ -225,7 +225,7 @@ export default function OnboardingLocation() {
                 </div>
               )}
 
-              <div style={{ aspectRatio: "4/5" }} className="rounded-[12px] overflow-hidden w-full">
+              <div style={{ aspectRatio: "1/1" }} className="rounded-[12px] overflow-hidden w-full">
                 <MapView
                   lat={parseFloat(lat)}
                   lng={parseFloat(lng)}
@@ -242,18 +242,28 @@ export default function OnboardingLocation() {
           {/* Straal (radius) mode */}
           {mode === "radius" && (
             <div data-testid="section-radius">
-              <p className="text-[15px] font-semibold mb-3" style={{ color: OBW.textSecondary }}>
-                {t("onboarding.location.radiusTab")}
-              </p>
-              {/* Slider control */}
-              <div className="mb-5">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[13px] font-medium" style={{ color: OBW.textMuted }}>1 km</span>
-                  <span className="text-[18px] font-bold" style={{ color: "rgb(var(--ha-primary))" }}>
-                    {radiusKm} km
-                  </span>
-                  <span className="text-[13px] font-medium" style={{ color: OBW.textMuted }}>50 km</span>
-                </div>
+              {/* Slider CSS — scoped via class, injected inline to stay within this file */}
+              <style>{`
+                .ha-radius-slider { -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; width: 100%; height: 4px; }
+                .ha-radius-slider::-webkit-slider-runnable-track { background: linear-gradient(to right, rgb(var(--ha-primary)) 0%, rgb(var(--ha-primary)) var(--sl-pct,0%), #E5E7EB var(--sl-pct,0%), #E5E7EB 100%); border-radius: 9999px; height: 4px; }
+                .ha-radius-slider::-moz-range-track { background: #E5E7EB; border-radius: 9999px; height: 4px; }
+                .ha-radius-slider::-moz-range-progress { background: rgb(var(--ha-primary)); border-radius: 9999px; height: 4px; }
+                .ha-radius-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%; background: #ffffff; box-shadow: 0 1px 6px rgba(0,0,0,0.18), 0 0 0 1.5px rgba(0,0,0,0.07); margin-top: -9px; cursor: pointer; }
+                .ha-radius-slider::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: #ffffff; box-shadow: 0 1px 6px rgba(0,0,0,0.18), 0 0 0 1.5px rgba(0,0,0,0.07); border: none; cursor: pointer; }
+              `}</style>
+
+              {/* Header row: Afstand label + city name */}
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-[15px] font-semibold" style={{ color: OBW.textSecondary }}>
+                  Afstand
+                </span>
+                <span className="text-[14px] font-medium" style={{ color: OBW.textMuted }}>
+                  {city}
+                </span>
+              </div>
+
+              {/* Slider row: track + value on right */}
+              <div className="flex items-center gap-3 mb-5">
                 <input
                   type="range"
                   min={1}
@@ -261,12 +271,20 @@ export default function OnboardingLocation() {
                   step={1}
                   value={radiusKm}
                   onChange={(e) => setRadiusKm(parseInt(e.target.value))}
-                  className="w-full cursor-pointer"
-                  style={{ accentColor: "rgb(var(--ha-primary))" }}
+                  className="ha-radius-slider flex-1"
+                  style={{ "--sl-pct": `${((radiusKm - 1) / 49) * 100}%` } as React.CSSProperties}
                   data-testid="slider-radius"
                 />
+                <span
+                  className="text-[15px] font-semibold shrink-0 w-[52px] text-right"
+                  style={{ color: "rgb(var(--ha-primary))" }}
+                >
+                  {radiusKm} km
+                </span>
               </div>
-              <div style={{ aspectRatio: "4/5" }} className="rounded-[12px] overflow-hidden w-full">
+
+              {/* Map 1:1 */}
+              <div style={{ aspectRatio: "1/1" }} className="rounded-[12px] overflow-hidden w-full">
                 <MapView
                   lat={parseFloat(lat)}
                   lng={parseFloat(lng)}
@@ -283,7 +301,7 @@ export default function OnboardingLocation() {
           {/* Gehele woonplaats (city) mode */}
           {mode === "city" && (
             <div data-testid="section-city">
-              <div style={{ aspectRatio: "4/5" }} className="rounded-[12px] overflow-hidden w-full">
+              <div style={{ aspectRatio: "1/1" }} className="rounded-[12px] overflow-hidden w-full">
                 <MapView
                   lat={parseFloat(lat)}
                   lng={parseFloat(lng)}
@@ -306,16 +324,16 @@ export default function OnboardingLocation() {
             paddingBottom: "max(8px, env(safe-area-inset-bottom, 8px))",
           }}
         >
-          <div className="max-w-[480px] mx-auto px-5 py-3 flex items-center gap-4">
+          <div className="max-w-[480px] mx-auto px-5 py-3 flex items-center gap-3">
             <div className="flex-1 min-w-0">
-              <p className="text-[11px] font-semibold tracking-[0.04em] uppercase" style={{ color: OBW.textMuted }}>
+              <p className="text-[11px] font-medium" style={{ color: OBW.textMuted }}>
                 {t("onboarding.location.estimatedMatches")}
               </p>
               <p className="text-[16px] font-semibold leading-snug" style={{ color: OBW.text }}>
                 195 {t("onboardingUI.perWeek")} 🔥
               </p>
             </div>
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-2.5 shrink-0">
               <button
                 onClick={handleBack}
                 className="w-[44px] h-[44px] rounded-[6px] flex items-center justify-center active:scale-95 transition-transform"

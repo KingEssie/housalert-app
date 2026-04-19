@@ -1,0 +1,81 @@
+STRICT SCOPE RULES:
+- Work ONLY in the file that renders website onboarding step 2 (the existing 2/4 location-details screen, likely client/src/pages/onboarding/location.tsx)
+- Website mode only
+- Do NOT touch step 1, step 3, paywall, or other onboarding screens
+- Do NOT perform a broad audit
+- Do NOT inspect locale files
+- Do NOT refactor unrelated code
+- Keep token/cost usage minimal
+- If another file is absolutely required, STOP and report it first
+
+TASK:
+Apply the final Rentbird-parity refinements for website onboarding step 2.
+
+IMPORTANT:
+- Do NOT change routing
+- Do NOT change overall flow logic
+- Do NOT change branding colors except where explicitly requested for the slider
+- This is a layout/control refinement only
+
+APPLY THESE EXACT CHANGES:
+
+1. MAP SIZE
+- The map is currently too tall
+- Change the map container to a 1:1 aspect ratio
+- Keep rounded corners
+- Ensure the crop/frame feels balanced and intentional, not stretched
+
+2. STRAAL TAB — MATCH RENTBIRD STRUCTURE
+When the "Straal" tab is active:
+
+A. Replace the current section title row
+- Left label: "Afstand"
+- Right label: the selected city name (e.g. Berlin / Leipzig)
+
+B. Slider
+- Make the slider visually match Rentbird more closely
+- Slider thumb:
+  - white
+  - visible shadow
+- Slider track:
+  - active track in HousAlert brand color
+  - inactive track subtle neutral
+- The current distance value should appear on the RIGHT side of the slider (not above the slider as a centered pink value)
+
+C. Overall hierarchy
+- The Straal section should feel like one coherent block:
+  - "Afstand" + city row
+  - slider row with value on right
+  - map below
+
+3. FOOTER TEXT STYLE
+- Change "GESCHATTE MATCHES" from all caps to normal title case:
+  - "Geschatte matches"
+- Match the Rentbird footer text hierarchy more closely
+- Keep current HousAlert colors if needed
+
+4. FOOTER LAYOUT REFINEMENT
+- Tighten spacing slightly between the left match block and the right buttons
+- Ensure the back button and "Volgende" button feel cleanly aligned and balanced
+- Keep both buttons the same height
+
+5. TABS / SEGMENTED CONTROL
+- Keep tabs slightly compact and balanced
+- Preserve current behavior
+- Do not let spacing feel too loose
+
+6. DO NOT CHANGE
+- Do not change Buurten logic
+- Do not change Gehele woonplaats logic
+- Do not change the woonplaats field
+- Do not change copy outside the explicitly requested text fix
+- Do not touch other files unless absolutely required
+
+RETURN ONLY:
+1. exact map aspect ratio change
+2. exact slider visual changes
+3. exact Straal section hierarchy changes
+4. exact footer text/style change
+5. exact footer spacing/button alignment refinements
+6. whether any extra file was required
+7. confirmation that no broader audit was done
