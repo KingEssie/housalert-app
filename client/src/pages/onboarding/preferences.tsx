@@ -106,15 +106,15 @@ export default function OnboardingPreferences() {
   const sLabel = "text-[15px] font-bold mb-3 block";
 
   const SUITABLE_FOR_OPTIONS = [
-    { value: "studenten", label: "Studenten" },
-    { value: "woningdelers", label: "Woningdelers" },
-    { value: "huisdieren", label: "Huisdieren" },
+    { value: "studenten", label: t("onboardingWebPreferences.suitableStudents") },
+    { value: "woningdelers", label: t("onboardingWebPreferences.suitableRoommates") },
+    { value: "huisdieren", label: t("onboardingWebPreferences.suitablePets") },
   ];
 
   const ZOEKFILTER_ROWS: { key: keyof SearchFilters; label: string; info?: boolean }[] = [
-    { key: "vrijeSector", label: "Vrije sectorwoningen van woningcorporaties" },
-    { key: "payToReply", label: "Woningen op websites waar je moet betalen om te reageren", info: true },
-    { key: "loting", label: "Lotingwoningen (sociale huur)", info: true },
+    { key: "vrijeSector", label: t("onboardingWebPreferences.filterVrijeSector") },
+    { key: "payToReply", label: t("onboardingWebPreferences.filterPayToReply"), info: true },
+    { key: "loting", label: t("onboardingWebPreferences.filterLoting"), info: true },
   ];
 
   return (
@@ -140,7 +140,7 @@ export default function OnboardingPreferences() {
             className="absolute inset-0 flex items-center justify-center text-[19px] font-bold pointer-events-none"
             style={{ color: OBW.text }}
           >
-            Zoekopdracht maken
+            {t("onboardingWebPreferences.headerTitle")}
           </span>
           <button
             onClick={handleClose}
@@ -155,14 +155,14 @@ export default function OnboardingPreferences() {
 
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[100px] overflow-y-auto">
 
-        {/* Naam zoekopdracht */}
+        {/* Search name */}
         <div className="mb-7">
           <label
             className="block text-[15px] font-semibold mb-2"
             style={{ color: OBW.text }}
             htmlFor="input-search-name"
           >
-            Naam zoekopdracht
+            {t("onboardingWebPreferences.searchNameLabel")}
           </label>
           <input
             id="input-search-name"
@@ -181,10 +181,10 @@ export default function OnboardingPreferences() {
           />
         </div>
 
-        {/* Woningen geschikt voor */}
+        {/* Suitable for */}
         <section className="mb-7">
           <label className={sLabel} style={{ color: "#111111" }}>
-            Woningen geschikt voor
+            {t("onboardingWebPreferences.suitableForLabel")}
           </label>
           <div className="flex gap-1.5" data-testid="suitable-for-chips">
             {SUITABLE_FOR_OPTIONS.map((opt) => {
@@ -218,15 +218,15 @@ export default function OnboardingPreferences() {
           >
             <Info className="w-[13px] h-[13px] shrink-0 mt-[2px]" style={{ color: "#9CA3AF" }} />
             <p className="text-[12.5px] leading-[1.55]" style={{ color: "#374151" }}>
-              Selecteer welk type bewoner het beste bij de woning past. Laat leeg als dit niet uitmaakt.
+              {t("onboardingWebPreferences.suitableForInfo")}
             </p>
           </div>
         </section>
 
-        {/* Zoekfilter */}
+        {/* Search filter */}
         <section className="mb-7">
           <label className={sLabel} style={{ color: "#111111" }}>
-            Zoekfilter
+            {t("onboardingWebPreferences.filterLabel")}
           </label>
           <div className="flex flex-col" data-testid="search-filter-rows">
             {ZOEKFILTER_ROWS.map((row) => {
@@ -265,10 +265,10 @@ export default function OnboardingPreferences() {
           </div>
         </section>
 
-        {/* Instellingen opslaan */}
+        {/* Save settings */}
         <section className="mb-2">
           <label className={sLabel} style={{ color: "#111111" }}>
-            Instellingen opslaan
+            {t("onboardingWebPreferences.settingsLabel")}
           </label>
           <button
             onClick={() => setApplyToAllProfiles(!applyToAllProfiles)}
@@ -276,7 +276,7 @@ export default function OnboardingPreferences() {
             data-testid="toggle-apply-to-all"
           >
             <span className="text-[14px] leading-[1.45] flex-1" style={{ color: "#111111" }}>
-              Bovenstaande zoekinstellingen toepassen op alle zoekprofielen
+              {t("onboardingWebPreferences.applyToAllLabel")}
             </span>
             <div
               className="w-[44px] h-[26px] rounded-full p-[3px] transition-colors shrink-0 flex items-center mt-[1px]"

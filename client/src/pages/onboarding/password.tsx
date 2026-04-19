@@ -15,16 +15,13 @@ import { validatePassword, isPasswordValid } from "@/lib/password-validation";
 import { PasswordRules } from "@/components/password-rules";
 import { useQuery } from "@tanstack/react-query";
 import { isValidImageUrl } from "@/components/listing-fallback";
-
-interface PreviewListing {
-  id: string;
-  price: number | null;
-  size_m2: number | null;
-  city: string | null;
-  source: string | null;
-  image_url: string | null;
-  fresh_label: string | null;
-}
+import {
+  normalizeOnboardingParams,
+  matchEstimateQueryKey,
+  fetchMatchEstimate,
+  type MatchEstimateResult,
+  type PreviewListingResult,
+} from "@/lib/match-estimate";
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -59,35 +56,29 @@ export default function OnboardingPassword() {
   const [accordionOpen, setAccordionOpen] = useState(true);
   const submittingRef = useRef(false);
 
-  // Fetch real preview listings that match the user's search criteria.
-  // Used by the accordion preview card — picks first listing with a valid image.
-  const previewQs = new URLSearchParams();
-  if (city) previewQs.set("city", city);
-  if (minPrice) previewQs.set("minPrice", minPrice);
-  if (maxPrice) previewQs.set("maxPrice", maxPrice);
+  // Normalize all onboarding URL params into the shared filter format and
+  // POST them to /api/match-estimate, which applies the full matching engine
+  // (same logic used for real alerts) to count matches and find a preview listing.
+  const normalizedFilters = normalizeOnboardingParams(params);
 
-  const { data: previewListings } = useQuery<PreviewListing[]>({
-    queryKey: ["/api/listings/preview", city, minPrice, maxPrice],
-    queryFn: () =>
-      fetch(`/api/listings/preview?${previewQs.toString()}`)
-        .then((r) => (r.ok ? r.json() : [])),
+  const { data: estimate } = useQuery<MatchEstimateResult>({
+    queryKey: matchEstimateQueryKey(normalizedFilters),
+    queryFn: () => fetchMatchEstimate(normalizedFilters),
     enabled: !!city,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 2 * 60 * 1000,
   });
 
-  // Fallback order:
-  //   1. First listing where image_url passes isValidImageUrl
-  //   2. First listing with any image_url (even if not ideal)
-  //   3. First listing regardless of image (use placeholder image)
-  //   4. null → static card
-  const listingWithValidImage = previewListings?.find((l) => isValidImageUrl(l.image_url));
-  const listingWithAnyImage = previewListings?.find((l) => l.image_url);
-  const anyListing = previewListings?.[0] ?? null;
-  const previewListing: PreviewListing | null =
-    listingWithValidImage ?? listingWithAnyImage ?? anyListing ?? null;
+  // Preview listing — server already applied the fallback order:
+  //   1. Newest matching listing with a valid image_url
+  //   2. Newest matching listing without a valid image → client shows placeholder
+  //   3. null → static card (no matching listings in DB)
+  const previewListing: PreviewListingResult | null = estimate?.latestListingWithImage ?? null;
   const previewImageSrc = isValidImageUrl(previewListing?.image_url)
     ? previewListing!.image_url!
     : "/listing-placeholder.png";
+
+  // Match count for the info card — real 30-day count, fallback to display value
+  const matchCount30 = estimate?.matchesLast30Days ?? null;
 
   if (!city) return <Redirect to="/onboarding/filters" />;
   if (!w && !params.get("email")) return <Redirect to="/onboarding/email" />;
@@ -308,7 +299,7 @@ export default function OnboardingPassword() {
             style={{ color: "#111111" }}
             data-testid="text-page-title"
           >
-            Waar kunnen we je matches heen sturen?
+            {t("onboarding.password.web.title")}
           </h1>
 
           {/* Card 1 — "Jouw zoekopdracht" accordion */}
@@ -326,7 +317,7 @@ export default function OnboardingPassword() {
                 data-testid="button-accordion-toggle"
               >
                 <span className="text-[16px] font-bold" style={{ color: "rgb(var(--ha-primary))" }}>
-                  Jouw zoekopdracht
+                  {t("onboarding.password.web.searchQuery")}
                 </span>
                 <ChevronDown
                   className="w-[17px] h-[17px] transition-transform duration-300"
@@ -344,9 +335,19 @@ export default function OnboardingPassword() {
                 data-testid="match-summary-card"
               >
                 <p className="text-[13.5px] leading-[1.55]" style={{ color: "#1E3A8A" }}>
-                  Je hebt{" "}
-                  <span className="font-bold" style={{ color: "#1D4ED8" }}>121</span>
-                  {" "}woningmatches gemist in de laatste 30 dagen
+                  {(() => {
+                    const raw = t("onboarding.password.web.missedMatchesStat", { count: "|||" });
+                    const [pre, post] = raw.split("|||");
+                    return (
+                      <>
+                        {pre}
+                        <span className="font-bold" style={{ color: "#1D4ED8" }}>
+                          {matchCount30 !== null ? matchCount30 : "—"}
+                        </span>
+                        {post}
+                      </>
+                    );
+                  })()}
                 </p>
               </div>
 
@@ -387,7 +388,7 @@ export default function OnboardingPassword() {
 
                 {/* Caption text */}
                 <p className="text-[11.5px] font-medium" style={{ color: "#374151" }}>
-                  Een voorbeeld van een populaire woning die je recentelijk gemist hebt
+                  {t("onboarding.password.web.previewCaption")}
                 </p>
 
                 {/* Preview listing card — no hard border, shadow only */}
@@ -412,7 +413,7 @@ export default function OnboardingPassword() {
                       className="absolute top-2 right-2 text-[10px] font-semibold px-2 py-[3px] rounded-[4px]"
                       style={{ backgroundColor: "rgba(255,255,255,0.92)", color: "rgb(var(--ha-primary))" }}
                     >
-                      Upgrade om te bekijken
+                      {t("onboarding.password.web.upgradeToView")}
                     </span>
                   </div>
 
@@ -427,7 +428,9 @@ export default function OnboardingPassword() {
                     </span>
                     <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
                     <span className="text-[12px] truncate min-w-0" style={{ color: "#6B7280" }}>
-                      {previewListing?.fresh_label ?? "2 dagen geleden"}
+                      {previewListing?.fresh_label
+                        ? t(`freshness.${({ net_binnen: "justIn", vandaag: "today" } as Record<string, string>)[previewListing.fresh_label] ?? "daysAgo"}`, { n: "1" })
+                        : t("onboarding.password.web.fallbackFreshLabel", { n: "2" })}
                     </span>
                   </div>
                 </div>
@@ -443,7 +446,7 @@ export default function OnboardingPassword() {
           >
             <div className="px-5 pt-5 pb-5">
               <p className="text-[18px] font-bold mb-4" style={{ color: "#111111" }}>
-                Maak een gratis account aan
+                {t("onboarding.password.web.createFreeAccount")}
               </p>
 
               <div className="flex flex-col gap-4">
@@ -576,25 +579,25 @@ export default function OnboardingPassword() {
               <div className="flex items-center gap-2.5 mb-5">
                 <ShieldCheck className="w-[19px] h-[19px]" style={{ color: "rgb(var(--ha-primary))" }} />
                 <p className="text-[18px] font-bold" style={{ color: "#111111" }}>
-                  Zonder risico proberen
+                  {t("onboarding.password.web.riskFreeTitle")}
                 </p>
               </div>
               <div className="flex flex-col" style={{ gap: 0 }}>
                 {[
                   {
                     icon: "💳",
-                    title: "Volledig gratis",
-                    sub: "Geen creditcard nodig om te starten",
+                    title: t("onboarding.password.web.trust1Title"),
+                    sub: t("onboarding.password.web.trust1Sub"),
                   },
                   {
                     icon: "⚡",
-                    title: "Direct actief",
-                    sub: "Jouw zoekopdracht start meteen na aanmaken",
+                    title: t("onboarding.password.web.trust2Title"),
+                    sub: t("onboarding.password.web.trust2Sub"),
                   },
                   {
                     icon: "🔔",
-                    title: "Nooit een match missen",
-                    sub: "Meldingen zodra er een woning voor jou is",
+                    title: t("onboarding.password.web.trust3Title"),
+                    sub: t("onboarding.password.web.trust3Sub"),
                   },
                 ].map((item, i, arr) => (
                   <div

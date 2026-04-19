@@ -135,7 +135,7 @@ export default function OnboardingLocation() {
             className="text-[18px] font-semibold mb-2 block"
             style={{ color: OBW.textSecondary }}
           >
-            Woonplaats
+            {t("onboarding.location.cityLabel")}
           </label>
           <button
             onClick={() => navigate(appendWebsiteParams("/onboarding/city", searchString))}
@@ -254,10 +254,10 @@ export default function OnboardingLocation() {
                 .ha-radius-slider::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: #ffffff; box-shadow: 0 1px 6px rgba(0,0,0,0.18), 0 0 0 1.5px rgba(0,0,0,0.07); border: none; cursor: pointer; }
               `}</style>
 
-              {/* Header row: Afstand label + city name */}
+              {/* Header row: distance label + city name */}
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[15px] font-semibold" style={{ color: OBW.textSecondary }}>
-                  Afstand
+                  {t("onboarding.location.distanceLabel")}
                 </span>
                 <span className="text-[14px] font-medium" style={{ color: OBW.textMuted }}>
                   {city}

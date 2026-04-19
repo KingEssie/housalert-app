@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import { computeMatchEstimate, type NormalizedFilters } from "./match-estimate";
 import { sendEmailMatchAlert } from "./notifications";
 import {
   runAllIngesters,
@@ -1517,6 +1518,49 @@ export async function registerRoutes(
       return res.json(listings);
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
+    }
+  });
+
+  // Public endpoint — no auth required.
+  // Accepts a normalized filter object, returns match counts for 3 time windows
+  // and the best available preview listing (with/without image).
+  app.post("/api/match-estimate", async (req, res) => {
+    try {
+      const body = req.body as Partial<NormalizedFilters>;
+
+      if (!body.city || typeof body.city !== "string" || !body.city.trim()) {
+        return res.status(400).json({ error: "city is required" });
+      }
+
+      const filters: NormalizedFilters = {
+        city: body.city.trim(),
+        city_name: body.city_name?.trim() || body.city.trim(),
+        location_mode: (["city", "radius", "districts"].includes(body.location_mode as string)
+          ? body.location_mode
+          : "city") as NormalizedFilters["location_mode"],
+        latitude: typeof body.latitude === "number" ? body.latitude : undefined,
+        longitude: typeof body.longitude === "number" ? body.longitude : undefined,
+        radius_km: typeof body.radius_km === "number" && body.radius_km > 0 ? body.radius_km : undefined,
+        districts: Array.isArray(body.districts) && body.districts.length > 0 ? body.districts : undefined,
+        price_min: typeof body.price_min === "number" ? body.price_min : 0,
+        price_max: typeof body.price_max === "number" ? body.price_max : 0,
+        bedrooms_min: typeof body.bedrooms_min === "number" ? body.bedrooms_min : 0,
+        size_min: typeof body.size_min === "number" ? body.size_min : 0,
+        furnished: typeof body.furnished === "string" && body.furnished !== "any" ? body.furnished : undefined,
+        property_types: Array.isArray(body.property_types) && body.property_types.length > 0 ? body.property_types : undefined,
+        extra_features: Array.isArray(body.extra_features) && body.extra_features.length > 0 ? body.extra_features : undefined,
+        send_unclear: body.send_unclear !== false,
+        price_flexible: body.price_flexible === true,
+        include_paid_sites: body.include_paid_sites,
+        include_housing_corporations: body.include_housing_corporations,
+        include_lottery_housing: body.include_lottery_housing,
+      };
+
+      const result = await computeMatchEstimate(filters);
+      return res.json(result);
+    } catch (err: any) {
+      console.error("[MATCH-ESTIMATE] Error:", err);
+      return res.status(500).json({ error: err?.message || "Internal server error" });
     }
   });
 
