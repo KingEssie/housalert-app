@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Switch, Route, Redirect, Router as WouterRouter } from "wouter";
+import { Switch, Route, Redirect, Router as WouterRouter, useLocation } from "wouter";
 import { useHashLocation } from "wouter/use-hash-location";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -168,6 +168,13 @@ function GuestRoute({ component: Component }: { component: React.ComponentType }
   return <Component />;
 }
 
+function QueryPreservingRedirect({ to }: { to: string }) {
+  const [location] = useLocation();
+  const qIdx = location.indexOf("?");
+  const search = qIdx >= 0 ? location.slice(qIdx) : "";
+  return <Redirect to={`${to}${search}`} />;
+}
+
 function WebFunnelRoute({ component: Component }: { component: React.ComponentType }) {
   const { user, session, loading } = useAuth();
   const [checking, setChecking] = useState(true);
@@ -211,8 +218,9 @@ function Router() {
       <Route path="/reset-password" component={ResetPasswordPage} />
       <Route path="/onboarding-embed" component={OnboardingEmbedPage} />
       <Route path="/continue" component={ContinueDraftPage} />
-      <Route path="/onboarding/intro" component={() => <Redirect to="/onboarding/location" />} />
-      <Route path="/onboarding/city" component={() => <Redirect to="/onboarding/location" />} />
+      <Route path="/onboarding/intro" component={() => <QueryPreservingRedirect to="/onboarding/start" />} />
+      <Route path="/onboarding/city" component={() => <QueryPreservingRedirect to="/onboarding/start" />} />
+      <Route path="/onboarding/start" component={() => <WebFunnelRoute component={OnboardingLocationNew} />} />
       <Route path="/onboarding/location" component={() => <WebFunnelRoute component={OnboardingLocationNew} />} />
       <Route path="/onboarding/filters" component={() => <WebFunnelRoute component={OnboardingFiltersNew} />} />
       <Route path="/onboarding/name" component={() => <WebFunnelRoute component={OnboardingNameNew} />} />
@@ -220,7 +228,7 @@ function Router() {
       <Route path="/onboarding/password" component={() => <WebFunnelRoute component={OnboardingPasswordNew} />} />
       <Route path="/onboarding/preferences" component={() => <WebFunnelRoute component={OnboardingPreferencesNew} />} />
       <Route path="/onboarding/setup" component={() => <ProtectedRoute component={OnboardingSetup} skipOnboardingCheck />} />
-      <Route path="/onboarding" component={() => <Redirect to="/onboarding/location" />} />
+      <Route path="/onboarding" component={() => <QueryPreservingRedirect to="/onboarding/start" />} />
       <Route path="/paywall" component={PaywallPage} />
       <Route path="/subscription-success" component={() => <ProtectedRoute component={SubscriptionSuccessPage} skipOnboardingCheck />} />
       <Route path="/checkout/success" component={CheckoutSuccessPage} />
