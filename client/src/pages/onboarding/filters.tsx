@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation, Redirect } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { useTranslation } from "@/i18n";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
+import { useQuery } from "@tanstack/react-query";
 import {
   Check, Bath, Sun, Trees, Leaf, Info, ChevronLeft, X, Loader2,
 } from "lucide-react";
@@ -11,6 +12,12 @@ import { OB, OBW, useWebsiteMode, appendWebsiteParams } from "@/components/onboa
 import { OnboardingFlowLayout } from "@/components/onboarding-flow-layout";
 import { createSearchProfile, type InsertSearchProfileInput } from "@/lib/search-profiles";
 import { queryClient } from "@/lib/queryClient";
+import {
+  matchEstimateQueryKey,
+  fetchMatchEstimate,
+  type MatchEstimateResult,
+  type NormalizedFilters,
+} from "@/lib/match-estimate";
 
 type OBTheme = typeof OB | typeof OBW;
 
@@ -375,6 +382,44 @@ export default function OnboardingFilters() {
       };
     }
     return INITIAL_FILTERS;
+  });
+
+  const [debouncedF, setDebouncedF] = useState<FilterData>(f);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => setDebouncedF(f), 600);
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+  }, [f]);
+
+  const parsedLat = parseFloat(lat);
+  const parsedLng = parseFloat(lng);
+  const parsedRadius = parseFloat(radiusKm);
+  const lMode = locationMode === "radius" ? "radius" : locationMode === "districts" ? "districts" : "city";
+  const estimateFilters: NormalizedFilters = {
+    city,
+    location_mode: lMode as NormalizedFilters["location_mode"],
+    latitude: !isNaN(parsedLat) ? parsedLat : undefined,
+    longitude: !isNaN(parsedLng) ? parsedLng : undefined,
+    radius_km: !isNaN(parsedRadius) && parsedRadius > 0 ? parsedRadius : undefined,
+    districts: districts ? districts.split(",").filter(Boolean) : undefined,
+    price_min: debouncedF.minPrice,
+    price_max: debouncedF.maxPrice,
+    bedrooms_min: debouncedF.minRooms === "any" ? 0 : parseInt(debouncedF.minRooms, 10),
+    size_min: debouncedF.sizeNA ? 0 : debouncedF.minSize,
+    furnished: debouncedF.furnished !== "any" ? debouncedF.furnished : undefined,
+    property_types: debouncedF.propertyType !== "any" ? [debouncedF.propertyType] : undefined,
+    extra_features: debouncedF.amenities.length > 0 ? debouncedF.amenities : undefined,
+    send_unclear: debouncedF.sendUnclear,
+    price_flexible: debouncedF.priceFlexible,
+    include_rooms: debouncedF.includeRooms,
+  };
+
+  const { data: estimate, isFetching: estimateFetching } = useQuery<MatchEstimateResult>({
+    queryKey: matchEstimateQueryKey(estimateFilters),
+    queryFn: () => fetchMatchEstimate(estimateFilters),
+    enabled: !!city,
+    staleTime: 2 * 60 * 1000,
   });
 
   if (!city) return <Redirect to="/onboarding/city" />;
@@ -980,7 +1025,16 @@ export default function OnboardingFilters() {
                 {t("onboarding.location.estimatedMatches")}
               </p>
               <p className="text-[16px] font-semibold leading-snug" style={{ color: OBW.text }}>
-                195 {t("onboardingUI.perWeek")} 🔥
+                {estimateFetching ? (
+                  <span style={{ color: OBW.textMuted }}>…</span>
+                ) : estimate?.matchesLast7Days != null ? (
+                  <>
+                    {estimate.matchesLast7Days} {t("onboardingUI.perWeek")}
+                    {estimate.matchesLast7Days > 10 ? " 🔥" : ""}
+                  </>
+                ) : (
+                  <>— {t("onboardingUI.perWeek")}</>
+                )}
               </p>
             </div>
             <div className="flex items-center gap-2.5 shrink-0">

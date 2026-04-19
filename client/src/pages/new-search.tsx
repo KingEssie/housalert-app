@@ -10,7 +10,14 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
 import { useTranslation } from "@/i18n";
-import { getMatchEstimateRange } from "@/lib/match-estimate";
+import {
+  matchEstimateQueryKey,
+  fetchMatchEstimate,
+  type MatchEstimateResult,
+  type PreviewListingResult,
+  type NormalizedFilters,
+} from "@/lib/match-estimate";
+import { isValidImageUrl } from "@/components/listing-fallback";
 import LocationModeSelector, {
   type LocationData,
   DEFAULT_LOCATION_DATA,
@@ -207,18 +214,32 @@ export default function NewSearchPage() {
     ? locationData.commuteCity || locationData.commuteDestination.split(",")[0].trim()
     : locationData.place?.city_name ?? "";
 
-  const estimateQuery = useQuery({
-    queryKey: ["/api/estimate", cityForProfile, filters.priceMin, filters.priceMax, filters.bedroomsMin, filters.sizeMin],
-    queryFn: async () => {
-      const params = new URLSearchParams({ city: cityForProfile });
-      if (filters.priceMin) params.set("minPrice", filters.priceMin);
-      if (filters.priceMax) params.set("maxPrice", filters.priceMax);
-      if (filters.bedroomsMin > 0) params.set("minRooms", String(filters.bedroomsMin));
-      if (filters.sizeMin > 0) params.set("minSize", String(filters.sizeMin));
-      const res = await apiFetch(`/api/estimate?${params}`);
-      if (!res.ok) return null;
-      return res.json();
-    },
+  const estimateLocationMode: NormalizedFilters["location_mode"] =
+    locationData.tab === "radius" ? "radius"
+    : locationData.tab === "wijken" && locationData.districts.length > 0 ? "districts"
+    : "city";
+
+  const estimateFilters: NormalizedFilters = {
+    city: cityForProfile,
+    location_mode: estimateLocationMode,
+    latitude: locationData.place?.latitude,
+    longitude: locationData.place?.longitude,
+    radius_km: locationData.tab === "radius" ? locationData.radiusKm : undefined,
+    districts: locationData.tab === "wijken" && locationData.districts.length > 0
+      ? locationData.districts : undefined,
+    price_min: parseInt(filters.priceMin) || 0,
+    price_max: parseInt(filters.priceMax) || 0,
+    bedrooms_min: filters.bedroomsMin,
+    size_min: filters.sizeMin,
+    furnished: filters.furnished || undefined,
+    extra_features: filters.extraFeatures.length > 0 ? filters.extraFeatures : undefined,
+    send_unclear: filters.sendUnclear,
+    price_flexible: filters.priceFlexible,
+  };
+
+  const estimateQuery = useQuery<MatchEstimateResult>({
+    queryKey: matchEstimateQueryKey(estimateFilters),
+    queryFn: () => fetchMatchEstimate(estimateFilters),
     enabled: !!cityForProfile && step >= 2,
     staleTime: 30000,
   });
@@ -389,7 +410,7 @@ export default function NewSearchPage() {
     );
   }
 
-  const perWeekRaw = estimateQuery.data?.perWeekEstimate ?? 0;
+  const estimateData = estimateQuery.data ?? null;
 
   return (
     <div className="min-h-screen bg-[#eaeaeb] flex flex-col">
@@ -434,7 +455,7 @@ export default function NewSearchPage() {
             isEditMode={isEditMode}
             submitting={submitting}
             onSubmit={handleSubmit}
-            perWeek={perWeekRaw}
+            estimate={estimateData}
             estimateLoading={estimateQuery.isLoading}
           />
         )}
@@ -953,7 +974,7 @@ function StepReview({
   isEditMode,
   submitting,
   onSubmit,
-  perWeek,
+  estimate,
   estimateLoading,
 }: {
   locationData: LocationData;
@@ -963,11 +984,15 @@ function StepReview({
   isEditMode: boolean;
   submitting: boolean;
   onSubmit: () => void;
-  perWeek: number;
+  estimate: MatchEstimateResult | null;
   estimateLoading: boolean;
 }) {
   const { t } = useTranslation();
-  const perWeekRange = getMatchEstimateRange(perWeek);
+  const matchCount30 = estimate?.matchesLast30Days ?? null;
+  const previewListing: PreviewListingResult | null = estimate?.latestListingWithImage ?? null;
+  const previewImageSrc = isValidImageUrl(previewListing?.image_url)
+    ? previewListing!.image_url!
+    : "/listing-placeholder.png";
 
   const locationLabel = locationData.tab === "reistijd"
     ? t("newSearch.step5.commuteTo", { dest: locationData.commuteDestination })
@@ -1012,21 +1037,68 @@ function StepReview({
 
       <div className="space-y-5">
         {!estimateLoading && (
-          <div className="rounded-[12px] bg-[#F5F0EB] p-6 flex items-center gap-4" data-testid="card-review-estimate">
-            <div className="flex-shrink-0">
-              <Sparkles className="w-[32px] h-[32px] text-[#111111]" strokeWidth={1.6} />
+          <div data-testid="card-review-estimate">
+            {/* Missed matches stat */}
+            <div
+              className="rounded-[10px] px-4 py-3 mb-3"
+              style={{ backgroundColor: "#EBF2FC" }}
+            >
+              <p className="text-[13.5px] leading-[1.55]" style={{ color: "#1E3A8A" }}>
+                {(() => {
+                  const raw = t("onboarding.password.web.missedMatchesStat", { count: "|||" });
+                  const [pre, post] = raw.split("|||");
+                  return (
+                    <>
+                      {pre}
+                      <span className="font-bold" style={{ color: "#1D4ED8" }}>
+                        {matchCount30 !== null ? matchCount30 : "—"}
+                      </span>
+                      {post}
+                    </>
+                  );
+                })()}
+              </p>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-[17px] font-bold text-[#111111] leading-snug">
-                {perWeek > 0
-                  ? t("newSearch.step5.estimate", perWeekRange)
-                  : t("newSearch.step5.noMatchesExpected")}
-              </p>
-              <p className="text-[14px] text-[#334855] mt-1">
-                {perWeek > 0
-                  ? t("newSearch.step5.estimateDesc")
-                  : t("newSearch.step5.adjustFiltersLater")}
-              </p>
+
+            {/* Preview listing card */}
+            <p className="text-[11.5px] font-medium mb-2" style={{ color: "#374151" }}>
+              {t("onboarding.password.web.previewCaption")}
+            </p>
+            <div
+              className="rounded-[8px] overflow-hidden bg-white"
+              style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.10)" }}
+              data-testid="listing-preview-card"
+            >
+              <div className="relative w-full h-[140px] overflow-hidden" style={{ backgroundColor: "#EDF2F7" }}>
+                <img
+                  src={previewImageSrc}
+                  alt=""
+                  className="w-full h-full object-cover"
+                  draggable={false}
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).src = "/listing-placeholder.png"; }}
+                />
+                <span
+                  className="absolute top-2 right-2 text-[10px] font-semibold px-2 py-[3px] rounded-[4px]"
+                  style={{ backgroundColor: "rgba(255,255,255,0.92)", color: "rgb(var(--ha-primary))" }}
+                >
+                  {t("onboarding.password.web.upgradeToView")}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 px-3.5 py-3 min-w-0" style={{ borderTop: "1px solid #F3F4F6" }}>
+                <span className="text-[14px] font-bold shrink-0" style={{ color: "#111111" }}>
+                  {previewListing?.price ? `€${previewListing.price}` : "€850"}
+                </span>
+                <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
+                <span className="text-[12px] font-medium shrink-0" style={{ color: "#111111" }}>
+                  {previewListing?.size_m2 ? `${previewListing.size_m2} m²` : "45 m²"}
+                </span>
+                <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
+                <span className="text-[12px] truncate min-w-0" style={{ color: "#6B7280" }}>
+                  {previewListing?.fresh_label
+                    ? t(`freshness.${({ net_binnen: "justIn", vandaag: "today" } as Record<string, string>)[previewListing.fresh_label] ?? "daysAgo"}`, { n: "1" })
+                    : t("onboarding.password.web.fallbackFreshLabel", { n: "2" })}
+                </span>
+              </div>
             </div>
           </div>
         )}
