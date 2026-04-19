@@ -1,9 +1,15 @@
 import { useState } from "react";
 import { useLocation, Redirect } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
-import { Check, Info } from "lucide-react";
+import { Info } from "lucide-react";
 import { OBW, OBWebHeader, OBWebFooter, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 import { useTranslation } from "@/i18n";
+
+interface SearchFilters {
+  vrijeSector: boolean;
+  payToReply: boolean;
+  loting: boolean;
+}
 
 export default function OnboardingPreferences() {
   const { t } = useTranslation();
@@ -12,51 +18,59 @@ export default function OnboardingPreferences() {
   const w = useWebsiteMode();
   const params = new URLSearchParams(searchString);
 
-  const PREFERENCE_OPTIONS = [
-    { value: "balcony", label: t("amenities.balcony") },
-    { value: "garden", label: t("amenities.garden") },
-    { value: "bath", label: t("amenities.bath") },
-    { value: "energy_c", label: t("amenities.energyC") },
-    { value: "rooftop", label: t("amenities.rooftop") },
-  ];
-
   const city = params.get("city") || "";
 
-  const [amenities, setAmenities] = useState<string[]>(() => {
-    const a = params.get("amenities");
-    return a ? a.split(",").filter(Boolean) : [];
-  });
-  const [sendUnclear, setSendUnclear] = useState(() => {
-    return params.get("sendUnclear") !== "false";
-  });
   const [searchName, setSearchName] = useState(() => {
     return params.get("searchName") || city;
   });
 
+  const [suitableFor, setSuitableFor] = useState<string[]>(() => {
+    const s = params.get("suitableFor");
+    return s ? s.split(",").filter(Boolean) : [];
+  });
+
+  const [searchFilters, setSearchFilters] = useState<SearchFilters>(() => ({
+    vrijeSector: params.get("filterVrijeSector") !== "false",
+    payToReply: params.get("filterPayToReply") !== "false",
+    loting: params.get("filterLoting") !== "false",
+  }));
+
+  const [applyToAllProfiles, setApplyToAllProfiles] = useState(() => {
+    return params.get("applyToAllProfiles") === "true";
+  });
+
   if (!city) return <Redirect to="/onboarding/filters" />;
 
-  function toggleAmenity(a: string) {
-    setAmenities((prev) =>
-      prev.includes(a) ? prev.filter((x) => x !== a) : [...prev, a]
+  function toggleSuitableFor(value: string) {
+    setSuitableFor((prev) =>
+      prev.includes(value) ? prev.filter((x) => x !== value) : [...prev, value]
     );
   }
 
-  function handleNext() {
-    const outParams = new URLSearchParams(searchString);
-    outParams.delete("source");
-    outParams.delete("theme");
+  function updateFilter(key: keyof SearchFilters, value: boolean) {
+    setSearchFilters((prev) => ({ ...prev, [key]: value }));
+  }
 
-    if (amenities.length > 0) {
-      outParams.set("amenities", amenities.join(","));
+  function buildOutParams(base: URLSearchParams) {
+    base.delete("source");
+    base.delete("theme");
+    base.set("searchName", searchName.trim() || city);
+    if (suitableFor.length > 0) {
+      base.set("suitableFor", suitableFor.join(","));
     } else {
-      outParams.delete("amenities");
+      base.delete("suitableFor");
     }
-    outParams.set("sendUnclear", String(sendUnclear));
-    outParams.set("searchName", searchName.trim() || city);
+    base.set("filterVrijeSector", String(searchFilters.vrijeSector));
+    base.set("filterPayToReply", String(searchFilters.payToReply));
+    base.set("filterLoting", String(searchFilters.loting));
+    base.set("applyToAllProfiles", String(applyToAllProfiles));
+    return base;
+  }
+
+  function handleNext() {
+    const outParams = buildOutParams(new URLSearchParams(searchString));
 
     if (w) {
-      // VITE_APP_URL should be set to the app's base URL in production (e.g. https://app.housalert.com).
-      // If unset, falls back to window.location.origin which works correctly in most deployments.
       const appBase = import.meta.env.VITE_APP_URL || window.location.origin;
       const accountUrl = new URL(`${appBase}/onboarding/password`);
       accountUrl.searchParams.set("source", "website");
@@ -76,16 +90,7 @@ export default function OnboardingPreferences() {
   }
 
   function handleBack() {
-    const backParams = new URLSearchParams(searchString);
-    backParams.delete("source");
-    backParams.delete("theme");
-    if (amenities.length > 0) {
-      backParams.set("amenities", amenities.join(","));
-    } else {
-      backParams.delete("amenities");
-    }
-    backParams.set("sendUnclear", String(sendUnclear));
-    backParams.set("searchName", searchName.trim() || city);
+    const backParams = buildOutParams(new URLSearchParams(searchString));
     navigate(appendWebsiteParams(`/onboarding/filters?${backParams.toString()}`, searchString));
   }
 
@@ -98,6 +103,20 @@ export default function OnboardingPreferences() {
     return null;
   }
 
+  const sLabel = "text-[15px] font-semibold mb-3 block";
+
+  const SUITABLE_FOR_OPTIONS = [
+    { value: "studenten", label: "Studenten" },
+    { value: "woningdelers", label: "Woningdelers" },
+    { value: "huisdieren", label: "Huisdieren" },
+  ];
+
+  const ZOEKFILTER_ROWS: { key: keyof SearchFilters; label: string; info?: boolean }[] = [
+    { key: "vrijeSector", label: "Vrije sectorwoningen van woningcorporaties" },
+    { key: "payToReply", label: "Woningen op websites waar je moet betalen om te reageren", info: true },
+    { key: "loting", label: "Lotingwoningen (sociale huur)", info: true },
+  ];
+
   return (
     <div
       className="min-h-[100dvh] flex flex-col"
@@ -107,7 +126,9 @@ export default function OnboardingPreferences() {
       <OBWebHeader step={4} totalSteps={4} onClose={handleClose} />
 
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-[100px] overflow-y-auto">
-        <div className="mb-4">
+
+        {/* Naam zoekopdracht */}
+        <div className="mb-6">
           <label
             className="block text-[15px] font-semibold mb-2"
             style={{ color: OBW.text }}
@@ -132,77 +153,120 @@ export default function OnboardingPreferences() {
           />
         </div>
 
-        <h2
-          className="text-[30px] font-semibold tracking-[-0.025em]"
-          style={{ color: OBW.text, marginBottom: 7 }}
-          data-testid="text-preferences-title"
-        >
-          {t("onboarding.filters.specificWishesTitle")}
-        </h2>
-        <p className="text-[13px] mb-4 leading-snug" style={{ color: OBW.textSecondary }}>
-          {t("onboarding.filters.specificWishesSubtitle")}
-        </p>
+        <div className="h-px mb-6" style={{ backgroundColor: "rgba(0,0,0,0.07)" }} />
 
-        <div
-          className="rounded-[4px] mb-5 flex items-center gap-3"
-          style={{ backgroundColor: "#FFFFFF", border: "1px solid #C4C8CE", padding: "14px 16px" }}
-        >
-          <Info className="w-[15px] h-[15px] shrink-0" style={{ color: "rgb(var(--ha-primary))" }} />
-          <div className="text-[13px] leading-[1.65]" style={{ color: "rgb(var(--ha-primary))" }}>
-            {t("onboarding.filters.specificWishesWarning")}
-          </div>
-        </div>
-
-        <div className="flex flex-col" data-testid="preference-options">
-          {PREFERENCE_OPTIONS.map((opt, i) => {
-            const active = amenities.includes(opt.value);
-            return (
-              <button
-                key={opt.value}
-                onClick={() => toggleAmenity(opt.value)}
-                className="w-full flex items-center justify-between py-[16px] text-left transition-colors"
-                style={{
-                  borderBottom: i < PREFERENCE_OPTIONS.length - 1 ? `1px solid rgba(0,0,0,0.07)` : "none",
-                }}
-                data-testid={`preference-${opt.value}`}
-              >
-                <span className="text-[15px]" style={{ color: OBW.text }}>
-                  {opt.label}
-                </span>
-                <div
-                  className="w-[22px] h-[22px] rounded-[4px] flex items-center justify-center shrink-0"
+        {/* Woningen geschikt voor */}
+        <section className="mb-6">
+          <label className={sLabel} style={{ color: OBW.text }}>
+            Woningen geschikt voor
+          </label>
+          <div className="flex flex-wrap gap-2" data-testid="suitable-for-chips">
+            {SUITABLE_FOR_OPTIONS.map((opt) => {
+              const active = suitableFor.includes(opt.value);
+              return (
+                <button
+                  key={opt.value}
+                  onClick={() => toggleSuitableFor(opt.value)}
+                  className="h-[40px] px-5 rounded-full text-[14px] font-medium border transition-all active:scale-[0.96]"
                   style={{
-                    border: active ? "none" : `1.5px solid ${OBW.chipBorder}`,
-                    backgroundColor: active ? "rgb(var(--ha-primary))" : "transparent",
+                    backgroundColor: active ? "rgb(var(--ha-primary))" : "#F9FAFB",
+                    borderColor: active ? "rgb(var(--ha-primary))" : "#E5E7EB",
+                    color: active ? "#fff" : "#334855",
                   }}
+                  data-testid={`chip-suitable-${opt.value}`}
                 >
-                  {active && <Check className="w-[14px] h-[14px] text-white" />}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="h-px my-4" style={{ backgroundColor: "rgba(0,0,0,0.07)" }} />
-
-        <label
-          className="flex items-center gap-3 cursor-pointer py-3"
-          data-testid="toggle-send-unclear"
-          onClick={() => setSendUnclear(!sendUnclear)}
-        >
-          <div
-            className="w-[40px] h-[22px] rounded-full p-[2px] transition-colors shrink-0 cursor-pointer"
-            style={{ backgroundColor: sendUnclear ? "rgb(var(--ha-primary))" : "#E5E7EB" }}
-          >
-            <div
-              className="w-[18px] h-[18px] rounded-full bg-white transition-transform shadow-sm"
-              style={{ transform: sendUnclear ? "translateX(18px)" : "translateX(0)" }}
-            />
+                  {opt.label}
+                </button>
+              );
+            })}
           </div>
-          <span className="text-[14px] leading-snug" style={{ color: OBW.text }}>
-            {t("onboarding.filters.sendUnclear")}
-          </span>
-        </label>
+
+          {/* Grey info box */}
+          <div
+            className="mt-4 rounded-[8px] flex items-center gap-3"
+            style={{ backgroundColor: "#F3F4F6", padding: "14px 16px" }}
+          >
+            <Info className="w-[15px] h-[15px] shrink-0" style={{ color: "#6B7280" }} />
+            <p className="text-[13px] leading-[1.6]" style={{ color: "#6B7280" }}>
+              Selecteer welk type bewoner het beste bij de woning past. Laat leeg als dit niet uitmaakt.
+            </p>
+          </div>
+        </section>
+
+        <div className="h-px mb-6" style={{ backgroundColor: "rgba(0,0,0,0.07)" }} />
+
+        {/* Zoekfilter */}
+        <section className="mb-6">
+          <label className={sLabel} style={{ color: OBW.text }}>
+            Zoekfilter
+          </label>
+          <div className="flex flex-col" data-testid="search-filter-rows">
+            {ZOEKFILTER_ROWS.map((row, i) => {
+              const checked = searchFilters[row.key];
+              return (
+                <button
+                  key={row.key}
+                  onClick={() => updateFilter(row.key, !checked)}
+                  className="w-full flex items-center justify-between py-[16px] text-left transition-colors"
+                  style={{
+                    borderBottom: i < ZOEKFILTER_ROWS.length - 1 ? "1px solid rgba(0,0,0,0.07)" : "none",
+                  }}
+                  data-testid={`toggle-filter-${row.key}`}
+                >
+                  <span className="flex items-center gap-1.5 text-[14px] leading-snug pr-4 flex-1" style={{ color: OBW.text }}>
+                    {row.label}
+                    {row.info && (
+                      <Info className="w-[13px] h-[13px] shrink-0 inline-block" style={{ color: "#9CA3AF" }} />
+                    )}
+                  </span>
+                  <div
+                    className="w-[44px] h-[26px] rounded-full p-[3px] transition-colors shrink-0 flex items-center"
+                    style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "#E5E7EB" }}
+                  >
+                    <div
+                      className="w-[20px] h-[20px] rounded-full bg-white transition-all"
+                      style={{
+                        transform: checked ? "translateX(18px)" : "translateX(0)",
+                        boxShadow: "0 1px 3px rgba(0,0,0,0.15)",
+                      }}
+                    />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        <div className="h-px mb-6" style={{ backgroundColor: "rgba(0,0,0,0.07)" }} />
+
+        {/* Instellingen opslaan */}
+        <section className="mb-2">
+          <label className={sLabel} style={{ color: OBW.text }}>
+            Instellingen opslaan
+          </label>
+          <button
+            onClick={() => setApplyToAllProfiles(!applyToAllProfiles)}
+            className="w-full flex items-center justify-between py-[16px] text-left transition-colors"
+            data-testid="toggle-apply-to-all"
+          >
+            <span className="text-[14px] leading-snug pr-4 flex-1" style={{ color: OBW.text }}>
+              Bovenstaande zoekinstellingen toepassen op alle zoekprofielen
+            </span>
+            <div
+              className="w-[44px] h-[26px] rounded-full p-[3px] transition-colors shrink-0 flex items-center"
+              style={{ backgroundColor: applyToAllProfiles ? "rgb(var(--ha-primary))" : "#E5E7EB" }}
+            >
+              <div
+                className="w-[20px] h-[20px] rounded-full bg-white transition-all"
+                style={{
+                  transform: applyToAllProfiles ? "translateX(18px)" : "translateX(0)",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.15)",
+                }}
+              />
+            </div>
+          </button>
+        </section>
+
       </main>
 
       <OBWebFooter

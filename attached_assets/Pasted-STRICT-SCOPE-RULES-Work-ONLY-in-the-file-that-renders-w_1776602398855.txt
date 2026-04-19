@@ -1,0 +1,123 @@
+STRICT SCOPE RULES:
+- Work ONLY in the file that renders website onboarding step 4
+- Website mode only
+- Do NOT touch step 1, step 2, or step 3
+- Do NOT inspect locale files
+- Do NOT perform a broad audit
+- Do NOT refactor unrelated code
+- Keep token/cost usage minimal
+- If another file is absolutely required, STOP and report it first
+
+TASK:
+The current 4/4 screen is the wrong screen content.
+It currently shows “Specifieke woonwensen”, but this step must instead be the Rentbird-style “Zoekfilters” screen.
+
+IMPORTANT:
+Do NOT just tweak spacing.
+This is a content/layout correction.
+Replace the current 4/4 content with the correct screen structure and keep functionality working.
+
+APPLY THESE EXACT CHANGES:
+
+1. KEEP HEADER / FOOTER
+Keep:
+- 4/4 badge
+- centered title "Zoekopdracht maken"
+- close button right
+- footer with:
+  - Geschatte matches
+  - count per week
+  - back button
+  - volgende button
+
+Keep these consistent with steps 2/4 and 3/4.
+
+2. TOP FIELD: NAAM ZOEKOPDRACHT
+At the top of the content area, show:
+- label: "Naam zoekopdracht"
+- editable input field below
+- default value must be the selected city name
+- if user edits it, preserve the custom value
+- this value must remain the saved title for the search profile/home screen
+
+3. REMOVE WRONG CONTENT
+Completely remove from 4/4:
+- title "Specifieke woonwensen"
+- subtitle about extra’s
+- the warning/info box about selecting fewer wishes
+- the checkbox list:
+  - Balkon
+  - Tuin
+  - Badkuip
+  - Energielabel C+
+  - Dakterras
+- the toggle:
+  - "Stuur mij woningen waarbij mijn eisen niet duidelijk staan"
+
+This content does not belong on this screen.
+
+4. ADD CORRECT SECTION: WONINGEN GESCHIKT VOOR
+Add a section titled:
+- "Woningen geschikt voor"
+
+Below it, add 3 selectable chips:
+- Studenten
+- Woningdelers
+- Huisdieren
+
+These must be interactive and stored in state.
+
+5. ADD LIGHT GREY INFO BOX
+Under the chips, add a compact light-grey information box in the Rentbird structure.
+Use the same grey box feeling as the screenshot.
+Keep it visually subtle and aligned with the rest of the flow.
+
+6. ADD CORRECT SECTION: ZOEKFILTER
+Add a section titled:
+- "Zoekfilter"
+
+Under it, render these rows with toggles on the right:
+- "Vrije sectorwoningen van woningcorporaties"
+- "Woningen op websites waar je moet betalen om te reageren"
+- "Lotingwoningen (sociale huur)"
+
+Where relevant, show the info icon inline next to the label text, matching the screenshot structure.
+
+These toggles must be functional and stored in state.
+
+7. ADD CORRECT SECTION: INSTELLINGEN OPSLAAN
+Add a section titled:
+- "Instellingen opslaan"
+
+Under it, render one toggle row:
+- "Bovenstaande zoekinstellingen toepassen op alle zoekprofielen"
+
+This toggle must be functional and stored in state.
+
+8. STYLING
+Make this screen visually consistent with steps 2/4 and 3/4:
+- same input styling
+- same chip system
+- same toggle system
+- same spacing rhythm
+- same footer rhythm
+- use the grey information box style from the Rentbird example
+
+9. DO NOT CHANGE
+- Do not touch other onboarding steps
+- Do not perform translation work
+- Do not redesign colors away from HousAlert branding
+- Do not remove the search name logic
+- Do not break footer behavior
+
+RETURN ONLY:
+1. exact content removed
+2. exact content added
+3. exact state fields used for:
+   - searchName
+   - suitableFor
+   - searchFilters
+   - applyToAllProfiles
+4. confirmation that 4/4 no longer shows “Specifieke woonwensen”
+5. whether any extra file was required
+6. confirmation that no broader audit or translation work was done
