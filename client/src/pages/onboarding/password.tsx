@@ -313,7 +313,7 @@ export default function OnboardingPassword() {
 
           {/* Card 1 — "Jouw zoekopdracht" accordion */}
           <div
-            className="rounded-[12px] mb-3 overflow-hidden bg-white"
+            className="rounded-[4px] mb-3 overflow-hidden bg-white"
             style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.08)" }}
             data-testid="search-summary-card"
           >
@@ -337,10 +337,10 @@ export default function OnboardingPassword() {
                 />
               </button>
 
-              {/* Info card — compact Rentbird-style single message */}
+              {/* Info card — no border, just background tint */}
               <div
-                className="rounded-[8px] px-4 py-3"
-                style={{ backgroundColor: "#EBF2FC", border: "1px solid #C8DCF0" }}
+                className="rounded-[4px] px-4 py-3"
+                style={{ backgroundColor: "#EBF2FC" }}
                 data-testid="match-summary-card"
               >
                 <p className="text-[13.5px] leading-[1.55]" style={{ color: "#1E3A8A" }}>
@@ -362,10 +362,10 @@ export default function OnboardingPassword() {
             >
               <div className="px-4 pb-4 flex flex-col gap-2.5">
 
-                {/* Grey sub-card: city + filter details */}
+                {/* Grey sub-card: city + filter details — light, near page background */}
                 <div
-                  className="rounded-[8px] px-4 py-3 flex flex-col gap-1"
-                  style={{ backgroundColor: "#DCDEE3" }}
+                  className="rounded-[4px] px-4 py-3 flex flex-col gap-1"
+                  style={{ backgroundColor: "#ECEEF1" }}
                 >
                   <div className="flex items-center gap-2">
                     <span
@@ -376,7 +376,7 @@ export default function OnboardingPassword() {
                       {searchName}
                     </span>
                   </div>
-                  <p className="text-[12px] pl-[16px] font-medium" style={{ color: "#374151" }}>
+                  <p className="text-[12px] pl-[16px] font-medium" style={{ color: "#1F2937" }}>
                     {[
                       minPrice && maxPrice ? `€${minPrice}–€${maxPrice}` : null,
                       roomsLabel ? `${roomsLabel} ${t("onboarding.password.web.apartments")}` : null,
@@ -390,14 +390,14 @@ export default function OnboardingPassword() {
                   Een voorbeeld van een populaire woning die je recentelijk gemist hebt
                 </p>
 
-                {/* Preview listing card */}
+                {/* Preview listing card — no hard border, shadow only */}
                 <div
-                  className="rounded-[8px] overflow-hidden bg-white"
-                  style={{ border: "1px solid #E8EAED", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
+                  className="rounded-[4px] overflow-hidden bg-white"
+                  style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.10)" }}
                   data-testid="listing-preview-card"
                 >
-                  {/* Image area — real listing image when available, placeholder as fallback */}
-                  <div className="w-full h-[148px] overflow-hidden" style={{ backgroundColor: "#EDF2F7" }}>
+                  {/* Image area — overlay badge top-right */}
+                  <div className="relative w-full h-[148px] overflow-hidden" style={{ backgroundColor: "#EDF2F7" }}>
                     <img
                       src={previewImageSrc}
                       alt=""
@@ -407,31 +407,27 @@ export default function OnboardingPassword() {
                         (e.currentTarget as HTMLImageElement).src = "/listing-placeholder.png";
                       }}
                     />
+                    {/* Upgrade badge — top-right overlay inside image */}
+                    <span
+                      className="absolute top-2 right-2 text-[10px] font-semibold px-2 py-[3px] rounded-[4px]"
+                      style={{ backgroundColor: "rgba(255,255,255,0.92)", color: "rgb(var(--ha-primary))" }}
+                    >
+                      Upgrade om te bekijken
+                    </span>
                   </div>
 
-                  {/* Meta row — real data when listing available, otherwise static placeholders */}
-                  <div className="flex items-center gap-2.5 px-3.5 py-3" style={{ borderTop: "1px solid #F0F2F5" }}>
-                    <span className="text-[14px] font-bold" style={{ color: "#111111" }}>
-                      {previewListing?.price ? `€${previewListing.price} /mnd` : "€850 /mnd"}
+                  {/* Meta row — price · size · time (no CTA, no /mnd) */}
+                  <div className="flex items-center gap-2 px-3.5 py-3 min-w-0" style={{ borderTop: "1px solid #F3F4F6" }}>
+                    <span className="text-[14px] font-bold shrink-0" style={{ color: "#111111" }}>
+                      {previewListing?.price ? `€${previewListing.price}` : "€850"}
                     </span>
-                    {previewListing?.size_m2 && (
-                      <>
-                        <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
-                        <span className="text-[12px] font-medium" style={{ color: "#374151" }}>{previewListing.size_m2} m²</span>
-                      </>
-                    )}
-                    {!previewListing?.size_m2 && (
-                      <>
-                        <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
-                        <span className="text-[12px] font-medium" style={{ color: "#374151" }}>45 m²</span>
-                      </>
-                    )}
                     <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
-                    <span className="text-[12px]" style={{ color: "#6B7280" }}>
-                      {previewListing?.fresh_label ?? "2 dagen geleden"}
+                    <span className="text-[12px] font-medium shrink-0" style={{ color: "#111111" }}>
+                      {previewListing?.size_m2 ? `${previewListing.size_m2} m²` : "45 m²"}
                     </span>
-                    <span className="ml-auto text-[11px] font-semibold" style={{ color: "rgb(var(--ha-primary))" }}>
-                      Upgrade om te bekijken →
+                    <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
+                    <span className="text-[12px] truncate min-w-0" style={{ color: "#6B7280" }}>
+                      {previewListing?.fresh_label ?? "2 dagen geleden"}
                     </span>
                   </div>
                 </div>
