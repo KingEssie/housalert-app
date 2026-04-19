@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useLocation, Redirect } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
-import { Check } from "lucide-react";
-import { OBW, OBWebHeader, OBWebFooter, OBInfoBox, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
+import { Check, Info } from "lucide-react";
+import { OBW, OBWebHeader, OBWebFooter, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 import { useTranslation } from "@/i18n";
 
 export default function OnboardingPreferences() {
@@ -98,24 +98,28 @@ export default function OnboardingPreferences() {
       style={{ background: "#ffffff" }}
       data-testid="screen-onboarding-preferences"
     >
-      <OBWebHeader step={3} onClose={handleClose} />
+      <OBWebHeader step={4} totalSteps={4} onClose={handleClose} />
 
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[100px] overflow-y-auto">
         <h2
-          className="text-[30px] font-semibold tracking-[-0.025em] mb-2"
-          style={{ color: OBW.text }}
+          className="text-[30px] font-semibold tracking-[-0.025em]"
+          style={{ color: OBW.text, marginBottom: 7 }}
           data-testid="text-preferences-title"
         >
           {t("onboarding.filters.specificWishesTitle")}
         </h2>
-        <p className="text-[14px] mb-6 leading-relaxed" style={{ color: OBW.textSecondary }}>
+        <p className="text-[13px] mb-4 leading-snug" style={{ color: OBW.textSecondary }}>
           {t("onboarding.filters.specificWishesSubtitle")}
         </p>
 
-        <div className="mb-8">
-          <OBInfoBox>
+        <div
+          className="rounded-[4px] mb-5 flex items-start gap-2"
+          style={{ backgroundColor: "#FFFFFF", border: "1px solid #C4C8CE", padding: "10px 12px" }}
+        >
+          <Info className="w-[13px] h-[13px] shrink-0 mt-[2px]" style={{ color: "rgb(var(--ha-primary))" }} />
+          <div className="text-[13px] leading-[1.5]" style={{ color: "rgb(var(--ha-primary))" }}>
             {t("onboarding.filters.specificWishesWarning")}
-          </OBInfoBox>
+          </div>
         </div>
 
         <div className="flex flex-col" data-testid="preference-options">
@@ -125,9 +129,9 @@ export default function OnboardingPreferences() {
               <button
                 key={opt.value}
                 onClick={() => toggleAmenity(opt.value)}
-                className="w-full flex items-center justify-between py-5 text-left transition-colors"
+                className="w-full flex items-center justify-between py-[14px] text-left transition-colors"
                 style={{
-                  borderBottom: i < PREFERENCE_OPTIONS.length - 1 ? `1px solid ${OBW.divider}` : "none",
+                  borderBottom: i < PREFERENCE_OPTIONS.length - 1 ? `1px solid rgba(0,0,0,0.07)` : "none",
                 }}
                 data-testid={`preference-${opt.value}`}
               >
@@ -135,20 +139,20 @@ export default function OnboardingPreferences() {
                   {opt.label}
                 </span>
                 <div
-                  className="w-[18px] h-[18px] rounded-[3px] flex items-center justify-center shrink-0"
+                  className="w-[22px] h-[22px] rounded-[4px] flex items-center justify-center shrink-0"
                   style={{
                     border: active ? "none" : `1.5px solid ${OBW.chipBorder}`,
                     backgroundColor: active ? "rgb(var(--ha-primary))" : "transparent",
                   }}
                 >
-                  {active && <Check className="w-3 h-3 text-white" />}
+                  {active && <Check className="w-[14px] h-[14px] text-white" />}
                 </div>
               </button>
             );
           })}
         </div>
 
-        <div className="h-px my-8" style={{ backgroundColor: OBW.divider }} />
+        <div className="h-px my-4" style={{ backgroundColor: "rgba(0,0,0,0.07)" }} />
 
         <label
           className="flex items-center gap-3 cursor-pointer py-3"
