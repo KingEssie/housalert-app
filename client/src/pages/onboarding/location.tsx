@@ -12,8 +12,6 @@ type LocationMode = "city" | "districts" | "radius";
 
 const RADIUS_OPTIONS = [2, 5, 10, 15, 25, 50];
 
-// App-flow only: this step is skipped in website mode.
-// In website mode, city.tsx bundles the radius selection and navigates directly to /onboarding/filters.
 export default function OnboardingLocation() {
   const { t } = useTranslation();
   const [, navigate] = useLocation();
@@ -34,7 +32,7 @@ export default function OnboardingLocation() {
   const incomingRadius = parseInt(params.get("radiusKm") || "0") || 5;
 
   const [mode, setMode] = useState<LocationMode>(
-    w ? "radius" : (incomingMode || (hasDistricts ? "districts" : "city"))
+    w ? "districts" : (incomingMode || (hasDistricts ? "districts" : "city"))
   );
   const [selectedDistricts, setSelectedDistricts] = useState<string[]>(incomingDistricts);
   const [radiusKm, setRadiusKm] = useState(incomingRadius);
@@ -87,60 +85,164 @@ export default function OnboardingLocation() {
           : t("onboarding.location.neighborhoodsPluralSelected").replace("{n}", String(n));
 
   if (w) {
+    const webTabs: { value: LocationMode; label: string }[] = [
+      { value: "districts", label: t("onboarding.location.neighborhoodsTab") },
+      { value: "radius", label: t("onboarding.location.radiusTab") },
+      { value: "city", label: t("onboarding.location.wholePlaceTab") },
+    ];
+
     return (
       <div
         className="min-h-[100dvh] flex flex-col"
-        style={{ background: T.gradient, borderRadius: 0 }}
+        style={{ background: "#ffffff" }}
         data-testid="screen-onboarding-location"
       >
+        {/* Header — matches city.tsx: badge | centered title | close circle */}
         <header
-          className="w-full sticky top-0 z-20"
-          style={{
-            backgroundColor: T.headerBg,
-            borderBottom: `1px solid ${T.headerBorder}`,
-          }}
+          className="sticky top-0 z-20 w-full"
+          style={{ backgroundColor: "#ffffff", borderBottom: `1px solid ${OBW.headerBorder}` }}
         >
-          <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
+          <div className="relative max-w-[480px] mx-auto px-4 h-[56px] flex items-center justify-between">
             <span
-              className="text-[12px] font-semibold px-2.5 py-1 rounded-[6px]"
-              style={{ backgroundColor: "#111111", color: "#ffffff" }}
+              className="text-[14px] font-bold rounded-[10px] shrink-0 flex items-center px-3.5"
+              style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "#ffffff" }}
               data-testid="badge-step"
             >
-              {`${w ? "1" : "2"}/${w ? "2" : ONBOARDING_TOTAL_STEPS}`}
+              2/4
             </span>
-            <span className="text-[20px] font-semibold" style={{ color: T.text }}>
-              {t("newSearch.filters.headerTitle")}
+            <span
+              className="absolute inset-0 flex items-center justify-center text-[19px] font-bold pointer-events-none"
+              style={{ color: OBW.text }}
+            >
+              {t("onboarding.filters.headerTitle")}
             </span>
             <button
               onClick={handleClose}
-              className="w-[36px] h-[36px] rounded-full flex items-center justify-center active:scale-95 transition-transform"
-              style={{ backgroundColor: OBW.closeBtnBg }}
+              className="w-[36px] h-[36px] shrink-0 flex items-center justify-center rounded-full transition-opacity hover:opacity-70 active:opacity-50"
+              style={{ backgroundColor: "#F2F2F2", color: "#444444" }}
               data-testid="button-location-close"
             >
-              <X className="w-4 h-4" style={{ color: OBW.closeBtnColor }} />
+              <X className="w-[22px] h-[22px]" />
             </button>
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pb-[140px] min-h-0">
-          <p className="text-[14px] font-medium" style={{ color: T.textSecondary, marginTop: "20px", marginBottom: "8px" }}>
+        <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-[140px] overflow-y-auto">
+          {/* City field */}
+          <label
+            className="text-[18px] font-semibold mb-2 block"
+            style={{ color: OBW.textSecondary }}
+          >
             {t("onboarding.location.cityLabel")}
-          </p>
+          </label>
           <button
             onClick={() => navigate(appendWebsiteParams("/onboarding/city", searchString))}
-            className="w-full flex items-center gap-3 mb-5 ha-field"
-            style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
+            className="w-full flex items-center gap-3 mb-5 ha-field-web text-left"
+            style={{ backgroundColor: OBW.inputBg, borderColor: "#CFCFCF", color: OBW.text }}
             data-testid="field-city-display"
           >
-            <Search className="w-[16px] h-[16px] shrink-0" style={{ color: T.textMuted }} />
-            <span className="flex-1 text-left text-[15px] font-medium" style={{ color: T.text }}>{city}</span>
-            <X className="w-[14px] h-[14px] shrink-0" style={{ color: T.textMuted }} />
+            <Search className="w-[18px] h-[18px] shrink-0" style={{ color: OBW.textMuted }} />
+            <span className="flex-1 text-[16px] font-medium" style={{ color: OBW.text }}>{city}</span>
+            <X className="w-[16px] h-[16px] shrink-0" style={{ color: OBW.textMuted }} />
           </button>
 
+          {/* Segmented tab control */}
+          <div
+            className="flex items-center gap-1 p-1 rounded-full mb-5"
+            style={{ backgroundColor: "#F0F4F8" }}
+            data-testid="location-tabs"
+          >
+            {webTabs.map((tab) => {
+              const isActive = mode === tab.value;
+              return (
+                <button
+                  key={tab.value}
+                  onClick={() => setMode(tab.value)}
+                  className="flex-1 py-[7px] text-[13px] font-semibold rounded-full text-center transition-all"
+                  style={{
+                    backgroundColor: isActive ? "rgb(var(--ha-primary))" : "transparent",
+                    color: isActive ? "#ffffff" : "#111111",
+                  }}
+                  data-testid={`tab-${tab.value}`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Buurten (districts) mode */}
+          {mode === "districts" && (
+            <div data-testid="section-districts">
+              <p className="text-[15px] font-semibold mb-3" style={{ color: OBW.textSecondary }}>
+                {t("onboarding.location.neighborhoodsTab")}
+              </p>
+              <button
+                onClick={() => setShowDistrictPicker(!showDistrictPicker)}
+                className="w-full flex items-center justify-between ha-field-web text-left mb-4"
+                style={{ backgroundColor: OBW.inputBg, borderColor: "#CFCFCF", color: OBW.text }}
+                data-testid="dropdown-districts"
+              >
+                <span className="text-[16px] font-medium" style={{ color: OBW.text }}>{districtSummary}</span>
+                <ChevronDown
+                  className="w-[18px] h-[18px] shrink-0 transition-transform duration-200"
+                  style={{
+                    color: OBW.textMuted,
+                    transform: showDistrictPicker ? "rotate(180deg)" : "none",
+                  }}
+                />
+              </button>
+
+              {showDistrictPicker && hasDistricts && (
+                <div
+                  className="rounded-[12px] overflow-hidden border mb-4"
+                  style={{ borderColor: "#EAEAEA", maxHeight: "200px", overflowY: "auto" }}
+                  data-testid="district-list"
+                >
+                  {districtList.map((d, i) => {
+                    const active = selectedDistricts.includes(d);
+                    return (
+                      <button
+                        key={d}
+                        onClick={() => toggleDistrict(d)}
+                        className="w-full flex items-center justify-between hover:bg-[#F7F7F7] transition-colors"
+                        style={{
+                          padding: "12px 16px",
+                          borderBottom: i < districtList.length - 1 ? "1px solid #F0F0F0" : "none",
+                        }}
+                        data-testid={`district-${d}`}
+                      >
+                        <span
+                          className="text-[14px] font-medium"
+                          style={{ color: active ? OBW.text : OBW.textSecondary }}
+                        >
+                          {d}
+                        </span>
+                        {active && <Check className="w-4 h-4" style={{ color: "rgb(var(--ha-primary))" }} />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              <MapView
+                lat={parseFloat(lat)}
+                lng={parseFloat(lng)}
+                zoom={12}
+                markers={[{ lat: parseFloat(lat), lng: parseFloat(lng), type: "primary" }]}
+                height="clamp(220px, 32vh, 300px)"
+                className="rounded-[12px] overflow-hidden"
+              />
+            </div>
+          )}
+
+          {/* Straal (radius) mode */}
           {mode === "radius" && (
-            <div className="flex-1 flex flex-col min-h-0">
-              <p className="text-[14px] font-medium mb-3 shrink-0" style={{ color: T.textSecondary }}>{t("onboarding.location.radiusTab")}</p>
-              <div className="flex flex-wrap gap-2 shrink-0" data-testid="radius-options">
+            <div data-testid="section-radius">
+              <p className="text-[15px] font-semibold mb-3" style={{ color: OBW.textSecondary }}>
+                {t("onboarding.location.radiusTab")}
+              </p>
+              <div className="flex flex-wrap gap-2 mb-4" data-testid="radius-options">
                 {RADIUS_OPTIONS.map((km) => {
                   const active = radiusKm === km;
                   return (
@@ -149,9 +251,9 @@ export default function OnboardingLocation() {
                       onClick={() => setRadiusKm(km)}
                       className="px-4 py-2.5 rounded-full text-[14px] font-medium transition-all"
                       style={{
-                        border: active ? "1.5px solid rgba(217,26,104,0.6)" : `1px solid ${OBW.chipBorder}`,
-                        backgroundColor: active ? OB.selectedBg : "transparent",
-                        color: active ? OB.pink : OBW.text,
+                        border: active ? "1.5px solid rgba(217,26,104,0.6)" : "1px solid #E5E7EB",
+                        backgroundColor: active ? "rgba(217,26,104,0.08)" : "transparent",
+                        color: active ? "rgb(var(--ha-primary))" : "#111111",
                       }}
                       data-testid={`radius-${km}`}
                     >
@@ -160,17 +262,43 @@ export default function OnboardingLocation() {
                   );
                 })}
               </div>
-              <div className="mt-4" data-testid="location-map">
-                <MapView
-                  lat={parseFloat(lat)}
-                  lng={parseFloat(lng)}
-                  zoom={10}
-                  markers={[{ lat: parseFloat(lat), lng: parseFloat(lng), type: "primary" }]}
-                  circles={[{ lat: parseFloat(lat), lng: parseFloat(lng), radiusMeters: radiusKm * 1000 }]}
-                  height="clamp(240px, 35vh, 360px)"
-                  className="rounded-[12px] overflow-hidden"
-                />
+              <MapView
+                lat={parseFloat(lat)}
+                lng={parseFloat(lng)}
+                zoom={10}
+                markers={[{ lat: parseFloat(lat), lng: parseFloat(lng), type: "primary" }]}
+                circles={[{ lat: parseFloat(lat), lng: parseFloat(lng), radiusMeters: radiusKm * 1000 }]}
+                height="clamp(220px, 32vh, 300px)"
+                className="rounded-[12px] overflow-hidden"
+              />
+            </div>
+          )}
+
+          {/* Gehele woonplaats (city) mode */}
+          {mode === "city" && (
+            <div data-testid="section-city">
+              <div
+                className="rounded-[12px] p-4 flex items-center gap-3 border mb-4"
+                style={{ borderColor: "#EAEAEA" }}
+              >
+                <div
+                  className="w-10 h-10 rounded-[8px] flex items-center justify-center shrink-0"
+                  style={{ backgroundColor: "rgba(217,26,104,0.08)" }}
+                >
+                  <Check className="w-5 h-5" style={{ color: "rgb(var(--ha-primary))" }} />
+                </div>
+                <p className="text-[14px] leading-relaxed" style={{ color: OBW.textSecondary }}>
+                  {t("onboardingLocation.searchingInCity").replace("{city}", city)}
+                </p>
               </div>
+              <MapView
+                lat={parseFloat(lat)}
+                lng={parseFloat(lng)}
+                zoom={10}
+                markers={[{ lat: parseFloat(lat), lng: parseFloat(lng), type: "primary" }]}
+                height="clamp(220px, 32vh, 300px)"
+                className="rounded-[12px] overflow-hidden"
+              />
             </div>
           )}
         </main>
@@ -184,8 +312,12 @@ export default function OnboardingLocation() {
           websiteMode={w}
           topContent={
             <div>
-              <p className="text-[13px] font-medium" style={{ color: T.textMuted }}>{t("onboarding.location.estimatedMatches")}</p>
-              <p className="text-[15px] font-semibold" style={{ color: T.text }}>121 per week 🔥</p>
+              <p className="text-[13px] font-medium" style={{ color: OBW.textMuted }}>
+                {t("onboarding.location.estimatedMatches")}
+              </p>
+              <p className="text-[15px] font-semibold" style={{ color: OBW.text }}>
+                195 {t("onboardingUI.perWeek")} 🔥
+              </p>
             </div>
           }
         />
