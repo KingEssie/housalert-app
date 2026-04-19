@@ -1,0 +1,84 @@
+STRICT SCOPE RULES:
+- Work ONLY in: client/src/pages/onboarding/city.tsx
+- Website mode only (useWebsiteMode === true)
+- Do NOT touch any other file
+- Do NOT inspect locale files
+- Do NOT perform a broad audit
+- Do NOT refactor unrelated code
+- Do NOT make this “similar” to Rentbird
+- Make it an exact structural/layout copy of the Rentbird screen 1 pattern
+- Keep token/cost usage minimal
+
+TASK:
+Rebuild website onboarding step 1 so it matches the Rentbird screen 1 layout and behavior as closely as possible.
+
+IMPORTANT:
+The previous version is wrong because it still contains too much custom HousAlert structure.
+I do NOT want an interpretation.
+I want the screen structure copied very closely.
+
+APPLY THESE EXACT CHANGES:
+
+1. TOP HEADER LAYOUT
+Replace the current top content/header structure in website mode with this exact structure:
+- Left: step badge "1/4"
+- Center: title "Zoekopdracht maken"
+- Right: close button "X"
+- No HousAlert logo in this onboarding header
+- No large page title below it
+- No subtitle/description below it
+
+2. REMOVE THESE ELEMENTS FROM WEBSITE MODE STEP 1
+Remove all of the following from website mode:
+- HousAlert logo/header row
+- large heading "Waar wil je wonen?"
+- subtitle/description text under it
+- footer CTA / bottom button
+- any boxed card container around the city list
+- chevrons on the right side of city rows
+
+3. CONTENT STRUCTURE
+The visible structure in website mode should be:
+- top header row (1/4 | Zoekopdracht maken | X)
+- label: "Locatie"
+- search field
+- flat city list
+
+4. SEARCH FIELD
+Make the search field visually close to Rentbird:
+- simple rectangular field
+- border radius around 6–8px
+- neutral border
+- search icon on the right side only if that is the closest safe match, otherwise keep left icon only if moving it would break behavior
+- placeholder/label styling should feel close to Rentbird
+- no pink focus styling unless absolutely required by shared behavior
+
+5. CITY LIST
+Make the city list structurally close to Rentbird:
+- flat list, not wrapped in a rounded card
+- each city row full width
+- simple divider lines between rows
+- no right chevrons
+- no extra boxed styling
+- tap on a city row should still instantly continue
+
+6. FUNCTIONALITY
+Preserve:
+- geocoder search behavior
+- city selection behavior
+- instant navigation on city tap
+
+7. DO NOT CHANGE
+- Do not touch routing structure outside this file
+- Do not touch step 2 or step 3
+- Do not touch other files
+- Do not add extra branding
+- Do not keep any extra HousAlert-specific heading/subtitle on this screen
+
+RETURN ONLY:
+1. exact visible elements removed
+2. exact visible elements added
+3. exact header structure implemented
+4. confirmation that logo, large heading, subtitle, card list, chevrons, and footer CTA are gone in website mode
+5. confirmation that tapping a city still instantly navigates
+6. confirmation that no other files were touched

@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
-import { Search, MapPin, Loader2, ChevronRight } from "lucide-react";
+import { Search, MapPin, Loader2, X } from "lucide-react";
 import { defaultCities } from "../../../../config/market";
-import { OBW, OBWebHeader, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
+import { OBW, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 import { OnboardingFlowLayout } from "@/components/onboarding-flow-layout";
 import MapView from "@/components/map-view";
 import { useGeocoderSearch } from "@/hooks/use-geocoder-search";
@@ -158,29 +158,43 @@ export default function OnboardingCity() {
         style={{ background: "#ffffff" }}
         data-testid="screen-onboarding-city"
       >
-        <OBWebHeader step={1} totalSteps={4} onClose={handleClose} />
+        {/* Rentbird-style compact onboarding header: step badge | title | close */}
+        <header
+          className="sticky top-0 z-20 w-full"
+          style={{ backgroundColor: "#ffffff", borderBottom: `1px solid ${OBW.headerBorder}` }}
+        >
+          <div className="max-w-[480px] mx-auto px-4 h-[52px] flex items-center justify-between gap-3">
+            <span
+              className="text-[11px] font-bold px-2 py-0.5 rounded-[4px] shrink-0"
+              style={{ backgroundColor: "rgb(var(--ha-primary))", color: "#ffffff" }}
+              data-testid="badge-step"
+            >
+              1/4
+            </span>
+            <span
+              className="text-[14px] font-semibold truncate"
+              style={{ color: OBW.text }}
+            >
+              {t("onboarding.filters.headerTitle")}
+            </span>
+            <button
+              onClick={handleClose}
+              className="w-[28px] h-[28px] shrink-0 flex items-center justify-center rounded-full transition-colors hover:bg-[#F0F0F0] active:bg-[#E5E5E5]"
+              style={{ color: OBW.textSecondary }}
+              data-testid="button-close"
+            >
+              <X className="w-[15px] h-[15px]" />
+            </button>
+          </div>
+        </header>
 
-        <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-10 overflow-y-auto">
-          <h2
-            className="text-[32px] font-semibold tracking-[-0.03em] mb-2"
-            style={{ color: OBW.text }}
-            data-testid="text-city-title"
-          >
-            {t("onboarding.location.title")}
-          </h2>
-          <p
-            className="text-[15px] mb-6 leading-relaxed"
-            style={{ color: OBW.textSecondary }}
-          >
-            {t("onboarding.location.subtitle")}
-          </p>
-
-          <label className="text-[13px] font-semibold mb-1.5 block uppercase tracking-[0.06em]" style={{ color: OBW.textMuted }}>
+        <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-10 overflow-y-auto">
+          <label className="text-[14px] font-semibold mb-2 block" style={{ color: OBW.textSecondary }}>
             {t("newSearch.step5.location")}
           </label>
 
-          <div className="relative mb-3">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-[20px] h-[20px]" style={{ color: OBW.textMuted }} />
+          <div className="relative mb-4">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: OBW.textMuted }} />
             <input
               type="text"
               value={search}
@@ -189,38 +203,32 @@ export default function OnboardingCity() {
                 if (selectedCity) setSelectedCity(null);
               }}
               placeholder={t("onboarding.location.searchPlaceholder")}
-              className="w-full ha-field-web"
-              style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text, paddingLeft: "48px", paddingRight: "44px" }}
+              className="w-full ha-field-web focus:ring-0"
+              style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text, paddingLeft: "40px", paddingRight: "16px" }}
               autoFocus
               data-testid="input-city-search"
             />
             {geocoder.loading && (
-              <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] animate-spin" style={{ color: OBW.textSecondary }} />
+              <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 w-[16px] h-[16px] animate-spin" style={{ color: OBW.textSecondary }} />
             )}
           </div>
 
           {showDropdown && (
-            <div
-              className="rounded-[8px] overflow-hidden"
-              style={{ border: `1px solid ${OBW.divider}` }}
-              data-testid="city-results"
-            >
+            <div data-testid="city-results">
               {presetMatches.map((city, i) => (
                 <button
                   key={city.name}
                   onClick={() => selectPresetCity(city)}
-                  className="w-full flex items-center gap-3 min-h-[64px] px-4 text-left transition-colors hover:bg-[#F7F7F7] active:bg-[#EDEEF0]"
+                  className="w-full flex items-center gap-3 min-h-[56px] text-left transition-colors hover:bg-[#F7F7F7] active:bg-[#F0F1F2]"
                   style={{
-                    paddingTop: "16px",
-                    paddingBottom: "16px",
-                    borderBottom: i < presetMatches.length - 1 ? `1px solid ${OBW.divider}` : "none",
-                    backgroundColor: "#ffffff",
+                    paddingTop: "14px",
+                    paddingBottom: "14px",
+                    borderBottom: `1px solid ${OBW.divider}`,
                   }}
                   data-testid={`city-option-${city.name}`}
                 >
-                  <MapPin className="w-[22px] h-[22px] shrink-0" style={{ color: OBW.pink }} />
-                  <span className="text-[17px] font-semibold flex-1" style={{ color: OBW.text }}>{city.name}</span>
-                  <ChevronRight className="w-[18px] h-[18px] shrink-0" style={{ color: OBW.textSecondary, opacity: 0.45 }} />
+                  <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.pink }} />
+                  <span className="text-[16px] font-medium" style={{ color: OBW.text }}>{city.name}</span>
                 </button>
               ))}
 
@@ -228,28 +236,26 @@ export default function OnboardingCity() {
                 <button
                   key={r.placeId || i}
                   onClick={() => selectGeocoderCity(r)}
-                  className="w-full flex items-center gap-3 min-h-[64px] px-4 text-left transition-colors hover:bg-[#F7F7F7] active:bg-[#EDEEF0]"
+                  className="w-full flex items-center gap-3 min-h-[56px] text-left transition-colors hover:bg-[#F7F7F7] active:bg-[#F0F1F2]"
                   style={{
-                    paddingTop: "16px",
-                    paddingBottom: "16px",
-                    borderBottom: i < geocoder.results.length - 1 ? `1px solid ${OBW.divider}` : "none",
-                    backgroundColor: "#ffffff",
+                    paddingTop: "14px",
+                    paddingBottom: "14px",
+                    borderBottom: `1px solid ${OBW.divider}`,
                   }}
                   data-testid={`city-nominatim-${i}`}
                 >
-                  <MapPin className="w-[22px] h-[22px] shrink-0" style={{ color: OBW.pink }} />
-                  <div className="flex-1 min-w-0">
-                    <span className="text-[17px] font-semibold block" style={{ color: OBW.text }}>{r.city}</span>
+                  <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.pink }} />
+                  <div className="min-w-0">
+                    <span className="text-[16px] font-medium block" style={{ color: OBW.text }}>{r.city}</span>
                     {r.label !== r.city && (
                       <span className="text-[13px]" style={{ color: OBW.textSecondary }}>{r.label.replace(`${r.city}, `, "")}</span>
                     )}
                   </div>
-                  <ChevronRight className="w-[18px] h-[18px] shrink-0" style={{ color: OBW.textSecondary, opacity: 0.45 }} />
                 </button>
               ))}
 
               {presetMatches.length === 0 && geocoder.results.length === 0 && !geocoder.loading && search.trim().length >= 3 && (
-                <p className="text-[15px] text-center py-6 px-4" style={{ color: OBW.textSecondary }}>
+                <p className="text-[15px] text-center py-6" style={{ color: OBW.textSecondary }}>
                   {t("onboardingLocation.noResults")}
                 </p>
               )}
