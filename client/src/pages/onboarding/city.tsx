@@ -114,7 +114,7 @@ export default function OnboardingCity() {
       locationMode: "radius",
       radiusKm: String(radiusKm),
     });
-    navigate(appendWebsiteParams(`/onboarding/filters?${p.toString()}`, searchString));
+    navigate(appendWebsiteParams(`/onboarding/location?${p.toString()}`, searchString));
   }
 
   function selectPresetCity(city: typeof TOP_CITIES[0]) {
@@ -164,7 +164,7 @@ export default function OnboardingCity() {
         >
           <div className="relative max-w-[480px] mx-auto px-4 h-[56px] flex items-center justify-between">
             <span
-              className="text-[14px] font-bold rounded-full shrink-0 flex items-center px-3.5"
+              className="text-[14px] font-bold rounded-[10px] shrink-0 flex items-center px-3.5"
               style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "#ffffff" }}
               data-testid="badge-step"
             >
@@ -188,7 +188,7 @@ export default function OnboardingCity() {
         </header>
 
         <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-10 overflow-y-auto">
-          <label className="text-[14px] font-semibold mb-2 block" style={{ color: OBW.textSecondary }}>
+          <label className="text-[18px] font-semibold mb-2 block" style={{ color: OBW.textSecondary }}>
             {t("newSearch.step5.location")}
           </label>
 
@@ -226,7 +226,7 @@ export default function OnboardingCity() {
                   data-testid={`city-option-${city.name}`}
                 >
                   <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.pink, opacity: 0.8 }} />
-                  <span className="text-[18px] font-bold" style={{ color: OBW.text }}>{city.name}</span>
+                  <span className="text-[18px] font-semibold" style={{ color: OBW.text }}>{city.name}</span>
                 </button>
               ))}
 
@@ -244,7 +244,7 @@ export default function OnboardingCity() {
                 >
                   <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.pink, opacity: 0.8 }} />
                   <div className="min-w-0">
-                    <span className="text-[18px] font-bold block" style={{ color: OBW.text }}>{r.city}</span>
+                    <span className="text-[18px] font-semibold block" style={{ color: OBW.text }}>{r.city}</span>
                     {r.label !== r.city && (
                       <span className="text-[13px]" style={{ color: OBW.textSecondary }}>{r.label.replace(`${r.city}, `, "")}</span>
                     )}
