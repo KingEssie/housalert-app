@@ -2084,13 +2084,30 @@ export async function registerRoutes(
 
   app.post("/api/auth/signup", async (req, res) => {
     try {
+      // 1. Log content-type and incoming body keys (never log the password value)
+      const contentType = req.headers["content-type"] || "(missing)";
+      const bodyKeys = Object.keys(req.body || {});
+      log(`[SIGNUP] content-type="${contentType}" body-keys=[${bodyKeys.join(",")}]`);
+
       const { email, password, fullName } = req.body;
-      log(`[SIGNUP] Attempt: email=${email}, hasPassword=${!!password}, fullName=${fullName || "(none)"}`);
+
+      // 2. Verify fields are received correctly
+      const pwLen = typeof password === "string" ? password.length : 0;
+      log(`[SIGNUP] Attempt: email=${email}, password-length=${pwLen}, fullName=${fullName || "(none)"}`);
+
       if (!email || !password) {
+        log(`[SIGNUP] 400 — missing field: email=${!!email} password=${!!password}`);
         return res.status(400).json({ error: "Email and password are required" });
       }
 
+      if (typeof password !== "string" || pwLen < 6) {
+        log(`[SIGNUP] 400 — password too short or wrong type (len=${pwLen})`);
+        return res.status(400).json({ error: "Password must be at least 6 characters" });
+      }
+
+      // 3. Supabase admin user creation
       const adminSb = getSupabaseAdmin();
+      log(`[SIGNUP] Calling adminSb.auth.admin.createUser for email=${email}`);
 
       const { data: newUser, error: createErr } = await adminSb.auth.admin.createUser({
         email,
@@ -2099,9 +2116,11 @@ export async function registerRoutes(
         user_metadata: { full_name: fullName || "", email_needs_verification: true },
       });
 
+      // 4. Catch and log Supabase auth errors
       if (createErr || !newUser?.user) {
         const msg = createErr?.message || "User creation failed";
-        log("auth", `[SIGNUP] Admin createUser failed: ${msg}`);
+        console.error("[SIGNUP] adminSb.auth.admin.createUser error:", createErr);
+        log(`[SIGNUP] Admin createUser failed: ${msg}`);
         const isDuplicate = msg.toLowerCase().includes("already") || msg.toLowerCase().includes("duplicate") || msg.toLowerCase().includes("exists");
         return res.status(isDuplicate ? 409 : 400).json({
           error: isDuplicate ? "user_exists" : msg,
@@ -2149,8 +2168,13 @@ export async function registerRoutes(
 
       return res.json({ ok: true, userId });
     } catch (err: any) {
-      log(`[SIGNUP] Unexpected error: ${err.message}`);
-      return res.status(500).json({ error: err.message });
+      // 5. Full error log with stack so we can see exactly where it crashes
+      console.error("[SIGNUP] Unexpected 500 error:", err);
+      log(`[SIGNUP] Unexpected error: ${err?.message || String(err)}`);
+      return res.status(500).json({
+        error: err?.message || "Internal server error",
+        ...(process.env.NODE_ENV !== "production" && { stack: err?.stack }),
+      });
     }
   });
 
