@@ -202,9 +202,17 @@ export async function computeMatchEstimate(
   let previewWithImage: PreviewListingResult | null = null;
   let previewFallback: PreviewListingResult | null = null;
 
+  const excludeRooms =
+    filters.include_rooms === false && !filters.property_types?.length;
+
   for (const listing of data) {
     const { matched } = explainMatchInternal(listing as any, profile as any);
     if (!matched) continue;
+
+    if (excludeRooms) {
+      const rawType = ((listing.property_type as string | null) ?? "").toLowerCase().trim();
+      if (rawType === "room" || rawType === "zimmer" || rawType === "wg-zimmer") continue;
+    }
 
     const createdAt = listing.created_at as string;
     count30++;
