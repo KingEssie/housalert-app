@@ -1,0 +1,138 @@
+STRICT SCOPE RULES:
+- Work ONLY in: client/src/pages/onboarding/city.tsx
+- Website mode only (useWebsiteMode === true)
+- Do NOT touch other steps
+- Do NOT modify routing logic outside this file
+- Do NOT trigger any i18n scans or changes
+- Do NOT refactor unrelated code
+
+GOAL:
+Make the onboarding city step visually and functionally match Rentbird:
+- Clear structure
+- Strong tap targets
+- Label-based input
+- Tap = continue (no CTA dependency)
+
+-----------------------------------
+1. HEADER STRUCTURE (Rentbird style)
+-----------------------------------
+Add a proper onboarding header section:
+
+- Title: "Zoekopdracht maken"
+- Show step indicator: "1/3" (keep existing logic but visually stronger)
+- Add close button (X) on the right (no functionality change required yet, placeholder is fine)
+
+Spacing:
+- Header container: mb-6
+
+-----------------------------------
+2. ADD LABEL ABOVE INPUT
+-----------------------------------
+Above the search field, add:
+
+Label:
+"Locatie"
+
+Style:
+- font-size: 14px–15px
+- font-weight: 600
+- mb-2
+
+-----------------------------------
+3. SEARCH INPUT (MATCH STYLE BASELINE)
+-----------------------------------
+Search input must be the visual standard for ALL fields:
+
+- Height: 56px
+- Border radius: 8px
+- Font-size: 16px
+- Padding: px-4
+- Border: darker than current (e.g. border-gray-300)
+- Focus:
+  - border-primary (pink)
+  - subtle ring
+
+Icon:
+- size: 20px
+- proper spacing from text
+
+-----------------------------------
+4. CITY LIST → CONVERT TO BUTTON ROWS
+-----------------------------------
+This is the MOST IMPORTANT change.
+
+Each city row must become a tappable block:
+
+Row container:
+- display: flex
+- align-items: center
+- justify-content: flex-start
+- gap: 12px
+- padding: py-4 px-2
+- min-height: 56px
+- border-bottom: 1px solid #eee
+- cursor: pointer
+
+Icon:
+- size: 20–22px
+- color: primary (pink)
+
+Text:
+- font-size: 16px
+- font-weight: 500
+
+Interaction:
+- onClick → select city AND immediately continue to next step
+
+-----------------------------------
+5. REMOVE CTA DEPENDENCY
+-----------------------------------
+Current:
+User selects city → must press “Volgende”
+
+Change:
+- Selecting a city should immediately trigger:
+  navigate("/onboarding/filters?source=website")
+
+Keep CTA visible if needed, but:
+- It should NOT be required anymore
+
+-----------------------------------
+6. VISUAL HIERARCHY FIX
+-----------------------------------
+Apply consistent spacing:
+
+- Title → mb-2
+- Subtitle → mb-5
+- Label → mb-2
+- Input → mb-4
+- List → no extra gap, rely on row borders
+
+-----------------------------------
+7. TOUCH / MOBILE UX IMPROVEMENTS
+-----------------------------------
+Add:
+- active state on row (light background on tap)
+- ensure full-width clickable area
+- no tiny click targets
+
+-----------------------------------
+8. DO NOT CHANGE
+-----------------------------------
+- Do NOT modify geocoder logic
+- Do NOT modify city data
+- Do NOT modify routing structure except instant navigation on select
+- Do NOT change API calls
+- Do NOT touch other onboarding steps
+
+-----------------------------------
+OUTPUT
+-----------------------------------
+Return:
+1. Exact code blocks changed
+2. Before → after for:
+   - city row
+   - input field
+3. Confirmation:
+   - tap = instant navigation works
+   - no regressions introduced

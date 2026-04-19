@@ -106,12 +106,24 @@ export default function OnboardingCity() {
     navigate(appendWebsiteParams(`/onboarding/location?${params.toString()}`, searchString));
   }
 
+  function goToFilters(city: { name: string; lat: number; lng: number }) {
+    const p = new URLSearchParams({
+      city: city.name,
+      lat: String(city.lat),
+      lng: String(city.lng),
+      locationMode: "radius",
+      radiusKm: String(radiusKm),
+    });
+    navigate(appendWebsiteParams(`/onboarding/filters?${p.toString()}`, searchString));
+  }
+
   function selectPresetCity(city: typeof TOP_CITIES[0]) {
     const selected = { name: city.name, lat: city.lat, lng: city.lng };
     setSelectedCity(selected);
     setSearch(city.name);
     geocoder.clear();
-    if (!w) goToStep2(selected);
+    if (w) { goToFilters(selected); return; }
+    goToStep2(selected);
   }
 
   function selectGeocoderCity(result: typeof geocoder.results[0]) {
@@ -119,22 +131,13 @@ export default function OnboardingCity() {
     setSelectedCity(selected);
     setSearch(result.city);
     geocoder.clear();
-    if (!w) goToStep2(selected);
+    if (w) { goToFilters(selected); return; }
+    goToStep2(selected);
   }
 
   function handleNext() {
     if (!selectedCity) return;
-    if (w) {
-      const p = new URLSearchParams({
-        city: selectedCity.name,
-        lat: String(selectedCity.lat),
-        lng: String(selectedCity.lng),
-        locationMode: "radius",
-        radiusKm: String(radiusKm),
-      });
-      navigate(appendWebsiteParams(`/onboarding/filters?${p.toString()}`, searchString));
-      return;
-    }
+    if (w) { goToFilters(selectedCity); return; }
     goToStep2(selectedCity);
   }
 
@@ -172,8 +175,12 @@ export default function OnboardingCity() {
             {t("onboarding.location.subtitle")}
           </p>
 
+          <label className="text-[15px] font-semibold mb-2 block" style={{ color: OBW.textSecondary }}>
+            {t("newSearch.step5.location")}
+          </label>
+
           <div className="relative mb-4">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[16px] h-[16px]" style={{ color: OBW.textMuted }} />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[20px] h-[20px]" style={{ color: OBW.textMuted }} />
             <input
               type="text"
               value={search}
@@ -183,7 +190,7 @@ export default function OnboardingCity() {
               }}
               placeholder={t("onboarding.location.searchPlaceholder")}
               className="w-full ha-field-web"
-              style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text, paddingLeft: "40px", paddingRight: "44px" }}
+              style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text, paddingLeft: "44px", paddingRight: "44px" }}
               autoFocus
               data-testid="input-city-search"
             />
@@ -198,10 +205,11 @@ export default function OnboardingCity() {
                 <button
                   key={city.name}
                   onClick={() => selectPresetCity(city)}
-                  className="w-full flex items-center gap-3 text-left transition-colors hover:bg-[#F7F7F7]"
+                  className="w-full flex items-center gap-3 min-h-[56px] px-2 text-left transition-colors hover:bg-[#F7F7F7] active:bg-[#F0F0F0]"
                   style={{
-                    padding: "14px 0",
-                    borderBottom: i < presetMatches.length - 1 ? `1px solid ${OBW.divider}` : "none",
+                    paddingTop: "14px",
+                    paddingBottom: "14px",
+                    borderBottom: `1px solid ${OBW.divider}`,
                   }}
                   data-testid={`city-option-${city.name}`}
                 >
@@ -214,9 +222,10 @@ export default function OnboardingCity() {
                   <button
                     key={r.placeId || i}
                     onClick={() => selectGeocoderCity(r)}
-                    className="w-full flex items-center gap-3 text-left transition-colors hover:bg-[#F7F7F7]"
+                    className="w-full flex items-center gap-3 min-h-[56px] px-2 text-left transition-colors hover:bg-[#F7F7F7] active:bg-[#F0F0F0]"
                     style={{
-                      padding: "14px 0",
+                      paddingTop: "14px",
+                      paddingBottom: "14px",
                       borderBottom: `1px solid ${OBW.divider}`,
                     }}
                     data-testid={`city-nominatim-${i}`}
