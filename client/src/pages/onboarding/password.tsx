@@ -3,7 +3,7 @@ import { useLocation, Redirect } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { useTranslation } from "@/i18n";
 import { HousAlertLogo } from "@/components/housalert-logo";
-import { ChevronLeft, Loader2, Eye, EyeOff, Gift, MapPin, X, ShieldCheck } from "lucide-react";
+import { ChevronLeft, ChevronDown, Loader2, Eye, EyeOff, Gift, MapPin, X, ShieldCheck, Building2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { clearAllUserData } from "@/lib/queryClient";
 import { createSearchProfile } from "@/lib/search-profiles";
@@ -44,6 +44,7 @@ export default function OnboardingPassword() {
   const [referralCode, setReferralCode] = useState(storedRef || "");
   const [showReferral, setShowReferral] = useState(!!storedRef);
   const [loading, setLoading] = useState(false);
+  const [accordionOpen, setAccordionOpen] = useState(true);
   const submittingRef = useRef(false);
 
   if (!city) return <Redirect to="/onboarding/filters" />;
@@ -265,55 +266,109 @@ export default function OnboardingPassword() {
 
         <main className="flex-1 max-w-[480px] mx-auto w-full px-4 pt-5 pb-8 overflow-y-auto">
 
-          {/* Card 1 — Jouw zoekopdracht */}
+          {/* Card 1 — Jouw zoekopdracht (accordion) */}
           <div
-            className="bg-white rounded-[12px] mb-4 overflow-hidden"
+            className="bg-white rounded-[16px] mb-4 overflow-hidden"
             style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}
             data-testid="search-summary-card"
           >
-            <div className="px-5 pt-5 pb-5">
-              {/* FIX 2: Section title — no caps, near-black, weight 600 */}
-              <p className="text-[15px] font-semibold mb-3" style={{ color: "#1F2937" }}>
+            {/* Accordion header — fully clickable */}
+            <button
+              onClick={() => setAccordionOpen(!accordionOpen)}
+              className="w-full flex items-center justify-between px-5 py-4 transition-colors hover:bg-gray-50 active:bg-gray-100"
+              data-testid="button-accordion-toggle"
+            >
+              <span className="text-[15px] font-semibold" style={{ color: "#1F2937" }}>
                 Jouw zoekopdracht
-              </p>
+              </span>
+              <ChevronDown
+                className="w-[18px] h-[18px] transition-transform duration-300"
+                style={{
+                  color: "#9CA3AF",
+                  transform: accordionOpen ? "rotate(0deg)" : "rotate(-90deg)",
+                }}
+              />
+            </button>
 
-              <div className="flex items-center gap-2.5 mb-4">
-                <div
-                  className="w-[34px] h-[34px] rounded-full flex items-center justify-center shrink-0"
-                  style={{ backgroundColor: "rgba(217,26,104,0.08)" }}
-                >
-                  <MapPin className="w-[15px] h-[15px]" style={{ color: "rgb(var(--ha-primary))" }} />
-                </div>
-                <div>
-                  <p className="text-[15px] font-bold leading-tight" style={{ color: "#111111" }}>
-                    {searchName}{radiusKm ? ` · ${radiusKm} km` : ""}
-                  </p>
-                  {(minPrice || maxPrice) && (
-                    <p className="text-[13px]" style={{ color: "#6B7280" }}>
-                      €{minPrice}–€{maxPrice} · {roomsLabel} {t("onboarding.password.web.apartments")}
-                    </p>
-                  )}
-                </div>
-              </div>
+            {/* Accordion body — animated */}
+            <div
+              style={{
+                maxHeight: accordionOpen ? "600px" : "0px",
+                overflow: "hidden",
+                transition: "max-height 0.32s cubic-bezier(0.4,0,0.2,1)",
+              }}
+            >
+              <div className="px-5 pb-5" style={{ borderTop: "1px solid #F3F4F6" }}>
 
-              {/* FIX 3: Missed-matches block — less pink saturation, bigger number, lighter "per week" */}
-              <div
-                className="rounded-[10px] flex items-start gap-3.5 px-4 py-4"
-                style={{ backgroundColor: "rgba(217,26,104,0.04)", border: "1px solid rgba(217,26,104,0.10)" }}
-                data-testid="match-summary-card"
-              >
-                <div className="shrink-0 mt-0.5">
-                  <span className="text-[20px] leading-none">🔥</span>
-                </div>
-                <div>
-                  <div className="flex items-baseline gap-1.5 mb-1">
-                    <span className="text-[28px] font-bold leading-none" style={{ color: "rgb(var(--ha-primary))" }}>121</span>
-                    <span className="text-[12px] font-medium" style={{ color: "#9CA3AF" }}>{t("onboardingUI.perWeek")}</span>
+                {/* Location row */}
+                <div className="flex items-center gap-2.5 pt-4 mb-3">
+                  <div
+                    className="w-[34px] h-[34px] rounded-full flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: "#F3F4F6" }}
+                  >
+                    <MapPin className="w-[15px] h-[15px]" style={{ color: "#6B7280" }} />
                   </div>
-                  <p className="text-[12.5px] leading-[1.55]" style={{ color: "#4B5563" }}>
-                    {t("onboarding.password.web.infoBox").replace("{city}", city || t("onboarding.password.web.yourRegion"))}
-                  </p>
+                  <div>
+                    <p className="text-[15px] font-bold leading-tight" style={{ color: "#111111" }}>
+                      {searchName}{radiusKm ? ` · ${radiusKm} km` : ""}
+                    </p>
+                    {(minPrice || maxPrice) && (
+                      <p className="text-[13px]" style={{ color: "#6B7280" }}>
+                        €{minPrice}–€{maxPrice} · {roomsLabel} {t("onboarding.password.web.apartments")}
+                      </p>
+                    )}
+                  </div>
                 </div>
+
+                {/* Missed-matches block — neutral blue background, not pink */}
+                <div
+                  className="rounded-[10px] flex items-start gap-3.5 px-4 py-4 mb-3"
+                  style={{ backgroundColor: "#EFF6FF", border: "1px solid #BFDBFE" }}
+                  data-testid="match-summary-card"
+                >
+                  <span className="text-[20px] leading-none shrink-0 mt-0.5">🏠</span>
+                  <div>
+                    <div className="flex items-baseline gap-1.5 mb-0.5">
+                      <span className="text-[28px] font-bold leading-none" style={{ color: "#1D4ED8" }}>121</span>
+                      <span className="text-[12px] font-medium" style={{ color: "#60A5FA" }}>{t("onboardingUI.perWeek")}</span>
+                    </div>
+                    <p className="text-[12.5px] leading-[1.55]" style={{ color: "#374151" }}>
+                      {t("onboarding.password.web.infoBox").replace("{city}", city || t("onboarding.password.web.yourRegion"))}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Preview listing placeholder */}
+                <div
+                  className="rounded-[10px] overflow-hidden"
+                  style={{ border: "1px solid #E5E7EB", backgroundColor: "#F9FAFB" }}
+                  data-testid="listing-preview-placeholder"
+                >
+                  <div className="flex items-stretch h-[80px]">
+                    {/* Blurred image area */}
+                    <div
+                      className="w-[84px] shrink-0 flex items-center justify-center"
+                      style={{ backgroundColor: "#E5E7EB", filter: "blur(3px)" }}
+                    >
+                      <Building2 className="w-[28px] h-[28px]" style={{ color: "#9CA3AF" }} />
+                    </div>
+                    {/* Skeleton meta */}
+                    <div className="flex flex-col justify-center px-3.5 gap-1.5 flex-1" style={{ filter: "blur(3px)" }}>
+                      <div className="h-3 w-20 rounded-full" style={{ backgroundColor: "#D1D5DB" }} />
+                      <div className="h-2.5 w-28 rounded-full" style={{ backgroundColor: "#E5E7EB" }} />
+                      <div className="h-2.5 w-14 rounded-full" style={{ backgroundColor: "#E5E7EB" }} />
+                    </div>
+                  </div>
+                  <div
+                    className="px-4 py-2.5 text-center"
+                    style={{ borderTop: "1px solid #E5E7EB" }}
+                  >
+                    <p className="text-[11.5px] font-medium" style={{ color: "#9CA3AF" }}>
+                      Nieuwe woningen verschijnen hier zodra je een account aanmaakt
+                    </p>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
@@ -461,27 +516,27 @@ export default function OnboardingPassword() {
             </div>
           </div>
 
-          {/* FIX 8: Trust block — more padding, bigger spacing, prominent title, larger icon */}
+          {/* Trust block */}
           <div
-            className="bg-white rounded-[12px] overflow-hidden"
+            className="bg-white rounded-[16px] overflow-hidden"
             style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}
           >
-            <div className="px-6 py-5">
-              <div className="flex items-center justify-center gap-2.5 mb-4">
-                <ShieldCheck className="w-[18px] h-[18px]" style={{ color: "rgb(var(--ha-primary))" }} />
-                <p className="text-[16px] font-bold" style={{ color: "#111111" }}>
+            <div className="px-6 py-6">
+              <div className="flex items-center justify-center gap-2.5 mb-5">
+                <ShieldCheck className="w-[20px] h-[20px]" style={{ color: "rgb(var(--ha-primary))" }} />
+                <p className="text-[17px] font-bold" style={{ color: "#111111" }}>
                   Zonder risico proberen
                 </p>
               </div>
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-4">
                 {[
                   "Gratis account — geen creditcard nodig",
                   "Direct actieve zoekopdracht na aanmaken",
                   "Meldingen zodra er een woning match is",
                 ].map((text, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <span className="text-[15px] font-bold shrink-0" style={{ color: "rgb(var(--ha-primary))" }}>✓</span>
-                    <span className="text-[13.5px]" style={{ color: "#374151" }}>{text}</span>
+                    <span className="text-[16px] font-bold shrink-0" style={{ color: "rgb(var(--ha-primary))" }}>✓</span>
+                    <span className="text-[14.5px]" style={{ color: "#374151" }}>{text}</span>
                   </div>
                 ))}
               </div>
