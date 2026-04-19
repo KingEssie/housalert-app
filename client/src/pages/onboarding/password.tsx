@@ -260,33 +260,42 @@ export default function OnboardingPassword() {
 
         <main className="flex-1 max-w-[480px] mx-auto w-full px-4 pt-5 pb-8 overflow-y-auto">
 
-          {/* Card 1 — search summary: title + details always visible, only preview collapsible */}
+          {/* Main page title */}
+          <h1
+            className="text-[26px] font-bold leading-tight mb-5"
+            style={{ color: "#1A1A1A" }}
+            data-testid="text-page-title"
+          >
+            Waar kunnen we je matches heen sturen?
+          </h1>
+
+          {/* Card 1 — "Jouw zoekopdracht" accordion */}
           <div
             className="rounded-[16px] mb-3 overflow-hidden"
-            style={{ backgroundColor: "#F0F2F5" }}
+            style={{ backgroundColor: "#F5F5F7" }}
             data-testid="search-summary-card"
           >
-            <div className="px-4 pt-4 pb-3 flex flex-col gap-3">
+            <div className="p-4 flex flex-col gap-3">
 
-              {/* Always-visible: title + location + missed matches */}
-              <p className="text-[15px] font-semibold" style={{ color: "#0F172A" }}>
-                Jouw zoekopdracht
-              </p>
-
-              {/* Location row — compact inline */}
-              <div className="flex items-center gap-2 flex-wrap">
-                <MapPin className="w-[13px] h-[13px] shrink-0" style={{ color: "#64748B" }} />
-                <span className="text-[14px] font-semibold" style={{ color: "#0F172A" }}>
-                  {searchName}{radiusKm ? ` · ${radiusKm} km` : ""}
+              {/* Header row — clickable toggle */}
+              <button
+                onClick={() => setAccordionOpen(!accordionOpen)}
+                className="flex items-center justify-between w-full transition-opacity active:opacity-60"
+                data-testid="button-accordion-toggle"
+              >
+                <span className="text-[15px] font-semibold" style={{ color: "rgb(var(--ha-primary))" }}>
+                  Jouw zoekopdracht
                 </span>
-                {(minPrice || maxPrice) && (
-                  <span className="text-[13px]" style={{ color: "#64748B" }}>
-                    · €{minPrice}–€{maxPrice} · {roomsLabel} {t("onboarding.password.web.apartments")}
-                  </span>
-                )}
-              </div>
+                <ChevronDown
+                  className="w-[17px] h-[17px] transition-transform duration-300"
+                  style={{
+                    color: "rgb(var(--ha-primary))",
+                    transform: accordionOpen ? "rotate(0deg)" : "rotate(-90deg)",
+                  }}
+                />
+              </button>
 
-              {/* Missed-matches block — always visible */}
+              {/* Info card — always visible */}
               <div
                 className="rounded-[10px] flex items-center gap-3 px-3.5 py-3"
                 style={{ backgroundColor: "#E8EEF8", border: "1px solid #D0DCF0" }}
@@ -302,41 +311,55 @@ export default function OnboardingPassword() {
                 </p>
               </div>
 
-              {/* Preview listing toggle — only this is collapsible */}
-              <button
-                onClick={() => setAccordionOpen(!accordionOpen)}
-                className="flex items-center justify-between w-full py-1 transition-opacity active:opacity-60"
-                data-testid="button-accordion-toggle"
-              >
-                <span className="text-[12.5px] font-medium" style={{ color: "#64748B" }}>
-                  Voorbeeld woning bekijken
-                </span>
-                <ChevronDown
-                  className="w-[15px] h-[15px] transition-transform duration-300"
-                  style={{
-                    color: "#94A3B8",
-                    transform: accordionOpen ? "rotate(0deg)" : "rotate(-90deg)",
-                  }}
-                />
-              </button>
             </div>
 
-            {/* Collapsible: preview listing only */}
+            {/* Collapsible: grey sub-card + caption + preview listing */}
             <div
               style={{
-                maxHeight: accordionOpen ? "280px" : "0px",
+                maxHeight: accordionOpen ? "460px" : "0px",
                 overflow: "hidden",
-                transition: "max-height 0.3s cubic-bezier(0.4,0,0.2,1)",
+                transition: "max-height 0.32s cubic-bezier(0.4,0,0.2,1)",
               }}
             >
-              <div className="px-4 pb-4">
+              <div className="px-4 pb-4 flex flex-col gap-3">
+
+                {/* Grey sub-card: city + filter details */}
                 <div
-                  className="rounded-[10px] overflow-hidden"
+                  className="rounded-[12px] p-3 flex flex-col gap-1"
+                  style={{ backgroundColor: "#E9E9EC" }}
+                >
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="w-[7px] h-[7px] rounded-full shrink-0"
+                      style={{ backgroundColor: "rgb(var(--ha-primary))" }}
+                    />
+                    <span className="text-[14px] font-bold" style={{ color: "#111111" }}>
+                      {searchName}
+                    </span>
+                  </div>
+                  <p className="text-[12.5px] pl-[15px]" style={{ color: "#6B7280" }}>
+                    {[
+                      minPrice && maxPrice ? `€${minPrice}–€${maxPrice}` : null,
+                      roomsLabel ? `${roomsLabel} ${t("onboarding.password.web.apartments")}` : null,
+                      radiusKm ? `${radiusKm} km radius` : null,
+                    ].filter(Boolean).join(" · ")}
+                  </p>
+                </div>
+
+                {/* Caption text */}
+                <p className="text-[12px]" style={{ color: "#6B7280" }}>
+                  Een voorbeeld van een populaire woning die je recentelijk gemist hebt
+                </p>
+
+                {/* Preview listing card */}
+                <div
+                  className="rounded-[10px] overflow-hidden bg-white"
                   style={{ border: "1px solid #D8DCE3" }}
                   data-testid="listing-preview-placeholder"
                 >
-                  {/* Blurred image */}
-                  <div className="w-full h-[112px] overflow-hidden relative">
+                  {/* Image area with overlay */}
+                  <div className="w-full h-[120px] overflow-hidden relative">
+                    {/* Blurred background */}
                     <div
                       className="absolute inset-0"
                       style={{
@@ -346,14 +369,21 @@ export default function OnboardingPassword() {
                       }}
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <Building2 className="w-[38px] h-[38px]" style={{ color: "#8896A6", opacity: 0.5, filter: "blur(2px)" }} />
+                      <Building2 className="w-[36px] h-[36px]" style={{ color: "#8896A6", opacity: 0.45, filter: "blur(2px)" }} />
+                    </div>
+                    {/* Top-right upgrade overlay */}
+                    <div
+                      className="absolute top-2 right-2 px-2.5 py-1 rounded-full"
+                      style={{ backgroundColor: "rgba(0,0,0,0.52)", backdropFilter: "blur(4px)" }}
+                    >
+                      <span className="text-[10.5px] font-semibold text-white">Upgrade om te bekijken</span>
                     </div>
                   </div>
 
                   {/* Meta row — real listing structure, blurred */}
                   <div
                     className="flex items-center gap-2.5 px-3 py-2.5"
-                    style={{ backgroundColor: "#FFFFFF", filter: "blur(3px)" }}
+                    style={{ filter: "blur(3px)" }}
                   >
                     <span className="text-[14px] font-bold" style={{ color: "#0F172A" }}>€850 /mnd</span>
                     <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#CBD5E1" }} />
@@ -361,17 +391,8 @@ export default function OnboardingPassword() {
                     <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#CBD5E1" }} />
                     <span className="text-[12px]" style={{ color: "#94A3B8" }}>2 dagen geleden</span>
                   </div>
-
-                  {/* Caption */}
-                  <div
-                    className="px-3 py-2 text-center"
-                    style={{ backgroundColor: "#F5F6F8", borderTop: "1px solid #E2E6EC" }}
-                  >
-                    <p className="text-[11px] font-medium" style={{ color: "#94A3B8" }}>
-                      Nieuwe woningen verschijnen hier zodra je een account aanmaakt
-                    </p>
-                  </div>
                 </div>
+
               </div>
             </div>
           </div>
