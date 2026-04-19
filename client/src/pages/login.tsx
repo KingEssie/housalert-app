@@ -240,7 +240,7 @@ export default function LoginPage() {
           </div>
 
           <button
-            onClick={() => navigate("/onboarding/intro")}
+            onClick={() => navigate("/onboarding/location")}
             className="w-full font-semibold cursor-pointer flex items-center justify-center gap-2 transition-all active:scale-[0.97]"
             style={{
               height: "56px",

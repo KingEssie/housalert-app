@@ -49,7 +49,7 @@ export default function ReferralLandingPage() {
   }, [refCode]);
 
   function handleStart() {
-    navigate("/onboarding/intro");
+    navigate("/onboarding/location");
   }
 
   if (loading) {

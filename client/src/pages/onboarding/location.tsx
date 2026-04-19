@@ -86,7 +86,7 @@ export default function OnboardingLocation() {
     staleTime: 2 * 60 * 1000,
   });
 
-  if (!city) return <Redirect to="/onboarding/city" />;
+  if (!city) return <Redirect to="/" />;
 
   function toggleDistrict(d: string) {
     setSelectedDistricts((prev) =>
@@ -111,7 +111,7 @@ export default function OnboardingLocation() {
   }
 
   function handleBack() {
-    navigate(appendWebsiteParams("/onboarding/city", searchString));
+    navigate("/");
   }
 
   function handleClose() {
@@ -158,7 +158,7 @@ export default function OnboardingLocation() {
               style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "#ffffff" }}
               data-testid="badge-step"
             >
-              2/4
+              1/4
             </span>
             <span
               className="absolute inset-0 flex items-center justify-center text-[19px] font-bold pointer-events-none"
@@ -186,7 +186,7 @@ export default function OnboardingLocation() {
             {t("onboarding.location.cityLabel")}
           </label>
           <button
-            onClick={() => navigate(appendWebsiteParams("/onboarding/city", searchString))}
+            onClick={() => navigate("/")}
             className="w-full flex items-center gap-3 mb-5 ha-field-web text-left"
             style={{ backgroundColor: OBW.inputBg, borderColor: "#CFCFCF", color: OBW.text }}
             data-testid="field-city-display"
@@ -419,7 +419,7 @@ export default function OnboardingLocation() {
   const locationContent = (
     <>
       <button
-        onClick={() => navigate(appendWebsiteParams("/onboarding/city", searchString))}
+        onClick={() => navigate("/")}
         className="w-full flex items-center gap-3 mb-5 h-[56px] rounded-[8px] border border-[#D1D5DB] bg-white px-4"
         data-testid="field-city-display"
       >

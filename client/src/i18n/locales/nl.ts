@@ -610,6 +610,7 @@ export const nl: Record<string, any> = {
     slide3Subtitle: "Vind een plek waar jij je écht thuis voelt.",
     createAccount: "Account aanmaken",
     login: "Inloggen",
+    citySearchPlaceholder: "Zoek je stad...",
   },
 
   languageScreen: {

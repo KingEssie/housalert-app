@@ -633,6 +633,7 @@ export const en: Record<string, any> = {
     slide3Subtitle: "Find a place where you truly feel at home.",
     createAccount: "Create account",
     login: "Log in",
+    citySearchPlaceholder: "Search your city...",
   },
 
   languageScreen: {

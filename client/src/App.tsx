@@ -31,8 +31,6 @@ import ForgotPasswordPage from "@/pages/forgot-password";
 import ResetPasswordPage from "@/pages/reset-password";
 import OnboardingSetup from "@/pages/onboarding/setup";
 import OnboardingEmbedPage from "@/pages/onboarding-embed";
-import OnboardingIntroNew from "@/pages/onboarding/intro";
-import OnboardingCityNew from "@/pages/onboarding/city";
 import OnboardingLocationNew from "@/pages/onboarding/location";
 import OnboardingFiltersNew from "@/pages/onboarding/filters";
 import OnboardingNameNew from "@/pages/onboarding/name";
@@ -213,8 +211,8 @@ function Router() {
       <Route path="/reset-password" component={ResetPasswordPage} />
       <Route path="/onboarding-embed" component={OnboardingEmbedPage} />
       <Route path="/continue" component={ContinueDraftPage} />
-      <Route path="/onboarding/intro" component={() => <WebFunnelRoute component={OnboardingIntroNew} />} />
-      <Route path="/onboarding/city" component={() => <WebFunnelRoute component={OnboardingCityNew} />} />
+      <Route path="/onboarding/intro" component={() => <Redirect to="/onboarding/location" />} />
+      <Route path="/onboarding/city" component={() => <Redirect to="/onboarding/location" />} />
       <Route path="/onboarding/location" component={() => <WebFunnelRoute component={OnboardingLocationNew} />} />
       <Route path="/onboarding/filters" component={() => <WebFunnelRoute component={OnboardingFiltersNew} />} />
       <Route path="/onboarding/name" component={() => <WebFunnelRoute component={OnboardingNameNew} />} />
@@ -222,7 +220,7 @@ function Router() {
       <Route path="/onboarding/password" component={() => <WebFunnelRoute component={OnboardingPasswordNew} />} />
       <Route path="/onboarding/preferences" component={() => <WebFunnelRoute component={OnboardingPreferencesNew} />} />
       <Route path="/onboarding/setup" component={() => <ProtectedRoute component={OnboardingSetup} skipOnboardingCheck />} />
-      <Route path="/onboarding" component={() => <Redirect to="/onboarding/intro" />} />
+      <Route path="/onboarding" component={() => <Redirect to="/onboarding/location" />} />
       <Route path="/paywall" component={PaywallPage} />
       <Route path="/subscription-success" component={() => <ProtectedRoute component={SubscriptionSuccessPage} skipOnboardingCheck />} />
       <Route path="/checkout/success" component={CheckoutSuccessPage} />

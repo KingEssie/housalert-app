@@ -422,7 +422,7 @@ export default function OnboardingFilters() {
     staleTime: 2 * 60 * 1000,
   });
 
-  if (!city) return <Redirect to="/onboarding/city" />;
+  if (!city) return <Redirect to="/" />;
 
   function update(partial: Partial<FilterData>) {
     setF((prev) => ({ ...prev, ...partial }));
@@ -750,7 +750,7 @@ export default function OnboardingFilters() {
               style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "#ffffff" }}
               data-testid="badge-step"
             >
-              3/4
+              2/4
             </span>
             <span
               className="absolute inset-0 flex items-center justify-center text-[19px] font-bold pointer-events-none"
