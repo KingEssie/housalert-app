@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation, Redirect } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
-import { Info } from "lucide-react";
+import { Info, Plus } from "lucide-react";
 import { OBW, OBWebHeader, OBWebFooter, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 import { useTranslation } from "@/i18n";
 
@@ -103,7 +103,7 @@ export default function OnboardingPreferences() {
     return null;
   }
 
-  const sLabel = "text-[15px] font-semibold mb-3 block";
+  const sLabel = "text-[15px] font-bold mb-3 block";
 
   const SUITABLE_FOR_OPTIONS = [
     { value: "studenten", label: "Studenten" },
@@ -125,10 +125,10 @@ export default function OnboardingPreferences() {
     >
       <OBWebHeader step={4} totalSteps={4} onClose={handleClose} />
 
-      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-[100px] overflow-y-auto">
+      <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[100px] overflow-y-auto">
 
         {/* Naam zoekopdracht */}
-        <div className="mb-6">
+        <div className="mb-7">
           <label
             className="block text-[15px] font-semibold mb-2"
             style={{ color: OBW.text }}
@@ -143,9 +143,8 @@ export default function OnboardingPreferences() {
             onChange={(e) => setSearchName(e.target.value)}
             className="w-full ha-field-web"
             style={{
-              height: 48,
               backgroundColor: "#FAFAFA",
-              borderColor: "#E5E7EB",
+              borderColor: OBW.inputBorder,
               color: OBW.text,
             }}
             placeholder={city}
@@ -153,10 +152,10 @@ export default function OnboardingPreferences() {
           />
         </div>
 
-        <div className="h-px mb-6" style={{ backgroundColor: "rgba(0,0,0,0.07)" }} />
+        <div className="h-px mb-7" style={{ backgroundColor: OBW.divider }} />
 
         {/* Woningen geschikt voor */}
-        <section className="mb-6">
+        <section className="mb-7">
           <label className={sLabel} style={{ color: OBW.text }}>
             Woningen geschikt voor
           </label>
@@ -167,14 +166,15 @@ export default function OnboardingPreferences() {
                 <button
                   key={opt.value}
                   onClick={() => toggleSuitableFor(opt.value)}
-                  className="h-[40px] px-5 rounded-full text-[14px] font-medium border transition-all active:scale-[0.96]"
+                  className="h-[38px] px-4 rounded-full text-[14px] font-medium border transition-all active:scale-[0.96] flex items-center gap-[5px]"
                   style={{
                     backgroundColor: active ? "rgb(var(--ha-primary))" : "#F9FAFB",
-                    borderColor: active ? "rgb(var(--ha-primary))" : "#E5E7EB",
-                    color: active ? "#fff" : "#334855",
+                    borderColor: active ? "rgb(var(--ha-primary))" : "#D1D5DB",
+                    color: active ? "#fff" : "#111111",
                   }}
                   data-testid={`chip-suitable-${opt.value}`}
                 >
+                  {!active && <Plus className="w-[12px] h-[12px] shrink-0" style={{ color: "#6B7280" }} />}
                   {opt.label}
                 </button>
               );
@@ -183,20 +183,24 @@ export default function OnboardingPreferences() {
 
           {/* Grey info box */}
           <div
-            className="mt-4 rounded-[8px] flex items-center gap-3"
-            style={{ backgroundColor: "#F3F4F6", padding: "14px 16px" }}
+            className="mt-4 rounded-[6px] flex items-start gap-2.5"
+            style={{
+              backgroundColor: "#F3F4F6",
+              border: "1px solid #E5E7EB",
+              padding: "12px 14px",
+            }}
           >
-            <Info className="w-[15px] h-[15px] shrink-0" style={{ color: "#6B7280" }} />
-            <p className="text-[13px] leading-[1.6]" style={{ color: "#6B7280" }}>
+            <Info className="w-[14px] h-[14px] shrink-0 mt-[2px]" style={{ color: "#6B7280" }} />
+            <p className="text-[13px] leading-[1.55]" style={{ color: "#4B5563" }}>
               Selecteer welk type bewoner het beste bij de woning past. Laat leeg als dit niet uitmaakt.
             </p>
           </div>
         </section>
 
-        <div className="h-px mb-6" style={{ backgroundColor: "rgba(0,0,0,0.07)" }} />
+        <div className="h-px mb-7" style={{ backgroundColor: OBW.divider }} />
 
         {/* Zoekfilter */}
-        <section className="mb-6">
+        <section className="mb-7">
           <label className={sLabel} style={{ color: OBW.text }}>
             Zoekfilter
           </label>
@@ -207,20 +211,23 @@ export default function OnboardingPreferences() {
                 <button
                   key={row.key}
                   onClick={() => updateFilter(row.key, !checked)}
-                  className="w-full flex items-center justify-between py-[16px] text-left transition-colors"
+                  className="w-full flex items-start justify-between gap-3 py-[14px] text-left transition-colors"
                   style={{
-                    borderBottom: i < ZOEKFILTER_ROWS.length - 1 ? "1px solid rgba(0,0,0,0.07)" : "none",
+                    borderBottom: i < ZOEKFILTER_ROWS.length - 1 ? `1px solid ${OBW.divider}` : "none",
                   }}
                   data-testid={`toggle-filter-${row.key}`}
                 >
-                  <span className="flex items-center gap-1.5 text-[14px] leading-snug pr-4 flex-1" style={{ color: OBW.text }}>
+                  <span className="text-[14px] leading-[1.5] flex-1" style={{ color: OBW.text }}>
                     {row.label}
                     {row.info && (
-                      <Info className="w-[13px] h-[13px] shrink-0 inline-block" style={{ color: "#9CA3AF" }} />
+                      <Info
+                        className="inline-block ml-1 relative"
+                        style={{ width: 13, height: 13, color: "#9CA3AF", top: -1, verticalAlign: "middle" }}
+                      />
                     )}
                   </span>
                   <div
-                    className="w-[44px] h-[26px] rounded-full p-[3px] transition-colors shrink-0 flex items-center"
+                    className="w-[44px] h-[26px] rounded-full p-[3px] transition-colors shrink-0 flex items-center mt-[1px]"
                     style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "#E5E7EB" }}
                   >
                     <div
@@ -237,7 +244,7 @@ export default function OnboardingPreferences() {
           </div>
         </section>
 
-        <div className="h-px mb-6" style={{ backgroundColor: "rgba(0,0,0,0.07)" }} />
+        <div className="h-px mb-7" style={{ backgroundColor: OBW.divider }} />
 
         {/* Instellingen opslaan */}
         <section className="mb-2">
@@ -246,14 +253,14 @@ export default function OnboardingPreferences() {
           </label>
           <button
             onClick={() => setApplyToAllProfiles(!applyToAllProfiles)}
-            className="w-full flex items-center justify-between py-[16px] text-left transition-colors"
+            className="w-full flex items-start justify-between gap-3 py-[14px] text-left transition-colors"
             data-testid="toggle-apply-to-all"
           >
-            <span className="text-[14px] leading-snug pr-4 flex-1" style={{ color: OBW.text }}>
+            <span className="text-[14px] leading-[1.5] flex-1" style={{ color: OBW.text }}>
               Bovenstaande zoekinstellingen toepassen op alle zoekprofielen
             </span>
             <div
-              className="w-[44px] h-[26px] rounded-full p-[3px] transition-colors shrink-0 flex items-center"
+              className="w-[44px] h-[26px] rounded-full p-[3px] transition-colors shrink-0 flex items-center mt-[1px]"
               style={{ backgroundColor: applyToAllProfiles ? "rgb(var(--ha-primary))" : "#E5E7EB" }}
             >
               <div

@@ -1,0 +1,120 @@
+STRICT SCOPE RULES:
+- Work ONLY in the file that renders website onboarding step 4
+- Website mode only
+- Do NOT touch step 1, step 2, or step 3
+- Do NOT inspect locale files
+- Do NOT perform a broad audit
+- Do NOT refactor unrelated code
+- Keep token/cost usage minimal
+- If another file is absolutely required, STOP and report it first
+
+TASK:
+Do a final pixel-perfect UI polish pass on website onboarding step 4 so it visually matches the Rentbird screen much more closely.
+
+IMPORTANT:
+- This is NOT a content rewrite
+- This is a detailed visual refinement pass
+- Be highly critical about header consistency, control heights, text contrast, helper box styling, border radii, and spacing
+- Keep HousAlert brand colors where relevant, but match Rentbird layout and component feel as closely as possible
+
+APPLY THESE EXACT CHANGES:
+
+1. HEADER CONSISTENCY
+- Make the 4/4 header use the exact same structural system as the finalized 2/4 and 3/4 screens
+- Match:
+  - vertical padding
+  - badge size and placement
+  - centered title positioning
+  - X button placement and spacing
+- The header should no longer feel different from the earlier steps
+
+2. INPUT FIELD HEIGHT + STYLE
+- Increase the “Naam zoekopdracht” input height so it matches the height of the earlier onboarding fields
+- Match the same:
+  - height
+  - border radius
+  - border color
+  - inner horizontal padding
+  - text vertical alignment
+- This field must feel like the same input component used elsewhere in the funnel
+
+3. TEXT CONTRAST / DARKNESS
+- Increase text contrast across the screen so the main text is darker and closer to black
+- Apply this critically to:
+  - section titles
+  - labels
+  - row text
+  - chip text
+  - helper text where appropriate
+- The screen currently feels too grey/light
+
+4. HELPER BOX (LIGHT GREY INFO BOX)
+- Refine the grey helper box so it visually matches Rentbird much more closely
+- Fix:
+  - background grey tone
+  - padding
+  - border radius
+  - icon alignment
+  - text alignment
+  - text sizing / line-height
+- Keep the helper box subtle, compact, and premium
+- The grey background should be closer to the Rentbird grey from the reference
+- The text inside should match the Rentbird structure more closely in tone and layout
+
+5. BORDER RADII CONSISTENCY
+- Audit ONLY this screen and make border radii consistent across:
+  - input field
+  - chips
+  - helper box
+  - any row containers if applicable
+  - footer buttons
+- Border radii should no longer feel mixed or inconsistent
+
+6. CHIP REFINEMENT
+- Refine the “Studenten / Woningdelers / Huisdieren” chips to more closely match Rentbird
+- Fix:
+  - chip height
+  - padding
+  - plus icon size and spacing
+  - border radius
+  - border color
+  - text alignment
+- The chips should feel tighter, cleaner, and more intentional
+
+7. TOGGLE ROWS
+- Refine the rows under “Zoekfilter” and “Instellingen opslaan”
+- Fix:
+  - row spacing
+  - text alignment
+  - info icon placement
+  - toggle alignment
+  - vertical rhythm between rows
+- The rows should feel cleaner and more premium, not loose
+
+8. TYPOGRAPHY / SPACING PASS
+- Do a critical final typography and spacing pass across the whole screen
+- Specifically improve:
+  - spacing between sections
+  - spacing between labels and controls
+  - consistency of font sizes and weights
+  - vertical rhythm from top to bottom
+- The screen should feel like it belongs to the same polished system as 2/4 and 3/4
+
+9. DO NOT CHANGE
+- Do not change logic
+- Do not change state behavior
+- Do not change copy unless required only to match the helper box structure already intended
+- Do not touch other onboarding steps
+- Do not touch translation files
+- Do not touch other files unless absolutely required
+
+RETURN ONLY:
+1. exact header refinements
+2. exact input field changes
+3. exact text contrast/typography changes
+4. exact helper box changes
+5. exact border radius consistency changes
+6. exact chip refinements
+7. exact toggle-row refinements
+8. whether any extra file was required
+9. confirmation that no broader audit or translation work was done
