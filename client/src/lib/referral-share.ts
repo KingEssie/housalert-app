@@ -3,10 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api-base";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "@/i18n";
 
 export function useReferralShare() {
   const { session } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const { data: referralData } = useQuery<{
     code: string;
@@ -43,22 +45,22 @@ export function useReferralShare() {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "HousAlert — Vind sneller een woning",
-          text: `Gebruik mijn HousAlert link en krijg 25% korting op je eerste betaling.`,
+          title: t("referral.nativeShareTitle"),
+          text: t("referral.nativeShareText"),
           url,
         });
-        toast({ title: "Link klaar om te delen", description: "Je vriend krijgt 25% korting op de eerste betaling" });
+        toast({ title: t("referral.linkShared"), description: t("referral.linkSharedDesc") });
         return;
       } catch {}
     }
 
     try {
       await navigator.clipboard.writeText(url);
-      toast({ title: "Link gekopieerd", description: "Je vriend krijgt 25% korting op de eerste betaling" });
+      toast({ title: t("referral.linkCopied"), description: t("referral.linkCopiedDesc") });
     } catch {
-      toast({ title: "Kopiëren mislukt", description: "Probeer het opnieuw", variant: "destructive" });
+      toast({ title: t("referral.copyFailed"), description: t("referral.copyFailedDesc"), variant: "destructive" });
     }
-  }, [referralData, toast]);
+  }, [referralData, toast, t]);
 
   return { handleReferralShare, referralData };
 }
