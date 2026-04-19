@@ -3,7 +3,7 @@ import { useLocation, Redirect } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { useTranslation } from "@/i18n";
 import { HousAlertLogo } from "@/components/housalert-logo";
-import { ChevronLeft, Loader2, Eye, EyeOff, Gift, MapPin } from "lucide-react";
+import { ChevronLeft, Loader2, Eye, EyeOff, Gift, MapPin, X, ShieldCheck } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { clearAllUserData } from "@/lib/queryClient";
 import { createSearchProfile } from "@/lib/search-profiles";
@@ -232,186 +232,261 @@ export default function OnboardingPassword() {
   const roomsLabel = minRooms === "0" ? "Studio+" : `${minRooms}+`;
 
   if (w) {
+    const searchName = params.get("searchName")?.trim() || city;
     return (
       <div
         className="min-h-[100dvh] flex flex-col"
-        style={{ background: "#ffffff" }}
+        style={{ background: "#F3F4F6" }}
         data-testid="screen-onboarding-password"
       >
-        <OBWebHeader onClose={handleClose} />
-
-        <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[130px] overflow-y-auto">
-          <h2
-            className="text-[30px] font-semibold tracking-[-0.025em] mb-4"
-            style={{ color: OBW.text }}
-            data-testid="text-password-title"
-          >
-            {t("onboarding.password.web.title")}
-          </h2>
-          {city && (
-            <div
-              className="rounded-[4px] p-3.5 mb-4 flex items-start gap-3"
-              style={{
-                backgroundColor: "#FFFFFF",
-                border: `1px solid rgba(217,26,104,0.15)`,
-              }}
-              data-testid="search-summary-card"
-            >
-              <MapPin className="w-4 h-4 shrink-0 mt-0.5" style={{ color: OBW.pink }} />
-              <div className="min-w-0">
-                <p className="text-[14px] font-semibold" style={{ color: OBW.text }}>
-                  {city}{radiusKm ? ` · ${radiusKm} km` : ""}
-                </p>
-                <p className="text-[12px]" style={{ color: OBW.textSecondary }}>
-                  €{minPrice}–€{maxPrice} · {roomsLabel} {t("onboarding.password.web.apartments")}
-                </p>
-              </div>
-            </div>
-          )}
-
-          <div
-            className="rounded-[10px] overflow-hidden mb-5"
-            style={{ border: "1px solid rgba(217,26,104,0.2)" }}
-            data-testid="match-summary-card"
-          >
-            <div className="px-5 pt-5 pb-4" style={{ background: "linear-gradient(135deg, rgba(217,26,104,0.07) 0%, rgba(217,26,104,0.02) 100%)" }}>
-              <div className="flex items-end gap-2 mb-2">
-                <span className="text-[36px] font-bold leading-none" style={{ color: "rgb(var(--ha-primary))" }}>121</span>
-                <span className="text-[22px] leading-none mb-0.5">🔥</span>
-                <span className="text-[13px] font-semibold pb-1" style={{ color: "rgb(var(--ha-primary))" }}>{t("onboardingUI.perWeek")}</span>
-              </div>
-              <p className="text-[13px] leading-[1.55]" style={{ color: OBW.textSecondary }}>
-                {t("onboarding.password.web.infoBox").replace("{city}", city || t("onboarding.password.web.yourRegion"))}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <div>
-              <label className="text-[15px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
-                {t("onboarding.name.firstNameLabel")}
-              </label>
-              <input
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                placeholder="Max"
-                className="w-full ha-field-web"
-                style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
-                autoFocus
-                data-testid="input-first-name"
-              />
-            </div>
-
-            <div>
-              <label className="text-[15px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
-                {t("onboarding.name.lastNameLabel")}
-              </label>
-              <input
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                placeholder="Müller"
-                className="w-full ha-field-web"
-                style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
-                data-testid="input-last-name"
-              />
-            </div>
-
-            <div>
-              <label className="text-[15px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
-                {t("onboarding.email.label")}
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={t("onboarding.email.placeholder")}
-                className="w-full ha-field-web"
-                style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text }}
-                data-testid="input-email"
-              />
-            </div>
-
-            <div>
-              <label className="text-[15px] font-semibold mb-1.5 block" style={{ color: OBW.textSecondary }}>
-                {t("onboarding.password.label")}
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder={t("onboarding.password.web.passwordPlaceholder")}
-                  className="w-full ha-field-web"
-                  style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text, paddingRight: "44px" }}
-                  autoComplete="new-password"
-                  data-testid="input-password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors"
-                  style={{ color: "#334855" }}
-                  data-testid="button-toggle-password"
-                >
-                  {showPassword ? <EyeOff className="w-[16px] h-[16px]" /> : <Eye className="w-[16px] h-[16px]" />}
-                </button>
-              </div>
-              <PasswordRules password={password} />
-            </div>
-          </div>
-        </main>
-
-        <div
-          className="fixed bottom-0 left-0 right-0 z-30"
-          style={{ borderTop: `1px solid ${OBW.footerBorder}`, backgroundColor: OBW.footerBg }}
+        {/* Header — matches steps 3/4 and 4/4 exactly */}
+        <header
+          className="sticky top-0 z-20 w-full"
+          style={{ backgroundColor: "#ffffff", borderBottom: "1px solid #E5E7EB" }}
         >
-          <div className="max-w-[480px] mx-auto px-5 pt-3 pb-3">
-            <div className="flex items-center gap-3 mb-2.5">
-              <button
-                onClick={handleBack}
-                className="w-[44px] h-[44px] rounded-[4px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
-                style={{ border: `1.5px solid ${OBW.pink}`, backgroundColor: "transparent" }}
-                data-testid="button-password-back"
+          <div className="relative max-w-[480px] mx-auto px-4 h-[56px] flex items-center justify-between">
+            <HousAlertLogo size={26} />
+            <span
+              className="absolute inset-0 flex items-center justify-center text-[19px] font-bold pointer-events-none"
+              style={{ color: "#111111" }}
+            >
+              Account aanmaken
+            </span>
+            <button
+              onClick={handleClose}
+              className="w-[36px] h-[36px] shrink-0 flex items-center justify-center rounded-full transition-opacity hover:opacity-70 active:opacity-50"
+              style={{ backgroundColor: "#F2F2F2", color: "#444444" }}
+              data-testid="button-password-close"
+            >
+              <X className="w-[22px] h-[22px]" />
+            </button>
+          </div>
+        </header>
+
+        <main className="flex-1 max-w-[480px] mx-auto w-full px-4 pt-5 pb-8 overflow-y-auto">
+
+          {/* Card 1 — Jouw zoekopdracht */}
+          <div
+            className="bg-white rounded-[12px] mb-4 overflow-hidden"
+            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}
+            data-testid="search-summary-card"
+          >
+            <div className="px-5 pt-5 pb-5">
+              <p className="text-[13px] font-bold uppercase tracking-[0.06em] mb-3" style={{ color: "#9CA3AF" }}>
+                Jouw zoekopdracht
+              </p>
+
+              <div className="flex items-center gap-2.5 mb-4">
+                <div
+                  className="w-[34px] h-[34px] rounded-full flex items-center justify-center shrink-0"
+                  style={{ backgroundColor: "rgba(217,26,104,0.08)" }}
+                >
+                  <MapPin className="w-[15px] h-[15px]" style={{ color: "rgb(var(--ha-primary))" }} />
+                </div>
+                <div>
+                  <p className="text-[15px] font-bold leading-tight" style={{ color: "#111111" }}>
+                    {searchName}{radiusKm ? ` · ${radiusKm} km` : ""}
+                  </p>
+                  {(minPrice || maxPrice) && (
+                    <p className="text-[13px]" style={{ color: "#6B7280" }}>
+                      €{minPrice}–€{maxPrice} · {roomsLabel} {t("onboarding.password.web.apartments")}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Missed-matches block */}
+              <div
+                className="rounded-[10px] flex items-start gap-3 px-4 py-3.5"
+                style={{ backgroundColor: "rgba(217,26,104,0.06)", border: "1px solid rgba(217,26,104,0.12)" }}
+                data-testid="match-summary-card"
               >
-                <ChevronLeft className="w-[17px] h-[17px]" style={{ color: OBW.pink }} />
-              </button>
+                <div className="shrink-0 mt-0.5">
+                  <span className="text-[22px] leading-none">🔥</span>
+                </div>
+                <div>
+                  <div className="flex items-baseline gap-1.5 mb-0.5">
+                    <span className="text-[22px] font-bold leading-none" style={{ color: "rgb(var(--ha-primary))" }}>121</span>
+                    <span className="text-[13px] font-semibold" style={{ color: "rgb(var(--ha-primary))" }}>{t("onboardingUI.perWeek")}</span>
+                  </div>
+                  <p className="text-[12.5px] leading-[1.5]" style={{ color: "#374151" }}>
+                    {t("onboarding.password.web.infoBox").replace("{city}", city || t("onboarding.password.web.yourRegion"))}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Card 2 — Account form */}
+          <div
+            className="bg-white rounded-[12px] mb-3 overflow-hidden"
+            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}
+          >
+            <div className="px-5 pt-5 pb-5">
+              <p className="text-[13px] font-bold uppercase tracking-[0.06em] mb-4" style={{ color: "#9CA3AF" }}>
+                Maak een gratis account aan
+              </p>
+
+              <div className="flex flex-col gap-4">
+                {/* Voornaam */}
+                <div>
+                  <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: "#374151" }}>
+                    {t("onboarding.name.firstNameLabel")}
+                  </label>
+                  <input
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="Max"
+                    className="w-full ha-field-web"
+                    style={{ backgroundColor: "#ffffff", borderColor: "#D1D5DB", color: "#111111" }}
+                    autoFocus
+                    data-testid="input-first-name"
+                  />
+                </div>
+
+                {/* Achternaam */}
+                <div>
+                  <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: "#374151" }}>
+                    {t("onboarding.name.lastNameLabel")}
+                  </label>
+                  <input
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    placeholder="Müller"
+                    className="w-full ha-field-web"
+                    style={{ backgroundColor: "#ffffff", borderColor: "#D1D5DB", color: "#111111" }}
+                    data-testid="input-last-name"
+                  />
+                </div>
+
+                {/* E-mail */}
+                <div>
+                  <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: "#374151" }}>
+                    {t("onboarding.email.label")}
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder={t("onboarding.email.placeholder")}
+                    className="w-full ha-field-web"
+                    style={{ backgroundColor: "#ffffff", borderColor: "#D1D5DB", color: "#111111" }}
+                    data-testid="input-email"
+                  />
+                </div>
+
+                {/* Wachtwoord */}
+                <div>
+                  <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: "#374151" }}>
+                    {t("onboarding.password.label")}
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder={t("onboarding.password.web.passwordPlaceholder")}
+                      className="w-full ha-field-web"
+                      style={{ backgroundColor: "#ffffff", borderColor: "#D1D5DB", color: "#111111", paddingRight: "44px" }}
+                      autoComplete="new-password"
+                      data-testid="input-password"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors"
+                      style={{ color: "#9CA3AF" }}
+                      data-testid="button-toggle-password"
+                    >
+                      {showPassword ? <EyeOff className="w-[16px] h-[16px]" /> : <Eye className="w-[16px] h-[16px]" />}
+                    </button>
+                  </div>
+                  <PasswordRules password={password} />
+                </div>
+              </div>
+
+              {/* Primary CTA */}
               <button
                 onClick={handleCreateAccount}
                 disabled={!canSubmit}
-                className="flex-1 h-[44px] rounded-[4px] text-[14px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-2"
-                style={{ background: OBW.pink, boxShadow: canSubmit ? "0 4px 14px rgba(217,26,104,0.2)" : "none" }}
+                className="w-full mt-6 h-[54px] rounded-[10px] text-[16px] font-bold text-white transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2"
+                style={{
+                  background: "rgb(var(--ha-primary))",
+                  boxShadow: canSubmit ? "0 4px 20px rgba(217,26,104,0.28)" : "none",
+                }}
                 data-testid="button-create-account"
               >
                 {loading ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-[18px] h-[18px] animate-spin" />
                     {t("onboarding.password.creating")}
                   </>
                 ) : (
                   t("onboarding.password.cta")
                 )}
               </button>
+
+              {/* Legal text */}
+              <p className="text-center text-[11px] leading-relaxed mt-3" style={{ color: "#9CA3AF" }}>
+                {t("onboarding.password.terms")}
+              </p>
+
+              {/* Login link */}
+              <p className="text-center text-[13px] mt-2.5" style={{ color: "#6B7280" }}>
+                {t("auth.signup.hasAccount")}{" "}
+                <button
+                  onClick={() => navigate("/")}
+                  className="font-semibold hover:underline"
+                  style={{ color: "rgb(var(--ha-primary))" }}
+                  data-testid="link-login"
+                >
+                  {t("auth.signup.loginLink")}
+                </button>
+              </p>
             </div>
-
-            <p className="text-center text-[10px] leading-relaxed" style={{ color: OBW.textMuted }}>
-              {t("onboarding.password.terms")}
-            </p>
-
-            <p className="text-center text-[12px] mt-1" style={{ color: OBW.textSecondary }}>
-              {t("auth.signup.hasAccount")}{" "}
-              <button
-                onClick={() => navigate("/")}
-                className="font-semibold hover:underline"
-                style={{ color: OB.pink }}
-                data-testid="link-login"
-              >
-                {t("auth.signup.loginLink")}
-              </button>
-            </p>
           </div>
-        </div>
+
+          {/* Back link */}
+          <button
+            onClick={handleBack}
+            className="flex items-center justify-center gap-1 w-full py-2 mb-4 text-[13px] transition-opacity hover:opacity-70"
+            style={{ color: "#9CA3AF" }}
+            data-testid="button-password-back"
+          >
+            <ChevronLeft className="w-[14px] h-[14px]" />
+            Terug naar vorige stap
+          </button>
+
+          {/* Trust block */}
+          <div
+            className="bg-white rounded-[12px] overflow-hidden"
+            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}
+          >
+            <div className="px-5 py-4">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <ShieldCheck className="w-[16px] h-[16px]" style={{ color: "rgb(var(--ha-primary))" }} />
+                <p className="text-[13px] font-bold" style={{ color: "#111111" }}>
+                  Zonder risico proberen
+                </p>
+              </div>
+              <div className="flex flex-col gap-2">
+                {[
+                  "Gratis account — geen creditcard nodig",
+                  "Direct actieve zoekopdracht na aanmaken",
+                  "Meldingen zodra er een woning match is",
+                ].map((text, i) => (
+                  <div key={i} className="flex items-center gap-2.5">
+                    <span className="text-[14px] font-bold shrink-0" style={{ color: "rgb(var(--ha-primary))" }}>✓</span>
+                    <span className="text-[13px]" style={{ color: "#374151" }}>{text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+        </main>
       </div>
     );
   }
