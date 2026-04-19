@@ -271,8 +271,8 @@ export default function OnboardingPassword() {
 
           {/* Card 1 — "Jouw zoekopdracht" accordion */}
           <div
-            className="rounded-[16px] mb-3 overflow-hidden"
-            style={{ backgroundColor: "#F5F5F7", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}
+            className="rounded-[16px] mb-3 overflow-hidden bg-white"
+            style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.09)" }}
             data-testid="search-summary-card"
           >
             <div className="p-4 flex flex-col gap-3">
@@ -354,42 +354,45 @@ export default function OnboardingPassword() {
                 {/* Preview listing card */}
                 <div
                   className="rounded-[10px] overflow-hidden bg-white"
-                  style={{ border: "1px solid #C9CDD6", boxShadow: "0 1px 4px rgba(0,0,0,0.10)" }}
+                  style={{ border: "1px solid #D0D4DC", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
                   data-testid="listing-preview-placeholder"
                 >
-                  {/* Image area with overlay */}
-                  <div className="w-full h-[130px] overflow-hidden relative">
-                    {/* Blurred background */}
+                  {/* Image area — soft blur + overlay to signal "locked" */}
+                  <div className="w-full h-[140px] overflow-hidden relative">
+                    {/* Realistic warm-tone property gradient, lightly blurred */}
                     <div
                       className="absolute inset-0"
                       style={{
-                        backgroundImage: "linear-gradient(135deg, #B0B8C4 0%, #98A2B0 50%, #B4BCC8 100%)",
-                        filter: "blur(10px)",
-                        transform: "scale(1.12)",
+                        backgroundImage: "linear-gradient(160deg, #C8B49A 0%, #A89278 30%, #C4B090 55%, #8E9AAA 80%, #A4B0BC 100%)",
+                        filter: "blur(4px)",
+                        transform: "scale(1.06)",
                       }}
                     />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Building2 className="w-[36px] h-[36px]" style={{ color: "#7888A0", opacity: 0.4, filter: "blur(2px)" }} />
-                    </div>
-                    {/* Top-right upgrade overlay */}
+                    {/* Soft dark overlay — creates locked feel without destroying image */}
                     <div
-                      className="absolute top-2 right-2 px-3 py-1.5 rounded-full"
-                      style={{ backgroundColor: "rgba(0,0,0,0.70)", backdropFilter: "blur(6px)" }}
+                      className="absolute inset-0"
+                      style={{ backgroundColor: "rgba(0,0,0,0.28)" }}
+                    />
+                    {/* Building icon centred */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Building2 className="w-[38px] h-[38px]" style={{ color: "#FFFFFF", opacity: 0.55 }} />
+                    </div>
+                    {/* Upgrade pill — top right */}
+                    <div
+                      className="absolute top-2.5 right-2.5 px-3 py-1.5 rounded-full"
+                      style={{ backgroundColor: "rgba(0,0,0,0.75)", backdropFilter: "blur(8px)" }}
                     >
-                      <span className="text-[11px] font-bold text-white">Upgrade om te bekijken</span>
+                      <span className="text-[11px] font-bold text-white tracking-wide">Upgrade om te bekijken</span>
                     </div>
                   </div>
 
-                  {/* Meta row — real listing structure, blurred */}
-                  <div
-                    className="flex items-center gap-2.5 px-3 py-3"
-                    style={{ filter: "blur(3px)" }}
-                  >
-                    <span className="text-[14px] font-bold" style={{ color: "#0F172A" }}>€850 /mnd</span>
-                    <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#CBD5E1" }} />
-                    <span className="text-[12px]" style={{ color: "#475569" }}>45 m²</span>
-                    <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#CBD5E1" }} />
-                    <span className="text-[12px]" style={{ color: "#94A3B8" }}>2 dagen geleden</span>
+                  {/* Meta row — SHARP, fully readable */}
+                  <div className="flex items-center gap-2.5 px-3 py-3">
+                    <span className="text-[14px] font-bold" style={{ color: "#111111" }}>€850 /mnd</span>
+                    <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
+                    <span className="text-[12px] font-medium" style={{ color: "#374151" }}>45 m²</span>
+                    <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
+                    <span className="text-[12px]" style={{ color: "#6B7280" }}>2 dagen geleden</span>
                   </div>
                 </div>
 
