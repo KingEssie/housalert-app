@@ -1,0 +1,75 @@
+STRICT SCOPE:
+- ONLY adjust the account creation screen (website onboarding final step)
+- Do NOT touch other steps
+- Do NOT inspect translation files
+- Do NOT refactor logic
+- Focus ONLY on visual + UX refinement
+- Keep implementation minimal and precise
+
+TASK:
+Do a final high-detail polish pass to match Rentbird-level UI quality and conversion hierarchy.
+
+APPLY EXACT FIXES:
+
+1. HEADER
+- Add clear spacing between logo and title
+- Title “Account aanmaken” must be visually independent
+- Align with previous onboarding header structure
+
+2. “Jouw zoekopdracht” TITLE
+- Remove ALL CAPS
+- Use darker text (near-black)
+- Font-weight 500–600
+- Increase readability and hierarchy
+
+3. MATCH INFO CARD (121 per week)
+- Reduce background saturation (less pink, more subtle)
+- Increase prominence of number (121)
+- Make “per week” smaller and lighter
+- Improve internal padding for breathing room
+
+4. INPUT FIELDS
+- Reduce border radius slightly (more structured look)
+- Use consistent light grey border
+- Remove heavy/black focus outline
+- Replace with:
+  - subtle brand-colored border
+  - very light shadow on focus
+- Keep field height consistent
+
+5. CTA BUTTON
+- Use full brand color (not faded)
+- Increase contrast (must look clearly clickable)
+- Minimum height: ~52px
+- Font-weight: 600+
+- Strong primary action styling
+
+6. LEGAL TEXT
+- Reduce width slightly for better readability
+- Increase line-height
+- Use slightly lighter color
+
+7. BACK NAVIGATION
+- Move “Terug naar vorige stap” out of current position
+- Place either:
+  - above CTA
+  - or remove if redundant with back button
+- Do NOT leave it between CTA and trust block
+
+8. TRUST BLOCK
+- Increase padding
+- Improve spacing between bullet points
+- Slightly increase icon size
+- Make title more prominent
+- Ensure it feels like a reassurance card, not a list
+
+9. DO NOT TOUCH
+- No logic changes
+- No translations
+- No new features
+- No other screens
+
+RETURN:
+- exact style changes made
+- confirmation no extra files were edited
+- confirmation no broader audit was done

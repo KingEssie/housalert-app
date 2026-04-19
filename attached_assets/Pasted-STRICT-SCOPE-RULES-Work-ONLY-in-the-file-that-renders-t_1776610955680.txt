@@ -1,0 +1,129 @@
+STRICT SCOPE RULES:
+- Work ONLY in the file that renders the website account creation screen after onboarding step 4
+- Website mode only
+- Do NOT touch step 1, step 2, step 3, or step 4 screens
+- Do NOT inspect locale files
+- Do NOT perform a broad audit
+- Do NOT refactor unrelated code
+- Keep token/cost usage minimal
+- If another file is absolutely required, STOP and report it first
+
+TASK:
+Rebuild/refine the website account creation screen so it matches the Rentbird reference structure and visual hierarchy much more closely.
+
+IMPORTANT:
+- Keep HousAlert branding colors where appropriate
+- Do NOT copy Rentbird branding
+- But DO match layout structure, spacing logic, grouping, form rhythm, and conversion flow as closely as possible
+- This is NOT a translation task
+- This is NOT a broad app task
+- This is a strict screen-level design and UX correction
+
+APPLY THESE EXACT CHANGES:
+
+1. OVERALL PAGE STRUCTURE
+- The account creation screen should no longer feel like a flat page with loose elements
+- Rebuild it so it feels like:
+  - a light-grey page background
+  - one or more white cards/sections
+  - a clear conversion-focused structure like the Rentbird example
+
+2. TOP SEARCH SUMMARY SECTION
+- Add/refine a top white card section titled:
+  - "Jouw zoekopdracht"
+- This section must show:
+  - the current search summary
+  - a highlighted info block about missed matches in the last 30 days
+- Make this section visually much closer to Rentbird:
+  - card container
+  - title row
+  - compact summary/info area
+  - proper spacing and hierarchy
+- Use the current selected search data from the funnel
+
+3. ACCOUNT FORM CARD
+- Place the account form inside a clear white card section below the search summary card
+- Fields in order:
+  - Voornaam
+  - Achternaam
+  - E-mail
+  - Wachtwoord
+- All fields must visually match Rentbird much more closely:
+  - consistent height
+  - subtle border radius
+  - clean border
+  - correct label spacing
+  - correct placeholder style
+  - clean vertical rhythm
+
+4. PASSWORD FIELD BLOCK
+- Refine the password block so it matches the Rentbird structure:
+  - password field with eye icon inside on the right
+  - thin validation/strength line below
+  - helper/validation text below
+- The validation text should visually follow the Rentbird hierarchy:
+  - normal text
+  - highlighted/red emphasis on the minimum-character portion where appropriate
+
+5. PRIMARY CTA
+- Rebuild/refine the “Account aanmaken” button so it matches the Rentbird feel:
+  - strong primary button
+  - correct height
+  - centered text
+  - high prominence
+  - optional icon positioning similar to the reference if already supported
+- This must be the strongest visual action on the page
+
+6. LEGAL / CONSENT TEXT
+- Under the CTA, add/refine the small centered legal/privacy text block
+- It should feel like the Rentbird structure:
+  - compact
+  - centered
+  - visually secondary
+  - part of the form completion flow
+
+7. TRUST / RISK-REDUCTION BLOCK
+- Add/refine a trust block beneath the legal text, equivalent in function to the Rentbird “zonder risico” section
+- Use HousAlert branding/copy style, but match the Rentbird intent:
+  - reduce risk
+  - create reassurance
+  - improve conversion confidence
+- This should be a visually distinct card/block below the form card
+
+8. TYPOGRAPHY
+- Do a critical pass on:
+  - section titles
+  - form labels
+  - placeholders
+  - helper text
+  - CTA text
+  - legal text
+- Match Rentbird hierarchy as closely as possible while keeping HousAlert styling
+
+9. SPACING / RHYTHM
+- Make spacing feel intentional and premium:
+  - between cards
+  - between labels and fields
+  - between fields
+  - between password field, validation bar, and helper text
+  - between CTA, legal text, and trust block
+- The current page should feel much more structured and conversion-focused
+
+10. DO NOT CHANGE
+- Do not touch other onboarding steps
+- Do not touch translation files
+- Do not do a broad audit
+- Do not redesign the app globally
+- Do not break existing account creation logic
+- Do not remove the current search-summary data flow
+
+RETURN ONLY:
+1. exact page structure changes
+2. exact search-summary card changes
+3. exact form-card changes
+4. exact password block changes
+5. exact CTA changes
+6. exact legal text block changes
+7. exact trust-block changes
+8. whether any extra file was required
+9. confirmation that no broader audit or translation work was done
