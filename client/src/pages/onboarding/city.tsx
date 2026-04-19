@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
-import { Search, MapPin, Loader2, X } from "lucide-react";
+import { MapPin, Loader2, X } from "lucide-react";
 import { defaultCities } from "../../../../config/market";
 import { OBW, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 import { OnboardingFlowLayout } from "@/components/onboarding-flow-layout";
@@ -158,32 +158,31 @@ export default function OnboardingCity() {
         style={{ background: "#ffffff" }}
         data-testid="screen-onboarding-city"
       >
-        {/* Rentbird-style compact onboarding header: step badge | title | close */}
         <header
           className="sticky top-0 z-20 w-full"
           style={{ backgroundColor: "#ffffff", borderBottom: `1px solid ${OBW.headerBorder}` }}
         >
-          <div className="max-w-[480px] mx-auto px-4 h-[52px] flex items-center justify-between gap-3">
+          <div className="relative max-w-[480px] mx-auto px-4 h-[56px] flex items-center justify-between">
             <span
-              className="text-[11px] font-bold px-2 py-0.5 rounded-[4px] shrink-0"
-              style={{ backgroundColor: "rgb(var(--ha-primary))", color: "#ffffff" }}
+              className="text-[14px] font-bold rounded-full shrink-0 flex items-center px-3.5"
+              style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "#ffffff" }}
               data-testid="badge-step"
             >
               1/4
             </span>
             <span
-              className="text-[14px] font-semibold truncate"
+              className="absolute inset-0 flex items-center justify-center text-[19px] font-bold pointer-events-none"
               style={{ color: OBW.text }}
             >
               {t("onboarding.filters.headerTitle")}
             </span>
             <button
               onClick={handleClose}
-              className="w-[28px] h-[28px] shrink-0 flex items-center justify-center rounded-full transition-colors hover:bg-[#F0F0F0] active:bg-[#E5E5E5]"
-              style={{ color: OBW.textSecondary }}
+              className="w-[36px] h-[36px] shrink-0 flex items-center justify-center rounded-full transition-opacity hover:opacity-70 active:opacity-50"
+              style={{ backgroundColor: "#F2F2F2", color: "#444444" }}
               data-testid="button-close"
             >
-              <X className="w-[15px] h-[15px]" />
+              <X className="w-[22px] h-[22px]" />
             </button>
           </div>
         </header>
@@ -194,7 +193,6 @@ export default function OnboardingCity() {
           </label>
 
           <div className="relative mb-4">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: OBW.textMuted }} />
             <input
               type="text"
               value={search}
@@ -203,8 +201,8 @@ export default function OnboardingCity() {
                 if (selectedCity) setSelectedCity(null);
               }}
               placeholder={t("onboarding.location.searchPlaceholder")}
-              className="w-full ha-field-web focus:ring-0"
-              style={{ backgroundColor: OBW.inputBg, borderColor: OBW.inputBorder, color: OBW.text, paddingLeft: "40px", paddingRight: "16px" }}
+              className="w-full ha-field-web focus:ring-0 placeholder:text-[16px] placeholder:text-[#9CA3AF]"
+              style={{ backgroundColor: OBW.inputBg, borderColor: "#CFCFCF", color: OBW.text }}
               autoFocus
               data-testid="input-city-search"
             />
@@ -219,16 +217,16 @@ export default function OnboardingCity() {
                 <button
                   key={city.name}
                   onClick={() => selectPresetCity(city)}
-                  className="w-full flex items-center gap-3 min-h-[56px] text-left transition-colors hover:bg-[#F7F7F7] active:bg-[#F0F1F2]"
+                  className="w-full flex items-center gap-2.5 min-h-[56px] text-left transition-colors hover:bg-[#F7F7F7] active:bg-[#F0F1F2]"
                   style={{
                     paddingTop: "14px",
                     paddingBottom: "14px",
-                    borderBottom: `1px solid ${OBW.divider}`,
+                    borderBottom: "1px solid #EAEAEA",
                   }}
                   data-testid={`city-option-${city.name}`}
                 >
-                  <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.pink }} />
-                  <span className="text-[16px] font-medium" style={{ color: OBW.text }}>{city.name}</span>
+                  <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.pink, opacity: 0.8 }} />
+                  <span className="text-[18px] font-bold" style={{ color: OBW.text }}>{city.name}</span>
                 </button>
               ))}
 
@@ -236,17 +234,17 @@ export default function OnboardingCity() {
                 <button
                   key={r.placeId || i}
                   onClick={() => selectGeocoderCity(r)}
-                  className="w-full flex items-center gap-3 min-h-[56px] text-left transition-colors hover:bg-[#F7F7F7] active:bg-[#F0F1F2]"
+                  className="w-full flex items-center gap-2.5 min-h-[56px] text-left transition-colors hover:bg-[#F7F7F7] active:bg-[#F0F1F2]"
                   style={{
                     paddingTop: "14px",
                     paddingBottom: "14px",
-                    borderBottom: `1px solid ${OBW.divider}`,
+                    borderBottom: "1px solid #EAEAEA",
                   }}
                   data-testid={`city-nominatim-${i}`}
                 >
-                  <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.pink }} />
+                  <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.pink, opacity: 0.8 }} />
                   <div className="min-w-0">
-                    <span className="text-[16px] font-medium block" style={{ color: OBW.text }}>{r.city}</span>
+                    <span className="text-[18px] font-bold block" style={{ color: OBW.text }}>{r.city}</span>
                     {r.label !== r.city && (
                       <span className="text-[13px]" style={{ color: OBW.textSecondary }}>{r.label.replace(`${r.city}, `, "")}</span>
                     )}
