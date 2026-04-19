@@ -31,6 +31,7 @@ export interface NormalizedFilters {
   extra_features?: string[];
   send_unclear: boolean;
   price_flexible: boolean;
+  include_rooms?: boolean;
   include_paid_sites?: boolean;
   include_housing_corporations?: boolean;
   include_lottery_housing?: boolean;
@@ -99,6 +100,7 @@ export function normalizeOnboardingParams(params: URLSearchParams): NormalizedFi
 
   const send_unclear = params.get("sendUnclear") !== "false";
   const price_flexible = params.get("priceFlexible") === "true";
+  const include_rooms = params.get("includeRooms") === "true";
 
   const include_paid_sites = params.get("includePaidSites") !== "false";
   const include_housing_corporations = params.get("includeHousingCorporations") !== "false";
@@ -121,6 +123,7 @@ export function normalizeOnboardingParams(params: URLSearchParams): NormalizedFi
     extra_features: extra_features && extra_features.length > 0 ? extra_features : undefined,
     send_unclear,
     price_flexible,
+    include_rooms,
     include_paid_sites,
     include_housing_corporations,
     include_lottery_housing,
@@ -146,6 +149,7 @@ export function matchEstimateQueryKey(filters: NormalizedFilters): unknown[] {
     (filters.extra_features ?? []).join(","),
     filters.send_unclear,
     filters.price_flexible,
+    filters.include_rooms ?? false,
   ];
 }
 

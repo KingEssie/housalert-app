@@ -1551,6 +1551,7 @@ export async function registerRoutes(
         extra_features: Array.isArray(body.extra_features) && body.extra_features.length > 0 ? body.extra_features : undefined,
         send_unclear: body.send_unclear !== false,
         price_flexible: body.price_flexible === true,
+        include_rooms: body.include_rooms === true,
         include_paid_sites: body.include_paid_sites,
         include_housing_corporations: body.include_housing_corporations,
         include_lottery_housing: body.include_lottery_housing,

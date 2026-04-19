@@ -25,6 +25,7 @@ export interface NormalizedFilters {
   extra_features?: string[];
   send_unclear: boolean;
   price_flexible: boolean;
+  include_rooms?: boolean;
   // These fields are accepted for forward-compatibility but not yet filterable
   // in the listings table — they are treated as pass-through (no effect on count).
   include_paid_sites?: boolean;
@@ -72,6 +73,7 @@ function cacheKey(f: NormalizedFilters): string {
     feat: (f.extra_features ?? []).slice().sort().join(","),
     su: f.send_unclear,
     pf: f.price_flexible,
+    ir: f.include_rooms ?? false,
   });
 }
 
@@ -158,6 +160,18 @@ export async function computeMatchEstimate(
     };
   }
 
+  // Build property_types for the profile:
+  // if include_rooms=true, append "room" so room listings are counted too.
+  let resolvedPropertyTypes: string[] | null = filters.property_types?.length
+    ? [...filters.property_types]
+    : null;
+  if (filters.include_rooms) {
+    if (resolvedPropertyTypes) {
+      if (!resolvedPropertyTypes.includes("room")) resolvedPropertyTypes.push("room");
+    }
+    // If no specific property type was set, include_rooms alone doesn't restrict types
+  }
+
   // Build a SearchProfile-shaped object for explainMatchInternal
   const profile = {
     id: "estimate",
@@ -172,7 +186,7 @@ export async function computeMatchEstimate(
     extra_features: filters.extra_features?.length ? filters.extra_features : null,
     target_categories: null,
     districts: filters.districts?.length ? filters.districts : null,
-    property_types: filters.property_types?.length ? filters.property_types : null,
+    property_types: resolvedPropertyTypes,
     location_mode: filters.location_mode,
     latitude: filters.latitude ?? null,
     longitude: filters.longitude ?? null,
