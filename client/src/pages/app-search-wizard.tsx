@@ -108,7 +108,7 @@ function WebToggle({ checked, onChange, label, testId }: {
         <div className="w-[20px] h-[20px] rounded-full bg-white transition-all"
           style={{ transform: checked ? "translateX(18px)" : "translateX(0)", boxShadow: "0 1px 3px rgba(0,0,0,0.15)" }} />
       </div>
-      <span className="text-[14px] leading-snug flex-1" style={{ color: OBW.text }}>{label}</span>
+      <span className="text-[15px] leading-snug flex-1" style={{ color: OBW.text }}>{label}</span>
     </label>
   );
 }
