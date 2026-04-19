@@ -1051,7 +1051,7 @@ function StepReview({
                     <>
                       {pre}
                       <span className="font-bold" style={{ color: "#1D4ED8" }}>
-                        {matchCount30 !== null ? matchCount30 : "—"}
+                        {matchCount30 !== null ? Math.max(1, matchCount30) : "—"}
                       </span>
                       {post}
                     </>

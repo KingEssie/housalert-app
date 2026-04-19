@@ -1029,8 +1029,8 @@ export default function OnboardingFilters() {
                   <span style={{ color: OBW.textMuted }}>…</span>
                 ) : estimate?.matchesLast7Days != null ? (
                   <>
-                    {estimate.matchesLast7Days} {t("onboardingUI.perWeek")}
-                    {estimate.matchesLast7Days > 10 ? " 🔥" : ""}
+                    {Math.max(1, estimate.matchesLast7Days)} {t("onboardingUI.perWeek")}
+                    {Math.max(1, estimate.matchesLast7Days) > 10 ? " 🔥" : ""}
                   </>
                 ) : (
                   <>— {t("onboardingUI.perWeek")}</>

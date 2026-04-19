@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation, Redirect } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { ChevronDown, ChevronLeft, Check, Search, X } from "lucide-react";
@@ -7,6 +7,13 @@ import { OB, OBW, useWebsiteMode, appendWebsiteParams } from "@/components/onboa
 import { OnboardingFlowLayout } from "@/components/onboarding-flow-layout";
 import MapView from "@/components/map-view";
 import { useTranslation } from "@/i18n";
+import { useQuery } from "@tanstack/react-query";
+import {
+  matchEstimateQueryKey,
+  fetchMatchEstimate,
+  type MatchEstimateResult,
+  type NormalizedFilters,
+} from "@/lib/match-estimate";
 
 type LocationMode = "city" | "districts" | "radius";
 
@@ -37,6 +44,47 @@ export default function OnboardingLocation() {
   const [selectedDistricts, setSelectedDistricts] = useState<string[]>(incomingDistricts);
   const [radiusKm, setRadiusKm] = useState(incomingRadius);
   const [showDistrictPicker, setShowDistrictPicker] = useState(false);
+
+  const [debounced, setDebounced] = useState({ mode, selectedDistricts, radiusKm });
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(
+      () => setDebounced({ mode, selectedDistricts, radiusKm }),
+      600,
+    );
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
+  }, [mode, selectedDistricts, radiusKm]);
+
+  const parsedLat = parseFloat(lat);
+  const parsedLng = parseFloat(lng);
+  const dMode = debounced.mode;
+  const dDistricts = debounced.selectedDistricts;
+  const dRadius = debounced.radiusKm;
+  const estimateFilters: NormalizedFilters = {
+    city,
+    location_mode:
+      dMode === "radius" ? "radius"
+      : dMode === "districts" && dDistricts.length > 0 ? "districts"
+      : "city",
+    latitude: !isNaN(parsedLat) ? parsedLat : undefined,
+    longitude: !isNaN(parsedLng) ? parsedLng : undefined,
+    radius_km: dMode === "radius" ? dRadius : undefined,
+    districts: dMode === "districts" && dDistricts.length > 0 ? dDistricts : undefined,
+    price_min: 0,
+    price_max: 0,
+    bedrooms_min: 0,
+    size_min: 0,
+    send_unclear: true,
+    price_flexible: false,
+  };
+
+  const { data: estimate, isFetching: estimateFetching } = useQuery<MatchEstimateResult>({
+    queryKey: matchEstimateQueryKey(estimateFilters),
+    queryFn: () => fetchMatchEstimate(estimateFilters),
+    enabled: !!city,
+    staleTime: 2 * 60 * 1000,
+  });
 
   if (!city) return <Redirect to="/onboarding/city" />;
 
@@ -332,7 +380,16 @@ export default function OnboardingLocation() {
                 {t("onboarding.location.estimatedMatches")}
               </p>
               <p className="text-[16px] font-semibold leading-snug" style={{ color: OBW.text }}>
-                195 {t("onboardingUI.perWeek")} 🔥
+                {estimateFetching ? (
+                  <span style={{ color: OBW.textMuted }}>…</span>
+                ) : estimate?.matchesLast7Days != null ? (
+                  <>
+                    {Math.max(1, estimate.matchesLast7Days)} {t("onboardingUI.perWeek")}
+                    {Math.max(1, estimate.matchesLast7Days) > 10 ? " 🔥" : ""}
+                  </>
+                ) : (
+                  <>— {t("onboardingUI.perWeek")}</>
+                )}
               </p>
             </div>
             <div className="flex items-center gap-2.5 shrink-0">
