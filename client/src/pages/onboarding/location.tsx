@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
-import { ChevronDown, Check, Search, X } from "lucide-react";
+import { ChevronDown, ChevronLeft, Check, Search, X } from "lucide-react";
 import { cityDistricts } from "../../../../config/market";
-import { OB, OBW, ONBOARDING_TOTAL_STEPS, OBFooter, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
+import { OB, OBW, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 import { OnboardingFlowLayout } from "@/components/onboarding-flow-layout";
 import MapView from "@/components/map-view";
 import { useTranslation } from "@/i18n";
@@ -158,7 +158,7 @@ export default function OnboardingLocation() {
                 <button
                   key={tab.value}
                   onClick={() => setMode(tab.value)}
-                  className="flex-1 py-[7px] text-[13px] font-semibold rounded-full text-center transition-all"
+                  className="flex-1 py-[6px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
                   style={{
                     backgroundColor: isActive ? "rgb(var(--ha-primary))" : "transparent",
                     color: isActive ? "#ffffff" : "#111111",
@@ -304,24 +304,44 @@ export default function OnboardingLocation() {
           )}
         </main>
 
-        <OBFooter
-          onBack={handleBack}
-          onNext={handleNext}
-          nextLabel={t("common.next")}
-          backTestId="button-location-back"
-          nextTestId="button-location-next"
-          websiteMode={w}
-          topContent={
-            <div>
-              <p className="text-[13px] font-medium" style={{ color: OBW.textMuted }}>
+        {/* Inline footer: match count left, back + next buttons right */}
+        <div
+          className="fixed bottom-0 left-0 right-0 z-30"
+          style={{
+            borderTop: `1px solid ${OBW.footerBorder}`,
+            backgroundColor: OBW.footerBg,
+            paddingBottom: "max(8px, env(safe-area-inset-bottom, 8px))",
+          }}
+        >
+          <div className="max-w-[480px] mx-auto px-5 py-3 flex items-center gap-4">
+            <div className="flex-1 min-w-0">
+              <p className="text-[11px] font-semibold tracking-[0.04em] uppercase" style={{ color: OBW.textMuted }}>
                 {t("onboarding.location.estimatedMatches")}
               </p>
-              <p className="text-[15px] font-semibold" style={{ color: OBW.text }}>
+              <p className="text-[16px] font-semibold leading-snug" style={{ color: OBW.text }}>
                 195 {t("onboardingUI.perWeek")} 🔥
               </p>
             </div>
-          }
-        />
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={handleBack}
+                className="w-[44px] h-[44px] rounded-[6px] flex items-center justify-center active:scale-95 transition-transform"
+                style={{ border: `1.5px solid ${OBW.backBtnBorder}`, backgroundColor: OBW.backBtnBg }}
+                data-testid="button-location-back"
+              >
+                <ChevronLeft className="w-[18px] h-[18px]" style={{ color: OBW.backBtnColor }} />
+              </button>
+              <button
+                onClick={handleNext}
+                className="h-[44px] px-6 rounded-[8px] text-[15px] font-semibold text-white flex items-center justify-center active:scale-[0.97] transition-transform"
+                style={{ background: OBW.pink, boxShadow: "0 4px 14px rgba(217,26,104,0.2)" }}
+                data-testid="button-location-next"
+              >
+                {t("common.next")}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

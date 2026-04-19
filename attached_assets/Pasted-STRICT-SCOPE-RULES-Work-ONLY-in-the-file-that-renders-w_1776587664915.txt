@@ -1,0 +1,55 @@
+STRICT SCOPE RULES:
+- Work ONLY in the file that renders website onboarding step 2 (the existing 2/4 location-details screen, likely client/src/pages/onboarding/location.tsx)
+- Website mode only
+- Do NOT touch other onboarding steps
+- Do NOT perform a broad audit
+- Do NOT inspect locale files
+- Do NOT refactor unrelated code
+- Keep token/cost usage minimal
+- If another file is absolutely required, STOP and report it first
+
+TASK:
+Apply the final layout refinements for website onboarding step 2 so it matches the Rentbird 2/4 screen more closely.
+
+IMPORTANT:
+Do NOT change colors or branding.
+Do NOT change logic.
+This is a layout/spacing/footer refinement only.
+
+APPLY THESE EXACT CHANGES:
+
+1. SEGMENTED CONTROL / TABS
+- Reduce the horizontal spacing between the tab labels inside the segmented control
+- The tabs should feel more compact and balanced
+- "Gehele woonplaats" should no longer sit pushed all the way to the far right edge
+- Keep the same 3 tabs and the same functionality
+- Keep the same overall control style, but improve internal spacing and alignment so it feels closer to Rentbird
+
+2. FOOTER BUTTON HEIGHT CONSISTENCY
+- Make the "Volgende" button the same height as the back button
+- Both buttons should align cleanly in height and vertical rhythm
+- Do NOT change button logic
+- Do NOT change button text
+
+3. FOOTER LAYOUT MATCH
+- Refine the bottom footer layout so it matches the Rentbird screen more closely:
+  - cleaner spacing between the left match count block and the right buttons
+  - cleaner alignment of the back button and next button
+  - more balanced proportions across the footer
+- Keep the existing HousAlert colors if needed
+- Focus on layout, spacing, sizing, and alignment only
+
+4. DO NOT CHANGE
+- Do not change the map
+- Do not change the dropdown
+- Do not change the tab labels
+- Do not change routing
+- Do not change functionality
+- Do not touch other files
+
+RETURN ONLY:
+1. exact tab spacing/alignment changes
+2. exact footer/button height changes
+3. exact footer layout refinements
+4. whether any extra file was required
+5. confirmation that no broader audit was done
