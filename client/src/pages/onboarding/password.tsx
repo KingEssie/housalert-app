@@ -302,9 +302,9 @@ export default function OnboardingPassword() {
                 data-testid="match-summary-card"
               >
                 <span className="text-[17px] leading-none shrink-0">🏠</span>
-                <div className="flex items-baseline gap-1.5 shrink-0">
-                  <span className="text-[26px] font-bold leading-none" style={{ color: "#1E40AF" }}>121</span>
-                  <span className="text-[11px] font-medium" style={{ color: "#93C5FD" }}>{t("onboardingUI.perWeek")}</span>
+                <div className="flex items-baseline gap-1 shrink-0">
+                  <span className="text-[30px] font-bold leading-none" style={{ color: "#1E40AF" }}>121</span>
+                  <span className="text-[10px] font-medium" style={{ color: "#93C5FD" }}>{t("onboardingUI.perWeek")}</span>
                 </div>
                 <p className="text-[12px] leading-[1.45] flex-1" style={{ color: "#374151" }}>
                   {t("onboarding.password.web.infoBox").replace("{city}", city || t("onboarding.password.web.yourRegion"))}
@@ -403,15 +403,14 @@ export default function OnboardingPassword() {
             style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}
           >
             <div className="px-5 pt-5 pb-5">
-              {/* FIX 2: Section title — no caps, near-black, weight 600 */}
-              <p className="text-[15px] font-semibold mb-4" style={{ color: "#1F2937" }}>
+              <p className="text-[17px] font-semibold mb-4" style={{ color: "#111111" }}>
                 Maak een gratis account aan
               </p>
 
               <div className="flex flex-col gap-4">
                 {/* Voornaam */}
                 <div>
-                  <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: "#374151" }}>
+                  <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: "#111111" }}>
                     {t("onboarding.name.firstNameLabel")}
                   </label>
                   <input
@@ -428,7 +427,7 @@ export default function OnboardingPassword() {
 
                 {/* Achternaam */}
                 <div>
-                  <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: "#374151" }}>
+                  <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: "#111111" }}>
                     {t("onboarding.name.lastNameLabel")}
                   </label>
                   <input
@@ -444,7 +443,7 @@ export default function OnboardingPassword() {
 
                 {/* E-mail */}
                 <div>
-                  <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: "#374151" }}>
+                  <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: "#111111" }}>
                     {t("onboarding.email.label")}
                   </label>
                   <input
@@ -460,7 +459,7 @@ export default function OnboardingPassword() {
 
                 {/* Wachtwoord */}
                 <div>
-                  <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: "#374151" }}>
+                  <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: "#111111" }}>
                     {t("onboarding.password.label")}
                   </label>
                   <div className="relative">
@@ -509,17 +508,17 @@ export default function OnboardingPassword() {
                 )}
               </button>
 
-              {/* FIX 6: Legal text — narrower, more line-height, lighter */}
-              <p className="text-center text-[11px] leading-[1.65] mt-3 mx-4" style={{ color: "#B0B7C3" }}>
+              {/* Legal text */}
+              <p className="text-center text-[12px] leading-[1.65] mt-3 mx-4" style={{ color: "#9CA3AF" }}>
                 {t("onboarding.password.terms")}
               </p>
 
               {/* Login link */}
-              <p className="text-center text-[13px] mt-2.5" style={{ color: "#6B7280" }}>
+              <p className="text-center text-[13px] mt-2.5" style={{ color: "#4B5563" }}>
                 {t("auth.signup.hasAccount")}{" "}
                 <button
                   onClick={() => navigate("/")}
-                  className="font-semibold hover:underline"
+                  className="font-bold hover:underline"
                   style={{ color: "rgb(var(--ha-primary))" }}
                   data-testid="link-login"
                 >
@@ -536,8 +535,8 @@ export default function OnboardingPassword() {
           >
             <div className="px-5 pt-5 pb-5">
               <div className="flex items-center gap-2 mb-4">
-                <ShieldCheck className="w-[17px] h-[17px]" style={{ color: "rgb(var(--ha-primary))" }} />
-                <p className="text-[15px] font-bold" style={{ color: "#0F172A" }}>
+                <ShieldCheck className="w-[18px] h-[18px]" style={{ color: "rgb(var(--ha-primary))" }} />
+                <p className="text-[18px] font-semibold" style={{ color: "#111111" }}>
                   Zonder risico proberen
                 </p>
               </div>
@@ -561,20 +560,20 @@ export default function OnboardingPassword() {
                 ].map((item, i, arr) => (
                   <div
                     key={i}
-                    className="flex items-start gap-3 py-3"
-                    style={i < arr.length - 1 ? { borderBottom: "1px solid #F1F3F5" } : {}}
+                    className="flex items-start gap-3 py-4"
+                    style={i < arr.length - 1 ? { borderBottom: "1px solid #EBEBEB" } : {}}
                   >
                     <div
-                      className="w-[34px] h-[34px] rounded-[8px] flex items-center justify-center shrink-0 text-[16px]"
-                      style={{ backgroundColor: "rgba(217,26,104,0.07)" }}
+                      className="w-[36px] h-[36px] rounded-[9px] flex items-center justify-center shrink-0 text-[17px]"
+                      style={{ backgroundColor: "rgba(217,26,104,0.08)" }}
                     >
                       {item.icon}
                     </div>
                     <div>
-                      <p className="text-[14px] font-semibold leading-tight" style={{ color: "#0F172A" }}>
+                      <p className="text-[15px] font-bold leading-tight" style={{ color: "#111111" }}>
                         {item.title}
                       </p>
-                      <p className="text-[12.5px] leading-snug mt-0.5" style={{ color: "#64748B" }}>
+                      <p className="text-[13px] leading-snug mt-1" style={{ color: "#4B5563" }}>
                         {item.sub}
                       </p>
                     </div>
