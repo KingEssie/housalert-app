@@ -5,6 +5,7 @@ import { logoSrc } from "@/components/housalert-logo";
 import { useTranslation } from "@/i18n";
 import { useGeocoderSearch } from "@/hooks/use-geocoder-search";
 import { defaultCities } from "../../../config/market";
+import OnboardingModal from "@/components/onboarding-modal";
 
 import slide1 from "@assets/CBEC0B90-CFEB-4531-9B92-189C3D5AE11C_1775582560871.png";
 import slide2 from "@assets/0953D9E3-7D7C-4BFA-A772-61A8256302DE_1775582560871.png";
@@ -32,6 +33,7 @@ export default function OnboardingSlideshow() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
   const [current, setCurrent] = useState(0);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const SLIDES = [
     { image: SLIDE_IMAGES[0], title: t("slideshow.slide1Title"), subtitle: t("slideshow.slide1Subtitle") },
@@ -145,12 +147,18 @@ export default function OnboardingSlideshow() {
 
   function handleStart() {
     if (!selectedCity) return;
-    const params = new URLSearchParams({
-      city: selectedCity.name,
-      lat: String(selectedCity.lat),
-      lng: String(selectedCity.lng),
-    });
-    navigate(`/onboarding/location?${params.toString()}`);
+    setModalOpen(true);
+  }
+
+  if (modalOpen && selectedCity) {
+    return (
+      <OnboardingModal
+        city={selectedCity.name}
+        lat={selectedCity.lat}
+        lng={selectedCity.lng}
+        onClose={() => setModalOpen(false)}
+      />
+    );
   }
 
   return (
