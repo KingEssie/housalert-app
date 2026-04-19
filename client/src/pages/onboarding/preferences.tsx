@@ -107,10 +107,10 @@ export default function OnboardingPreferences() {
       <OBWebHeader step={4} totalSteps={4} onClose={handleClose} />
 
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-[100px] overflow-y-auto">
-        <div className="mb-5">
+        <div className="mb-4">
           <label
-            className="block text-[11px] font-semibold tracking-[0.05em] uppercase mb-1.5"
-            style={{ color: OBW.textMuted }}
+            className="block text-[15px] font-semibold mb-2"
+            style={{ color: OBW.text }}
             htmlFor="input-search-name"
           >
             Naam zoekopdracht
@@ -123,8 +123,8 @@ export default function OnboardingPreferences() {
             className="w-full ha-field-web"
             style={{
               height: 48,
-              backgroundColor: OBW.inputBg,
-              borderColor: OBW.inputBorder,
+              backgroundColor: "#FAFAFA",
+              borderColor: "#E5E7EB",
               color: OBW.text,
             }}
             placeholder={city}
@@ -144,11 +144,11 @@ export default function OnboardingPreferences() {
         </p>
 
         <div
-          className="rounded-[4px] mb-5 flex items-start gap-2"
-          style={{ backgroundColor: "#FFFFFF", border: "1px solid #C4C8CE", padding: "10px 12px" }}
+          className="rounded-[4px] mb-5 flex items-center gap-3"
+          style={{ backgroundColor: "#FFFFFF", border: "1px solid #C4C8CE", padding: "14px 16px" }}
         >
-          <Info className="w-[13px] h-[13px] shrink-0 mt-[2px]" style={{ color: "rgb(var(--ha-primary))" }} />
-          <div className="text-[13px] leading-[1.5]" style={{ color: "rgb(var(--ha-primary))" }}>
+          <Info className="w-[15px] h-[15px] shrink-0" style={{ color: "rgb(var(--ha-primary))" }} />
+          <div className="text-[13px] leading-[1.65]" style={{ color: "rgb(var(--ha-primary))" }}>
             {t("onboarding.filters.specificWishesWarning")}
           </div>
         </div>
@@ -160,7 +160,7 @@ export default function OnboardingPreferences() {
               <button
                 key={opt.value}
                 onClick={() => toggleAmenity(opt.value)}
-                className="w-full flex items-center justify-between py-[14px] text-left transition-colors"
+                className="w-full flex items-center justify-between py-[16px] text-left transition-colors"
                 style={{
                   borderBottom: i < PREFERENCE_OPTIONS.length - 1 ? `1px solid rgba(0,0,0,0.07)` : "none",
                 }}
@@ -192,7 +192,7 @@ export default function OnboardingPreferences() {
         >
           <div
             className="w-[40px] h-[22px] rounded-full p-[2px] transition-colors shrink-0 cursor-pointer"
-            style={{ backgroundColor: sendUnclear ? "rgb(var(--ha-success))" : "#E5E7EB" }}
+            style={{ backgroundColor: sendUnclear ? "rgb(var(--ha-primary))" : "#E5E7EB" }}
           >
             <div
               className="w-[18px] h-[18px] rounded-full bg-white transition-transform shadow-sm"
