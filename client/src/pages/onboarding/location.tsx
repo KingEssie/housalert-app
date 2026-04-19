@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, Redirect } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
-import { ChevronDown, ChevronLeft, Check, Search, X } from "lucide-react";
-import { cityDistricts } from "../../../../config/market";
+import { ChevronDown, ChevronLeft, Check, Search, X, MapPin, Loader2 } from "lucide-react";
+import { cityDistricts, defaultCities } from "../../../../config/market";
+import { useGeocoderSearch } from "@/hooks/use-geocoder-search";
 import { OB, OBW, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 import { OnboardingFlowLayout } from "@/components/onboarding-flow-layout";
 import MapView from "@/components/map-view";
@@ -18,6 +19,7 @@ import {
 type LocationMode = "city" | "districts" | "radius";
 
 const RADIUS_OPTIONS = [2, 5, 10, 15, 25, 50];
+const TOP_CITIES = defaultCities.slice(0, 8);
 
 export default function OnboardingLocation() {
   const { t } = useTranslation();
@@ -44,6 +46,21 @@ export default function OnboardingLocation() {
   const [selectedDistricts, setSelectedDistricts] = useState<string[]>(incomingDistricts);
   const [radiusKm, setRadiusKm] = useState(incomingRadius);
   const [showDistrictPicker, setShowDistrictPicker] = useState(false);
+
+  const [citySearch, setCitySearch] = useState("");
+  const cityGeocoder = useGeocoderSearch({ debounceMs: 300, minChars: 2, limit: 6 });
+
+  const presetMatches = citySearch.trim().length > 0
+    ? TOP_CITIES.filter((c) => c.name.toLowerCase().includes(citySearch.toLowerCase()))
+    : TOP_CITIES;
+
+  function selectCity(name: string, clat: number, clng: number) {
+    const p = new URLSearchParams(searchString);
+    p.set("city", name);
+    p.set("lat", String(clat));
+    p.set("lng", String(clng));
+    navigate(appendWebsiteParams(`/onboarding/location?${p.toString()}`, searchString));
+  }
 
   const [debounced, setDebounced] = useState({ mode, selectedDistricts, radiusKm });
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -86,7 +103,110 @@ export default function OnboardingLocation() {
     staleTime: 2 * 60 * 1000,
   });
 
-  if (!city) return <Redirect to="/" />;
+  if (!city) {
+    return (
+      <div
+        className="min-h-[100dvh] flex flex-col"
+        style={{ background: "#ffffff" }}
+        data-testid="screen-onboarding-location-citypicker"
+      >
+        <header
+          className="sticky top-0 z-20 w-full"
+          style={{ backgroundColor: "#ffffff", borderBottom: `1px solid ${OBW.headerBorder}` }}
+        >
+          <div className="relative max-w-[480px] mx-auto px-4 h-[56px] flex items-center justify-between">
+            <span
+              className="text-[14px] font-bold rounded-[10px] shrink-0 flex items-center px-3.5"
+              style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "#ffffff" }}
+              data-testid="badge-step"
+            >
+              1/4
+            </span>
+            <span
+              className="absolute inset-0 flex items-center justify-center text-[19px] font-bold pointer-events-none"
+              style={{ color: OBW.text }}
+            >
+              {t("onboarding.filters.headerTitle")}
+            </span>
+            <button
+              onClick={() => navigate("/")}
+              className="w-[36px] h-[36px] shrink-0 flex items-center justify-center rounded-full transition-opacity hover:opacity-70 active:opacity-50"
+              style={{ backgroundColor: "#F2F2F2", color: "#444444" }}
+              data-testid="button-close"
+            >
+              <X className="w-[22px] h-[22px]" />
+            </button>
+          </div>
+        </header>
+
+        <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-10 overflow-y-auto">
+          <label className="text-[18px] font-semibold mb-2 block" style={{ color: OBW.textSecondary }}>
+            {t("newSearch.step5.location")}
+          </label>
+
+          <div className="relative mb-4">
+            <input
+              type="text"
+              value={citySearch}
+              onChange={(e) => {
+                setCitySearch(e.target.value);
+                cityGeocoder.search(e.target.value);
+              }}
+              placeholder={t("onboarding.location.searchPlaceholder")}
+              className="w-full ha-field-web focus:ring-0 placeholder:text-[16px] placeholder:text-[#9CA3AF]"
+              style={{ backgroundColor: OBW.inputBg, borderColor: "#CFCFCF", color: OBW.text, paddingRight: "2.5rem" }}
+              autoFocus
+              data-testid="input-city-search"
+            />
+            {cityGeocoder.loading ? (
+              <Loader2 className="absolute right-3.5 top-1/2 -translate-y-1/2 w-[16px] h-[16px] animate-spin" style={{ color: OBW.textSecondary }} />
+            ) : (
+              <Search className="absolute right-3.5 top-1/2 -translate-y-1/2 w-[16px] h-[16px]" style={{ color: OBW.textSecondary }} />
+            )}
+          </div>
+
+          <div data-testid="city-results">
+            {presetMatches.length > 0 && presetMatches.map((c) => (
+              <button
+                key={c.name}
+                onClick={() => selectCity(c.name, c.lat, c.lng)}
+                className="w-full flex items-center gap-2.5 min-h-[56px] text-left transition-colors hover:bg-[#F7F7F7] active:bg-[#F0F1F2]"
+                style={{ paddingTop: "14px", paddingBottom: "14px", borderBottom: "1px solid #EAEAEA" }}
+                data-testid={`city-option-${c.name}`}
+              >
+                <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.pink, opacity: 0.8 }} />
+                <span className="text-[18px] font-semibold" style={{ color: OBW.text }}>{c.name}</span>
+              </button>
+            ))}
+
+            {presetMatches.length === 0 && cityGeocoder.results.length > 0 && cityGeocoder.results.map((r, i) => (
+              <button
+                key={(r as any).placeId || i}
+                onClick={() => selectCity((r as any).city, (r as any).lat ?? 0, (r as any).lng ?? 0)}
+                className="w-full flex items-center gap-2.5 min-h-[56px] text-left transition-colors hover:bg-[#F7F7F7] active:bg-[#F0F1F2]"
+                style={{ paddingTop: "14px", paddingBottom: "14px", borderBottom: "1px solid #EAEAEA" }}
+                data-testid={`city-geocoder-${i}`}
+              >
+                <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.pink, opacity: 0.8 }} />
+                <div className="min-w-0">
+                  <span className="text-[18px] font-semibold block" style={{ color: OBW.text }}>{(r as any).city}</span>
+                  {(r as any).label !== (r as any).city && (
+                    <span className="text-[13px]" style={{ color: OBW.textSecondary }}>{(r as any).label.replace(`${(r as any).city}, `, "")}</span>
+                  )}
+                </div>
+              </button>
+            ))}
+
+            {presetMatches.length === 0 && cityGeocoder.results.length === 0 && !cityGeocoder.loading && citySearch.trim().length >= 3 && (
+              <p className="text-[15px] text-center py-6" style={{ color: OBW.textSecondary }}>
+                {t("onboardingLocation.noResults")}
+              </p>
+            )}
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   function toggleDistrict(d: string) {
     setSelectedDistricts((prev) =>

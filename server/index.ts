@@ -51,7 +51,8 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   const isEmbedRoute =
     req.path === "/onboarding-embed" ||
-    req.path.startsWith("/api/onboarding-drafts");
+    req.path.startsWith("/api/onboarding-drafts") ||
+    req.path.startsWith("/onboarding/");
 
   if (isEmbedRoute) {
     res.removeHeader("X-Frame-Options");
