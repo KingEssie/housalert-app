@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useLocation, Redirect } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
-import { Info, Plus } from "lucide-react";
-import { OBW, OBWebHeader, OBWebFooter, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
+import { Info, Plus, X } from "lucide-react";
+import { OBW, OBWebFooter, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 import { useTranslation } from "@/i18n";
 
 interface SearchFilters {
@@ -123,7 +123,35 @@ export default function OnboardingPreferences() {
       style={{ background: "#ffffff" }}
       data-testid="screen-onboarding-preferences"
     >
-      <OBWebHeader step={4} totalSteps={4} onClose={handleClose} />
+      {/* Header — matches 3/4 exactly: left badge | centered title | right X */}
+      <header
+        className="sticky top-0 z-20 w-full"
+        style={{ backgroundColor: "#ffffff", borderBottom: `1px solid ${OBW.headerBorder}` }}
+      >
+        <div className="relative max-w-[480px] mx-auto px-4 h-[56px] flex items-center justify-between">
+          <span
+            className="text-[14px] font-bold rounded-[10px] shrink-0 flex items-center px-3.5"
+            style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "#ffffff" }}
+            data-testid="badge-step"
+          >
+            4/4
+          </span>
+          <span
+            className="absolute inset-0 flex items-center justify-center text-[19px] font-bold pointer-events-none"
+            style={{ color: OBW.text }}
+          >
+            Zoekopdracht maken
+          </span>
+          <button
+            onClick={handleClose}
+            className="w-[36px] h-[36px] shrink-0 flex items-center justify-center rounded-full transition-opacity hover:opacity-70 active:opacity-50"
+            style={{ backgroundColor: "#F2F2F2", color: "#444444" }}
+            data-testid="button-preferences-close"
+          >
+            <X className="w-[22px] h-[22px]" />
+          </button>
+        </div>
+      </header>
 
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[100px] overflow-y-auto">
 
@@ -143,38 +171,37 @@ export default function OnboardingPreferences() {
             onChange={(e) => setSearchName(e.target.value)}
             className="w-full ha-field-web"
             style={{
-              backgroundColor: "#FAFAFA",
+              backgroundColor: "#ffffff",
               borderColor: OBW.inputBorder,
-              color: OBW.text,
+              borderRadius: 6,
+              color: "#111111",
             }}
             placeholder={city}
             data-testid="input-search-name"
           />
         </div>
 
-        <div className="h-px mb-7" style={{ backgroundColor: OBW.divider }} />
-
         {/* Woningen geschikt voor */}
         <section className="mb-7">
-          <label className={sLabel} style={{ color: OBW.text }}>
+          <label className={sLabel} style={{ color: "#111111" }}>
             Woningen geschikt voor
           </label>
-          <div className="flex flex-wrap gap-2" data-testid="suitable-for-chips">
+          <div className="flex gap-1.5" data-testid="suitable-for-chips">
             {SUITABLE_FOR_OPTIONS.map((opt) => {
               const active = suitableFor.includes(opt.value);
               return (
                 <button
                   key={opt.value}
                   onClick={() => toggleSuitableFor(opt.value)}
-                  className="h-[38px] px-4 rounded-full text-[14px] font-medium border transition-all active:scale-[0.96] flex items-center gap-[5px]"
+                  className="h-[36px] px-3 rounded-full text-[13px] font-medium border transition-all active:scale-[0.96] flex items-center gap-[4px] shrink-0"
                   style={{
                     backgroundColor: active ? "rgb(var(--ha-primary))" : "#F9FAFB",
                     borderColor: active ? "rgb(var(--ha-primary))" : "#D1D5DB",
-                    color: active ? "#fff" : "#111111",
+                    color: active ? "#ffffff" : "#111111",
                   }}
                   data-testid={`chip-suitable-${opt.value}`}
                 >
-                  {!active && <Plus className="w-[12px] h-[12px] shrink-0" style={{ color: "#6B7280" }} />}
+                  {!active && <Plus className="w-[11px] h-[11px] shrink-0" style={{ color: "#6B7280" }} />}
                   {opt.label}
                 </button>
               );
@@ -183,46 +210,40 @@ export default function OnboardingPreferences() {
 
           {/* Grey info box */}
           <div
-            className="mt-4 rounded-[6px] flex items-start gap-2.5"
+            className="mt-4 rounded-[8px] flex items-start gap-2.5"
             style={{
-              backgroundColor: "#F3F4F6",
-              border: "1px solid #E5E7EB",
-              padding: "12px 14px",
+              backgroundColor: "#F7F8F9",
+              padding: "11px 13px",
             }}
           >
-            <Info className="w-[14px] h-[14px] shrink-0 mt-[2px]" style={{ color: "#6B7280" }} />
-            <p className="text-[13px] leading-[1.55]" style={{ color: "#4B5563" }}>
+            <Info className="w-[13px] h-[13px] shrink-0 mt-[2px]" style={{ color: "#9CA3AF" }} />
+            <p className="text-[12.5px] leading-[1.55]" style={{ color: "#374151" }}>
               Selecteer welk type bewoner het beste bij de woning past. Laat leeg als dit niet uitmaakt.
             </p>
           </div>
         </section>
 
-        <div className="h-px mb-7" style={{ backgroundColor: OBW.divider }} />
-
         {/* Zoekfilter */}
         <section className="mb-7">
-          <label className={sLabel} style={{ color: OBW.text }}>
+          <label className={sLabel} style={{ color: "#111111" }}>
             Zoekfilter
           </label>
           <div className="flex flex-col" data-testid="search-filter-rows">
-            {ZOEKFILTER_ROWS.map((row, i) => {
+            {ZOEKFILTER_ROWS.map((row) => {
               const checked = searchFilters[row.key];
               return (
                 <button
                   key={row.key}
                   onClick={() => updateFilter(row.key, !checked)}
-                  className="w-full flex items-start justify-between gap-3 py-[14px] text-left transition-colors"
-                  style={{
-                    borderBottom: i < ZOEKFILTER_ROWS.length - 1 ? `1px solid ${OBW.divider}` : "none",
-                  }}
+                  className="w-full flex items-start justify-between gap-3 py-[11px] text-left transition-colors"
                   data-testid={`toggle-filter-${row.key}`}
                 >
-                  <span className="text-[14px] leading-[1.5] flex-1" style={{ color: OBW.text }}>
+                  <span className="text-[14px] leading-[1.45] flex-1" style={{ color: "#111111" }}>
                     {row.label}
                     {row.info && (
                       <Info
                         className="inline-block ml-1 relative"
-                        style={{ width: 13, height: 13, color: "#9CA3AF", top: -1, verticalAlign: "middle" }}
+                        style={{ width: 12, height: 12, color: "#9CA3AF", top: -1, verticalAlign: "middle" }}
                       />
                     )}
                   </span>
@@ -244,19 +265,17 @@ export default function OnboardingPreferences() {
           </div>
         </section>
 
-        <div className="h-px mb-7" style={{ backgroundColor: OBW.divider }} />
-
         {/* Instellingen opslaan */}
         <section className="mb-2">
-          <label className={sLabel} style={{ color: OBW.text }}>
+          <label className={sLabel} style={{ color: "#111111" }}>
             Instellingen opslaan
           </label>
           <button
             onClick={() => setApplyToAllProfiles(!applyToAllProfiles)}
-            className="w-full flex items-start justify-between gap-3 py-[14px] text-left transition-colors"
+            className="w-full flex items-start justify-between gap-3 py-[11px] text-left transition-colors"
             data-testid="toggle-apply-to-all"
           >
-            <span className="text-[14px] leading-[1.5] flex-1" style={{ color: OBW.text }}>
+            <span className="text-[14px] leading-[1.45] flex-1" style={{ color: "#111111" }}>
               Bovenstaande zoekinstellingen toepassen op alle zoekprofielen
             </span>
             <div

@@ -1,0 +1,96 @@
+STRICT SCOPE RULES:
+- Work ONLY in the file that renders website onboarding step 4
+- Website mode only
+- Do NOT touch step 1, step 2, or step 3
+- Do NOT inspect locale files
+- Do NOT perform a broad audit
+- Do NOT refactor unrelated code
+- Keep token/cost usage minimal
+- If another file is absolutely required, STOP and report it first
+
+TASK:
+Do a final visual correction pass on website onboarding step 4 so it matches the Rentbird reference much more closely.
+
+IMPORTANT:
+- Keep HousAlert brand colors where applicable
+- This is NOT a logic task
+- This is a strict visual/layout correction task
+- Be critical and precise
+
+APPLY THESE EXACT CHANGES:
+
+1. TEXT COLOR
+- Make all primary onboarding text truly dark / near-black
+- Do NOT leave important text in dark grey
+- Apply this to:
+  - section headings
+  - row text
+  - chip text
+  - input value text
+  - helper box text where appropriate
+
+2. “WONINGEN GESCHIKT VOOR” CHIPS
+- Make the 3 chips fit on a single row:
+  - Studenten
+  - Woningdelers
+  - Huisdieren
+- Reduce chip horizontal padding
+- Reduce gap between chips
+- Tighten text sizing/spacing if needed
+- Keep them visually balanced and aligned on one line
+
+3. REMOVE EXCESS DIVIDER LINES
+- Remove the visible horizontal divider lines that are currently breaking the screen into too many sections
+- Match the Rentbird feel more closely:
+  - rely more on spacing
+  - less on lines
+- Especially remove/minimize divider lines in the Zoekfilter area
+
+4. GREY HELPER BOX
+- Change the helper box styling to visually match the Rentbird grey box more closely
+- Fix:
+  - grey background tone
+  - text color
+  - padding
+  - border radius
+  - icon alignment
+- The helper box should feel softer, cleaner, and closer to the screenshot
+
+5. INPUT FIELD
+- Reduce border radius so the input is less rounded
+- Change the input background to white
+- Keep border subtle and clean
+- The field should visually feel like the Rentbird input, not a soft rounded card
+
+6. HEADER
+- Rebuild the header structure so it exactly follows the same system as the earlier steps:
+  - left: step badge
+  - center: title “Zoekopdracht maken”
+  - right: close/X button
+- Make spacing and alignment match steps 2/4 and 3/4
+- This screen should no longer have a different-feeling header
+
+7. ZOEKFILTER ROW SPACING
+- Reduce vertical spacing between the search filter items
+- Make rows more compact and aligned like Rentbird
+- Keep toggles neatly aligned on the right
+- Use spacing, not divider lines, to create structure
+
+8. DO NOT CHANGE
+- Do not change logic
+- Do not change state behavior
+- Do not change step order
+- Do not touch translation files
+- Do not touch other onboarding steps
+- Do not touch other files unless absolutely required
+
+RETURN ONLY:
+1. exact text color changes
+2. exact chip adjustments to fit one row
+3. exact divider-line removals/minimizations
+4. exact grey helper-box changes
+5. exact input-field changes
+6. exact header reconstruction details
+7. exact search-filter row spacing changes
+8. whether any extra file was required
+9. confirmation that no broader audit or translation work was done
