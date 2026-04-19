@@ -1,0 +1,65 @@
+STRICT SCOPE RULES:
+- Work ONLY in: client/src/pages/onboarding/city.tsx
+- Website mode only (useWebsiteMode === true)
+- Do NOT touch other onboarding steps
+- Do NOT inspect locale files
+- Do NOT perform a broad audit
+- Do NOT refactor unrelated code
+- Apply visible UI changes only where needed
+- Keep token/cost usage minimal
+
+Task:
+The previous city step update was not visually strong enough.
+Make the website onboarding city step visibly match Rentbird more closely.
+
+Problems still visible:
+1. The screen still shows 1/3, but this should visually behave as 1/4
+2. The header still does not feel like a strong onboarding setup screen
+3. The city list still does not feel tapable enough
+4. The CTA/footer still visually suggests that tapping a city is not enough
+
+Apply these exact changes:
+
+1. STEP INDICATOR
+- Change the visible step badge on this website-mode screen from 1/3 to 1/4
+- This is a visual flow adjustment for website mode only
+
+2. STRONGER ONBOARDING HEADER FEEL
+- Keep existing logo/header structure if needed, but make the step feel more like an onboarding setup screen
+- Improve spacing and hierarchy so the user clearly feels: “I am starting a 4-step setup flow”
+
+3. CITY LIST ROWS — MAKE THEM VISIBLY MORE TAPABLE
+- Increase city row vertical presence further
+- Make rows feel like action rows, not static list items
+- Increase icon size if needed
+- Increase city name size/weight slightly if needed
+- Ensure full row tap area is obvious
+- Add clearer active/tap feedback
+
+4. INPUT/LIST HIERARCHY
+- Strengthen the visual hierarchy between:
+  - title
+  - subtitle
+  - “Locatie” label
+  - search field
+  - city list
+- Use spacing and sizing so the structure feels closer to Rentbird
+
+5. CTA / FOOTER VISUAL CLARITY
+- Since tapping a city now instantly continues, reduce the misleading feeling that the user must press “Volgende”
+- Keep the footer button if necessary, but make the primary interaction clearly the city row tap
+- If the safest solution is to visually de-emphasize the button until a city is selected, do that
+
+6. DO NOT CHANGE
+- Do not touch routing architecture
+- Do not touch other onboarding steps
+- Do not touch geocoder logic
+- Do not inspect other files
+
+Return ONLY:
+1. exact visible UI changes made
+2. exact step badge change
+3. exact row sizing/padding/icon/text changes
+4. exact footer/CTA change
+5. confirmation that tap still instantly navigates
+6. confirmation that no other files were touched
