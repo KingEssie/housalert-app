@@ -272,7 +272,8 @@ export default function OnboardingPassword() {
             data-testid="search-summary-card"
           >
             <div className="px-5 pt-5 pb-5">
-              <p className="text-[13px] font-bold uppercase tracking-[0.06em] mb-3" style={{ color: "#9CA3AF" }}>
+              {/* FIX 2: Section title — no caps, near-black, weight 600 */}
+              <p className="text-[15px] font-semibold mb-3" style={{ color: "#1F2937" }}>
                 Jouw zoekopdracht
               </p>
 
@@ -295,21 +296,21 @@ export default function OnboardingPassword() {
                 </div>
               </div>
 
-              {/* Missed-matches block */}
+              {/* FIX 3: Missed-matches block — less pink saturation, bigger number, lighter "per week" */}
               <div
-                className="rounded-[10px] flex items-start gap-3 px-4 py-3.5"
-                style={{ backgroundColor: "rgba(217,26,104,0.06)", border: "1px solid rgba(217,26,104,0.12)" }}
+                className="rounded-[10px] flex items-start gap-3.5 px-4 py-4"
+                style={{ backgroundColor: "rgba(217,26,104,0.04)", border: "1px solid rgba(217,26,104,0.10)" }}
                 data-testid="match-summary-card"
               >
                 <div className="shrink-0 mt-0.5">
-                  <span className="text-[22px] leading-none">🔥</span>
+                  <span className="text-[20px] leading-none">🔥</span>
                 </div>
                 <div>
-                  <div className="flex items-baseline gap-1.5 mb-0.5">
-                    <span className="text-[22px] font-bold leading-none" style={{ color: "rgb(var(--ha-primary))" }}>121</span>
-                    <span className="text-[13px] font-semibold" style={{ color: "rgb(var(--ha-primary))" }}>{t("onboardingUI.perWeek")}</span>
+                  <div className="flex items-baseline gap-1.5 mb-1">
+                    <span className="text-[28px] font-bold leading-none" style={{ color: "rgb(var(--ha-primary))" }}>121</span>
+                    <span className="text-[12px] font-medium" style={{ color: "#9CA3AF" }}>{t("onboardingUI.perWeek")}</span>
                   </div>
-                  <p className="text-[12.5px] leading-[1.5]" style={{ color: "#374151" }}>
+                  <p className="text-[12.5px] leading-[1.55]" style={{ color: "#4B5563" }}>
                     {t("onboarding.password.web.infoBox").replace("{city}", city || t("onboarding.password.web.yourRegion"))}
                   </p>
                 </div>
@@ -323,7 +324,8 @@ export default function OnboardingPassword() {
             style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}
           >
             <div className="px-5 pt-5 pb-5">
-              <p className="text-[13px] font-bold uppercase tracking-[0.06em] mb-4" style={{ color: "#9CA3AF" }}>
+              {/* FIX 2: Section title — no caps, near-black, weight 600 */}
+              <p className="text-[15px] font-semibold mb-4" style={{ color: "#1F2937" }}>
                 Maak een gratis account aan
               </p>
 
@@ -339,7 +341,7 @@ export default function OnboardingPassword() {
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="Max"
                     className="w-full ha-field-web"
-                    style={{ backgroundColor: "#ffffff", borderColor: "#D1D5DB", color: "#111111" }}
+                    style={{ backgroundColor: "#ffffff", borderColor: "#D1D5DB", color: "#111111", borderRadius: 6 }}
                     autoFocus
                     data-testid="input-first-name"
                   />
@@ -356,7 +358,7 @@ export default function OnboardingPassword() {
                     onChange={(e) => setLastName(e.target.value)}
                     placeholder="Müller"
                     className="w-full ha-field-web"
-                    style={{ backgroundColor: "#ffffff", borderColor: "#D1D5DB", color: "#111111" }}
+                    style={{ backgroundColor: "#ffffff", borderColor: "#D1D5DB", color: "#111111", borderRadius: 6 }}
                     data-testid="input-last-name"
                   />
                 </div>
@@ -372,7 +374,7 @@ export default function OnboardingPassword() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder={t("onboarding.email.placeholder")}
                     className="w-full ha-field-web"
-                    style={{ backgroundColor: "#ffffff", borderColor: "#D1D5DB", color: "#111111" }}
+                    style={{ backgroundColor: "#ffffff", borderColor: "#D1D5DB", color: "#111111", borderRadius: 6 }}
                     data-testid="input-email"
                   />
                 </div>
@@ -389,7 +391,7 @@ export default function OnboardingPassword() {
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder={t("onboarding.password.web.passwordPlaceholder")}
                       className="w-full ha-field-web"
-                      style={{ backgroundColor: "#ffffff", borderColor: "#D1D5DB", color: "#111111", paddingRight: "44px" }}
+                      style={{ backgroundColor: "#ffffff", borderColor: "#D1D5DB", color: "#111111", paddingRight: "44px", borderRadius: 6 }}
                       autoComplete="new-password"
                       data-testid="input-password"
                     />
@@ -400,21 +402,32 @@ export default function OnboardingPassword() {
                       style={{ color: "#9CA3AF" }}
                       data-testid="button-toggle-password"
                     >
-                      {showPassword ? <EyeOff className="w-[16px] h-[16px]" /> : <Eye className="w-[16px] h-[16px]" />}
+                      {showPassword ? <EyeOff className="w-[17px] h-[17px]" /> : <Eye className="w-[17px] h-[17px]" />}
                     </button>
                   </div>
                   <PasswordRules password={password} />
                 </div>
               </div>
 
-              {/* Primary CTA */}
+              {/* FIX 7: Back link — moved above CTA, not below trust block */}
+              <button
+                onClick={handleBack}
+                className="flex items-center gap-1 mt-5 mb-3 text-[13px] transition-opacity hover:opacity-70"
+                style={{ color: "#9CA3AF" }}
+                data-testid="button-password-back"
+              >
+                <ChevronLeft className="w-[14px] h-[14px]" />
+                Terug naar vorige stap
+              </button>
+
+              {/* FIX 5: Primary CTA — full brand color, h-[52px], font-semibold, strong shadow */}
               <button
                 onClick={handleCreateAccount}
                 disabled={!canSubmit}
-                className="w-full mt-6 h-[54px] rounded-[10px] text-[16px] font-bold text-white transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2"
+                className="w-full h-[52px] rounded-[8px] text-[16px] font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2"
                 style={{
                   background: "rgb(var(--ha-primary))",
-                  boxShadow: canSubmit ? "0 4px 20px rgba(217,26,104,0.28)" : "none",
+                  boxShadow: canSubmit ? "0 6px 22px rgba(217,26,104,0.32)" : "none",
                 }}
                 data-testid="button-create-account"
               >
@@ -428,8 +441,8 @@ export default function OnboardingPassword() {
                 )}
               </button>
 
-              {/* Legal text */}
-              <p className="text-center text-[11px] leading-relaxed mt-3" style={{ color: "#9CA3AF" }}>
+              {/* FIX 6: Legal text — narrower, more line-height, lighter */}
+              <p className="text-center text-[11px] leading-[1.65] mt-3 mx-4" style={{ color: "#B0B7C3" }}>
                 {t("onboarding.password.terms")}
               </p>
 
@@ -448,38 +461,27 @@ export default function OnboardingPassword() {
             </div>
           </div>
 
-          {/* Back link */}
-          <button
-            onClick={handleBack}
-            className="flex items-center justify-center gap-1 w-full py-2 mb-4 text-[13px] transition-opacity hover:opacity-70"
-            style={{ color: "#9CA3AF" }}
-            data-testid="button-password-back"
-          >
-            <ChevronLeft className="w-[14px] h-[14px]" />
-            Terug naar vorige stap
-          </button>
-
-          {/* Trust block */}
+          {/* FIX 8: Trust block — more padding, bigger spacing, prominent title, larger icon */}
           <div
             className="bg-white rounded-[12px] overflow-hidden"
             style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}
           >
-            <div className="px-5 py-4">
-              <div className="flex items-center justify-center gap-2 mb-3">
-                <ShieldCheck className="w-[16px] h-[16px]" style={{ color: "rgb(var(--ha-primary))" }} />
-                <p className="text-[13px] font-bold" style={{ color: "#111111" }}>
+            <div className="px-6 py-5">
+              <div className="flex items-center justify-center gap-2.5 mb-4">
+                <ShieldCheck className="w-[18px] h-[18px]" style={{ color: "rgb(var(--ha-primary))" }} />
+                <p className="text-[16px] font-bold" style={{ color: "#111111" }}>
                   Zonder risico proberen
                 </p>
               </div>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-3">
                 {[
                   "Gratis account — geen creditcard nodig",
                   "Direct actieve zoekopdracht na aanmaken",
                   "Meldingen zodra er een woning match is",
                 ].map((text, i) => (
-                  <div key={i} className="flex items-center gap-2.5">
-                    <span className="text-[14px] font-bold shrink-0" style={{ color: "rgb(var(--ha-primary))" }}>✓</span>
-                    <span className="text-[13px]" style={{ color: "#374151" }}>{text}</span>
+                  <div key={i} className="flex items-center gap-3">
+                    <span className="text-[15px] font-bold shrink-0" style={{ color: "rgb(var(--ha-primary))" }}>✓</span>
+                    <span className="text-[13.5px]" style={{ color: "#374151" }}>{text}</span>
                   </div>
                 ))}
               </div>
