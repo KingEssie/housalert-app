@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Redirect } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { useTranslation } from "@/i18n";
 import { useAuth } from "@/lib/auth";
@@ -376,6 +376,8 @@ export default function OnboardingFilters() {
     }
     return INITIAL_FILTERS;
   });
+
+  if (!city) return <Redirect to="/onboarding/intro" />;
 
   function update(partial: Partial<FilterData>) {
     setF((prev) => ({ ...prev, ...partial }));

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Redirect } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { useTranslation } from "@/i18n";
 import { User } from "lucide-react";
@@ -18,6 +18,9 @@ export default function OnboardingName() {
 
   const [firstName, setFirstName] = useState(incomingParams.get("firstName") || "");
   const [lastName, setLastName] = useState(incomingParams.get("lastName") || "");
+
+  const city = incomingParams.get("city") || "";
+  if (!city) return <Redirect to="/onboarding/intro" />;
 
   function forwardParams() {
     const out = new URLSearchParams(searchString);

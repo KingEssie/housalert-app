@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Redirect } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { ChevronDown, ChevronLeft, Check, Search, X } from "lucide-react";
 import { cityDistricts } from "../../../../config/market";
@@ -37,6 +37,8 @@ export default function OnboardingLocation() {
   const [selectedDistricts, setSelectedDistricts] = useState<string[]>(incomingDistricts);
   const [radiusKm, setRadiusKm] = useState(incomingRadius);
   const [showDistrictPicker, setShowDistrictPicker] = useState(false);
+
+  if (!city) return <Redirect to="/onboarding/intro" />;
 
   function toggleDistrict(d: string) {
     setSelectedDistricts((prev) =>

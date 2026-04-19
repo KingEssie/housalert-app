@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Redirect } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { useTranslation } from "@/i18n";
 import { Mail, ChevronLeft } from "lucide-react";
@@ -20,6 +20,10 @@ export default function OnboardingEmail() {
   const incomingParams = new URLSearchParams(searchString);
 
   const [email, setEmail] = useState(incomingParams.get("email") || "");
+
+  const city = incomingParams.get("city") || "";
+  const firstName = incomingParams.get("firstName") || "";
+  if (!city || !firstName) return <Redirect to="/onboarding/intro" />;
 
   function forwardParams() {
     const out = new URLSearchParams(searchString);

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Redirect } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { Check } from "lucide-react";
 import { OBW, OBWebHeader, OBWebFooter, OBInfoBox, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
@@ -27,6 +27,9 @@ export default function OnboardingPreferences() {
   const [sendUnclear, setSendUnclear] = useState(() => {
     return params.get("sendUnclear") !== "false";
   });
+
+  const city = params.get("city") || "";
+  if (!city) return <Redirect to="/onboarding/intro" />;
 
   function toggleAmenity(a: string) {
     setAmenities((prev) =>

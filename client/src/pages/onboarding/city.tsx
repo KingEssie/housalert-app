@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
-import { MapPin, Loader2, X } from "lucide-react";
+import { MapPin, Loader2, X, Search } from "lucide-react";
 import { defaultCities } from "../../../../config/market";
 import { OBW, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 import { OnboardingFlowLayout } from "@/components/onboarding-flow-layout";

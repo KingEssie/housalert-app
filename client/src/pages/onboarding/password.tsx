@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Redirect } from "wouter";
 import { useHashSearch } from "@/lib/hash-search";
 import { useTranslation } from "@/i18n";
 import { HousAlertLogo } from "@/components/housalert-logo";
@@ -45,6 +45,8 @@ export default function OnboardingPassword() {
   const [showReferral, setShowReferral] = useState(!!storedRef);
   const [loading, setLoading] = useState(false);
   const submittingRef = useRef(false);
+
+  if (!city || !params.get("email")) return <Redirect to="/onboarding/intro" />;
 
   async function saveSearchProfile(userId: string) {
     const spMinPrice = parseInt(params.get("minPrice") || "") || 0;
