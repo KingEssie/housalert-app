@@ -89,7 +89,7 @@ export default function SettingsPage() {
     <div className="min-h-screen" style={{ backgroundColor: "#eaeaeb" }}>
       <AppHeader
         title={t("settings.title")}
-        onBack={() => navigate("/dashboard?tab=profiel")}
+        onBack={() => navigate("/dashboard?tab=profile")}
         trailing={logoutIcon}
       />
 

@@ -230,7 +230,7 @@ export function SubscriptionCancelledPage() {
           </div>
 
           <button
-            onClick={() => navigate("/dashboard?tab=profiel&sub=account")}
+            onClick={() => navigate("/dashboard?tab=profile&sub=account")}
             className="w-full h-[48px] bg-ha-primary hover:bg-ha-primary-hover text-white rounded-[6px] font-semibold text-[15px] transition-colors"
             data-testid="button-back-to-account"
           >

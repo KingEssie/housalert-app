@@ -76,7 +76,7 @@ export default function ProfileEditPage() {
       }
 
       toast({ title: t("profileEdit.saved") });
-      navigate("/dashboard?tab=profiel");
+      navigate("/dashboard?tab=profile");
     } catch (err: any) {
       toast({ title: t("common.error"), description: err.message || t("profileEdit.saveFailed"), variant: "destructive" });
     } finally {
@@ -91,7 +91,7 @@ export default function ProfileEditPage() {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
-      <AppHeader title={config.question} onBack={() => navigate("/dashboard?tab=profiel")} />
+      <AppHeader title={config.question} onBack={() => navigate("/dashboard?tab=profile")} />
 
       <div className="flex-1 max-w-xl mx-auto px-5 w-full">
         {loading ? (

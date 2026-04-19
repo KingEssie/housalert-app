@@ -85,11 +85,32 @@ export function useWebsiteMode(): boolean {
   return false;
 }
 
+export function usePopupMode(): boolean {
+  const searchString = useHashSearch();
+  const params = new URLSearchParams(searchString);
+  if (params.get("popup") === "1") return true;
+  try {
+    const loc = new URLSearchParams(window.location.search);
+    if (loc.get("popup") === "1") return true;
+  } catch {}
+  return false;
+}
+
+export function closeOnboarding(isPopup: boolean, navigate: (to: string) => void) {
+  if (isPopup) {
+    try { window.close(); } catch {}
+    navigate("/");
+  } else {
+    navigate("/");
+  }
+}
+
 export function getWebsiteParams(searchString: string): string {
   const params = new URLSearchParams(searchString);
   const parts: string[] = [];
   if (params.get("source")) parts.push(`source=${encodeURIComponent(params.get("source")!)}`);
   if (params.get("theme")) parts.push(`theme=${encodeURIComponent(params.get("theme")!)}`);
+  if (params.get("popup")) parts.push(`popup=${encodeURIComponent(params.get("popup")!)}`);
   return parts.join("&");
 }
 

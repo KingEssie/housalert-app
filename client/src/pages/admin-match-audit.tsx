@@ -125,7 +125,7 @@ export default function AdminMatchAudit() {
   if (error) {
     return (
       <div className="min-h-screen bg-[#eaeaeb]" data-testid="page-admin-audit">
-        <AppHeader title="Match Audit" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
+        <AppHeader title="Match Audit" onBack={() => navigate("/dashboard?tab=profile&sub=account")} />
         <div className="p-4 pt-6 text-center">
           <AlertTriangle className="w-12 h-12 text-ha-danger mx-auto mb-3" />
           <p className="text-[15px] text-[#334855]">{error}</p>
@@ -141,7 +141,7 @@ export default function AdminMatchAudit() {
 
   return (
     <div className="min-h-screen bg-[#eaeaeb]" data-testid="page-admin-audit">
-      <AppHeader title="Match Audit" onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
+      <AppHeader title="Match Audit" onBack={() => navigate("/dashboard?tab=profile&sub=account")} />
 
       <div className="max-w-xl mx-auto px-4 pb-32 space-y-5">
         <div className="bg-[#111111] rounded-2xl p-5 text-white" data-testid="card-account-info">

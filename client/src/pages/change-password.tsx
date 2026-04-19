@@ -49,7 +49,7 @@ export default function ChangePasswordPage() {
   if (success) {
     return (
       <div className="min-h-screen bg-[#eaeaeb]" data-testid="page-password-success">
-        <AppHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
+        <AppHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profile")} />
         <div className="max-w-xl mx-auto p-4 pb-8">
           <div className="bg-white rounded-[12px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-6 text-center">
             <div className="flex items-center justify-center mb-5">
@@ -64,7 +64,7 @@ export default function ChangePasswordPage() {
               {t("changePassword.successDesc")}
             </p>
             <button
-              onClick={() => navigate("/dashboard?tab=profiel")}
+              onClick={() => navigate("/dashboard?tab=profile")}
               className="w-full h-[52px] bg-ha-primary text-white rounded-[10px] font-semibold text-[15px] transition-colors hover:bg-ha-primary-hover"
               data-testid="button-back-to-account"
             >
@@ -78,7 +78,7 @@ export default function ChangePasswordPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#eaeaeb]" data-testid="page-change-password">
-      <AppHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
+      <AppHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profile")} />
 
       <div className="flex-1 max-w-xl mx-auto w-full px-4 pt-5 pb-8">
 

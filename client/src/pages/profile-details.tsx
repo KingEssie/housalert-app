@@ -105,7 +105,7 @@ export default function ProfileDetailsPage() {
       queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
       queryClient.invalidateQueries({ queryKey: ["/api/notifications/settings"] });
       toast({ title: t("profileEdit.saved") });
-      navigate("/dashboard?tab=profiel");
+      navigate("/dashboard?tab=profile");
     } catch (err: any) {
       toast({ title: t("common.error"), description: err.message, variant: "destructive" });
     } finally {
@@ -129,7 +129,7 @@ export default function ProfileDetailsPage() {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
-      <AppHeader title={t("profileDetails.title")} onBack={() => navigate("/dashboard?tab=profiel")} />
+      <AppHeader title={t("profileDetails.title")} onBack={() => navigate("/dashboard?tab=profile")} />
 
       <div className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-4">
         {loading ? (

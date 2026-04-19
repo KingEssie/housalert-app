@@ -94,7 +94,7 @@ export default function PreferencesPage() {
 
   return (
     <div className="min-h-screen bg-[#eaeaeb]">
-      <AppHeader title={t("settings.preferences")} onBack={() => navigate("/dashboard?tab=profiel")} />
+      <AppHeader title={t("settings.preferences")} onBack={() => navigate("/dashboard?tab=profile")} />
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
 

@@ -67,8 +67,8 @@ import { BuddyDisconnectSheet } from "@/components/ui/buddy-disconnect-sheet";
 
 const MAX_PROFILES = 4;
 
-type TabKey = "home" | "matches" | "profiel" | "favorieten";
-type MatchesTopTab = "matches" | "gereageerd";
+type TabKey = "home" | "matches" | "profile" | "favorites";
+type MatchesTopTab = "matches" | "applied";
 
 const MATCH_VIEWED_KEY = "housalert_match_viewed";
 const MATCH_APPLIED_KEY = "housalert_match_applied";
@@ -97,10 +97,10 @@ function markViewed(listingId: string) {
   }
 }
 
-function getMatchTab(match: ApiMatch): "gereageerd" | "bekeken" | "nieuw" {
-  if (match.canonical_applied || safeGetSet(MATCH_APPLIED_KEY).has(match.listing_id)) return "gereageerd";
-  if (match.canonical_viewed || safeGetSet(MATCH_VIEWED_KEY).has(match.listing_id)) return "bekeken";
-  return "nieuw";
+function getMatchTab(match: ApiMatch): "applied" | "viewed" | "new" {
+  if (match.canonical_applied || safeGetSet(MATCH_APPLIED_KEY).has(match.listing_id)) return "applied";
+  if (match.canonical_viewed || safeGetSet(MATCH_VIEWED_KEY).has(match.listing_id)) return "viewed";
+  return "new";
 }
 
 function RecentlyViewedSection({ accessToken }: { accessToken: string | undefined }) {
@@ -116,7 +116,7 @@ function RecentlyViewedSection({ accessToken }: { accessToken: string | undefine
   });
 
   const viewedMatches = (apiMatchesQuery.data?.matches ?? [])
-    .filter(m => m.title && m.url && m.listing_id && getMatchTab(m) === "bekeken")
+    .filter(m => m.title && m.url && m.listing_id && getMatchTab(m) === "viewed")
     .slice(0, 10);
 
   if (apiMatchesQuery.isLoading || viewedMatches.length === 0) return null;
@@ -731,7 +731,7 @@ function ProfileTipsCompletionCard({ navigate }: { navigate: (path: string) => v
   );
 }
 
-function ZoekopdrachtenSection({ profiles, navigate, buddyMode }: { profiles: SearchProfile[]; navigate: (path: string) => void; buddyMode?: boolean }) {
+function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: SearchProfile[]; navigate: (path: string) => void; buddyMode?: boolean }) {
   const { t, locale } = useTranslation();
   const { toast } = useToast();
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
@@ -753,13 +753,13 @@ function ZoekopdrachtenSection({ profiles, navigate, buddyMode }: { profiles: Se
 
   return (
     <div
-      data-testid="section-zoekopdrachten"
+      data-testid="section-search-profiles"
       className="bg-white rounded-[12px] p-5"
       style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}
     >
       <div className="flex items-center gap-2.5 mb-1.5">
         <Search className="w-[20px] h-[20px] text-ha-primary flex-shrink-0" />
-        <h2 className="text-[21px] font-semibold text-[#111111] flex-1" data-testid="text-zoekopdrachten-title">
+        <h2 className="text-[21px] font-semibold text-[#111111] flex-1" data-testid="text-search-profiles-title">
           {t("home.zoekopdrachtenTitle")}
         </h2>
         {profiles.length > 0 && (
@@ -778,7 +778,7 @@ function ZoekopdrachtenSection({ profiles, navigate, buddyMode }: { profiles: Se
       </p>
 
       {profiles.length > 0 ? (
-        <div className="flex flex-col gap-3" data-testid="card-zoekopdrachten">
+        <div className="flex flex-col gap-3" data-testid="card-search-profiles">
           {profiles.map((p) => {
             const title = getProfileTitle(p, t, locale);
             const priceLine = getProfilePriceLine(p, t);
@@ -788,7 +788,7 @@ function ZoekopdrachtenSection({ profiles, navigate, buddyMode }: { profiles: Se
                 key={p.id}
                 className={`rounded-[10px] bg-[#f3f4f6] p-4 flex items-center ${buddyMode ? "cursor-default" : "cursor-pointer active:opacity-80"} transition-all`}
                 onClick={buddyMode ? undefined : () => navigate(`/dashboard/searches/edit/${p.id}`)}
-                data-testid={`row-zoekopdracht-${p.id}`}
+                data-testid={`row-search-profile-${p.id}`}
               >
                 <div className="w-[11px] h-[11px] rounded-full flex-shrink-0 mr-3.5" style={{ backgroundColor: "#22c55e", boxShadow: "0 0 0 3px rgba(34,197,94,0.15)" }} />
                 <div className="flex-1 min-w-0">
@@ -835,7 +835,7 @@ function ZoekopdrachtenSection({ profiles, navigate, buddyMode }: { profiles: Se
           })}
         </div>
       ) : (
-        <div className="rounded-[12px] bg-white border border-[#E5E7EB] p-7 flex flex-col items-center justify-center text-center min-h-[calc(100dvh-260px)]" data-testid="card-zoekopdrachten-empty">
+        <div className="rounded-[12px] bg-white border border-[#E5E7EB] p-7 flex flex-col items-center justify-center text-center min-h-[calc(100dvh-260px)]" data-testid="card-search-profiles-empty">
           <img src={EMPTY_STATE_IMAGES.createSearch} alt="" className="w-[72px] max-h-[72px] h-auto mb-5 object-contain" draggable={false} />
           <p className="text-[20px] font-bold text-[#000000] mb-2">{t("home.emptyTitle")}</p>
           <p className="text-[16px] text-[#334855] mb-6 leading-relaxed max-w-[280px]">{t("home.emptySubtitle")}</p>
@@ -855,13 +855,13 @@ function ZoekopdrachtenSection({ profiles, navigate, buddyMode }: { profiles: Se
         <button
           onClick={() => navigate("/dashboard/searches/new")}
           className="w-full mt-4 py-[14px] rounded-[10px] bg-transparent border-2 border-ha-primary text-[16px] font-semibold text-ha-primary hover:bg-ha-primary/5 transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
-          data-testid="button-add-zoekopdracht"
+          data-testid="button-add-search-profile"
         >
           + {t("home.addZoekopdracht")}
         </button>
       )}
       {!buddyMode && profiles.length >= MAX_PROFILES && (
-        <p className="mt-3 text-[12px] text-[#C4C4C4] text-center" data-testid="text-zoek-max-reached">
+        <p className="mt-3 text-[12px] text-[#C4C4C4] text-center" data-testid="text-search-max-reached">
           {t("searchProfiles.maxReached")}
         </p>
       )}
@@ -1041,7 +1041,7 @@ function HomeTab({
           />
         )}
 
-        <ZoekopdrachtenSection profiles={profiles} navigate={navigate} buddyMode={buddyMode} />
+        <HomeProfilesSection profiles={profiles} navigate={navigate} buddyMode={buddyMode} />
 
         {/* Reactiebrief status card */}
         {(() => {
@@ -1052,7 +1052,7 @@ function HomeTab({
               onClick={() => navigate("/application-letter")}
               className="w-full text-left bg-white rounded-[12px] p-5 flex flex-col gap-3 active:scale-[0.985] transition-transform"
               style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}
-              data-testid="card-reactiebrief-status"
+              data-testid="card-application-letter-status"
             >
               <div className="flex items-center gap-2.5">
                 <FileText className="w-[20px] h-[20px] text-ha-primary flex-shrink-0" />
@@ -1089,7 +1089,7 @@ function HomeTab({
               onClick={() => navigate("/profile/search-buddy")}
               className="w-full text-left bg-white rounded-[12px] p-5 flex flex-col gap-3 active:scale-[0.985] transition-transform"
               style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}
-              data-testid="card-zoekbuddy-status"
+              data-testid="card-search-buddy-status"
             >
               <div className="flex items-center gap-2.5">
                 <Users className="w-[20px] h-[20px] text-ha-primary flex-shrink-0" />
@@ -1202,7 +1202,7 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
 
   if (!hasAccess) {
     return (
-      <div className="flex flex-col pb-8" data-testid="favorieten-locked">
+      <div className="flex flex-col pb-8" data-testid="favorites-locked">
         <div className="sticky top-0 z-10 bg-white px-5 pb-4 border-b border-[#E5E7EB]" style={{ paddingTop: "max(env(safe-area-inset-top), 24px)" }}>
           <h1 className="text-[22px] font-bold text-[#111111]">{t("nav.favorites")}</h1>
         </div>
@@ -1265,7 +1265,7 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
               illustration={EMPTY_STATE_IMAGES.noFavorites}
               title={t("matches.emptyFavorites.title")}
               description={t("matches.emptyFavorites.desc")}
-              testId="empty-favorieten-tab"
+              testId="empty-favorites-tab"
               compact
             />
           </div>
@@ -1481,7 +1481,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
 
   const topTabs: { key: MatchesTopTab; label: string }[] = [
     { key: "matches", label: t("matches.title") },
-    { key: "gereageerd", label: t("matches.subtabs.applied") },
+    { key: "applied", label: t("matches.subtabs.applied") },
   ];
 
   if (!hasAccess) {
@@ -1616,7 +1616,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
           </div>
         )}
 
-        {topTab === "gereageerd" && (
+        {topTab === "applied" && (
           <>
             {appliedListings.length === 0 ? (
               <div className="bg-white rounded-[12px]" style={cardStyle}>
@@ -1624,7 +1624,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
                   illustration={EMPTY_STATE_IMAGES.noApplications}
                   title={t("matches.emptyApplied.title")}
                   description={t("matches.emptyApplied.desc")}
-                  testId="empty-gereageerd-tab"
+                  testId="empty-applied-tab"
                   compact
                 />
               </div>
@@ -2015,7 +2015,7 @@ function BuddyV2Section({ subscription }: { subscription: { isActive: boolean; i
   );
 }
 
-function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canonicalStats, computedAppliedCount, buddyMode, activeBuddyRel }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null; currentPeriodEndsAt: string | null; cancelAtPeriodEnd: boolean }; setActiveTab: (tab: TabKey) => void; canonicalStats?: CanonicalStats; computedAppliedCount: number; buddyMode?: boolean; activeBuddyRel?: BuddyRelation | null }) {
+function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canonicalStats, computedAppliedCount, buddyMode, activeBuddyRel }: { user: any; signOut: () => Promise<void>; navigate: (path: string) => void; subscription: { status: string; isTrial: boolean; isActive: boolean; isExpired: boolean; plan: string | null; trialEndsAt: string | null; currentPeriodEndsAt: string | null; cancelAtPeriodEnd: boolean }; setActiveTab: (tab: TabKey) => void; canonicalStats?: CanonicalStats; computedAppliedCount: number; buddyMode?: boolean; activeBuddyRel?: BuddyRelation | null }) {
   const [signingOut, setSigningOut] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showBuddyDisconnectConfirm, setShowBuddyDisconnectConfirm] = useState(false);
@@ -2040,7 +2040,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
       if (!session?.access_token) return null;
       const res = await apiFetch("/api/profile-data", { headers: { Authorization: `Bearer ${session.access_token}` } });
       const data = await res.json();
-      console.log(`[IDENTITY] ProfielTab profile fetch — first_name="${data?.first_name ?? "null"}", user_id="${data?.user_id ?? "unknown"}", auth_user="${session.user?.id?.substring(0, 8) ?? "null"}"`);
+      console.log(`[IDENTITY] ProfileTab profile fetch — first_name="${data?.first_name ?? "null"}", user_id="${data?.user_id ?? "unknown"}", auth_user="${session.user?.id?.substring(0, 8) ?? "null"}"`);
       return data;
     },
   });
@@ -2222,7 +2222,7 @@ function ProfielTab({ user, signOut, navigate, subscription, setActiveTab, canon
   );
 }
 
-function ZoekTab({ profiles, navigate }: { profiles: SearchProfile[]; navigate: (path: string) => void }) {
+function SearchTab({ profiles, navigate }: { profiles: SearchProfile[]; navigate: (path: string) => void }) {
   const { t } = useTranslation();
   const canAdd = profiles.length < MAX_PROFILES;
   return (
@@ -2233,14 +2233,14 @@ function ZoekTab({ profiles, navigate }: { profiles: SearchProfile[]; navigate: 
           <button
             onClick={() => navigate("/dashboard/searches/new")}
             className="w-9 h-9 rounded-full bg-ha-primary flex items-center justify-center text-white active:scale-90 transition-transform shadow-sm"
-            data-testid="button-zoek-add-profile"
+            data-testid="button-search-add-profile"
           >
             <span className="text-[20px] font-medium leading-none">+</span>
           </button>
         )}
       </div>
       <div className="px-5 pt-1">
-        <ZoekopdrachtenSection profiles={profiles} navigate={navigate} />
+        <SearchProfilesSection profiles={profiles} navigate={navigate} />
       </div>
     </div>
   );
@@ -2249,8 +2249,8 @@ function ZoekTab({ profiles, navigate }: { profiles: SearchProfile[]; navigate: 
 const TAB_CONFIG: { key: TabKey; labelKey: string; Icon: any }[] = [
   { key: "home", labelKey: "nav.home", Icon: Home },
   { key: "matches", labelKey: "nav.matches", Icon: Search },
-  { key: "favorieten", labelKey: "nav.favorites", Icon: Heart },
-  { key: "profiel", labelKey: "nav.profile", Icon: User },
+  { key: "favorites", labelKey: "nav.favorites", Icon: Heart },
+  { key: "profile", labelKey: "nav.profile", Icon: User },
 ];
 
 export default function DashboardPage() {
@@ -2260,14 +2260,16 @@ export default function DashboardPage() {
   const [initialMatchesTopTab] = useState<MatchesTopTab | null>(() => {
     const params = new URLSearchParams(window.location.search);
     const tab = params.get("tab");
-    if (tab === "gereageerd") return "gereageerd";
+    if (tab === "applied" || tab === "gereageerd") return "applied";
     return null;
   });
   const [activeTab, setActiveTab] = useState<TabKey>(() => {
     const params = new URLSearchParams(window.location.search);
     const tab = params.get("tab");
-    if (tab === "gereageerd") return "matches";
-    if (tab && ["home", "matches", "favorieten", "profiel"].includes(tab)) {
+    if (tab === "applied" || tab === "gereageerd") return "matches";
+    if (tab === "profiel") return "profile";
+    if (tab === "favorieten") return "favorites";
+    if (tab && ["home", "matches", "favorites", "profile"].includes(tab)) {
       return tab as TabKey;
     }
     return "home";
@@ -2395,7 +2397,7 @@ export default function DashboardPage() {
 
   const allMatches = apiMatchesQuery.data?.matches ?? [];
   const computedAppliedCount = allMatches.length > 0
-    ? allMatches.filter(m => getMatchTab(m) === "gereageerd").length
+    ? allMatches.filter(m => getMatchTab(m) === "applied").length
     : (apiMatchesQuery.data?.canonicalStats?.applied ?? 0);
 
   return (
@@ -2448,11 +2450,11 @@ export default function DashboardPage() {
         {activeTab === "matches" && (
           <MatchesTab accessToken={accessToken} setActiveTab={setActiveTab} initialTopTab={initialMatchesTopTab} buddyMode={inBuddyMode} ownerSubActive={ownerSubActive} />
         )}
-        {activeTab === "favorieten" && (
+        {activeTab === "favorites" && (
           <FavorietenTab accessToken={accessToken} navigate={navigate} />
         )}
-        {activeTab === "profiel" && (
-          <ProfielTab
+        {activeTab === "profile" && (
+          <ProfileTab
             user={user}
             signOut={signOut}
             navigate={navigate}
@@ -2470,7 +2472,7 @@ export default function DashboardPage() {
         <nav className="max-w-xl mx-auto flex h-[72px]" data-testid="bottom-nav">
           {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
             const isActive = activeTab === key;
-            const isProfileWithPhoto = key === "profiel" && !!tabPhotoUrl;
+            const isProfileWithPhoto = key === "profile" && !!tabPhotoUrl;
             return (
               <button
                 key={key}

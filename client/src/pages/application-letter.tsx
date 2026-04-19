@@ -57,7 +57,7 @@ export default function ApplicationLetterPage() {
       const params = new URLSearchParams(window.location.search || window.location.hash.split("?")[1] || "");
       const from = params.get("from");
       if (from === "tips") return "/dashboard?tab=tips";
-      if (from === "profile") return "/dashboard?tab=profiel";
+      if (from === "profile") return "/dashboard?tab=profile";
     } catch {}
     return "/dashboard?tab=home";
   })();

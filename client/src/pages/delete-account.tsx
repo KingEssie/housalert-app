@@ -63,7 +63,7 @@ export default function DeleteAccountPage() {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
-      <AppHeader title={t("deleteAccount.title")} onBack={() => navigate("/dashboard?tab=profiel&sub=account")} />
+      <AppHeader title={t("deleteAccount.title")} onBack={() => navigate("/dashboard?tab=profile&sub=account")} />
 
       <main className="flex-1 flex flex-col items-center justify-center px-6">
         <div className="w-16 h-16 rounded-[6px] bg-ha-danger flex items-center justify-center mb-6">
@@ -103,7 +103,7 @@ export default function DeleteAccountPage() {
             {deleting ? t("deleteAccount.deleting") : t("deleteAccount.confirmDelete")}
           </button>
           <button
-            onClick={() => navigate("/dashboard?tab=profiel&sub=account")}
+            onClick={() => navigate("/dashboard?tab=profile&sub=account")}
             className="w-full ha-btn border border-[#E5E7EB] text-[#111111] font-semibold hover:bg-white"
             data-testid="button-delete-account-cancel"
           >
