@@ -229,8 +229,8 @@ function Router() {
       <Route path="/embed-success" component={EmbedSuccessPage} />
       <Route path="/home" component={() => <ProtectedRoute component={DashboardPage} />} />
       <Route path="/dashboard" component={() => <ProtectedRoute component={DashboardPage} />} />
-      <Route path="/dashboard/searches/new" component={() => <BuddyProtectedRoute component={NewSearchPage} />} />
-      <Route path="/dashboard/searches/edit/:id" component={() => <BuddyProtectedRoute component={NewSearchPage} />} />
+      <Route path="/dashboard/searches/new" component={() => <BuddyProtectedRoute component={AppSearchWizard} />} />
+      <Route path="/dashboard/searches/edit/:id" component={() => <BuddyProtectedRoute component={AppSearchWizard} />} />
       <Route path="/listing/:id" component={() => <ProtectedRoute component={ListingDetailPage} />} />
       <Route path="/apply/:id" component={() => <ProtectedRoute component={ApplyPage} />} />
       <Route path="/flow/:flowId/:stepId" component={() => <ProtectedRoute component={FlowPage} />} />

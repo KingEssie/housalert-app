@@ -1,0 +1,39 @@
+Bug report: white screen when creating or editing a search profile from the app dashboard.
+
+Current behavior:
+- From the app home/dashboard, tapping “+ Zoekopdracht toevoegen” opens a white screen
+- Tapping to edit an existing search profile also opens a white screen
+
+This happens in both create and edit flows, which strongly suggests the new search profile flow is crashing on mount/render or the route is misconfigured.
+
+What to investigate and fix:
+1. Check the exact route targets used by:
+   - “+ Zoekopdracht toevoegen”
+   - “Bewerk zoekopdracht” / existing search profile edit action
+2. Verify the target screen actually mounts in the app and is not referencing web-only code/components
+3. Check runtime logs / console / device logs for the actual render error
+4. Verify create mode works with empty/default state only
+5. Verify edit mode correctly loads and maps existing search profile data into the new 4-step flow
+6. Check for undefined/null values causing the screen to crash on first render
+7. Add a temporary error boundary or fallback UI so crashes do not result in a blank white screen
+
+Most likely failure points:
+- missing or invalid route params
+- missing search profile id in edit mode
+- incorrect mapping of existing profile data into form state
+- shared flow component expecting web-specific providers/context
+- a hook throwing on initial render
+- step config or initial state not defined in app mode
+
+Required fix:
+- Make both create and edit open the exact new 4-step search profile flow successfully
+- No blank screen
+- First screen must render reliably
+- Edit mode must preload existing values without crashing
+- Remove or disable any broken/old routes still pointing to incomplete screens
+
+Acceptance criteria:
+- “+ Zoekopdracht toevoegen” opens step 1/4 correctly
+- Editing an existing search profile opens the same flow with prefilled values
+- No blank white screen anywhere in the flow
+- If data fails to load, show a visible fallback/error state instead of a blank screen
