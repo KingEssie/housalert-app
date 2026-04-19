@@ -262,8 +262,8 @@ export default function OnboardingPassword() {
 
           {/* Main page title */}
           <h1
-            className="text-[26px] font-bold leading-tight mb-5"
-            style={{ color: "#1A1A1A" }}
+            className="text-[28px] font-bold leading-tight mb-5"
+            style={{ color: "#111111" }}
             data-testid="text-page-title"
           >
             Waar kunnen we je matches heen sturen?
@@ -272,7 +272,7 @@ export default function OnboardingPassword() {
           {/* Card 1 — "Jouw zoekopdracht" accordion */}
           <div
             className="rounded-[16px] mb-3 overflow-hidden"
-            style={{ backgroundColor: "#F5F5F7" }}
+            style={{ backgroundColor: "#F5F5F7", boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}
             data-testid="search-summary-card"
           >
             <div className="p-4 flex flex-col gap-3">
@@ -283,7 +283,7 @@ export default function OnboardingPassword() {
                 className="flex items-center justify-between w-full transition-opacity active:opacity-60"
                 data-testid="button-accordion-toggle"
               >
-                <span className="text-[15px] font-semibold" style={{ color: "rgb(var(--ha-primary))" }}>
+                <span className="text-[16px] font-bold" style={{ color: "rgb(var(--ha-primary))" }}>
                   Jouw zoekopdracht
                 </span>
                 <ChevronDown
@@ -297,16 +297,16 @@ export default function OnboardingPassword() {
 
               {/* Info card — always visible */}
               <div
-                className="rounded-[10px] flex items-center gap-3 px-3.5 py-3"
-                style={{ backgroundColor: "#E8EEF8", border: "1px solid #D0DCF0" }}
+                className="rounded-[10px] flex items-center gap-3 px-4 py-3.5"
+                style={{ backgroundColor: "#E4EDF8", border: "1px solid #BDD0F0" }}
                 data-testid="match-summary-card"
               >
-                <span className="text-[17px] leading-none shrink-0">🏠</span>
+                <span className="text-[20px] leading-none shrink-0">🏠</span>
                 <div className="flex items-baseline gap-1 shrink-0">
-                  <span className="text-[30px] font-bold leading-none" style={{ color: "#1E40AF" }}>121</span>
-                  <span className="text-[10px] font-medium" style={{ color: "#93C5FD" }}>{t("onboardingUI.perWeek")}</span>
+                  <span className="text-[34px] font-bold leading-none" style={{ color: "#1E40AF" }}>121</span>
+                  <span className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: "#93C5FD" }}>{t("onboardingUI.perWeek")}</span>
                 </div>
-                <p className="text-[12px] leading-[1.45] flex-1" style={{ color: "#374151" }}>
+                <p className="text-[12px] leading-[1.5] flex-1 font-medium" style={{ color: "#1E3A8A" }}>
                   {t("onboarding.password.web.infoBox").replace("{city}", city || t("onboarding.password.web.yourRegion"))}
                 </p>
               </div>
@@ -325,19 +325,19 @@ export default function OnboardingPassword() {
 
                 {/* Grey sub-card: city + filter details */}
                 <div
-                  className="rounded-[12px] p-3 flex flex-col gap-1"
-                  style={{ backgroundColor: "#E9E9EC" }}
+                  className="rounded-[12px] p-4 flex flex-col gap-1.5"
+                  style={{ backgroundColor: "#E3E4E8" }}
                 >
                   <div className="flex items-center gap-2">
                     <span
-                      className="w-[7px] h-[7px] rounded-full shrink-0"
+                      className="w-[8px] h-[8px] rounded-full shrink-0"
                       style={{ backgroundColor: "rgb(var(--ha-primary))" }}
                     />
-                    <span className="text-[14px] font-bold" style={{ color: "#111111" }}>
+                    <span className="text-[15px] font-bold" style={{ color: "#111111" }}>
                       {searchName}
                     </span>
                   </div>
-                  <p className="text-[12.5px] pl-[15px]" style={{ color: "#6B7280" }}>
+                  <p className="text-[12px] pl-[16px]" style={{ color: "#4B5563" }}>
                     {[
                       minPrice && maxPrice ? `€${minPrice}–€${maxPrice}` : null,
                       roomsLabel ? `${roomsLabel} ${t("onboarding.password.web.apartments")}` : null,
@@ -347,42 +347,42 @@ export default function OnboardingPassword() {
                 </div>
 
                 {/* Caption text */}
-                <p className="text-[12px]" style={{ color: "#6B7280" }}>
+                <p className="text-[12px] font-medium" style={{ color: "#4B5563" }}>
                   Een voorbeeld van een populaire woning die je recentelijk gemist hebt
                 </p>
 
                 {/* Preview listing card */}
                 <div
                   className="rounded-[10px] overflow-hidden bg-white"
-                  style={{ border: "1px solid #D8DCE3" }}
+                  style={{ border: "1px solid #C9CDD6", boxShadow: "0 1px 4px rgba(0,0,0,0.10)" }}
                   data-testid="listing-preview-placeholder"
                 >
                   {/* Image area with overlay */}
-                  <div className="w-full h-[120px] overflow-hidden relative">
+                  <div className="w-full h-[130px] overflow-hidden relative">
                     {/* Blurred background */}
                     <div
                       className="absolute inset-0"
                       style={{
-                        backgroundImage: "linear-gradient(135deg, #BFC5CF 0%, #A8B0BC 50%, #C2C8D2 100%)",
+                        backgroundImage: "linear-gradient(135deg, #B0B8C4 0%, #98A2B0 50%, #B4BCC8 100%)",
                         filter: "blur(10px)",
                         transform: "scale(1.12)",
                       }}
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <Building2 className="w-[36px] h-[36px]" style={{ color: "#8896A6", opacity: 0.45, filter: "blur(2px)" }} />
+                      <Building2 className="w-[36px] h-[36px]" style={{ color: "#7888A0", opacity: 0.4, filter: "blur(2px)" }} />
                     </div>
                     {/* Top-right upgrade overlay */}
                     <div
-                      className="absolute top-2 right-2 px-2.5 py-1 rounded-full"
-                      style={{ backgroundColor: "rgba(0,0,0,0.52)", backdropFilter: "blur(4px)" }}
+                      className="absolute top-2 right-2 px-3 py-1.5 rounded-full"
+                      style={{ backgroundColor: "rgba(0,0,0,0.70)", backdropFilter: "blur(6px)" }}
                     >
-                      <span className="text-[10.5px] font-semibold text-white">Upgrade om te bekijken</span>
+                      <span className="text-[11px] font-bold text-white">Upgrade om te bekijken</span>
                     </div>
                   </div>
 
                   {/* Meta row — real listing structure, blurred */}
                   <div
-                    className="flex items-center gap-2.5 px-3 py-2.5"
+                    className="flex items-center gap-2.5 px-3 py-3"
                     style={{ filter: "blur(3px)" }}
                   >
                     <span className="text-[14px] font-bold" style={{ color: "#0F172A" }}>€850 /mnd</span>
@@ -400,10 +400,10 @@ export default function OnboardingPassword() {
           {/* Card 2 — Account form */}
           <div
             className="bg-white rounded-[12px] mb-3 overflow-hidden"
-            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}
+            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.10)" }}
           >
             <div className="px-5 pt-5 pb-5">
-              <p className="text-[17px] font-semibold mb-4" style={{ color: "#111111" }}>
+              <p className="text-[18px] font-bold mb-4" style={{ color: "#111111" }}>
                 Maak een gratis account aan
               </p>
 
@@ -419,7 +419,7 @@ export default function OnboardingPassword() {
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="Max"
                     className="w-full ha-field-web"
-                    style={{ backgroundColor: "#ffffff", borderColor: "#D1D5DB", color: "#111111", borderRadius: 6 }}
+                    style={{ backgroundColor: "#ffffff", borderColor: "#C4C8D0", color: "#111111", borderRadius: 6 }}
                     autoFocus
                     data-testid="input-first-name"
                   />
@@ -436,7 +436,7 @@ export default function OnboardingPassword() {
                     onChange={(e) => setLastName(e.target.value)}
                     placeholder="Müller"
                     className="w-full ha-field-web"
-                    style={{ backgroundColor: "#ffffff", borderColor: "#D1D5DB", color: "#111111", borderRadius: 6 }}
+                    style={{ backgroundColor: "#ffffff", borderColor: "#C4C8D0", color: "#111111", borderRadius: 6 }}
                     data-testid="input-last-name"
                   />
                 </div>
@@ -452,7 +452,7 @@ export default function OnboardingPassword() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder={t("onboarding.email.placeholder")}
                     className="w-full ha-field-web"
-                    style={{ backgroundColor: "#ffffff", borderColor: "#D1D5DB", color: "#111111", borderRadius: 6 }}
+                    style={{ backgroundColor: "#ffffff", borderColor: "#C4C8D0", color: "#111111", borderRadius: 6 }}
                     data-testid="input-email"
                   />
                 </div>
@@ -469,7 +469,7 @@ export default function OnboardingPassword() {
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder={t("onboarding.password.web.passwordPlaceholder")}
                       className="w-full ha-field-web"
-                      style={{ backgroundColor: "#ffffff", borderColor: "#D1D5DB", color: "#111111", paddingRight: "44px", borderRadius: 6 }}
+                      style={{ backgroundColor: "#ffffff", borderColor: "#C4C8D0", color: "#111111", paddingRight: "44px", borderRadius: 6 }}
                       autoComplete="new-password"
                       data-testid="input-password"
                     />
@@ -531,12 +531,12 @@ export default function OnboardingPassword() {
           {/* Trust block — 3 premium benefit rows */}
           <div
             className="bg-white rounded-[16px] overflow-hidden"
-            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.07)" }}
+            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.10)" }}
           >
             <div className="px-5 pt-5 pb-5">
-              <div className="flex items-center gap-2 mb-4">
-                <ShieldCheck className="w-[18px] h-[18px]" style={{ color: "rgb(var(--ha-primary))" }} />
-                <p className="text-[18px] font-semibold" style={{ color: "#111111" }}>
+              <div className="flex items-center gap-2.5 mb-5">
+                <ShieldCheck className="w-[19px] h-[19px]" style={{ color: "rgb(var(--ha-primary))" }} />
+                <p className="text-[18px] font-bold" style={{ color: "#111111" }}>
                   Zonder risico proberen
                 </p>
               </div>
@@ -561,11 +561,11 @@ export default function OnboardingPassword() {
                   <div
                     key={i}
                     className="flex items-start gap-3 py-4"
-                    style={i < arr.length - 1 ? { borderBottom: "1px solid #EBEBEB" } : {}}
+                    style={i < arr.length - 1 ? { borderBottom: "1px solid #E2E2E5" } : {}}
                   >
                     <div
-                      className="w-[36px] h-[36px] rounded-[9px] flex items-center justify-center shrink-0 text-[17px]"
-                      style={{ backgroundColor: "rgba(217,26,104,0.08)" }}
+                      className="w-[38px] h-[38px] rounded-[10px] flex items-center justify-center shrink-0 text-[18px]"
+                      style={{ backgroundColor: "rgba(217,26,104,0.10)" }}
                     >
                       {item.icon}
                     </div>
