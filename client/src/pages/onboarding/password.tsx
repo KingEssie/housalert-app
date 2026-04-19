@@ -271,8 +271,8 @@ export default function OnboardingPassword() {
 
           {/* Card 1 — "Jouw zoekopdracht" accordion */}
           <div
-            className="rounded-[16px] mb-3 overflow-hidden bg-white"
-            style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.09)" }}
+            className="rounded-[12px] mb-3 overflow-hidden bg-white"
+            style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.08)" }}
             data-testid="search-summary-card"
           >
             <div className="p-4 flex flex-col gap-3">
@@ -295,21 +295,16 @@ export default function OnboardingPassword() {
                 />
               </button>
 
-              {/* Info card — always visible */}
+              {/* Info card — compact Rentbird-style single message */}
               <div
-                className="rounded-[10px] flex items-center gap-3 px-4 py-4"
-                style={{ backgroundColor: "#D8E8F8", border: "1px solid #A8C4E8" }}
+                className="rounded-[8px] px-4 py-3"
+                style={{ backgroundColor: "#EBF2FC", border: "1px solid #C8DCF0" }}
                 data-testid="match-summary-card"
               >
-                <span className="text-[22px] leading-none shrink-0">🏠</span>
-                <div className="flex items-baseline gap-[3px] shrink-0">
-                  <span className="text-[38px] font-black leading-none" style={{ color: "#1E40AF" }}>121</span>
-                  <div className="flex flex-col ml-1">
-                    <span className="text-[9px] font-bold uppercase tracking-widest leading-none" style={{ color: "#60A5FA" }}>{t("onboardingUI.perWeek")}</span>
-                  </div>
-                </div>
-                <p className="text-[12px] leading-[1.5] flex-1 font-semibold" style={{ color: "#1E3A8A" }}>
-                  {t("onboarding.password.web.infoBox").replace("{city}", city || t("onboarding.password.web.yourRegion"))}
+                <p className="text-[13.5px] leading-[1.55]" style={{ color: "#1E3A8A" }}>
+                  Je hebt{" "}
+                  <span className="font-bold" style={{ color: "#1D4ED8" }}>121</span>
+                  {" "}woningmatches gemist in de laatste 30 dagen
                 </p>
               </div>
 
@@ -327,8 +322,8 @@ export default function OnboardingPassword() {
 
                 {/* Grey sub-card: city + filter details */}
                 <div
-                  className="rounded-[12px] px-4 py-3.5 flex flex-col gap-1"
-                  style={{ backgroundColor: "#D4D6DC", border: "1px solid #C8CAD0" }}
+                  className="rounded-[8px] px-4 py-3 flex flex-col gap-1"
+                  style={{ backgroundColor: "#DCDEE3" }}
                 >
                   <div className="flex items-center gap-2">
                     <span
@@ -355,43 +350,30 @@ export default function OnboardingPassword() {
 
                 {/* Preview listing card */}
                 <div
-                  className="rounded-[10px] overflow-hidden bg-white"
-                  style={{ border: "1px solid #C8CDD8", boxShadow: "0 4px 16px rgba(0,0,0,0.13)" }}
+                  className="rounded-[8px] overflow-hidden bg-white"
+                  style={{ border: "1px solid #E8EAED", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
                   data-testid="listing-preview-placeholder"
                 >
-                  {/* Image area — real placeholder + light overlay to signal locked */}
-                  <div className="w-full h-[148px] overflow-hidden relative" style={{ backgroundColor: "#EDF2F7" }}>
-                    {/* App's real listing placeholder image */}
+                  {/* Image area — fills fully, no overlay on top */}
+                  <div className="w-full h-[148px] overflow-hidden" style={{ backgroundColor: "#EDF2F7" }}>
                     <img
                       src="/listing-placeholder.png"
                       alt=""
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-cover"
                       draggable={false}
                     />
-                    {/* Light desaturation + lock overlay — keeps image visible but signals "locked" */}
-                    <div
-                      className="absolute inset-0"
-                      style={{
-                        backgroundColor: "rgba(15,23,42,0.38)",
-                        backdropFilter: "blur(1.5px) saturate(60%)",
-                      }}
-                    />
-                    {/* Upgrade pill — top right, premium dark */}
-                    <div
-                      className="absolute top-2.5 right-2.5 px-3 py-1.5 rounded-full"
-                      style={{ backgroundColor: "rgba(0,0,0,0.84)", backdropFilter: "blur(10px)" }}
-                    >
-                      <span className="text-[11px] font-bold text-white tracking-wide">Upgrade om te bekijken</span>
-                    </div>
                   </div>
 
-                  {/* Meta row — SHARP and readable, no blur */}
-                  <div className="flex items-center gap-2.5 px-3.5 py-3">
+                  {/* Meta row — sharp and readable */}
+                  <div className="flex items-center gap-2.5 px-3.5 py-3" style={{ borderTop: "1px solid #F0F2F5" }}>
                     <span className="text-[14px] font-bold" style={{ color: "#111111" }}>€850 /mnd</span>
-                    <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#C4C9D4" }} />
+                    <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
                     <span className="text-[12px] font-medium" style={{ color: "#374151" }}>45 m²</span>
-                    <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#C4C9D4" }} />
+                    <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
                     <span className="text-[12px]" style={{ color: "#6B7280" }}>2 dagen geleden</span>
+                    <span className="ml-auto text-[11px] font-semibold" style={{ color: "rgb(var(--ha-primary))" }}>
+                      Upgrade om te bekijken →
+                    </span>
                   </div>
                 </div>
 
@@ -421,7 +403,7 @@ export default function OnboardingPassword() {
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="Max"
                     className="w-full ha-field-web"
-                    style={{ backgroundColor: "#ffffff", borderColor: "#C4C8D0", color: "#111111", borderRadius: 6 }}
+                    style={{ backgroundColor: "#ffffff", borderColor: "#C4C8D0", color: "#111111", borderRadius: 4 }}
                     autoFocus
                     data-testid="input-first-name"
                   />
@@ -438,7 +420,7 @@ export default function OnboardingPassword() {
                     onChange={(e) => setLastName(e.target.value)}
                     placeholder="Müller"
                     className="w-full ha-field-web"
-                    style={{ backgroundColor: "#ffffff", borderColor: "#C4C8D0", color: "#111111", borderRadius: 6 }}
+                    style={{ backgroundColor: "#ffffff", borderColor: "#C4C8D0", color: "#111111", borderRadius: 4 }}
                     data-testid="input-last-name"
                   />
                 </div>
@@ -454,7 +436,7 @@ export default function OnboardingPassword() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder={t("onboarding.email.placeholder")}
                     className="w-full ha-field-web"
-                    style={{ backgroundColor: "#ffffff", borderColor: "#C4C8D0", color: "#111111", borderRadius: 6 }}
+                    style={{ backgroundColor: "#ffffff", borderColor: "#C4C8D0", color: "#111111", borderRadius: 4 }}
                     data-testid="input-email"
                   />
                 </div>
@@ -471,7 +453,7 @@ export default function OnboardingPassword() {
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder={t("onboarding.password.web.passwordPlaceholder")}
                       className="w-full ha-field-web"
-                      style={{ backgroundColor: "#ffffff", borderColor: "#C4C8D0", color: "#111111", paddingRight: "44px", borderRadius: 6 }}
+                      style={{ backgroundColor: "#ffffff", borderColor: "#C4C8D0", color: "#111111", paddingRight: "44px", borderRadius: 4 }}
                       autoComplete="new-password"
                       data-testid="input-password"
                     />

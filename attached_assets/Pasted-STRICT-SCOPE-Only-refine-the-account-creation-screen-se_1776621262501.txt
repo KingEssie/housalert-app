@@ -1,0 +1,90 @@
+STRICT SCOPE:
+Only refine the account-creation screen search-summary section and shared card/input styling used there.
+Do not touch translations.
+Do not touch other onboarding step logic.
+Do not do any broad audit.
+
+GOAL:
+Make this section visually match Rentbird much more closely.
+
+APPLY THESE EXACT CHANGES:
+
+1. TEXT ON GREY BACKGROUNDS
+- Any text shown inside grey cards / grey panels must never be light grey
+- Use:
+  - primary text: near black (#111111 or equivalent)
+  - secondary text: dark grey
+- Only placeholders inside form inputs may stay light grey
+- This rule should apply consistently to the account screen and reusable grey-card styles used here
+
+2. BLUE MATCHES INFO CARD
+Replace the current “121 per week + extra text” presentation with a Rentbird-style info card.
+
+NEW STRUCTURE:
+- One compact blue card
+- Text format:
+  "Je hebt [X] woningmatches gemist in de laatste 30 dagen"
+- [X] must still come from HousAlert’s own logic / current match estimate logic
+- Remove the oversized “121 per week” emphasis style
+- Remove the extra split layout
+- Match Rentbird hierarchy:
+  - one compact message
+  - clean readable emphasis on the number
+  - no separate “per week” styling
+
+3. PREVIEW / EMPTY STATE CARD
+Current issue:
+- image feels fake
+- overlay hurts the look
+- image does not fill nicely
+
+Fix it like this:
+- Remove the dark overlay badge from on top of the image
+- Do not place overlay text over the image
+- The preview image area must fully fill the image frame
+- Use object-fit: cover so the image fills the full width/height area cleanly
+
+IF a real latest listing exists:
+- show the real image filling the image area properly
+- keep the bottom meta row readable
+
+IF no real listing exists:
+- use the existing empty-state housing image / illustration
+- make it fill the image area properly
+- do NOT blur it heavily
+- do NOT use a floating overlay on top
+- it must look like a clean preview card, not a broken placeholder
+
+4. CARD / INPUT ROUNDING
+Reduce rounding everywhere in this section to feel closer to Rentbird:
+- search-summary outer card: slightly smaller radius
+- city grey sub-card: slightly smaller radius
+- preview listing card: slightly smaller radius
+- form inputs: smaller radius than now
+
+5. BORDERS
+Current borders are too hard.
+Change to:
+- no border where unnecessary
+- otherwise a very light subtle border only
+- remove harsh outlines
+
+6. VISUAL TONE
+Overall result should feel:
+- cleaner
+- less bubble-like
+- less over-rounded
+- more like Rentbird’s tighter visual system
+
+DO NOT CHANGE:
+- HousAlert brand colors outside of this refinement
+- app logic for match counting
+- form field logic
+- accordion logic unless needed for visual cleanup
+
+RETURN ONLY:
+1. files changed
+2. exact info-card change
+3. exact preview/empty-state image change
+4. exact radius/border changes
+5. confirmation no translation work was touched
