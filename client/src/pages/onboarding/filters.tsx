@@ -5,9 +5,9 @@ import { useTranslation } from "@/i18n";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import {
-  Check, Bath, Sun, Trees, Leaf,
+  Check, Bath, Sun, Trees, Leaf, Info, ChevronLeft, X, Loader2,
 } from "lucide-react";
-import { OB, OBW, OBWebHeader, OBWebFooter, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
+import { OB, OBW, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 import { OnboardingFlowLayout } from "@/components/onboarding-flow-layout";
 import { createSearchProfile, type InsertSearchProfileInput } from "@/lib/search-profiles";
 import { queryClient } from "@/lib/queryClient";
@@ -338,6 +338,7 @@ export default function OnboardingFilters() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [saving, setSaving] = useState(false);
+  const [showPriceInfo, setShowPriceInfo] = useState(false);
   const searchString = useHashSearch();
   const w = useWebsiteMode();
   const T = w ? OBW : OB;
@@ -466,9 +467,10 @@ export default function OnboardingFilters() {
 
   function handleBack() {
     if (w) {
-      const backParams = new URLSearchParams({ city, lat, lng });
+      const backParams = new URLSearchParams({ city, lat, lng, locationMode });
+      if (districts) backParams.set("districts", districts);
       if (radiusKm) backParams.set("radiusKm", radiusKm);
-      navigate(appendWebsiteParams(`/onboarding/city?${backParams.toString()}`, searchString));
+      navigate(appendWebsiteParams(`/onboarding/location?${backParams.toString()}`, searchString));
     } else {
       const backParams = new URLSearchParams({ city, lat, lng, locationMode });
       if (districts) backParams.set("districts", districts);
@@ -687,25 +689,71 @@ export default function OnboardingFilters() {
         style={{ background: "#ffffff" }}
         data-testid="screen-onboarding-filters"
       >
-        <OBWebHeader step={2} onClose={handleClose} />
+        {/* Header: badge | centered title | close — matches 2/4 exactly */}
+        <header
+          className="sticky top-0 z-20 w-full"
+          style={{ backgroundColor: "#ffffff", borderBottom: `1px solid ${OBW.headerBorder}` }}
+        >
+          <div className="relative max-w-[480px] mx-auto px-4 h-[56px] flex items-center justify-between">
+            <span
+              className="text-[14px] font-bold rounded-[10px] shrink-0 flex items-center px-3.5"
+              style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "#ffffff" }}
+              data-testid="badge-step"
+            >
+              3/4
+            </span>
+            <span
+              className="absolute inset-0 flex items-center justify-center text-[19px] font-bold pointer-events-none"
+              style={{ color: OBW.text }}
+            >
+              {t("onboarding.filters.headerTitle")}
+            </span>
+            <button
+              onClick={handleClose}
+              className="w-[36px] h-[36px] shrink-0 flex items-center justify-center rounded-full transition-opacity hover:opacity-70 active:opacity-50"
+              style={{ backgroundColor: "#F2F2F2", color: "#444444" }}
+              data-testid="button-filters-close"
+            >
+              <X className="w-[22px] h-[22px]" />
+            </button>
+          </div>
+        </header>
 
-        <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-[120px] overflow-y-auto">
-          <h2
-            className="text-[30px] font-semibold tracking-[-0.025em] mb-2"
-            style={{ color: OBW.text }}
-            data-testid="text-filters-title"
-          >
-            {t("onboarding.filters.title")}
-          </h2>
-          <p className="text-[15px] mb-6 leading-relaxed" style={{ color: OBW.textSecondary }}>
-            {t("onboarding.filters.subtitle")}
-          </p>
+        <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-[140px] overflow-y-auto">
+          <div className="flex flex-col gap-5">
 
-          <div className="flex flex-col gap-6">
+            {/* Huurprijs */}
             <section>
-              <label className="text-[16px] font-semibold mb-3 block" style={{ color: OBW.text }}>
-                {t("onboarding.filters.rentLabel")}
-              </label>
+              <div className="flex items-center gap-1.5 mb-3">
+                <span className="text-[15px] font-semibold" style={{ color: OBW.text }}>
+                  {t("onboarding.filters.rentLabel")}
+                </span>
+                <div className="relative">
+                  <button
+                    onClick={() => setShowPriceInfo((v) => !v)}
+                    className="flex items-center justify-center w-[18px] h-[18px] transition-opacity hover:opacity-70"
+                    style={{ color: OBW.textMuted }}
+                    data-testid="button-price-info"
+                  >
+                    <Info className="w-[14px] h-[14px]" />
+                  </button>
+                  {showPriceInfo && (
+                    <div
+                      className="absolute left-0 top-[22px] z-20 w-[210px] rounded-[10px] px-3 py-2.5"
+                      style={{
+                        backgroundColor: "#ffffff",
+                        border: `1px solid ${OBW.cardBorder}`,
+                        boxShadow: "0 4px 14px rgba(0,0,0,0.09)",
+                      }}
+                      data-testid="tooltip-price-info"
+                    >
+                      <p className="text-[12px] leading-relaxed" style={{ color: OBW.textSecondary }}>
+                        {t("onboarding.filters.priceTooltip") || "Stel het huurprijsbereik in voor jouw zoekopdracht."}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
               <DualRangeSlider
                 min={0}
                 max={3000}
@@ -718,50 +766,99 @@ export default function OnboardingFilters() {
                 testId="slider-rent-price"
                 theme={OBW}
               />
+              <div className="mt-3">
+                <WebToggle
+                  checked={f.priceFlexible}
+                  onChange={(v) => update({ priceFlexible: v })}
+                  label={t("onboarding.filters.priceFlexible")}
+                  testId="toggle-price-flexible"
+                />
+              </div>
             </section>
 
             <div className="h-px bg-[#F0F0F0]" />
 
+            {/* Soort woning */}
             <section>
-              <label className="text-[16px] font-semibold mb-3 block" style={{ color: OBW.text }}>
+              <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
                 {t("onboarding.filters.propertyTypeLabel")}
               </label>
-              <WebSelect
-                options={PROPERTY_OPTIONS}
-                value={f.propertyType}
-                onChange={(v) => update({ propertyType: v })}
-                testId="property-type"
-              />
+              <div
+                className="flex items-center gap-[4px] p-[4px] rounded-full"
+                style={{ backgroundColor: "#F0F4F8" }}
+                data-testid="property-type"
+              >
+                {PROPERTY_OPTIONS.map((opt) => {
+                  const isActive = f.propertyType === opt.value;
+                  return (
+                    <button
+                      key={opt.value}
+                      onClick={() => update({ propertyType: opt.value })}
+                      className="flex-1 py-[8px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
+                      style={{
+                        backgroundColor: isActive ? "rgb(var(--ha-primary))" : "transparent",
+                        color: isActive ? "#ffffff" : "#111111",
+                      }}
+                      data-testid={`property-type-${opt.value}`}
+                    >
+                      {opt.label}
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="mt-3">
+                <WebToggle
+                  checked={f.includeRooms}
+                  onChange={(v) => update({ includeRooms: v })}
+                  label={t("onboarding.filters.includeRooms")}
+                  testId="toggle-include-rooms"
+                />
+              </div>
             </section>
 
             <div className="h-px bg-[#F0F0F0]" />
 
+            {/* Slaapkamers */}
             <section>
-              <label className="text-[16px] font-semibold mb-3 block" style={{ color: OBW.text }}>
+              <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
                 {t("onboarding.filters.bedroomsLabel")}
               </label>
-              <WebSelect
-                options={ROOM_OPTIONS}
-                value={f.minRooms}
-                onChange={(v) => update({ minRooms: v })}
-                testId="rooms-selector"
-              />
+              <div className="flex gap-1.5 overflow-x-auto no-scrollbar" data-testid="rooms-selector">
+                {ROOM_OPTIONS.map((opt) => {
+                  const active = f.minRooms === opt.value;
+                  return (
+                    <button
+                      key={opt.value}
+                      onClick={() => update({ minRooms: opt.value })}
+                      className="py-[8px] px-4 text-[12px] font-semibold rounded-full whitespace-nowrap shrink-0 transition-all active:scale-[0.96]"
+                      style={{
+                        backgroundColor: active ? "rgb(var(--ha-primary))" : "#F0F4F8",
+                        color: active ? "#ffffff" : "#111111",
+                      }}
+                      data-testid={`rooms-${opt.value}`}
+                    >
+                      {opt.label}
+                    </button>
+                  );
+                })}
+              </div>
             </section>
 
             <div className="h-px bg-[#F0F0F0]" />
 
+            {/* Minimale oppervlakte */}
             <section>
               <div className="flex items-center justify-between mb-3">
-                <label className="text-[16px] font-semibold" style={{ color: OBW.text }}>
+                <label className="text-[15px] font-semibold" style={{ color: OBW.text }}>
                   {t("onboarding.filters.minSizeLabel")}
                 </label>
                 <button
                   onClick={() => update({ sizeNA: !f.sizeNA, minSize: f.sizeNA ? 30 : 0 })}
-                  className="text-[12px] font-medium px-3 py-1 rounded-full border transition-all"
+                  className="text-[12px] font-semibold px-3 py-[5px] rounded-full border transition-all"
                   style={{
                     borderColor: f.sizeNA ? "rgba(217,26,104,0.3)" : "#E5E7EB",
                     backgroundColor: f.sizeNA ? "rgba(217,26,104,0.06)" : "transparent",
-                    color: f.sizeNA ? OB.pink : OBW.textSecondary,
+                    color: f.sizeNA ? "rgb(var(--ha-primary))" : OBW.textSecondary,
                   }}
                   data-testid="button-size-na"
                 >
@@ -784,45 +881,30 @@ export default function OnboardingFilters() {
 
             <div className="h-px bg-[#F0F0F0]" />
 
+            {/* Gemeubileerd */}
             <section>
-              <label className="text-[16px] font-semibold mb-3 block" style={{ color: OBW.text }}>
+              <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
                 {t("onboarding.filters.furnishedLabel")}
               </label>
-              <WebSelect
-                options={FURNISHED_OPTIONS}
-                value={f.furnished}
-                onChange={(v) => update({ furnished: v })}
-                testId="furnished-selector"
-              />
-            </section>
-
-            <div className="h-px bg-[#F0F0F0]" />
-
-            <section>
-              <label className="text-[16px] font-semibold mb-2 block" style={{ color: OBW.text }}>
-                {t("onboarding.filters.amenitiesLabel")}
-              </label>
-              <div className="flex flex-col" data-testid="amenity-chips">
-                {AMENITY_OPTIONS.map(({ value, labelKey, fallback }, i) => {
-                  const active = f.amenities.includes(value);
+              <div
+                className="flex items-center gap-[4px] p-[4px] rounded-full"
+                style={{ backgroundColor: "#F0F4F8" }}
+                data-testid="furnished-selector"
+              >
+                {FURNISHED_OPTIONS.map((opt) => {
+                  const isActive = f.furnished === opt.value;
                   return (
                     <button
-                      key={value}
-                      onClick={() => toggleAmenity(value)}
-                      className="w-full flex items-center justify-between py-3 text-left transition-colors"
-                      style={{ borderBottom: i < AMENITY_OPTIONS.length - 1 ? `1px solid ${OBW.divider}` : "none" }}
-                      data-testid={`amenity-${value}`}
+                      key={opt.value}
+                      onClick={() => update({ furnished: opt.value })}
+                      className="flex-1 py-[8px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
+                      style={{
+                        backgroundColor: isActive ? "rgb(var(--ha-primary))" : "transparent",
+                        color: isActive ? "#ffffff" : "#111111",
+                      }}
+                      data-testid={`furnished-selector-${opt.value}`}
                     >
-                      <span className="text-[15px]" style={{ color: OBW.text }}>{t(labelKey) || fallback}</span>
-                      <div
-                        className="w-[18px] h-[18px] rounded-[3px] flex items-center justify-center shrink-0"
-                        style={{
-                          border: active ? "none" : `1.5px solid ${OBW.chipBorder}`,
-                          backgroundColor: active ? "rgb(var(--ha-primary))" : "transparent",
-                        }}
-                      >
-                        {active && <Check className="w-3 h-3 text-white" />}
-                      </div>
+                      {opt.label}
                     </button>
                   );
                 })}
@@ -831,25 +913,93 @@ export default function OnboardingFilters() {
 
             <div className="h-px bg-[#F0F0F0]" />
 
+            {/* Overige wensen — pill chips */}
+            <section>
+              <label className="text-[15px] font-semibold mb-3 block" style={{ color: OBW.text }}>
+                {t("onboarding.filters.amenitiesLabel")}
+              </label>
+              <div className="flex flex-wrap gap-2" data-testid="amenity-chips">
+                {AMENITY_OPTIONS.map(({ value, labelKey, fallback, icon: Icon }) => {
+                  const active = f.amenities.includes(value);
+                  return (
+                    <button
+                      key={value}
+                      onClick={() => toggleAmenity(value)}
+                      className="flex items-center gap-1.5 h-[36px] px-3.5 rounded-full text-[13px] font-medium border transition-all active:scale-[0.96]"
+                      style={{
+                        backgroundColor: active ? "rgb(var(--ha-primary))" : "transparent",
+                        borderColor: active ? "rgb(var(--ha-primary))" : OBW.chipBorder,
+                        color: active ? "#fff" : OBW.textSecondary,
+                      }}
+                      data-testid={`amenity-${value}`}
+                    >
+                      {active ? (
+                        <Check className="w-3 h-3 shrink-0" />
+                      ) : (
+                        <Icon className="w-3.5 h-3.5 shrink-0" />
+                      )}
+                      <span>{t(labelKey) || fallback}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
+            <div className="h-px bg-[#F0F0F0]" />
+
+            {/* sendUnclear toggle */}
             <section>
               <WebToggle
-                checked={f.priceFlexible}
-                onChange={(v) => update({ priceFlexible: v })}
-                label={t("onboarding.filters.priceFlexible")}
-                testId="toggle-price-flexible"
+                checked={f.sendUnclear}
+                onChange={(v) => update({ sendUnclear: v })}
+                label={t("onboarding.filters.sendUnclear")}
+                testId="toggle-send-unclear"
               />
             </section>
+
           </div>
         </main>
 
-        <OBWebFooter
-          onBack={handleBack}
-          onNext={handleNext}
-          nextLabel={isSearchOnlyMode ? t("common.save") : t("common.next")}
-          saving={saving}
-          backTestId="button-filters-back"
-          nextTestId="button-filters-next"
-        />
+        {/* Footer: matches 2/4 exactly */}
+        <div
+          className="fixed bottom-0 left-0 right-0 z-30"
+          style={{
+            borderTop: `1px solid ${OBW.footerBorder}`,
+            backgroundColor: OBW.footerBg,
+            paddingBottom: "max(8px, env(safe-area-inset-bottom, 8px))",
+          }}
+        >
+          <div className="max-w-[480px] mx-auto px-5 py-3 flex items-center gap-3">
+            <div className="flex-1 min-w-0">
+              <p className="text-[11px] font-medium" style={{ color: OBW.textMuted }}>
+                {t("onboarding.location.estimatedMatches")}
+              </p>
+              <p className="text-[16px] font-semibold leading-snug" style={{ color: OBW.text }}>
+                195 {t("onboardingUI.perWeek")} 🔥
+              </p>
+            </div>
+            <div className="flex items-center gap-2.5 shrink-0">
+              <button
+                onClick={handleBack}
+                className="w-[44px] h-[44px] rounded-[6px] flex items-center justify-center active:scale-95 transition-transform"
+                style={{ border: `1.5px solid ${OBW.backBtnBorder}`, backgroundColor: OBW.backBtnBg }}
+                data-testid="button-filters-back"
+              >
+                <ChevronLeft className="w-[18px] h-[18px]" style={{ color: OBW.backBtnColor }} />
+              </button>
+              <button
+                onClick={handleNext}
+                disabled={saving}
+                className="h-[44px] px-6 rounded-[8px] text-[15px] font-semibold text-white flex items-center justify-center gap-1.5 active:scale-[0.97] transition-transform disabled:opacity-40"
+                style={{ background: OBW.pink, boxShadow: "0 4px 14px rgba(217,26,104,0.2)" }}
+                data-testid="button-filters-next"
+              >
+                {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+                {isSearchOnlyMode ? t("common.save") : t("common.next")}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

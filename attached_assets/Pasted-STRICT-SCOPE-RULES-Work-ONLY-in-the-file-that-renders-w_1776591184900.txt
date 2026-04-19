@@ -1,0 +1,161 @@
+STRICT SCOPE RULES:
+- Work ONLY in the file that renders website onboarding step 3 (the existing 3/4 screen, likely client/src/pages/onboarding/filters.tsx)
+- Website mode only
+- Do NOT touch step 1, step 2, paywall, account screen, or other onboarding screens
+- Do NOT perform a broad audit
+- Do NOT inspect locale files
+- Do NOT refactor unrelated code
+- Keep token/cost usage minimal
+- If another file is absolutely required, STOP and report it first
+
+TASK:
+Refine website onboarding step 3 so it feels pixel-perfect and consistent with the finalized 2/4 screen.
+
+IMPORTANT:
+- Keep the current overall structure and functionality
+- Do NOT change branding colors
+- Do NOT redesign the screen from scratch
+- This is a precision UI/UX refinement pass
+- Be highly critical about spacing, typography, control sizing, alignment, and proportions
+
+APPLY THESE EXACT CHANGES:
+
+1. BACK BUTTON / FLOW
+- Ensure the back button on 3/4 navigates to the existing 2/4 screen
+- It must not jump back to 1/4
+- Preserve all other routing logic
+
+2. HEADER CONSISTENCY
+- Match the finalized 2/4 header proportions and spacing exactly:
+  - badge left
+  - centered title "Zoekopdracht maken"
+  - close button right
+- Keep the same visual rhythm as 2/4
+- Badge must read 3/4
+
+3. HUURPRIJS SECTION
+- Keep the info icon next to "Huurprijs"
+- Refine the label row, price row, slider spacing, and toggle spacing so the whole block feels cleaner and more balanced
+- The price range labels should feel properly aligned relative to the slider
+
+4. INFO TOOLTIP / HELPER BOX
+- The tooltip shown when tapping the info icon is currently too large and clumsy
+- Redesign ONLY this tooltip/popover so it feels refined and lightweight:
+  - smaller overall width/height
+  - tighter padding
+  - cleaner shadow
+  - more subtle appearance
+  - visually connected to the info icon
+- Keep the same message content
+- It should feel like a neat helper bubble, not a giant modal card
+
+5. SEGMENTED CONTROLS
+Apply a precision pass to all segmented controls on this screen:
+- Soort woning
+- Slaapkamers
+- Gemeubileerd
+
+Refine:
+- overall height
+- active-pill proportions
+- text alignment
+- horizontal padding
+- spacing between items
+- visual consistency across all segmented controls
+
+Goal:
+These controls must feel like one coherent system and align with the quality of 2/4.
+
+6. TOGGLE ROWS
+Apply a precision pass to:
+- “Stuur ook woningen die ~€100 duurder zijn...”
+- “Zoek ook naar kamers / onzelfstandige woonruimtes”
+- “Stuur mij woningen waarbij mijn eisen niet duidelijk staan aangegeven”
+
+Refine:
+- row height
+- toggle size
+- spacing between toggle and text
+- text vertical alignment
+- spacing above and below each row
+
+Goal:
+These rows must feel clean, balanced, and consistent.
+
+7. MINIMALE OPPERVLAKTE
+Refine:
+- title alignment
+- n.v.t. placement
+- slider spacing
+- spacing above and below the block
+
+Goal:
+This section should feel as polished as the huurprijs block.
+
+8. OVERIGE WENSEN CHIPS
+Keep the chip UI and current logic, but refine them to feel pixel-perfect:
+- chip height
+- horizontal/vertical padding
+- plus icon alignment
+- text alignment
+- spacing between chips
+- spacing between chip rows
+
+Goal:
+The chip area should look tighter, more intentional, and more premium.
+
+9. TYPOGRAPHY PASS
+Do a critical pass on text sizing/weight across this screen:
+- section headings
+- helper/toggle text
+- chip labels
+- segmented control labels
+- n.v.t. / small labels
+- tooltip text
+
+Goal:
+Everything should feel consistent, readable, and visually aligned with the refined 2/4 screen.
+
+10. VERTICAL SPACING PASS
+Do a critical pass on vertical spacing across the whole screen:
+- between sections
+- between labels and controls
+- between controls and helper rows
+- between chip rows and the final toggle
+- between the last content block and the footer
+
+Goal:
+Breathable, but not loose.
+Consistent, but not cramped.
+Match the polished feel of 2/4.
+
+11. FOOTER CONSISTENCY
+Make the 3/4 footer match the finalized 2/4 footer as closely as possible:
+- left match block
+- back button
+- next button
+- spacing and proportions
+- button heights
+- alignment
+
+Keep current HousAlert colors and logic.
+
+12. DO NOT CHANGE
+- Do not change the control types
+- Do not remove segmented controls
+- Do not remove chips
+- Do not change the text content except for tooltip presentation/layout
+- Do not touch other onboarding steps
+- Do not touch other files unless absolutely required
+
+RETURN ONLY:
+1. exact back-button routing fix
+2. exact tooltip/popover refinements
+3. exact segmented-control refinements
+4. exact toggle-row refinements
+5. exact chip refinements
+6. exact typography changes
+7. exact vertical spacing changes
+8. exact footer consistency refinements
+9. whether any extra file was required
+10. confirmation that no broader audit was done

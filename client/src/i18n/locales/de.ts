@@ -89,6 +89,12 @@ export const de: Record<string, any> = {
     petsNote: "Haustiere: vom Anbieter nicht bestätigt – bitte selbst nachfragen",
   },
 
+  dashboard: {
+    confirmEmailBanner: "Bestätige deine E-Mail-Adresse, um alle Funktionen zu nutzen.",
+    confirmEmailBtn: "E-Mail bestätigen",
+    confirmEmailSent: "Bestätigungsmail gesendet!",
+  },
+
   home: {
     greeting: "Hallo, {name}",
     greetingDefault: "Hallo",
@@ -591,6 +597,7 @@ export const de: Record<string, any> = {
       confirmInstructions: "Klicke auf den Link in der E-Mail, um dein Konto zu aktivieren. Danach kannst du dich direkt anmelden und mit der Suche beginnen.",
       toLogin: "Zur Anmeldung",
       noEmail: "Keine E-Mail erhalten? Überprüfe deinen Spam-Ordner oder versuche es erneut.",
+      emailExists: "Ein Konto mit dieser E-Mail-Adresse existiert bereits. Versuche dich anzumelden.",
     },
   },
 
@@ -1525,6 +1532,10 @@ export const de: Record<string, any> = {
     popularCities: "Beliebte Städte",
     districtsLabel: "Stadtteile",
     optional: "(optional)",
+    selectDistricts: "Stadtteile auswählen…",
+    districtsSelected: "Stadtteile ausgewählt",
+    helperText: "Tipp: Du kannst deinen Standort später jederzeit anpassen oder weitere Suchprofile für andere Städte hinzufügen.",
+    lowMatchHint: "Tipp: Erweitere deinen Radius oder erhöhe dein Budget, um mehr Ergebnisse zu erhalten.",
     radiusLabel: "Radius",
     destinationLabel: "Arbeitsadresse / Ziel",
     destinationPlaceholder: "z.B. Berlin Hauptbahnhof",
@@ -2029,6 +2040,8 @@ export const de: Record<string, any> = {
     tipFinances: "Finanzielle Situation prüfen",
     tipLandlordAccounts: "Accounts bei beliebten Vermietern erstellen",
     tipFacebookGroups: "Facebook-Gruppen beitreten",
+    tipNewBuild: "Neubauprojekte im Blick behalten",
+    tipFollowup: "Nach der Besichtigung eine starke Mietbewerbung senden",
     tipNetwork: "Nutze dein Netzwerk",
     tipViewings: "Bei Besichtigungen überzeugen",
     applicationLetter: "Bewerbungsschreiben vorbereiten",
@@ -2047,6 +2060,8 @@ export const de: Record<string, any> = {
       tipFinances: "Überprüfe dein Budget und stelle sicher, dass deine Finanzen in Ordnung sind.",
       tipLandlordAccounts: "Erstelle vorab Accounts auf großen Vermietungsplattformen.",
       tipFacebookGroups: "Viele Wohnungen werden in lokalen Facebook-Gruppen geteilt.",
+      tipNewBuild: "Neubauten sind oft schon vor Fertigstellung ausgebucht. Sei früh dabei.",
+      tipFollowup: "Nach der Besichtigung bist du noch nicht fertig. Eine starke Mietbewerbung kann den Ausschlag geben.",
       tipNetwork: "Erzähle Freunden und Familie, dass du suchst. Die besten Tipps kommen aus dem eigenen Netzwerk.",
       tipViewings: "Bereite dich gut auf Besichtigungen vor und mache einen starken Eindruck.",
       applicationLetter: "Ein gutes Bewerbungsschreiben verbessert deine Chancen. Bereite es jetzt vor.",
@@ -2952,5 +2967,41 @@ export const de: Record<string, any> = {
         para4: "Bist du sicher? Sende deine Bewerbung direkt nach der Besichtigung. Unsicher? Schlafe eine Nacht darüber — aber warte nicht zu lange. Schnelligkeit zählt.",
       },
     },
+  },
+
+  valueStep: {
+    heroTitle: "Bereit, schneller eine Wohnung zu finden?",
+    withoutTitle: "Suchen ohne HousAlert",
+    without: {
+      hours: "Stunden täglich manuell auf Dutzenden Websites suchen",
+      tooLate: "Zu spät reagieren — die Wohnung ist schon weg",
+      noResponse: "Keine Rückmeldung von Vermietern",
+      missSmall: "Kleine Websites und neue Angebote verpassen",
+    },
+    withTitle: "Suchen mit HousAlert",
+    with: {
+      autoAlerts: "Automatische Benachrichtigungen, sobald ein Match erscheint",
+      beFirst: "Gehöre zu den Ersten, die auf neue Wohnungen reagieren",
+      moreViewings: "Mehr Besichtigungen dank schnellerer Reaktionen",
+      allSites: "Alle Wohnungswebsites werden für dich durchsucht",
+    },
+    explain: {
+      saveTime: {
+        title: "Spare Stunden bei der Suche",
+        desc: "Wir durchsuchen kontinuierlich Dutzende Wohnungsplattformen. Du erhältst nur relevante Matches.",
+      },
+      findMore: {
+        title: "Finde mehr Wohnungen",
+        desc: "Wir sammeln Angebote aus allen Quellen, auch von kleineren Seiten, die du sonst übersehen würdest.",
+      },
+      moreViewings: {
+        title: "Erhalte mehr Besichtigungen",
+        desc: "Wer als Erster reagiert, erhöht die Chancen auf eine Einladung deutlich.",
+      },
+    },
+    plansTitle: "Wähle dein Abonnement",
+    plansSubtitle: "Starte mit 14 Tagen kostenlos. Jederzeit kündbar.",
+    trustBadge: "Sichere Zahlung über Stripe. Jederzeit kündbar.",
+    cta: "Weiter zur Zahlung",
   },
 };
