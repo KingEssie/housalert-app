@@ -872,6 +872,11 @@ export const de: Record<string, any> = {
       button: "Suche starten",
       hint: "Dauert weniger als 1 Minute",
     },
+    city: {
+      title: "Wo möchtest du wohnen?",
+      searchPlaceholder: "Stadt suchen...",
+      topCities: "Beliebte Städte",
+    },
     location: {
       title: "Wo möchtest du wohnen?",
       subtitle: "Wähle deine Stadt und optional Stadtteile.",

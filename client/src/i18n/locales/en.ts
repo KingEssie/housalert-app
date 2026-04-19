@@ -895,6 +895,11 @@ export const en: Record<string, any> = {
       button: "Start searching",
       hint: "Takes less than 1 minute",
     },
+    city: {
+      title: "Where do you want to live?",
+      searchPlaceholder: "Search for a city...",
+      topCities: "Popular cities",
+    },
     location: {
       title: "Where do you want to live?",
       subtitle: "Choose your city and optionally select neighborhoods.",

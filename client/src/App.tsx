@@ -15,7 +15,7 @@ import { useBuddyConnections, isBuddyMode } from "@/lib/buddy";
 const IS_NATIVE = isNativePlatform();
 import WelcomePage from "@/pages/welcome";
 import DashboardPage from "@/pages/dashboard";
-import NewSearchPage from "@/pages/new-search";
+import AppSearchWizard from "@/pages/app-search-wizard";
 import NotFound from "@/pages/not-found";
 import ListingDetailPage from "@/pages/listing-detail";
 import ApplicationLetterPage from "@/pages/application-letter";

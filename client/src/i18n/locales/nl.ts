@@ -872,6 +872,11 @@ export const nl: Record<string, any> = {
       button: "Start met zoeken",
       hint: "Duurt minder dan 1 minuut",
     },
+    city: {
+      title: "Waar wil je wonen?",
+      searchPlaceholder: "Zoek een stad...",
+      topCities: "Populaire steden",
+    },
     location: {
       title: "Waar wil je wonen?",
       subtitle: "Kies je stad en eventueel wijken.",
