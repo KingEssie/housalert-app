@@ -1,0 +1,62 @@
+STRICT SCOPE RULES:
+- Work ONLY in the file that renders website onboarding step 2 (the existing 2/4 location-details screen, likely client/src/pages/onboarding/location.tsx)
+- Website mode only
+- Do NOT touch step 1, step 3, paywall, or other onboarding screens
+- Do NOT perform a broad audit
+- Do NOT inspect locale files
+- Do NOT refactor unrelated code
+- Keep token/cost usage minimal
+- If another file is absolutely required, STOP and report it first
+
+TASK:
+Apply the final UI refinements for website onboarding step 2.
+
+IMPORTANT:
+- Do NOT change colors/branding
+- Do NOT change routing/logic beyond the exact UI behavior requested below
+- This is a layout + control refinement only
+
+APPLY THESE EXACT CHANGES:
+
+1. TABS / SEGMENTED CONTROL HEIGHT
+- Make the segmented control slightly taller so it matches the Rentbird proportions more closely
+- Increase the container height and the active-tab pill height
+- Keep the same 3 tabs:
+  - Buurten
+  - Straal
+  - Gehele woonplaats
+- Keep the current HousAlert styling/colors
+
+2. STRAAL TAB — USE A SLIDER INSTEAD OF PILLS
+- When the "Straal" tab is active, replace the km pill buttons with a slider control
+- The slider should cover the same radius range as the current options (1–20 km or current equivalent range used in this step)
+- The slider must be the primary control in Straal mode
+- Remove the pill-button UI in Straal mode entirely
+- Keep the underlying radius logic working correctly
+
+3. GEHELE WOONPLAATS TAB — REMOVE THE INFO BOX
+- When the "Gehele woonplaats" tab is active, remove the section that says something like:
+  - “We zoeken in heel Berlijn naar passende woningen.”
+- Do not replace it with another explanatory box
+- Keep only the necessary UI for that tab
+
+4. MAP ASPECT RATIO
+- Make the map container 4:5 (height:width ratio)
+- I want the map visibly taller than it is now
+- Keep rounded corners
+- Keep the current map logic/behavior for each tab
+
+5. DO NOT CHANGE
+- Do not change the footer layout
+- Do not change the woonplaats field
+- Do not change the dropdown in Buurten mode
+- Do not change copy text outside the one removable "We zoeken in heel ..." box
+- Do not touch other files unless absolutely required
+
+RETURN ONLY:
+1. exact tab height changes
+2. exact Straal-tab control change (pills → slider)
+3. confirmation that the “We zoeken in heel ...” box is removed in Gehele woonplaats mode
+4. exact map aspect-ratio change
+5. whether any extra file was required
+6. confirmation that no broader audit was done

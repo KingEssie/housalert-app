@@ -148,7 +148,7 @@ export default function OnboardingLocation() {
 
           {/* Segmented tab control */}
           <div
-            className="flex items-center gap-1 p-1 rounded-full mb-5"
+            className="flex items-center gap-1 p-[4px] rounded-full mb-5"
             style={{ backgroundColor: "#F0F4F8" }}
             data-testid="location-tabs"
           >
@@ -158,7 +158,7 @@ export default function OnboardingLocation() {
                 <button
                   key={tab.value}
                   onClick={() => setMode(tab.value)}
-                  className="flex-1 py-[6px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
+                  className="flex-1 py-[8px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
                   style={{
                     backgroundColor: isActive ? "rgb(var(--ha-primary))" : "transparent",
                     color: isActive ? "#ffffff" : "#111111",
@@ -225,15 +225,17 @@ export default function OnboardingLocation() {
                 </div>
               )}
 
-              <MapView
-                lat={parseFloat(lat)}
-                lng={parseFloat(lng)}
-                zoom={13}
-                markers={[{ lat: parseFloat(lat), lng: parseFloat(lng), type: "primary" }]}
-                circles={[{ lat: parseFloat(lat), lng: parseFloat(lng), radiusMeters: 1500 }]}
-                height="clamp(220px, 32vh, 300px)"
-                className="rounded-[12px] overflow-hidden"
-              />
+              <div style={{ aspectRatio: "4/5" }} className="rounded-[12px] overflow-hidden w-full">
+                <MapView
+                  lat={parseFloat(lat)}
+                  lng={parseFloat(lng)}
+                  zoom={13}
+                  markers={[{ lat: parseFloat(lat), lng: parseFloat(lng), type: "primary" }]}
+                  circles={[{ lat: parseFloat(lat), lng: parseFloat(lng), radiusMeters: 1500 }]}
+                  height="100%"
+                  className=""
+                />
+              </div>
             </div>
           )}
 
@@ -243,63 +245,54 @@ export default function OnboardingLocation() {
               <p className="text-[15px] font-semibold mb-3" style={{ color: OBW.textSecondary }}>
                 {t("onboarding.location.radiusTab")}
               </p>
-              <div className="flex flex-wrap gap-2 mb-4" data-testid="radius-options">
-                {RADIUS_OPTIONS.map((km) => {
-                  const active = radiusKm === km;
-                  return (
-                    <button
-                      key={km}
-                      onClick={() => setRadiusKm(km)}
-                      className="px-4 py-2.5 rounded-full text-[14px] font-medium transition-all"
-                      style={{
-                        border: active ? "1.5px solid rgba(217,26,104,0.6)" : "1px solid #E5E7EB",
-                        backgroundColor: active ? "rgba(217,26,104,0.08)" : "transparent",
-                        color: active ? "rgb(var(--ha-primary))" : "#111111",
-                      }}
-                      data-testid={`radius-${km}`}
-                    >
-                      {km} km
-                    </button>
-                  );
-                })}
+              {/* Slider control */}
+              <div className="mb-5">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[13px] font-medium" style={{ color: OBW.textMuted }}>1 km</span>
+                  <span className="text-[18px] font-bold" style={{ color: "rgb(var(--ha-primary))" }}>
+                    {radiusKm} km
+                  </span>
+                  <span className="text-[13px] font-medium" style={{ color: OBW.textMuted }}>50 km</span>
+                </div>
+                <input
+                  type="range"
+                  min={1}
+                  max={50}
+                  step={1}
+                  value={radiusKm}
+                  onChange={(e) => setRadiusKm(parseInt(e.target.value))}
+                  className="w-full cursor-pointer"
+                  style={{ accentColor: "rgb(var(--ha-primary))" }}
+                  data-testid="slider-radius"
+                />
               </div>
-              <MapView
-                lat={parseFloat(lat)}
-                lng={parseFloat(lng)}
-                zoom={10}
-                markers={[{ lat: parseFloat(lat), lng: parseFloat(lng), type: "primary" }]}
-                circles={[{ lat: parseFloat(lat), lng: parseFloat(lng), radiusMeters: radiusKm * 1000 }]}
-                height="clamp(220px, 32vh, 300px)"
-                className="rounded-[12px] overflow-hidden"
-              />
+              <div style={{ aspectRatio: "4/5" }} className="rounded-[12px] overflow-hidden w-full">
+                <MapView
+                  lat={parseFloat(lat)}
+                  lng={parseFloat(lng)}
+                  zoom={10}
+                  markers={[{ lat: parseFloat(lat), lng: parseFloat(lng), type: "primary" }]}
+                  circles={[{ lat: parseFloat(lat), lng: parseFloat(lng), radiusMeters: radiusKm * 1000 }]}
+                  height="100%"
+                  className=""
+                />
+              </div>
             </div>
           )}
 
           {/* Gehele woonplaats (city) mode */}
           {mode === "city" && (
             <div data-testid="section-city">
-              <div
-                className="rounded-[12px] p-4 flex items-center gap-3 border mb-4"
-                style={{ borderColor: "#EAEAEA" }}
-              >
-                <div
-                  className="w-10 h-10 rounded-[8px] flex items-center justify-center shrink-0"
-                  style={{ backgroundColor: "rgba(217,26,104,0.08)" }}
-                >
-                  <Check className="w-5 h-5" style={{ color: "rgb(var(--ha-primary))" }} />
-                </div>
-                <p className="text-[14px] leading-relaxed" style={{ color: OBW.textSecondary }}>
-                  {t("onboardingLocation.searchingInCity").replace("{city}", city)}
-                </p>
+              <div style={{ aspectRatio: "4/5" }} className="rounded-[12px] overflow-hidden w-full">
+                <MapView
+                  lat={parseFloat(lat)}
+                  lng={parseFloat(lng)}
+                  zoom={10}
+                  markers={[{ lat: parseFloat(lat), lng: parseFloat(lng), type: "primary" }]}
+                  height="100%"
+                  className=""
+                />
               </div>
-              <MapView
-                lat={parseFloat(lat)}
-                lng={parseFloat(lng)}
-                zoom={10}
-                markers={[{ lat: parseFloat(lat), lng: parseFloat(lng), type: "primary" }]}
-                height="clamp(220px, 32vh, 300px)"
-                className="rounded-[12px] overflow-hidden"
-              />
             </div>
           )}
         </main>
