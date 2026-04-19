@@ -925,6 +925,7 @@ export const en: Record<string, any> = {
       furnishedNo: "No",
       amenitiesLabel: "Other preferences",
       sendUnclear: "Send me apartments where my criteria are not clearly listed",
+      priceTooltip: "Set the rent range for your search. We'll alert you as soon as a match appears.",
       specificWishesTitle: "Specific preferences",
       specificWishesSubtitle: "Optional: indicate which extras are important to you.",
       specificWishesWarning: "The more preferences you select, the fewer results you'll receive. Only select what's truly important.",

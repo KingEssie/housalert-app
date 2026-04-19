@@ -905,6 +905,7 @@ export const nl: Record<string, any> = {
       specificWishesWarning: "Hoe meer wensen je selecteert, hoe minder resultaten je ontvangt. Selecteer alleen wat echt belangrijk is.",
       amenitiesLabel: "Overige wensen",
       sendUnclear: "Stuur mij woningen waarbij mijn eisen niet duidelijk staan",
+      priceTooltip: "Stel het huurprijsbereik in voor jouw zoekopdracht. We sturen je meteen een melding als er iets beschikbaar komt.",
     },
     budget: {
       title: "Wat is je maandelijks budget?",

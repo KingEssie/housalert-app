@@ -19,35 +19,34 @@ function WebToggle({
   onChange,
   label,
   testId,
+  noBorder,
 }: {
   checked: boolean;
   onChange: (v: boolean) => void;
   label: string;
   testId: string;
+  noBorder?: boolean;
 }) {
   return (
     <label
-      className="flex items-start gap-3 cursor-pointer rounded-[8px] p-3 transition-colors"
-      style={{
-        backgroundColor: checked ? "rgba(217,26,104,0.04)" : "transparent",
-        border: `1px solid ${checked ? "rgba(217,26,104,0.2)" : OBW.divider}`,
-      }}
+      className="flex items-center gap-3 cursor-pointer h-[52px] px-4 rounded-[10px]"
+      style={noBorder ? {} : { border: "1px solid #E8EAED" }}
       data-testid={testId}
     >
       <div
-        className="w-[38px] h-[22px] rounded-full p-[2px] transition-colors shrink-0 mt-[1px]"
+        className="w-[44px] h-[26px] rounded-full p-[3px] transition-colors shrink-0 flex items-center"
         style={{ backgroundColor: checked ? "#111111" : "#E5E7EB" }}
         onClick={(e) => { e.preventDefault(); onChange(!checked); }}
       >
         <div
-          className="w-[18px] h-[18px] rounded-full bg-white transition-transform"
+          className="w-[20px] h-[20px] rounded-full bg-white transition-all"
           style={{
-            transform: checked ? "translateX(16px)" : "translateX(0)",
-            boxShadow: "0 1px 2px rgba(0,0,0,0.1)",
+            transform: checked ? "translateX(18px)" : "translateX(0)",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.15)",
           }}
         />
       </div>
-      <span className="text-[15px] leading-snug" style={{ color: OBW.text }}>{label}</span>
+      <span className="text-[14px] leading-snug flex-1" style={{ color: OBW.text }}>{label}</span>
     </label>
   );
 }
@@ -191,6 +190,7 @@ function RangeSlider({
   formatLabel,
   testId,
   theme,
+  extraClass,
 }: {
   min: number;
   max: number;
@@ -200,6 +200,7 @@ function RangeSlider({
   formatLabel: (v: number) => string;
   testId: string;
   theme?: OBTheme;
+  extraClass?: string;
 }) {
   const t = theme || OB;
   const trackInactive = "#E5E7EB";
@@ -213,7 +214,7 @@ function RangeSlider({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full"
+        className={`w-full${extraClass ? ` ${extraClass}` : ""}`}
         style={{
           background: `linear-gradient(to right, ${OB.pink} 0%, ${OB.pink} ${pct}%, ${trackInactive} ${pct}%, ${trackInactive} 100%)`,
         }}
@@ -238,6 +239,7 @@ function DualRangeSlider({
   formatLabel,
   testId,
   theme,
+  extraClass,
 }: {
   min: number;
   max: number;
@@ -249,6 +251,7 @@ function DualRangeSlider({
   formatLabel: (v: number) => string;
   testId: string;
   theme?: OBTheme;
+  extraClass?: string;
 }) {
   const t = theme || OB;
   const trackInactive = "#E5E7EB";
@@ -273,7 +276,7 @@ function DualRangeSlider({
             const v = Number(e.target.value);
             if (v <= valueHigh) onChangeLow(v);
           }}
-          className="w-full absolute inset-0 dual-range-thumb"
+          className={`w-full absolute inset-0 dual-range-thumb${extraClass ? ` ${extraClass}` : ""}`}
           style={{ background: trackBg, zIndex: valueLow > max - step ? 3 : 1 }}
           data-testid="slider-min-price"
         />
@@ -287,7 +290,7 @@ function DualRangeSlider({
             const v = Number(e.target.value);
             if (v >= valueLow) onChangeHigh(v);
           }}
-          className="w-full absolute inset-0 dual-range-thumb"
+          className={`w-full absolute inset-0 dual-range-thumb${extraClass ? ` ${extraClass}` : ""}`}
           style={{ background: "transparent", zIndex: 2 }}
           data-testid="slider-max-price"
         />
@@ -748,7 +751,7 @@ export default function OnboardingFilters() {
                       data-testid="tooltip-price-info"
                     >
                       <p className="text-[12px] leading-relaxed" style={{ color: OBW.textSecondary }}>
-                        {t("onboarding.filters.priceTooltip") || "Stel het huurprijsbereik in voor jouw zoekopdracht."}
+                        {t("onboarding.filters.priceTooltip")}
                       </p>
                     </div>
                   )}

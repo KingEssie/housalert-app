@@ -905,6 +905,7 @@ export const de: Record<string, any> = {
       specificWishesWarning: "Je mehr Wünsche du auswählst, desto weniger Ergebnisse bekommst du. Wähle nur, was wirklich wichtig ist.",
       amenitiesLabel: "Weitere Wünsche",
       sendUnclear: "Sende mir Wohnungen, bei denen meine Kriterien nicht eindeutig angegeben sind",
+      priceTooltip: "Lege die Mietpreisspanne für deine Suche fest. Wir benachrichtigen dich sofort, wenn eine passende Wohnung auftaucht.",
     },
     budget: {
       title: "Was ist dein monatliches Budget?",

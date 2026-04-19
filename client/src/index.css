@@ -643,6 +643,26 @@ input[type="range"]::-moz-range-thumb {
 .dual-range-thumb::-moz-range-thumb {
   pointer-events: auto;
 }
+.ob-web-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+.ob-web-range::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
 .login-input::placeholder {
   color: #334855;
   opacity: 0.55;

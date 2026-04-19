@@ -382,7 +382,7 @@ export default function ApplicationLetterPage() {
                     type="tel"
                     value={phone}
                     onChange={e => setPhone(e.target.value)}
-                    placeholder="06 12345678"
+                    placeholder={t("profileEdit.phonePlaceholder")}
                     className="app-input"
                     data-testid="input-phone"
                   />
