@@ -13,6 +13,18 @@ import { OB, OBW, OBStickyBar, OBWebHeader, OBInfoBox, useWebsiteMode, appendWeb
 import { OnboardingFlowLayout } from "@/components/onboarding-flow-layout";
 import { validatePassword, isPasswordValid } from "@/lib/password-validation";
 import { PasswordRules } from "@/components/password-rules";
+import { useQuery } from "@tanstack/react-query";
+import { isValidImageUrl } from "@/components/listing-fallback";
+
+interface PreviewListing {
+  id: string;
+  price: number | null;
+  size_m2: number | null;
+  city: string | null;
+  source: string | null;
+  image_url: string | null;
+  fresh_label: string | null;
+}
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -46,6 +58,36 @@ export default function OnboardingPassword() {
   const [loading, setLoading] = useState(false);
   const [accordionOpen, setAccordionOpen] = useState(true);
   const submittingRef = useRef(false);
+
+  // Fetch real preview listings that match the user's search criteria.
+  // Used by the accordion preview card — picks first listing with a valid image.
+  const previewQs = new URLSearchParams();
+  if (city) previewQs.set("city", city);
+  if (minPrice) previewQs.set("minPrice", minPrice);
+  if (maxPrice) previewQs.set("maxPrice", maxPrice);
+
+  const { data: previewListings } = useQuery<PreviewListing[]>({
+    queryKey: ["/api/listings/preview", city, minPrice, maxPrice],
+    queryFn: () =>
+      fetch(`/api/listings/preview?${previewQs.toString()}`)
+        .then((r) => (r.ok ? r.json() : [])),
+    enabled: !!city,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Fallback order:
+  //   1. First listing where image_url passes isValidImageUrl
+  //   2. First listing with any image_url (even if not ideal)
+  //   3. First listing regardless of image (use placeholder image)
+  //   4. null → static card
+  const listingWithValidImage = previewListings?.find((l) => isValidImageUrl(l.image_url));
+  const listingWithAnyImage = previewListings?.find((l) => l.image_url);
+  const anyListing = previewListings?.[0] ?? null;
+  const previewListing: PreviewListing | null =
+    listingWithValidImage ?? listingWithAnyImage ?? anyListing ?? null;
+  const previewImageSrc = isValidImageUrl(previewListing?.image_url)
+    ? previewListing!.image_url!
+    : "/listing-placeholder.png";
 
   if (!city) return <Redirect to="/onboarding/filters" />;
   if (!w && !params.get("email")) return <Redirect to="/onboarding/email" />;
@@ -352,25 +394,42 @@ export default function OnboardingPassword() {
                 <div
                   className="rounded-[8px] overflow-hidden bg-white"
                   style={{ border: "1px solid #E8EAED", boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
-                  data-testid="listing-preview-placeholder"
+                  data-testid="listing-preview-card"
                 >
-                  {/* Image area — fills fully, no overlay on top */}
+                  {/* Image area — real listing image when available, placeholder as fallback */}
                   <div className="w-full h-[148px] overflow-hidden" style={{ backgroundColor: "#EDF2F7" }}>
                     <img
-                      src="/listing-placeholder.png"
+                      src={previewImageSrc}
                       alt=""
                       className="w-full h-full object-cover"
                       draggable={false}
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = "/listing-placeholder.png";
+                      }}
                     />
                   </div>
 
-                  {/* Meta row — sharp and readable */}
+                  {/* Meta row — real data when listing available, otherwise static placeholders */}
                   <div className="flex items-center gap-2.5 px-3.5 py-3" style={{ borderTop: "1px solid #F0F2F5" }}>
-                    <span className="text-[14px] font-bold" style={{ color: "#111111" }}>€850 /mnd</span>
+                    <span className="text-[14px] font-bold" style={{ color: "#111111" }}>
+                      {previewListing?.price ? `€${previewListing.price} /mnd` : "€850 /mnd"}
+                    </span>
+                    {previewListing?.size_m2 && (
+                      <>
+                        <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
+                        <span className="text-[12px] font-medium" style={{ color: "#374151" }}>{previewListing.size_m2} m²</span>
+                      </>
+                    )}
+                    {!previewListing?.size_m2 && (
+                      <>
+                        <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
+                        <span className="text-[12px] font-medium" style={{ color: "#374151" }}>45 m²</span>
+                      </>
+                    )}
                     <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
-                    <span className="text-[12px] font-medium" style={{ color: "#374151" }}>45 m²</span>
-                    <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
-                    <span className="text-[12px]" style={{ color: "#6B7280" }}>2 dagen geleden</span>
+                    <span className="text-[12px]" style={{ color: "#6B7280" }}>
+                      {previewListing?.fresh_label ?? "2 dagen geleden"}
+                    </span>
                     <span className="ml-auto text-[11px] font-semibold" style={{ color: "rgb(var(--ha-primary))" }}>
                       Upgrade om te bekijken →
                     </span>

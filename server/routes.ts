@@ -1480,6 +1480,46 @@ export async function registerRoutes(
     }
   });
 
+  // Public endpoint — used by the onboarding account-creation screen to show a
+  // real listing preview that matches the user's search criteria.
+  // No auth required (user is not logged in yet).
+  app.get("/api/listings/preview", async (req, res) => {
+    try {
+      const city = (req.query.city as string || "").trim();
+      const minPrice = parseInt(req.query.minPrice as string) || 0;
+      const maxPrice = parseInt(req.query.maxPrice as string) || 0;
+
+      if (!city) return res.status(400).json({ error: "city is required" });
+
+      let query = supabase
+        .from("listings")
+        .select("id, price, size_m2, city, source, image_url, created_at")
+        .ilike("city", `%${city}%`)
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      if (minPrice > 0) query = query.gte("price", minPrice);
+      if (maxPrice > 0) query = query.lte("price", maxPrice);
+
+      const { data, error } = await query;
+      if (error) return res.status(500).json({ error: error.message });
+
+      const listings = (data ?? []).map((l: any) => ({
+        id: l.id,
+        price: l.price,
+        size_m2: l.size_m2,
+        city: l.city,
+        source: l.source,
+        image_url: l.image_url ?? null,
+        fresh_label: computeFreshLabel(l.created_at),
+      }));
+
+      return res.json(listings);
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.get("/api/matches", async (req, res) => {
     try {
       const token = req.headers.authorization?.replace("Bearer ", "");
