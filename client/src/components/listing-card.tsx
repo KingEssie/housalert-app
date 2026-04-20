@@ -68,6 +68,7 @@ interface ListingCardFullProps {
   respondedLabel?: string;
   onRemoveResponse?: () => void;
   removeResponseLabel?: string;
+  matchVariant?: boolean;
 }
 
 export function ListingCardFull({
@@ -79,6 +80,7 @@ export function ListingCardFull({
   respondedLabel,
   onRemoveResponse,
   removeResponseLabel,
+  matchVariant = false,
 }: ListingCardFullProps) {
   const [imgError, setImgError] = useState(false);
   const { t, locale } = useTranslation();
@@ -99,10 +101,32 @@ export function ListingCardFull({
 
   const newLabel = locale === "de" ? "Neu" : locale === "en" ? "New" : "Nieuw";
 
+  const cardBg = matchVariant
+    ? "rgba(155, 190, 253, 0.87)"
+    : "#ffffff";
+  const cardBorder = matchVariant
+    ? "none"
+    : "1px solid rgb(var(--ha-card-border))";
+  const imageRatio = matchVariant ? "2/1" : "16/9";
+
+  const heartFill = isFavorited ? "#6192FC" : "none";
+  const heartStroke = matchVariant
+    ? "#6192FC"
+    : isFavorited
+    ? "#FF385C"
+    : "#ffffff";
+  const heartActiveFill = matchVariant
+    ? "#6192FC"
+    : "#FF385C";
+
   return (
     <div
-      className="bg-white cursor-pointer active:scale-[0.985] transition-transform duration-200 rounded-[12px] overflow-hidden"
-      style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.07)", border: "1px solid rgb(var(--ha-card-border))" }}
+      className="cursor-pointer active:scale-[0.985] transition-transform duration-200 rounded-[12px] overflow-hidden"
+      style={{
+        backgroundColor: cardBg,
+        boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
+        border: cardBorder,
+      }}
       onClick={onCardClick}
       data-testid={`card-match-${match.listing_id}`}
     >
@@ -112,18 +136,18 @@ export function ListingCardFull({
             src={match.image_url!}
             alt={match.title}
             className="w-full object-cover"
-            style={{ aspectRatio: "16/9" }}
+            style={{ aspectRatio: imageRatio }}
             loading="lazy"
             onError={() => setImgError(true)}
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-full" style={{ aspectRatio: "16/9" }}>
+          <div className="w-full" style={{ aspectRatio: imageRatio }}>
             <ListingFallback title={match.title} source={match.source} city={match.city} size="full" />
           </div>
         )}
 
-        {isNew && (
+        {isNew && !matchVariant && (
           <div
             className="absolute top-2.5 left-2.5 bg-ha-highlight text-ha-text text-[11px] font-bold px-2 py-[3px] rounded-[5px] leading-none uppercase tracking-wide"
             data-testid={`badge-new-${match.listing_id}`}
@@ -134,22 +158,26 @@ export function ListingCardFull({
 
         <button
           onClick={handleHeartClick}
-          className="absolute top-3 right-3 w-[38px] h-[38px] flex items-center justify-center transition-all duration-150 active:scale-110"
+          className={`absolute top-3 right-3 flex items-center justify-center transition-all duration-150 active:scale-110 ${
+            matchVariant
+              ? "w-[36px] h-[36px] rounded-full bg-white"
+              : "w-[38px] h-[38px]"
+          }`}
           data-testid={`button-favorite-${match.listing_id}`}
         >
           <Heart
-            className="w-[22px] h-[22px] transition-all duration-150"
-            fill={isFavorited ? "#FF385C" : "none"}
-            stroke={isFavorited ? "#FF385C" : "#ffffff"}
+            className="w-[20px] h-[20px] transition-all duration-150"
+            fill={isFavorited ? heartActiveFill : "none"}
+            stroke={matchVariant ? "#6192FC" : isFavorited ? "#FF385C" : "#ffffff"}
             strokeWidth={2.5}
-            style={{ filter: "drop-shadow(0 1px 4px rgba(0,0,0,0.55))" }}
+            style={matchVariant ? undefined : { filter: "drop-shadow(0 1px 4px rgba(0,0,0,0.55))" }}
           />
         </button>
       </div>
 
       <div className="p-4 flex flex-col gap-1.5">
         <h3
-          className="text-[16px] font-bold text-ha-text leading-snug line-clamp-2"
+          className={`text-[16px] font-bold leading-snug line-clamp-2 ${matchVariant ? "text-black" : "text-ha-text"}`}
           data-testid={`text-match-title-${match.listing_id}`}
         >
           {match.title}
@@ -164,35 +192,55 @@ export function ListingCardFull({
         <div className="flex flex-nowrap gap-1.5 mt-0.5 overflow-hidden" data-testid={`detail-meta-${match.listing_id}`}>
           {address && (
             <span
-              className="inline-flex items-center gap-[4px] bg-ha-surface text-[13px] font-medium text-ha-text px-2 py-[5px] rounded-[6px] min-w-0 shrink"
+              className={`inline-flex items-center gap-[4px] text-[13px] font-medium px-2 py-[5px] rounded-[6px] min-w-0 shrink ${
+                matchVariant ? "bg-white text-black" : "bg-ha-surface text-ha-text"
+              }`}
               data-testid={`detail-city-${match.listing_id}`}
             >
-              <MapPin className="w-[19px] h-[19px] flex-shrink-0 text-ha-text-muted" strokeWidth={1.7} />
+              <MapPin
+                className={`w-[19px] h-[19px] flex-shrink-0 ${matchVariant ? "text-ha-primary" : "text-ha-text-muted"}`}
+                strokeWidth={1.7}
+              />
               <span className="truncate">{address}</span>
             </span>
           )}
           {hasBedrooms && (
             <span
-              className="inline-flex items-center gap-[4px] bg-ha-surface text-[13px] font-medium text-ha-text px-2 py-[5px] rounded-[6px] shrink-0"
+              className={`inline-flex items-center gap-[4px] text-[13px] font-medium px-2 py-[5px] rounded-[6px] shrink-0 ${
+                matchVariant ? "bg-white text-black" : "bg-ha-surface text-ha-text"
+              }`}
             >
-              <BedDouble className="w-[19px] h-[19px] flex-shrink-0 text-ha-text-muted" strokeWidth={1.7} />
+              <BedDouble
+                className={`w-[19px] h-[19px] flex-shrink-0 ${matchVariant ? "text-ha-primary" : "text-ha-text-muted"}`}
+                strokeWidth={1.7}
+              />
               {match.bedrooms}
             </span>
           )}
           {hasSize && (
             <span
-              className="inline-flex items-center gap-[4px] bg-ha-surface text-[13px] font-medium text-ha-text px-2 py-[5px] rounded-[6px] shrink-0"
+              className={`inline-flex items-center gap-[4px] text-[13px] font-medium px-2 py-[5px] rounded-[6px] shrink-0 ${
+                matchVariant ? "bg-white text-black" : "bg-ha-surface text-ha-text"
+              }`}
             >
-              <Maximize2 className="w-[19px] h-[19px] flex-shrink-0 text-ha-text-muted" strokeWidth={1.7} />
+              <Maximize2
+                className={`w-[19px] h-[19px] flex-shrink-0 ${matchVariant ? "text-ha-primary" : "text-ha-text-muted"}`}
+                strokeWidth={1.7}
+              />
               {match.size_m2} m²
             </span>
           )}
           {match.price > 0 && (
             <span
-              className="inline-flex items-center gap-[4px] bg-ha-surface text-[13px] font-semibold text-ha-text px-2 py-[5px] rounded-[6px] shrink-0"
+              className={`inline-flex items-center gap-[4px] text-[13px] font-semibold px-2 py-[5px] rounded-[6px] shrink-0 ${
+                matchVariant ? "bg-white text-black" : "bg-ha-surface text-ha-text"
+              }`}
               data-testid={`badge-price-${match.listing_id}`}
             >
-              <Tag className="w-[19px] h-[19px] flex-shrink-0 text-ha-text-muted" strokeWidth={1.7} />
+              <Tag
+                className={`w-[19px] h-[19px] flex-shrink-0 ${matchVariant ? "text-ha-primary" : "text-ha-text-muted"}`}
+                strokeWidth={1.7}
+              />
               {formatPrice(match.price, locale)}
             </span>
           )}

@@ -46,6 +46,7 @@ import {
   ExternalLink,
   Link2Off,
   Rocket,
+  SlidersHorizontal,
 } from "lucide-react";
 import { ExpandableCompletionCard, type CompletionStep } from "@/components/expandable-completion-card";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
@@ -1296,6 +1297,8 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [topTab, setTopTab] = useState<MatchesTopTab>(initialTopTab || "matches");
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortOption, setSortOption] = useState<string>("date_desc");
+  const [sortSheetOpen, setSortSheetOpen] = useState(false);
   const [appliedListings, setAppliedListings] = useState<ApiMatch[]>([]);
   const { t, locale } = useTranslation();
   const { toast } = useToast();
@@ -1431,9 +1434,17 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
   }, []);
 
   const allMatchesSorted = [...matches].sort((a, b) => {
-    const dateA = a.first_seen_at || a.matched_at || "";
-    const dateB = b.first_seen_at || b.matched_at || "";
-    return new Date(dateB).getTime() - new Date(dateA).getTime();
+    switch (sortOption) {
+      case "price_asc": return (a.price || 0) - (b.price || 0);
+      case "price_desc": return (b.price || 0) - (a.price || 0);
+      case "size_asc": return (a.size_m2 || 0) - (b.size_m2 || 0);
+      case "size_desc": return (b.size_m2 || 0) - (a.size_m2 || 0);
+      default: {
+        const dateA = a.first_seen_at || a.matched_at || "";
+        const dateB = b.first_seen_at || b.matched_at || "";
+        return new Date(dateB).getTime() - new Date(dateA).getTime();
+      }
+    }
   });
 
   const filteredMatches = searchQuery.trim()
@@ -1491,22 +1502,26 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
           <h1 className="text-page-title">{t("matches.title")}</h1>
         </div>
 
-        <div className="px-5 pt-16">
-          <div className="flex flex-col items-center text-center px-6 pb-4">
-            <div className="w-16 h-16 rounded-full bg-ha-surface flex items-center justify-center mb-6">
-              <Lock className="w-7 h-7 text-ha-text-muted" />
+        <div className="px-3 pt-4">
+          <div
+            className="rounded-[20px] p-6 flex flex-col items-center text-center"
+            style={{ backgroundColor: "#6192FC" }}
+          >
+            <div className="w-14 h-14 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "rgba(255,255,255,0.2)" }}>
+              <Lock className="w-7 h-7 text-white" />
             </div>
-            <h2 className="text-[20px] font-semibold text-ha-text mb-2.5" data-testid="text-locked-headline">
+            <h2 className="text-[20px] font-bold text-white mb-3" data-testid="text-locked-headline">
               {t("matches.locked.headline")}
             </h2>
-            <p className="text-[15px] text-ha-text-secondary leading-relaxed max-w-[280px] mb-8" data-testid="text-locked-desc">
+            <p className="text-[15px] leading-relaxed max-w-[280px] mb-6" style={{ color: "rgba(255,255,255,0.88)" }} data-testid="text-locked-desc">
               {t("matches.locked.desc")}
             </p>
             <button
               onClick={() => navigate("/paywall")}
-              className="h-[48px] px-10 rounded-[12px] bg-ha-primary-hover text-white text-[15px] font-semibold hover:bg-ha-primary transition-colors active:scale-[0.97]"
+              className="h-[48px] px-8 rounded-[12px] bg-white text-black text-[15px] font-semibold flex items-center gap-2 active:scale-[0.97] transition-transform"
               data-testid="button-locked-subscribe"
             >
+              <ChevronRight className="w-4 h-4 text-black" />
               {t("matches.locked.cta")}
             </button>
           </div>
@@ -1527,7 +1542,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
               <button
                 key={key}
                 onClick={() => setTopTab(key)}
-                className={`flex-1 text-center pb-3 text-[15px] transition-all duration-200 border-b-2 ${
+                className={`flex-1 text-center pb-3 text-[17px] transition-all duration-200 border-b-2 ${
                   isActive
                     ? "text-ha-primary-hover font-semibold border-ha-primary-hover"
                     : "text-ha-text-muted font-medium border-transparent"
@@ -1542,19 +1557,28 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
         </div>
       </div>
 
-      <div className="px-5 pt-3">
+      <div className="px-2 pt-3">
         {topTab === "matches" && (
-          <div className="bg-white rounded-[12px] p-4 flex flex-col gap-4" style={cardStyle}>
-            <div className="relative">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[17px] h-[17px] text-ha-text-placeholder pointer-events-none" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t("matches.searchPlaceholder")}
-                className="w-full h-[44px] pl-10 pr-4 rounded-[14px] bg-ha-surface border border-transparent text-[15px] text-ha-text placeholder-ha-text-placeholder outline-none focus:bg-white focus:border-ha-card-border transition-all"
-                data-testid="input-search-matches"
-              />
+          <div className="bg-white rounded-[12px] p-3 flex flex-col gap-3" style={cardStyle}>
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-[20px] h-[20px] text-black pointer-events-none" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t("matches.searchPlaceholder")}
+                  className="w-full h-[52px] pl-10 pr-4 rounded-[4px] bg-white border border-ha-card-border text-[15px] text-ha-text placeholder-ha-text-placeholder outline-none focus:border-ha-primary transition-all"
+                  data-testid="input-search-matches"
+                />
+              </div>
+              <button
+                onClick={() => setSortSheetOpen(true)}
+                className="w-[52px] h-[52px] rounded-full bg-ha-surface flex items-center justify-center flex-shrink-0 active:bg-ha-card-border transition-colors"
+                data-testid="button-sort-matches"
+              >
+                <SlidersHorizontal className="w-[20px] h-[20px] text-ha-text" strokeWidth={1.8} />
+              </button>
             </div>
 
             {apiMatchesQuery.isLoading ? (
@@ -1610,6 +1634,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
                     navigate(`/apply/${m.listing_id}`);
                   }}
                   locked={!hasAccess}
+                  matchVariant
                 />
               ))
             )}
@@ -1644,6 +1669,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
                     respondedLabel={formatRespondedDate(m)}
                     onRemoveResponse={() => removeApplied(m.listing_id)}
                     removeResponseLabel={t("matches.removeResponse")}
+                    matchVariant
                   />
                 ))}
               </div>
@@ -1651,6 +1677,54 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
           </>
         )}
       </div>
+
+      {sortSheetOpen && (
+        <div className="fixed inset-0 z-50" data-testid="sort-sheet-overlay">
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setSortSheetOpen(false)}
+          />
+          <div
+            className="absolute bottom-0 left-0 right-0 bg-white rounded-t-[20px] px-5 pt-5"
+            style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 24px)" }}
+          >
+            <div className="w-10 h-1 rounded-full bg-ha-card-border mx-auto mb-5" />
+            <h3 className="text-[17px] font-bold text-ha-text mb-4">Sorteren</h3>
+            {[
+              { key: "date_desc", label: "Datum toegevoegd" },
+              { key: "price_asc", label: "Prijs (laag-hoog)" },
+              { key: "price_desc", label: "Prijs (hoog-laag)" },
+              { key: "size_asc", label: "Oppervlak (laag-hoog)" },
+              { key: "size_desc", label: "Oppervlak (hoog-laag)" },
+            ].map((opt) => {
+              const isSelected = sortOption === opt.key;
+              return (
+                <button
+                  key={opt.key}
+                  onClick={() => { setSortOption(opt.key); setSortSheetOpen(false); }}
+                  className="w-full flex items-center justify-between py-4 border-b border-ha-card-border last:border-0 active:opacity-70 transition-opacity"
+                  data-testid={`sort-option-${opt.key}`}
+                >
+                  <span
+                    className={`text-[16px] ${isSelected ? "font-semibold" : "font-medium text-ha-text"}`}
+                    style={isSelected ? { color: "#6192FC" } : undefined}
+                  >
+                    {opt.label}
+                  </span>
+                  {isSelected && (
+                    <div
+                      className="w-[22px] h-[22px] rounded-full flex items-center justify-center"
+                      style={{ backgroundColor: "#6192FC" }}
+                    >
+                      <Check className="w-[13px] h-[13px] text-white" strokeWidth={3} />
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

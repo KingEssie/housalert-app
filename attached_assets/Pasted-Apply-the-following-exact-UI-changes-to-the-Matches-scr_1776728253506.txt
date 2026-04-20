@@ -1,0 +1,146 @@
+Apply the following exact UI changes to the Matches screen only.
+
+Important:
+- Scope only the Matches screen and directly used Matches components.
+- Do not affect Home, Favorites, Account, or other screens unless the bottom sheet / shared sort component must be reused intentionally.
+- Do not change logic except where explicitly requested for sorting.
+- Keep everything clean and minimal.
+- Use the existing semantic token system where possible.
+- If needed, map the requested colors cleanly into semantic usage.
+- Do not introduce random new colors.
+
+--------------------------------------------------
+1. TOP TABS
+--------------------------------------------------
+
+Target the top tabs such as:
+- Matches
+- Ontdekken / Gereageerd / equivalent second tab
+
+Changes:
+- Make the tab label text slightly larger than current
+- Keep the current tab structure and behavior
+- Preserve the active/inactive state logic
+
+--------------------------------------------------
+2. SEARCH BAR + SORT BUTTON
+--------------------------------------------------
+
+Search field:
+- Make the search field taller
+- Search field background: white
+- Border radius: 4px
+- Magnifying glass icon:
+  - larger
+  - black
+- Keep placeholder and search behavior intact
+
+Sort button next to search:
+- Add / style a light grey circular button next to the search field
+- It should contain a sort icon
+- The circle should feel like a clean utility action button
+- Keep it aligned neatly with the height of the search field
+
+--------------------------------------------------
+3. SORT MODAL (BOTTOM SHEET)
+--------------------------------------------------
+
+When the sort button is clicked:
+- Show a bottom modal / bottom sheet
+- Use the same sorting options and order as Rentbird
+- Sorting must be functional
+- Default selected sorting: "Datum toegevoegd"
+
+Selected/active sort option:
+- active color: #6192FC
+
+Keep:
+- clean white bottom sheet
+- simple readable list
+- good spacing
+- no visual clutter
+
+--------------------------------------------------
+4. "GEEN ACTIEF ABONNEMENT" BLOCK
+--------------------------------------------------
+
+If the user has no active subscription:
+- make this block visually match the Rentbird style described
+
+Changes:
+- background: #6192FC
+- title text: white
+- body text: white
+- CTA button:
+  - background: white
+  - text: black
+  - icon: black
+
+Keep:
+- existing message/copy structure unless text content is already defined
+- existing functionality
+
+--------------------------------------------------
+5. MATCH CARDS
+--------------------------------------------------
+
+General card background:
+- Match card content background: #9bbefdde
+- All main text: black
+
+Detail pills / chips (place, area, price, etc.):
+- background: white
+- icon color: #6192FC
+- keep text black
+- preserve current layout and spacing
+
+"Nieuw" badge:
+- remove it completely from the image
+
+Favorite heart:
+- keep a white circular background behind the heart
+- inactive state:
+  - outlined heart
+  - heart color: #6192FC
+- active state:
+  - filled heart
+  - use the existing active favorite logic, but style it with the requested blue family if appropriate
+- keep favorite functionality intact
+
+Image:
+- make the listing image slightly shorter in height
+- keep proportions visually clean
+- do not make it too short
+
+--------------------------------------------------
+6. MAIN WHITE CONTAINER WIDTH
+--------------------------------------------------
+
+Target the large white content container sitting on the grey page background.
+
+Changes:
+- make the white container slightly wider
+- reduce the side margins so there is less empty grey space at the left and right
+- keep it balanced and aligned
+
+--------------------------------------------------
+RULES
+--------------------------------------------------
+
+- Only modify the Matches screen and directly related Matches-only components
+- Do not redesign unrelated components
+- Do not change text unnecessarily
+- Do not change routing
+- Do not break shared card behavior outside Matches unless intentionally required and safe
+- Keep all interactions functional
+
+--------------------------------------------------
+OUTPUT
+--------------------------------------------------
+
+Return:
+1. files changed
+2. exact Matches elements updated
+3. whether the sort bottom sheet was newly created or adapted from an existing component
+4. confirmation that sorting is functional and defaults to "Datum toegevoegd"
+5. confirmation that unrelated screens were not modified
