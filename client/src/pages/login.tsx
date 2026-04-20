@@ -102,7 +102,7 @@ export default function LoginPage() {
       <div
         className="relative w-full flex-shrink-0"
         style={{
-          background: "linear-gradient(135deg, #253c96 0%, #19244e 100%)",
+          background: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, rgb(var(--ha-primary-hover)) 100%)",
           minHeight: "32vh",
           paddingBottom: "48px",
         }}

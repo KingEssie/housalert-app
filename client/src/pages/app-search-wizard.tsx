@@ -594,7 +594,7 @@ export default function AppSearchWizard() {
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-[10px] border text-left transition-all active:scale-[0.98]"
                 style={{
                   borderColor: "rgb(var(--ha-card-border))",
-                  backgroundColor: city?.name === c.name ? "rgba(37,60,150,0.04)" : "rgb(var(--ha-surface))",
+                  backgroundColor: city?.name === c.name ? "var(--ha-primary-light)" : "rgb(var(--ha-surface))",
                 }}
                 data-testid={`city-preset-${c.name}`}>
                 <span className="text-[15px] font-medium flex-1" style={{ color: OBW.text }}>{c.name}</span>
@@ -918,7 +918,7 @@ export default function AppSearchWizard() {
                   className="text-[12px] font-semibold px-3 py-[5px] rounded-full border transition-all"
                   style={{
                     borderColor: "rgb(var(--ha-card-border))",
-                    backgroundColor: f.sizeNA ? "rgba(37,60,150,0.06)" : "transparent",
+                    backgroundColor: f.sizeNA ? "var(--ha-primary-light)" : "transparent",
                     color: f.sizeNA ? "rgb(var(--ha-primary))" : OBW.textSecondary,
                   }}
                   data-testid="button-size-na">

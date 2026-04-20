@@ -46,6 +46,7 @@ interface Plan {
   popular: boolean;
   discountLabel?: string;
   discountColor?: string;
+  discountBgColor?: string;
 }
 
 function getPlans(t: (k: string) => string): Plan[] {
@@ -58,6 +59,7 @@ function getPlans(t: (k: string) => string): Plan[] {
       popular: false,
       discountLabel: "-40%",
       discountColor: "rgb(var(--ha-success))",
+      discountBgColor: "var(--ha-success-light)",
     },
     {
       id: "two_month",
@@ -67,6 +69,7 @@ function getPlans(t: (k: string) => string): Plan[] {
       popular: true,
       discountLabel: "-30%",
       discountColor: "rgb(var(--ha-primary))",
+      discountBgColor: "var(--ha-primary-light)",
     },
     {
       id: "monthly",
@@ -256,7 +259,7 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
                   {plan.discountLabel && (
                     <span
                       className="text-[11px] font-semibold px-2 py-0.5 rounded-[4px]"
-                      style={{ backgroundColor: plan.discountColor + "20", color: plan.discountColor }}
+                      style={{ backgroundColor: plan.discountBgColor, color: plan.discountColor }}
                     >
                       {plan.discountLabel}
                     </span>

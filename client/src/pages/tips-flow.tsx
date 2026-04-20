@@ -253,7 +253,7 @@ export default function TipsFlowPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[rgba(15,23,42,0.04)] z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-ha-card-border z-10">
         <div className="max-w-[480px] mx-auto px-4 py-4 pb-5 space-y-3">
           <button
             onClick={handleToggleCheck}

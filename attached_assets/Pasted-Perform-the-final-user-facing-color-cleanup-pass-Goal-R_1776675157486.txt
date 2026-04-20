@@ -1,0 +1,55 @@
+Perform the final user-facing color cleanup pass.
+
+Goal:
+Resolve the last remaining functional color bugs and remove the remaining non-approved hardcoded user-facing color values, without changing layout or product behavior.
+
+Scope:
+- user-facing app only
+- exclude admin
+- keep all explicitly approved exceptions untouched
+
+Fix these exact issues:
+
+1. Functional CSS bugs
+- onboarding-slideshow.tsx line 299:
+  replace invalid `rgba(var(--ha-primary),0.04)` with valid semantic token usage
+- paywall.tsx line 477:
+  replace broken `plan.discountColor + "20"` opacity construction with a valid semantic-token-based background color approach
+- onboarding/setup.tsx line 259:
+  fix the same broken `discountColor + "20"` pattern
+
+2. Hardcoded user-facing color values
+- onboarding/password.tsx:
+  replace `#EBF2FC`, `#1E3A8A`, `#1D4ED8`, `#0F172A`
+  with semantic token equivalents
+- login.tsx:
+  replace `linear-gradient(135deg, #253c96 0%, #19244e 100%)`
+  with semantic token references
+- expandable-completion-card.tsx:
+  replace `border-[#86EFAC]` with semantic success border usage
+
+3. Arbitrary rgba values that should be tokenized
+- tips-flow.tsx line 256:
+  replace `border-[rgba(15,23,42,0.04)]` with semantic divider usage
+- expandable-completion-card.tsx line 90:
+  replace `shadow-[0_0_0_1px_rgba(134,239,172,0.15)]` with semantic success-token-based shadow syntax
+
+4. Consistency refinement
+- If safe and visually neutral, normalize remaining inline selected-state backgrounds in user-facing onboarding/search flows to the canonical selected-state token (`var(--ha-primary-light)`), especially where they are currently 0.06 or 0.04 blue opacity.
+- Do not change any cases that are clearly intentional emphasis differences unless the output stays visually equivalent.
+
+Constraints:
+- do not touch approved exceptions:
+  - Trustpilot green
+  - favorite heart red
+  - approved CTA shadows
+  - approved card elevation shadows
+  - admin files
+- do not introduce new hardcoded colors
+- do not change layout, copy, routing, logic, or behavior
+
+After completion, return:
+1. files changed
+2. exact fixes made
+3. whether all remaining user-facing functional color bugs are resolved
+4. whether any non-approved hardcoded user-facing color values still remain

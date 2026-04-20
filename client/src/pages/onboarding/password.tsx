@@ -331,17 +331,17 @@ export default function OnboardingPassword() {
               {/* Info card — no border, just background tint */}
               <div
                 className="rounded-[4px] px-4 py-3"
-                style={{ backgroundColor: "#EBF2FC" }}
+                style={{ backgroundColor: "var(--ha-primary-light)" }}
                 data-testid="match-summary-card"
               >
-                <p className="text-[13.5px] leading-[1.55]" style={{ color: "#1E3A8A" }}>
+                <p className="text-[13.5px] leading-[1.55]" style={{ color: "rgb(var(--ha-text-secondary))" }}>
                   {(() => {
                     const raw = t("onboarding.password.web.missedMatchesStat", { count: "|||" });
                     const [pre, post] = raw.split("|||");
                     return (
                       <>
                         {pre}
-                        <span className="font-bold" style={{ color: "#1D4ED8" }}>
+                        <span className="font-bold" style={{ color: "rgb(var(--ha-primary))" }}>
                           {matchCount30 !== null ? Math.max(1, matchCount30) : "—"}
                         </span>
                         {post}
@@ -373,7 +373,7 @@ export default function OnboardingPassword() {
                       className="w-[8px] h-[8px] rounded-full shrink-0"
                       style={{ backgroundColor: "rgb(var(--ha-primary))" }}
                     />
-                    <span className="text-[15px] font-extrabold tracking-tight" style={{ color: "#0F172A" }}>
+                    <span className="text-[15px] font-extrabold tracking-tight" style={{ color: "rgb(var(--ha-text))" }}>
                       {searchName}
                     </span>
                   </div>

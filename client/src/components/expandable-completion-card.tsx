@@ -87,7 +87,7 @@ export function ExpandableCompletionCard({
     <div
       className={`rounded-[18px] bg-white border-[1.5px] overflow-hidden transition-colors duration-300 ${
         allDone
-          ? "border-[#86EFAC] shadow-[0_0_0_1px_rgba(134,239,172,0.15)]"
+          ? "border-ha-success/40 shadow-[0_0_0_1px_rgb(var(--ha-success)_/_0.15)]"
           : "border-ha-card-border shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
       }`}
       data-testid={testId}

@@ -907,7 +907,7 @@ export default function OnboardingFilters() {
                   className="text-[12px] font-semibold px-3 py-[5px] rounded-full border transition-all"
                   style={{
                     borderColor: "rgb(var(--ha-card-border))",
-                    backgroundColor: f.sizeNA ? "rgba(37,60,150,0.06)" : "transparent",
+                    backgroundColor: f.sizeNA ? "var(--ha-primary-light)" : "transparent",
                     color: f.sizeNA ? "rgb(var(--ha-primary))" : OBW.textSecondary,
                   }}
                   data-testid="button-size-na"

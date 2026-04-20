@@ -296,7 +296,7 @@ export default function OnboardingSlideshow() {
               className="w-full h-[48px] rounded-[12px] border pl-10 pr-10 text-[15px] font-medium outline-none transition-all"
               style={{
                 borderColor: "rgb(var(--ha-card-border))",
-                backgroundColor: selectedCity ? "rgba(var(--ha-primary),0.04)" : "rgb(var(--ha-surface))",
+                backgroundColor: selectedCity ? "var(--ha-primary-light)" : "rgb(var(--ha-surface))",
                 color: "rgb(var(--ha-text))",
               }}
               data-testid="input-city-search"
