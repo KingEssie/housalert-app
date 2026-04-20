@@ -45,6 +45,7 @@ import {
   UserCheck,
   ExternalLink,
   Link2Off,
+  Rocket,
 } from "lucide-react";
 import { ExpandableCompletionCard, type CompletionStep } from "@/components/expandable-completion-card";
 import { EmptyState, EMPTY_STATE_IMAGES } from "@/components/empty-state";
@@ -695,9 +696,12 @@ function TaskFlowCard({
 
   const steps = resolveFlowSteps(flow, completionMap, t, navigate, overrides);
 
+  const FlowIcon = flow.id === "account" ? Check : Rocket;
+
   return (
     <ExpandableCompletionCard
       title={t(flow.titleKey)}
+      icon={FlowIcon}
       steps={steps}
       completedLabel={t("activation.completed")}
       subtitleFormat={t(flow.subtitleKey)}
@@ -724,6 +728,7 @@ function ProfileTipsCompletionCard({ navigate }: { navigate: (path: string) => v
   return (
     <ExpandableCompletionCard
       title={t("profile.tipsTitle")}
+      icon={Rocket}
       steps={steps}
       completedLabel={t("profile.completedLabel")}
       testId="card-profile-tips-completion"
@@ -2428,7 +2433,7 @@ export default function DashboardPage() {
           </button>
         </div>
       )}
-      <main className="flex-1 max-w-xl mx-auto w-full pb-[100px]">
+      <main className="flex-1 max-w-xl mx-auto w-full pb-[130px]">
         {activeTab === "home" && (
           <HomeTab
             user={user}
@@ -2463,32 +2468,46 @@ export default function DashboardPage() {
         )}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-ha-card-border" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
-        <nav className="max-w-xl mx-auto flex h-[72px]" data-testid="bottom-nav">
-          {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
-            const isActive = activeTab === key;
-            const isProfileWithPhoto = key === "profile" && !!tabPhotoUrl;
-            return (
-              <button
-                key={key}
-                onClick={() => setActiveTab(key)}
-                className="flex-1 flex flex-col items-center justify-center gap-1.5 active:opacity-70 transition-opacity"
-                data-testid={`tab-${key}`}
-              >
-                {isProfileWithPhoto ? (
-                  <div className={`w-[28px] h-[28px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-ha-primary-hover ring-offset-1 ring-offset-white" : ""}`}>
-                    <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
-                  </div>
-                ) : (
-                  <Icon className={`w-[26px] h-[26px] transition-colors ${isActive ? "text-ha-primary-hover" : "text-ha-text-muted"}`} strokeWidth={isActive ? 2.2 : 1.6} />
-                )}
-                <span className={`text-[11px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary-hover" : "font-medium text-ha-text-muted"}`}>
-                  {t(labelKey)}
-                </span>
-              </button>
-            );
-          })}
-        </nav>
+      <div
+        className="fixed bottom-0 left-0 right-0 z-20"
+        style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 0px)" }}
+      >
+        <div
+          className="max-w-xl mx-auto px-4"
+          style={{ paddingBottom: "max(calc(env(safe-area-inset-bottom, 0px) + 8px), 14px)" }}
+        >
+          <nav
+            className="flex rounded-[100px] h-[66px] overflow-hidden bg-ha-primary-hover"
+            data-testid="bottom-nav"
+          >
+            {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
+              const isActive = activeTab === key;
+              const isProfileWithPhoto = key === "profile" && !!tabPhotoUrl;
+              return (
+                <button
+                  key={key}
+                  onClick={() => setActiveTab(key)}
+                  className="flex-1 flex flex-col items-center justify-center gap-1 active:opacity-70 transition-opacity"
+                  data-testid={`tab-${key}`}
+                >
+                  {isProfileWithPhoto ? (
+                    <div className={`w-[26px] h-[26px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-ha-primary ring-offset-1 ring-offset-ha-primary-hover" : ""}`}>
+                      <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
+                    </div>
+                  ) : (
+                    <Icon
+                      className={`w-[24px] h-[24px] transition-colors ${isActive ? "text-ha-primary" : "text-white"}`}
+                      strokeWidth={isActive ? 2.2 : 1.6}
+                    />
+                  )}
+                  <span className={`text-[11px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-white"}`}>
+                    {t(labelKey)}
+                  </span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
       </div>
     </div>
   );

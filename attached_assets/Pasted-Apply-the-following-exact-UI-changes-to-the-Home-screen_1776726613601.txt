@@ -1,0 +1,92 @@
+Apply the following exact UI changes to the Home screen only.
+
+Important:
+- Only change the Home screen and directly used Home components.
+- Do not change logic or functionality.
+- Do not affect other screens.
+- Use the existing semantic token system where possible.
+- If needed, map the requested colors cleanly to semantic usage.
+- Keep the current overall layout, except for the exact UI adjustments below.
+
+--------------------------------------------------
+1. PROGRESS SECTIONS
+--------------------------------------------------
+
+Target both sections:
+- "Maak je account af"
+- "Vergroot je kansen met deze tips"
+
+A. Progress bar row
+- Move the percentage label to the right side of the progress bar, on the same horizontal row
+- Show it in the Rentbird style:
+  - bar on the left
+  - text on the right like: "50% voltooid"
+- Shorten the progress bar width so there is room for the percentage text on the right
+- Keep the bar thick and rounded
+- Completed color: #7CEF66
+- Remaining color: #EFF0F4
+
+B. Section icons
+- "Maak je account af" icon should be a check icon
+- "Vergroot je kansen met deze tips" icon should be a rocket icon
+- Icon color should stay in the blue brand family (use #6192FC / semantic equivalent)
+
+--------------------------------------------------
+2. EXPANDED ITEM LISTS
+--------------------------------------------------
+
+When a section is expanded:
+
+- Remove the gray rectangular background behind each item row
+- Remove the circular background behind the item number
+- Item layout should be cleaner and flatter, more like Rentbird:
+  - left: number only (no circle)
+  - middle: title text
+  - right: check circle
+
+Check circle on the right:
+- keep the circle
+- background color: #C7EF66
+- check icon inside: black
+- incomplete items should still show the empty circle style as already intended
+
+--------------------------------------------------
+3. BOTTOM TAB BAR
+--------------------------------------------------
+
+Redesign the bottom tab bar on Home to match this style:
+
+- Floating feel
+- Fully rounded / pill-shaped outer container
+- Background color: #080E42
+- Inactive icons: white
+- Inactive labels: white
+- Active icon: #6192FC
+- Active label: #6192FC
+
+Important:
+- Keep tab functionality unchanged
+- Keep icon order unchanged
+- Make the whole tab bar visually distinct from the page background
+- Ensure spacing/padding feels clean and premium
+
+--------------------------------------------------
+RULES
+--------------------------------------------------
+
+- Do not introduce random new colors
+- Use semantic tokens where possible
+- Do not redesign unrelated parts
+- Do not change text content
+- Do not change navigation logic
+- Do not affect Matches, Favorites, Account, or other screens unless they share this bottom tab bar component and the change is intentionally global
+
+--------------------------------------------------
+OUTPUT
+--------------------------------------------------
+
+Return:
+1. files changed
+2. exact Home screen elements updated
+3. whether the bottom tab bar change is Home-only or shared globally
+4. confirmation that no unrelated screens were modified

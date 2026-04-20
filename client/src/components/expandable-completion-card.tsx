@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Check, ChevronDown, ChevronRight, ClipboardList, CheckCircle2 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 export type StepType = "navigate" | "modal" | "inline";
 
@@ -14,7 +15,7 @@ export interface CompletionStep {
 
 interface ExpandableCompletionCardProps {
   title: string;
-  icon?: React.ReactNode;
+  icon?: LucideIcon;
   steps: CompletionStep[];
   completedLabel: string;
   subtitleFormat?: string;
@@ -24,6 +25,7 @@ interface ExpandableCompletionCardProps {
 
 export function ExpandableCompletionCard({
   title,
+  icon: CardIconProp,
   steps,
   completedLabel,
   testId,
@@ -36,6 +38,8 @@ export function ExpandableCompletionCard({
   const totalCount = steps.length;
   const percentage = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
   const allDone = doneCount === totalCount;
+
+  const CardIcon = CardIconProp ?? ClipboardList;
 
   function handleStepClick(step: CompletionStep) {
     if (step.stepType === "inline" && step.inlineContent) {
@@ -59,22 +63,15 @@ export function ExpandableCompletionCard({
         onClick={() => setExpanded(!expanded)}
         data-testid={`${testId}-toggle`}
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 mb-3">
           {allDone ? (
             <CheckCircle2 className="w-5 h-5 text-ha-success flex-shrink-0" />
           ) : (
-            <ClipboardList className="w-5 h-5 text-ha-primary flex-shrink-0" />
+            <CardIcon className="w-5 h-5 text-ha-primary flex-shrink-0" />
           )}
           <p className="text-[17px] font-bold text-ha-text leading-snug tracking-[-0.01em] flex-1 min-w-0">
             {title}
           </p>
-          <span
-            className={`text-[13px] font-semibold flex-shrink-0 ${
-              allDone ? "text-ha-success" : "text-ha-text-muted"
-            }`}
-          >
-            {percentage}%
-          </span>
           <ChevronDown
             className={`w-5 h-5 text-ha-text-secondary flex-shrink-0 transition-transform duration-200 ${
               expanded ? "rotate-180" : ""
@@ -82,11 +79,20 @@ export function ExpandableCompletionCard({
           />
         </div>
 
-        <div className="mt-3 h-[8px] rounded-full overflow-hidden bg-ha-bg">
-          <div
-            className="h-full rounded-full bg-ha-highlight transition-all duration-500"
-            style={{ width: `${percentage}%` }}
-          />
+        <div className="flex items-center gap-3">
+          <div className="flex-1 h-[8px] rounded-full overflow-hidden bg-ha-bg">
+            <div
+              className="h-full rounded-full transition-all duration-500"
+              style={{ width: `${percentage}%`, backgroundColor: "#C7EF66" }}
+            />
+          </div>
+          <span
+            className={`text-[13px] font-semibold flex-shrink-0 whitespace-nowrap ${
+              allDone ? "text-ha-success" : "text-ha-text-muted"
+            }`}
+          >
+            {percentage}% voltooid
+          </span>
         </div>
 
         {allDone && (
@@ -99,33 +105,23 @@ export function ExpandableCompletionCard({
           expanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="px-5 pb-5 flex flex-col gap-2">
+        <div className="px-5 pb-5 flex flex-col gap-1">
           {steps.map((step, index) => {
             const isInlineOpen = expandedInline === step.id && step.stepType === "inline";
             return (
               <div key={step.id} className="flex flex-col">
                 <button
                   onClick={() => handleStepClick(step)}
-                  className={`w-full min-h-[56px] flex items-center gap-3.5 px-4 text-left rounded-[14px] transition-all duration-150 ${
-                    step.completed
-                      ? "bg-ha-surface active:bg-ha-divider"
-                      : "bg-ha-surface hover:bg-ha-surface active:bg-ha-surface active:scale-[0.99]"
-                  }`}
+                  className="w-full min-h-[52px] flex items-center gap-3 text-left transition-all duration-150 active:opacity-70 active:scale-[0.99]"
                   data-testid={`${testId}-step-${step.id}`}
                 >
-                  <span
-                    className={`w-[26px] h-[26px] rounded-full flex items-center justify-center flex-shrink-0 text-[12px] font-bold ${
-                      step.completed
-                        ? "bg-ha-card-border text-ha-text-secondary"
-                        : "bg-ha-primary text-white"
-                    }`}
-                  >
+                  <span className="text-[14px] font-bold text-ha-text-muted w-[20px] text-center flex-shrink-0">
                     {index + 1}
                   </span>
                   <span
                     className={`text-[14px] flex-1 leading-snug ${
                       step.completed
-                        ? "text-ha-text-secondary font-normal line-through decoration-ha-border-input"
+                        ? "text-ha-text-secondary font-normal"
                         : "text-ha-text font-medium"
                     }`}
                   >
@@ -133,16 +129,18 @@ export function ExpandableCompletionCard({
                   </span>
                   <div className="flex-shrink-0">
                     {step.completed ? (
-                      <div className="w-[26px] h-[26px] rounded-full bg-ha-bg border border-ha-card-border flex items-center justify-center">
-                        <Check className="w-[14px] h-[14px] text-ha-text" strokeWidth={3} />
+                      <div
+                        className="w-[26px] h-[26px] rounded-full flex items-center justify-center"
+                        style={{ backgroundColor: "#C7EF66" }}
+                      >
+                        <Check className="w-[14px] h-[14px] text-black" strokeWidth={3} />
                       </div>
                     ) : step.stepType === "inline" ? (
-                      <ChevronDown
-                        className={`w-[18px] h-[18px] text-ha-text-secondary transition-transform duration-200 ${isInlineOpen ? "rotate-180" : ""}`}
-                        strokeWidth={2}
-                      />
+                      <div className={`transition-transform duration-200 ${isInlineOpen ? "rotate-180" : ""}`}>
+                        <ChevronDown className="w-[18px] h-[18px] text-ha-text-secondary" strokeWidth={2} />
+                      </div>
                     ) : (
-                      <ChevronRight className="w-[18px] h-[18px] text-ha-text-secondary" strokeWidth={2} />
+                      <div className="w-[26px] h-[26px] rounded-full border-[1.5px] border-ha-card-border" />
                     )}
                   </div>
                 </button>
