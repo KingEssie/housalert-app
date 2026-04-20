@@ -98,7 +98,7 @@ export default function OnboardingIntro() {
         <div className="max-w-lg mx-auto px-5 py-4 pb-[max(16px,env(safe-area-inset-bottom))]">
           <button
             onClick={() => navigate("/onboarding/city")}
-            className="w-full h-[48px] rounded-full bg-ha-primary text-white text-[16px] font-semibold hover:brightness-95 active:scale-[0.97] transition-all flex items-center justify-center gap-1.5 shadow-[0_2px_8px_rgba(37,60,150,0.18)]"
+            className="w-full h-[48px] rounded-full bg-ha-accent text-white text-[16px] font-semibold hover:bg-ha-accent-hover active:scale-[0.97] transition-all flex items-center justify-center gap-1.5 shadow-[0_2px_10px_rgba(243,107,46,0.28)]"
             data-testid="button-intro-start"
           >
             {t("onboarding.intro.cta")}

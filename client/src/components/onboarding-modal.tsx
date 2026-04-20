@@ -948,7 +948,7 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
                 onClick={handleCreateAccount}
                 disabled={!canSubmit}
                 className="h-[44px] px-6 rounded-[8px] text-[14px] font-semibold text-white flex items-center justify-center gap-1.5 active:scale-[0.97] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                style={{ background: "rgb(var(--ha-primary))", boxShadow: canSubmit ? "0 4px 14px rgba(37,60,150,0.2)" : "none" }}
+                style={{ background: "rgb(var(--ha-accent))", boxShadow: canSubmit ? "0 4px 14px rgba(243,107,46,0.28)" : "none" }}
                 data-testid="button-create-account"
               >
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}

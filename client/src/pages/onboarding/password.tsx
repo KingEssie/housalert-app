@@ -535,8 +535,8 @@ export default function OnboardingPassword() {
                 disabled={!canSubmit}
                 className="w-full mt-5 h-[52px] rounded-[8px] text-[16px] font-bold text-white transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2"
                 style={{
-                  background: "rgb(var(--ha-primary))",
-                  boxShadow: canSubmit ? "0 8px 28px rgba(37,60,150,0.38)" : "none",
+                  background: "rgb(var(--ha-accent))",
+                  boxShadow: canSubmit ? "0 8px 24px rgba(243,107,46,0.35)" : "none",
                 }}
                 data-testid="button-create-account"
               >

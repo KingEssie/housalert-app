@@ -208,10 +208,10 @@ export function OBWebFooter({
           <button
             onClick={onBack}
             className="w-[44px] h-[44px] rounded-[4px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
-            style={{ border: `1.5px solid ${OBW.pink}`, backgroundColor: "transparent" }}
+            style={{ border: `1.5px solid ${OBW.backBtnBorder}`, backgroundColor: "transparent" }}
             data-testid={backTestId || "button-back"}
           >
-            <ChevronLeft className="w-[17px] h-[17px]" style={{ color: OBW.pink }} />
+            <ChevronLeft className="w-[17px] h-[17px]" style={{ color: OBW.backBtnColor }} />
           </button>
         )}
         <button
@@ -233,10 +233,10 @@ export function OBInfoBox({ children }: { children: React.ReactNode }) {
   return (
     <div
       className="rounded-[4px] p-3.5 flex items-start gap-2.5"
-      style={{ backgroundColor: "rgb(var(--ha-card))", border: `1px solid rgb(var(--ha-border-input))` }}
+      style={{ backgroundColor: "var(--ha-primary-light)", border: `1px solid rgba(37,60,150,0.15)` }}
     >
       <Info className="w-[15px] h-[15px] shrink-0 mt-[1px]" style={{ color: "rgb(var(--ha-primary))" }} />
-      <div className="text-[15px] leading-[1.55]" style={{ color: "rgb(var(--ha-primary))" }}>
+      <div className="text-[15px] leading-[1.55]" style={{ color: "rgb(var(--ha-text-secondary))" }}>
         {children}
       </div>
     </div>
