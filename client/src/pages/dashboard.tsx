@@ -1208,8 +1208,8 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
         </div>
         <div className="px-5 pt-16">
           <div className="flex flex-col items-center text-center px-6 pb-4">
-            <div className="w-16 h-16 rounded-full bg-ha-highlight flex items-center justify-center mb-6">
-              <Lock className="w-7 h-7 text-ha-text" />
+            <div className="w-16 h-16 rounded-full bg-ha-surface flex items-center justify-center mb-6">
+              <Lock className="w-7 h-7 text-ha-text-muted" />
             </div>
             <h2 className="text-[20px] font-semibold text-ha-text mb-2.5" data-testid="text-fav-locked-headline">
               {t("matches.locked.headline")}
@@ -1219,7 +1219,7 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
             </p>
             <button
               onClick={() => navigate("/paywall")}
-              className="h-[48px] px-10 rounded-[12px] bg-ha-primary text-white text-[15px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
+              className="h-[48px] px-10 rounded-[12px] bg-ha-primary-hover text-white text-[15px] font-semibold hover:bg-ha-primary transition-colors active:scale-[0.97]"
               data-testid="button-fav-locked-subscribe"
             >
               {t("matches.locked.cta")}
@@ -1236,7 +1236,7 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
         <div className="flex items-center gap-2.5">
           <h1 className="text-[22px] font-bold text-ha-text">{t("nav.favorites")}</h1>
           {favoriteListings.length > 0 && (
-            <span className="text-[12px] font-semibold text-white bg-[#FF385C] px-[9px] py-[3px] rounded-full" data-testid="badge-favorites-count">
+            <span className="text-[12px] font-bold text-ha-text bg-ha-highlight px-[9px] py-[3px] rounded-full" data-testid="badge-favorites-count">
               {favoriteListings.length}
             </span>
           )}
