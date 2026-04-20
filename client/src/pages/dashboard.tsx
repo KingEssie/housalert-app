@@ -1529,7 +1529,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
                 onClick={() => setTopTab(key)}
                 className={`flex-1 text-center pb-3 text-[15px] transition-all duration-200 border-b-2 ${
                   isActive
-                    ? "text-ha-text font-semibold border-ha-text"
+                    ? "text-ha-primary-hover font-semibold border-ha-primary-hover"
                     : "text-ha-text-muted font-medium border-transparent"
                 }`}
                 style={{ marginBottom: "-1px" }}
@@ -1560,12 +1560,12 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
             {apiMatchesQuery.isLoading ? (
               <div className="flex flex-col gap-4">
                 {[1, 2].map((i) => (
-                  <div key={i} className="animate-pulse rounded-[10px] overflow-hidden bg-ha-success/10">
-                    <div className="bg-ha-success/15" style={{ aspectRatio: "16/9" }} />
+                  <div key={i} className="animate-pulse rounded-[10px] overflow-hidden bg-ha-surface border border-ha-card-border">
+                    <div className="bg-ha-card-border/40" style={{ aspectRatio: "16/9" }} />
                     <div className="p-4 flex flex-col gap-2">
-                      <div className="h-4 bg-ha-success/15 rounded-full w-3/4" />
-                      <div className="h-3 bg-ha-success/15 rounded-full w-1/2" />
-                      <div className="h-3 bg-ha-success/15 rounded-full w-2/5" />
+                      <div className="h-4 bg-ha-card-border/60 rounded-full w-3/4" />
+                      <div className="h-3 bg-ha-card-border/40 rounded-full w-1/2" />
+                      <div className="h-3 bg-ha-card-border/40 rounded-full w-2/5" />
                     </div>
                   </div>
                 ))}
