@@ -2080,7 +2080,7 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
         <span className="text-[15px] font-semibold text-ha-text">{label}</span>
         {external
           ? <ExternalLink className="w-[16px] h-[16px] text-ha-text-placeholder flex-shrink-0" />
-          : <ChevronRight className="w-[16px] h-[16px] text-ha-border-input flex-shrink-0" />
+          : <ChevronRight className="w-[16px] h-[16px] text-ha-text-muted flex-shrink-0" />
         }
       </button>
       {!last && <div className="h-px bg-ha-surface mx-4" />}
@@ -2090,7 +2090,7 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
   const SectionInline = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <div>
       <div className="h-px bg-ha-surface" />
-      <p className="text-[11px] font-semibold text-ha-text-placeholder px-4 pt-4 pb-1">{title}</p>
+      <p className="text-[11px] font-semibold text-ha-text-muted px-4 pt-4 pb-1">{title}</p>
       {children}
     </div>
   );
@@ -2106,12 +2106,12 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
 
           {/* Profile row */}
           <div className="flex items-center gap-3 px-4 py-4" data-testid="row-account-profile">
-            <div className="w-[44px] h-[44px] rounded-full bg-ha-primary flex items-center justify-center flex-shrink-0">
+            <div className="w-[44px] h-[44px] rounded-full bg-ha-primary-hover flex items-center justify-center flex-shrink-0">
               <span className="text-[16px] font-bold text-white" data-testid="text-account-initials">{initials}</span>
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-[15px] font-semibold text-ha-text truncate" data-testid="text-account-name">{displayName}</p>
-              <p className="text-[13px] text-ha-text truncate" data-testid="text-account-email">{user.email}</p>
+              <p className="text-[13px] text-ha-text-secondary truncate" data-testid="text-account-email">{user.email}</p>
             </div>
             <button
               onClick={() => setShowLogoutConfirm(true)}
@@ -2146,7 +2146,7 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
           {buddyMode && activeBuddyRel && (
             <div>
               <div className="h-px bg-ha-surface" />
-              <p className="text-[11px] font-semibold text-ha-text-placeholder px-4 pt-4 pb-1">{t("buddyV2.modeBadge")}</p>
+              <p className="text-[11px] font-semibold text-ha-text-muted px-4 pt-4 pb-1">{t("buddyV2.modeBadge")}</p>
               <button
                 type="button"
                 onClick={() => setShowBuddyDisconnectConfirm(true)}
@@ -2194,7 +2194,7 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
         </div>
 
         <div className="flex flex-col items-center gap-3 pt-4 pb-4">
-          <p className="text-[13px] text-ha-border-input">HousAlert v1.0.0</p>
+          <p className="text-[13px] text-ha-text-placeholder">HousAlert v1.0.0</p>
         </div>
 
         {isAdmin && <div className="h-16" />}
