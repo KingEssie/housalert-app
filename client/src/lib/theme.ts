@@ -1,12 +1,19 @@
 export const BRAND = {
-  primary: "#d91a68",
-  primaryEnd: "#b31556",
-  primaryHover: "#b31556",
-  gradient: "linear-gradient(135deg, #d91a68, #b31556)",
-  primaryLight: "rgba(217, 26, 104, 0.08)",
-  primaryLighter: "rgba(217, 26, 104, 0.04)",
-  primaryBorder: "rgba(217, 26, 104, 0.3)",
-  primaryShadow: "rgba(217, 26, 104, 0.2)",
+  primary: "#253c96",
+  primaryEnd: "#19244e",
+  primaryHover: "#19244e",
+  gradient: "linear-gradient(135deg, #253c96, #19244e)",
+  primaryLight: "rgba(37, 60, 150, 0.08)",
+  primaryLighter: "rgba(37, 60, 150, 0.04)",
+  primaryBorder: "rgba(37, 60, 150, 0.3)",
+  primaryShadow: "rgba(37, 60, 150, 0.2)",
+  accent: "#f36b2e",
+  accentHover: "#d45826",
+  accentLight: "rgba(243, 107, 46, 0.08)",
+  accentShadow: "rgba(243, 107, 46, 0.25)",
+  accentYellow: "#f59a1e",
+  accentYellowLight: "rgba(245, 154, 30, 0.08)",
+  mint: "#c4e7e5",
 } as const;
 
 export const theme = {

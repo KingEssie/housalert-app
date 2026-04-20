@@ -123,7 +123,7 @@ function WebsitePaywall({
             className="rounded-[4px] p-3.5 mb-5 flex items-start gap-3"
             style={{
               backgroundColor: "rgb(var(--ha-surface))",
-              border: "1px solid rgba(217,26,104,0.15)",
+              border: "1px solid rgba(37,60,150,0.15)",
             }}
             data-testid="search-summary-card"
           >
@@ -175,7 +175,7 @@ function WebsitePaywall({
                   className="w-full text-left transition-colors"
                   style={{
                     borderBottom: !isLast ? `1px solid ${OBW.cardBorder}` : "none",
-                    backgroundColor: isSelected ? "rgba(217,26,104,0.04)" : "rgb(var(--ha-card))",
+                    backgroundColor: isSelected ? "rgba(37,60,150,0.04)" : "rgb(var(--ha-card))",
                     padding: plan.popular ? "20px 16px 16px 16px" : "16px 16px",
                   }}
                   data-testid={`card-plan-${plan.id}`}
@@ -223,8 +223,8 @@ function WebsitePaywall({
           disabled={loading}
           className="w-full h-[52px] rounded-[10px] text-[15px] font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2.5 mb-6"
           style={{
-            background: OBW.pink,
-            boxShadow: "0 4px 14px rgba(217,26,104,0.2)",
+            background: "rgb(var(--ha-accent))",
+            boxShadow: "0 4px 14px rgba(243,107,46,0.25)",
           }}
           data-testid="button-select-payment"
         >

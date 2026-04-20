@@ -385,11 +385,11 @@ export default function OnboardingSlideshow() {
             style={{
               height: "52px",
               borderRadius: "14px",
-              background: "rgb(var(--ha-primary))",
+              background: "rgb(var(--ha-accent))",
               color: "white",
               fontSize: "16px",
               fontWeight: 600,
-              boxShadow: selectedCity ? "0 4px 15px rgba(217,26,104,0.25)" : "none",
+              boxShadow: selectedCity ? "0 4px 15px rgba(243,107,46,0.28)" : "none",
             }}
             data-testid="button-create-account"
           >

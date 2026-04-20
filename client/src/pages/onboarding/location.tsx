@@ -524,7 +524,7 @@ export default function OnboardingLocation() {
               <button
                 onClick={handleNext}
                 className="h-[44px] px-6 rounded-[8px] text-[15px] font-semibold text-white flex items-center justify-center active:scale-[0.97] transition-transform"
-                style={{ background: OBW.pink, boxShadow: "0 4px 14px rgba(217,26,104,0.2)" }}
+                style={{ background: OBW.pink, boxShadow: "0 4px 14px rgba(37,60,150,0.2)" }}
                 data-testid="button-location-next"
               >
                 {t("common.next")}
@@ -635,8 +635,8 @@ export default function OnboardingLocation() {
                   onClick={() => setRadiusKm(km)}
                   className="px-4 py-2.5 rounded-full text-[14px] font-medium transition-all"
                   style={{
-                    border: active ? "1.5px solid rgba(217,26,104,0.6)" : "1px solid rgb(var(--ha-card-border))",
-                    backgroundColor: active ? "rgba(217,26,104,0.08)" : "transparent",
+                    border: active ? "1.5px solid rgba(37,60,150,0.6)" : "1px solid rgb(var(--ha-card-border))",
+                    backgroundColor: active ? "rgba(37,60,150,0.08)" : "transparent",
                     color: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-text))",
                   }}
                   data-testid={`radius-${km}`}

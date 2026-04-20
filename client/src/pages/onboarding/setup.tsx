@@ -133,7 +133,7 @@ function PrimaryBtn({ onClick, children, loading, disabled, testId }: {
       onClick={onClick}
       disabled={disabled || loading}
       className="w-full h-[56px] rounded-[6px] text-[16px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50"
-      style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 15px rgba(217,26,104,0.2)" }}
+      style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 15px rgba(37,60,150,0.2)" }}
       data-testid={testId}
     >
       {loading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : children}
@@ -226,7 +226,7 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
               className="w-full rounded-[--ha-card-radius] border-2 transition-all text-left relative overflow-hidden"
               style={{
                 borderColor: "rgb(var(--ha-card-border))",
-                backgroundColor: isSelected ? "rgba(217,26,104,0.08)" : "rgb(var(--ha-card))",
+                backgroundColor: isSelected ? "rgba(37,60,150,0.08)" : "rgb(var(--ha-card))",
               }}
               data-testid={`card-plan-${plan.id}`}
             >
@@ -416,7 +416,7 @@ function LightPrimaryBtn({ onClick, children, loading, disabled, testId }: {
       onClick={onClick}
       disabled={disabled || loading}
       className="w-full h-[56px] rounded-[6px] text-[16px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
-      style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 15px rgba(217,26,104,0.2)" }}
+      style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 15px rgba(37,60,150,0.2)" }}
       data-testid={testId}
     >
       {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>{children} <ArrowRight className="w-4 h-4" /></>}

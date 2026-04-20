@@ -102,7 +102,7 @@ export default function LoginPage() {
       <div
         className="relative w-full flex-shrink-0"
         style={{
-          background: "linear-gradient(135deg, #d91a68 0%, #a01050 100%)",
+          background: "linear-gradient(135deg, #253c96 0%, #19244e 100%)",
           minHeight: "32vh",
           paddingBottom: "48px",
         }}
@@ -217,7 +217,7 @@ export default function LoginPage() {
                 color: "white",
                 fontSize: "16px",
                 fontWeight: 600,
-                boxShadow: "0 4px 15px rgba(217,26,104,0.25)",
+                boxShadow: "0 4px 15px rgba(37,60,150,0.25)",
               }}
               disabled={loading}
               data-testid="button-login-submit"

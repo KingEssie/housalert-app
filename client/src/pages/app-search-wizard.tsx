@@ -255,7 +255,7 @@ function StepFooter({
           </button>
           <button onClick={onNext} disabled={nextDisabled || saving}
             className="h-[44px] px-6 rounded-[8px] text-[15px] font-semibold text-white flex items-center justify-center gap-1.5 active:scale-[0.97] transition-transform disabled:opacity-40"
-            style={{ background: OBW.pink, boxShadow: "0 4px 14px rgba(217,26,104,0.2)" }}
+            style={{ background: OBW.pink, boxShadow: "0 4px 14px rgba(37,60,150,0.2)" }}
             data-testid="button-step-next">
             {saving && <Loader2 className="w-4 h-4 animate-spin" />}
             {nextLabel}
@@ -594,7 +594,7 @@ export default function AppSearchWizard() {
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-[10px] border text-left transition-all active:scale-[0.98]"
                 style={{
                   borderColor: "rgb(var(--ha-card-border))",
-                  backgroundColor: city?.name === c.name ? "rgba(217,26,104,0.04)" : "rgb(var(--ha-surface))",
+                  backgroundColor: city?.name === c.name ? "rgba(37,60,150,0.04)" : "rgb(var(--ha-surface))",
                 }}
                 data-testid={`city-preset-${c.name}`}>
                 <span className="text-[15px] font-medium flex-1" style={{ color: OBW.text }}>{c.name}</span>
@@ -918,7 +918,7 @@ export default function AppSearchWizard() {
                   className="text-[12px] font-semibold px-3 py-[5px] rounded-full border transition-all"
                   style={{
                     borderColor: "rgb(var(--ha-card-border))",
-                    backgroundColor: f.sizeNA ? "rgba(217,26,104,0.06)" : "transparent",
+                    backgroundColor: f.sizeNA ? "rgba(37,60,150,0.06)" : "transparent",
                     color: f.sizeNA ? "rgb(var(--ha-primary))" : OBW.textSecondary,
                   }}
                   data-testid="button-size-na">

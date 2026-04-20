@@ -536,7 +536,7 @@ export default function OnboardingPassword() {
                 className="w-full mt-5 h-[52px] rounded-[8px] text-[16px] font-bold text-white transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2"
                 style={{
                   background: "rgb(var(--ha-primary))",
-                  boxShadow: canSubmit ? "0 8px 28px rgba(217,26,104,0.38)" : "none",
+                  boxShadow: canSubmit ? "0 8px 28px rgba(37,60,150,0.38)" : "none",
                 }}
                 data-testid="button-create-account"
               >
@@ -607,7 +607,7 @@ export default function OnboardingPassword() {
                   >
                     <div
                       className="w-[38px] h-[38px] rounded-[10px] flex items-center justify-center shrink-0 text-[18px]"
-                      style={{ backgroundColor: "rgba(217,26,104,0.10)" }}
+                      style={{ backgroundColor: "rgba(37,60,150,0.10)" }}
                     >
                       {item.icon}
                     </div>

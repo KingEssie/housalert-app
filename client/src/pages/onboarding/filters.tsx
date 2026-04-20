@@ -907,7 +907,7 @@ export default function OnboardingFilters() {
                   className="text-[12px] font-semibold px-3 py-[5px] rounded-full border transition-all"
                   style={{
                     borderColor: "rgb(var(--ha-card-border))",
-                    backgroundColor: f.sizeNA ? "rgba(217,26,104,0.06)" : "transparent",
+                    backgroundColor: f.sizeNA ? "rgba(37,60,150,0.06)" : "transparent",
                     color: f.sizeNA ? "rgb(var(--ha-primary))" : OBW.textSecondary,
                   }}
                   data-testid="button-size-na"
@@ -1050,7 +1050,7 @@ export default function OnboardingFilters() {
                 onClick={handleNext}
                 disabled={saving}
                 className="h-[44px] px-6 rounded-[8px] text-[15px] font-semibold text-white flex items-center justify-center gap-1.5 active:scale-[0.97] transition-transform disabled:opacity-40"
-                style={{ background: OBW.pink, boxShadow: "0 4px 14px rgba(217,26,104,0.2)" }}
+                style={{ background: OBW.pink, boxShadow: "0 4px 14px rgba(37,60,150,0.2)" }}
                 data-testid="button-filters-next"
               >
                 {saving && <Loader2 className="w-4 h-4 animate-spin" />}

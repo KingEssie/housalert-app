@@ -98,13 +98,13 @@ export default function ReferralLandingPage() {
 
         <div
           className="w-full rounded-[12px] p-5 mb-6"
-          style={{ background: "linear-gradient(135deg, rgba(217,26,104,0.08) 0%, rgba(217,26,104,0.03) 100%)" }}
+          style={{ background: "linear-gradient(135deg, rgba(37,60,150,0.08) 0%, rgba(37,60,150,0.03) 100%)" }}
           data-testid="card-referral-reward"
         >
           <div className="flex items-center gap-3">
             <div
               className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0"
-              style={{ background: "rgba(217,26,104,0.12)" }}
+              style={{ background: "rgba(37,60,150,0.12)" }}
             >
               <Gift className="w-5 h-5" style={{ color: HA_PRIMARY }} />
             </div>
@@ -134,8 +134,8 @@ export default function ReferralLandingPage() {
           onClick={handleStart}
           className="w-full h-[52px] rounded-[10px] text-white text-[16px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform"
           style={{
-            background: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #b31556 100%)",
-            boxShadow: "0 4px 15px rgba(217,26,104,0.25)",
+            background: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, rgb(var(--ha-primary-hover)) 100%)",
+            boxShadow: "0 4px 15px rgba(37,60,150,0.25)",
           }}
           data-testid="button-start-referral"
         >

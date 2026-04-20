@@ -478,7 +478,7 @@ export default function NewSearchPage() {
             <button
               onClick={step < TOTAL_STEPS - 1 ? goNext : () => setStep(5)}
               disabled={!canProceed()}
-              className="h-[52px] px-8 rounded-full bg-ha-primary hover:brightness-95 text-white text-[15px] font-semibold flex items-center justify-center gap-1.5 shadow-[0_4px_16px_rgba(217,26,104,0.3)] disabled:opacity-20 disabled:shadow-none transition-all active:scale-[0.97]"
+              className="h-[52px] px-8 rounded-full bg-ha-primary hover:brightness-95 text-white text-[15px] font-semibold flex items-center justify-center gap-1.5 shadow-[0_4px_16px_rgba(37,60,150,0.3)] disabled:opacity-20 disabled:shadow-none transition-all active:scale-[0.97]"
               data-testid="button-wizard-next"
             >
               {t("taskFlow.ui.next")}
@@ -1122,7 +1122,7 @@ function StepReview({
           <Button
             onClick={onSubmit}
             disabled={submitting}
-            className="w-full h-[56px] rounded-[10px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[17px] font-bold disabled:opacity-40 shadow-[0_4px_20px_rgba(217,26,104,0.3)]"
+            className="w-full h-[56px] rounded-[10px] bg-ha-accent hover:bg-ha-accent-hover text-white text-[17px] font-bold disabled:opacity-40 shadow-[0_4px_20px_rgba(243,107,46,0.3)]"
             data-testid="button-wizard-submit"
           >
             {submitting ? (

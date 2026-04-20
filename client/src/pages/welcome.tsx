@@ -205,8 +205,8 @@ export default function WelcomePage() {
                   color: "rgb(var(--ha-text))",
                 }}
                 onFocus={(e) => {
-                  e.currentTarget.style.borderColor = "rgb(217,26,104)";
-                  e.currentTarget.style.boxShadow = "0 0 0 3px rgba(217,26,104,0.1)";
+                  e.currentTarget.style.borderColor = "rgb(var(--ha-primary))";
+                  e.currentTarget.style.boxShadow = "0 0 0 3px rgba(37,60,150,0.1)";
                 }}
                 onBlur={(e) => {
                   e.currentTarget.style.borderColor = "transparent";
@@ -239,8 +239,8 @@ export default function WelcomePage() {
                     color: "rgb(var(--ha-text))",
                   }}
                   onFocus={(e) => {
-                    e.currentTarget.style.borderColor = "rgb(217,26,104)";
-                    e.currentTarget.style.boxShadow = "0 0 0 3px rgba(217,26,104,0.1)";
+                    e.currentTarget.style.borderColor = "rgb(var(--ha-primary))";
+                    e.currentTarget.style.boxShadow = "0 0 0 3px rgba(37,60,150,0.1)";
                   }}
                   onBlur={(e) => {
                     e.currentTarget.style.borderColor = "transparent";
@@ -285,7 +285,7 @@ export default function WelcomePage() {
                 color: "white",
                 fontSize: "16px",
                 fontWeight: 600,
-                boxShadow: "0 4px 15px rgba(217,26,104,0.25)",
+                boxShadow: "0 4px 15px rgba(37,60,150,0.25)",
               }}
               data-testid="button-login"
             >

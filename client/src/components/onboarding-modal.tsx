@@ -707,7 +707,7 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
                     className="text-[12px] font-medium px-2.5 py-1 rounded-full border transition-all"
                     style={{
                       borderColor: filters.sizeNA ? "rgb(var(--ha-primary))" : OBW.cardBorder,
-                      backgroundColor: filters.sizeNA ? "rgba(217,26,104,0.08)" : "transparent",
+                      backgroundColor: filters.sizeNA ? "rgba(37,60,150,0.08)" : "transparent",
                       color: filters.sizeNA ? "rgb(var(--ha-primary))" : OBW.textSecondary,
                     }}
                     data-testid="button-size-na"
@@ -935,7 +935,7 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
               <button
                 onClick={goNext}
                 className="h-[44px] px-6 rounded-[8px] text-[15px] font-semibold text-white flex items-center justify-center gap-1.5 active:scale-[0.97] transition-transform"
-                style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 14px rgba(217,26,104,0.2)" }}
+                style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 14px rgba(37,60,150,0.2)" }}
                 data-testid="button-modal-next"
               >
                 {t("common.next")}
@@ -948,7 +948,7 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
                 onClick={handleCreateAccount}
                 disabled={!canSubmit}
                 className="h-[44px] px-6 rounded-[8px] text-[14px] font-semibold text-white flex items-center justify-center gap-1.5 active:scale-[0.97] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-                style={{ background: "rgb(var(--ha-primary))", boxShadow: canSubmit ? "0 4px 14px rgba(217,26,104,0.2)" : "none" }}
+                style={{ background: "rgb(var(--ha-primary))", boxShadow: canSubmit ? "0 4px 14px rgba(37,60,150,0.2)" : "none" }}
                 data-testid="button-create-account"
               >
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}

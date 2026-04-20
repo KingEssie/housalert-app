@@ -571,7 +571,7 @@ export default function ApplicationLetterPage() {
                     boxSizing: "border-box",
                     cursor: isBuddy ? "default" : "text",
                   }}
-                  onFocus={isBuddy ? undefined : e => { e.currentTarget.style.borderColor = "rgb(217,26,104)"; }}
+                  onFocus={isBuddy ? undefined : e => { e.currentTarget.style.borderColor = "rgb(var(--ha-primary))"; }}
                   onBlur={isBuddy ? undefined : e => { e.currentTarget.style.borderColor = "rgb(var(--ha-border-input))"; }}
                   data-testid="input-template"
                 />

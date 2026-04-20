@@ -121,7 +121,7 @@ export function FlowLayout({
           <button
             onClick={onNext ?? undefined}
             disabled={!onNext}
-            className="h-[48px] px-8 rounded-full bg-ha-primary text-white text-[15px] font-semibold disabled:opacity-20 disabled:cursor-not-allowed hover:brightness-95 active:scale-[0.97] transition-all flex items-center gap-1.5 shadow-[0_2px_8px_rgba(217,26,104,0.18)]"
+            className="h-[48px] px-8 rounded-full bg-ha-primary text-white text-[15px] font-semibold disabled:opacity-20 disabled:cursor-not-allowed hover:brightness-95 active:scale-[0.97] transition-all flex items-center gap-1.5 shadow-[0_2px_8px_rgba(37,60,150,0.18)]"
             data-testid="button-flow-next"
           >
             {isLastStep ? t("taskFlow.ui.finish") : t("taskFlow.ui.next")}

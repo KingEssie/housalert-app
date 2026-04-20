@@ -19,27 +19,27 @@
   --sidebar: 0 0% 98%;
   --sidebar-foreground: 0 0% 7%;
   --sidebar-border: 220 13% 91%;
-  --sidebar-primary: 335 79% 48%;
+  --sidebar-primary: 228 60% 37%;
   --sidebar-primary-foreground: 0 0% 100%;
   --sidebar-accent: 220 14% 96%;
   --sidebar-accent-foreground: 0 0% 7%;
-  --sidebar-ring: 335 79% 48%;
+  --sidebar-ring: 228 60% 37%;
   --popover: 0 0% 100%;
   --popover-foreground: 0 0% 7%;
   --popover-border: 220 13% 91%;
-  --primary: 335 79% 48%;
+  --primary: 228 60% 37%;
   --primary-foreground: 0 0% 100%;
   --secondary: 210 20% 98%;
   --secondary-foreground: 0 0% 7%;
   --muted: 210 20% 98%;
-  --muted-foreground: 200 26% 27%;
+  --muted-foreground: 220 18% 30%;
   --accent: 210 20% 98%;
   --accent-foreground: 0 0% 7%;
   --destructive: 0 72% 51%;
   --destructive-foreground: 0 0% 100%;
   --input: 220 13% 91%;
-  --ring: 335 79% 48%;
-  --chart-1: 335 79% 48%;
+  --ring: 228 60% 37%;
+  --chart-1: 228 60% 37%;
   --chart-2: 142 71% 45%;
   --chart-3: 43 96% 56%;
   --chart-4: 0 72% 51%;
@@ -47,10 +47,18 @@
 
   /* ── HousAlert semantic color tokens (RGB space-separated) ── */
 
-  /* Brand / Primary */
-  --ha-primary: 217 26 104;           /* #D91A68 */
-  --ha-primary-hover: 179 21 86;      /* #B31556 */
-  --ha-primary-light: rgba(217, 26, 104, 0.08);
+  /* Brand / Primary — #253c96 Primary Blue */
+  --ha-primary: 37 60 150;            /* #253c96 */
+  --ha-primary-hover: 25 36 78;       /* #19244e */
+  --ha-primary-light: rgba(37, 60, 150, 0.08);
+
+  /* Accent — Orange / Yellow / Mint */
+  --ha-accent: 243 107 46;            /* #f36b2e — high-attention CTA orange */
+  --ha-accent-hover: 212 88 38;       /* #d45826 — accent hover */
+  --ha-accent-light: rgba(243, 107, 46, 0.08);
+  --ha-accent-yellow: 245 154 30;     /* #f59a1e — warm friendly accent */
+  --ha-accent-yellow-light: rgba(245, 154, 30, 0.08);
+  --ha-mint: 196 231 229;             /* #c4e7e5 — soft supportive backgrounds */
 
   /* Text */
   --ha-text: 17 17 17;                /* #111111 — primary text */
@@ -64,7 +72,7 @@
   --ha-surface: 249 250 251;          /* #F9FAFB — surface / subtle bg */
   --ha-hover-bg: 247 247 247;         /* #F7F7F7 — list item hover bg */
   --ha-toggle-bg: 240 244 248;        /* #F0F4F8 — pill toggle group bg */
-  --ha-highlight: 245 240 235;        /* #F5F0EB — warm highlight surface */
+  --ha-highlight: 196 231 229;        /* #c4e7e5 — soft mint highlight surface */
 
   /* Borders */
   --ha-card-border: 229 231 235;      /* #E5E7EB — card / nav / standard borders */
@@ -157,7 +165,7 @@
   [data-radix-select-trigger]:focus-visible {
     outline: none;
     border-color: rgb(var(--ha-primary)) !important;
-    box-shadow: 0 0 0 2px rgba(217, 26, 104, 0.25) !important;
+    box-shadow: 0 0 0 2px rgba(37, 60, 150, 0.25) !important;
   }
 }
 
@@ -352,7 +360,7 @@
   }
   .app-input:focus {
     border-color: rgb(var(--ha-primary));
-    box-shadow: 0 0 0 3px rgba(217, 26, 104, 0.12);
+    box-shadow: 0 0 0 3px rgba(37, 60, 150, 0.12);
   }
   .app-input:disabled {
     background: rgb(var(--ha-surface));
@@ -375,7 +383,7 @@
   }
   .app-select:focus {
     border-color: rgb(var(--ha-primary));
-    box-shadow: 0 0 0 3px rgba(217, 26, 104, 0.12);
+    box-shadow: 0 0 0 3px rgba(37, 60, 150, 0.12);
   }
 
   .app-textarea {
@@ -396,7 +404,7 @@
   }
   .app-textarea:focus {
     border-color: rgb(var(--ha-primary));
-    box-shadow: 0 0 0 3px rgba(217, 26, 104, 0.12);
+    box-shadow: 0 0 0 3px rgba(37, 60, 150, 0.12);
   }
 
   .scrollbar-none {
@@ -505,7 +513,7 @@
   background: rgb(var(--ha-primary));
   border: 3px solid rgb(var(--ha-bg));
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(217,26,104,0.2);
+  box-shadow: 0 2px 6px rgba(37,60,150,0.2);
 }
 .v2-slider::-moz-range-thumb {
   width: 22px;
@@ -514,7 +522,7 @@
   background: rgb(var(--ha-primary));
   border: 3px solid rgb(var(--ha-bg));
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(217,26,104,0.2);
+  box-shadow: 0 2px 6px rgba(37,60,150,0.2);
 }
 
 input[type="range"] {
@@ -568,7 +576,7 @@ input[type="range"]::-moz-range-thumb {
 }
 .ha-field-light:focus {
   border-color: rgb(var(--ha-primary));
-  box-shadow: 0 0 0 3px rgba(217,26,104,0.1);
+  box-shadow: 0 0 0 3px rgba(37,60,150,0.1);
 }
 .ha-field-light:disabled {
   background: rgb(var(--ha-surface));
@@ -616,7 +624,7 @@ input[type="range"]::-moz-range-thumb {
 }
 .ha-field-web:focus {
   border-color: rgb(var(--ha-primary));
-  box-shadow: 0 0 0 3px rgba(217,26,104,0.1);
+  box-shadow: 0 0 0 3px rgba(37,60,150,0.1);
 }
 .ha-select-web {
   height: 56px;
@@ -639,7 +647,7 @@ input[type="range"]::-moz-range-thumb {
 }
 .ha-select-web:focus {
   border-color: rgb(var(--ha-primary));
-  box-shadow: 0 0 0 3px rgba(217,26,104,0.1);
+  box-shadow: 0 0 0 3px rgba(37,60,150,0.1);
 }
 
 .dual-range-thumb {
