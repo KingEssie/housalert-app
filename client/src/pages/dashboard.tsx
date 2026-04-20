@@ -1020,7 +1020,7 @@ function HomeTab({
         </p>
       </div>
 
-      <div className="flex flex-col gap-5 px-5 pt-5">
+      <div className="flex flex-col gap-5 px-2 pt-5">
         {!buddyMode && (
           <div className="flex flex-col gap-3.5" style={{ marginTop: 20 }} data-testid="section-gamification">
             <TaskFlowCard accessToken={accessToken} flow={ACCOUNT_FLOW} taskSource="tasks" navigate={navigate} testId="card-account-completion" searchProfileCount={profiles.length} />
@@ -1207,7 +1207,7 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
         <div className="sticky top-0 z-10 bg-white px-5 pb-4 border-b border-ha-card-border" style={{ paddingTop: "max(env(safe-area-inset-top), 24px)" }}>
           <h1 className="text-[22px] font-bold text-ha-text">{t("nav.favorites")}</h1>
         </div>
-        <div className="px-5 pt-16">
+        <div className="px-2 pt-16">
           <div className="flex flex-col items-center text-center px-6 pb-4">
             <div className="w-16 h-16 rounded-full bg-ha-surface flex items-center justify-center mb-6">
               <Lock className="w-7 h-7 text-ha-text-muted" />
@@ -1244,7 +1244,7 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
         </div>
       </div>
 
-      <div className="px-5 pt-3">
+      <div className="px-2 pt-3">
         {favLoading ? (
           <div className="bg-white rounded-[12px] p-4 flex flex-col gap-4" style={cardStyle}>
             {[1, 2].map((i) => (
@@ -1505,7 +1505,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
         <div className="px-3 pt-4">
           <div
             className="rounded-[20px] p-6 flex flex-col items-center text-center"
-            style={{ backgroundColor: "#6192FC" }}
+            style={{ backgroundColor: "rgb(var(--ha-primary))" }}
           >
             <div className="w-14 h-14 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "rgba(255,255,255,0.2)" }}>
               <Lock className="w-7 h-7 text-white" />
@@ -1707,14 +1707,14 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
                 >
                   <span
                     className={`text-[16px] ${isSelected ? "font-semibold" : "font-medium text-ha-text"}`}
-                    style={isSelected ? { color: "#6192FC" } : undefined}
+                    style={isSelected ? { color: "rgb(var(--ha-primary))" } : undefined}
                   >
                     {opt.label}
                   </span>
                   {isSelected && (
                     <div
                       className="w-[22px] h-[22px] rounded-full flex items-center justify-center"
-                      style={{ backgroundColor: "#6192FC" }}
+                      style={{ backgroundColor: "rgb(var(--ha-primary))" }}
                     >
                       <Check className="w-[13px] h-[13px] text-white" strokeWidth={3} />
                     </div>
@@ -2173,7 +2173,7 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
     <div className="min-h-[calc(100vh-80px)] bg-ha-bg">
 
       {/* ── MAIN PANEL ── */}
-      <div className="px-4 pb-8 max-w-[480px] mx-auto" style={{ paddingTop: "max(env(safe-area-inset-top), 24px)" }}>
+      <div className="px-2 pb-8 max-w-[480px] mx-auto" style={{ paddingTop: "max(env(safe-area-inset-top), 24px)" }}>
 
         {/* Single white container */}
         <div className="bg-white rounded-[12px] border border-ha-card-border shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden mb-4">
@@ -2313,7 +2313,7 @@ function SearchTab({ profiles, navigate }: { profiles: SearchProfile[]; navigate
           </button>
         )}
       </div>
-      <div className="px-5 pt-1">
+      <div className="px-2 pt-1">
         <SearchProfilesSection profiles={profiles} navigate={navigate} />
       </div>
     </div>
@@ -2552,6 +2552,7 @@ export default function DashboardPage() {
         >
           <nav
             className="flex rounded-[100px] h-[66px] overflow-hidden bg-ha-primary-hover"
+            style={{ backgroundColor: "#091043" }}
             data-testid="bottom-nav"
           >
             {TAB_CONFIG.map(({ key, labelKey, Icon }) => {

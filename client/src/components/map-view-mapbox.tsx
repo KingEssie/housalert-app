@@ -31,7 +31,7 @@ export default function MapViewMapbox({
       el.style.height = "16px";
       el.style.borderRadius = "50%";
       el.style.backgroundColor = "rgb(var(--ha-primary))";
-      el.style.border = "2px solid #fff";
+      el.style.border = "2px solid rgb(var(--ha-card))";
       el.style.boxShadow = "0 1px 4px rgba(0,0,0,0.3)";
       const marker = new mapboxgl.Marker({ element: el })
         .setLngLat([m.lng, m.lat])

@@ -157,7 +157,7 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
           <h1 className="text-[24px] font-bold text-ha-text" data-testid="text-greeting">{getGreeting()}, {userName}</h1>
           <p className="text-[13px] text-ha-text-secondary mt-0.5">Here's what's happening today</p>
         </div>
-        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-ha-hover-bg flex items-center justify-center hover:bg-[#EFEFEF] transition-colors" data-testid="button-refresh-dashboard">
+        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-ha-hover-bg flex items-center justify-center hover:bg-ha-divider transition-colors" data-testid="button-refresh-dashboard">
           <RefreshCw className={`w-4 h-4 text-ha-text-secondary ${refreshing ? "animate-spin" : ""}`} />
         </button>
       </div>
@@ -165,7 +165,7 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
       {alerts.length > 0 && (
         <div>
           <SectionHeader title="Needs attention" />
-          <div className={`${CARD} divide-y divide-[#F7F7F7]`}>
+          <div className={`${CARD} divide-y divide-ha-hover-bg`}>
             {alerts.map((a: any, i: number) => {
               const sColor = a.severity === "critical" ? "bg-ha-danger" : a.severity === "warning" ? "bg-amber-400" : "bg-ha-primary";
               return (
@@ -215,7 +215,7 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
       {data.sourceHealth && data.sourceHealth.length > 0 && (
         <div>
           <SectionHeader title="Source health" action={{ label: "View all", onClick: () => onNavigate("sources") }} />
-          <div className={`${CARD} divide-y divide-[#F7F7F7]`}>
+          <div className={`${CARD} divide-y divide-ha-hover-bg`}>
             {(() => {
               const byCity = new Map<string, { healthy: number; issues: number; total: number }>();
               for (const s of data.sourceHealth) {
@@ -449,7 +449,7 @@ function ListingsTab() {
       </div>
 
       {loading ? <LoadingState /> : (
-        <div className={`${CARD} divide-y divide-[#F7F7F7]`}>
+        <div className={`${CARD} divide-y divide-ha-hover-bg`}>
           {listings.length === 0 ? (
             <div className="px-4 py-8 text-center text-[13px] text-ha-text-secondary">No listings found</div>
           ) : listings.map(l => (
@@ -489,14 +489,14 @@ function ListingsTab() {
                     </div>
                   </div>
                   <div className="flex gap-1 flex-shrink-0">
-                    <button onClick={() => startEdit(l)} className="w-8 h-8 rounded-lg bg-ha-hover-bg flex items-center justify-center hover:bg-[#EFEFEF]" data-testid={`button-edit-${l.id}`}>
+                    <button onClick={() => startEdit(l)} className="w-8 h-8 rounded-lg bg-ha-hover-bg flex items-center justify-center hover:bg-ha-divider" data-testid={`button-edit-${l.id}`}>
                       <Pencil className="w-3.5 h-3.5 text-ha-text-secondary" />
                     </button>
                     <button onClick={() => setDeleteConfirm(l.id)} className="w-8 h-8 rounded-lg bg-ha-hover-bg flex items-center justify-center hover:bg-ha-danger/10" data-testid={`button-delete-${l.id}`}>
                       <Trash2 className="w-3.5 h-3.5 text-ha-danger" />
                     </button>
                     {l.url && (
-                      <a href={l.url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg bg-ha-hover-bg flex items-center justify-center hover:bg-[#EFEFEF]" data-testid={`link-ext-${l.id}`}>
+                      <a href={l.url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg bg-ha-hover-bg flex items-center justify-center hover:bg-ha-divider" data-testid={`link-ext-${l.id}`}>
                         <ExternalLink className="w-3.5 h-3.5 text-ha-text-secondary" />
                       </a>
                     )}
@@ -630,7 +630,7 @@ function ImagesTab() {
             </div>
           )}
           {backfillStatus.recentRuns && backfillStatus.recentRuns.length > 0 && (
-            <div className={`${CARD} mt-3 divide-y divide-[#F7F7F7]`}>
+            <div className={`${CARD} mt-3 divide-y divide-ha-hover-bg`}>
               <div className="px-4 py-2">
                 <p className="text-[12px] font-semibold text-ha-text-secondary uppercase tracking-wider">Recent runs</p>
               </div>
@@ -662,7 +662,7 @@ function ImagesTab() {
 
           <div>
             <SectionHeader title="Per source coverage" />
-            <div className={`${CARD} divide-y divide-[#F7F7F7]`}>
+            <div className={`${CARD} divide-y divide-ha-hover-bg`}>
               {(auditData.per_source || []).map((s: any) => (
                 <div key={s.source} className="px-4 py-3" data-testid={`image-source-${s.source}`}>
                   <div className="flex items-center justify-between mb-1.5">
@@ -705,7 +705,7 @@ function ImagesTab() {
               {Object.entries(auditData.samples).map(([source, samples]: [string, any]) => (
                 <div key={source} className="mb-3">
                   <p className="text-[12px] font-semibold text-ha-text-secondary mb-2 uppercase">{source}</p>
-                  <div className={`${CARD} divide-y divide-[#F7F7F7]`}>
+                  <div className={`${CARD} divide-y divide-ha-hover-bg`}>
                     {(samples as any[]).map((s: any) => (
                       <div key={s.id} className="px-4 py-3" data-testid={`sample-${s.id}`}>
                         <p className="text-[13px] font-medium text-ha-text truncate mb-1">{s.title || s.id}</p>
@@ -844,7 +844,7 @@ function SourcesTab() {
         <SectionHeader title="Source monitor" />
         <div className="flex gap-2 overflow-x-auto pb-2 mb-3" style={{ WebkitOverflowScrolling: "touch" }}>
           {["All", "Healthy", "Warning", "Broken"].map(f => (
-            <button key={f} onClick={() => setStatusFilter(f)} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${statusFilter === f ? "bg-[#111] text-white" : "bg-white text-ha-text-secondary border border-ha-divider"}`} data-testid={`filter-status-${f}`}>
+            <button key={f} onClick={() => setStatusFilter(f)} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${statusFilter === f ? "bg-ha-text text-white" : "bg-white text-ha-text-secondary border border-ha-divider"}`} data-testid={`filter-status-${f}`}>
               {f}
             </button>
           ))}
@@ -853,7 +853,7 @@ function SourcesTab() {
           </select>
         </div>
 
-        <div className={`${CARD} divide-y divide-[#F7F7F7]`}>
+        <div className={`${CARD} divide-y divide-ha-hover-bg`}>
           {filteredSources.length > 0 ? filteredSources.map((s: any) => {
             const st = s.status || (s.errors > 0 ? "broken" : s.found > 0 ? "active" : "broken");
             const sourceName = s.name || s.source;
@@ -1075,7 +1075,7 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
               {actionLoading === "resend" ? "Sending..." : "Resend undelivered matches"}
             </Button>
           </div>
-          <div className="pt-2 border-t border-[#F7F7F7]">
+          <div className="pt-2 border-t border-ha-hover-bg">
             <Button variant="outline" size="sm" onClick={deactivateUser} disabled={actionLoading === "deactivate"} className="rounded-full text-ha-danger border-ha-danger/30 hover:bg-ha-danger/5" data-testid="button-deactivate">
               <XCircle className="w-3.5 h-3.5 mr-1" />
               {actionLoading === "deactivate" ? "Deactivating..." : "Deactivate user"}
@@ -1196,7 +1196,7 @@ function UsersTab() {
 
       <div className="flex gap-2 overflow-x-auto pb-1" style={{ WebkitOverflowScrolling: "touch" }}>
         {["all", "paid", "trial", "canceled", "expired"].map(f => (
-          <button key={f} onClick={() => { setFilter(f); setPage(1); }} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${filter === f ? "bg-[#111] text-white" : "bg-white text-ha-text-secondary border border-ha-divider"}`} data-testid={`filter-user-${f}`}>
+          <button key={f} onClick={() => { setFilter(f); setPage(1); }} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${filter === f ? "bg-ha-text text-white" : "bg-white text-ha-text-secondary border border-ha-divider"}`} data-testid={`filter-user-${f}`}>
             {f.charAt(0).toUpperCase() + f.slice(1)}
           </button>
         ))}
@@ -1204,7 +1204,7 @@ function UsersTab() {
       </div>
 
       {loading ? <LoadingState /> : (
-        <div className={`${CARD} divide-y divide-[#F7F7F7]`}>
+        <div className={`${CARD} divide-y divide-ha-hover-bg`}>
           {users.map(u => (
             <button key={u.user_id} onClick={() => openUser(u.user_id)} className="w-full px-4 py-3 flex items-center gap-3 text-left hover:bg-ha-bg transition-colors" data-testid={`user-card-${u.user_id}`}>
               <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-[13px] font-bold ${u.has_profile_data === false ? "bg-ha-hover-bg text-ha-text-secondary" : "bg-ha-hover-bg text-ha-primary"}`}>
@@ -1264,7 +1264,7 @@ function SubscriptionsTab() {
 
       <div className="flex gap-2 overflow-x-auto pb-1" style={{ WebkitOverflowScrolling: "touch" }}>
         {["all", "active", "trial", "canceled", "expired"].map(f => (
-          <button key={f} onClick={() => { setFilter(f); setPage(1); }} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${filter === f ? "bg-[#111] text-white" : "bg-white text-ha-text-secondary border border-ha-divider"}`} data-testid={`filter-sub-${f}`}>
+          <button key={f} onClick={() => { setFilter(f); setPage(1); }} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${filter === f ? "bg-ha-text text-white" : "bg-white text-ha-text-secondary border border-ha-divider"}`} data-testid={`filter-sub-${f}`}>
             {f.charAt(0).toUpperCase() + f.slice(1)}
           </button>
         ))}
@@ -1274,7 +1274,7 @@ function SubscriptionsTab() {
       {loading ? <LoadingState /> : subs.length === 0 ? (
         <EmptyState title="No subscriptions" message={`No subscriptions found for "${filter}".`} />
       ) : (
-        <div className={`${CARD} divide-y divide-[#F7F7F7]`}>
+        <div className={`${CARD} divide-y divide-ha-hover-bg`}>
           {subs.map(s => (
             <div key={s.id} className="px-4 py-3" data-testid={`sub-card-${s.id}`}>
               <div className="flex items-center justify-between mb-1">
@@ -1358,7 +1358,7 @@ function SystemTab() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-[24px] font-bold text-ha-text">System</h1>
-        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-ha-hover-bg flex items-center justify-center hover:bg-[#EFEFEF]" data-testid="button-refresh-system">
+        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-ha-hover-bg flex items-center justify-center hover:bg-ha-divider" data-testid="button-refresh-system">
           <RefreshCw className={`w-4 h-4 text-ha-text-secondary ${refreshing ? "animate-spin" : ""}`} />
         </button>
       </div>
@@ -1401,7 +1401,7 @@ function SystemTab() {
             </div>
             {backfillStatus.lastRun && (
               <>
-                <div className="border-t border-[#F7F7F7] pt-2 mt-2">
+                <div className="border-t border-ha-hover-bg pt-2 mt-2">
                   <p className="text-[12px] text-ha-text-secondary font-medium mb-1">Last run</p>
                   <p className="text-[13px] text-ha-text">{new Date(backfillStatus.lastRun.timestamp).toLocaleString()}</p>
                   <p className="text-[11px] text-ha-text-secondary">{backfillStatus.lastRun.duration_ms}ms · {backfillStatus.lastRun.updated} updated · {backfillStatus.lastRun.failed} failed</p>
@@ -1411,7 +1411,7 @@ function SystemTab() {
           </div>
 
           {backfillStatus.recentRuns && backfillStatus.recentRuns.length > 0 && (
-            <div className={`${CARD} mt-3 divide-y divide-[#F7F7F7]`}>
+            <div className={`${CARD} mt-3 divide-y divide-ha-hover-bg`}>
               <div className="px-4 py-2">
                 <p className="text-[12px] font-semibold text-ha-text-secondary uppercase tracking-wider">Recent backfill runs</p>
               </div>
@@ -1446,7 +1446,7 @@ function SystemTab() {
       {loading ? <LoadingState /> : checks ? (
         <div>
           <SectionHeader title="Service status" />
-          <div className={`${CARD} divide-y divide-[#F7F7F7]`}>
+          <div className={`${CARD} divide-y divide-ha-hover-bg`}>
             {Object.entries(checks).map(([key, val]) => {
               const Icon = serviceIcons[key] || Settings;
               const info = labels[key] || { name: key, desc: "" };
@@ -1534,7 +1534,7 @@ function AlertsTab() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-[24px] font-bold text-ha-text">Alert Control</h1>
-        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-ha-hover-bg flex items-center justify-center hover:bg-[#EFEFEF]" data-testid="button-refresh-alerts">
+        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-ha-hover-bg flex items-center justify-center hover:bg-ha-divider" data-testid="button-refresh-alerts">
           <RefreshCw className={`w-4 h-4 text-ha-text-secondary ${refreshing ? "animate-spin" : ""}`} />
         </button>
       </div>
@@ -1553,7 +1553,7 @@ function AlertsTab() {
         <div className="space-y-3">
           <div className="flex gap-2">
             {(["email", "push"] as const).map(t => (
-              <button key={t} onClick={() => setTestType(t)} className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-colors ${testType === t ? "bg-[#111] text-white" : "bg-white text-ha-text-secondary border border-ha-divider"}`} data-testid={`test-type-${t}`}>
+              <button key={t} onClick={() => setTestType(t)} className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-colors ${testType === t ? "bg-ha-text text-white" : "bg-white text-ha-text-secondary border border-ha-divider"}`} data-testid={`test-type-${t}`}>
                 {t === "email" ? "Email" : "Push"}
               </button>
             ))}
@@ -1586,7 +1586,7 @@ function AlertsTab() {
 
       <div>
         <SectionHeader title="Recent alert activity" />
-        <div className={`${CARD} divide-y divide-[#F7F7F7]`}>
+        <div className={`${CARD} divide-y divide-ha-hover-bg`}>
           {activity.length === 0 ? (
             <div className="px-4 py-8 text-center text-[13px] text-ha-text-secondary">No recent activity</div>
           ) : activity.map((a, i) => (
@@ -1651,7 +1651,7 @@ function SettingsTab() {
             <p className="text-[11px] text-ha-text-secondary mb-1.5">Number of matches a free user can see before the paywall appears.</p>
             <div className="flex gap-2">
               {["0", "1", "3", "5", "10"].map(v => (
-                <button key={v} onClick={() => setSettings(s => ({ ...s, free_matches_limit: v }))} className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-colors ${settings.free_matches_limit === v ? "bg-[#111] text-white" : "bg-white text-ha-text-secondary border border-ha-divider"}`} data-testid={`setting-limit-${v}`}>
+                <button key={v} onClick={() => setSettings(s => ({ ...s, free_matches_limit: v }))} className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-colors ${settings.free_matches_limit === v ? "bg-ha-text text-white" : "bg-white text-ha-text-secondary border border-ha-divider"}`} data-testid={`setting-limit-${v}`}>
                   {v === "0" ? "None" : v}
                 </button>
               ))}
@@ -1666,7 +1666,7 @@ function SettingsTab() {
             </div>
           </div>
 
-          <div className="pt-3 border-t border-[#F7F7F7]">
+          <div className="pt-3 border-t border-ha-hover-bg">
             <div className="flex items-center justify-between">
               <div>
                 <label className="text-[12px] font-medium text-ha-text-secondary block">Show blurred locked matches</label>

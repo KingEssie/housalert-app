@@ -83,7 +83,7 @@ export function ExpandableCompletionCard({
           <div className="flex-1 h-[8px] rounded-full overflow-hidden bg-ha-bg">
             <div
               className="h-full rounded-full transition-all duration-500"
-              style={{ width: `${percentage}%`, backgroundColor: "#C7EF66" }}
+              style={{ width: `${percentage}%`, backgroundColor: "rgb(var(--ha-highlight))" }}
             />
           </div>
           <span
@@ -131,7 +131,7 @@ export function ExpandableCompletionCard({
                     {step.completed ? (
                       <div
                         className="w-[26px] h-[26px] rounded-full flex items-center justify-center"
-                        style={{ backgroundColor: "#C7EF66" }}
+                        style={{ backgroundColor: "rgb(var(--ha-highlight))" }}
                       >
                         <Check className="w-[14px] h-[14px] text-black" strokeWidth={3} />
                       </div>

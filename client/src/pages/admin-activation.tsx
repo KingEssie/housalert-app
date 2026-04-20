@@ -218,7 +218,7 @@ export default function AdminActivationPage() {
           {(!data?.recentEvents || data.recentEvents.length === 0) ? (
             <p className="text-[13px] text-ha-text-secondary">No events recorded yet.</p>
           ) : (
-            <div className="flex flex-col divide-y divide-[#F7F7F7]">
+            <div className="flex flex-col divide-y divide-ha-hover-bg">
               {data.recentEvents.map((evt, i) => (
                 <div key={i} className="py-2.5 flex items-center gap-3" data-testid={`event-row-${i}`}>
                   <Activity className="w-3.5 h-3.5 text-ha-text-secondary flex-shrink-0" />

@@ -242,7 +242,7 @@ export default function AdminImageAuditPage() {
             </div>
 
             <Section title="Per-source coverage">
-              <div className="divide-y divide-[#E5E7EB]">
+              <div className="divide-y divide-ha-card-border">
                 {data.per_source.map(s => (
                   <div key={s.source}>
                     <button
@@ -301,7 +301,7 @@ export default function AdminImageAuditPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Section title="Top 5 worst coverage">
-                <div className="divide-y divide-[#E5E7EB]">
+                <div className="divide-y divide-ha-card-border">
                   {data.top_5_worst.map((s, i) => (
                     <div key={s.source} className="px-4 py-3 flex items-center gap-3" data-testid={`row-worst-${i}`}>
                       <span className="w-6 h-6 rounded-full bg-red-50 text-red-600 text-[12px] font-semibold flex items-center justify-center shrink-0">{i + 1}</span>
@@ -316,7 +316,7 @@ export default function AdminImageAuditPage() {
               </Section>
 
               <Section title="Top 5 highest priority to fix">
-                <div className="divide-y divide-[#E5E7EB]">
+                <div className="divide-y divide-ha-card-border">
                   {data.top_5_priority.map((s, i) => (
                     <div key={s.source} className="px-4 py-3 flex items-center gap-3" data-testid={`row-priority-${i}`}>
                       <span className="w-6 h-6 rounded-full bg-amber-50 text-amber-700 text-[12px] font-semibold flex items-center justify-center shrink-0">{i + 1}</span>
@@ -339,7 +339,7 @@ export default function AdminImageAuditPage() {
                   <p className="text-[12px] text-ha-text-secondary">Listings that may benefit from image backfill</p>
                 </div>
               </div>
-              <div className="divide-y divide-[#E5E7EB]">
+              <div className="divide-y divide-ha-card-border">
                 {data.backfill.per_source.filter(c => c.total_candidates > 0).map(c => (
                   <div key={c.source} className="px-4 py-2.5 flex items-center justify-between text-[13px]" data-testid={`row-backfill-${c.source}`}>
                     <span className="font-medium text-ha-text">{c.source}</span>
@@ -355,7 +355,7 @@ export default function AdminImageAuditPage() {
 
             <Section title="Automatic image backfill pipeline">
               {pipelineStatus ? (
-                <div className="divide-y divide-[#E5E7EB]">
+                <div className="divide-y divide-ha-card-border">
                   <div className="px-4 py-3 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className={`w-2.5 h-2.5 rounded-full ${pipelineStatus.enabled ? (pipelineStatus.running ? "bg-amber-500 animate-pulse" : "bg-emerald-500") : "bg-ha-border-input"}`} />

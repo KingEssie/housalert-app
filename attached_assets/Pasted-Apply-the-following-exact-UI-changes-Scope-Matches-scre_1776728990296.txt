@@ -1,0 +1,83 @@
+Apply the following exact UI changes.
+
+Scope:
+- Matches screen
+- Global bottom tab bar
+- Global main content container (spacing consistency across the app)
+
+Do NOT change layout structure beyond what is described.
+Do NOT affect logic.
+Use semantic tokens where possible.
+
+--------------------------------------------------
+1. BOTTOM TAB BAR (GLOBAL)
+--------------------------------------------------
+
+- Change the background color of the bottom tab bar to: #091043
+- Keep it fully rounded / pill-shaped as currently implemented
+
+Icon + text colors:
+- Inactive:
+  - icon: white
+  - text: white
+- Active:
+  - icon: #6192FC
+  - text: #6192FC
+
+Ensure:
+- good contrast
+- no changes to navigation behavior
+- applies consistently across all screens
+
+--------------------------------------------------
+2. MATCH CARD BACKGROUND (MATCHES ONLY)
+--------------------------------------------------
+
+- Change the match card background from the current blue tint to:
+  #EBF1FF
+
+- Keep:
+  - all text black
+  - detail pills (location, size, price):
+    - background: white
+    - icon color: #6192FC
+
+- Ensure the card still feels clean and readable
+- Do not change spacing or layout
+
+--------------------------------------------------
+3. GLOBAL CONTAINER WIDTH CONSISTENCY
+--------------------------------------------------
+
+- Apply the current Matches screen container width (reduced side spacing) across the entire app
+
+Goal:
+- all main screens (Home, Matches, Favorites, Account, etc.) should use the same content width
+- reduce side margins so screens feel wider and more consistent
+
+Do:
+- reuse the same container class or layout logic used in Matches
+- ensure consistent padding left/right across screens
+
+Do NOT:
+- break layout on smaller screens
+- change component structure
+
+--------------------------------------------------
+RULES
+--------------------------------------------------
+
+- Use semantic tokens where possible
+- Do not introduce random new colors
+- Do not modify unrelated components beyond spacing + tab bar
+- Keep everything visually clean and consistent
+
+--------------------------------------------------
+OUTPUT
+--------------------------------------------------
+
+Return:
+1. files changed
+2. confirmation bottom tab bar is now global
+3. confirmation all screens use same container width
+4. exact elements updated on Matches

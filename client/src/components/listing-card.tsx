@@ -102,21 +102,21 @@ export function ListingCardFull({
   const newLabel = locale === "de" ? "Neu" : locale === "en" ? "New" : "Nieuw";
 
   const cardBg = matchVariant
-    ? "rgba(155, 190, 253, 0.87)"
-    : "#ffffff";
+    ? "#EBF1FF"
+    : "rgb(var(--ha-card))";
   const cardBorder = matchVariant
     ? "none"
     : "1px solid rgb(var(--ha-card-border))";
   const imageRatio = matchVariant ? "2/1" : "16/9";
 
-  const heartFill = isFavorited ? "#6192FC" : "none";
+  const heartFill = isFavorited ? "rgb(var(--ha-primary))" : "none";
   const heartStroke = matchVariant
-    ? "#6192FC"
+    ? "rgb(var(--ha-primary))"
     : isFavorited
     ? "#FF385C"
-    : "#ffffff";
+    : "rgb(var(--ha-card))";
   const heartActiveFill = matchVariant
-    ? "#6192FC"
+    ? "rgb(var(--ha-primary))"
     : "#FF385C";
 
   return (

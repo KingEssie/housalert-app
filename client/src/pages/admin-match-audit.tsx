@@ -156,7 +156,7 @@ export default function AdminMatchAudit() {
 
         <div className="grid grid-cols-2 gap-3">
           <StatCard icon={Database} label="Total Matches" value={stats.total} color="bg-ha-primary" />
-          <StatCard icon={Eye} label="New (Unviewed)" value={stats.new_count} color="bg-[#334855]" />
+          <StatCard icon={Eye} label="New (Unviewed)" value={stats.new_count} color="bg-ha-text-secondary" />
           <StatCard icon={CheckCircle2} label="Viewed" value={stats.viewed} color="bg-ha-success" />
           <StatCard icon={Send} label="Applied" value={stats.applied} color="bg-ha-primary" />
           <StatCard icon={Mail} label="Emails Sent" value={stats.email_sent} color="bg-ha-danger" />
@@ -212,7 +212,7 @@ export default function AdminMatchAudit() {
             <p className="text-[15px] font-bold text-ha-text">Recent Fetch Runs</p>
             <div className="space-y-2">
               {fetch_runs.map((run: any, i: number) => (
-                <div key={run.id || i} className="flex items-center gap-3 py-2 border-b border-[#F7F7F7] last:border-0 text-[12px]">
+                <div key={run.id || i} className="flex items-center gap-3 py-2 border-b border-ha-hover-bg last:border-0 text-[12px]">
                   <div className={`w-2 h-2 rounded-full ${run.status === "completed" ? "bg-green-500" : run.status === "failed" ? "bg-ha-danger" : "bg-yellow-500"}`} />
                   <div className="flex-1">
                     <span className="text-ha-text font-medium">{formatDate(run.started_at)}</span>
@@ -233,7 +233,7 @@ export default function AdminMatchAudit() {
           ) : (
             <div className="space-y-0">
               {recent_matches.map((m: any, i: number) => (
-                <div key={m.id || i} className="py-3 border-b border-[#F7F7F7] last:border-0" data-testid={`match-row-${i}`}>
+                <div key={m.id || i} className="py-3 border-b border-ha-hover-bg last:border-0" data-testid={`match-row-${i}`}>
                   <div className="flex justify-between items-start mb-1">
                     <p className="text-[13px] font-semibold text-ha-text leading-tight flex-1 pr-2">
                       {m.listing_title || "Untitled"}
@@ -272,7 +272,7 @@ export default function AdminMatchAudit() {
           <div className="bg-white rounded-2xl border border-ha-card-border p-4 space-y-3" data-testid="card-search-profiles">
             <p className="text-[15px] font-bold text-ha-text">Search Profiles ({data.search_profiles.count})</p>
             {data.search_profiles.profiles.map((p: any, i: number) => (
-              <div key={p.id || i} className="py-2 border-b border-[#F7F7F7] last:border-0 text-[12px]">
+              <div key={p.id || i} className="py-2 border-b border-ha-hover-bg last:border-0 text-[12px]">
                 <span className="font-medium text-ha-text">{p.city_name || p.city}</span>
                 <span className="text-ha-text-secondary ml-2">
                   €{p.price_min || 0}–€{p.price_max || "∞"} · {p.bedrooms_min || 0}+ rooms · {p.size_min || 0}+ m²
