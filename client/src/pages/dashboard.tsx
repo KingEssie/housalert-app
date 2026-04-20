@@ -842,7 +842,7 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
           {!buddyMode && (
             <button
               onClick={() => navigate("/dashboard/searches/new")}
-              className="h-[48px] px-8 rounded-[12px] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
+              className="h-[48px] px-8 rounded-[12px] bg-ha-primary-hover text-white text-[16px] font-semibold hover:bg-ha-primary transition-colors active:scale-[0.97]"
               data-testid="button-create-first-profile"
             >
               {t("home.createProfile")}
@@ -897,7 +897,7 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
                   deleteMutation.mutate(confirmDeleteId);
                   setConfirmDeleteId(null);
                 }}
-                className="w-full h-[48px] rounded-full bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
+                className="w-full h-[48px] rounded-full bg-ha-primary-hover text-white text-[16px] font-semibold hover:bg-ha-primary transition-colors active:scale-[0.98]"
                 data-testid="button-delete-yes"
               >
                 {t("home.deleteYes")}
@@ -982,7 +982,7 @@ function HomeTab({
             </div>
             <button
               onClick={() => { onDismissBuddyUnlinked?.(); navigate("/onboarding/setup?from=buddy_unlinked"); }}
-              className="w-full h-[52px] rounded-[12px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98]"
+              className="w-full h-[52px] rounded-[12px] bg-ha-primary-hover hover:bg-ha-primary text-white text-[16px] font-semibold transition-colors active:scale-[0.98]"
               data-testid="button-buddy-unlinked-cta"
             >
               {t("buddyUnlinked.cta")}
@@ -2485,9 +2485,9 @@ export default function DashboardPage() {
                     <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <Icon className={`w-[26px] h-[26px] transition-colors ${isActive ? "text-ha-primary-hover" : "text-ha-text-secondary"}`} strokeWidth={isActive ? 2.2 : 1.6} />
+                  <Icon className={`w-[26px] h-[26px] transition-colors ${isActive ? "text-ha-primary-hover" : "text-ha-text-muted"}`} strokeWidth={isActive ? 2.2 : 1.6} />
                 )}
-                <span className={`text-[11px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary-hover" : "font-medium text-ha-text-secondary"}`}>
+                <span className={`text-[11px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary-hover" : "font-medium text-ha-text-muted"}`}>
                   {t(labelKey)}
                 </span>
               </button>
