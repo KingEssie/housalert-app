@@ -47,10 +47,10 @@
 
   /* ── HousAlert semantic color tokens (RGB space-separated) ── */
 
-  /* Brand / Primary — #253c96 Primary Blue */
-  --ha-primary: 37 60 150;            /* #253c96 */
-  --ha-primary-hover: 25 36 78;       /* #19244e */
-  --ha-primary-light: rgba(37, 60, 150, 0.08);
+  /* Brand / Primary — #6192FC Primary Blue */
+  --ha-primary: 97 146 252;           /* #6192FC */
+  --ha-primary-hover: 17 53 139;      /* #11358B */
+  --ha-primary-light: rgba(97, 146, 252, 0.08);
 
   /* Accent — Orange / Yellow / Mint */
   --ha-accent: 243 107 46;            /* #f36b2e — high-attention CTA orange */
@@ -58,7 +58,7 @@
   --ha-accent-light: rgba(243, 107, 46, 0.08);
   --ha-accent-yellow: 245 154 30;     /* #f59a1e — warm friendly accent */
   --ha-accent-yellow-light: rgba(245, 154, 30, 0.08);
-  --ha-mint: 196 231 229;             /* #c4e7e5 — soft supportive backgrounds */
+  --ha-mint: 199 239 102;             /* #C7EF66 — accent highlight surface */
   --ha-emerald: 15 186 128;           /* #0FBA80 — progress ring / confirmed status */
 
   /* Text */
@@ -68,12 +68,12 @@
   --ha-text-placeholder: 156 163 175; /* #9CA3AF — placeholder / muted icons */
 
   /* Backgrounds */
-  --ha-bg: 234 234 235;               /* #EAEAEB — page background */
+  --ha-bg: 239 240 244;               /* #EFF0F4 — page background */
   --ha-card: 255 255 255;             /* #FFFFFF — card / modal / nav bg */
   --ha-surface: 249 250 251;          /* #F9FAFB — surface / subtle bg */
   --ha-hover-bg: 247 247 247;         /* #F7F7F7 — list item hover bg */
   --ha-toggle-bg: 240 244 248;        /* #F0F4F8 — pill toggle group bg */
-  --ha-highlight: 196 231 229;        /* #c4e7e5 — soft mint highlight surface */
+  --ha-highlight: 199 239 102;        /* #C7EF66 — accent highlight surface */
 
   /* Borders */
   --ha-card-border: 229 231 235;      /* #E5E7EB — card / nav / standard borders */
