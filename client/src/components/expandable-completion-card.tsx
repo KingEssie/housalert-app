@@ -44,7 +44,7 @@ function CircularProgress({ percentage, size = 52 }: { percentage: number; size?
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="rgb(var(--ha-primary))"
+          stroke="rgb(var(--ha-emerald))"
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={offset}
@@ -106,13 +106,11 @@ export function ExpandableCompletionCard({
         )}
         <div className="flex-1 min-w-0">
           <p className="text-[17px] font-bold text-ha-text leading-snug tracking-[-0.01em]">{title}</p>
-          <p className={`text-[13px] mt-1 ${allDone ? "text-ha-success font-semibold" : "text-ha-text-secondary font-medium"}`}>
-            {allDone
-              ? completedLabel
-              : subtitleFormat
-                ? subtitleFormat.replace("{done}", String(doneCount)).replace("{total}", String(totalCount))
-                : `${doneCount} / ${totalCount} ${completedLabel}`}
-          </p>
+          {allDone && (
+            <p className="text-[13px] mt-1 text-ha-success font-semibold">
+              {completedLabel}
+            </p>
+          )}
         </div>
         <ChevronDown
           className={`w-5 h-5 text-ha-text-secondary flex-shrink-0 transition-transform duration-200 ${

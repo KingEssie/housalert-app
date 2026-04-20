@@ -758,7 +758,7 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
       style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid rgb(var(--ha-card-border))" }}
     >
       <div className="flex items-center gap-2.5 mb-1.5">
-        <Search className="w-[20px] h-[20px] text-ha-primary flex-shrink-0" />
+        <Search className="w-[20px] h-[20px] text-ha-accent flex-shrink-0" />
         <h2 className="text-[21px] font-semibold text-ha-text flex-1" data-testid="text-search-profiles-title">
           {t("home.zoekopdrachtenTitle")}
         </h2>
@@ -786,7 +786,7 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
             return (
               <div
                 key={p.id}
-                className={`rounded-[10px] bg-ha-surface p-4 flex items-center ${buddyMode ? "cursor-default" : "cursor-pointer active:opacity-80"} transition-all`}
+                className={`rounded-[10px] bg-ha-bg p-4 flex items-center ${buddyMode ? "cursor-default" : "cursor-pointer active:opacity-80"} transition-all`}
                 onClick={buddyMode ? undefined : () => navigate(`/dashboard/searches/edit/${p.id}`)}
                 data-testid={`row-search-profile-${p.id}`}
               >
@@ -854,7 +854,7 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
       {!buddyMode && profiles.length > 0 && profiles.length < MAX_PROFILES && (
         <button
           onClick={() => navigate("/dashboard/searches/new")}
-          className="w-full mt-4 py-[14px] rounded-[10px] bg-transparent border-2 border-ha-primary text-[16px] font-semibold text-ha-primary hover:bg-ha-primary/5 transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
+          className="w-full mt-4 py-[14px] rounded-[10px] bg-transparent border-2 border-ha-accent text-[16px] font-semibold text-ha-accent hover:bg-ha-accent/5 transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
           data-testid="button-add-search-profile"
         >
           + {t("home.addZoekopdracht")}
@@ -1055,10 +1055,10 @@ function HomeTab({
               data-testid="card-application-letter-status"
             >
               <div className="flex items-center gap-2.5">
-                <FileText className="w-[20px] h-[20px] text-ha-primary flex-shrink-0" />
+                <FileText className="w-[20px] h-[20px] text-ha-accent flex-shrink-0" />
                 <h2 className="text-[21px] font-semibold text-ha-text flex-1">{t("profile.reactionLetter2")}</h2>
                 {!buddyMode && (
-                  <span className="text-[14px] font-medium" style={{ color: "rgb(var(--ha-info))" }}>
+                  <span className="text-[14px] font-medium" style={{ color: "rgb(var(--ha-primary))" }}>
                     {hasLetter ? t("common.manage") : t("common.generate")}
                   </span>
                 )}
@@ -1066,8 +1066,8 @@ function HomeTab({
               <div className="flex items-center gap-2 pl-[30px]">
                 {hasLetter ? (
                   <>
-                    <Check className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "rgb(var(--ha-success))" }} />
-                    <span className="text-[13px] font-medium" style={{ color: "rgb(var(--ha-success))" }}>{t("home.reactionLetterConfigured")}</span>
+                    <Check className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "rgb(var(--ha-emerald))" }} />
+                    <span className="text-[13px] font-medium" style={{ color: "rgb(var(--ha-emerald))" }}>{t("home.reactionLetterConfigured")}</span>
                   </>
                 ) : (
                   <>
@@ -1092,15 +1092,15 @@ function HomeTab({
               data-testid="card-search-buddy-status"
             >
               <div className="flex items-center gap-2.5">
-                <Users className="w-[20px] h-[20px] text-ha-primary flex-shrink-0" />
+                <Users className="w-[20px] h-[20px] text-ha-accent flex-shrink-0" />
                 <h2 className="text-[21px] font-semibold text-ha-text flex-1">{t("profile.searchBuddy")}</h2>
-                <span className="text-[14px] font-medium" style={{ color: "rgb(var(--ha-info))" }}>{t("common.manage")}</span>
+                <span className="text-[14px] font-medium" style={{ color: "rgb(var(--ha-primary))" }}>{t("common.manage")}</span>
               </div>
               <div className="flex items-center gap-2 pl-[30px]">
                 {hasBuddy ? (
                   <>
-                    <Check className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "rgb(var(--ha-success))" }} />
-                    <span className="text-[13px] font-medium" style={{ color: "rgb(var(--ha-success))" }}>{t("home.zoekbuddyConfigured")}</span>
+                    <Check className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "rgb(var(--ha-emerald))" }} />
+                    <span className="text-[13px] font-medium" style={{ color: "rgb(var(--ha-emerald))" }}>{t("home.zoekbuddyConfigured")}</span>
                   </>
                 ) : (
                   <>

@@ -36,8 +36,7 @@ export function HighlightCard({ icon: Icon, title, subtitle, overline, ctaLabel,
         )}
         {ctaLabel && (
           <span
-            className="inline-flex h-[40px] px-5 rounded-full bg-white text-ha-text text-[14px] font-semibold items-center transition-colors"
-            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.08)" }}
+            className="inline-flex h-[52px] px-8 rounded-[4px] bg-ha-accent text-white text-[14px] font-semibold items-center transition-colors"
           >
             {ctaLabel}
           </span>

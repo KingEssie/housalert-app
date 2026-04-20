@@ -1,0 +1,71 @@
+Apply the following UI changes to the Home screen only.
+
+Important rules:
+- Scope only the Home screen and its directly used components.
+- Do not change layout structure unless explicitly requested.
+- Do not change logic or functionality.
+- Reuse the existing semantic token system where possible.
+- If a requested color is not yet available as a semantic token, add or map it cleanly.
+- Keep spacing and typography intact unless explicitly mentioned.
+
+Home screen changes:
+
+1. Progress cards at the top
+Target:
+- "Rond je account af"
+- "Vergroot je kansen met deze tips"
+
+Changes:
+- Change the circular progress ring color to: #0FBA80
+- Remove the descriptive subtitle text under each title:
+  - remove "3 van de 4 voltooid"
+  - remove "1 van de 8 voltooid"
+- Keep the title text and percentage visible
+- Preserve card spacing and alignment after removing the subtitle
+
+2. Referral card: "Geef een vriend 25% korting"
+Changes:
+- Card background color: #c4e7e5
+- CTA button "Deel je link":
+  - background: #f36b2e
+  - make the button taller and wider than current
+  - remove all shadow
+  - border radius: 4px
+  - keep text readable with strong contrast
+- Do not change the referral card copy or structure
+
+3. Search section: "Zoekopdrachten"
+Changes:
+- Search icon color: #f36b2e
+- The light gray background of each search item card should become: #eaeaeb
+- The button "Zoekopdracht toevoegen":
+  - text color: #f36b2e
+  - border color: #f36b2e
+  - background: transparent
+- Keep the button style clean and sharp
+- Do not change the search count badge unless needed for visual consistency
+
+4. Reactiebrief and Zoekbuddy cards
+Changes:
+- Icon color for both cards: #f36b2e
+- Status text colors:
+  - "Reactiebrief ingesteld" -> #0FBA80
+  - "Zoekbuddy ingesteld" -> #0FBA80
+- Link text "Beheren" -> #253c96
+
+5. Bottom navigation
+Changes:
+- Active icon color: #253c96
+- Active label text color: #253c96
+- Do not change inactive tab colors unless needed for consistency
+
+Implementation notes:
+- If these exact colors are not already mapped in semantic tokens, create or reuse semantic tokens cleanly instead of hardcoding inline values unnecessarily.
+- Keep the rest of the Home screen unchanged.
+- Do not affect other screens.
+
+After completion, return:
+1. files changed
+2. exact Home screen elements updated
+3. any semantic tokens added or reused
+4. confirmation that only the Home screen was affected

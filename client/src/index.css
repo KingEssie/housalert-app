@@ -59,6 +59,7 @@
   --ha-accent-yellow: 245 154 30;     /* #f59a1e — warm friendly accent */
   --ha-accent-yellow-light: rgba(245, 154, 30, 0.08);
   --ha-mint: 196 231 229;             /* #c4e7e5 — soft supportive backgrounds */
+  --ha-emerald: 15 186 128;           /* #0FBA80 — progress ring / confirmed status */
 
   /* Text */
   --ha-text: 17 17 17;                /* #111111 — primary text */
