@@ -146,7 +146,7 @@ export function ListingCardFull({
         </h3>
 
         {(timeAgo || sourceName) && (
-          <p className="text-[13px] text-ha-text" data-testid={`detail-source-${match.listing_id}`}>
+          <p className="text-[13px] text-ha-text-muted" data-testid={`detail-source-${match.listing_id}`}>
             {timeAgo && sourceName ? `${timeAgo} · ${sourceName}` : timeAgo || sourceName}
           </p>
         )}

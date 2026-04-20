@@ -1493,8 +1493,8 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
 
         <div className="px-5 pt-16">
           <div className="flex flex-col items-center text-center px-6 pb-4">
-            <div className="w-16 h-16 rounded-full bg-ha-highlight flex items-center justify-center mb-6">
-              <Lock className="w-7 h-7 text-ha-text" />
+            <div className="w-16 h-16 rounded-full bg-ha-surface flex items-center justify-center mb-6">
+              <Lock className="w-7 h-7 text-ha-text-muted" />
             </div>
             <h2 className="text-[20px] font-semibold text-ha-text mb-2.5" data-testid="text-locked-headline">
               {t("matches.locked.headline")}
@@ -1504,7 +1504,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
             </p>
             <button
               onClick={() => navigate("/paywall")}
-              className="h-[48px] px-10 rounded-[12px] bg-ha-primary text-white text-[15px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
+              className="h-[48px] px-10 rounded-[12px] bg-ha-primary-hover text-white text-[15px] font-semibold hover:bg-ha-primary transition-colors active:scale-[0.97]"
               data-testid="button-locked-subscribe"
             >
               {t("matches.locked.cta")}
@@ -1530,7 +1530,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
                 className={`flex-1 text-center pb-3 text-[15px] transition-all duration-200 border-b-2 ${
                   isActive
                     ? "text-ha-text font-semibold border-ha-text"
-                    : "text-ha-text-placeholder font-medium border-transparent"
+                    : "text-ha-text-muted font-medium border-transparent"
                 }`}
                 style={{ marginBottom: "-1px" }}
                 data-testid={`tab-matches-${key}`}
@@ -1577,7 +1577,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
                 <p className="text-[15px] text-ha-text-secondary leading-relaxed max-w-[280px]">{t("matches.loadErrorDesc")}</p>
                 <button
                   onClick={() => apiMatchesQuery.refetch()}
-                  className="text-[15px] font-semibold text-ha-primary active:opacity-70 transition-opacity"
+                  className="text-[15px] font-semibold text-ha-primary-hover active:opacity-70 transition-opacity"
                   data-testid="button-retry-matches"
                 >
                   {t("common.retry")}
