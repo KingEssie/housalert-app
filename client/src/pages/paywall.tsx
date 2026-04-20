@@ -127,7 +127,7 @@ function WebsitePaywall({
             }}
             data-testid="search-summary-card"
           >
-            <MapPin className="w-4 h-4 shrink-0 mt-0.5" style={{ color: OBW.pink }} />
+            <MapPin className="w-4 h-4 shrink-0 mt-0.5" style={{ color: OBW.primary }} />
             <div className="min-w-0">
               <p className="text-[14px] font-semibold" style={{ color: OBW.text }}>
                 {city}{radiusKm && radiusKm !== "0" ? ` · ${radiusKm} km` : ""}

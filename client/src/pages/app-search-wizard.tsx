@@ -46,10 +46,10 @@ function DualRangeSlider({
   testId: string;
 }) {
   const inactive = "rgb(var(--ha-card-border))";
-  const pink = "rgb(var(--ha-primary))";
+  const primary = "rgb(var(--ha-primary))";
   const pL = ((valueLow - min) / (max - min)) * 100;
   const pH = ((valueHigh - min) / (max - min)) * 100;
-  const bg = `linear-gradient(to right,${inactive} 0%,${inactive} ${pL}%,${pink} ${pL}%,${pink} ${pH}%,${inactive} ${pH}%,${inactive} 100%)`;
+  const bg = `linear-gradient(to right,${inactive} 0%,${inactive} ${pL}%,${primary} ${pL}%,${primary} ${pH}%,${inactive} ${pH}%,${inactive} 100%)`;
   return (
     <div data-testid={testId}>
       <div className="flex justify-between mb-2">
@@ -78,7 +78,7 @@ function RangeSlider({
   min: number; max: number; step: number; value: number;
   onChange: (v: number) => void; formatLabel: (v: number) => string; testId: string;
 }) {
-  const pink = "rgb(var(--ha-primary))";
+  const primary = "rgb(var(--ha-primary))";
   const inactive = "rgb(var(--ha-card-border))";
   const pct = ((value - min) / (max - min)) * 100;
   return (
@@ -86,10 +86,10 @@ function RangeSlider({
       <input type="range" min={min} max={max} step={step} value={value}
         onChange={(e) => onChange(Number(e.target.value))}
         className="w-full"
-        style={{ background: `linear-gradient(to right,${pink} 0%,${pink} ${pct}%,${inactive} ${pct}%,${inactive} 100%)` }} />
+        style={{ background: `linear-gradient(to right,${primary} 0%,${primary} ${pct}%,${inactive} ${pct}%,${inactive} 100%)` }} />
       <div className="flex justify-between mt-1">
         <span className="text-[12px]" style={{ color: OBW.textSecondary }}>{formatLabel(min)}</span>
-        <span className="text-[13px] font-semibold" style={{ color: pink }}>{formatLabel(value)}</span>
+        <span className="text-[13px] font-semibold" style={{ color: primary }}>{formatLabel(value)}</span>
         <span className="text-[12px]" style={{ color: OBW.textSecondary }}>{formatLabel(max)}</span>
       </div>
     </div>
@@ -255,7 +255,7 @@ function StepFooter({
           </button>
           <button onClick={onNext} disabled={nextDisabled || saving}
             className="h-[44px] px-6 rounded-[8px] text-[15px] font-semibold text-white flex items-center justify-center gap-1.5 active:scale-[0.97] transition-transform disabled:opacity-40"
-            style={{ background: OBW.pink, boxShadow: "0 4px 14px rgba(37,60,150,0.2)" }}
+            style={{ background: OBW.primary, boxShadow: "0 4px 14px rgb(var(--ha-primary) / 0.2)" }}
             data-testid="button-step-next">
             {saving && <Loader2 className="w-4 h-4 animate-spin" />}
             {nextLabel}
@@ -520,7 +520,7 @@ export default function AppSearchWizard() {
             </p>
             <button onClick={goClose}
               className="w-full h-[48px] rounded-[10px] text-white text-[15px] font-semibold"
-              style={{ background: OBW.pink }}>
+              style={{ background: OBW.primary }}>
               {t("newSearch.backToDashboard")}
             </button>
           </div>
@@ -611,7 +611,7 @@ export default function AppSearchWizard() {
             <button onClick={() => { if (city) setStep(2); }}
               disabled={!city}
               className="h-[44px] px-6 rounded-[8px] text-[15px] font-semibold text-white disabled:opacity-40"
-              style={{ background: OBW.pink }}
+              style={{ background: OBW.primary }}
               data-testid="button-city-next">
               {t("common.next")}
             </button>

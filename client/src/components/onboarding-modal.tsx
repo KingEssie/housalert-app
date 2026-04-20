@@ -128,9 +128,9 @@ function DualRangeSlider({
 }) {
   const pctLow = ((valueLow - min) / (max - min)) * 100;
   const pctHigh = ((valueHigh - min) / (max - min)) * 100;
-  const pink = "rgb(var(--ha-primary))";
+  const primary = "rgb(var(--ha-primary))";
   const inactive = "rgb(var(--ha-card-border))";
-  const trackBg = `linear-gradient(to right, ${inactive} 0%, ${inactive} ${pctLow}%, ${pink} ${pctLow}%, ${pink} ${pctHigh}%, ${inactive} ${pctHigh}%, ${inactive} 100%)`;
+  const trackBg = `linear-gradient(to right, ${inactive} 0%, ${inactive} ${pctLow}%, ${primary} ${pctLow}%, ${primary} ${pctHigh}%, ${inactive} ${pctHigh}%, ${inactive} 100%)`;
   return (
     <div data-testid={testId}>
       <div className="flex justify-between mb-2">

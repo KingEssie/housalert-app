@@ -225,7 +225,7 @@ export default function OnboardingCity() {
                   }}
                   data-testid={`city-option-${city.name}`}
                 >
-                  <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.pink, opacity: 0.8 }} />
+                  <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.primary, opacity: 0.8 }} />
                   <span className="text-[18px] font-semibold" style={{ color: OBW.text }}>{city.name}</span>
                 </button>
               ))}
@@ -242,7 +242,7 @@ export default function OnboardingCity() {
                   }}
                   data-testid={`city-nominatim-${i}`}
                 >
-                  <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.pink, opacity: 0.8 }} />
+                  <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.primary, opacity: 0.8 }} />
                   <div className="min-w-0">
                     <span className="text-[18px] font-semibold block" style={{ color: OBW.text }}>{r.city}</span>
                     {r.label !== r.city && (

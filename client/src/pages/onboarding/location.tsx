@@ -174,7 +174,7 @@ export default function OnboardingLocation() {
                 style={{ paddingTop: "14px", paddingBottom: "14px", borderBottom: "1px solid rgb(var(--ha-divider))" }}
                 data-testid={`city-option-${c.name}`}
               >
-                <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.pink, opacity: 0.8 }} />
+                <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.primary, opacity: 0.8 }} />
                 <span className="text-[18px] font-semibold" style={{ color: OBW.text }}>{c.name}</span>
               </button>
             ))}
@@ -187,7 +187,7 @@ export default function OnboardingLocation() {
                 style={{ paddingTop: "14px", paddingBottom: "14px", borderBottom: "1px solid rgb(var(--ha-divider))" }}
                 data-testid={`city-geocoder-${i}`}
               >
-                <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.pink, opacity: 0.8 }} />
+                <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.primary, opacity: 0.8 }} />
                 <div className="min-w-0">
                   <span className="text-[18px] font-semibold block" style={{ color: OBW.text }}>{(r as any).city}</span>
                   {(r as any).label !== (r as any).city && (
@@ -524,7 +524,7 @@ export default function OnboardingLocation() {
               <button
                 onClick={handleNext}
                 className="h-[44px] px-6 rounded-[8px] text-[15px] font-semibold text-white flex items-center justify-center active:scale-[0.97] transition-transform"
-                style={{ background: OBW.pink, boxShadow: "0 4px 14px rgba(37,60,150,0.2)" }}
+                style={{ background: OBW.primary, boxShadow: "0 4px 14px rgb(var(--ha-primary) / 0.2)" }}
                 data-testid="button-location-next"
               >
                 {t("common.next")}

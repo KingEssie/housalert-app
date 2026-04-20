@@ -175,7 +175,7 @@ function Toggle({
     <label className="flex items-center gap-3 cursor-pointer" data-testid={testId}>
       <div
         className="w-[44px] h-[24px] rounded-full p-[2px] transition-colors shrink-0"
-        style={{ backgroundColor: checked ? OB.pink : "rgb(var(--ha-card-border))" }}
+        style={{ backgroundColor: checked ? OB.primary : "rgb(var(--ha-card-border))" }}
         onClick={() => onChange(!checked)}
       >
         <div
@@ -223,12 +223,12 @@ function RangeSlider({
         onChange={(e) => onChange(Number(e.target.value))}
         className={`w-full${extraClass ? ` ${extraClass}` : ""}`}
         style={{
-          background: `linear-gradient(to right, ${OB.pink} 0%, ${OB.pink} ${pct}%, ${trackInactive} ${pct}%, ${trackInactive} 100%)`,
+          background: `linear-gradient(to right, ${OB.primary} 0%, ${OB.primary} ${pct}%, ${trackInactive} ${pct}%, ${trackInactive} 100%)`,
         }}
       />
       <div className="flex justify-between mt-1">
         <span className="text-[12px]" style={{ color: t.textSecondary }}>{formatLabel(min)}</span>
-        <span className="text-[13px] font-semibold" style={{ color: OB.pink }}>{formatLabel(value)}</span>
+        <span className="text-[13px] font-semibold" style={{ color: OB.primary }}>{formatLabel(value)}</span>
         <span className="text-[12px]" style={{ color: t.textSecondary }}>{formatLabel(max)}</span>
       </div>
     </div>
@@ -264,7 +264,7 @@ function DualRangeSlider({
   const trackInactive = "rgb(var(--ha-card-border))";
   const pctLow = ((valueLow - min) / (max - min)) * 100;
   const pctHigh = ((valueHigh - min) / (max - min)) * 100;
-  const trackBg = `linear-gradient(to right, ${trackInactive} 0%, ${trackInactive} ${pctLow}%, ${OB.pink} ${pctLow}%, ${OB.pink} ${pctHigh}%, ${trackInactive} ${pctHigh}%, ${trackInactive} 100%)`;
+  const trackBg = `linear-gradient(to right, ${trackInactive} 0%, ${trackInactive} ${pctLow}%, ${OB.primary} ${pctLow}%, ${OB.primary} ${pctHigh}%, ${trackInactive} ${pctHigh}%, ${trackInactive} 100%)`;
 
   return (
     <div data-testid={testId}>
@@ -652,7 +652,7 @@ export default function OnboardingFilters() {
             style={{
               borderColor: f.sizeNA ? T.selectedBorder : T.cardBorder,
               backgroundColor: f.sizeNA ? T.selectedBg : "transparent",
-              color: f.sizeNA ? OB.pink : T.textSecondary,
+              color: f.sizeNA ? OB.primary : T.textSecondary,
             }}
             data-testid="button-size-na"
           >
@@ -703,8 +703,8 @@ export default function OnboardingFilters() {
                 onClick={() => toggleAmenity(value)}
                 className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium border transition-all"
                 style={{
-                  backgroundColor: active ? OB.pink : "transparent",
-                  borderColor: active ? OB.pink : T.cardBorder,
+                  backgroundColor: active ? OB.primary : "transparent",
+                  borderColor: active ? OB.primary : T.cardBorder,
                   color: active ? "white" : T.textSecondary,
                 }}
                 data-testid={`amenity-${value}`}
@@ -1050,7 +1050,7 @@ export default function OnboardingFilters() {
                 onClick={handleNext}
                 disabled={saving}
                 className="h-[44px] px-6 rounded-[8px] text-[15px] font-semibold text-white flex items-center justify-center gap-1.5 active:scale-[0.97] transition-transform disabled:opacity-40"
-                style={{ background: OBW.pink, boxShadow: "0 4px 14px rgba(37,60,150,0.2)" }}
+                style={{ background: OBW.primary, boxShadow: "0 4px 14px rgb(var(--ha-primary) / 0.2)" }}
                 data-testid="button-filters-next"
               >
                 {saving && <Loader2 className="w-4 h-4 animate-spin" />}

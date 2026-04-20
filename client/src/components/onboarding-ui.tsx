@@ -20,21 +20,21 @@ export const OB = {
   text: "rgb(var(--ha-text))",
   textSecondary: "rgb(var(--ha-text-secondary))",
   textMuted: "rgb(var(--ha-text-muted))",
-  pink: "rgb(var(--ha-primary))",
-  pinkHover: "rgb(var(--ha-primary-hover))",
-  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, rgb(var(--ha-primary-hover)) 100%)",
-  pinkShadow: "0 4px 15px rgba(37,60,150,0.2)",
+  primary: "rgb(var(--ha-primary))",
+  primaryHover: "rgb(var(--ha-primary-hover))",
+  primaryGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, rgb(var(--ha-primary-hover)) 100%)",
+  primaryShadow: "0 4px 15px rgb(var(--ha-primary) / 0.2)",
   surface: "rgb(var(--ha-card))",
   divider: "rgb(var(--ha-card-border))",
   progressInactive: "rgb(var(--ha-card-border))",
   backBtnBg: "rgb(var(--ha-card))",
   selectedBg: "var(--ha-primary-light)",
   selectedBorder: "rgb(var(--ha-primary))",
-  accentBg: "rgba(37,60,150,0.06)",
+  accentBg: "var(--ha-primary-light)",
   greenBg: "var(--ha-success-light)",
-  greenBorder: "rgba(22,163,74,0.2)",
+  greenBorder: "rgb(var(--ha-success) / 0.2)",
   redBg: "var(--ha-danger-light)",
-  redBorder: "rgba(220,38,38,0.2)",
+  redBorder: "rgb(var(--ha-danger) / 0.2)",
 } as const;
 
 export const OBW = {
@@ -48,21 +48,21 @@ export const OBW = {
   text: "rgb(var(--ha-text))",
   textSecondary: "rgb(var(--ha-text-secondary))",
   textMuted: "rgb(var(--ha-text-muted))",
-  pink: "rgb(var(--ha-primary))",
-  pinkHover: "rgb(var(--ha-primary-hover))",
-  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, rgb(var(--ha-primary-hover)) 100%)",
-  pinkShadow: "0 4px 15px rgba(37,60,150,0.2)",
+  primary: "rgb(var(--ha-primary))",
+  primaryHover: "rgb(var(--ha-primary-hover))",
+  primaryGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, rgb(var(--ha-primary-hover)) 100%)",
+  primaryShadow: "0 4px 15px rgb(var(--ha-primary) / 0.2)",
   surface: "rgb(var(--ha-card))",
   divider: "rgb(var(--ha-border-input))",
   progressInactive: "rgb(var(--ha-card-border))",
   backBtnBg: "rgb(var(--ha-card))",
   selectedBg: "var(--ha-primary-light)",
   selectedBorder: "rgb(var(--ha-primary))",
-  accentBg: "rgba(37,60,150,0.06)",
+  accentBg: "var(--ha-primary-light)",
   greenBg: "var(--ha-success-light)",
-  greenBorder: "rgba(22,163,74,0.2)",
+  greenBorder: "rgb(var(--ha-success) / 0.2)",
   redBg: "var(--ha-danger-light)",
-  redBorder: "rgba(220,38,38,0.2)",
+  redBorder: "rgb(var(--ha-danger) / 0.2)",
   footerBg: "rgb(var(--ha-card))",
   footerBorder: "rgb(var(--ha-border-input))",
   backBtnBorder: "rgb(var(--ha-border-input))",
@@ -135,7 +135,7 @@ export function OBProgressDots({ current, total }: { current: number; total: num
           className="h-[6px] rounded-full transition-all"
           style={{
             width: i === current ? 24 : 6,
-            backgroundColor: i <= current ? OB.pink : OB.progressInactive,
+            backgroundColor: i <= current ? OB.primary : OB.progressInactive,
           }}
         />
       ))}
@@ -218,7 +218,7 @@ export function OBWebFooter({
           onClick={onNext}
           disabled={nextDisabled || saving}
           className="min-w-[120px] px-6 h-[44px] rounded-[4px] text-[14px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-1.5 shrink-0"
-          style={{ background: OBW.pink, boxShadow: nextDisabled ? "none" : "0 4px 14px rgba(37,60,150,0.2)" }}
+          style={{ background: OBW.primary, boxShadow: nextDisabled ? "none" : "0 4px 14px rgb(var(--ha-primary) / 0.2)" }}
           data-testid={nextTestId || "button-next"}
         >
           {saving && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -233,7 +233,7 @@ export function OBInfoBox({ children }: { children: React.ReactNode }) {
   return (
     <div
       className="rounded-[4px] p-3.5 flex items-start gap-2.5"
-      style={{ backgroundColor: "var(--ha-primary-light)", border: `1px solid rgba(37,60,150,0.15)` }}
+      style={{ backgroundColor: "var(--ha-primary-light)", border: `1px solid rgb(var(--ha-primary) / 0.15)` }}
     >
       <Info className="w-[15px] h-[15px] shrink-0 mt-[1px]" style={{ color: "rgb(var(--ha-primary))" }} />
       <div className="text-[15px] leading-[1.55]" style={{ color: "rgb(var(--ha-text-secondary))" }}>
@@ -308,7 +308,7 @@ export function OBFooter({
             onClick={onNext}
             disabled={nextDisabled || saving}
             className="flex-1 ha-btn text-white font-semibold disabled:opacity-40"
-            style={{ background: OB.pink, boxShadow: "0 8px 20px rgba(37,60,150,0.2)" }}
+            style={{ background: OB.primary, boxShadow: "0 8px 20px rgb(var(--ha-primary) / 0.2)" }}
             data-testid={nextTestId || "button-next"}
           >
             {saving && <Loader2 className="w-4 h-4 animate-spin mr-1" />}
