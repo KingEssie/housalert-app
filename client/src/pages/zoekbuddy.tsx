@@ -246,7 +246,7 @@ export default function ZoekbuddyPage() {
             {isConnected ? (
               <button
                 onClick={() => setShowDisconnectSheet(true)}
-                className="w-full h-[52px] rounded-[10px] border border-red-200 bg-red-50 hover:bg-red-100 text-[16px] font-semibold text-ha-btn-destructive transition-colors active:scale-[0.98] flex items-center justify-center gap-2"
+                className="w-full h-[52px] rounded-[10px] border border-ha-danger/20 bg-ha-danger/5 hover:bg-ha-danger/10 text-[16px] font-semibold text-ha-btn-destructive transition-colors active:scale-[0.98] flex items-center justify-center gap-2"
                 data-testid="button-unlink-buddy"
               >
                 <Link2Off className="w-[18px] h-[18px]" strokeWidth={2} />

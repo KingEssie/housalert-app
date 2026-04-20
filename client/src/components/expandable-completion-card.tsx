@@ -98,7 +98,7 @@ export function ExpandableCompletionCard({
         data-testid={`${testId}-toggle`}
       >
         {allDone ? (
-          <div className="w-[52px] h-[52px] rounded-full bg-green-50 flex items-center justify-center flex-shrink-0">
+          <div className="w-[52px] h-[52px] rounded-full bg-ha-success/10 flex items-center justify-center flex-shrink-0">
             <Check className="w-7 h-7 text-ha-success" strokeWidth={2.5} />
           </div>
         ) : (

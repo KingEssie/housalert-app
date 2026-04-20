@@ -58,7 +58,7 @@ export function FlowLayout({
             </button>
           </div>
         </div>
-        <div className="h-[6px] bg-ha-divider mx-5 rounded-full overflow-hidden">
+        <div className="h-[6px] bg-ha-card-border mx-5 rounded-full overflow-hidden">
           <div
             className="h-full bg-ha-primary rounded-full transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}

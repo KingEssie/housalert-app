@@ -765,7 +765,7 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
         {profiles.length > 0 && (
           <span
             className="text-[12px] font-medium px-[10px] py-[4px] rounded-full"
-            style={{ backgroundColor: "#e6f0f7", color: "#4b7b94" }}
+            style={{ backgroundColor: "var(--ha-primary-light)", color: "rgb(var(--ha-primary))" }}
           >
             {profiles.length}/4
           </span>
@@ -790,7 +790,7 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
                 onClick={buddyMode ? undefined : () => navigate(`/dashboard/searches/edit/${p.id}`)}
                 data-testid={`row-search-profile-${p.id}`}
               >
-                <div className="w-[11px] h-[11px] rounded-full flex-shrink-0 mr-3.5" style={{ backgroundColor: "#22c55e", boxShadow: "0 0 0 3px rgba(34,197,94,0.15)" }} />
+                <div className="w-[11px] h-[11px] rounded-full flex-shrink-0 mr-3.5" style={{ backgroundColor: "rgb(var(--ha-success))", boxShadow: "0 0 0 3px rgba(22,163,74,0.15)" }} />
                 <div className="flex-1 min-w-0">
                   <p className="text-[18px] font-semibold text-ha-text truncate">{title}</p>
                   <p className="text-[14px] text-ha-text-muted mt-1 truncate">{priceLine}</p>
@@ -994,7 +994,7 @@ function HomeTab({
       <div
         className="px-5 pb-10"
         style={{
-          backgroundColor: "#22336b",
+          backgroundColor: "rgb(var(--ha-primary))",
           borderBottomLeftRadius: 24,
           borderBottomRightRadius: 24,
           paddingTop: "max(env(safe-area-inset-top), 32px)",
@@ -1036,7 +1036,7 @@ function HomeTab({
             ctaLabel={t("tips.referralShareCta")}
             onClick={handleReferralShare}
             testId="card-home-referral"
-            bgColor="#f2f6ff"
+            bgColor="rgb(var(--ha-mint))"
             layout="horizontal"
           />
         )}
@@ -1560,12 +1560,12 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
             {apiMatchesQuery.isLoading ? (
               <div className="flex flex-col gap-4">
                 {[1, 2].map((i) => (
-                  <div key={i} className="animate-pulse rounded-[10px] overflow-hidden bg-[#def2e9]">
-                    <div className="bg-[#cee8da]" style={{ aspectRatio: "16/9" }} />
+                  <div key={i} className="animate-pulse rounded-[10px] overflow-hidden bg-ha-success/10">
+                    <div className="bg-ha-success/15" style={{ aspectRatio: "16/9" }} />
                     <div className="p-4 flex flex-col gap-2">
-                      <div className="h-4 bg-[#cee8da] rounded-full w-3/4" />
-                      <div className="h-3 bg-[#cee8da] rounded-full w-1/2" />
-                      <div className="h-3 bg-[#cee8da] rounded-full w-2/5" />
+                      <div className="h-4 bg-ha-success/15 rounded-full w-3/4" />
+                      <div className="h-3 bg-ha-success/15 rounded-full w-1/2" />
+                      <div className="h-3 bg-ha-success/15 rounded-full w-2/5" />
                     </div>
                   </div>
                 ))}
@@ -1923,7 +1923,7 @@ function BuddyV2Section({ subscription }: { subscription: { isActive: boolean; i
         {currentBuddy ? (
           <div className="px-5 py-4">
             <div className="flex items-center gap-3.5">
-              <div className="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-full bg-ha-primary/5 flex items-center justify-center flex-shrink-0">
                 {isConnected ? (
                   <UserCheck className="w-[20px] h-[20px] text-ha-primary" />
                 ) : (
@@ -1936,9 +1936,9 @@ function BuddyV2Section({ subscription }: { subscription: { isActive: boolean; i
                 </p>
                 <p className="text-[13px] mt-0.5">
                   {isConnected ? (
-                    <span className="text-green-600 font-medium">{t("buddyV2.statusConnected")}</span>
+                    <span className="text-ha-success font-medium">{t("buddyV2.statusConnected")}</span>
                   ) : (
-                    <span className="text-amber-600 font-medium">{t("buddyV2.statusPending")}</span>
+                    <span className="text-ha-warning font-medium">{t("buddyV2.statusPending")}</span>
                   )}
                 </p>
               </div>
@@ -1951,7 +1951,7 @@ function BuddyV2Section({ subscription }: { subscription: { isActive: boolean; i
                   <button
                     onClick={() => handleRevoke(currentBuddy.id)}
                     disabled={revokeMutation.isPending}
-                    className="h-[36px] px-4 rounded-[10px] bg-red-500 text-white text-[13px] font-semibold hover:bg-red-600 transition-colors active:scale-[0.97] disabled:opacity-50"
+                    className="h-[36px] px-4 rounded-[10px] bg-ha-btn-destructive text-white text-[13px] font-semibold hover:bg-ha-danger transition-colors active:scale-[0.97] disabled:opacity-50"
                     data-testid="button-buddy-revoke-confirm"
                   >
                     {revokeMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : t("buddyV2.revokeConfirm")}
@@ -1968,7 +1968,7 @@ function BuddyV2Section({ subscription }: { subscription: { isActive: boolean; i
             ) : (
               <button
                 onClick={() => setShowRevokeConfirm(true)}
-                className="mt-3 text-[13px] text-red-500 font-semibold active:opacity-70 transition-opacity"
+                className="mt-3 text-[13px] text-ha-danger font-semibold active:opacity-70 transition-opacity"
                 data-testid="button-buddy-revoke"
               >
                 {t("buddyV2.revokeButton")}
@@ -1979,7 +1979,7 @@ function BuddyV2Section({ subscription }: { subscription: { isActive: boolean; i
           <div className="px-5 py-5">
             <p className="text-[14px] text-ha-text-secondary leading-relaxed mb-4">{t("buddyV2.inviteSubtitle")}</p>
             {!hasActiveSub ? (
-              <p className="text-[13px] text-amber-600 font-medium">{t("buddyV2.inviteSubRequired")}</p>
+              <p className="text-[13px] text-ha-warning font-medium">{t("buddyV2.inviteSubRequired")}</p>
             ) : (
               <div className="flex gap-2">
                 <div className="relative flex-1">
@@ -2153,8 +2153,8 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
                 className="w-full flex items-center justify-between px-4 h-[42px] text-left active:bg-ha-surface transition-colors"
                 data-testid="button-buddy-disconnect"
               >
-                <span className="text-[15px] font-semibold text-red-600">{t("buddyV2.buddyDisconnectLabel")}</span>
-                <Link2Off className="w-[16px] h-[16px] text-red-400 flex-shrink-0" />
+                <span className="text-[15px] font-semibold text-ha-danger">{t("buddyV2.buddyDisconnectLabel")}</span>
+                <Link2Off className="w-[16px] h-[16px] text-ha-danger flex-shrink-0" />
               </button>
             </div>
           )}
@@ -2412,21 +2412,21 @@ export default function DashboardPage() {
         </div>
       )}
       {inBuddyMode && activeBuddyRel && !ownerSubActive && (
-        <div className="bg-amber-50 border-b border-amber-200 px-4 py-3 flex items-center gap-3 max-w-xl mx-auto w-full" data-testid="banner-buddy-sub-paused">
-          <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0" />
-          <p className="text-[13px] text-amber-800">{t("buddyV2.subPaused").replace("{name}", activeBuddyRel.owner_name || "")}</p>
+        <div className="bg-ha-warning/10 border-b border-ha-warning/25 px-4 py-3 flex items-center gap-3 max-w-xl mx-auto w-full" data-testid="banner-buddy-sub-paused">
+          <AlertTriangle className="w-5 h-5 text-ha-warning flex-shrink-0" />
+          <p className="text-[13px] text-ha-text">{t("buddyV2.subPaused").replace("{name}", activeBuddyRel.owner_name || "")}</p>
         </div>
       )}
       {sub.isPastDue && !inBuddyMode && (
-        <div className="bg-amber-50 border-b border-amber-200 px-4 py-3 flex items-center gap-3 max-w-xl mx-auto w-full" data-testid="banner-past-due">
-          <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0" />
+        <div className="bg-ha-warning/10 border-b border-ha-warning/25 px-4 py-3 flex items-center gap-3 max-w-xl mx-auto w-full" data-testid="banner-past-due">
+          <AlertTriangle className="w-5 h-5 text-ha-warning flex-shrink-0" />
           <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-semibold text-amber-800">{t("subscription.pastDue.title")}</p>
-            <p className="text-[12px] text-amber-700">{t("subscription.pastDue.desc")}</p>
+            <p className="text-[13px] font-semibold text-ha-text">{t("subscription.pastDue.title")}</p>
+            <p className="text-[12px] text-ha-text-secondary">{t("subscription.pastDue.desc")}</p>
           </div>
           <button
             onClick={() => navigate("/account/subscription")}
-            className="px-3 py-1.5 rounded-full bg-amber-600 text-white text-[12px] font-semibold flex-shrink-0 active:scale-[0.97] transition-transform"
+            className="px-3 py-1.5 rounded-full bg-ha-warning text-white text-[12px] font-semibold flex-shrink-0 active:scale-[0.97] transition-transform"
             data-testid="button-fix-payment"
           >
             {t("subscription.pastDue.action")}

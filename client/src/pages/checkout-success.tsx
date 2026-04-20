@@ -118,10 +118,10 @@ export default function CheckoutSuccessPage() {
   return (
     <div className="min-h-screen bg-ha-bg flex items-center justify-center px-5" data-testid="page-checkout-success">
       <div className="text-center max-w-sm">
-        <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: status === "error" ? "#FEE2E2" : "rgba(37,60,150,0.08)" }}>
-          {status === "loading" && <Loader2 className="w-8 h-8 animate-spin" style={{ color: "rgb(var(--ha-primary))" }} />}
-          {status === "success" && <CheckCircle className="w-8 h-8 text-emerald-500" />}
-          {status === "error" && <AlertCircle className="w-8 h-8 text-red-500" />}
+        <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: status === "error" ? "var(--ha-danger-light)" : "var(--ha-primary-light)" }}>
+          {status === "loading" && <Loader2 className="w-8 h-8 animate-spin text-ha-primary" />}
+          {status === "success" && <CheckCircle className="w-8 h-8 text-ha-success" />}
+          {status === "error" && <AlertCircle className="w-8 h-8 text-ha-danger" />}
         </div>
 
         <h1 className="text-[30px] font-semibold text-ha-text mb-2" data-testid="text-checkout-title">

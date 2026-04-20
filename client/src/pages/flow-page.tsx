@@ -231,7 +231,7 @@ function InlineNotifications({ accessToken }: { accessToken: string }) {
       </div>
 
       {anyEnabled && (
-        <div className="flex items-center gap-2.5 mt-4 py-3 px-4 bg-green-50 border border-green-200 rounded-2xl" data-testid="notif-active-confirm">
+        <div className="flex items-center gap-2.5 mt-4 py-3 px-4 bg-ha-success/10 border border-ha-success/25 rounded-2xl" data-testid="notif-active-confirm">
           <div className="w-[22px] h-[22px] rounded-full bg-ha-success flex items-center justify-center flex-shrink-0">
             <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
           </div>
@@ -253,7 +253,7 @@ function NotifToggleRow({ icon, label, subtitle, badge, enabled, loading, onTogg
         <div className="flex items-center gap-2">
           <span className="text-[15px] font-semibold text-ha-text">{label}</span>
           {badge && (
-            <span className="text-[11px] font-semibold text-ha-primary bg-pink-50 px-2 py-0.5 rounded-full">{badge}</span>
+            <span className="text-[11px] font-semibold text-ha-primary bg-ha-primary/5 px-2 py-0.5 rounded-full">{badge}</span>
           )}
         </div>
         <p className="text-[13px] text-ha-text-secondary mt-0.5 leading-snug">{subtitle}</p>
@@ -318,7 +318,7 @@ function InlineSearchBuddy({ accessToken }: { accessToken: string }) {
         <p className="text-[13px] text-ha-text-secondary mt-2 leading-snug">{t("profileEdit.searchBuddyDesc")}</p>
       </div>
       {existing && (
-        <div className="flex items-center gap-2 py-2 px-3 bg-green-50 rounded-xl">
+        <div className="flex items-center gap-2 py-2 px-3 bg-ha-success/10 rounded-xl">
           <Check className="w-4 h-4 text-ha-success" />
           <span className="text-[13px] font-medium text-ha-success">{existing}</span>
         </div>

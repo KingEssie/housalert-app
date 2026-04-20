@@ -826,7 +826,7 @@ function CheckboxRow({
       onClick={onToggle}
       className={`w-full flex items-center gap-4 px-4 min-h-[72px] py-4 rounded-[12px] border-2 transition-all text-left ${
         selected
-          ? "border-[rgb(var(--ha-primary))] bg-pink-50"
+          ? "border-[rgb(var(--ha-primary))] bg-ha-primary/5"
           : "border-ha-card-border bg-white hover:bg-ha-surface"
       }`}
       data-testid={testId}
@@ -1041,16 +1041,16 @@ function StepReview({
             {/* Missed matches stat */}
             <div
               className="rounded-[10px] px-4 py-3 mb-3"
-              style={{ backgroundColor: "#EBF2FC" }}
+              style={{ backgroundColor: "var(--ha-primary-light)" }}
             >
-              <p className="text-[13.5px] leading-[1.55]" style={{ color: "#1E3A8A" }}>
+              <p className="text-[13.5px] leading-[1.55]" style={{ color: "rgb(var(--ha-primary-hover))" }}>
                 {(() => {
                   const raw = t("onboarding.password.web.missedMatchesStat", { count: "|||" });
                   const [pre, post] = raw.split("|||");
                   return (
                     <>
                       {pre}
-                      <span className="font-bold" style={{ color: "#1D4ED8" }}>
+                      <span className="font-bold" style={{ color: "rgb(var(--ha-primary))" }}>
                         {matchCount30 !== null ? Math.max(1, matchCount30) : "—"}
                       </span>
                       {post}

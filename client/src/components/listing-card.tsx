@@ -100,7 +100,7 @@ export function ListingCardFull({
   return (
     <div
       className="cursor-pointer active:scale-[0.985] transition-transform duration-200 rounded-[12px] overflow-hidden"
-      style={{ backgroundColor: "#def2e9", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
+      style={{ backgroundColor: "rgb(var(--ha-success) / 0.12)", boxShadow: "0 1px 4px rgba(0,0,0,0.06)" }}
       onClick={onCardClick}
       data-testid={`card-match-${match.listing_id}`}
     >

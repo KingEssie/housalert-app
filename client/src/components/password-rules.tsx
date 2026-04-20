@@ -15,7 +15,7 @@ export function PasswordRules({ password, className }: PasswordRulesProps) {
   const barColor =
     count === 0 ? "rgb(var(--ha-card-border))" :
     count === 1 ? "rgb(var(--ha-warning))" :
-    count === 2 ? "#84CC16" :
+    count === 2 ? "rgb(var(--ha-accent-yellow))" :
     "rgb(var(--ha-success))";
 
   return (

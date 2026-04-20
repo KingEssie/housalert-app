@@ -70,10 +70,10 @@ export default function SubscriptionDetailPage() {
   }
 
   function getStatusBadgeClass(): string {
-    if (subscription?.isExpired) return "bg-red-50 text-red-700";
+    if (subscription?.isExpired) return "bg-ha-danger/10 text-ha-danger";
     if (isCanceled && subscription?.isActive) return "bg-ha-surface text-ha-text";
     if (subscription?.isTrial) return "bg-ha-primary/10 text-ha-primary";
-    return "bg-emerald-50 text-emerald-900";
+    return "bg-ha-success/10 text-ha-success";
   }
 
   const startDate = subscription?.created_at || null;
@@ -185,7 +185,7 @@ export default function SubscriptionDetailPage() {
             {subscription?.isActive && !subscription?.isExpired && (
               <div className="flex items-center gap-2 mt-3">
                 <CheckCircle2
-                  className="w-[15px] h-[15px] text-emerald-600 flex-shrink-0"
+                  className="w-[15px] h-[15px] text-ha-success flex-shrink-0"
                   strokeWidth={2}
                 />
                 <p className="text-[13px] font-normal text-ha-text">
@@ -243,7 +243,7 @@ export default function SubscriptionDetailPage() {
               <div className="h-px bg-ha-surface mx-5" />
               <button
                 onClick={() => navigate("/account/subscription/cancel")}
-                className="w-full flex items-center gap-4 px-5 py-[14px] text-left active:bg-red-50/60 transition-colors"
+                className="w-full flex items-center gap-4 px-5 py-[14px] text-left active:bg-ha-danger/5 transition-colors"
                 data-testid="button-cancel-subscription"
               >
                 <XCircle

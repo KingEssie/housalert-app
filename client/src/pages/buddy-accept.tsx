@@ -262,8 +262,8 @@ export default function BuddyAcceptPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-ha-bg px-5">
         <div className="w-full max-w-[400px] text-center">
-          <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-6">
-            <CheckCircle2 className="w-8 h-8 text-green-600" />
+          <div className="w-16 h-16 rounded-full bg-ha-success/10 flex items-center justify-center mx-auto mb-6">
+            <CheckCircle2 className="w-8 h-8 text-ha-success" />
           </div>
           <h1 className="text-[22px] font-bold text-ha-text mb-2" data-testid="text-accept-success">{t("buddyV2.acceptSuccess")}</h1>
           <p className="text-[15px] text-ha-text-secondary leading-relaxed">
@@ -278,8 +278,8 @@ export default function BuddyAcceptPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-ha-bg px-5">
         <div className="w-full max-w-[400px] text-center">
-          <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-6">
-            <XCircle className="w-8 h-8 text-red-500" />
+          <div className="w-16 h-16 rounded-full bg-ha-danger/10 flex items-center justify-center mx-auto mb-6">
+            <XCircle className="w-8 h-8 text-ha-danger" />
           </div>
           <h1 className="text-[22px] font-bold text-ha-text mb-2">{errorMsg}</h1>
           <button
@@ -411,7 +411,7 @@ export default function BuddyAcceptPage() {
             </div>
 
             {authError && (
-              <p className="mt-3 text-[13px] text-red-600 text-center" data-testid="text-auth-error">{authError}</p>
+              <p className="mt-3 text-[13px] text-ha-danger text-center" data-testid="text-auth-error">{authError}</p>
             )}
           </div>
 

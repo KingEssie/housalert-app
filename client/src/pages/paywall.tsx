@@ -175,7 +175,7 @@ function WebsitePaywall({
                   className="w-full text-left transition-colors"
                   style={{
                     borderBottom: !isLast ? `1px solid ${OBW.cardBorder}` : "none",
-                    backgroundColor: isSelected ? "rgba(37,60,150,0.04)" : "rgb(var(--ha-card))",
+                    backgroundColor: isSelected ? "var(--ha-primary-light)" : "rgb(var(--ha-card))",
                     padding: plan.popular ? "20px 16px 16px 16px" : "16px 16px",
                   }}
                   data-testid={`card-plan-${plan.id}`}
