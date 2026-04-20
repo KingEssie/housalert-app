@@ -2403,7 +2403,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-ha-bg flex flex-col">
       {inBuddyMode && activeBuddyRel && (
-        <div className="bg-[#2D3748] px-4 py-3 flex items-center gap-3 max-w-xl mx-auto w-full" data-testid="banner-buddy-mode">
+        <div className="bg-ha-primary-hover px-4 py-3 flex items-center gap-3 max-w-xl mx-auto w-full" data-testid="banner-buddy-mode">
           <Users className="w-5 h-5 text-white/80 flex-shrink-0" />
           <div className="flex-1 min-w-0">
             <p className="text-[13px] font-semibold text-white">{t("buddyV2.modeBadge")}</p>

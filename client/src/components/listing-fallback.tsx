@@ -23,7 +23,7 @@ export function ListingFallback({ city, source, size = "full" }: ListingFallback
         draggable={false}
       />
       {showMeta && (
-        <div className="absolute bottom-0 left-0 right-0 px-3 py-2 bg-gradient-to-t from-[#1a2d45]/40 to-transparent">
+        <div className="absolute bottom-0 left-0 right-0 px-3 py-2 bg-gradient-to-t from-ha-primary-hover/40 to-transparent">
           {city && (
             <span className="text-[11px] font-medium text-white/80 truncate block">{city}</span>
           )}

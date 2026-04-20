@@ -378,7 +378,7 @@ function TipSection({ title, items }: { title?: string; items: string[] }) {
 
 function TipHighlight({ text }: { text: string }) {
   return (
-    <div className="flex items-center gap-3 rounded-xl bg-[#FDF8F0] border border-[#F5E6D3] px-4 py-3.5">
+    <div className="flex items-center gap-3 rounded-xl bg-ha-accent-yellow-light border border-ha-accent-yellow/25 px-4 py-3.5">
       <span className="text-[16px] flex-shrink-0">💡</span>
       <p className="text-[14px] font-medium text-ha-text leading-snug">{text}</p>
     </div>

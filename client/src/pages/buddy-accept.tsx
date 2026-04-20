@@ -300,7 +300,7 @@ export default function BuddyAcceptPage() {
       <div className="min-h-screen flex items-center justify-center bg-ha-bg px-5 py-8">
         <div className="w-full max-w-[400px]">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-full bg-[#2D3748] flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 rounded-full bg-ha-primary-hover flex items-center justify-center mx-auto mb-6">
               <Users className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-[24px] font-bold text-ha-text mb-2 leading-tight" data-testid="text-accept-title">
@@ -446,7 +446,7 @@ export default function BuddyAcceptPage() {
     <div className="min-h-screen flex items-center justify-center bg-ha-bg px-5">
       <div className="w-full max-w-[400px]">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-full bg-[#2D3748] flex items-center justify-center mx-auto mb-6">
+          <div className="w-16 h-16 rounded-full bg-ha-primary-hover flex items-center justify-center mx-auto mb-6">
             <Users className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-[24px] font-bold text-ha-text mb-3 leading-tight" data-testid="text-accept-title">
