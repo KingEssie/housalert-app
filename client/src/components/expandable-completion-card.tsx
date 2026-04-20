@@ -142,7 +142,7 @@ export function ExpandableCompletionCard({
                     className={`w-[26px] h-[26px] rounded-full flex items-center justify-center flex-shrink-0 text-[12px] font-bold ${
                       step.completed
                         ? "bg-ha-card-border text-ha-text-secondary"
-                        : "bg-ha-text text-white"
+                        : "bg-ha-primary text-white"
                     }`}
                   >
                     {index + 1}
