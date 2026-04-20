@@ -9,7 +9,7 @@ import { validatePassword, isPasswordValid } from "@/lib/password-validation";
 import { PasswordRules } from "@/components/password-rules";
 
 const INPUT_CLASS =
-  "w-full h-[56px] border border-[#D1D5DB] rounded-[8px] bg-white px-4 pr-12 text-[15px] text-[#111111] placeholder:text-[#9CA3AF] outline-none transition-all focus:border-ha-primary";
+  "w-full h-[56px] border border-ha-border-input rounded-[8px] bg-white px-4 pr-12 text-[15px] text-ha-text placeholder:text-ha-text-placeholder outline-none transition-all focus:border-ha-primary";
 
 export default function ChangePasswordPage() {
   const [, navigate] = useLocation();
@@ -48,19 +48,19 @@ export default function ChangePasswordPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-[#eaeaeb]" data-testid="page-password-success">
+      <div className="min-h-screen bg-ha-bg" data-testid="page-password-success">
         <AppHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profile")} />
         <div className="max-w-xl mx-auto p-4 pb-8">
-          <div className="bg-white rounded-[12px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-6 text-center">
+          <div className="bg-white rounded-[12px] border border-ha-card-border shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-6 text-center">
             <div className="flex items-center justify-center mb-5">
-              <div className="w-14 h-14 rounded-full bg-[#DCFCE7] flex items-center justify-center">
-                <CheckCircle2 className="w-7 h-7 text-[#16A34A]" />
+              <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center">
+                <CheckCircle2 className="w-7 h-7 text-ha-success" />
               </div>
             </div>
-            <h2 className="text-[20px] font-semibold text-[#111111] mb-2" data-testid="text-success-title">
+            <h2 className="text-[20px] font-semibold text-ha-text mb-2" data-testid="text-success-title">
               {t("changePassword.successTitle")}
             </h2>
-            <p className="text-[15px] text-[#6B7280] mb-6">
+            <p className="text-[15px] text-ha-text-muted mb-6">
               {t("changePassword.successDesc")}
             </p>
             <button
@@ -77,16 +77,16 @@ export default function ChangePasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#eaeaeb]" data-testid="page-change-password">
+    <div className="min-h-screen flex flex-col bg-ha-bg" data-testid="page-change-password">
       <AppHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profile")} />
 
       <div className="flex-1 max-w-xl mx-auto w-full px-4 pt-5 pb-8">
 
-        <div className="bg-white rounded-[12px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-5 flex flex-col gap-5">
+        <div className="bg-white rounded-[12px] border border-ha-card-border shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-5 flex flex-col gap-5">
 
           {/* Password field */}
           <div>
-            <label className="block text-[15px] font-semibold text-[#111111] mb-2">
+            <label className="block text-[15px] font-semibold text-ha-text mb-2">
               {t("changePassword.new")}
             </label>
             <div className="relative">
@@ -103,7 +103,7 @@ export default function ChangePasswordPage() {
               <button
                 type="button"
                 onClick={() => setShowNew(!showNew)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#6B7280] transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-ha-text-placeholder hover:text-ha-text-muted transition-colors"
                 data-testid="button-toggle-new"
               >
                 {showNew
@@ -116,7 +116,7 @@ export default function ChangePasswordPage() {
 
           {/* Confirm password */}
           <div>
-            <label className="block text-[15px] font-semibold text-[#111111] mb-2">
+            <label className="block text-[15px] font-semibold text-ha-text mb-2">
               {t("changePassword.confirm")}
             </label>
             <div className="relative">
@@ -132,7 +132,7 @@ export default function ChangePasswordPage() {
               <button
                 type="button"
                 onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#6B7280] transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-ha-text-placeholder hover:text-ha-text-muted transition-colors"
                 data-testid="button-toggle-confirm"
               >
                 {showConfirm
@@ -141,7 +141,7 @@ export default function ChangePasswordPage() {
               </button>
             </div>
             {mismatch && (
-              <p className="text-[13px] mt-2 text-[#E11D48]" data-testid="text-error-mismatch">
+              <p className="text-[13px] mt-2 text-ha-danger" data-testid="text-error-mismatch">
                 {t("changePassword.mismatch")}
               </p>
             )}
@@ -151,7 +151,7 @@ export default function ChangePasswordPage() {
       </div>
 
       {/* Sticky CTA */}
-      <div className="sticky bottom-0 bg-white border-t border-[#E5E7EB] px-5 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+      <div className="sticky bottom-0 bg-white border-t border-ha-card-border px-5 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
         <div className="max-w-xl mx-auto">
           <button
             onClick={handleSubmit}

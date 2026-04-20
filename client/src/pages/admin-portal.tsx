@@ -36,7 +36,7 @@ function StatusDot({ status }: { status: string }) {
   const color = status === "active" || status === "operational" || status === "success"
     ? "bg-emerald-400" : status === "warning" || status === "partial" || status === "degraded"
     ? "bg-amber-400" : status === "error" || status === "failed" || status === "broken" || status === "canceled"
-    ? "bg-ha-danger" : "bg-[#E5E7EB]";
+    ? "bg-ha-danger" : "bg-ha-card-border";
   return <span className={`w-2 h-2 rounded-full inline-block ${color}`} />;
 }
 
@@ -47,26 +47,26 @@ function StatusBadge({ status }: { status: string }) {
     trial: { cls: "bg-orange-50 text-ha-primary border-orange-200", label: "Trial" },
     past_due: { cls: "bg-amber-50 text-amber-700 border-amber-200", label: "Past Due" },
     canceled: { cls: "bg-ha-danger/5 text-ha-danger border-ha-danger/20", label: "Canceled" },
-    expired: { cls: "bg-[#F7F7F7] text-[#334855] border-[#E5E7EB]", label: "Expired" },
+    expired: { cls: "bg-ha-hover-bg text-ha-text-secondary border-ha-card-border", label: "Expired" },
     error: { cls: "bg-ha-danger/5 text-ha-danger border-ha-danger/20", label: "Error" },
     warning: { cls: "bg-amber-50 text-amber-700 border-amber-200", label: "Warning" },
-    disabled: { cls: "bg-[#F7F7F7] text-[#334855] border-[#E5E7EB]", label: "Disabled" },
+    disabled: { cls: "bg-ha-hover-bg text-ha-text-secondary border-ha-card-border", label: "Disabled" },
     success: { cls: "bg-emerald-50 text-emerald-700 border-emerald-200", label: "Success" },
     partial: { cls: "bg-amber-50 text-amber-700 border-amber-200", label: "Partial" },
     failed: { cls: "bg-ha-danger/5 text-ha-danger border-ha-danger/20", label: "Failed" },
     broken: { cls: "bg-ha-danger/5 text-ha-danger border-ha-danger/20", label: "Broken" },
     degraded: { cls: "bg-amber-50 text-amber-700 border-amber-200", label: "Degraded" },
   };
-  const m = map[status] || { cls: "bg-[#F7F7F7] text-[#334855] border-[#E5E7EB]", label: status };
+  const m = map[status] || { cls: "bg-ha-hover-bg text-ha-text-secondary border-ha-card-border", label: status };
   return <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold border ${m.cls}`}>{m.label}</span>;
 }
 
-const CARD = "bg-white rounded-2xl border border-[#F0F0F0] shadow-sm";
+const CARD = "bg-white rounded-2xl border border-ha-divider shadow-sm";
 
 function SectionHeader({ title, action }: { title: string; action?: { label: string; onClick: () => void } }) {
   return (
     <div className="flex items-center justify-between mb-3">
-      <h3 className="text-[15px] font-semibold text-[#111]">{title}</h3>
+      <h3 className="text-[15px] font-semibold text-ha-text">{title}</h3>
       {action && <button onClick={action.onClick} className="text-[13px] font-medium text-ha-primary" data-testid={`action-${title.toLowerCase().replace(/\s/g, "-")}`}>{action.label}</button>}
     </div>
   );
@@ -76,11 +76,11 @@ function MetricCard({ label, value, sub, icon: Icon }: { label: string; value: s
   return (
     <div className={`${CARD} p-4`} data-testid={`metric-${label.toLowerCase().replace(/\s/g, "-")}`}>
       <div className="flex items-center gap-2 mb-2">
-        <Icon className="w-4 h-4 text-[#334855]" />
-        <span className="text-[11px] text-[#334855] font-medium uppercase tracking-wide">{label}</span>
+        <Icon className="w-4 h-4 text-ha-text-secondary" />
+        <span className="text-[11px] text-ha-text-secondary font-medium uppercase tracking-wide">{label}</span>
       </div>
-      <p className="text-[22px] font-bold text-[#111]">{value}</p>
-      {sub && <p className="text-[11px] text-[#334855] mt-0.5">{sub}</p>}
+      <p className="text-[22px] font-bold text-ha-text">{value}</p>
+      {sub && <p className="text-[11px] text-ha-text-secondary mt-0.5">{sub}</p>}
     </div>
   );
 }
@@ -88,9 +88,9 @@ function MetricCard({ label, value, sub, icon: Icon }: { label: string; value: s
 function EmptyState({ title, message, onRetry }: { title: string; message: string; onRetry?: () => void }) {
   return (
     <div className={`${CARD} p-8 text-center`}>
-      <Database className="w-6 h-6 text-[#334855] mx-auto mb-3" />
-      <h4 className="text-[15px] font-semibold text-[#111] mb-1">{title}</h4>
-      <p className="text-[13px] text-[#334855] mb-4">{message}</p>
+      <Database className="w-6 h-6 text-ha-text-secondary mx-auto mb-3" />
+      <h4 className="text-[15px] font-semibold text-ha-text mb-1">{title}</h4>
+      <p className="text-[13px] text-ha-text-secondary mb-4">{message}</p>
       {onRetry && <Button variant="outline" size="sm" onClick={onRetry} className="rounded-full" data-testid="button-retry">Try again</Button>}
     </div>
   );
@@ -108,8 +108,8 @@ function ConfirmDialog({ title, message, onConfirm, onCancel }: { title: string;
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={onCancel}>
       <div className={`${CARD} p-6 max-w-sm w-full`} onClick={e => e.stopPropagation()}>
-        <h3 className="text-[16px] font-bold text-[#111] mb-2">{title}</h3>
-        <p className="text-[13px] text-[#334855] mb-5">{message}</p>
+        <h3 className="text-[16px] font-bold text-ha-text mb-2">{title}</h3>
+        <p className="text-[13px] text-ha-text-secondary mb-5">{message}</p>
         <div className="flex gap-3 justify-end">
           <Button variant="outline" size="sm" onClick={onCancel} className="rounded-full" data-testid="button-cancel">Cancel</Button>
           <Button size="sm" onClick={onConfirm} className="rounded-full bg-ha-danger hover:bg-ha-danger/90 text-white" data-testid="button-confirm">Confirm</Button>
@@ -154,11 +154,11 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-bold text-[#111]" data-testid="text-greeting">{getGreeting()}, {userName}</h1>
-          <p className="text-[13px] text-[#334855] mt-0.5">Here's what's happening today</p>
+          <h1 className="text-[24px] font-bold text-ha-text" data-testid="text-greeting">{getGreeting()}, {userName}</h1>
+          <p className="text-[13px] text-ha-text-secondary mt-0.5">Here's what's happening today</p>
         </div>
-        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-[#F7F7F7] flex items-center justify-center hover:bg-[#EFEFEF] transition-colors" data-testid="button-refresh-dashboard">
-          <RefreshCw className={`w-4 h-4 text-[#334855] ${refreshing ? "animate-spin" : ""}`} />
+        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-ha-hover-bg flex items-center justify-center hover:bg-[#EFEFEF] transition-colors" data-testid="button-refresh-dashboard">
+          <RefreshCw className={`w-4 h-4 text-ha-text-secondary ${refreshing ? "animate-spin" : ""}`} />
         </button>
       </div>
 
@@ -172,8 +172,8 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
                 <div key={i} className="flex items-start gap-3 px-4 py-3.5" data-testid={`alert-row-${i}`}>
                   <span className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${sColor}`} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-semibold text-[#111] leading-snug">{a.message}</p>
-                    <p className="text-[11px] text-[#334855] mt-0.5">{new Date(a.timestamp).toLocaleTimeString()}</p>
+                    <p className="text-[13px] font-semibold text-ha-text leading-snug">{a.message}</p>
+                    <p className="text-[11px] text-ha-text-secondary mt-0.5">{new Date(a.timestamp).toLocaleTimeString()}</p>
                   </div>
                 </div>
               );
@@ -197,16 +197,16 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
           {[
             { label: "Matches today", value: data.matchesToday },
             { label: "Emails sent", value: data.emailsToday, color: "text-emerald-600" },
-            { label: "Emails skipped (no sub)", value: data.emailsSkippedNoSub ?? 0, color: "text-[#334855]" },
-            { label: "Real email failures", value: data.emailRealFailures ?? 0, color: (data.emailRealFailures ?? 0) > 0 ? "text-ha-danger" : "text-[#334855]" },
+            { label: "Emails skipped (no sub)", value: data.emailsSkippedNoSub ?? 0, color: "text-ha-text-secondary" },
+            { label: "Real email failures", value: data.emailRealFailures ?? 0, color: (data.emailRealFailures ?? 0) > 0 ? "text-ha-danger" : "text-ha-text-secondary" },
             { label: "Push sent", value: data.pushesToday },
             { label: "Signups this week", value: data.signupsWeek },
             { label: "Listings this week", value: data.listingsWeek },
             { label: "Matches this week", value: data.matchesWeek },
           ].map(({ label, value, color }) => (
             <div key={label} className="flex items-center justify-between text-[13px]">
-              <span className="text-[#334855]">{label}</span>
-              <span className={`font-semibold ${color || "text-[#111]"}`}>{value}</span>
+              <span className="text-ha-text-secondary">{label}</span>
+              <span className={`font-semibold ${color || "text-ha-text"}`}>{value}</span>
             </div>
           ))}
         </div>
@@ -228,8 +228,8 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
               return Array.from(byCity.entries()).slice(0, 6).map(([city, info]) => (
                 <div key={city} className="flex items-center gap-3 px-4 py-3">
                   <StatusDot status={info.issues > 0 ? "warning" : "active"} />
-                  <span className="text-[13px] font-medium text-[#111] flex-1">{city}</span>
-                  <span className="text-[12px] text-[#334855]">{info.total} listings</span>
+                  <span className="text-[13px] font-medium text-ha-text flex-1">{city}</span>
+                  <span className="text-[12px] text-ha-text-secondary">{info.total} listings</span>
                   <StatusBadge status={info.issues > 0 ? "degraded" : "active"} />
                 </div>
               ));
@@ -249,9 +249,9 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
             { icon: Sliders, label: "Settings", tab: "settings" as TabId },
             { icon: Settings, label: "System", tab: "system" as TabId },
           ].map(({ icon: Icon, label, tab }) => (
-            <button key={tab} onClick={() => onNavigate(tab)} className={`${CARD} p-3 flex flex-col items-center gap-1.5 hover:bg-[#eaeaeb] transition-colors`} data-testid={`quick-${tab}`}>
-              <Icon className="w-5 h-5 text-[#111]" />
-              <span className="text-[11px] font-medium text-[#334855]">{label}</span>
+            <button key={tab} onClick={() => onNavigate(tab)} className={`${CARD} p-3 flex flex-col items-center gap-1.5 hover:bg-ha-bg transition-colors`} data-testid={`quick-${tab}`}>
+              <Icon className="w-5 h-5 text-ha-text" />
+              <span className="text-[11px] font-medium text-ha-text-secondary">{label}</span>
             </button>
           ))}
         </div>
@@ -365,14 +365,14 @@ function ListingsTab() {
           <>
             <div className={`${CARD} p-5`}>
               <div className="flex items-start justify-between mb-4">
-                <h2 className="text-[18px] font-bold text-[#111]">{detail.title || "Untitled"}</h2>
+                <h2 className="text-[18px] font-bold text-ha-text">{detail.title || "Untitled"}</h2>
                 <div className="flex gap-1.5">
                   {detail.featured && <Badge className="bg-amber-50 text-amber-700 border-amber-200 text-[10px]">Aanrader</Badge>}
-                  {detail.hidden_from_feed && <Badge className="bg-[#F7F7F7] text-[#334855] text-[10px]">Hidden</Badge>}
+                  {detail.hidden_from_feed && <Badge className="bg-ha-hover-bg text-ha-text-secondary text-[10px]">Hidden</Badge>}
                 </div>
               </div>
               {detail.image_url && (
-                <div className="mb-4 rounded-xl overflow-hidden bg-[#F7F7F7]">
+                <div className="mb-4 rounded-xl overflow-hidden bg-ha-hover-bg">
                   <img src={detail.image_url} alt="" className="w-full h-48 object-cover" onError={e => (e.target as any).style.display = "none"} />
                 </div>
               )}
@@ -387,8 +387,8 @@ function ListingsTab() {
                   ["Created", detail.created_at ? new Date(detail.created_at).toLocaleString() : "—"],
                 ].map(([k, v]) => (
                   <div key={k} className="flex justify-between">
-                    <span className="text-[#334855]">{k}</span>
-                    <span className="font-medium text-[#111] max-w-[60%] truncate text-right">{v}</span>
+                    <span className="text-ha-text-secondary">{k}</span>
+                    <span className="font-medium text-ha-text max-w-[60%] truncate text-right">{v}</span>
                   </div>
                 ))}
                 {detail.url && (
@@ -400,30 +400,30 @@ function ListingsTab() {
             </div>
 
             <div className={`${CARD} p-5`}>
-              <h3 className="text-[15px] font-semibold text-[#111] mb-3">Quality controls</h3>
+              <h3 className="text-[15px] font-semibold text-ha-text mb-3">Quality controls</h3>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Star className="w-4 h-4 text-amber-500" />
                     <div>
-                      <p className="text-[13px] font-medium text-[#111]">Featured (Aanrader)</p>
-                      <p className="text-[11px] text-[#334855]">Prioritize in user feeds</p>
+                      <p className="text-[13px] font-medium text-ha-text">Featured (Aanrader)</p>
+                      <p className="text-[11px] text-ha-text-secondary">Prioritize in user feeds</p>
                     </div>
                   </div>
                   <button onClick={toggleFeatured} disabled={saving} className="relative" data-testid="toggle-featured">
-                    {detail.featured ? <ToggleRight className="w-8 h-8 text-ha-primary" /> : <ToggleLeft className="w-8 h-8 text-[#D1D5DB]" />}
+                    {detail.featured ? <ToggleRight className="w-8 h-8 text-ha-primary" /> : <ToggleLeft className="w-8 h-8 text-ha-border-input" />}
                   </button>
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <EyeOff className="w-4 h-4 text-[#334855]" />
+                    <EyeOff className="w-4 h-4 text-ha-text-secondary" />
                     <div>
-                      <p className="text-[13px] font-medium text-[#111]">Hide from feed</p>
-                      <p className="text-[11px] text-[#334855]">Remove from user matching</p>
+                      <p className="text-[13px] font-medium text-ha-text">Hide from feed</p>
+                      <p className="text-[11px] text-ha-text-secondary">Remove from user matching</p>
                     </div>
                   </div>
                   <button onClick={toggleHidden} disabled={saving} className="relative" data-testid="toggle-hidden">
-                    {detail.hidden_from_feed ? <ToggleRight className="w-8 h-8 text-ha-danger" /> : <ToggleLeft className="w-8 h-8 text-[#D1D5DB]" />}
+                    {detail.hidden_from_feed ? <ToggleRight className="w-8 h-8 text-ha-danger" /> : <ToggleLeft className="w-8 h-8 text-ha-border-input" />}
                   </button>
                 </div>
               </div>
@@ -439,27 +439,27 @@ function ListingsTab() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-[24px] font-bold text-[#111]">Listings</h1>
-        <span className="text-[13px] text-[#334855]">{total} total</span>
+        <h1 className="text-[24px] font-bold text-ha-text">Listings</h1>
+        <span className="text-[13px] text-ha-text-secondary">{total} total</span>
       </div>
 
       <div className="flex gap-2">
-        <input placeholder="Filter by city..." value={cityInput} onChange={e => { setCityInput(e.target.value); setPage(1); }} className="flex-1 h-10 px-4 rounded-xl bg-[#F7F7F7] text-[13px] text-[#111] placeholder:text-[#334855] focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-listing-city" />
-        <input placeholder="Filter by source..." value={sourceInput} onChange={e => { setSourceInput(e.target.value); setPage(1); }} className="flex-1 h-10 px-4 rounded-xl bg-[#F7F7F7] text-[13px] text-[#111] placeholder:text-[#334855] focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-listing-source" />
+        <input placeholder="Filter by city..." value={cityInput} onChange={e => { setCityInput(e.target.value); setPage(1); }} className="flex-1 h-10 px-4 rounded-xl bg-ha-hover-bg text-[13px] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-listing-city" />
+        <input placeholder="Filter by source..." value={sourceInput} onChange={e => { setSourceInput(e.target.value); setPage(1); }} className="flex-1 h-10 px-4 rounded-xl bg-ha-hover-bg text-[13px] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-listing-source" />
       </div>
 
       {loading ? <LoadingState /> : (
         <div className={`${CARD} divide-y divide-[#F7F7F7]`}>
           {listings.length === 0 ? (
-            <div className="px-4 py-8 text-center text-[13px] text-[#334855]">No listings found</div>
+            <div className="px-4 py-8 text-center text-[13px] text-ha-text-secondary">No listings found</div>
           ) : listings.map(l => (
             <div key={l.id} className="px-4 py-3" data-testid={`listing-row-${l.id}`}>
               {editingId === l.id ? (
                 <div className="space-y-2">
-                  <input value={editForm.title} onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))} className="w-full h-9 px-3 rounded-lg bg-[#F7F7F7] text-[13px] focus:outline-none" placeholder="Title" data-testid="input-edit-title" />
+                  <input value={editForm.title} onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))} className="w-full h-9 px-3 rounded-lg bg-ha-hover-bg text-[13px] focus:outline-none" placeholder="Title" data-testid="input-edit-title" />
                   <div className="flex gap-2">
-                    <input value={editForm.price} onChange={e => setEditForm(f => ({ ...f, price: e.target.value }))} className="flex-1 h-9 px-3 rounded-lg bg-[#F7F7F7] text-[13px] focus:outline-none" placeholder="Price" type="number" data-testid="input-edit-price" />
-                    <input value={editForm.image_url} onChange={e => setEditForm(f => ({ ...f, image_url: e.target.value }))} className="flex-[2] h-9 px-3 rounded-lg bg-[#F7F7F7] text-[13px] focus:outline-none" placeholder="Image URL" data-testid="input-edit-image" />
+                    <input value={editForm.price} onChange={e => setEditForm(f => ({ ...f, price: e.target.value }))} className="flex-1 h-9 px-3 rounded-lg bg-ha-hover-bg text-[13px] focus:outline-none" placeholder="Price" type="number" data-testid="input-edit-price" />
+                    <input value={editForm.image_url} onChange={e => setEditForm(f => ({ ...f, image_url: e.target.value }))} className="flex-[2] h-9 px-3 rounded-lg bg-ha-hover-bg text-[13px] focus:outline-none" placeholder="Image URL" data-testid="input-edit-image" />
                   </div>
                   <div className="flex gap-2 justify-end">
                     <Button variant="outline" size="sm" onClick={() => setEditingId(null)} className="rounded-full" data-testid="button-cancel-edit"><X className="w-3.5 h-3.5 mr-1" /> Cancel</Button>
@@ -468,20 +468,20 @@ function ListingsTab() {
                 </div>
               ) : (
                 <div className="flex items-start gap-3">
-                  <div className="w-12 h-12 rounded-lg bg-[#F7F7F7] flex-shrink-0 overflow-hidden">
+                  <div className="w-12 h-12 rounded-lg bg-ha-hover-bg flex-shrink-0 overflow-hidden">
                     {l.image_url ? (
                       <img src={l.image_url} alt="" className="w-full h-full object-cover" onError={e => { (e.target as any).style.display = "none"; }} />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center"><Image className="w-5 h-5 text-[#D1D5DB]" /></div>
+                      <div className="w-full h-full flex items-center justify-center"><Image className="w-5 h-5 text-ha-border-input" /></div>
                     )}
                   </div>
                   <div className="flex-1 min-w-0 cursor-pointer" onClick={() => openDetail(l.id)}>
                     <div className="flex items-center gap-1.5">
-                      <p className="text-[13px] font-semibold text-[#111] truncate">{l.title || "Untitled"}</p>
+                      <p className="text-[13px] font-semibold text-ha-text truncate">{l.title || "Untitled"}</p>
                       {l.featured && <Star className="w-3 h-3 text-amber-500 flex-shrink-0" />}
-                      {l.hidden_from_feed && <EyeOff className="w-3 h-3 text-[#334855] flex-shrink-0" />}
+                      {l.hidden_from_feed && <EyeOff className="w-3 h-3 text-ha-text-secondary flex-shrink-0" />}
                     </div>
-                    <div className="flex items-center gap-2 text-[11px] text-[#334855] mt-0.5">
+                    <div className="flex items-center gap-2 text-[11px] text-ha-text-secondary mt-0.5">
                       <Badge variant="secondary" className="text-[10px] px-1.5 py-0">{l.source}</Badge>
                       <span>{l.city}</span>
                       <span>€{l.price || "—"}</span>
@@ -489,15 +489,15 @@ function ListingsTab() {
                     </div>
                   </div>
                   <div className="flex gap-1 flex-shrink-0">
-                    <button onClick={() => startEdit(l)} className="w-8 h-8 rounded-lg bg-[#F7F7F7] flex items-center justify-center hover:bg-[#EFEFEF]" data-testid={`button-edit-${l.id}`}>
-                      <Pencil className="w-3.5 h-3.5 text-[#334855]" />
+                    <button onClick={() => startEdit(l)} className="w-8 h-8 rounded-lg bg-ha-hover-bg flex items-center justify-center hover:bg-[#EFEFEF]" data-testid={`button-edit-${l.id}`}>
+                      <Pencil className="w-3.5 h-3.5 text-ha-text-secondary" />
                     </button>
-                    <button onClick={() => setDeleteConfirm(l.id)} className="w-8 h-8 rounded-lg bg-[#F7F7F7] flex items-center justify-center hover:bg-ha-danger/10" data-testid={`button-delete-${l.id}`}>
+                    <button onClick={() => setDeleteConfirm(l.id)} className="w-8 h-8 rounded-lg bg-ha-hover-bg flex items-center justify-center hover:bg-ha-danger/10" data-testid={`button-delete-${l.id}`}>
                       <Trash2 className="w-3.5 h-3.5 text-ha-danger" />
                     </button>
                     {l.url && (
-                      <a href={l.url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg bg-[#F7F7F7] flex items-center justify-center hover:bg-[#EFEFEF]" data-testid={`link-ext-${l.id}`}>
-                        <ExternalLink className="w-3.5 h-3.5 text-[#334855]" />
+                      <a href={l.url} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg bg-ha-hover-bg flex items-center justify-center hover:bg-[#EFEFEF]" data-testid={`link-ext-${l.id}`}>
+                        <ExternalLink className="w-3.5 h-3.5 text-ha-text-secondary" />
                       </a>
                     )}
                   </div>
@@ -511,7 +511,7 @@ function ListingsTab() {
       {total > 50 && (
         <div className="flex items-center justify-between">
           <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="rounded-full" data-testid="button-listing-prev">Previous</Button>
-          <span className="text-[12px] text-[#334855]">Page {page} of {Math.ceil(total / 50)}</span>
+          <span className="text-[12px] text-ha-text-secondary">Page {page} of {Math.ceil(total / 50)}</span>
           <Button variant="outline" size="sm" disabled={listings.length < 50} onClick={() => setPage(p => p + 1)} className="rounded-full" data-testid="button-listing-next">Next</Button>
         </div>
       )}
@@ -602,7 +602,7 @@ function ImagesTab() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-[24px] font-bold text-[#111]">Image Management</h1>
+        <h1 className="text-[24px] font-bold text-ha-text">Image Management</h1>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={() => { setRefreshing(true); load(); }} className="rounded-full" data-testid="button-refresh-images">
             <RefreshCw className={`w-3.5 h-3.5 mr-1 ${refreshing ? "animate-spin" : ""}`} /> Refresh
@@ -624,21 +624,21 @@ function ImagesTab() {
           </div>
           {backfillStatus.lastRun && (
             <div className={`${CARD} p-4 mt-3`}>
-              <p className="text-[12px] text-[#334855] font-medium mb-1">Last run</p>
-              <p className="text-[13px] text-[#111] font-medium">{new Date(backfillStatus.lastRun.timestamp).toLocaleString()}</p>
-              <p className="text-[11px] text-[#334855]">Duration: {backfillStatus.lastRun.duration_ms}ms · Updated: {backfillStatus.lastRun.updated} · Failed: {backfillStatus.lastRun.failed}</p>
+              <p className="text-[12px] text-ha-text-secondary font-medium mb-1">Last run</p>
+              <p className="text-[13px] text-ha-text font-medium">{new Date(backfillStatus.lastRun.timestamp).toLocaleString()}</p>
+              <p className="text-[11px] text-ha-text-secondary">Duration: {backfillStatus.lastRun.duration_ms}ms · Updated: {backfillStatus.lastRun.updated} · Failed: {backfillStatus.lastRun.failed}</p>
             </div>
           )}
           {backfillStatus.recentRuns && backfillStatus.recentRuns.length > 0 && (
             <div className={`${CARD} mt-3 divide-y divide-[#F7F7F7]`}>
               <div className="px-4 py-2">
-                <p className="text-[12px] font-semibold text-[#334855] uppercase tracking-wider">Recent runs</p>
+                <p className="text-[12px] font-semibold text-ha-text-secondary uppercase tracking-wider">Recent runs</p>
               </div>
               {backfillStatus.recentRuns.slice(0, 8).map((run: any, i: number) => (
                 <div key={i} className="px-4 py-2.5 flex items-center justify-between text-[12px]">
-                  <span className="text-[#334855]">{new Date(run.started_at).toLocaleString()}</span>
+                  <span className="text-ha-text-secondary">{new Date(run.started_at).toLocaleString()}</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-[#111] font-medium">{run.updated}/{run.total}</span>
+                    <span className="text-ha-text font-medium">{run.updated}/{run.total}</span>
                     <StatusBadge status={run.updated > 0 ? "success" : "warning"} />
                   </div>
                 </div>
@@ -667,11 +667,11 @@ function ImagesTab() {
                 <div key={s.source} className="px-4 py-3" data-testid={`image-source-${s.source}`}>
                   <div className="flex items-center justify-between mb-1.5">
                     <div className="flex items-center gap-2">
-                      <span className="text-[13px] font-semibold text-[#111]">{s.source}</span>
+                      <span className="text-[13px] font-semibold text-ha-text">{s.source}</span>
                       <Badge variant="secondary" className="text-[10px]">{s.priority}</Badge>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[13px] font-bold text-[#111]">{s.coverage_pct}%</span>
+                      <span className="text-[13px] font-bold text-ha-text">{s.coverage_pct}%</span>
                       <Button
                         variant="outline"
                         size="sm"
@@ -685,10 +685,10 @@ function ImagesTab() {
                       </Button>
                     </div>
                   </div>
-                  <div className="h-2 bg-[#F7F7F7] rounded-full overflow-hidden mb-1.5">
+                  <div className="h-2 bg-ha-hover-bg rounded-full overflow-hidden mb-1.5">
                     <div className="h-full rounded-full bg-ha-primary transition-all" style={{ width: `${s.coverage_pct}%` }} />
                   </div>
-                  <div className="flex gap-3 text-[11px] text-[#334855]">
+                  <div className="flex gap-3 text-[11px] text-ha-text-secondary">
                     <span>{s.total} total</span>
                     <span className="text-emerald-600">{s.with_image} with</span>
                     <span className="text-ha-danger">{s.without_image} without</span>
@@ -704,17 +704,17 @@ function ImagesTab() {
               <SectionHeader title="Missing image samples" />
               {Object.entries(auditData.samples).map(([source, samples]: [string, any]) => (
                 <div key={source} className="mb-3">
-                  <p className="text-[12px] font-semibold text-[#334855] mb-2 uppercase">{source}</p>
+                  <p className="text-[12px] font-semibold text-ha-text-secondary mb-2 uppercase">{source}</p>
                   <div className={`${CARD} divide-y divide-[#F7F7F7]`}>
                     {(samples as any[]).map((s: any) => (
                       <div key={s.id} className="px-4 py-3" data-testid={`sample-${s.id}`}>
-                        <p className="text-[13px] font-medium text-[#111] truncate mb-1">{s.title || s.id}</p>
+                        <p className="text-[13px] font-medium text-ha-text truncate mb-1">{s.title || s.id}</p>
                         <div className="flex gap-2 items-center">
                           <input
                             placeholder="Paste image URL..."
                             value={manualUrl[s.id] || ""}
                             onChange={e => setManualUrl(m => ({ ...m, [s.id]: e.target.value }))}
-                            className="flex-1 h-8 px-3 rounded-lg bg-[#F7F7F7] text-[12px] focus:outline-none"
+                            className="flex-1 h-8 px-3 rounded-lg bg-ha-hover-bg text-[12px] focus:outline-none"
                             data-testid={`input-manual-url-${s.id}`}
                           />
                           <Button
@@ -821,7 +821,7 @@ function SourcesTab() {
 
   return (
     <div className="space-y-5">
-      <h1 className="text-[24px] font-bold text-[#111]">Sources</h1>
+      <h1 className="text-[24px] font-bold text-ha-text">Sources</h1>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <MetricCard label="Active sources" value={healthySources} icon={CheckCircle} />
@@ -834,8 +834,8 @@ function SourcesTab() {
         <div className={`${CARD} p-4 flex items-center gap-3`}>
           <StatusBadge status={latestRun.status} />
           <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-semibold text-[#111]">Last ingestion run</p>
-            <p className="text-[11px] text-[#334855]">{new Date(latestRun.started_at).toLocaleString()} · {latestRun.duration_sec}s</p>
+            <p className="text-[13px] font-semibold text-ha-text">Last ingestion run</p>
+            <p className="text-[11px] text-ha-text-secondary">{new Date(latestRun.started_at).toLocaleString()} · {latestRun.duration_sec}s</p>
           </div>
         </div>
       )}
@@ -844,11 +844,11 @@ function SourcesTab() {
         <SectionHeader title="Source monitor" />
         <div className="flex gap-2 overflow-x-auto pb-2 mb-3" style={{ WebkitOverflowScrolling: "touch" }}>
           {["All", "Healthy", "Warning", "Broken"].map(f => (
-            <button key={f} onClick={() => setStatusFilter(f)} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${statusFilter === f ? "bg-[#111] text-white" : "bg-white text-[#334855] border border-[#F0F0F0]"}`} data-testid={`filter-status-${f}`}>
+            <button key={f} onClick={() => setStatusFilter(f)} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${statusFilter === f ? "bg-[#111] text-white" : "bg-white text-ha-text-secondary border border-ha-divider"}`} data-testid={`filter-status-${f}`}>
               {f}
             </button>
           ))}
-          <select value={cityFilter} onChange={e => setCityFilter(e.target.value)} className="px-3 py-1.5 rounded-full text-[12px] font-medium bg-white text-[#334855] border border-[#F0F0F0] cursor-pointer" data-testid="select-source-city">
+          <select value={cityFilter} onChange={e => setCityFilter(e.target.value)} className="px-3 py-1.5 rounded-full text-[12px] font-medium bg-white text-ha-text-secondary border border-ha-divider cursor-pointer" data-testid="select-source-city">
             {SOURCE_HEALTH_CITIES.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
         </div>
@@ -864,8 +864,8 @@ function SourcesTab() {
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-2 min-w-0">
                     <StatusDot status={isAdminEnabled ? st : "disabled"} />
-                    <span className="text-[13px] font-semibold text-[#111] truncate">{sourceName}</span>
-                    {!isAdminEnabled && <Badge className="bg-[#F7F7F7] text-[#334855] text-[9px]">Disabled</Badge>}
+                    <span className="text-[13px] font-semibold text-ha-text truncate">{sourceName}</span>
+                    {!isAdminEnabled && <Badge className="bg-ha-hover-bg text-ha-text-secondary text-[9px]">Disabled</Badge>}
                   </div>
                   <div className="flex items-center gap-2">
                     <button
@@ -876,7 +876,7 @@ function SourcesTab() {
                     >
                       {isAdminEnabled
                         ? <ToggleRight className="w-7 h-7 text-emerald-500" />
-                        : <ToggleLeft className="w-7 h-7 text-[#D1D5DB]" />
+                        : <ToggleLeft className="w-7 h-7 text-ha-border-input" />
                       }
                     </button>
                     <StatusBadge status={st} />
@@ -893,7 +893,7 @@ function SourcesTab() {
                     </Button>
                   </div>
                 </div>
-                <div className="flex gap-3 text-[11px] text-[#334855] ml-4">
+                <div className="flex gap-3 text-[11px] text-ha-text-secondary ml-4">
                   {s.city && <span>{s.city}</span>}
                   <span>{s.found ?? 0} found</span>
                   <span>{s.inserted ?? 0} new</span>
@@ -902,7 +902,7 @@ function SourcesTab() {
               </div>
             );
           }) : (
-            <div className="px-4 py-8 text-center text-[13px] text-[#334855]">No sources match this filter</div>
+            <div className="px-4 py-8 text-center text-[13px] text-ha-text-secondary">No sources match this filter</div>
           )}
         </div>
       </div>
@@ -967,48 +967,48 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
       </button>
 
       <div className={`${CARD} p-5`}>
-        <h3 className="text-[16px] font-bold text-[#111] mb-3">Profile</h3>
+        <h3 className="text-[16px] font-bold text-ha-text mb-3">Profile</h3>
         <div className="space-y-2.5 text-[13px]">
-          <div className="flex justify-between"><span className="text-[#334855]">Name</span><span className="font-medium text-[#111]">{profile?.first_name || ""} {profile?.last_name || ""}</span></div>
-          <div className="flex justify-between"><span className="text-[#334855]">Email</span><span className="font-medium text-[#111] max-w-[200px] truncate">{profile?.email || "—"}</span></div>
-          <div className="flex justify-between"><span className="text-[#334855]">Phone</span><span className="font-medium text-[#111]">{profile?.phone || "—"}</span></div>
-          <div className="flex justify-between"><span className="text-[#334855]">Created</span><span className="font-medium text-[#111]">{profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : "—"}</span></div>
+          <div className="flex justify-between"><span className="text-ha-text-secondary">Name</span><span className="font-medium text-ha-text">{profile?.first_name || ""} {profile?.last_name || ""}</span></div>
+          <div className="flex justify-between"><span className="text-ha-text-secondary">Email</span><span className="font-medium text-ha-text max-w-[200px] truncate">{profile?.email || "—"}</span></div>
+          <div className="flex justify-between"><span className="text-ha-text-secondary">Phone</span><span className="font-medium text-ha-text">{profile?.phone || "—"}</span></div>
+          <div className="flex justify-between"><span className="text-ha-text-secondary">Created</span><span className="font-medium text-ha-text">{profile?.created_at ? new Date(profile.created_at).toLocaleDateString() : "—"}</span></div>
           <div className="flex justify-between items-center">
-            <span className="text-[#334855]">Notifications</span>
+            <span className="text-ha-text-secondary">Notifications</span>
             <div className="flex gap-1.5">
               {notificationSettings?.email_enabled && <Badge variant="secondary" className="text-[10px]">Email</Badge>}
               {notificationSettings?.push_enabled && <Badge variant="secondary" className="text-[10px]">Push</Badge>}
-              {!notificationSettings?.email_enabled && !notificationSettings?.push_enabled && <span className="text-[#334855]">None</span>}
+              {!notificationSettings?.email_enabled && !notificationSettings?.push_enabled && <span className="text-ha-text-secondary">None</span>}
             </div>
           </div>
-          <div><span className="text-[#334855] text-[11px] break-all">{profile?.user_id || ""}</span></div>
+          <div><span className="text-ha-text-secondary text-[11px] break-all">{profile?.user_id || ""}</span></div>
         </div>
       </div>
 
       {diagnostics && (
         <div className={`${CARD} p-5`}>
-          <h3 className="text-[16px] font-bold text-[#111] mb-3">Diagnostics</h3>
+          <h3 className="text-[16px] font-bold text-ha-text mb-3">Diagnostics</h3>
           <div className="space-y-2.5 text-[13px]">
             <div className="flex justify-between items-center">
-              <span className="text-[#334855]">Role</span>
+              <span className="text-ha-text-secondary">Role</span>
               <Badge variant="secondary" className={`text-[10px] ${diagnostics.accountRole === "owner" ? "bg-ha-primary/10 text-ha-primary" : diagnostics.accountRole === "buddy" ? "bg-blue-50 text-blue-700" : diagnostics.accountRole === "both" ? "bg-purple-50 text-purple-700" : "bg-gray-100 text-gray-500"}`}>
                 {diagnostics.accountRole === "owner" ? "Owner" : diagnostics.accountRole === "buddy" ? "Buddy" : diagnostics.accountRole === "both" ? "Owner + Buddy" : "No role"}
               </Badge>
             </div>
-            <div className="flex justify-between"><span className="text-[#334855]">Search profiles</span><span className="font-medium text-[#111]">{diagnostics.searchProfileCount}</span></div>
-            <div className="flex justify-between"><span className="text-[#334855]">Matches (24h)</span><span className="font-medium text-[#111]">{diagnostics.matchesLast24h}</span></div>
-            <div className="flex justify-between"><span className="text-[#334855]">Emails sent (24h)</span><span className="font-medium text-[#111]">{diagnostics.emailsSentLast24h}</span></div>
-            <div className="flex justify-between"><span className="text-[#334855]">hasAccess</span><span className={`font-medium ${subscription?.hasAccess ? "text-emerald-600" : "text-ha-danger"}`}>{subscription?.hasAccess ? "Yes" : "No"}</span></div>
+            <div className="flex justify-between"><span className="text-ha-text-secondary">Search profiles</span><span className="font-medium text-ha-text">{diagnostics.searchProfileCount}</span></div>
+            <div className="flex justify-between"><span className="text-ha-text-secondary">Matches (24h)</span><span className="font-medium text-ha-text">{diagnostics.matchesLast24h}</span></div>
+            <div className="flex justify-between"><span className="text-ha-text-secondary">Emails sent (24h)</span><span className="font-medium text-ha-text">{diagnostics.emailsSentLast24h}</span></div>
+            <div className="flex justify-between"><span className="text-ha-text-secondary">hasAccess</span><span className={`font-medium ${subscription?.hasAccess ? "text-emerald-600" : "text-ha-danger"}`}>{subscription?.hasAccess ? "Yes" : "No"}</span></div>
             {diagnostics.buddyConnections?.asOwner && (
-              <div className="p-2.5 bg-[#F7F7F7] rounded-xl">
-                <p className="text-[11px] font-semibold text-[#334855] mb-1">Buddy (as owner)</p>
-                <p className="text-[12px] text-[#111]">{diagnostics.buddyConnections.asOwner.invite_email} — {diagnostics.buddyConnections.asOwner.invite_status}</p>
+              <div className="p-2.5 bg-ha-hover-bg rounded-xl">
+                <p className="text-[11px] font-semibold text-ha-text-secondary mb-1">Buddy (as owner)</p>
+                <p className="text-[12px] text-ha-text">{diagnostics.buddyConnections.asOwner.invite_email} — {diagnostics.buddyConnections.asOwner.invite_status}</p>
               </div>
             )}
             {diagnostics.buddyConnections?.asBuddy?.length > 0 && diagnostics.buddyConnections.asBuddy.map((b: any, i: number) => (
-              <div key={i} className="p-2.5 bg-[#F7F7F7] rounded-xl">
-                <p className="text-[11px] font-semibold text-[#334855] mb-1">Owner (as buddy)</p>
-                <p className="text-[12px] text-[#111]">{b.owner_name || b.owner_user_id?.substring(0, 8)} — {b.invite_status}</p>
+              <div key={i} className="p-2.5 bg-ha-hover-bg rounded-xl">
+                <p className="text-[11px] font-semibold text-ha-text-secondary mb-1">Owner (as buddy)</p>
+                <p className="text-[12px] text-ha-text">{b.owner_name || b.owner_user_id?.substring(0, 8)} — {b.invite_status}</p>
               </div>
             ))}
             {diagnostics.legacyBuddyEmail && (
@@ -1023,15 +1023,15 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
 
       {subscription && (
         <div className={`${CARD} p-5`}>
-          <h3 className="text-[16px] font-bold text-[#111] mb-3">Subscription</h3>
+          <h3 className="text-[16px] font-bold text-ha-text mb-3">Subscription</h3>
           <div className="space-y-2.5 text-[13px]">
-            <div className="flex justify-between items-center"><span className="text-[#334855]">Status</span><StatusBadge status={subscription.computedStatus || subscription.status} /></div>
+            <div className="flex justify-between items-center"><span className="text-ha-text-secondary">Status</span><StatusBadge status={subscription.computedStatus || subscription.status} /></div>
             {subscription.computedStatus && subscription.computedStatus !== subscription.status && (
               <div className="flex justify-between items-center"><span className="text-[10px] text-orange-500">DB raw: {subscription.status}</span></div>
             )}
-            <div className="flex justify-between"><span className="text-[#334855]">Plan</span><span className="font-medium">{subscription.plan || "—"}</span></div>
-            <div className="flex justify-between"><span className="text-[#334855]">Trial ends</span><span className="font-medium">{subscription.trial_ends_at ? new Date(subscription.trial_ends_at).toLocaleDateString() : "—"}</span></div>
-            <div className="flex justify-between"><span className="text-[#334855]">Period ends</span><span className="font-medium">{subscription.current_period_ends_at ? new Date(subscription.current_period_ends_at).toLocaleDateString() : "—"}</span></div>
+            <div className="flex justify-between"><span className="text-ha-text-secondary">Plan</span><span className="font-medium">{subscription.plan || "—"}</span></div>
+            <div className="flex justify-between"><span className="text-ha-text-secondary">Trial ends</span><span className="font-medium">{subscription.trial_ends_at ? new Date(subscription.trial_ends_at).toLocaleDateString() : "—"}</span></div>
+            <div className="flex justify-between"><span className="text-ha-text-secondary">Period ends</span><span className="font-medium">{subscription.current_period_ends_at ? new Date(subscription.current_period_ends_at).toLocaleDateString() : "—"}</span></div>
             {subscription.stripe_subscription_id && (
               <a href={`https://dashboard.stripe.com/subscriptions/${subscription.stripe_subscription_id}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-ha-primary text-[12px] font-medium" data-testid="link-stripe-sub">
                 <ExternalLink className="w-3 h-3" /> View in Stripe
@@ -1042,12 +1042,12 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
       )}
 
       <div className={`${CARD} p-5`}>
-        <h3 className="text-[16px] font-bold text-[#111] mb-3">Actions</h3>
+        <h3 className="text-[16px] font-bold text-ha-text mb-3">Actions</h3>
         <div className="space-y-3">
           <div>
-            <p className="text-[12px] text-[#334855] font-medium mb-1.5">Extend trial</p>
+            <p className="text-[12px] text-ha-text-secondary font-medium mb-1.5">Extend trial</p>
             <div className="flex gap-2">
-              <select value={trialDays} onChange={e => setTrialDays(e.target.value)} className="h-9 px-3 rounded-lg bg-[#F7F7F7] text-[13px] border-0 focus:outline-none" data-testid="select-trial-days">
+              <select value={trialDays} onChange={e => setTrialDays(e.target.value)} className="h-9 px-3 rounded-lg bg-ha-hover-bg text-[13px] border-0 focus:outline-none" data-testid="select-trial-days">
                 <option value="3">3 days</option>
                 <option value="7">7 days</option>
                 <option value="14">14 days</option>
@@ -1059,7 +1059,7 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
             </div>
           </div>
           <div>
-            <p className="text-[12px] text-[#334855] font-medium mb-1.5">Change plan</p>
+            <p className="text-[12px] text-ha-text-secondary font-medium mb-1.5">Change plan</p>
             <div className="flex gap-2">
               {["monthly", "two_month", "three_month"].map(plan => (
                 <Button key={plan} variant="outline" size="sm" onClick={() => changePlan(plan)} disabled={actionLoading === "plan"} className="rounded-full text-[11px]" data-testid={`button-plan-${plan}`}>
@@ -1069,7 +1069,7 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
             </div>
           </div>
           <div>
-            <p className="text-[12px] text-[#334855] font-medium mb-1.5">Alerts</p>
+            <p className="text-[12px] text-ha-text-secondary font-medium mb-1.5">Alerts</p>
             <Button variant="outline" size="sm" onClick={resendUserMatches} disabled={actionLoading === "resend"} className="rounded-full" data-testid="button-resend-matches">
               <Send className="w-3.5 h-3.5 mr-1" />
               {actionLoading === "resend" ? "Sending..." : "Resend undelivered matches"}
@@ -1086,12 +1086,12 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
 
       {searchProfiles && searchProfiles.length > 0 && (
         <div className={`${CARD} p-5`}>
-          <h3 className="text-[16px] font-bold text-[#111] mb-3">Search profiles ({searchProfiles.length})</h3>
+          <h3 className="text-[16px] font-bold text-ha-text mb-3">Search profiles ({searchProfiles.length})</h3>
           <div className="space-y-2">
             {searchProfiles.map((sp: any) => (
-              <div key={sp.id} className="p-3 bg-[#F7F7F7] rounded-xl text-[12px]">
-                <p className="font-semibold text-[#111] mb-0.5">{sp.city_name || sp.city}</p>
-                <p className="text-[#334855]">€{sp.price_min || 0}–€{sp.price_max || "∞"} · {sp.bedrooms_min || 0}+ rooms · {sp.size_min || 0}+ m²</p>
+              <div key={sp.id} className="p-3 bg-ha-hover-bg rounded-xl text-[12px]">
+                <p className="font-semibold text-ha-text mb-0.5">{sp.city_name || sp.city}</p>
+                <p className="text-ha-text-secondary">€{sp.price_min || 0}–€{sp.price_max || "∞"} · {sp.bedrooms_min || 0}+ rooms · {sp.size_min || 0}+ m²</p>
               </div>
             ))}
           </div>
@@ -1100,13 +1100,13 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
 
       {recentMatches && recentMatches.length > 0 && (
         <div className={`${CARD} p-5`}>
-          <h3 className="text-[16px] font-bold text-[#111] mb-3">Recent matches ({recentMatches.length})</h3>
+          <h3 className="text-[16px] font-bold text-ha-text mb-3">Recent matches ({recentMatches.length})</h3>
           <div className="space-y-2">
             {recentMatches.slice(0, 10).map((m: any) => (
-              <div key={m.id} className="flex items-center gap-2 p-2.5 bg-[#F7F7F7] rounded-xl text-[12px]">
+              <div key={m.id} className="flex items-center gap-2 p-2.5 bg-ha-hover-bg rounded-xl text-[12px]">
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-[#111] truncate">{m.listing_title || m.listing_id?.substring(0, 12)}</p>
-                  <p className="text-[#334855]">{m.matched_at ? new Date(m.matched_at).toLocaleString() : "—"}</p>
+                  <p className="font-medium text-ha-text truncate">{m.listing_title || m.listing_id?.substring(0, 12)}</p>
+                  <p className="text-ha-text-secondary">{m.matched_at ? new Date(m.matched_at).toLocaleString() : "—"}</p>
                 </div>
                 <div className="flex gap-1 flex-shrink-0">
                   {m.email_sent && <Badge variant="secondary" className="text-[9px] px-1.5">Email</Badge>}
@@ -1121,10 +1121,10 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
 
       {cancellationFeedback && (
         <div className={`${CARD} p-5`}>
-          <h3 className="text-[16px] font-bold text-[#111] mb-3">Cancellation feedback</h3>
+          <h3 className="text-[16px] font-bold text-ha-text mb-3">Cancellation feedback</h3>
           <div className="space-y-2 text-[13px]">
-            <div className="flex justify-between"><span className="text-[#334855]">Reason</span><span className="font-medium">{cancellationFeedback.reason || "—"}</span></div>
-            {cancellationFeedback.feedback && <p className="text-[#334855] text-[12px] bg-[#F7F7F7] rounded-xl p-3">{cancellationFeedback.feedback}</p>}
+            <div className="flex justify-between"><span className="text-ha-text-secondary">Reason</span><span className="font-medium">{cancellationFeedback.reason || "—"}</span></div>
+            {cancellationFeedback.feedback && <p className="text-ha-text-secondary text-[12px] bg-ha-hover-bg rounded-xl p-3">{cancellationFeedback.feedback}</p>}
           </div>
         </div>
       )}
@@ -1181,38 +1181,38 @@ function UsersTab() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-[24px] font-bold text-[#111]">Users</h1>
+      <h1 className="text-[24px] font-bold text-ha-text">Users</h1>
 
       <div className={`${CARD} px-4 py-3 flex items-center gap-3`}>
-        <Search className="w-5 h-5 text-[#334855] flex-shrink-0" />
+        <Search className="w-5 h-5 text-ha-text-secondary flex-shrink-0" />
         <input
           placeholder="Search name or email..."
           value={search}
           onChange={e => { setSearch(e.target.value); setPage(1); }}
-          className="flex-1 text-[13px] text-[#111] bg-transparent focus:outline-none placeholder:text-[#334855]"
+          className="flex-1 text-[13px] text-ha-text bg-transparent focus:outline-none placeholder:text-ha-text-secondary"
           data-testid="input-search-users"
         />
       </div>
 
       <div className="flex gap-2 overflow-x-auto pb-1" style={{ WebkitOverflowScrolling: "touch" }}>
         {["all", "paid", "trial", "canceled", "expired"].map(f => (
-          <button key={f} onClick={() => { setFilter(f); setPage(1); }} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${filter === f ? "bg-[#111] text-white" : "bg-white text-[#334855] border border-[#F0F0F0]"}`} data-testid={`filter-user-${f}`}>
+          <button key={f} onClick={() => { setFilter(f); setPage(1); }} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${filter === f ? "bg-[#111] text-white" : "bg-white text-ha-text-secondary border border-ha-divider"}`} data-testid={`filter-user-${f}`}>
             {f.charAt(0).toUpperCase() + f.slice(1)}
           </button>
         ))}
-        <span className="text-[12px] text-[#334855] self-center ml-auto flex-shrink-0">{total} users</span>
+        <span className="text-[12px] text-ha-text-secondary self-center ml-auto flex-shrink-0">{total} users</span>
       </div>
 
       {loading ? <LoadingState /> : (
         <div className={`${CARD} divide-y divide-[#F7F7F7]`}>
           {users.map(u => (
-            <button key={u.user_id} onClick={() => openUser(u.user_id)} className="w-full px-4 py-3 flex items-center gap-3 text-left hover:bg-[#eaeaeb] transition-colors" data-testid={`user-card-${u.user_id}`}>
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-[13px] font-bold ${u.has_profile_data === false ? "bg-[#F7F7F7] text-[#334855]" : "bg-[#F7F7F7] text-ha-primary"}`}>
+            <button key={u.user_id} onClick={() => openUser(u.user_id)} className="w-full px-4 py-3 flex items-center gap-3 text-left hover:bg-ha-bg transition-colors" data-testid={`user-card-${u.user_id}`}>
+              <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-[13px] font-bold ${u.has_profile_data === false ? "bg-ha-hover-bg text-ha-text-secondary" : "bg-ha-hover-bg text-ha-primary"}`}>
                 {(u.first_name || u.email || "?")[0]?.toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-semibold text-[#111] truncate">{u.first_name || u.email || "Unknown"} {u.last_name || ""}</p>
-                <p className="text-[11px] text-[#334855] truncate">{u.email || u.user_id?.substring(0, 8)} · {u.searchProfileCount || 0} profiles · {u.matchCount || 0} matches</p>
+                <p className="text-[13px] font-semibold text-ha-text truncate">{u.first_name || u.email || "Unknown"} {u.last_name || ""}</p>
+                <p className="text-[11px] text-ha-text-secondary truncate">{u.email || u.user_id?.substring(0, 8)} · {u.searchProfileCount || 0} profiles · {u.matchCount || 0} matches</p>
               </div>
               <div className="flex flex-col items-end gap-1 flex-shrink-0">
                 <div className="flex gap-1 items-center">
@@ -1221,21 +1221,21 @@ function UsersTab() {
                       {u.role === "both" ? "O+B" : u.role.charAt(0).toUpperCase() + u.role.slice(1)}
                     </span>
                   )}
-                  {u.subscription ? <StatusBadge status={u.subscription.status} /> : <span className="text-[11px] text-[#334855]">No sub</span>}
+                  {u.subscription ? <StatusBadge status={u.subscription.status} /> : <span className="text-[11px] text-ha-text-secondary">No sub</span>}
                 </div>
-                <span className="text-[10px] text-[#334855]">{u.created_at ? new Date(u.created_at).toLocaleDateString() : ""}</span>
+                <span className="text-[10px] text-ha-text-secondary">{u.created_at ? new Date(u.created_at).toLocaleDateString() : ""}</span>
               </div>
               <ChevronRight className="w-4 h-4 text-gray-200 flex-shrink-0" />
             </button>
           ))}
-          {users.length === 0 && <div className="px-4 py-8 text-center text-[13px] text-[#334855]">No users found</div>}
+          {users.length === 0 && <div className="px-4 py-8 text-center text-[13px] text-ha-text-secondary">No users found</div>}
         </div>
       )}
 
       {total > 50 && (
         <div className="flex items-center justify-between">
           <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="rounded-full" data-testid="button-user-prev">Previous</Button>
-          <span className="text-[12px] text-[#334855]">Page {page}</span>
+          <span className="text-[12px] text-ha-text-secondary">Page {page}</span>
           <Button variant="outline" size="sm" disabled={users.length < 50} onClick={() => setPage(p => p + 1)} className="rounded-full" data-testid="button-user-next">Next</Button>
         </div>
       )}
@@ -1260,15 +1260,15 @@ function SubscriptionsTab() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-[24px] font-bold text-[#111]">Subscriptions</h1>
+      <h1 className="text-[24px] font-bold text-ha-text">Subscriptions</h1>
 
       <div className="flex gap-2 overflow-x-auto pb-1" style={{ WebkitOverflowScrolling: "touch" }}>
         {["all", "active", "trial", "canceled", "expired"].map(f => (
-          <button key={f} onClick={() => { setFilter(f); setPage(1); }} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${filter === f ? "bg-[#111] text-white" : "bg-white text-[#334855] border border-[#F0F0F0]"}`} data-testid={`filter-sub-${f}`}>
+          <button key={f} onClick={() => { setFilter(f); setPage(1); }} className={`px-3 py-1.5 rounded-full text-[12px] font-medium flex-shrink-0 transition-colors ${filter === f ? "bg-[#111] text-white" : "bg-white text-ha-text-secondary border border-ha-divider"}`} data-testid={`filter-sub-${f}`}>
             {f.charAt(0).toUpperCase() + f.slice(1)}
           </button>
         ))}
-        <span className="text-[12px] text-[#334855] self-center ml-auto flex-shrink-0">{total}</span>
+        <span className="text-[12px] text-ha-text-secondary self-center ml-auto flex-shrink-0">{total}</span>
       </div>
 
       {loading ? <LoadingState /> : subs.length === 0 ? (
@@ -1279,15 +1279,15 @@ function SubscriptionsTab() {
             <div key={s.id} className="px-4 py-3" data-testid={`sub-card-${s.id}`}>
               <div className="flex items-center justify-between mb-1">
                 <div className="min-w-0 flex-1">
-                  <p className="text-[13px] font-semibold text-[#111] truncate">{s.userName || "Unknown"}</p>
-                  <p className="text-[10px] text-[#334855]">{s.user_id?.substring(0, 8)}...</p>
+                  <p className="text-[13px] font-semibold text-ha-text truncate">{s.userName || "Unknown"}</p>
+                  <p className="text-[10px] text-ha-text-secondary">{s.user_id?.substring(0, 8)}...</p>
                 </div>
                 <StatusBadge status={s.computedStatus || s.status} />
               </div>
               {s.computedStatus && s.computedStatus !== s.status && (
                 <p className="text-[10px] text-orange-500 mb-1">DB: {s.status} → Computed: {s.computedStatus}</p>
               )}
-              <div className="flex items-center gap-3 text-[11px] text-[#334855]">
+              <div className="flex items-center gap-3 text-[11px] text-ha-text-secondary">
                 <span>{s.plan || "—"}</span>
                 <span>{s.created_at ? new Date(s.created_at).toLocaleDateString() : ""}</span>
                 {s.stripe_subscription_id && (
@@ -1304,7 +1304,7 @@ function SubscriptionsTab() {
       {total > 50 && (
         <div className="flex items-center justify-between">
           <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="rounded-full" data-testid="button-sub-prev">Previous</Button>
-          <span className="text-[12px] text-[#334855]">Page {page}</span>
+          <span className="text-[12px] text-ha-text-secondary">Page {page}</span>
           <Button variant="outline" size="sm" disabled={subs.length < 50} onClick={() => setPage(p => p + 1)} className="rounded-full" data-testid="button-sub-next">Next</Button>
         </div>
       )}
@@ -1357,9 +1357,9 @@ function SystemTab() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-[24px] font-bold text-[#111]">System</h1>
-        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-[#F7F7F7] flex items-center justify-center hover:bg-[#EFEFEF]" data-testid="button-refresh-system">
-          <RefreshCw className={`w-4 h-4 text-[#334855] ${refreshing ? "animate-spin" : ""}`} />
+        <h1 className="text-[24px] font-bold text-ha-text">System</h1>
+        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-ha-hover-bg flex items-center justify-center hover:bg-[#EFEFEF]" data-testid="button-refresh-system">
+          <RefreshCw className={`w-4 h-4 text-ha-text-secondary ${refreshing ? "animate-spin" : ""}`} />
         </button>
       </div>
 
@@ -1380,31 +1380,31 @@ function SystemTab() {
           <SectionHeader title="Image backfill pipeline" />
           <div className={`${CARD} p-4 space-y-3`}>
             <div className="flex items-center justify-between text-[13px]">
-              <span className="text-[#334855]">Status</span>
+              <span className="text-ha-text-secondary">Status</span>
               <StatusBadge status={backfillStatus.enabled ? "active" : "disabled"} />
             </div>
             <div className="flex items-center justify-between text-[13px]">
-              <span className="text-[#334855]">Running</span>
-              <span className="font-medium text-[#111]">{backfillStatus.running ? "Yes" : "No"}</span>
+              <span className="text-ha-text-secondary">Running</span>
+              <span className="font-medium text-ha-text">{backfillStatus.running ? "Yes" : "No"}</span>
             </div>
             <div className="flex items-center justify-between text-[13px]">
-              <span className="text-[#334855]">Batch size</span>
-              <span className="font-medium text-[#111]">{backfillStatus.batchSize}</span>
+              <span className="text-ha-text-secondary">Batch size</span>
+              <span className="font-medium text-ha-text">{backfillStatus.batchSize}</span>
             </div>
             <div className="flex items-center justify-between text-[13px]">
-              <span className="text-[#334855]">Total updated</span>
-              <span className="font-medium text-[#111]">{backfillStatus.cumulativeUpdates}</span>
+              <span className="text-ha-text-secondary">Total updated</span>
+              <span className="font-medium text-ha-text">{backfillStatus.cumulativeUpdates}</span>
             </div>
             <div className="flex items-center justify-between text-[13px]">
-              <span className="text-[#334855]">Enabled sources</span>
-              <span className="font-medium text-[#111] text-right max-w-[60%] truncate">{(backfillStatus.enabledSources || []).join(", ") || "—"}</span>
+              <span className="text-ha-text-secondary">Enabled sources</span>
+              <span className="font-medium text-ha-text text-right max-w-[60%] truncate">{(backfillStatus.enabledSources || []).join(", ") || "—"}</span>
             </div>
             {backfillStatus.lastRun && (
               <>
                 <div className="border-t border-[#F7F7F7] pt-2 mt-2">
-                  <p className="text-[12px] text-[#334855] font-medium mb-1">Last run</p>
-                  <p className="text-[13px] text-[#111]">{new Date(backfillStatus.lastRun.timestamp).toLocaleString()}</p>
-                  <p className="text-[11px] text-[#334855]">{backfillStatus.lastRun.duration_ms}ms · {backfillStatus.lastRun.updated} updated · {backfillStatus.lastRun.failed} failed</p>
+                  <p className="text-[12px] text-ha-text-secondary font-medium mb-1">Last run</p>
+                  <p className="text-[13px] text-ha-text">{new Date(backfillStatus.lastRun.timestamp).toLocaleString()}</p>
+                  <p className="text-[11px] text-ha-text-secondary">{backfillStatus.lastRun.duration_ms}ms · {backfillStatus.lastRun.updated} updated · {backfillStatus.lastRun.failed} failed</p>
                 </div>
               </>
             )}
@@ -1413,13 +1413,13 @@ function SystemTab() {
           {backfillStatus.recentRuns && backfillStatus.recentRuns.length > 0 && (
             <div className={`${CARD} mt-3 divide-y divide-[#F7F7F7]`}>
               <div className="px-4 py-2">
-                <p className="text-[12px] font-semibold text-[#334855] uppercase tracking-wider">Recent backfill runs</p>
+                <p className="text-[12px] font-semibold text-ha-text-secondary uppercase tracking-wider">Recent backfill runs</p>
               </div>
               {backfillStatus.recentRuns.slice(0, 5).map((run: any, i: number) => (
                 <div key={i} className="px-4 py-2.5 flex items-center justify-between text-[12px]">
-                  <span className="text-[#334855]">{new Date(run.started_at).toLocaleString()}</span>
+                  <span className="text-ha-text-secondary">{new Date(run.started_at).toLocaleString()}</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-[#111] font-medium">{run.updated}/{run.total}</span>
+                    <span className="text-ha-text font-medium">{run.updated}/{run.total}</span>
                     <StatusBadge status={run.status || (run.updated > 0 ? "success" : "warning")} />
                   </div>
                 </div>
@@ -1429,12 +1429,12 @@ function SystemTab() {
 
           {backfillStatus.recoveryStats && (
             <div className={`${CARD} mt-3 p-4`}>
-              <p className="text-[12px] font-semibold text-[#334855] uppercase tracking-wider mb-2">Recovery stats</p>
+              <p className="text-[12px] font-semibold text-ha-text-secondary uppercase tracking-wider mb-2">Recovery stats</p>
               <div className="space-y-2 text-[13px]">
                 {Object.entries(backfillStatus.recoveryStats).map(([key, val]: [string, any]) => (
                   <div key={key} className="flex justify-between">
-                    <span className="text-[#334855]">{key}</span>
-                    <span className="font-medium text-[#111]">{typeof val === "object" ? JSON.stringify(val) : String(val)}</span>
+                    <span className="text-ha-text-secondary">{key}</span>
+                    <span className="font-medium text-ha-text">{typeof val === "object" ? JSON.stringify(val) : String(val)}</span>
                   </div>
                 ))}
               </div>
@@ -1452,10 +1452,10 @@ function SystemTab() {
               const info = labels[key] || { name: key, desc: "" };
               return (
                 <div key={key} className="flex items-center gap-3 px-4 py-3.5" data-testid={`status-${key}`}>
-                  <Icon className="w-5 h-5 text-[#111] flex-shrink-0" />
+                  <Icon className="w-5 h-5 text-ha-text flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-semibold text-[#111]">{info.name}</p>
-                    <p className="text-[11px] text-[#334855] truncate">{val.message}</p>
+                    <p className="text-[13px] font-semibold text-ha-text">{info.name}</p>
+                    <p className="text-[11px] text-ha-text-secondary truncate">{val.message}</p>
                   </div>
                   <StatusBadge status={val.status} />
                 </div>
@@ -1533,9 +1533,9 @@ function AlertsTab() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-[24px] font-bold text-[#111]">Alert Control</h1>
-        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-[#F7F7F7] flex items-center justify-center hover:bg-[#EFEFEF]" data-testid="button-refresh-alerts">
-          <RefreshCw className={`w-4 h-4 text-[#334855] ${refreshing ? "animate-spin" : ""}`} />
+        <h1 className="text-[24px] font-bold text-ha-text">Alert Control</h1>
+        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-ha-hover-bg flex items-center justify-center hover:bg-[#EFEFEF]" data-testid="button-refresh-alerts">
+          <RefreshCw className={`w-4 h-4 text-ha-text-secondary ${refreshing ? "animate-spin" : ""}`} />
         </button>
       </div>
 
@@ -1549,19 +1549,19 @@ function AlertsTab() {
       )}
 
       <div className={`${CARD} p-5`}>
-        <h3 className="text-[15px] font-semibold text-[#111] mb-3">Send test alert</h3>
+        <h3 className="text-[15px] font-semibold text-ha-text mb-3">Send test alert</h3>
         <div className="space-y-3">
           <div className="flex gap-2">
             {(["email", "push"] as const).map(t => (
-              <button key={t} onClick={() => setTestType(t)} className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-colors ${testType === t ? "bg-[#111] text-white" : "bg-white text-[#334855] border border-[#F0F0F0]"}`} data-testid={`test-type-${t}`}>
+              <button key={t} onClick={() => setTestType(t)} className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-colors ${testType === t ? "bg-[#111] text-white" : "bg-white text-ha-text-secondary border border-ha-divider"}`} data-testid={`test-type-${t}`}>
                 {t === "email" ? "Email" : "Push"}
               </button>
             ))}
           </div>
           {testType === "email" ? (
-            <input placeholder="Target email (blank = admin)" value={testEmail} onChange={e => setTestEmail(e.target.value)} className="w-full h-10 px-4 rounded-xl bg-[#F7F7F7] text-[13px] text-[#111] placeholder:text-[#334855] focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-test-email" />
+            <input placeholder="Target email (blank = admin)" value={testEmail} onChange={e => setTestEmail(e.target.value)} className="w-full h-10 px-4 rounded-xl bg-ha-hover-bg text-[13px] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-test-email" />
           ) : (
-            <input placeholder="Target user ID (blank = admin)" value={testUserId} onChange={e => setTestUserId(e.target.value)} className="w-full h-10 px-4 rounded-xl bg-[#F7F7F7] text-[13px] text-[#111] placeholder:text-[#334855] focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-test-userid" />
+            <input placeholder="Target user ID (blank = admin)" value={testUserId} onChange={e => setTestUserId(e.target.value)} className="w-full h-10 px-4 rounded-xl bg-ha-hover-bg text-[13px] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-test-userid" />
           )}
           <div className="flex items-center gap-3">
             <Button size="sm" onClick={sendTestAlert} disabled={sending} className="rounded-full bg-ha-primary hover:bg-ha-primary/90 text-white" data-testid="button-send-test">
@@ -1573,10 +1573,10 @@ function AlertsTab() {
       </div>
 
       <div className={`${CARD} p-5`}>
-        <h3 className="text-[15px] font-semibold text-[#111] mb-3">Resend matches to user</h3>
-        <p className="text-[12px] text-[#334855] mb-3">Re-deliver undelivered matches for a specific user via email.</p>
+        <h3 className="text-[15px] font-semibold text-ha-text mb-3">Resend matches to user</h3>
+        <p className="text-[12px] text-ha-text-secondary mb-3">Re-deliver undelivered matches for a specific user via email.</p>
         <div className="flex gap-2">
-          <input placeholder="User ID" value={resendUserId} onChange={e => setResendUserId(e.target.value)} className="flex-1 h-10 px-4 rounded-xl bg-[#F7F7F7] text-[13px] text-[#111] placeholder:text-[#334855] focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-resend-userid" />
+          <input placeholder="User ID" value={resendUserId} onChange={e => setResendUserId(e.target.value)} className="flex-1 h-10 px-4 rounded-xl bg-ha-hover-bg text-[13px] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-resend-userid" />
           <Button size="sm" onClick={resendMatches} disabled={resending || !resendUserId} className="rounded-full bg-ha-primary hover:bg-ha-primary/90 text-white" data-testid="button-resend">
             <RotateCw className={`w-3.5 h-3.5 mr-1 ${resending ? "animate-spin" : ""}`} /> {resending ? "Sending..." : "Resend"}
           </Button>
@@ -1588,17 +1588,17 @@ function AlertsTab() {
         <SectionHeader title="Recent alert activity" />
         <div className={`${CARD} divide-y divide-[#F7F7F7]`}>
           {activity.length === 0 ? (
-            <div className="px-4 py-8 text-center text-[13px] text-[#334855]">No recent activity</div>
+            <div className="px-4 py-8 text-center text-[13px] text-ha-text-secondary">No recent activity</div>
           ) : activity.map((a, i) => (
             <div key={i} className="px-4 py-3 flex items-center gap-3" data-testid={`activity-row-${i}`}>
-              {a.channel === "email" ? <Mail className="w-4 h-4 text-[#334855] flex-shrink-0" /> : <Smartphone className="w-4 h-4 text-[#334855] flex-shrink-0" />}
+              {a.channel === "email" ? <Mail className="w-4 h-4 text-ha-text-secondary flex-shrink-0" /> : <Smartphone className="w-4 h-4 text-ha-text-secondary flex-shrink-0" />}
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-medium text-[#111] truncate">{a.title}</p>
-                <p className="text-[11px] text-[#334855] truncate">{a.email || a.userId?.substring(0, 8)}</p>
+                <p className="text-[13px] font-medium text-ha-text truncate">{a.title}</p>
+                <p className="text-[11px] text-ha-text-secondary truncate">{a.email || a.userId?.substring(0, 8)}</p>
               </div>
               <div className="text-right flex-shrink-0">
                 <Badge variant="secondary" className="text-[9px]">{a.channel}</Badge>
-                <p className="text-[10px] text-[#334855] mt-0.5">{a.emailSentAt ? new Date(a.emailSentAt).toLocaleString() : a.pushSentAt ? new Date(a.pushSentAt).toLocaleString() : ""}</p>
+                <p className="text-[10px] text-ha-text-secondary mt-0.5">{a.emailSentAt ? new Date(a.emailSentAt).toLocaleString() : a.pushSentAt ? new Date(a.pushSentAt).toLocaleString() : ""}</p>
               </div>
             </div>
           ))}
@@ -1639,19 +1639,19 @@ function SettingsTab() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-[24px] font-bold text-[#111]">Revenue Settings</h1>
+      <h1 className="text-[24px] font-bold text-ha-text">Revenue Settings</h1>
 
       <div className={`${CARD} p-5`}>
-        <h3 className="text-[15px] font-semibold text-[#111] mb-1">Paywall behavior</h3>
-        <p className="text-[12px] text-[#334855] mb-4">Control what free/expired users see in the app.</p>
+        <h3 className="text-[15px] font-semibold text-ha-text mb-1">Paywall behavior</h3>
+        <p className="text-[12px] text-ha-text-secondary mb-4">Control what free/expired users see in the app.</p>
 
         <div className="space-y-4">
           <div>
-            <label className="text-[12px] font-medium text-[#334855] mb-1.5 block">Free matches limit</label>
-            <p className="text-[11px] text-[#334855] mb-1.5">Number of matches a free user can see before the paywall appears.</p>
+            <label className="text-[12px] font-medium text-ha-text-secondary mb-1.5 block">Free matches limit</label>
+            <p className="text-[11px] text-ha-text-secondary mb-1.5">Number of matches a free user can see before the paywall appears.</p>
             <div className="flex gap-2">
               {["0", "1", "3", "5", "10"].map(v => (
-                <button key={v} onClick={() => setSettings(s => ({ ...s, free_matches_limit: v }))} className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-colors ${settings.free_matches_limit === v ? "bg-[#111] text-white" : "bg-white text-[#334855] border border-[#F0F0F0]"}`} data-testid={`setting-limit-${v}`}>
+                <button key={v} onClick={() => setSettings(s => ({ ...s, free_matches_limit: v }))} className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-colors ${settings.free_matches_limit === v ? "bg-[#111] text-white" : "bg-white text-ha-text-secondary border border-ha-divider"}`} data-testid={`setting-limit-${v}`}>
                   {v === "0" ? "None" : v}
                 </button>
               ))}
@@ -1659,7 +1659,7 @@ function SettingsTab() {
                 type="number"
                 value={settings.free_matches_limit || "3"}
                 onChange={e => setSettings(s => ({ ...s, free_matches_limit: e.target.value }))}
-                className="w-16 h-8 px-3 rounded-lg bg-[#F7F7F7] text-[13px] text-center focus:outline-none"
+                className="w-16 h-8 px-3 rounded-lg bg-ha-hover-bg text-[13px] text-center focus:outline-none"
                 min="0"
                 data-testid="input-free-limit"
               />
@@ -1669,13 +1669,13 @@ function SettingsTab() {
           <div className="pt-3 border-t border-[#F7F7F7]">
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-[12px] font-medium text-[#334855] block">Show blurred locked matches</label>
-                <p className="text-[11px] text-[#334855]">When enabled, free users see blurred match previews behind the paywall.</p>
+                <label className="text-[12px] font-medium text-ha-text-secondary block">Show blurred locked matches</label>
+                <p className="text-[11px] text-ha-text-secondary">When enabled, free users see blurred match previews behind the paywall.</p>
               </div>
               <button onClick={() => setSettings(s => ({ ...s, show_blurred_locked: s.show_blurred_locked === "true" ? "false" : "true" }))} data-testid="toggle-blurred">
                 {settings.show_blurred_locked === "true"
                   ? <ToggleRight className="w-8 h-8 text-ha-primary" />
-                  : <ToggleLeft className="w-8 h-8 text-[#D1D5DB]" />
+                  : <ToggleLeft className="w-8 h-8 text-ha-border-input" />
                 }
               </button>
             </div>
@@ -1684,12 +1684,12 @@ function SettingsTab() {
       </div>
 
       <div className={`${CARD} p-5`}>
-        <h3 className="text-[15px] font-semibold text-[#111] mb-1">Current values</h3>
+        <h3 className="text-[15px] font-semibold text-ha-text mb-1">Current values</h3>
         <div className="space-y-2 mt-3">
           {Object.entries(settings).map(([key, value]) => (
             <div key={key} className="flex justify-between text-[13px]">
-              <span className="text-[#334855] font-mono text-[12px]">{key}</span>
-              <span className="font-medium text-[#111]">{value}</span>
+              <span className="text-ha-text-secondary font-mono text-[12px]">{key}</span>
+              <span className="font-medium text-ha-text">{value}</span>
             </div>
           ))}
         </div>
@@ -1735,14 +1735,14 @@ export default function AdminPortalPage() {
       });
   }, [user]);
 
-  if (checking) return <div className="min-h-screen bg-[#eaeaeb] flex items-center justify-center"><Loader2 className="w-7 h-7 text-ha-primary animate-spin" /></div>;
+  if (checking) return <div className="min-h-screen bg-ha-bg flex items-center justify-center"><Loader2 className="w-7 h-7 text-ha-primary animate-spin" /></div>;
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#eaeaeb] flex items-center justify-center px-5">
+      <div className="min-h-screen bg-ha-bg flex items-center justify-center px-5">
         <div className="text-center max-w-sm">
-          <h1 className="text-[20px] font-bold text-[#111] mb-2">Not authenticated</h1>
-          <p className="text-[13px] text-[#334855] mb-4">Please log in to access the admin portal.</p>
+          <h1 className="text-[20px] font-bold text-ha-text mb-2">Not authenticated</h1>
+          <p className="text-[13px] text-ha-text-secondary mb-4">Please log in to access the admin portal.</p>
           <Button onClick={() => navigate("/")} className="rounded-full" data-testid="button-login">Go to login</Button>
         </div>
       </div>
@@ -1755,17 +1755,17 @@ export default function AdminPortalPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#eaeaeb] flex">
+    <div className="min-h-screen bg-ha-bg flex">
       {sidebarOpen && (
         <div className="fixed inset-0 bg-black/30 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
-      <aside className={`fixed lg:sticky top-0 left-0 z-50 h-screen w-[240px] bg-white border-r border-[#F0F0F0] flex flex-col transition-transform lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
-        <div className="px-5 h-[60px] flex items-center gap-3 border-b border-[#F0F0F0]">
+      <aside className={`fixed lg:sticky top-0 left-0 z-50 h-screen w-[240px] bg-white border-r border-ha-divider flex flex-col transition-transform lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
+        <div className="px-5 h-[60px] flex items-center gap-3 border-b border-ha-divider">
           <HousAlertLogo size={26} />
-          <span className="text-[15px] font-bold text-[#111]">Admin</span>
-          <button onClick={() => setSidebarOpen(false)} className="ml-auto lg:hidden w-8 h-8 flex items-center justify-center rounded-lg hover:bg-[#F7F7F7]">
-            <X className="w-4 h-4 text-[#334855]" />
+          <span className="text-[15px] font-bold text-ha-text">Admin</span>
+          <button onClick={() => setSidebarOpen(false)} className="ml-auto lg:hidden w-8 h-8 flex items-center justify-center rounded-lg hover:bg-ha-hover-bg">
+            <X className="w-4 h-4 text-ha-text-secondary" />
           </button>
         </div>
 
@@ -1776,7 +1776,7 @@ export default function AdminPortalPage() {
               <button
                 key={id}
                 onClick={() => { setActiveTab(id); setSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium mb-0.5 transition-colors ${active ? "bg-[#F7F7F7] text-[#111]" : "text-[#334855] hover:bg-[#eaeaeb] hover:text-[#111]"}`}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium mb-0.5 transition-colors ${active ? "bg-ha-hover-bg text-ha-text" : "text-ha-text-secondary hover:bg-ha-bg hover:text-ha-text"}`}
                 data-testid={`nav-${id}`}
               >
                 <Icon className={`w-[18px] h-[18px] ${active ? "text-ha-primary" : ""}`} />
@@ -1786,10 +1786,10 @@ export default function AdminPortalPage() {
           })}
         </nav>
 
-        <div className="px-3 py-3 border-t border-[#F0F0F0]">
+        <div className="px-3 py-3 border-t border-ha-divider">
           <button
             onClick={() => navigate("/")}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-[#334855] hover:bg-[#eaeaeb] hover:text-[#111] transition-colors"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-ha-text-secondary hover:bg-ha-bg hover:text-ha-text transition-colors"
             data-testid="link-back-app"
           >
             <ArrowLeft className="w-[18px] h-[18px]" />
@@ -1799,15 +1799,15 @@ export default function AdminPortalPage() {
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-[60px] bg-white border-b border-[#F0F0F0] flex items-center px-5 sticky top-0 z-30 lg:hidden">
-          <button onClick={() => setSidebarOpen(true)} className="w-9 h-9 rounded-lg bg-[#F7F7F7] flex items-center justify-center mr-3" data-testid="button-menu">
-            <Menu className="w-5 h-5 text-[#111]" />
+        <header className="h-[60px] bg-white border-b border-ha-divider flex items-center px-5 sticky top-0 z-30 lg:hidden">
+          <button onClick={() => setSidebarOpen(true)} className="w-9 h-9 rounded-lg bg-ha-hover-bg flex items-center justify-center mr-3" data-testid="button-menu">
+            <Menu className="w-5 h-5 text-ha-text" />
           </button>
           <HousAlertLogo size={24} />
-          <span className="text-[14px] font-bold text-[#111] ml-2">Admin</span>
+          <span className="text-[14px] font-bold text-ha-text ml-2">Admin</span>
           <button
             onClick={() => navigate("/")}
-            className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold text-[#334855] bg-[#F7F7F7] hover:bg-[#F0F0F0] active:scale-[0.97] transition-all"
+            className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold text-ha-text-secondary bg-ha-hover-bg hover:bg-ha-divider active:scale-[0.97] transition-all"
             data-testid="link-back-app-mobile"
           >
             <ArrowLeft className="w-3.5 h-3.5" />

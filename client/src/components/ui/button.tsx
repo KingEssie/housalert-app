@@ -15,9 +15,9 @@ const buttonVariants = cva(
           "bg-destructive text-destructive-foreground border border-destructive-border",
         outline:
           "border-2 border-ha-primary bg-white text-ha-primary hover:bg-ha-primary/5",
-        secondary: "border border-[#E5E7EB] bg-white text-ha-text hover:bg-ha-surface-hover",
-        ghost: "border border-transparent hover:bg-ha-surface-hover",
-        banner: "bg-white text-ha-text hover:bg-ha-surface-hover border-0 font-medium",
+        secondary: "border border-ha-card-border bg-white text-ha-text hover:bg-ha-surface",
+        ghost: "border border-transparent hover:bg-ha-surface",
+        banner: "bg-white text-ha-text hover:bg-ha-surface border-0 font-medium",
       },
       size: {
         default: "min-h-[48px] px-7 py-3",

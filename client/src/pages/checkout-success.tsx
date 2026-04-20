@@ -116,7 +116,7 @@ export default function CheckoutSuccessPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#eaeaeb] flex items-center justify-center px-5" data-testid="page-checkout-success">
+    <div className="min-h-screen bg-ha-bg flex items-center justify-center px-5" data-testid="page-checkout-success">
       <div className="text-center max-w-sm">
         <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: status === "error" ? "#FEE2E2" : "rgba(217,26,104,0.08)" }}>
           {status === "loading" && <Loader2 className="w-8 h-8 animate-spin" style={{ color: "rgb(var(--ha-primary))" }} />}
@@ -124,13 +124,13 @@ export default function CheckoutSuccessPage() {
           {status === "error" && <AlertCircle className="w-8 h-8 text-red-500" />}
         </div>
 
-        <h1 className="text-[30px] font-semibold text-[#111] mb-2" data-testid="text-checkout-title">
+        <h1 className="text-[30px] font-semibold text-ha-text mb-2" data-testid="text-checkout-title">
           {status === "loading" && t("checkoutSuccess.loading")}
           {status === "success" && t("checkoutSuccess.success")}
           {status === "error" && t("checkoutSuccess.error")}
         </h1>
 
-        <p className="text-[15px] text-[#334855]" data-testid="text-checkout-subtitle">
+        <p className="text-[15px] text-ha-text-secondary" data-testid="text-checkout-subtitle">
           {status === "loading" && t("checkoutSuccess.loadingSubtitle")}
           {status === "success" && t("checkoutSuccess.successSubtitle")}
           {status === "error" && errorMsg}
@@ -149,7 +149,7 @@ export default function CheckoutSuccessPage() {
             </button>
             <button
               onClick={() => navigate("/home")}
-              className="h-[44px] rounded-[10px] text-[15px] font-medium text-[#334855] hover:bg-[#F9FAFB] transition-colors"
+              className="h-[44px] rounded-[10px] text-[15px] font-medium text-ha-text-secondary hover:bg-ha-surface transition-colors"
               data-testid="button-go-home"
             >
               {t("checkoutSuccess.goToApp")}

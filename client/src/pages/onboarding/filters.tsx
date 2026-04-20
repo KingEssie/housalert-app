@@ -37,12 +37,12 @@ function WebToggle({
   return (
     <label
       className="flex items-center gap-3 cursor-pointer h-[52px] px-4 rounded-[10px]"
-      style={noBorder ? {} : { border: "1px solid #E8EAED" }}
+      style={noBorder ? {} : { border: "1px solid rgb(var(--ha-card-border))" }}
       data-testid={testId}
     >
       <div
         className="w-[44px] h-[26px] rounded-full p-[3px] transition-colors shrink-0 flex items-center"
-        style={{ backgroundColor: checked ? "#111111" : "#E5E7EB" }}
+        style={{ backgroundColor: checked ? "rgb(var(--ha-text))" : "rgb(var(--ha-card-border))" }}
         onClick={(e) => { e.preventDefault(); onChange(!checked); }}
       >
         <div
@@ -74,7 +74,7 @@ function WebSelect({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className="w-full ha-select-web"
-      style={{ borderColor: "#C4C8CE", color: "#111111", backgroundColor: "#ffffff" }}
+      style={{ borderColor: "rgb(var(--ha-border-input))", color: "rgb(var(--ha-text))", backgroundColor: "rgb(var(--ha-card))" }}
       data-testid={testId}
     >
       {options.map((opt) => (
@@ -105,9 +105,9 @@ function WebPillGroup({
             onClick={() => onChange(opt.value)}
             className="h-[40px] px-5 rounded-full text-[14px] font-medium border transition-all active:scale-[0.96]"
             style={{
-              backgroundColor: active ? "rgb(var(--ha-primary))" : "#F9FAFB",
-              borderColor: active ? "rgb(var(--ha-primary))" : "#E5E7EB",
-              color: active ? "#fff" : "#334855",
+              backgroundColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-surface))",
+              borderColor: "rgb(var(--ha-card-border))",
+              color: active ? "white" : "rgb(var(--ha-text-secondary))",
             }}
             data-testid={`${testId}-${opt.value}`}
           >
@@ -144,8 +144,8 @@ function SegmentedControl({
             onClick={() => onChange(opt.value)}
             className={`px-3.5 py-[6px] text-[13px] rounded-full border transition-all duration-200 active:scale-[0.96] ${
               isActive
-                ? "bg-[#111111] text-white font-semibold border-[#111111]"
-                : "bg-[#F3F4F6] text-[#111111] font-medium border-transparent"
+                ? "bg-ha-text text-white font-semibold border-ha-text"
+                : "bg-ha-surface text-ha-text font-medium border-transparent"
             }`}
             data-testid={`${testId}-${opt.value}`}
           >
@@ -175,7 +175,7 @@ function Toggle({
     <label className="flex items-center gap-3 cursor-pointer" data-testid={testId}>
       <div
         className="w-[44px] h-[24px] rounded-full p-[2px] transition-colors shrink-0"
-        style={{ backgroundColor: checked ? OB.pink : "#E5E7EB" }}
+        style={{ backgroundColor: checked ? OB.pink : "rgb(var(--ha-card-border))" }}
         onClick={() => onChange(!checked)}
       >
         <div
@@ -210,7 +210,7 @@ function RangeSlider({
   extraClass?: string;
 }) {
   const t = theme || OB;
-  const trackInactive = "#E5E7EB";
+  const trackInactive = "rgb(var(--ha-card-border))";
   const pct = ((value - min) / (max - min)) * 100;
   return (
     <div data-testid={testId}>
@@ -261,7 +261,7 @@ function DualRangeSlider({
   extraClass?: string;
 }) {
   const t = theme || OB;
-  const trackInactive = "#E5E7EB";
+  const trackInactive = "rgb(var(--ha-card-border))";
   const pctLow = ((valueLow - min) / (max - min)) * 100;
   const pctHigh = ((valueHigh - min) / (max - min)) * 100;
   const trackBg = `linear-gradient(to right, ${trackInactive} 0%, ${trackInactive} ${pctLow}%, ${OB.pink} ${pctLow}%, ${OB.pink} ${pctHigh}%, ${trackInactive} ${pctHigh}%, ${trackInactive} 100%)`;
@@ -627,8 +627,8 @@ export default function OnboardingFilters() {
                 onClick={() => update({ minRooms: opt.value })}
                 className="h-[40px] px-4 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96] shrink-0"
                 style={{
-                  backgroundColor: active ? "rgb(var(--ha-primary))" : "#F3F4F6",
-                  color: active ? "#fff" : T.textSecondary,
+                  backgroundColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-surface))",
+                  color: active ? "white" : T.textSecondary,
                 }}
                 data-testid={`rooms-${opt.value}`}
               >
@@ -705,7 +705,7 @@ export default function OnboardingFilters() {
                 style={{
                   backgroundColor: active ? OB.pink : "transparent",
                   borderColor: active ? OB.pink : T.cardBorder,
-                  color: active ? "#fff" : T.textSecondary,
+                  color: active ? "white" : T.textSecondary,
                 }}
                 data-testid={`amenity-${value}`}
               >
@@ -736,18 +736,18 @@ export default function OnboardingFilters() {
     return (
       <div
         className="min-h-[100dvh] flex flex-col"
-        style={{ background: "#ffffff" }}
+        style={{ background: "rgb(var(--ha-card))" }}
         data-testid="screen-onboarding-filters"
       >
         {/* Header: badge | centered title | close — matches 2/4 exactly */}
         <header
           className="sticky top-0 z-20 w-full"
-          style={{ backgroundColor: "#ffffff", borderBottom: `1px solid ${OBW.headerBorder}` }}
+          style={{ backgroundColor: "rgb(var(--ha-card))", borderBottom: `1px solid ${OBW.headerBorder}` }}
         >
           <div className="relative max-w-[480px] mx-auto px-4 h-[56px] flex items-center justify-between">
             <span
               className="text-[14px] font-bold rounded-[10px] shrink-0 flex items-center px-3.5"
-              style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "#ffffff" }}
+              style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "white" }}
               data-testid="badge-step"
             >
               2/4
@@ -761,7 +761,7 @@ export default function OnboardingFilters() {
             <button
               onClick={handleClose}
               className="w-[36px] h-[36px] shrink-0 flex items-center justify-center rounded-full transition-opacity hover:opacity-70 active:opacity-50"
-              style={{ backgroundColor: "#F2F2F2", color: "#444444" }}
+              style={{ backgroundColor: "rgb(var(--ha-surface))", color: "rgb(var(--ha-text-muted))" }}
               data-testid="button-filters-close"
             >
               <X className="w-[22px] h-[22px]" />
@@ -791,7 +791,7 @@ export default function OnboardingFilters() {
                     <div
                       className="absolute left-0 top-[22px] z-20 w-[210px] rounded-[10px] px-3 py-2.5"
                       style={{
-                        backgroundColor: "#ffffff",
+                        backgroundColor: "rgb(var(--ha-card))",
                         border: `1px solid ${OBW.cardBorder}`,
                         boxShadow: "0 4px 14px rgba(0,0,0,0.09)",
                       }}
@@ -826,7 +826,7 @@ export default function OnboardingFilters() {
               </div>
             </section>
 
-            <div className="h-px bg-[#F0F0F0]" />
+            <div className="h-px bg-ha-divider" />
 
             {/* Soort woning */}
             <section>
@@ -835,7 +835,7 @@ export default function OnboardingFilters() {
               </label>
               <div
                 className="flex items-center gap-[4px] p-[4px] rounded-full"
-                style={{ backgroundColor: "#F0F4F8" }}
+                style={{ backgroundColor: "rgb(var(--ha-toggle-bg))" }}
                 data-testid="property-type"
               >
                 {PROPERTY_OPTIONS.map((opt) => {
@@ -847,7 +847,7 @@ export default function OnboardingFilters() {
                       className="flex-1 py-[8px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
                       style={{
                         backgroundColor: isActive ? "rgb(var(--ha-primary))" : "transparent",
-                        color: isActive ? "#ffffff" : "#111111",
+                        color: isActive ? "white" : "rgb(var(--ha-text))",
                       }}
                       data-testid={`property-type-${opt.value}`}
                     >
@@ -866,7 +866,7 @@ export default function OnboardingFilters() {
               </div>
             </section>
 
-            <div className="h-px bg-[#F0F0F0]" />
+            <div className="h-px bg-ha-divider" />
 
             {/* Slaapkamers */}
             <section>
@@ -882,8 +882,8 @@ export default function OnboardingFilters() {
                       onClick={() => update({ minRooms: opt.value })}
                       className="py-[8px] px-4 text-[12px] font-semibold rounded-full whitespace-nowrap shrink-0 transition-all active:scale-[0.96]"
                       style={{
-                        backgroundColor: active ? "rgb(var(--ha-primary))" : "#F0F4F8",
-                        color: active ? "#ffffff" : "#111111",
+                        backgroundColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-toggle-bg))",
+                        color: active ? "white" : "rgb(var(--ha-text))",
                       }}
                       data-testid={`rooms-${opt.value}`}
                     >
@@ -894,7 +894,7 @@ export default function OnboardingFilters() {
               </div>
             </section>
 
-            <div className="h-px bg-[#F0F0F0]" />
+            <div className="h-px bg-ha-divider" />
 
             {/* Minimale oppervlakte */}
             <section>
@@ -906,7 +906,7 @@ export default function OnboardingFilters() {
                   onClick={() => update({ sizeNA: !f.sizeNA, minSize: f.sizeNA ? 30 : 0 })}
                   className="text-[12px] font-semibold px-3 py-[5px] rounded-full border transition-all"
                   style={{
-                    borderColor: f.sizeNA ? "rgba(217,26,104,0.3)" : "#E5E7EB",
+                    borderColor: "rgb(var(--ha-card-border))",
                     backgroundColor: f.sizeNA ? "rgba(217,26,104,0.06)" : "transparent",
                     color: f.sizeNA ? "rgb(var(--ha-primary))" : OBW.textSecondary,
                   }}
@@ -929,7 +929,7 @@ export default function OnboardingFilters() {
               )}
             </section>
 
-            <div className="h-px bg-[#F0F0F0]" />
+            <div className="h-px bg-ha-divider" />
 
             {/* Gemeubileerd */}
             <section>
@@ -938,7 +938,7 @@ export default function OnboardingFilters() {
               </label>
               <div
                 className="flex items-center gap-[4px] p-[4px] rounded-full"
-                style={{ backgroundColor: "#F0F4F8" }}
+                style={{ backgroundColor: "rgb(var(--ha-toggle-bg))" }}
                 data-testid="furnished-selector"
               >
                 {FURNISHED_OPTIONS.map((opt) => {
@@ -950,7 +950,7 @@ export default function OnboardingFilters() {
                       className="flex-1 py-[8px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
                       style={{
                         backgroundColor: isActive ? "rgb(var(--ha-primary))" : "transparent",
-                        color: isActive ? "#ffffff" : "#111111",
+                        color: isActive ? "white" : "rgb(var(--ha-text))",
                       }}
                       data-testid={`furnished-selector-${opt.value}`}
                     >
@@ -961,7 +961,7 @@ export default function OnboardingFilters() {
               </div>
             </section>
 
-            <div className="h-px bg-[#F0F0F0]" />
+            <div className="h-px bg-ha-divider" />
 
             {/* Overige wensen — pill chips */}
             <section>
@@ -979,7 +979,7 @@ export default function OnboardingFilters() {
                       style={{
                         backgroundColor: active ? "rgb(var(--ha-primary))" : "transparent",
                         borderColor: active ? "rgb(var(--ha-primary))" : OBW.chipBorder,
-                        color: active ? "#fff" : OBW.textSecondary,
+                        color: active ? "white" : OBW.textSecondary,
                       }}
                       data-testid={`amenity-${value}`}
                     >
@@ -995,7 +995,7 @@ export default function OnboardingFilters() {
               </div>
             </section>
 
-            <div className="h-px bg-[#F0F0F0]" />
+            <div className="h-px bg-ha-divider" />
 
             {/* sendUnclear toggle */}
             <section>

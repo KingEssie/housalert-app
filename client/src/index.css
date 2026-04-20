@@ -8,6 +8,8 @@
   --opaque-button-border-intensity: -8;
   --elevate-1: rgba(0,0,0, .03);
   --elevate-2: rgba(0,0,0, .08);
+
+  /* ── Shadcn compatibility tokens (HSL) ── */
   --background: 240 3% 92%;
   --foreground: 0 0% 7%;
   --border: 220 13% 91%;
@@ -43,53 +45,59 @@
   --chart-4: 0 72% 51%;
   --chart-5: 260 60% 50%;
 
-  --ha-bg: 234 234 235;
-  --ha-card: 255 255 255;
-  --ha-card-border: 229 231 235;
-  --ha-card-hover: 249 250 251;
-  --ha-text: 17 17 17;
-  --ha-text-secondary: 51 72 85;
-  --ha-text-muted: 51 72 85;
-  --ha-primary: 217 26 104;
-  --ha-primary-hover: 179 21 86;
+  /* ── HousAlert semantic color tokens (RGB space-separated) ── */
+
+  /* Brand / Primary */
+  --ha-primary: 217 26 104;           /* #D91A68 */
+  --ha-primary-hover: 179 21 86;      /* #B31556 */
   --ha-primary-light: rgba(217, 26, 104, 0.08);
-  --ha-input-bg: 255 255 255;
-  --ha-input-border: 229 231 235;
-  --ha-highlight: 245 240 235;
-  --ha-highlight-hover: 237 231 225;
-  --ha-surface: 249 250 251;
-  --ha-nav-bg: 255 255 255;
-  --ha-nav-border: 229 231 235;
-  --ha-success: 22 163 74;
+
+  /* Text */
+  --ha-text: 17 17 17;                /* #111111 — primary text */
+  --ha-text-secondary: 51 72 85;      /* #334855 — secondary / labels */
+  --ha-text-muted: 107 114 128;       /* #6B7280 — de-emphasized text */
+  --ha-text-placeholder: 156 163 175; /* #9CA3AF — placeholder / muted icons */
+
+  /* Backgrounds */
+  --ha-bg: 234 234 235;               /* #EAEAEB — page background */
+  --ha-card: 255 255 255;             /* #FFFFFF — card / modal / nav bg */
+  --ha-surface: 249 250 251;          /* #F9FAFB — surface / subtle bg */
+  --ha-hover-bg: 247 247 247;         /* #F7F7F7 — list item hover bg */
+  --ha-toggle-bg: 240 244 248;        /* #F0F4F8 — pill toggle group bg */
+  --ha-highlight: 245 240 235;        /* #F5F0EB — warm highlight surface */
+
+  /* Borders */
+  --ha-card-border: 229 231 235;      /* #E5E7EB — card / nav / standard borders */
+  --ha-border-input: 209 213 219;     /* #D1D5DB — input field borders */
+  --ha-divider: 240 240 240;          /* #F0F0F0 — light section dividers */
+
+  /* Status */
+  --ha-success: 22 163 74;            /* #16A34A */
   --ha-success-light: rgba(22, 163, 74, 0.08);
-  --ha-warning: 245 158 11;
+  --ha-warning: 245 158 11;           /* #F59E0B */
   --ha-warning-light: rgba(245, 158, 11, 0.08);
-  --ha-danger: 220 38 38;
+  --ha-danger: 220 38 38;             /* #DC2626 */
   --ha-danger-light: rgba(220, 38, 38, 0.08);
-  --ha-status-green: 22 163 74;
-  --ha-status-red: 220 38 38;
-  --ha-avatar-purple: 217 26 104;
-  --ha-icon-secondary: 51 72 85;
-  --ha-badge-bg: 249 250 251;
-  --ha-surface-active: 249 250 251;
-  --ha-surface-hover: 249 250 251;
-  --ha-divider: 240 240 240;
-  --ha-overlay: rgba(0, 0, 0, 0.05);
+  --ha-btn-destructive: 239 68 68;    /* #EF4444 — destructive action buttons */
+  --ha-info: 8 145 178;               /* #0891B2 — info / link color */
+
+  /* Misc */
+  --ha-check-unchecked: transparent;
+  --ha-shadow-card: 0 2px 8px rgba(0,0,0,0.04);
+  --ha-shadow-overlay: 0 2px 6px rgba(0,0,0,0.08);
+
+  /* Layout */
   --ha-card-radius: 12px;
   --ha-card-inner-radius: 10px;
   --ha-btn-radius: 10px;
-  --ha-brand-dark: 17 17 17;
-  --ha-brand-dark-hover: 34 34 34;
-  --ha-brand-dark-border: 55 55 55;
-  --ha-profile-header: 17 17 17;
-  --ha-shadow-card: 0 2px 8px rgba(0,0,0,0.04);
-  --ha-shadow-overlay: 0 2px 6px rgba(0,0,0,0.08);
-  --ha-check-unchecked: transparent;
 
+  /* Fonts */
   --font-sans: 'Poppins', 'Inter', system-ui, -apple-system, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Menlo, monospace;
   --radius: 0.375rem;
+
+  /* Shadows */
   --shadow-2xs: 0px 1px 2px 0px rgba(0,0,0,0.03);
   --shadow-xs: 0px 1px 3px 0px rgba(0,0,0,0.04);
   --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
@@ -125,8 +133,8 @@
 
   body {
     @apply font-sans antialiased;
-    background-color: #eaeaeb;
-    color: var(--ha-text);
+    background-color: rgb(var(--ha-bg));
+    color: rgb(var(--ha-text));
   }
 
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]):not([type="submit"]):not([type="reset"]):not([type="button"]):not([role="switch"]),
@@ -148,7 +156,7 @@
   [data-radix-select-trigger]:focus,
   [data-radix-select-trigger]:focus-visible {
     outline: none;
-    border-color: var(--ha-primary) !important;
+    border-color: rgb(var(--ha-primary)) !important;
     box-shadow: 0 0 0 2px rgba(217, 26, 104, 0.25) !important;
   }
 }
@@ -158,7 +166,7 @@
   .text-page-title {
     font-size: 34px;
     font-weight: 600;
-    color: #111111;
+    color: rgb(var(--ha-text));
     line-height: 1.15;
     text-transform: none;
     letter-spacing: -0.025em;
@@ -173,7 +181,7 @@
   .text-section-title {
     font-size: 22px;
     font-weight: 600;
-    color: #111111;
+    color: rgb(var(--ha-text));
     line-height: 1.25;
     letter-spacing: -0.01em;
   }
@@ -181,7 +189,7 @@
   .text-card-title {
     font-size: 20px;
     font-weight: 600;
-    color: #111111;
+    color: rgb(var(--ha-text));
     line-height: 1.35;
     letter-spacing: -0.01em;
   }
@@ -189,70 +197,70 @@
   .text-row-section-title {
     font-size: 13px;
     font-weight: 600;
-    color: #334855;
+    color: rgb(var(--ha-text-secondary));
     line-height: 1.4;
   }
 
   .text-row-title {
     font-size: 17px;
     font-weight: 600;
-    color: #111111;
+    color: rgb(var(--ha-text));
     line-height: 1.4;
   }
 
   .text-row-subtitle {
     font-size: 14px;
     font-weight: 400;
-    color: #334855;
+    color: rgb(var(--ha-text-secondary));
     line-height: 1.5;
   }
 
   .text-subtitle {
     font-size: 14px;
     font-weight: 400;
-    color: #334855;
+    color: rgb(var(--ha-text-secondary));
     line-height: 1.5;
   }
 
   .text-body {
     font-size: 16px;
     font-weight: 400;
-    color: #111111;
+    color: rgb(var(--ha-text));
     line-height: 1.55;
   }
 
   .text-secondary {
     font-size: 14px;
     font-weight: 400;
-    color: #334855;
+    color: rgb(var(--ha-text-secondary));
     line-height: 1.5;
   }
 
   .text-small-label {
     font-size: 12px;
     font-weight: 600;
-    color: #334855;
+    color: rgb(var(--ha-text-secondary));
     line-height: 1.4;
   }
 
   .text-muted-body {
     font-size: 14px;
     font-weight: 400;
-    color: #334855;
+    color: rgb(var(--ha-text-secondary));
     line-height: 1.5;
   }
 
   .text-field-label {
     font-size: 15px;
     font-weight: 600;
-    color: #000000;
+    color: rgb(var(--ha-text));
     line-height: 1.4;
   }
 
   .text-field-value {
     font-size: 16px;
     font-weight: 400;
-    color: #111111;
+    color: rgb(var(--ha-text));
     line-height: 1.4;
   }
 
@@ -273,23 +281,23 @@
   }
 
   .app-card {
-    background: #FFFFFF;
+    background: rgb(var(--ha-card));
     border-radius: 12px;
-    border: 1px solid #E5E7EB;
+    border: 1px solid rgb(var(--ha-card-border));
     padding: 16px;
     box-shadow: var(--ha-shadow-card);
   }
 
   .ha-card {
-    background: #FFFFFF;
+    background: rgb(var(--ha-card));
     border-radius: 12px;
-    border: 1px solid #E5E7EB;
+    border: 1px solid rgb(var(--ha-card-border));
     padding: 20px;
     box-shadow: var(--ha-shadow-card);
   }
 
   .ha-card-inner {
-    background: #F9FAFB;
+    background: rgb(var(--ha-surface));
     border-radius: 10px;
     padding: 14px 16px;
   }
@@ -298,7 +306,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    color: rgb(var(--ha-status-green));
+    color: rgb(var(--ha-success));
   }
   .ha-status-positive svg {
     flex-shrink: 0;
@@ -314,7 +322,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    color: rgb(var(--ha-status-red));
+    color: rgb(var(--ha-danger));
   }
   .ha-status-negative svg {
     flex-shrink: 0;
@@ -327,19 +335,19 @@
   }
 
   .app-input {
-    background: #FFFFFF;
-    border: 1px solid #D1D5DB;
+    background: rgb(var(--ha-card));
+    border: 1px solid rgb(var(--ha-border-input));
     border-radius: 8px;
     height: 56px;
     padding: 12px 16px;
     font-size: 16px;
-    color: #111111;
+    color: rgb(var(--ha-text));
     width: 100%;
     outline: none;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
   .app-input::placeholder {
-    color: #334855;
+    color: rgb(var(--ha-text-secondary));
     opacity: 0.55;
   }
   .app-input:focus {
@@ -347,19 +355,19 @@
     box-shadow: 0 0 0 3px rgba(217, 26, 104, 0.12);
   }
   .app-input:disabled {
-    background: #F9FAFB;
-    color: #334855;
+    background: rgb(var(--ha-surface));
+    color: rgb(var(--ha-text-secondary));
   }
 
   .app-select {
-    background: #FFFFFF;
-    border: 1px solid #D1D5DB;
+    background: rgb(var(--ha-card));
+    border: 1px solid rgb(var(--ha-border-input));
     border-radius: 8px;
     height: 56px;
     padding: 12px 16px;
     padding-right: 40px;
     font-size: 16px;
-    color: #111111;
+    color: rgb(var(--ha-text));
     width: 100%;
     outline: none;
     appearance: none;
@@ -371,19 +379,19 @@
   }
 
   .app-textarea {
-    background: #FFFFFF;
-    border: 1px solid #D1D5DB;
+    background: rgb(var(--ha-card));
+    border: 1px solid rgb(var(--ha-border-input));
     border-radius: 8px;
     padding: 16px;
     font-size: 16px;
-    color: #111111;
+    color: rgb(var(--ha-text));
     width: 100%;
     outline: none;
     resize: vertical;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
   .app-textarea::placeholder {
-    color: #334855;
+    color: rgb(var(--ha-text-secondary));
     opacity: 0.55;
   }
   .app-textarea:focus {
@@ -494,8 +502,8 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #d91a68;
-  border: 3px solid var(--ha-bg);
+  background: rgb(var(--ha-primary));
+  border: 3px solid rgb(var(--ha-bg));
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(217,26,104,0.2);
 }
@@ -503,8 +511,8 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #d91a68;
-  border: 3px solid var(--ha-bg);
+  background: rgb(var(--ha-primary));
+  border: 3px solid rgb(var(--ha-bg));
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(217,26,104,0.2);
 }
@@ -523,7 +531,7 @@ input[type="range"]::-webkit-slider-thumb {
   height: 22px;
   border-radius: 50%;
   background: rgb(var(--ha-primary));
-  border: 3px solid white;
+  border: 3px solid rgb(var(--ha-card));
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
@@ -532,7 +540,7 @@ input[type="range"]::-moz-range-thumb {
   height: 22px;
   border-radius: 50%;
   background: rgb(var(--ha-primary));
-  border: 3px solid white;
+  border: 3px solid rgb(var(--ha-card));
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
@@ -550,12 +558,12 @@ input[type="range"]::-moz-range-thumb {
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 .ha-field-light {
-  background: #ffffff;
-  color: #111111;
-  border-color: #D1D5DB;
+  background: rgb(var(--ha-card));
+  color: rgb(var(--ha-text));
+  border-color: rgb(var(--ha-border-input));
 }
 .ha-field-light::placeholder {
-  color: #334855;
+  color: rgb(var(--ha-text-secondary));
   opacity: 0.55;
 }
 .ha-field-light:focus {
@@ -563,7 +571,7 @@ input[type="range"]::-moz-range-thumb {
   box-shadow: 0 0 0 3px rgba(217,26,104,0.1);
 }
 .ha-field-light:disabled {
-  background: #F9FAFB;
+  background: rgb(var(--ha-surface));
 }
 
 .ha-btn {
@@ -603,7 +611,7 @@ input[type="range"]::-moz-range-thumb {
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 .ha-field-web::placeholder {
-  color: #334855;
+  color: rgb(var(--ha-text-secondary));
   opacity: 0.55;
 }
 .ha-field-web:focus {
@@ -649,7 +657,7 @@ input[type="range"]::-moz-range-thumb {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #ffffff;
+  background: rgb(var(--ha-card));
   border: none;
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
@@ -658,13 +666,13 @@ input[type="range"]::-moz-range-thumb {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #ffffff;
+  background: rgb(var(--ha-card));
   border: none;
   cursor: pointer;
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 .login-input::placeholder {
-  color: #334855;
+  color: rgb(var(--ha-text-secondary));
   opacity: 0.55;
 }
 .no-scrollbar {

@@ -54,7 +54,7 @@ export default function ReferralLandingPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#eaeaeb] flex items-center justify-center">
+      <div className="min-h-screen bg-ha-bg flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin" style={{ color: HA_PRIMARY }} />
       </div>
     );
@@ -72,7 +72,7 @@ export default function ReferralLandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#eaeaeb] flex flex-col" data-testid="page-referral-landing">
+    <div className="min-h-screen bg-ha-bg flex flex-col" data-testid="page-referral-landing">
       <header className="px-5 pt-6 pb-2 flex items-center justify-center">
         <HousAlertLogo size="md" />
       </header>
@@ -80,7 +80,7 @@ export default function ReferralLandingPage() {
       <main className="flex-1 flex flex-col items-center justify-center px-6 max-w-[440px] mx-auto w-full">
         <div className="text-center mb-8">
           <h1
-            className="text-[30px] font-semibold leading-[1.2] text-[#111]"
+            className="text-[30px] font-semibold leading-[1.2] text-ha-text"
             data-testid="text-referral-title"
           >
             {t("referralLanding.title")}
@@ -88,7 +88,7 @@ export default function ReferralLandingPage() {
 
           {info?.firstName && (
             <p
-              className="text-[16px] text-[#334855] mt-3"
+              className="text-[16px] text-ha-text-secondary mt-3"
               data-testid="text-referral-inviter"
             >
               {t("referralLanding.invitedBy", { name: info.firstName })}
@@ -109,10 +109,10 @@ export default function ReferralLandingPage() {
               <Gift className="w-5 h-5" style={{ color: HA_PRIMARY }} />
             </div>
             <div>
-              <p className="text-[16px] font-semibold text-[#111]">
+              <p className="text-[16px] font-semibold text-ha-text">
                 {t("referralLanding.discountTitle")}
               </p>
-              <p className="text-[13px] text-[#334855] mt-0.5">
+              <p className="text-[13px] text-ha-text-secondary mt-0.5">
                 {t("referralLanding.discountSubtitle")}
               </p>
             </div>
@@ -122,10 +122,10 @@ export default function ReferralLandingPage() {
         <div className="w-full space-y-3 mb-8">
           {benefits.map(({ icon: Icon, text }) => (
             <div key={text} className="flex items-center gap-3" data-testid={`benefit-${text.substring(0, 10)}`}>
-              <div className="w-9 h-9 rounded-full bg-[#F7F7F7] flex items-center justify-center flex-shrink-0">
-                <Icon className="w-4 h-4 text-[#111]" />
+              <div className="w-9 h-9 rounded-full bg-ha-hover-bg flex items-center justify-center flex-shrink-0">
+                <Icon className="w-4 h-4 text-ha-text" />
               </div>
-              <span className="text-[15px] text-[#111] font-medium">{text}</span>
+              <span className="text-[15px] text-ha-text font-medium">{text}</span>
             </div>
           ))}
         </div>
@@ -143,13 +143,13 @@ export default function ReferralLandingPage() {
           <ArrowRight className="w-5 h-5" />
         </button>
 
-        <p className="text-[12px] text-[#334855] text-center mt-4">
+        <p className="text-[12px] text-ha-text-secondary text-center mt-4">
           {t("referralLanding.noCard")}
         </p>
       </main>
 
       <footer className="px-6 py-6 text-center">
-        <p className="text-[11px] text-[#334855]">
+        <p className="text-[11px] text-ha-text-secondary">
           © {new Date().getFullYear()} HousAlert · {t("referralLanding.copyright")}
         </p>
       </footer>

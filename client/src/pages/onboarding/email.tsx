@@ -91,7 +91,7 @@ export default function OnboardingEmail() {
               {t("onboarding.email.label")}
             </label>
             <div className="relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#334855" }} />
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "rgb(var(--ha-text-secondary))" }} />
               <input
                 type="email"
                 value={email}
@@ -123,17 +123,17 @@ export default function OnboardingEmail() {
 
   const emailFormContent = (
     <div>
-      <label className="text-[13px] font-medium mb-1.5 block text-[#334855]">
+      <label className="text-[13px] font-medium mb-1.5 block text-ha-text-secondary">
         {t("onboarding.email.label")}
       </label>
       <div className="relative">
-        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
+        <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-secondary" />
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("onboarding.email.placeholder")}
-          className="w-full h-[56px] pl-12 pr-4 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+          className="w-full h-[56px] pl-12 pr-4 rounded-[8px] border border-ha-border-input bg-white text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
           autoFocus
           data-testid="input-email"
         />

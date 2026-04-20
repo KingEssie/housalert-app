@@ -102,56 +102,56 @@ function InlineProfileDetails({ accessToken, userEmail }: { accessToken: string;
     }
   }
 
-  if (loading) return <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-[#334855]" /></div>;
+  if (loading) return <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-ha-text-secondary" /></div>;
 
-  const inputClass = "w-full h-[56px] px-4 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
-  const readonlyClass = "w-full h-[56px] px-4 rounded-[8px] border border-[#D1D5DB] bg-[#F9FAFB] text-[16px] text-[#334855] cursor-not-allowed";
+  const inputClass = "w-full h-[56px] px-4 rounded-[8px] border border-ha-border-input bg-white text-[16px] text-ha-text placeholder:text-ha-text-secondary placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
+  const readonlyClass = "w-full h-[56px] px-4 rounded-[8px] border border-ha-border-input bg-ha-surface text-[16px] text-ha-text-secondary cursor-not-allowed";
   const canSave = firstName.trim() && lastName.trim() && phone.trim();
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 flex flex-col gap-4" data-testid="inline-profile-details">
+    <div className="bg-white rounded-2xl border border-ha-card-border p-5 flex flex-col gap-4" data-testid="inline-profile-details">
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="text-[13px] font-semibold text-[#334855] mb-1.5 block">{t("profileDetails.firstName")}</label>
+          <label className="text-[13px] font-semibold text-ha-text-secondary mb-1.5 block">{t("profileDetails.firstName")}</label>
           <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} placeholder={t("profileEdit.firstNamePlaceholder")} className={inputClass} data-testid="input-first-name" />
         </div>
         <div>
-          <label className="text-[13px] font-semibold text-[#334855] mb-1.5 block">{t("profileDetails.lastName")}</label>
+          <label className="text-[13px] font-semibold text-ha-text-secondary mb-1.5 block">{t("profileDetails.lastName")}</label>
           <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} placeholder={t("profileEdit.lastNamePlaceholder")} className={inputClass} data-testid="input-last-name" />
         </div>
       </div>
       <div>
-        <label className="text-[13px] font-semibold text-[#334855] mb-1.5 block">{t("profileDetails.email")}</label>
+        <label className="text-[13px] font-semibold text-ha-text-secondary mb-1.5 block">{t("profileDetails.email")}</label>
         <div className="relative">
-          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#334855]" />
+          <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-secondary" />
           <input type="email" value={userEmail} readOnly className={`${readonlyClass} pl-10`} data-testid="input-email-readonly" />
         </div>
       </div>
       <div>
-        <label className="text-[13px] font-semibold text-[#334855] mb-1.5 block">{t("profileDetails.phone")}</label>
+        <label className="text-[13px] font-semibold text-ha-text-secondary mb-1.5 block">{t("profileDetails.phone")}</label>
         <div className="relative">
-          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#334855]" />
+          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-secondary" />
           <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} placeholder={t("profileEdit.phonePlaceholder")} className={`${inputClass} pl-10`} data-testid="input-phone" />
         </div>
       </div>
       <div>
-        <label className="text-[13px] font-semibold text-[#334855] mb-1.5 block">{t("profileDetails.birthDate")}</label>
+        <label className="text-[13px] font-semibold text-ha-text-secondary mb-1.5 block">{t("profileDetails.birthDate")}</label>
         <div className="relative">
-          <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#334855]" />
+          <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-secondary" />
           <input type="date" value={birthDate} onChange={e => setBirthDate(e.target.value)} className={`${inputClass} pl-10`} data-testid="input-birth-date" />
         </div>
       </div>
       <div>
-        <label className="text-[13px] font-semibold text-[#334855] mb-1.5 block">{t("profileEdit.occupation")}</label>
+        <label className="text-[13px] font-semibold text-ha-text-secondary mb-1.5 block">{t("profileEdit.occupation")}</label>
         <div className="relative">
-          <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#334855]" />
+          <Briefcase className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text-secondary" />
           <input type="text" value={occupation} onChange={e => setOccupation(e.target.value)} placeholder={t("profileEdit.occupationPlaceholder")} className={`${inputClass} pl-10`} data-testid="input-occupation" />
         </div>
       </div>
       <button
         onClick={handleSave}
         disabled={saving || !canSave}
-        className="w-full h-[50px] rounded-full bg-[#111111] text-white text-[15px] font-semibold hover:bg-[#333333] disabled:opacity-40 transition-colors flex items-center justify-center gap-2 mt-1"
+        className="w-full h-[50px] rounded-full bg-ha-text text-white text-[15px] font-semibold hover:bg-ha-text disabled:opacity-40 transition-colors flex items-center justify-center gap-2 mt-1"
         data-testid="button-save-profile"
       >
         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
@@ -200,14 +200,14 @@ function InlineNotifications({ accessToken }: { accessToken: string }) {
     }
   }
 
-  if (loading) return <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-[#334855]" /></div>;
+  if (loading) return <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-ha-text-secondary" /></div>;
   if (!settings) return null;
 
   const anyEnabled = settings.push_enabled || settings.email_enabled;
 
   return (
     <div data-testid="inline-notifications">
-      <div className="bg-white rounded-2xl border border-[#E5E7EB] overflow-hidden">
+      <div className="bg-white rounded-2xl border border-ha-card-border overflow-hidden">
         <NotifToggleRow
           icon={<Bell className="w-5 h-5 text-ha-primary" />}
           label={t("taskFlow.notif.pushLabel")}
@@ -218,7 +218,7 @@ function InlineNotifications({ accessToken }: { accessToken: string }) {
           onToggle={() => handleToggle("push_enabled", settings.push_enabled)}
           testId="toggle-push"
         />
-        <div className="h-px bg-[#F0F0F0] mx-5" />
+        <div className="h-px bg-ha-divider mx-5" />
         <NotifToggleRow
           icon={<Mail className="w-5 h-5 text-ha-primary" />}
           label={t("taskFlow.notif.emailLabel")}
@@ -231,11 +231,11 @@ function InlineNotifications({ accessToken }: { accessToken: string }) {
       </div>
 
       {anyEnabled && (
-        <div className="flex items-center gap-2.5 mt-4 py-3 px-4 bg-[#F0FDF4] border border-[#BBF7D0] rounded-2xl" data-testid="notif-active-confirm">
-          <div className="w-[22px] h-[22px] rounded-full bg-[#16A34A] flex items-center justify-center flex-shrink-0">
+        <div className="flex items-center gap-2.5 mt-4 py-3 px-4 bg-green-50 border border-green-200 rounded-2xl" data-testid="notif-active-confirm">
+          <div className="w-[22px] h-[22px] rounded-full bg-ha-success flex items-center justify-center flex-shrink-0">
             <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
           </div>
-          <span className="text-[14px] font-medium text-[#16A34A]">{t("taskFlow.notif.activeConfirm")}</span>
+          <span className="text-[14px] font-medium text-ha-success">{t("taskFlow.notif.activeConfirm")}</span>
         </div>
       )}
     </div>
@@ -247,18 +247,18 @@ function NotifToggleRow({ icon, label, subtitle, badge, enabled, loading, onTogg
   onToggle: () => void; testId: string;
 }) {
   return (
-    <button onClick={onToggle} disabled={loading} className="w-full px-5 py-4 flex items-start gap-4 hover:bg-[#FAFAFA] transition-colors text-left" data-testid={testId}>
+    <button onClick={onToggle} disabled={loading} className="w-full px-5 py-4 flex items-start gap-4 hover:bg-ha-surface transition-colors text-left" data-testid={testId}>
       <div className="flex-shrink-0 mt-0.5">{icon}</div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className="text-[15px] font-semibold text-[#111111]">{label}</span>
+          <span className="text-[15px] font-semibold text-ha-text">{label}</span>
           {badge && (
-            <span className="text-[11px] font-semibold text-ha-primary bg-[#FDF1F6] px-2 py-0.5 rounded-full">{badge}</span>
+            <span className="text-[11px] font-semibold text-ha-primary bg-pink-50 px-2 py-0.5 rounded-full">{badge}</span>
           )}
         </div>
-        <p className="text-[13px] text-[#334855] mt-0.5 leading-snug">{subtitle}</p>
+        <p className="text-[13px] text-ha-text-secondary mt-0.5 leading-snug">{subtitle}</p>
       </div>
-      <div className={`w-[46px] h-[26px] rounded-full transition-colors flex items-center px-0.5 flex-shrink-0 mt-0.5 ${enabled ? "bg-[#111111]" : "bg-[#D1D5DB]"}`}>
+      <div className={`w-[46px] h-[26px] rounded-full transition-colors flex items-center px-0.5 flex-shrink-0 mt-0.5 ${enabled ? "bg-ha-text" : "bg-ha-border-input"}`}>
         <div className={`w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${enabled ? "translate-x-[20px]" : "translate-x-0"}`} />
       </div>
     </button>
@@ -306,27 +306,27 @@ function InlineSearchBuddy({ accessToken }: { accessToken: string }) {
     }
   }
 
-  if (loading) return <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-[#334855]" /></div>;
+  if (loading) return <div className="flex justify-center py-6"><Loader2 className="w-5 h-5 animate-spin text-ha-text-secondary" /></div>;
 
-  const inputClass = "w-full h-[56px] px-4 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
+  const inputClass = "w-full h-[56px] px-4 rounded-[8px] border border-ha-border-input bg-white text-[16px] text-ha-text placeholder:text-ha-text-secondary placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 flex flex-col gap-4" data-testid="inline-search-buddy">
+    <div className="bg-white rounded-2xl border border-ha-card-border p-5 flex flex-col gap-4" data-testid="inline-search-buddy">
       <div>
-        <label className="text-[13px] font-semibold text-[#334855] mb-1.5 block">{t("profileEdit.searchBuddyLabel")}</label>
+        <label className="text-[13px] font-semibold text-ha-text-secondary mb-1.5 block">{t("profileEdit.searchBuddyLabel")}</label>
         <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder={t("profileEdit.searchBuddyPlaceholder")} className={inputClass} data-testid="input-buddy-email" />
-        <p className="text-[13px] text-[#334855] mt-2 leading-snug">{t("profileEdit.searchBuddyDesc")}</p>
+        <p className="text-[13px] text-ha-text-secondary mt-2 leading-snug">{t("profileEdit.searchBuddyDesc")}</p>
       </div>
       {existing && (
-        <div className="flex items-center gap-2 py-2 px-3 bg-[#F0FDF4] rounded-xl">
-          <Check className="w-4 h-4 text-[#16A34A]" />
-          <span className="text-[13px] font-medium text-[#16A34A]">{existing}</span>
+        <div className="flex items-center gap-2 py-2 px-3 bg-green-50 rounded-xl">
+          <Check className="w-4 h-4 text-ha-success" />
+          <span className="text-[13px] font-medium text-ha-success">{existing}</span>
         </div>
       )}
       <button
         onClick={handleSave}
         disabled={saving || !email.trim() || !email.includes("@") || email.trim() === existing}
-        className="w-full h-[50px] rounded-full bg-[#111111] text-white text-[15px] font-semibold hover:bg-[#333333] disabled:opacity-40 transition-colors flex items-center justify-center gap-2"
+        className="w-full h-[50px] rounded-full bg-ha-text text-white text-[15px] font-semibold hover:bg-ha-text disabled:opacity-40 transition-colors flex items-center justify-center gap-2"
         data-testid="button-save-buddy"
       >
         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
@@ -341,7 +341,7 @@ function OpenPageButton({ step, label }: { step: TaskFlowStep; label: string }) 
   return (
     <button
       onClick={() => navigate(step.route)}
-      className="w-full h-[52px] rounded-2xl bg-[#111111] text-white text-[15px] font-semibold hover:bg-[#333333] transition-colors flex items-center justify-center gap-2.5"
+      className="w-full h-[52px] rounded-2xl bg-ha-text text-white text-[15px] font-semibold hover:bg-ha-text transition-colors flex items-center justify-center gap-2.5"
       data-testid={`button-open-step-${step.id}`}
     >
       {label}
@@ -352,7 +352,7 @@ function OpenPageButton({ step, label }: { step: TaskFlowStep; label: string }) 
 
 function TipBody({ children }: { children: React.ReactNode }) {
   return (
-    <div className="text-left text-[15px] text-[#1F2937] leading-relaxed flex flex-col gap-5" data-testid="tip-body">
+    <div className="text-left text-[15px] text-ha-text leading-relaxed flex flex-col gap-5" data-testid="tip-body">
       {children}
     </div>
   );
@@ -362,12 +362,12 @@ function TipSection({ title, items }: { title?: string; items: string[] }) {
   return (
     <div>
       {title && (
-        <p className="text-[15px] font-semibold text-[#111111] mb-2">{title}</p>
+        <p className="text-[15px] font-semibold text-ha-text mb-2">{title}</p>
       )}
       <ul className="flex flex-col gap-1.5 pl-1">
         {items.map((item, i) => (
-          <li key={i} className="flex items-start gap-2.5 text-[14px] text-[#1F2937] leading-snug">
-            <span className="text-[#334855] mt-1.5 text-[7px]">●</span>
+          <li key={i} className="flex items-start gap-2.5 text-[14px] text-ha-text leading-snug">
+            <span className="text-ha-text-secondary mt-1.5 text-[7px]">●</span>
             <span>{item}</span>
           </li>
         ))}
@@ -380,7 +380,7 @@ function TipHighlight({ text }: { text: string }) {
   return (
     <div className="flex items-center gap-3 rounded-xl bg-[#FDF8F0] border border-[#F5E6D3] px-4 py-3.5">
       <span className="text-[16px] flex-shrink-0">💡</span>
-      <p className="text-[14px] font-medium text-[#111111] leading-snug">{text}</p>
+      <p className="text-[14px] font-medium text-ha-text leading-snug">{text}</p>
     </div>
   );
 }
@@ -392,16 +392,16 @@ type RegionData = { name: string; platforms: (string | RegionItem)[] };
 function RegionAccordion({ regions }: { regions: RegionData[] }) {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   return (
-    <div className="flex flex-col gap-0 rounded-2xl border border-[#E5E7EB] overflow-hidden bg-white">
+    <div className="flex flex-col gap-0 rounded-2xl border border-ha-card-border overflow-hidden bg-white">
       {regions.map((r, i) => (
-        <div key={r.name} className={i > 0 ? "border-t border-[#F3F4F6]" : ""}>
+        <div key={r.name} className={i > 0 ? "border-t border-ha-surface" : ""}>
           <button
             onClick={() => setOpenIdx(openIdx === i ? null : i)}
             className="w-full flex items-center justify-between px-5 py-3.5 text-left"
             data-testid={`region-toggle-${i}`}
           >
-            <span className="text-[15px] font-semibold text-[#111111]">{r.name}</span>
-            <ChevronDown className={`w-4 h-4 text-[#334855] transition-transform ${openIdx === i ? "rotate-180" : ""}`} />
+            <span className="text-[15px] font-semibold text-ha-text">{r.name}</span>
+            <ChevronDown className={`w-4 h-4 text-ha-text-secondary transition-transform ${openIdx === i ? "rotate-180" : ""}`} />
           </button>
           {openIdx === i && (
             <ul className="px-5 pb-4 flex flex-col gap-2.5">
@@ -409,9 +409,9 @@ function RegionAccordion({ regions }: { regions: RegionData[] }) {
                 const item = typeof p === "string" ? { label: p } : p;
                 return (
                   <li key={j} className="flex items-start gap-2 text-[14px] leading-snug">
-                    <span className="text-[#D1D5DB] mt-1.5 text-[8px]">●</span>
+                    <span className="text-ha-border-input mt-1.5 text-[8px]">●</span>
                     <div className="flex flex-col">
-                      <span className="text-[#1F2937]">{item.label}</span>
+                      <span className="text-ha-text">{item.label}</span>
                       {item.url && (
                         <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-[13px] text-ha-primary hover:underline truncate" data-testid={`link-region-${i}-${j}`}>{item.url.replace(/^https?:\/\//, "")}</a>
                       )}
@@ -436,7 +436,7 @@ function getTipContent(t: TFn): Record<string, () => React.ReactNode> {
   return {
   tip_documents: () => (
     <TipBody>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_documents.intro")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_documents.intro")}</p>
       <TipSection title={t("flowPage.tips.tip_documents.section1Title")} items={tArr("flowPage.tips.tip_documents.section1Items")} />
       <TipSection title={t("flowPage.tips.tip_documents.section2Title")} items={tArr("flowPage.tips.tip_documents.section2Items")} />
       <TipSection title={t("flowPage.tips.tip_documents.section3Title")} items={tArr("flowPage.tips.tip_documents.section3Items")} />
@@ -444,23 +444,23 @@ function getTipContent(t: TFn): Record<string, () => React.ReactNode> {
   ),
   tip_finances: () => (
     <TipBody>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_finances.para1")}</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_finances.para2")}</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_finances.para3")}</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_finances.para4")}</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_finances.para5")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_finances.para1")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_finances.para2")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_finances.para3")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_finances.para4")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_finances.para5")}</p>
     </TipBody>
   ),
   tip_landlord_accounts: () => (
     <TipBody>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_landlord_accounts.intro")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_landlord_accounts.intro")}</p>
       <RegionAccordion regions={tRegions("flowPage.tips.tip_landlord_accounts.regions")} />
     </TipBody>
   ),
   tip_facebook_groups: () => (
     <TipBody>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_facebook_groups.para1")}</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_facebook_groups.para2")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_facebook_groups.para1")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_facebook_groups.para2")}</p>
       <a
         href="https://www.facebook.com/search/groups/?q=wohnung%20mieten"
         target="_blank"
@@ -470,23 +470,23 @@ function getTipContent(t: TFn): Record<string, () => React.ReactNode> {
       >
         » Rooms &amp; Apartments in Berlin, Munich, Hamburg, Frankfurt, Cologne
       </a>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_facebook_groups.para3")}</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_facebook_groups.searchIntro")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_facebook_groups.para3")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_facebook_groups.searchIntro")}</p>
       <ul className="flex flex-col gap-1.5 pl-1">
         {tArr("flowPage.tips.tip_facebook_groups.searchItems").map((item, i) => (
-          <li key={i} className="flex items-start gap-2 text-[14px] text-[#1F2937] leading-snug"><span className="text-[#334855] mt-1.5 text-[7px]">●</span><span>{item}</span></li>
+          <li key={i} className="flex items-start gap-2 text-[14px] text-ha-text leading-snug"><span className="text-ha-text-secondary mt-1.5 text-[7px]">●</span><span>{item}</span></li>
         ))}
       </ul>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_facebook_groups.para4")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_facebook_groups.para4")}</p>
     </TipBody>
   ),
   tip_new_build: () => (
     <TipBody>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_new_build.para1")}</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_new_build.para2")}</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_new_build.para3")}</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_new_build.para4")}</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_new_build.para5")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_new_build.para1")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_new_build.para2")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_new_build.para3")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_new_build.para4")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_new_build.para5")}</p>
       <a
         href="https://www.neubaukompass.de"
         target="_blank"
@@ -500,43 +500,43 @@ function getTipContent(t: TFn): Record<string, () => React.ReactNode> {
   ),
   tip_network: () => (
     <TipBody>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_network.para1")}</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_network.para2")}</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_network.para3")}</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_network.para4")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_network.para1")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_network.para2")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_network.para3")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_network.para4")}</p>
     </TipBody>
   ),
   tip_viewings: () => (
     <TipBody>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_viewings.intro")}</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_viewings.intro2")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_viewings.intro")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_viewings.intro2")}</p>
       <div className="flex flex-col gap-4">
         <div>
-          <p className="text-[14px] font-semibold text-[#111111]">{t("flowPage.tips.tip_viewings.item1Title")}</p>
-          <p className="text-[14px] text-[#1F2937] leading-relaxed mt-1">{t("flowPage.tips.tip_viewings.item1Body")}</p>
+          <p className="text-[14px] font-semibold text-ha-text">{t("flowPage.tips.tip_viewings.item1Title")}</p>
+          <p className="text-[14px] text-ha-text leading-relaxed mt-1">{t("flowPage.tips.tip_viewings.item1Body")}</p>
         </div>
         <div>
-          <p className="text-[14px] font-semibold text-[#111111]">{t("flowPage.tips.tip_viewings.item2Title")}</p>
-          <p className="text-[14px] text-[#1F2937] leading-relaxed mt-1">{t("flowPage.tips.tip_viewings.item2Body")}</p>
+          <p className="text-[14px] font-semibold text-ha-text">{t("flowPage.tips.tip_viewings.item2Title")}</p>
+          <p className="text-[14px] text-ha-text leading-relaxed mt-1">{t("flowPage.tips.tip_viewings.item2Body")}</p>
         </div>
         <div>
-          <p className="text-[14px] font-semibold text-[#111111]">{t("flowPage.tips.tip_viewings.item3Title")}</p>
-          <p className="text-[14px] text-[#1F2937] leading-relaxed mt-1">{t("flowPage.tips.tip_viewings.item3Body")}</p>
+          <p className="text-[14px] font-semibold text-ha-text">{t("flowPage.tips.tip_viewings.item3Title")}</p>
+          <p className="text-[14px] text-ha-text leading-relaxed mt-1">{t("flowPage.tips.tip_viewings.item3Body")}</p>
         </div>
         <div>
-          <p className="text-[14px] font-semibold text-[#111111]">{t("flowPage.tips.tip_viewings.item4Title")}</p>
-          <p className="text-[14px] text-[#1F2937] leading-relaxed mt-1">{t("flowPage.tips.tip_viewings.item4Body")}</p>
+          <p className="text-[14px] font-semibold text-ha-text">{t("flowPage.tips.tip_viewings.item4Title")}</p>
+          <p className="text-[14px] text-ha-text leading-relaxed mt-1">{t("flowPage.tips.tip_viewings.item4Body")}</p>
         </div>
       </div>
     </TipBody>
   ),
   tip_followup: () => (
     <TipBody>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_followup.para1")}</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_followup.para2")}</p>
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_followup.para3")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_followup.para1")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_followup.para2")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_followup.para3")}</p>
       <TipHighlight text={t("flowPage.tips.tip_followup.highlight")} />
-      <p className="text-[14px] text-[#1F2937] leading-relaxed">{t("flowPage.tips.tip_followup.para4")}</p>
+      <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_followup.para4")}</p>
     </TipBody>
   ),
   };

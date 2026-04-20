@@ -36,13 +36,13 @@ function formatDate(d: string | null): string {
 
 function StatCard({ icon: Icon, label, value, color }: { icon: any; label: string; value: number | string; color: string }) {
   return (
-    <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 flex items-center gap-3" data-testid={`stat-${label.toLowerCase().replace(/\s/g, "-")}`}>
+    <div className="bg-white rounded-2xl border border-ha-card-border p-4 flex items-center gap-3" data-testid={`stat-${label.toLowerCase().replace(/\s/g, "-")}`}>
       <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${color}`}>
         <Icon className="w-5 h-5 text-white" />
       </div>
       <div>
-        <p className="text-[22px] font-bold text-[#111111] leading-none">{value}</p>
-        <p className="text-[13px] text-[#334855] mt-0.5">{label}</p>
+        <p className="text-[22px] font-bold text-ha-text leading-none">{value}</p>
+        <p className="text-[13px] text-ha-text-secondary mt-0.5">{label}</p>
       </div>
     </div>
   );
@@ -116,7 +116,7 @@ export default function AdminMatchAudit() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#eaeaeb] flex items-center justify-center">
+      <div className="min-h-screen bg-ha-bg flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-ha-primary" />
       </div>
     );
@@ -124,11 +124,11 @@ export default function AdminMatchAudit() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#eaeaeb]" data-testid="page-admin-audit">
+      <div className="min-h-screen bg-ha-bg" data-testid="page-admin-audit">
         <AppHeader title="Match Audit" onBack={() => navigate("/dashboard?tab=profile&sub=account")} />
         <div className="p-4 pt-6 text-center">
           <AlertTriangle className="w-12 h-12 text-ha-danger mx-auto mb-3" />
-          <p className="text-[15px] text-[#334855]">{error}</p>
+          <p className="text-[15px] text-ha-text-secondary">{error}</p>
           <button onClick={loadData} className="mt-4 px-6 py-2 bg-ha-primary text-white rounded-full text-[14px] font-semibold" data-testid="button-retry">Retry</button>
         </div>
       </div>
@@ -140,49 +140,49 @@ export default function AdminMatchAudit() {
   const { stats, timing, recent_matches, fetch_runs } = data;
 
   return (
-    <div className="min-h-screen bg-[#eaeaeb]" data-testid="page-admin-audit">
+    <div className="min-h-screen bg-ha-bg" data-testid="page-admin-audit">
       <AppHeader title="Match Audit" onBack={() => navigate("/dashboard?tab=profile&sub=account")} />
 
       <div className="max-w-xl mx-auto px-4 pb-32 space-y-5">
-        <div className="bg-[#111111] rounded-2xl p-5 text-white" data-testid="card-account-info">
-          <p className="text-[13px] text-[#334855] mb-1">Account</p>
+        <div className="bg-ha-text rounded-2xl p-5 text-white" data-testid="card-account-info">
+          <p className="text-[13px] text-ha-text-secondary mb-1">Account</p>
           <p className="text-[16px] font-bold">{data.account.email}</p>
-          <p className="text-[12px] text-[#334855] mt-1">ID: {data.account.user_id.substring(0, 8)}...</p>
+          <p className="text-[12px] text-ha-text-secondary mt-1">ID: {data.account.user_id.substring(0, 8)}...</p>
           <div className="flex gap-4 mt-3 text-[13px]">
-            <span className="text-[#334855]">Profiles: <strong className="text-white">{data.search_profiles.count}</strong></span>
-            <span className="text-[#334855]">Sub: <strong className="text-white">{data.subscription?.status || "none"}</strong></span>
+            <span className="text-ha-text-secondary">Profiles: <strong className="text-white">{data.search_profiles.count}</strong></span>
+            <span className="text-ha-text-secondary">Sub: <strong className="text-white">{data.subscription?.status || "none"}</strong></span>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <StatCard icon={Database} label="Total Matches" value={stats.total} color="bg-ha-primary" />
           <StatCard icon={Eye} label="New (Unviewed)" value={stats.new_count} color="bg-[#334855]" />
-          <StatCard icon={CheckCircle2} label="Viewed" value={stats.viewed} color="bg-[#16A34A]" />
+          <StatCard icon={CheckCircle2} label="Viewed" value={stats.viewed} color="bg-ha-success" />
           <StatCard icon={Send} label="Applied" value={stats.applied} color="bg-ha-primary" />
           <StatCard icon={Mail} label="Emails Sent" value={stats.email_sent} color="bg-ha-danger" />
           <StatCard icon={Bell} label="Push Sent" value={stats.push_sent} color="bg-ha-primary" />
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-3" data-testid="card-timing">
-          <p className="text-[15px] font-bold text-[#111111]">Timing</p>
+        <div className="bg-white rounded-2xl border border-ha-card-border p-4 space-y-3" data-testid="card-timing">
+          <p className="text-[15px] font-bold text-ha-text">Timing</p>
           <div className="space-y-2 text-[13px]">
             <div className="flex justify-between">
-              <span className="text-[#334855]">Last fetch run</span>
-              <span className="text-[#111111] font-medium">{formatDate(timing.last_fetch_run_at)}</span>
+              <span className="text-ha-text-secondary">Last fetch run</span>
+              <span className="text-ha-text font-medium">{formatDate(timing.last_fetch_run_at)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#334855]">Last email sent</span>
-              <span className="text-[#111111] font-medium">{formatDate(timing.last_email_sent_at)}</span>
+              <span className="text-ha-text-secondary">Last email sent</span>
+              <span className="text-ha-text font-medium">{formatDate(timing.last_email_sent_at)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[#334855]">Last push sent</span>
-              <span className="text-[#111111] font-medium">{formatDate(timing.last_push_sent_at)}</span>
+              <span className="text-ha-text-secondary">Last push sent</span>
+              <span className="text-ha-text font-medium">{formatDate(timing.last_push_sent_at)}</span>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-3" data-testid="card-actions">
-          <p className="text-[15px] font-bold text-[#111111]">Actions</p>
+        <div className="bg-white rounded-2xl border border-ha-card-border p-4 space-y-3" data-testid="card-actions">
+          <p className="text-[15px] font-bold text-ha-text">Actions</p>
           <div className="flex gap-3">
             <button
               onClick={runBackfill}
@@ -195,7 +195,7 @@ export default function AdminMatchAudit() {
             </button>
             <button
               onClick={loadData}
-              className="flex items-center gap-2 px-4 py-2.5 bg-[#eaeaeb] text-[#111111] rounded-xl text-[13px] font-semibold"
+              className="flex items-center gap-2 px-4 py-2.5 bg-ha-bg text-ha-text rounded-xl text-[13px] font-semibold"
               data-testid="button-refresh"
             >
               <RefreshCw className="w-4 h-4" />
@@ -203,20 +203,20 @@ export default function AdminMatchAudit() {
             </button>
           </div>
           {backfillResult && (
-            <p className="text-[12px] text-[#334855] mt-2">{backfillResult}</p>
+            <p className="text-[12px] text-ha-text-secondary mt-2">{backfillResult}</p>
           )}
         </div>
 
         {fetch_runs.length > 0 && (
-          <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-3" data-testid="card-fetch-runs">
-            <p className="text-[15px] font-bold text-[#111111]">Recent Fetch Runs</p>
+          <div className="bg-white rounded-2xl border border-ha-card-border p-4 space-y-3" data-testid="card-fetch-runs">
+            <p className="text-[15px] font-bold text-ha-text">Recent Fetch Runs</p>
             <div className="space-y-2">
               {fetch_runs.map((run: any, i: number) => (
                 <div key={run.id || i} className="flex items-center gap-3 py-2 border-b border-[#F7F7F7] last:border-0 text-[12px]">
                   <div className={`w-2 h-2 rounded-full ${run.status === "completed" ? "bg-green-500" : run.status === "failed" ? "bg-ha-danger" : "bg-yellow-500"}`} />
                   <div className="flex-1">
-                    <span className="text-[#111111] font-medium">{formatDate(run.started_at)}</span>
-                    <span className="text-[#334855] ml-2">
+                    <span className="text-ha-text font-medium">{formatDate(run.started_at)}</span>
+                    <span className="text-ha-text-secondary ml-2">
                       fetched={run.fetched_count} matched={run.newly_matched_count} emails={run.emails_sent_count} errors={run.error_count}
                     </span>
                   </div>
@@ -226,41 +226,41 @@ export default function AdminMatchAudit() {
           </div>
         )}
 
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-3" data-testid="card-recent-matches">
-          <p className="text-[15px] font-bold text-[#111111]">Recent Match Deliveries ({recent_matches.length})</p>
+        <div className="bg-white rounded-2xl border border-ha-card-border p-4 space-y-3" data-testid="card-recent-matches">
+          <p className="text-[15px] font-bold text-ha-text">Recent Match Deliveries ({recent_matches.length})</p>
           {recent_matches.length === 0 ? (
-            <p className="text-[13px] text-[#334855] text-center py-4">No canonical matches yet. Run backfill to populate.</p>
+            <p className="text-[13px] text-ha-text-secondary text-center py-4">No canonical matches yet. Run backfill to populate.</p>
           ) : (
             <div className="space-y-0">
               {recent_matches.map((m: any, i: number) => (
                 <div key={m.id || i} className="py-3 border-b border-[#F7F7F7] last:border-0" data-testid={`match-row-${i}`}>
                   <div className="flex justify-between items-start mb-1">
-                    <p className="text-[13px] font-semibold text-[#111111] leading-tight flex-1 pr-2">
+                    <p className="text-[13px] font-semibold text-ha-text leading-tight flex-1 pr-2">
                       {m.listing_title || "Untitled"}
                     </p>
-                    <span className="text-[11px] text-[#334855] whitespace-nowrap">{formatDate(m.matched_at)}</span>
+                    <span className="text-[11px] text-ha-text-secondary whitespace-nowrap">{formatDate(m.matched_at)}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-[11px] text-[#334855] mt-1">
+                  <div className="flex items-center gap-2 text-[11px] text-ha-text-secondary mt-1">
                     <span>{m.listing_city || "—"}</span>
                     {m.listing_price && <span>€{m.listing_price}</span>}
                     <span>{m.listing_source || "—"}</span>
                   </div>
                   <div className="flex items-center gap-3 mt-1.5 text-[11px]">
-                    <span className={m.visible_in_app ? "text-green-600 font-medium" : "text-[#334855]"}>
+                    <span className={m.visible_in_app ? "text-green-600 font-medium" : "text-ha-text-secondary"}>
                       {m.visible_in_app ? "✓ visible" : "✗ hidden"}
                     </span>
-                    <span className={m.email_sent ? "text-ha-primary font-medium" : "text-[#334855]"}>
+                    <span className={m.email_sent ? "text-ha-primary font-medium" : "text-ha-text-secondary"}>
                       {m.email_sent ? "✓ emailed" : "✗ no email"}
                     </span>
-                    <span className={m.push_sent ? "text-ha-primary font-medium" : "text-[#334855]"}>
+                    <span className={m.push_sent ? "text-ha-primary font-medium" : "text-ha-text-secondary"}>
                       {m.push_sent ? "✓ pushed" : "✗ no push"}
                     </span>
-                    <span className={m.viewed ? "text-green-600" : "text-[#334855]"}>
+                    <span className={m.viewed ? "text-green-600" : "text-ha-text-secondary"}>
                       {m.viewed ? "viewed" : "unviewed"}
                     </span>
                   </div>
                   {m.dedup_key && (
-                    <p className="text-[10px] text-[#334855] mt-1 font-mono truncate">dedup: {m.dedup_key}</p>
+                    <p className="text-[10px] text-ha-text-secondary mt-1 font-mono truncate">dedup: {m.dedup_key}</p>
                   )}
                 </div>
               ))}
@@ -269,12 +269,12 @@ export default function AdminMatchAudit() {
         </div>
 
         {data.search_profiles.profiles.length > 0 && (
-          <div className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-3" data-testid="card-search-profiles">
-            <p className="text-[15px] font-bold text-[#111111]">Search Profiles ({data.search_profiles.count})</p>
+          <div className="bg-white rounded-2xl border border-ha-card-border p-4 space-y-3" data-testid="card-search-profiles">
+            <p className="text-[15px] font-bold text-ha-text">Search Profiles ({data.search_profiles.count})</p>
             {data.search_profiles.profiles.map((p: any, i: number) => (
               <div key={p.id || i} className="py-2 border-b border-[#F7F7F7] last:border-0 text-[12px]">
-                <span className="font-medium text-[#111111]">{p.city_name || p.city}</span>
-                <span className="text-[#334855] ml-2">
+                <span className="font-medium text-ha-text">{p.city_name || p.city}</span>
+                <span className="text-ha-text-secondary ml-2">
                   €{p.price_min || 0}–€{p.price_max || "∞"} · {p.bedrooms_min || 0}+ rooms · {p.size_min || 0}+ m²
                 </span>
               </div>

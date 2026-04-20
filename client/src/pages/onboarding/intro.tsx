@@ -46,7 +46,7 @@ export default function OnboardingIntro() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#F5F5F5] flex flex-col" data-testid="screen-onboarding-intro">
+    <div className="fixed inset-0 z-50 bg-ha-surface flex flex-col" data-testid="screen-onboarding-intro">
       <div className="bg-white" style={{ paddingTop: "max(0px, env(safe-area-inset-top))" }}>
         <div className="flex items-center justify-between px-5 h-[64px]">
           <HousAlertLogo size={28} />
@@ -54,10 +54,10 @@ export default function OnboardingIntro() {
             <LanguageSwitcher />
             <button
               onClick={handleClose}
-              className="w-9 h-9 flex items-center justify-center rounded-full bg-[#F4F4F5] hover:bg-[#E5E7EB] transition-colors"
+              className="w-9 h-9 flex items-center justify-center rounded-full bg-ha-surface hover:bg-ha-card-border transition-colors"
               data-testid="button-intro-close"
             >
-              <X className="w-[18px] h-[18px] text-[#111111]" strokeWidth={2.5} />
+              <X className="w-[18px] h-[18px] text-ha-text" strokeWidth={2.5} />
             </button>
           </div>
         </div>
@@ -67,7 +67,7 @@ export default function OnboardingIntro() {
         <div className="max-w-lg mx-auto px-4 pt-6 pb-8">
           <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.06)] px-6 py-7">
             <h1
-              className="text-[24px] font-bold tracking-[-0.025em] leading-[1.15] mb-6 text-[#000000]"
+              className="text-[24px] font-bold tracking-[-0.025em] leading-[1.15] mb-6 text-ha-text"
               data-testid="text-intro-title"
             >
               {t("onboarding.intro.headline")}
@@ -80,10 +80,10 @@ export default function OnboardingIntro() {
                     {step.num}
                   </div>
                   <div>
-                    <p className="text-[16px] font-semibold leading-[1.25] text-[#111111]">
+                    <p className="text-[16px] font-semibold leading-[1.25] text-ha-text">
                       {t(step.titleKey)}
                     </p>
-                    <p className="text-[16px] mt-1 leading-[1.45] text-[#334855]">
+                    <p className="text-[16px] mt-1 leading-[1.45] text-ha-text-secondary">
                       {t(step.descKey)}
                     </p>
                   </div>
@@ -94,7 +94,7 @@ export default function OnboardingIntro() {
         </div>
       </div>
 
-      <div className="bg-white border-t border-[#E5E7EB]">
+      <div className="bg-white border-t border-ha-card-border">
         <div className="max-w-lg mx-auto px-5 py-4 pb-[max(16px,env(safe-area-inset-bottom))]">
           <button
             onClick={() => navigate("/onboarding/city")}
@@ -105,7 +105,7 @@ export default function OnboardingIntro() {
             <ArrowRight className="w-4 h-4" />
           </button>
           <div className="flex items-center justify-center gap-1 mt-3">
-            <span className="text-[14px] text-[#334855]">
+            <span className="text-[14px] text-ha-text-secondary">
               {t("onboarding.intro.alreadyAccount")}
             </span>
             <button

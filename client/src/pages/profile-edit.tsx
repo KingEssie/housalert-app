@@ -90,13 +90,13 @@ export default function ProfileEditPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
       <AppHeader title={config.question} onBack={() => navigate("/dashboard?tab=profile")} />
 
       <div className="flex-1 max-w-xl mx-auto px-5 w-full">
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-6 h-6 animate-spin text-ha-icon-secondary" />
+            <Loader2 className="w-6 h-6 animate-spin text-ha-text-secondary" />
           </div>
         ) : (
           <div className="app-card mt-5">
@@ -132,7 +132,7 @@ export default function ProfileEditPage() {
       </div>
 
       {!loading && (
-        <div className="sticky bottom-0 bg-white border-t border-[#E5E7EB] px-5 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <div className="sticky bottom-0 bg-white border-t border-ha-card-border px-5 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
           <div className="max-w-xl mx-auto">
             <button
               onClick={handleSave}

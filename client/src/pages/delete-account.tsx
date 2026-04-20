@@ -62,14 +62,14 @@ export default function DeleteAccountPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
       <AppHeader title={t("deleteAccount.title")} onBack={() => navigate("/dashboard?tab=profile&sub=account")} />
 
       <main className="flex-1 flex flex-col items-center justify-center px-6">
         <div className="w-16 h-16 rounded-[6px] bg-ha-danger flex items-center justify-center mb-6">
           <AlertTriangle className="w-8 h-8 text-white" />
         </div>
-        <h2 className="text-[30px] font-semibold text-[#111111] mb-3 text-center" data-testid="text-delete-account-title">
+        <h2 className="text-[30px] font-semibold text-ha-text mb-3 text-center" data-testid="text-delete-account-title">
           {t("deleteAccount.confirmTitle")}
         </h2>
         <p className="text-[15px] text-ha-text-muted text-center max-w-[320px] mb-6 leading-relaxed" data-testid="text-delete-account-body">
@@ -104,7 +104,7 @@ export default function DeleteAccountPage() {
           </button>
           <button
             onClick={() => navigate("/dashboard?tab=profile&sub=account")}
-            className="w-full ha-btn border border-[#E5E7EB] text-[#111111] font-semibold hover:bg-white"
+            className="w-full ha-btn border border-ha-card-border text-ha-text font-semibold hover:bg-white"
             data-testid="button-delete-account-cancel"
           >
             {t("common.cancel")}

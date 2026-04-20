@@ -241,7 +241,7 @@ export default function BuddyAcceptPage() {
 
   if (inviteLoading || authLoading || status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#eaeaeb]">
+      <div className="min-h-screen flex items-center justify-center bg-ha-bg">
         <Loader2 className="w-8 h-8 animate-spin text-ha-primary" />
       </div>
     );
@@ -249,10 +249,10 @@ export default function BuddyAcceptPage() {
 
   if (status === "accepting") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#eaeaeb]">
+      <div className="min-h-screen flex items-center justify-center bg-ha-bg">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin text-ha-primary mx-auto mb-4" />
-          <p className="text-[15px] text-[#334855]">{t("buddyV2.acceptingInvite")}</p>
+          <p className="text-[15px] text-ha-text-secondary">{t("buddyV2.acceptingInvite")}</p>
         </div>
       </div>
     );
@@ -260,13 +260,13 @@ export default function BuddyAcceptPage() {
 
   if (status === "accepted") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#eaeaeb] px-5">
+      <div className="min-h-screen flex items-center justify-center bg-ha-bg px-5">
         <div className="w-full max-w-[400px] text-center">
           <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="w-8 h-8 text-green-600" />
           </div>
-          <h1 className="text-[22px] font-bold text-[#111111] mb-2" data-testid="text-accept-success">{t("buddyV2.acceptSuccess")}</h1>
-          <p className="text-[15px] text-[#334855] leading-relaxed">
+          <h1 className="text-[22px] font-bold text-ha-text mb-2" data-testid="text-accept-success">{t("buddyV2.acceptSuccess")}</h1>
+          <p className="text-[15px] text-ha-text-secondary leading-relaxed">
             {inviteInfo?.owner_name ? t("buddyV2.modeBanner").replace("{name}", inviteInfo.owner_name) : ""}
           </p>
         </div>
@@ -276,12 +276,12 @@ export default function BuddyAcceptPage() {
 
   if (status === "error") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#eaeaeb] px-5">
+      <div className="min-h-screen flex items-center justify-center bg-ha-bg px-5">
         <div className="w-full max-w-[400px] text-center">
           <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-6">
             <XCircle className="w-8 h-8 text-red-500" />
           </div>
-          <h1 className="text-[22px] font-bold text-[#111111] mb-2">{errorMsg}</h1>
+          <h1 className="text-[22px] font-bold text-ha-text mb-2">{errorMsg}</h1>
           <button
             onClick={() => navigate("/home")}
             className="mt-6 h-[48px] px-8 rounded-[10px] bg-ha-primary text-white text-[15px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
@@ -297,16 +297,16 @@ export default function BuddyAcceptPage() {
   if (status === "auth" && inviteInfo) {
     const isLogin = authMode === "login";
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#eaeaeb] px-5 py-8">
+      <div className="min-h-screen flex items-center justify-center bg-ha-bg px-5 py-8">
         <div className="w-full max-w-[400px]">
           <div className="text-center mb-8">
             <div className="w-16 h-16 rounded-full bg-[#2D3748] flex items-center justify-center mx-auto mb-6">
               <Users className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-[24px] font-bold text-[#111111] mb-2 leading-tight" data-testid="text-accept-title">
+            <h1 className="text-[24px] font-bold text-ha-text mb-2 leading-tight" data-testid="text-accept-title">
               {t("buddyV2.acceptTitle")}
             </h1>
-            <p className="text-[15px] text-[#334855] leading-relaxed" data-testid="text-accept-body">
+            <p className="text-[15px] text-ha-text-secondary leading-relaxed" data-testid="text-accept-body">
               {isLogin
                 ? inviteInfo.owner_name
                   ? t("buddyV2.acceptBodyShort").replace("{name}", inviteInfo.owner_name)
@@ -315,16 +315,16 @@ export default function BuddyAcceptPage() {
             </p>
           </div>
 
-          <div className="rounded-[12px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] p-5 mb-5">
+          <div className="rounded-[12px] bg-white border border-ha-card-border shadow-[0_1px_3px_rgba(0,0,0,0.03)] p-5 mb-5">
             <div className="space-y-3">
               {/* Email — always readonly */}
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-secondary" />
                 <input
                   type="email"
                   value={inviteInfo.invite_email}
                   readOnly
-                  className="w-full h-[56px] pl-11 pr-4 rounded-[10px] border border-[#D1D5DB] bg-[#F3F4F6] text-[15px] text-[#6B7280] cursor-not-allowed"
+                  className="w-full h-[56px] pl-11 pr-4 rounded-[10px] border border-ha-border-input bg-ha-surface text-[15px] text-ha-text-muted cursor-not-allowed"
                   data-testid="input-buddy-email"
                 />
               </div>
@@ -333,24 +333,24 @@ export default function BuddyAcceptPage() {
               {!isLogin && (
                 <>
                   <div className="relative">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-secondary" />
                     <input
                       type="text"
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
                       placeholder={t("buddyV2.authFirstNamePlaceholder")}
-                      className="w-full h-[56px] pl-11 pr-4 rounded-[10px] border border-[#D1D5DB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/20 focus:border-ha-primary transition-colors"
+                      className="w-full h-[56px] pl-11 pr-4 rounded-[10px] border border-ha-border-input bg-white text-[15px] text-ha-text placeholder:text-ha-text-placeholder focus:outline-none focus:ring-2 focus:ring-ha-primary/20 focus:border-ha-primary transition-colors"
                       data-testid="input-buddy-firstname"
                     />
                   </div>
                   <div className="relative">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
+                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-secondary" />
                     <input
                       type="text"
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
                       placeholder={t("buddyV2.authLastNamePlaceholder")}
-                      className="w-full h-[56px] pl-11 pr-4 rounded-[10px] border border-[#D1D5DB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/20 focus:border-ha-primary transition-colors"
+                      className="w-full h-[56px] pl-11 pr-4 rounded-[10px] border border-ha-border-input bg-white text-[15px] text-ha-text placeholder:text-ha-text-placeholder focus:outline-none focus:ring-2 focus:ring-ha-primary/20 focus:border-ha-primary transition-colors"
                       data-testid="input-buddy-lastname"
                     />
                   </div>
@@ -359,13 +359,13 @@ export default function BuddyAcceptPage() {
 
               {/* Password */}
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-secondary" />
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={t("buddyV2.authPasswordPlaceholder")}
-                  className="w-full h-[56px] pl-11 pr-12 rounded-[10px] border border-[#D1D5DB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/20 focus:border-ha-primary transition-colors"
+                  className="w-full h-[56px] pl-11 pr-12 rounded-[10px] border border-ha-border-input bg-white text-[15px] text-ha-text placeholder:text-ha-text-placeholder focus:outline-none focus:ring-2 focus:ring-ha-primary/20 focus:border-ha-primary transition-colors"
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       isLogin ? handleLogin() : handleSignup();
@@ -376,7 +376,7 @@ export default function BuddyAcceptPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#334855] hover:text-[#111111]"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-ha-text-secondary hover:text-ha-text"
                   data-testid="button-toggle-password"
                 >
                   {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
@@ -386,13 +386,13 @@ export default function BuddyAcceptPage() {
               {/* Signup-only: confirm password */}
               {!isLogin && (
                 <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-secondary" />
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder={t("buddyV2.authConfirmPasswordPlaceholder")}
-                    className="w-full h-[56px] pl-11 pr-12 rounded-[10px] border border-[#D1D5DB] bg-white text-[15px] text-[#111111] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-ha-primary/20 focus:border-ha-primary transition-colors"
+                    className="w-full h-[56px] pl-11 pr-12 rounded-[10px] border border-ha-border-input bg-white text-[15px] text-ha-text placeholder:text-ha-text-placeholder focus:outline-none focus:ring-2 focus:ring-ha-primary/20 focus:border-ha-primary transition-colors"
                     onKeyDown={(e) => {
                       if (e.key === "Enter") handleSignup();
                     }}
@@ -401,7 +401,7 @@ export default function BuddyAcceptPage() {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[#334855] hover:text-[#111111]"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-ha-text-secondary hover:text-ha-text"
                     data-testid="button-toggle-confirm-password"
                   >
                     {showConfirmPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
@@ -432,7 +432,7 @@ export default function BuddyAcceptPage() {
 
           <button
             onClick={() => navigate("/")}
-            className="w-full h-[48px] mt-3 text-[15px] font-medium text-[#334855] hover:text-[#111111] transition-colors"
+            className="w-full h-[48px] mt-3 text-[15px] font-medium text-ha-text-secondary hover:text-ha-text transition-colors"
             data-testid="button-accept-decline"
           >
             {t("buddyV2.acceptDecline")}
@@ -443,17 +443,17 @@ export default function BuddyAcceptPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#eaeaeb] px-5">
+    <div className="min-h-screen flex items-center justify-center bg-ha-bg px-5">
       <div className="w-full max-w-[400px]">
         <div className="text-center mb-8">
           <div className="w-16 h-16 rounded-full bg-[#2D3748] flex items-center justify-center mx-auto mb-6">
             <Users className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-[24px] font-bold text-[#111111] mb-3 leading-tight" data-testid="text-accept-title">
+          <h1 className="text-[24px] font-bold text-ha-text mb-3 leading-tight" data-testid="text-accept-title">
             {t("buddyV2.acceptTitle")}
           </h1>
           {inviteInfo?.owner_name && (
-            <p className="text-[15px] text-[#334855]" data-testid="text-accept-owner">
+            <p className="text-[15px] text-ha-text-secondary" data-testid="text-accept-owner">
               {t("buddyV2.acceptBodyShort").replace("{name}", inviteInfo.owner_name)}
             </p>
           )}
@@ -474,7 +474,7 @@ export default function BuddyAcceptPage() {
 
         <button
           onClick={() => navigate("/home")}
-          className="w-full h-[48px] mt-3 text-[15px] font-medium text-[#334855] hover:text-[#111111] transition-colors"
+          className="w-full h-[48px] mt-3 text-[15px] font-medium text-ha-text-secondary hover:text-ha-text transition-colors"
           data-testid="button-accept-decline"
         >
           {t("buddyV2.acceptDecline")}

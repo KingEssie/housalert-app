@@ -98,7 +98,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "#eaeaeb" }}>
+    <div className="min-h-screen flex flex-col" style={{ background: "rgb(var(--ha-bg))" }}>
       <div
         className="relative w-full flex-shrink-0"
         style={{
@@ -147,7 +147,7 @@ export default function LoginPage() {
         <div
           className="w-full max-w-[480px] mx-auto flex flex-col"
           style={{
-            background: "#FFFFFF",
+            background: "rgb(var(--ha-card))",
             borderRadius: "20px",
             boxShadow: "0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.04)",
             padding: "28px 24px 24px",
@@ -155,7 +155,7 @@ export default function LoginPage() {
         >
           <form onSubmit={handleLogin} className="flex flex-col gap-5">
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="login-email" className="text-[14px] font-medium text-[#334855]">
+              <label htmlFor="login-email" className="text-[14px] font-medium text-ha-text-secondary">
                 {t("auth.login.email")}
               </label>
               <input
@@ -165,13 +165,13 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full h-[56px] rounded-[8px] border border-[#D1D5DB] bg-white px-4 text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+                className="w-full h-[56px] rounded-[8px] border border-ha-border-input bg-white px-4 text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
                 data-testid="input-login-email"
               />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="login-password" className="text-[14px] font-medium text-[#334855]">
+              <label htmlFor="login-password" className="text-[14px] font-medium text-ha-text-secondary">
                 {t("auth.login.password")}
               </label>
               <div className="relative">
@@ -182,14 +182,14 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full h-[56px] rounded-[8px] border border-[#D1D5DB] bg-white pl-4 pr-12 text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+                  className="w-full h-[56px] rounded-[8px] border border-ha-border-input bg-white pl-4 pr-12 text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
                   data-testid="input-login-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 p-0 bg-transparent border-0"
-                  style={{ color: "#334855" }}
+                  style={{ color: "rgb(var(--ha-text-secondary))" }}
                   data-testid="button-toggle-password"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -214,7 +214,7 @@ export default function LoginPage() {
                 height: "56px",
                 borderRadius: "14px",
                 background: "rgb(var(--ha-primary))",
-                color: "#FFFFFF",
+                color: "white",
                 fontSize: "16px",
                 fontWeight: 600,
                 boxShadow: "0 4px 15px rgba(217,26,104,0.25)",
@@ -232,11 +232,11 @@ export default function LoginPage() {
           </form>
 
           <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
-            <span className="text-[13px] font-semibold" style={{ color: "#334855" }}>
+            <div className="flex-1 h-px" style={{ backgroundColor: "rgb(var(--ha-card-border))" }} />
+            <span className="text-[13px] font-semibold" style={{ color: "rgb(var(--ha-text-secondary))" }}>
               {t("auth.login.or")}
             </span>
-            <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
+            <div className="flex-1 h-px" style={{ backgroundColor: "rgb(var(--ha-card-border))" }} />
           </div>
 
           <button
@@ -259,7 +259,7 @@ export default function LoginPage() {
         </div>
 
         <div className="flex items-center justify-center gap-2 pt-8 pb-6">
-          <span className="text-[13px] font-semibold" style={{ color: "#334855" }}>
+          <span className="text-[13px] font-semibold" style={{ color: "rgb(var(--ha-text-secondary))" }}>
             Trustpilot
           </span>
           <div className="flex items-center gap-0.5">
@@ -267,7 +267,7 @@ export default function LoginPage() {
               <div
                 key={i}
                 className="w-[22px] h-[22px] flex items-center justify-center rounded-[3px]"
-                style={{ backgroundColor: i <= 4 ? "#00b67a" : "#E5E7EB" }}
+                style={{ backgroundColor: i <= 4 ? "#00b67a" : "rgb(var(--ha-card-border))" }}
               >
                 <Star
                   className="w-3 h-3"
@@ -277,7 +277,7 @@ export default function LoginPage() {
               </div>
             ))}
           </div>
-          <span className="text-[14px] font-semibold" style={{ color: "#334855" }}>
+          <span className="text-[14px] font-semibold" style={{ color: "rgb(var(--ha-text-secondary))" }}>
             4.8
           </span>
         </div>

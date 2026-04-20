@@ -71,9 +71,9 @@ export default function SubscriptionDetailPage() {
 
   function getStatusBadgeClass(): string {
     if (subscription?.isExpired) return "bg-red-50 text-red-700";
-    if (isCanceled && subscription?.isActive) return "bg-[#F3F4F6] text-[#111111]";
+    if (isCanceled && subscription?.isActive) return "bg-ha-surface text-ha-text";
     if (subscription?.isTrial) return "bg-ha-primary/10 text-ha-primary";
-    return "bg-[#ECFDF5] text-[#065F46]";
+    return "bg-emerald-50 text-emerald-900";
   }
 
   const startDate = subscription?.created_at || null;
@@ -81,7 +81,7 @@ export default function SubscriptionDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: "#eaeaeb" }}>
+      <div className="min-h-screen" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
         <AppHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profile")} />
         <div className="max-w-lg mx-auto px-4 pt-4">
           <div className="app-card animate-pulse space-y-4">
@@ -132,7 +132,7 @@ export default function SubscriptionDetailPage() {
   ];
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#eaeaeb" }} data-testid="page-subscription-detail">
+    <div className="min-h-screen" style={{ backgroundColor: "rgb(var(--ha-bg))" }} data-testid="page-subscription-detail">
       <AppHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profile")} />
 
       <div className="max-w-lg mx-auto px-4 pt-2 pb-12 flex flex-col gap-3">
@@ -145,13 +145,13 @@ export default function SubscriptionDetailPage() {
 
             {/* Crown icon — standalone, no background */}
             <Crown
-              className="w-[26px] h-[26px] text-[#000000] mb-4"
+              className="w-[26px] h-[26px] text-ha-text mb-4"
               strokeWidth={1.8}
             />
 
             {/* Plan name — bold black, largest text */}
             <p
-              className="text-[22px] font-bold text-[#000000] leading-tight"
+              className="text-[22px] font-bold text-ha-text leading-tight"
               data-testid="text-plan-summary"
             >
               {subscription?.isTrial ? t("subscription.status.trial") : getPlanLabel(subscription?.plan)}
@@ -172,7 +172,7 @@ export default function SubscriptionDetailPage() {
 
             {/* Renewal message — black, no fade */}
             {renewalDate && (
-              <p className="text-[14px] font-medium text-[#000000] mt-3" data-testid="text-renewal-hero">
+              <p className="text-[14px] font-medium text-ha-text mt-3" data-testid="text-renewal-hero">
                 {isCanceled
                   ? `${t("subscription.endsAt")} ${formatDate(renewalDate, locale)}`
                   : subscription?.isTrial
@@ -185,10 +185,10 @@ export default function SubscriptionDetailPage() {
             {subscription?.isActive && !subscription?.isExpired && (
               <div className="flex items-center gap-2 mt-3">
                 <CheckCircle2
-                  className="w-[15px] h-[15px] text-[#059669] flex-shrink-0"
+                  className="w-[15px] h-[15px] text-emerald-600 flex-shrink-0"
                   strokeWidth={2}
                 />
-                <p className="text-[13px] font-normal text-[#000000]">
+                <p className="text-[13px] font-normal text-ha-text">
                   {t("subscription.matchesNowActive")}
                 </p>
               </div>
@@ -196,17 +196,17 @@ export default function SubscriptionDetailPage() {
           </div>
 
           {/* Divider */}
-          <div className="h-px bg-[#F3F4F6] mx-5" />
+          <div className="h-px bg-ha-surface mx-5" />
 
           {/* Detail rows — labels black, values bold black */}
           <div className="px-5 pb-1">
             {rows.map((row, idx) => (
               <div
                 key={row.testId}
-                className={`flex items-center justify-between py-[13px] ${idx < rows.length - 1 ? "border-b border-[#F3F4F6]" : ""}`}
+                className={`flex items-center justify-between py-[13px] ${idx < rows.length - 1 ? "border-b border-ha-surface" : ""}`}
               >
-                <p className="text-[13px] font-normal text-[#000000]">{row.label}</p>
-                <p className="text-[13px] font-semibold text-[#000000]" data-testid={row.testId}>{row.value}</p>
+                <p className="text-[13px] font-normal text-ha-text">{row.label}</p>
+                <p className="text-[13px] font-semibold text-ha-text" data-testid={row.testId}>{row.value}</p>
               </div>
             ))}
           </div>
@@ -218,42 +218,42 @@ export default function SubscriptionDetailPage() {
           {/* Primary: manage payment */}
           <button
             onClick={() => navigate("/account/payment-method")}
-            className="w-full flex items-center gap-4 px-5 py-[16px] text-left active:bg-[#F9FAFB] transition-colors"
+            className="w-full flex items-center gap-4 px-5 py-[16px] text-left active:bg-ha-surface transition-colors"
             data-testid="button-manage-payment"
           >
             {/* Icon standalone — no background */}
             <CreditCard
-              className="w-[22px] h-[22px] text-[#000000] flex-shrink-0"
+              className="w-[22px] h-[22px] text-ha-text flex-shrink-0"
               strokeWidth={1.8}
             />
             <div className="flex-1 min-w-0">
-              <p className="text-[15px] font-bold text-[#000000] leading-snug">
+              <p className="text-[15px] font-bold text-ha-text leading-snug">
                 {t("subscription.managePayment")}
               </p>
-              <p className="text-[12px] font-normal text-[#000000] mt-[2px] opacity-60">
+              <p className="text-[12px] font-normal text-ha-text mt-[2px] opacity-60">
                 {t("subscription.updatePaymentDesc")}
               </p>
             </div>
-            <ChevronRight className="w-[18px] h-[18px] text-[#000000] opacity-30 flex-shrink-0" />
+            <ChevronRight className="w-[18px] h-[18px] text-ha-text opacity-30 flex-shrink-0" />
           </button>
 
           {/* Destructive: cancel — clearly red, no icon container */}
           {!isCanceled && (
             <>
-              <div className="h-px bg-[#F3F4F6] mx-5" />
+              <div className="h-px bg-ha-surface mx-5" />
               <button
                 onClick={() => navigate("/account/subscription/cancel")}
                 className="w-full flex items-center gap-4 px-5 py-[14px] text-left active:bg-red-50/60 transition-colors"
                 data-testid="button-cancel-subscription"
               >
                 <XCircle
-                  className="w-[20px] h-[20px] text-[#DC2626] flex-shrink-0"
+                  className="w-[20px] h-[20px] text-ha-danger flex-shrink-0"
                   strokeWidth={1.8}
                 />
-                <p className="text-[14px] font-medium text-[#DC2626] flex-1">
+                <p className="text-[14px] font-medium text-ha-danger flex-1">
                   {t("subscription.cancelSubscription")}
                 </p>
-                <ChevronRight className="w-[16px] h-[16px] text-[#DC2626] opacity-40 flex-shrink-0" />
+                <ChevronRight className="w-[16px] h-[16px] text-ha-danger opacity-40 flex-shrink-0" />
               </button>
             </>
           )}
@@ -265,12 +265,12 @@ export default function SubscriptionDetailPage() {
             <div className="flex items-start gap-3 mb-4">
               {/* AlertCircle standalone — no container */}
               <AlertCircle
-                className="w-[22px] h-[22px] text-[#000000] flex-shrink-0 mt-0.5"
+                className="w-[22px] h-[22px] text-ha-text flex-shrink-0 mt-0.5"
                 strokeWidth={1.8}
               />
               <div>
-                <p className="text-[15px] font-bold text-[#000000]">{t("subscription.expiredTitle")}</p>
-                <p className="text-[13px] font-normal text-[#000000] mt-0.5 opacity-60">{t("subscription.expiredDesc")}</p>
+                <p className="text-[15px] font-bold text-ha-text">{t("subscription.expiredTitle")}</p>
+                <p className="text-[13px] font-normal text-ha-text mt-0.5 opacity-60">{t("subscription.expiredDesc")}</p>
               </div>
             </div>
             <button

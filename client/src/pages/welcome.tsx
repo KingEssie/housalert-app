@@ -48,12 +48,12 @@ function LanguageDropdown() {
         aria-expanded={open}
         aria-label="Select language"
         className="flex items-center gap-1 px-2.5 py-1 rounded-[5px] transition-colors active:scale-[0.96]"
-        style={{ backgroundColor: "#F3F4F6" }}
+        style={{ backgroundColor: "rgb(var(--ha-surface))" }}
         data-testid="button-language-selector"
       >
         <span className="text-[14px]">{current.flag}</span>
-        <span className="text-[12px] font-semibold text-[#111111]">{current.label}</span>
-        <ChevronDown className={`w-3.5 h-3.5 text-[#334855] transition-transform ${open ? "rotate-180" : ""}`} />
+        <span className="text-[12px] font-semibold text-ha-text">{current.label}</span>
+        <ChevronDown className={`w-3.5 h-3.5 text-ha-text-secondary transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 
       {open && (
@@ -61,7 +61,7 @@ function LanguageDropdown() {
           role="listbox"
           aria-label="Languages"
           className="absolute top-full right-0 mt-1.5 w-[180px] rounded-[6px] border overflow-hidden z-50 shadow-[0_4px_16px_rgba(0,0,0,0.08)]"
-          style={{ backgroundColor: "#ffffff", borderColor: "#E5E7EB" }}
+          style={{ backgroundColor: "rgb(var(--ha-card))", borderColor: "rgb(var(--ha-card-border))" }}
         >
           {LANGUAGES.map((lang) => {
             const isActive = locale === lang.code;
@@ -71,11 +71,11 @@ function LanguageDropdown() {
                 role="option"
                 aria-selected={isActive}
                 onClick={() => { setLocale(lang.code); setOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-3 transition-colors ${isActive ? "bg-[#F9FAFB]" : "hover:bg-[#F9FAFB]"}`}
+                className={`w-full flex items-center gap-3 px-4 py-3 transition-colors ${isActive ? "bg-ha-surface" : "hover:bg-ha-surface"}`}
                 data-testid={`button-lang-${lang.code}`}
               >
                 <span className="text-[16px]">{lang.flag}</span>
-                <span className={`text-[14px] font-semibold ${isActive ? "text-ha-primary" : "text-[#111111]"}`}>
+                <span className={`text-[14px] font-semibold ${isActive ? "text-ha-primary" : "text-ha-text"}`}>
                   {lang.label}
                 </span>
                 {isActive && (
@@ -145,7 +145,7 @@ export default function WelcomePage() {
   return (
     <div
       className="h-[100dvh] flex flex-col overflow-auto"
-      style={{ background: "#eaeaeb" }}
+      style={{ background: "rgb(var(--ha-bg))" }}
       data-testid="welcome-page"
     >
       <header className="flex items-center justify-between px-5 pt-[max(env(safe-area-inset-top),16px)] pb-0">
@@ -161,7 +161,7 @@ export default function WelcomePage() {
           />
           <span
             className="font-semibold text-[20px] tracking-[-0.01em]"
-            style={{ color: "#111111" }}
+            style={{ color: "rgb(var(--ha-text))" }}
             data-testid="text-logo"
           >
             HousAlert
@@ -175,7 +175,7 @@ export default function WelcomePage() {
       >
         <h1
           className="text-[28px] font-bold leading-[1.15] tracking-[-0.02em] pt-6 pb-6"
-          style={{ color: "#111111" }}
+          style={{ color: "rgb(var(--ha-text))" }}
           data-testid="text-auth-title"
         >
           {t("v2.welcome.title")}
@@ -184,7 +184,7 @@ export default function WelcomePage() {
         <div>
           <form onSubmit={handleLogin} className="flex flex-col gap-5">
             <div className="flex flex-col gap-1.5">
-              <label className="text-[14px] font-medium" style={{ color: "#334855" }} htmlFor="welcome-email">
+              <label className="text-[14px] font-medium" style={{ color: "rgb(var(--ha-text-secondary))" }} htmlFor="welcome-email">
                 {t("v2.welcome.emailLabel")}
               </label>
               <input
@@ -198,11 +198,11 @@ export default function WelcomePage() {
                 style={{
                   height: "56px",
                   borderRadius: "12px",
-                  background: "#EDEEF1",
+                  background: "rgb(var(--ha-surface))",
                   border: "2px solid transparent",
                   padding: "0 16px",
                   fontSize: "16px",
-                  color: "#111111",
+                  color: "rgb(var(--ha-text))",
                 }}
                 onFocus={(e) => {
                   e.currentTarget.style.borderColor = "rgb(217,26,104)";
@@ -217,7 +217,7 @@ export default function WelcomePage() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-[14px] font-medium" style={{ color: "#334855" }} htmlFor="welcome-password">
+              <label className="text-[14px] font-medium" style={{ color: "rgb(var(--ha-text-secondary))" }} htmlFor="welcome-password">
                 {t("v2.welcome.passwordLabel")}
               </label>
               <div className="relative">
@@ -232,11 +232,11 @@ export default function WelcomePage() {
                   style={{
                     height: "56px",
                     borderRadius: "12px",
-                    background: "#EDEEF1",
+                    background: "rgb(var(--ha-surface))",
                     border: "2px solid transparent",
                     padding: "0 48px 0 16px",
                     fontSize: "16px",
-                    color: "#111111",
+                    color: "rgb(var(--ha-text))",
                   }}
                   onFocus={(e) => {
                     e.currentTarget.style.borderColor = "rgb(217,26,104)";
@@ -252,7 +252,7 @@ export default function WelcomePage() {
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors bg-transparent border-0 cursor-pointer p-0"
-                  style={{ color: "#334855" }}
+                  style={{ color: "rgb(var(--ha-text-secondary))" }}
                   tabIndex={-1}
                   data-testid="button-toggle-password"
                 >
@@ -282,7 +282,7 @@ export default function WelcomePage() {
                 height: "56px",
                 borderRadius: "14px",
                 background: "rgb(var(--ha-primary))",
-                color: "#FFFFFF",
+                color: "white",
                 fontSize: "16px",
                 fontWeight: 600,
                 boxShadow: "0 4px 15px rgba(217,26,104,0.25)",
@@ -301,11 +301,11 @@ export default function WelcomePage() {
           </form>
 
           <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
-            <span className="text-[13px] font-semibold" style={{ color: "#334855" }}>
+            <div className="flex-1 h-px" style={{ backgroundColor: "rgb(var(--ha-card-border))" }} />
+            <span className="text-[13px] font-semibold" style={{ color: "rgb(var(--ha-text-secondary))" }}>
               {t("v2.welcome.or")}
             </span>
-            <div className="flex-1 h-px" style={{ backgroundColor: "#E5E7EB" }} />
+            <div className="flex-1 h-px" style={{ backgroundColor: "rgb(var(--ha-card-border))" }} />
           </div>
 
           <button
@@ -331,7 +331,7 @@ export default function WelcomePage() {
         <div className="flex-1 min-h-[16px]" />
 
         <div className="flex items-center justify-center gap-2.5 pt-3 pb-2">
-          <span className="text-[13px] font-semibold" style={{ color: "#334855" }}>
+          <span className="text-[13px] font-semibold" style={{ color: "rgb(var(--ha-text-secondary))" }}>
             Trustpilot
           </span>
           <div className="flex items-center gap-[3px]">
@@ -339,7 +339,7 @@ export default function WelcomePage() {
               <div
                 key={i}
                 className="w-[22px] h-[22px] flex items-center justify-center rounded-[3px]"
-                style={{ backgroundColor: i <= 4 ? "#00b67a" : "#E5E7EB" }}
+                style={{ backgroundColor: i <= 4 ? "#00b67a" : "rgb(var(--ha-card-border))" }}
               >
                 <Star
                   className="w-3 h-3"
@@ -349,7 +349,7 @@ export default function WelcomePage() {
               </div>
             ))}
           </div>
-          <span className="text-[14px] font-semibold" style={{ color: "#334855" }}>
+          <span className="text-[14px] font-semibold" style={{ color: "rgb(var(--ha-text-secondary))" }}>
             4.8
           </span>
         </div>

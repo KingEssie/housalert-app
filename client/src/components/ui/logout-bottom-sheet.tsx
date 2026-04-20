@@ -24,7 +24,7 @@ export function LogoutBottomSheet({ open, onClose, onConfirm, loading }: LogoutB
         onClick={e => e.stopPropagation()}
         data-testid="sheet-logout"
       >
-        <p className="text-[18px] font-semibold text-[#000000] mb-5" data-testid="text-logout-title">
+        <p className="text-[18px] font-semibold text-ha-text mb-5" data-testid="text-logout-title">
           {t("profile.logoutSheetTitle")}
         </p>
 

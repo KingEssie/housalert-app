@@ -17,9 +17,9 @@ interface HousingData {
   pets_count: string;
 }
 
-const FIELD_LABEL = "text-[15px] font-semibold text-[#000000] mb-2 block";
-const SELECT_CLS = "w-full h-[52px] px-4 pr-10 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] font-normal appearance-none outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/20";
-const INPUT_CLS  = "w-full h-[52px] px-4 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] font-normal text-[#000000] placeholder:text-[#9CA3AF] outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/20";
+const FIELD_LABEL = "text-[15px] font-semibold text-ha-text mb-2 block";
+const SELECT_CLS = "w-full h-[52px] px-4 pr-10 rounded-[8px] border border-ha-border-input bg-white text-[16px] font-normal appearance-none outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/20";
+const INPUT_CLS  = "w-full h-[52px] px-4 rounded-[8px] border border-ha-border-input bg-white text-[16px] font-normal text-ha-text placeholder:text-ha-text-placeholder outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/20";
 
 export default function HousingSituationPage() {
   const { session } = useAuth();
@@ -136,26 +136,26 @@ export default function HousingSituationPage() {
         <select
           value={value}
           onChange={e => onChange(e.target.value)}
-          className={`${SELECT_CLS} ${!value ? "text-[#9CA3AF]" : "text-[#000000]"}`}
+          className={`${SELECT_CLS} ${!value ? "text-ha-text-placeholder" : "text-ha-text"}`}
           data-testid={testId}
         >
           {options.map(opt => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </select>
-        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-[16px] h-[16px] text-[#000000] pointer-events-none" strokeWidth={2} />
+        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-[16px] h-[16px] text-ha-text pointer-events-none" strokeWidth={2} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
       <AppHeader title={t("settings.housingSituation")} onBack={() => navigate("/dashboard?tab=profile")} />
 
       <div className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-4">
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF]" />
+            <Loader2 className="w-6 h-6 animate-spin text-ha-text-placeholder" />
           </div>
         ) : (
           <div className="flex flex-col gap-3">
@@ -208,7 +208,7 @@ export default function HousingSituationPage() {
       </div>
 
       {!loading && (
-        <div className="sticky bottom-0 bg-white border-t border-[#E5E7EB] px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <div className="sticky bottom-0 bg-white border-t border-ha-card-border px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
           <div className="max-w-[480px] mx-auto">
             <button
               onClick={handleSave}

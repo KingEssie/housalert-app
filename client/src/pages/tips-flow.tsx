@@ -176,30 +176,30 @@ export default function TipsFlowPage() {
     .replace("{percent}", String(progressPercent));
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
-      <header className="sticky top-0 z-10 bg-white border-b border-[#E5E7EB]" style={{ paddingTop: "env(safe-area-inset-top)" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
+      <header className="sticky top-0 z-10 bg-white border-b border-ha-card-border" style={{ paddingTop: "env(safe-area-inset-top)" }}>
         <div className="max-w-[480px] mx-auto flex items-center h-12 px-4">
           <button
             onClick={handleBack}
-            className="w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors"
+            className="w-10 h-10 rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input flex items-center justify-center transition-colors"
             data-testid="button-tips-back"
           >
-            <ArrowLeft className="w-5 h-5 text-[#374151]" />
+            <ArrowLeft className="w-5 h-5 text-ha-text-secondary" />
           </button>
-          <h1 className="flex-1 text-center text-[16px] font-semibold text-[#111111]">
+          <h1 className="flex-1 text-center text-[16px] font-semibold text-ha-text">
             {t("tipsFlow.pageTitle")}
           </h1>
           <button
             onClick={handleClose}
-            className="w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors"
+            className="w-10 h-10 rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input flex items-center justify-center transition-colors"
             data-testid="button-tips-close"
           >
-            <X className="w-5 h-5 text-[#374151]" />
+            <X className="w-5 h-5 text-ha-text-secondary" />
           </button>
         </div>
 
         <div className="max-w-[480px] mx-auto px-4 pb-3">
-          <div className="w-full h-[6px] rounded-full bg-[#F9FAFB] overflow-hidden">
+          <div className="w-full h-[6px] rounded-full bg-ha-surface overflow-hidden">
             <div
               className="h-full rounded-full bg-ha-success transition-all duration-500"
               style={{ width: `${progressPercent}%` }}
@@ -224,24 +224,24 @@ export default function TipsFlowPage() {
         >
           <div className="px-5 py-5">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-9 h-9 rounded-full bg-[#111111] flex items-center justify-center flex-shrink-0">
+              <div className="w-9 h-9 rounded-full bg-ha-text flex items-center justify-center flex-shrink-0">
                 <span className="text-[14px] font-semibold text-white">{currentStep + 1}</span>
               </div>
-              <h2 className="text-[18px] font-semibold text-[#111111] leading-tight" data-testid="text-step-title">
+              <h2 className="text-[18px] font-semibold text-ha-text leading-tight" data-testid="text-step-title">
                 {step.title}
               </h2>
             </div>
 
-            <div className="text-[15px] text-[#111111] leading-relaxed whitespace-pre-line" data-testid="text-step-body">
+            <div className="text-[15px] text-ha-text leading-relaxed whitespace-pre-line" data-testid="text-step-body">
               {step.body}
             </div>
 
             {step.sections?.map((section, sIdx) => (
               <div key={sIdx} className="mt-5">
-                <p className="text-[14px] font-semibold text-[#111111] mb-2">{section.heading}</p>
+                <p className="text-[14px] font-semibold text-ha-text mb-2">{section.heading}</p>
                 <ul className="space-y-1.5">
                   {section.items.map((item, iIdx) => (
-                    <li key={iIdx} className="flex items-start gap-2 text-[14px] text-[#111111] leading-relaxed">
+                    <li key={iIdx} className="flex items-start gap-2 text-[14px] text-ha-text leading-relaxed">
                       <span className="text-ha-success mt-0.5 flex-shrink-0">•</span>
                       {item}
                     </li>
@@ -259,8 +259,8 @@ export default function TipsFlowPage() {
             onClick={handleToggleCheck}
             className="w-full h-[48px] rounded-[--ha-btn-radius] flex items-center justify-center gap-2 text-[15px] font-medium transition-colors active:scale-[0.98]"
             style={{
-              background: isChecked ? "rgb(var(--ha-success) / 0.08)" : "#F9FAFB",
-              color: isChecked ? "rgb(var(--ha-success))" : "#111111",
+              background: isChecked ? "rgb(var(--ha-success) / 0.08)" : "rgb(var(--ha-surface))",
+              color: isChecked ? "rgb(var(--ha-success))" : "rgb(var(--ha-text))",
               border: isChecked ? "1px solid rgb(var(--ha-success) / 0.3)" : "1px solid transparent",
             }}
             data-testid="button-mark-complete"

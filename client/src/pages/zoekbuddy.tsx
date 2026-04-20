@@ -30,7 +30,7 @@ function buildInviteLink(token: string) {
 }
 
 const INPUT_CLS =
-  "w-full h-[52px] px-4 rounded-[8px] border border-[#C7CDD4] bg-white text-[16px] font-normal text-[#000000] placeholder:text-[#9CA3AF] outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/20";
+  "w-full h-[52px] px-4 rounded-[8px] border border-ha-border-input bg-white text-[16px] font-normal text-ha-text placeholder:text-ha-text-placeholder outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/20";
 
 export default function ZoekbuddyPage() {
   const { session } = useAuth();
@@ -130,26 +130,26 @@ export default function ZoekbuddyPage() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
       <AppHeader title={t("zoekbuddyPage.pageTitle")} onBack={() => navigate("/dashboard?tab=profile")} />
 
       <div className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-4">
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF]" />
+            <Loader2 className="w-6 h-6 animate-spin text-ha-text-placeholder" />
           </div>
         ) : isConnected ? (
           /* ── STATE B: CONNECTED — clean management state ── */
           <div className="app-card !p-5">
-            <h2 className="text-[21px] font-bold text-[#000000] mb-1">{t("zoekbuddyPage.connectedTitle")}</h2>
-            <p className="text-[16px] text-[#000000] mb-5 leading-snug">
+            <h2 className="text-[21px] font-bold text-ha-text mb-1">{t("zoekbuddyPage.connectedTitle")}</h2>
+            <p className="text-[16px] text-ha-text mb-5 leading-snug">
               {t("zoekbuddyPage.connectedDesc")}
             </p>
 
             {/* Buddy email row */}
-            <div className="flex items-center gap-3 py-3 border-t border-[#E5E7EB]">
-              <Mail className="w-[19px] h-[19px] text-[#000000] flex-shrink-0" strokeWidth={1.8} />
-              <span className="text-[16px] text-[#000000] font-medium break-all" data-testid="text-buddy-email">
+            <div className="flex items-center gap-3 py-3 border-t border-ha-card-border">
+              <Mail className="w-[19px] h-[19px] text-ha-text flex-shrink-0" strokeWidth={1.8} />
+              <span className="text-[16px] text-ha-text font-medium break-all" data-testid="text-buddy-email">
                 {asOwner?.invite_email}
               </span>
             </div>
@@ -160,10 +160,10 @@ export default function ZoekbuddyPage() {
             {/* Pending status banner */}
             {isPending && (
               <div className="app-card !p-4 flex items-start gap-3">
-                <Clock className="w-[19px] h-[19px] text-[#F59E0B] flex-shrink-0 mt-0.5" strokeWidth={2} />
+                <Clock className="w-[19px] h-[19px] text-ha-warning flex-shrink-0 mt-0.5" strokeWidth={2} />
                 <div>
-                  <p className="text-[15px] font-semibold text-[#000000]">{t("zoekbuddyPage.pendingTitle")}</p>
-                  <p className="text-[14px] font-medium text-[#000000] leading-snug mt-0.5">
+                  <p className="text-[15px] font-semibold text-ha-text">{t("zoekbuddyPage.pendingTitle")}</p>
+                  <p className="text-[14px] font-medium text-ha-text leading-snug mt-0.5">
                     {t("zoekbuddyPage.waitingFor").replace("{email}", asOwner?.invite_email || "")}
                   </p>
                 </div>
@@ -172,10 +172,10 @@ export default function ZoekbuddyPage() {
 
             {/* Info panel */}
             <div className="app-card !p-5">
-              <h2 className="text-[21px] font-bold text-[#000000] mb-2">
+              <h2 className="text-[21px] font-bold text-ha-text mb-2">
                 {t("zoekbuddyPage.introTitle")}
               </h2>
-              <p className="text-[16px] font-medium text-[#000000] mb-4 leading-snug">
+              <p className="text-[16px] font-medium text-ha-text mb-4 leading-snug">
                 {t("zoekbuddyPage.introSubtitle")}
               </p>
 
@@ -185,22 +185,22 @@ export default function ZoekbuddyPage() {
                   <div key={item} className="flex items-center gap-3">
                     <CheckCircle2
                       className="flex-shrink-0 w-[20px] h-[20px]"
-                      fill="#16A34A"
+                      fill="rgb(var(--ha-success))"
                       stroke="white"
                       strokeWidth={2}
                     />
-                    <span className="text-[16px] font-medium text-[#000000]">{item}</span>
+                    <span className="text-[16px] font-medium text-ha-text">{item}</span>
                   </div>
                 ))}
                 {NOT_ALLOWED_ITEMS.map(item => (
                   <div key={item} className="flex items-center gap-3">
                     <XCircle
                       className="flex-shrink-0 w-[20px] h-[20px]"
-                      fill="#DC2626"
+                      fill="rgb(var(--ha-danger))"
                       stroke="white"
                       strokeWidth={2}
                     />
-                    <span className="text-[16px] font-medium text-[#000000]">{item}</span>
+                    <span className="text-[16px] font-medium text-ha-text">{item}</span>
                   </div>
                 ))}
               </div>
@@ -208,7 +208,7 @@ export default function ZoekbuddyPage() {
               {/* Email input — only when no pending invite */}
               {!isPending && (
                 <div>
-                  <label className="text-[16px] font-semibold text-[#000000] mb-2 block">
+                  <label className="text-[16px] font-semibold text-ha-text mb-2 block">
                     {t("zoekbuddyPage.emailLabel")}
                   </label>
                   <input
@@ -227,11 +227,11 @@ export default function ZoekbuddyPage() {
               {isPending && inviteLink && (
                 <button
                   onClick={handleCopyLink}
-                  className="flex items-center gap-3 py-3 border-t border-[#E5E7EB] w-full text-left mt-1"
+                  className="flex items-center gap-3 py-3 border-t border-ha-card-border w-full text-left mt-1"
                   data-testid="button-copy-link-pending"
                 >
-                  <Copy className="w-[19px] h-[19px] text-[#000000] flex-shrink-0" strokeWidth={1.8} />
-                  <span className="text-[16px] font-medium text-[#000000]">{t("zoekbuddyPage.copyLink")}</span>
+                  <Copy className="w-[19px] h-[19px] text-ha-text flex-shrink-0" strokeWidth={1.8} />
+                  <span className="text-[16px] font-medium text-ha-text">{t("zoekbuddyPage.copyLink")}</span>
                 </button>
               )}
             </div>
@@ -241,12 +241,12 @@ export default function ZoekbuddyPage() {
 
       {/* Sticky bottom bar */}
       {!isLoading && (
-        <div className="sticky bottom-0 bg-white border-t border-[#E5E7EB] px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <div className="sticky bottom-0 bg-white border-t border-ha-card-border px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
           <div className="max-w-[480px] mx-auto flex flex-col gap-2">
             {isConnected ? (
               <button
                 onClick={() => setShowDisconnectSheet(true)}
-                className="w-full h-[52px] rounded-[10px] border border-[#FECACA] bg-[#FFF5F5] hover:bg-[#FEE2E2] text-[16px] font-semibold text-[#EF4444] transition-colors active:scale-[0.98] flex items-center justify-center gap-2"
+                className="w-full h-[52px] rounded-[10px] border border-red-200 bg-red-50 hover:bg-red-100 text-[16px] font-semibold text-ha-btn-destructive transition-colors active:scale-[0.98] flex items-center justify-center gap-2"
                 data-testid="button-unlink-buddy"
               >
                 <Link2Off className="w-[18px] h-[18px]" strokeWidth={2} />
@@ -264,7 +264,7 @@ export default function ZoekbuddyPage() {
                 </button>
                 <button
                   onClick={() => setShowDisconnectSheet(true)}
-                  className="w-full h-[44px] rounded-[10px] border border-[#E5E7EB] bg-white text-[14px] text-[#9CA3AF] font-medium transition-colors hover:bg-[#F9FAFB] active:scale-[0.98] flex items-center justify-center gap-2"
+                  className="w-full h-[44px] rounded-[10px] border border-ha-card-border bg-white text-[14px] text-ha-text-placeholder font-medium transition-colors hover:bg-ha-surface active:scale-[0.98] flex items-center justify-center gap-2"
                   data-testid="button-cancel-invite"
                 >
                   {t("zoekbuddyPage.cancelInvite")}

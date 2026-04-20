@@ -3,75 +3,81 @@ import { useTranslation } from "@/i18n";
 
 export const ONBOARDING_TOTAL_STEPS = 3;
 
+/* ─── Semantic CSS variable shorthand helpers ─────────────────────────────────
+   All colors resolve to CSS variables. No hardcoded hex values.
+   OB = native app mode (dark header), OBW = website/light mode.
+   Both share the same semantic tokens; OBW uses slightly tighter borders.
+─────────────────────────────────────────────────────────────────────────────── */
+
 export const OB = {
-  gradient: "#ffffff",
-  headerBg: "#ffffff",
-  headerBorder: "#E5E7EB",
-  card: "#FFFFFF",
-  cardBorder: "#E5E7EB",
-  inputBg: "#ffffff",
-  inputBorder: "#E5E7EB",
-  text: "#111111",
-  textSecondary: "#334855",
-  textMuted: "#334855",
+  gradient: "rgb(var(--ha-card))",
+  headerBg: "rgb(var(--ha-card))",
+  headerBorder: "rgb(var(--ha-card-border))",
+  card: "rgb(var(--ha-card))",
+  cardBorder: "rgb(var(--ha-card-border))",
+  inputBg: "rgb(var(--ha-card))",
+  inputBorder: "rgb(var(--ha-card-border))",
+  text: "rgb(var(--ha-text))",
+  textSecondary: "rgb(var(--ha-text-secondary))",
+  textMuted: "rgb(var(--ha-text-muted))",
   pink: "rgb(var(--ha-primary))",
   pinkHover: "rgb(var(--ha-primary-hover))",
-  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #b31556 100%)",
+  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, rgb(var(--ha-primary-hover)) 100%)",
   pinkShadow: "0 4px 15px rgba(217,26,104,0.2)",
-  surface: "#FFFFFF",
-  divider: "#E5E7EB",
-  progressInactive: "#E5E7EB",
-  backBtnBg: "#FFFFFF",
-  selectedBg: "rgba(217,26,104,0.08)",
+  surface: "rgb(var(--ha-card))",
+  divider: "rgb(var(--ha-card-border))",
+  progressInactive: "rgb(var(--ha-card-border))",
+  backBtnBg: "rgb(var(--ha-card))",
+  selectedBg: "var(--ha-primary-light)",
   selectedBorder: "rgb(var(--ha-primary))",
   accentBg: "rgba(217,26,104,0.06)",
-  greenBg: "rgb(var(--ha-success) / 0.08)",
-  greenBorder: "rgb(var(--ha-success) / 0.2)",
-  redBg: "rgba(220,38,38,0.08)",
+  greenBg: "var(--ha-success-light)",
+  greenBorder: "rgba(22,163,74,0.2)",
+  redBg: "var(--ha-danger-light)",
   redBorder: "rgba(220,38,38,0.2)",
 } as const;
 
 export const OBW = {
-  gradient: "#ffffff",
-  headerBg: "#ffffff",
-  headerBorder: "#D1D5DB",
-  card: "#FFFFFF",
-  cardBorder: "#C9CDD2",
-  inputBg: "#ffffff",
-  inputBorder: "#C4C8CE",
-  text: "#111111",
-  textSecondary: "#334855",
-  textMuted: "#334855",
+  gradient: "rgb(var(--ha-card))",
+  headerBg: "rgb(var(--ha-card))",
+  headerBorder: "rgb(var(--ha-border-input))",
+  card: "rgb(var(--ha-card))",
+  cardBorder: "rgb(var(--ha-border-input))",
+  inputBg: "rgb(var(--ha-card))",
+  inputBorder: "rgb(var(--ha-border-input))",
+  text: "rgb(var(--ha-text))",
+  textSecondary: "rgb(var(--ha-text-secondary))",
+  textMuted: "rgb(var(--ha-text-muted))",
   pink: "rgb(var(--ha-primary))",
   pinkHover: "rgb(var(--ha-primary-hover))",
-  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, #b31556 100%)",
+  pinkGradient: "linear-gradient(135deg, rgb(var(--ha-primary)) 0%, rgb(var(--ha-primary-hover)) 100%)",
   pinkShadow: "0 4px 15px rgba(217,26,104,0.2)",
-  surface: "#FFFFFF",
-  divider: "#D1D5DB",
-  progressInactive: "#E5E7EB",
-  backBtnBg: "#FFFFFF",
-  selectedBg: "rgba(217,26,104,0.08)",
+  surface: "rgb(var(--ha-card))",
+  divider: "rgb(var(--ha-border-input))",
+  progressInactive: "rgb(var(--ha-card-border))",
+  backBtnBg: "rgb(var(--ha-card))",
+  selectedBg: "var(--ha-primary-light)",
   selectedBorder: "rgb(var(--ha-primary))",
   accentBg: "rgba(217,26,104,0.06)",
-  greenBg: "rgb(var(--ha-success) / 0.08)",
-  greenBorder: "rgb(var(--ha-success) / 0.2)",
-  redBg: "rgba(220,38,38,0.08)",
+  greenBg: "var(--ha-success-light)",
+  greenBorder: "rgba(22,163,74,0.2)",
+  redBg: "var(--ha-danger-light)",
   redBorder: "rgba(220,38,38,0.2)",
-  footerBg: "#ffffff",
-  footerBorder: "#D1D5DB",
-  backBtnBorder: "#C9CDD2",
-  backBtnColor: "#111111",
-  badgeBg: "rgba(217,26,104,0.08)",
+  footerBg: "rgb(var(--ha-card))",
+  footerBorder: "rgb(var(--ha-border-input))",
+  backBtnBorder: "rgb(var(--ha-border-input))",
+  backBtnColor: "rgb(var(--ha-text))",
+  badgeBg: "var(--ha-primary-light)",
   badgeColor: "rgb(var(--ha-primary))",
-  closeBtnBg: "#F7F7F7",
-  closeBtnColor: "#334855",
-  tabBg: "#F7F7F7",
-  tabActiveBg: "#111111",
-  tabActiveColor: "#FFFFFF",
-  tabInactiveColor: "#334855",
-  chipBorder: "#C4C8CE",
-  chipActiveColor: "#ffffff",
-  mapBorder: "#D1D5DB",
+  closeBtnBg: "rgb(var(--ha-hover-bg))",
+  closeBtnColor: "rgb(var(--ha-text-secondary))",
+  tabBg: "rgb(var(--ha-hover-bg))",
+  tabActiveBg: "rgb(var(--ha-text))",
+  tabActiveColor: "rgb(var(--ha-card))",
+  tabInactiveColor: "rgb(var(--ha-text-secondary))",
+  chipBorder: "rgb(var(--ha-border-input))",
+  chipActiveColor: "rgb(var(--ha-card))",
+  mapBorder: "rgb(var(--ha-border-input))",
 } as const;
 
 export function useWebsiteMode(): boolean {
@@ -151,7 +157,7 @@ export function OBWebHeader({ step, totalSteps = 3 }: { step?: number; totalStep
         {step ? (
           <span
             className="text-[11px] font-semibold px-2.5 py-1 rounded-[4px]"
-            style={{ backgroundColor: "rgb(var(--ha-primary))", color: "#ffffff" }}
+            style={{ backgroundColor: "rgb(var(--ha-primary))", color: "rgb(var(--ha-card))" }}
             data-testid="badge-step"
           >
             {step}/{totalSteps}
@@ -227,7 +233,7 @@ export function OBInfoBox({ children }: { children: React.ReactNode }) {
   return (
     <div
       className="rounded-[4px] p-3.5 flex items-start gap-2.5"
-      style={{ backgroundColor: "#FFFFFF", border: "1px solid #C4C8CE" }}
+      style={{ backgroundColor: "rgb(var(--ha-card))", border: `1px solid rgb(var(--ha-border-input))` }}
     >
       <Info className="w-[15px] h-[15px] shrink-0 mt-[1px]" style={{ color: "rgb(var(--ha-primary))" }} />
       <div className="text-[15px] leading-[1.55]" style={{ color: "rgb(var(--ha-primary))" }}>
@@ -275,7 +281,6 @@ export function OBFooter({
   nextTestId?: string;
   websiteMode?: boolean;
 }) {
-  const w = websiteMode;
   return (
     <div
       className="fixed bottom-0 left-0 right-0 z-30"

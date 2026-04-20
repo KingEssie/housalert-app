@@ -17,8 +17,8 @@ interface ProfileData {
   gender?: string | null;
 }
 
-const FIELD_LABEL = "text-[15px] font-semibold text-[#000000] mb-2 block";
-const INPUT_CLS = "w-full h-[52px] px-4 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] font-normal text-[#000000] placeholder:text-[#9CA3AF] outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/20";
+const FIELD_LABEL = "text-[15px] font-semibold text-ha-text mb-2 block";
+const INPUT_CLS = "w-full h-[52px] px-4 rounded-[8px] border border-ha-border-input bg-white text-[16px] font-normal text-ha-text placeholder:text-ha-text-placeholder outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/20";
 
 export default function ProfileDetailsPage() {
   const { user, session } = useAuth();
@@ -128,13 +128,13 @@ export default function ProfileDetailsPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
       <AppHeader title={t("profileDetails.title")} onBack={() => navigate("/dashboard?tab=profile")} />
 
       <div className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-4">
         {loading ? (
           <div className="flex items-center justify-center py-24">
-            <Loader2 className="w-6 h-6 animate-spin text-[#9CA3AF]" />
+            <Loader2 className="w-6 h-6 animate-spin text-ha-text-placeholder" />
           </div>
         ) : (
           <div className="flex flex-col gap-3">
@@ -212,7 +212,7 @@ export default function ProfileDetailsPage() {
                       <select
                         value={birthDay}
                         onChange={e => setBirthDay(e.target.value)}
-                        className={`${INPUT_CLS} appearance-none text-center px-2 pr-6 ${!birthDay ? "text-[#9CA3AF]" : "text-[#000000]"}`}
+                        className={`${INPUT_CLS} appearance-none text-center px-2 pr-6 ${!birthDay ? "text-ha-text-placeholder" : "text-ha-text"}`}
                         data-testid="select-birth-day"
                       >
                         <option value="">{t("profileDetails.birthDay")}</option>
@@ -220,14 +220,14 @@ export default function ProfileDetailsPage() {
                           <option key={d} value={String(d)}>{d}</option>
                         ))}
                       </select>
-                      <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-[13px] h-[13px] text-[#000000] pointer-events-none" strokeWidth={2} />
+                      <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-[13px] h-[13px] text-ha-text pointer-events-none" strokeWidth={2} />
                     </div>
                     {/* Maand — 2fr, full names, left-aligned */}
                     <div className="relative min-w-0">
                       <select
                         value={birthMonth}
                         onChange={e => setBirthMonth(e.target.value)}
-                        className={`${INPUT_CLS} appearance-none text-left px-3 pr-7 ${!birthMonth ? "text-[#9CA3AF]" : "text-[#000000]"}`}
+                        className={`${INPUT_CLS} appearance-none text-left px-3 pr-7 ${!birthMonth ? "text-ha-text-placeholder" : "text-ha-text"}`}
                         data-testid="select-birth-month"
                       >
                         <option value="">{t("profileDetails.birthMonth")}</option>
@@ -235,14 +235,14 @@ export default function ProfileDetailsPage() {
                           <option key={i + 1} value={String(i + 1)}>{name}</option>
                         ))}
                       </select>
-                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-[13px] h-[13px] text-[#000000] pointer-events-none" strokeWidth={2} />
+                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-[13px] h-[13px] text-ha-text pointer-events-none" strokeWidth={2} />
                     </div>
                     {/* Jaar — 1fr, 1940–now */}
                     <div className="relative min-w-0">
                       <select
                         value={birthYear}
                         onChange={e => setBirthYear(e.target.value)}
-                        className={`${INPUT_CLS} appearance-none text-center px-2 pr-6 ${!birthYear ? "text-[#9CA3AF]" : "text-[#000000]"}`}
+                        className={`${INPUT_CLS} appearance-none text-center px-2 pr-6 ${!birthYear ? "text-ha-text-placeholder" : "text-ha-text"}`}
                         data-testid="select-birth-year"
                       >
                         <option value="">{t("profileDetails.birthYear")}</option>
@@ -250,7 +250,7 @@ export default function ProfileDetailsPage() {
                           <option key={y} value={String(y)}>{y}</option>
                         ))}
                       </select>
-                      <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-[13px] h-[13px] text-[#000000] pointer-events-none" strokeWidth={2} />
+                      <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-[13px] h-[13px] text-ha-text pointer-events-none" strokeWidth={2} />
                     </div>
                   </div>
                 </div>
@@ -262,14 +262,14 @@ export default function ProfileDetailsPage() {
                     <select
                       value={gender}
                       onChange={e => setGender(e.target.value)}
-                      className={`${INPUT_CLS} appearance-none pr-10 ${!gender ? "text-[#9CA3AF]" : "text-[#000000]"}`}
+                      className={`${INPUT_CLS} appearance-none pr-10 ${!gender ? "text-ha-text-placeholder" : "text-ha-text"}`}
                       data-testid="select-gender"
                     >
                       {GENDER_OPTIONS.map(opt => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
                       ))}
                     </select>
-                    <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#000000] pointer-events-none" strokeWidth={2} />
+                    <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text pointer-events-none" strokeWidth={2} />
                   </div>
                 </div>
 
@@ -281,7 +281,7 @@ export default function ProfileDetailsPage() {
       </div>
 
       {!loading && (
-        <div className="sticky bottom-0 bg-white border-t border-[#E5E7EB] px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <div className="sticky bottom-0 bg-white border-t border-ha-card-border px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
           <div className="max-w-[480px] mx-auto">
             <button
               onClick={handleSave}

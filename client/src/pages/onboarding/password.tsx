@@ -270,20 +270,20 @@ export default function OnboardingPassword() {
     return (
       <div
         className="min-h-[100dvh] flex flex-col"
-        style={{ background: "#F3F4F6" }}
+        style={{ background: "rgb(var(--ha-surface))" }}
         data-testid="screen-onboarding-password"
       >
         {/* Header — logo left, X right, no title text */}
         <header
           className="sticky top-0 z-20 w-full"
-          style={{ backgroundColor: "#ffffff", borderBottom: "1px solid #EBEBEB" }}
+          style={{ backgroundColor: "rgb(var(--ha-card))", borderBottom: "1px solid rgb(var(--ha-divider))" }}
         >
           <div className="max-w-[480px] mx-auto px-4 h-[52px] flex items-center justify-between">
             <HousAlertLogo size={26} />
             <button
               onClick={handleClose}
               className="w-[34px] h-[34px] shrink-0 flex items-center justify-center rounded-full transition-opacity hover:opacity-70 active:opacity-50"
-              style={{ backgroundColor: "#F2F2F2", color: "#444444" }}
+              style={{ backgroundColor: "rgb(var(--ha-surface))", color: "rgb(var(--ha-text-muted))" }}
               data-testid="button-password-close"
             >
               <X className="w-[20px] h-[20px]" />
@@ -296,7 +296,7 @@ export default function OnboardingPassword() {
           {/* Main page title */}
           <h1
             className="text-[28px] font-bold leading-tight mb-5"
-            style={{ color: "#111111" }}
+            style={{ color: "rgb(var(--ha-text))" }}
             data-testid="text-page-title"
           >
             {t("onboarding.password.web.title")}
@@ -366,7 +366,7 @@ export default function OnboardingPassword() {
                 {/* Grey sub-card: city + filter details — light, near page background */}
                 <div
                   className="rounded-[4px] px-4 py-3 flex flex-col gap-1"
-                  style={{ backgroundColor: "#ECEEF1" }}
+                  style={{ backgroundColor: "rgb(var(--ha-surface))" }}
                 >
                   <div className="flex items-center gap-2">
                     <span
@@ -377,7 +377,7 @@ export default function OnboardingPassword() {
                       {searchName}
                     </span>
                   </div>
-                  <p className="text-[12px] pl-[16px] font-medium" style={{ color: "#1F2937" }}>
+                  <p className="text-[12px] pl-[16px] font-medium" style={{ color: "rgb(var(--ha-text))" }}>
                     {[
                       minPrice && maxPrice ? `€${minPrice}–€${maxPrice}` : null,
                       roomsLabel ? `${roomsLabel} ${t("onboarding.password.web.apartments")}` : null,
@@ -387,7 +387,7 @@ export default function OnboardingPassword() {
                 </div>
 
                 {/* Caption text */}
-                <p className="text-[11.5px] font-medium" style={{ color: "#374151" }}>
+                <p className="text-[11.5px] font-medium" style={{ color: "rgb(var(--ha-text-secondary))" }}>
                   {t("onboarding.password.web.previewCaption")}
                 </p>
 
@@ -398,7 +398,7 @@ export default function OnboardingPassword() {
                   data-testid="listing-preview-card"
                 >
                   {/* Image area — overlay badge top-right */}
-                  <div className="relative w-full h-[148px] overflow-hidden" style={{ backgroundColor: "#EDF2F7" }}>
+                  <div className="relative w-full h-[148px] overflow-hidden" style={{ backgroundColor: "rgb(var(--ha-surface))" }}>
                     <img
                       src={previewImageSrc}
                       alt=""
@@ -418,16 +418,16 @@ export default function OnboardingPassword() {
                   </div>
 
                   {/* Meta row — price · size · time (no CTA, no /mnd) */}
-                  <div className="flex items-center gap-2 px-3.5 py-3 min-w-0" style={{ borderTop: "1px solid #F3F4F6" }}>
-                    <span className="text-[14px] font-bold shrink-0" style={{ color: "#111111" }}>
+                  <div className="flex items-center gap-2 px-3.5 py-3 min-w-0" style={{ borderTop: "1px solid rgb(var(--ha-surface))" }}>
+                    <span className="text-[14px] font-bold shrink-0" style={{ color: "rgb(var(--ha-text))" }}>
                       {previewListing?.price ? `€${previewListing.price}` : "€850"}
                     </span>
-                    <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
-                    <span className="text-[12px] font-medium shrink-0" style={{ color: "#111111" }}>
+                    <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "rgb(var(--ha-border-input))" }} />
+                    <span className="text-[12px] font-medium shrink-0" style={{ color: "rgb(var(--ha-text))" }}>
                       {previewListing?.size_m2 ? `${previewListing.size_m2} m²` : "45 m²"}
                     </span>
-                    <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
-                    <span className="text-[12px] truncate min-w-0" style={{ color: "#6B7280" }}>
+                    <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "rgb(var(--ha-border-input))" }} />
+                    <span className="text-[12px] truncate min-w-0" style={{ color: "rgb(var(--ha-text-muted))" }}>
                       {previewListing?.fresh_label
                         ? t(`freshness.${({ net_binnen: "justIn", vandaag: "today" } as Record<string, string>)[previewListing.fresh_label] ?? "daysAgo"}`, { n: "1" })
                         : t("onboarding.password.web.fallbackFreshLabel", { n: "2" })}
@@ -445,14 +445,14 @@ export default function OnboardingPassword() {
             style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.10)" }}
           >
             <div className="px-5 pt-5 pb-5">
-              <p className="text-[18px] font-bold mb-4" style={{ color: "#111111" }}>
+              <p className="text-[18px] font-bold mb-4" style={{ color: "rgb(var(--ha-text))" }}>
                 {t("onboarding.password.web.createFreeAccount")}
               </p>
 
               <div className="flex flex-col gap-4">
                 {/* Voornaam */}
                 <div>
-                  <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: "#111111" }}>
+                  <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: "rgb(var(--ha-text))" }}>
                     {t("onboarding.name.firstNameLabel")}
                   </label>
                   <input
@@ -461,7 +461,7 @@ export default function OnboardingPassword() {
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="Max"
                     className="w-full ha-field-web"
-                    style={{ backgroundColor: "#ffffff", borderColor: "#C4C8D0", color: "#111111", borderRadius: 4 }}
+                    style={{ backgroundColor: "rgb(var(--ha-card))", borderColor: "rgb(var(--ha-border-input))", color: "rgb(var(--ha-text))", borderRadius: 4 }}
                     autoFocus
                     data-testid="input-first-name"
                   />
@@ -469,7 +469,7 @@ export default function OnboardingPassword() {
 
                 {/* Achternaam */}
                 <div>
-                  <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: "#111111" }}>
+                  <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: "rgb(var(--ha-text))" }}>
                     {t("onboarding.name.lastNameLabel")}
                   </label>
                   <input
@@ -478,14 +478,14 @@ export default function OnboardingPassword() {
                     onChange={(e) => setLastName(e.target.value)}
                     placeholder="Müller"
                     className="w-full ha-field-web"
-                    style={{ backgroundColor: "#ffffff", borderColor: "#C4C8D0", color: "#111111", borderRadius: 4 }}
+                    style={{ backgroundColor: "rgb(var(--ha-card))", borderColor: "rgb(var(--ha-border-input))", color: "rgb(var(--ha-text))", borderRadius: 4 }}
                     data-testid="input-last-name"
                   />
                 </div>
 
                 {/* E-mail */}
                 <div>
-                  <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: "#111111" }}>
+                  <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: "rgb(var(--ha-text))" }}>
                     {t("onboarding.email.label")}
                   </label>
                   <input
@@ -494,14 +494,14 @@ export default function OnboardingPassword() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder={t("onboarding.email.placeholder")}
                     className="w-full ha-field-web"
-                    style={{ backgroundColor: "#ffffff", borderColor: "#C4C8D0", color: "#111111", borderRadius: 4 }}
+                    style={{ backgroundColor: "rgb(var(--ha-card))", borderColor: "rgb(var(--ha-border-input))", color: "rgb(var(--ha-text))", borderRadius: 4 }}
                     data-testid="input-email"
                   />
                 </div>
 
                 {/* Wachtwoord */}
                 <div>
-                  <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: "#111111" }}>
+                  <label className="text-[13px] font-semibold mb-1.5 block" style={{ color: "rgb(var(--ha-text))" }}>
                     {t("onboarding.password.label")}
                   </label>
                   <div className="relative">
@@ -511,7 +511,7 @@ export default function OnboardingPassword() {
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder={t("onboarding.password.web.passwordPlaceholder")}
                       className="w-full ha-field-web"
-                      style={{ backgroundColor: "#ffffff", borderColor: "#C4C8D0", color: "#111111", paddingRight: "44px", borderRadius: 4 }}
+                      style={{ backgroundColor: "rgb(var(--ha-card))", borderColor: "rgb(var(--ha-border-input))", color: "rgb(var(--ha-text))", paddingRight: "44px", borderRadius: 4 }}
                       autoComplete="new-password"
                       data-testid="input-password"
                     />
@@ -519,7 +519,7 @@ export default function OnboardingPassword() {
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors"
-                      style={{ color: "#9CA3AF" }}
+                      style={{ color: "rgb(var(--ha-text-placeholder))" }}
                       data-testid="button-toggle-password"
                     >
                       {showPassword ? <EyeOff className="w-[17px] h-[17px]" /> : <Eye className="w-[17px] h-[17px]" />}
@@ -551,12 +551,12 @@ export default function OnboardingPassword() {
               </button>
 
               {/* Legal text */}
-              <p className="text-center text-[12px] leading-[1.65] mt-3 mx-4" style={{ color: "#9CA3AF" }}>
+              <p className="text-center text-[12px] leading-[1.65] mt-3 mx-4" style={{ color: "rgb(var(--ha-text-placeholder))" }}>
                 {t("onboarding.password.terms")}
               </p>
 
               {/* Login link */}
-              <p className="text-center text-[13px] mt-2.5" style={{ color: "#4B5563" }}>
+              <p className="text-center text-[13px] mt-2.5" style={{ color: "rgb(var(--ha-text-muted))" }}>
                 {t("auth.signup.hasAccount")}{" "}
                 <button
                   onClick={() => navigate("/")}
@@ -578,7 +578,7 @@ export default function OnboardingPassword() {
             <div className="px-5 pt-5 pb-5">
               <div className="flex items-center gap-2.5 mb-5">
                 <ShieldCheck className="w-[19px] h-[19px]" style={{ color: "rgb(var(--ha-primary))" }} />
-                <p className="text-[18px] font-bold" style={{ color: "#111111" }}>
+                <p className="text-[18px] font-bold" style={{ color: "rgb(var(--ha-text))" }}>
                   {t("onboarding.password.web.riskFreeTitle")}
                 </p>
               </div>
@@ -603,7 +603,7 @@ export default function OnboardingPassword() {
                   <div
                     key={i}
                     className="flex items-start gap-3 py-4"
-                    style={i < arr.length - 1 ? { borderBottom: "1px solid #E2E2E5" } : {}}
+                    style={i < arr.length - 1 ? { borderBottom: "1px solid rgb(var(--ha-divider))" } : {}}
                   >
                     <div
                       className="w-[38px] h-[38px] rounded-[10px] flex items-center justify-center shrink-0 text-[18px]"
@@ -612,10 +612,10 @@ export default function OnboardingPassword() {
                       {item.icon}
                     </div>
                     <div>
-                      <p className="text-[15px] font-bold leading-tight" style={{ color: "#111111" }}>
+                      <p className="text-[15px] font-bold leading-tight" style={{ color: "rgb(var(--ha-text))" }}>
                         {item.title}
                       </p>
-                      <p className="text-[13px] leading-snug mt-1" style={{ color: "#4B5563" }}>
+                      <p className="text-[13px] leading-snug mt-1" style={{ color: "rgb(var(--ha-text-muted))" }}>
                         {item.sub}
                       </p>
                     </div>
@@ -633,7 +633,7 @@ export default function OnboardingPassword() {
   const passwordFormContent = (
     <div className="flex flex-col gap-5">
       <div>
-        <label className="text-[15px] font-semibold mb-2 block text-[#111111]">
+        <label className="text-[15px] font-semibold mb-2 block text-ha-text">
           {t("onboarding.password.label")}
         </label>
         <div className="relative">
@@ -642,7 +642,7 @@ export default function OnboardingPassword() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder={t("onboarding.password.placeholder")}
-            className="w-full h-[56px] border border-[#D1D5DB] rounded-[8px] bg-white px-4 pr-12 text-[15px] text-[#111111] placeholder:text-[#9CA3AF] outline-none transition-all focus:border-ha-primary"
+            className="w-full h-[56px] border border-ha-border-input rounded-[8px] bg-white px-4 pr-12 text-[15px] text-ha-text placeholder:text-ha-text-placeholder outline-none transition-all focus:border-ha-primary"
             autoFocus
             autoComplete="new-password"
             data-testid="input-password"
@@ -650,7 +650,7 @@ export default function OnboardingPassword() {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors text-[#9CA3AF] hover:text-[#6B7280]"
+            className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors text-ha-text-placeholder hover:text-ha-text-muted"
             data-testid="button-toggle-password"
           >
             {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
@@ -660,7 +660,7 @@ export default function OnboardingPassword() {
       </div>
 
       <div>
-        <label className="text-[15px] font-semibold mb-2 block text-[#111111]">
+        <label className="text-[15px] font-semibold mb-2 block text-ha-text">
           {t("onboarding.password.confirmLabel")}
         </label>
         <div className="relative">
@@ -669,21 +669,21 @@ export default function OnboardingPassword() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             placeholder={t("onboarding.password.confirmPlaceholder")}
-            className="w-full h-[56px] border border-[#D1D5DB] rounded-[8px] bg-white px-4 pr-12 text-[15px] text-[#111111] placeholder:text-[#9CA3AF] outline-none transition-all focus:border-ha-primary"
+            className="w-full h-[56px] border border-ha-border-input rounded-[8px] bg-white px-4 pr-12 text-[15px] text-ha-text placeholder:text-ha-text-placeholder outline-none transition-all focus:border-ha-primary"
             autoComplete="new-password"
             data-testid="input-confirm-password"
           />
           <button
             type="button"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors text-[#9CA3AF] hover:text-[#6B7280]"
+            className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors text-ha-text-placeholder hover:text-ha-text-muted"
             data-testid="button-toggle-confirm-password"
           >
             {showConfirmPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
           </button>
         </div>
         {confirmPassword.length > 0 && password !== confirmPassword && (
-          <p className="text-[13px] mt-2 text-[#E11D48]" data-testid="text-confirm-mismatch">
+          <p className="text-[13px] mt-2 text-ha-danger" data-testid="text-confirm-mismatch">
             {t("onboarding.password.passwordMismatch")}
           </p>
         )}
@@ -693,7 +693,7 @@ export default function OnboardingPassword() {
         <button
           type="button"
           onClick={() => setShowReferral(true)}
-          className="flex items-center gap-2 text-[14px] py-1 transition-colors text-[#334855]"
+          className="flex items-center gap-2 text-[14px] py-1 transition-colors text-ha-text-secondary"
           data-testid="button-show-referral"
         >
           <Gift className="w-4 h-4" />
@@ -701,22 +701,22 @@ export default function OnboardingPassword() {
         </button>
       ) : (
         <div>
-          <label className="text-[14px] font-medium mb-1.5 block text-[#334855]">
+          <label className="text-[14px] font-medium mb-1.5 block text-ha-text-secondary">
             {t("referral.inputLabel")}
           </label>
           <div className="relative">
-            <Gift className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
+            <Gift className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-secondary" />
             <input
               type="text"
               placeholder={t("referral.inputPlaceholder")}
               value={referralCode}
               onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
-              className="w-full h-[56px] pl-12 pr-4 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+              className="w-full h-[56px] pl-12 pr-4 rounded-[8px] border border-ha-border-input bg-white text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
               autoCapitalize="characters"
               data-testid="input-referral-code"
             />
           </div>
-          <p className="text-[12px] mt-1 ml-1 text-[#334855]">
+          <p className="text-[12px] mt-1 ml-1 text-ha-text-secondary">
             {t("referral.inputHelper")}
           </p>
         </div>
@@ -726,10 +726,10 @@ export default function OnboardingPassword() {
 
   const footerTerms = (
     <div className="text-center">
-      <p className="text-[12px] leading-relaxed text-[#334855]">
+      <p className="text-[12px] leading-relaxed text-ha-text-secondary">
         {t("onboarding.password.terms")}
       </p>
-      <p className="text-[14px] mt-2 text-[#334855]">
+      <p className="text-[14px] mt-2 text-ha-text-secondary">
         {t("onboarding.intro.alreadyAccount")}{" "}
         <button
           onClick={() => navigate("/")}

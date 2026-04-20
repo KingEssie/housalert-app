@@ -85,7 +85,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 function Divider() {
-  return <div className="h-px" style={{ backgroundColor: "#F0F0F0" }} />;
+  return <div className="h-px" style={{ backgroundColor: "rgb(var(--ha-divider))" }} />;
 }
 
 function Toggle({
@@ -103,7 +103,7 @@ function Toggle({
     <label className="flex items-center gap-3 cursor-pointer" data-testid={testId}>
       <div
         className="w-[44px] h-[24px] rounded-full p-[2px] transition-colors shrink-0"
-        style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "#E5E7EB" }}
+        style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "rgb(var(--ha-card-border))" }}
         onClick={() => onChange(!checked)}
       >
         <div
@@ -129,7 +129,7 @@ function DualRangeSlider({
   const pctLow = ((valueLow - min) / (max - min)) * 100;
   const pctHigh = ((valueHigh - min) / (max - min)) * 100;
   const pink = "rgb(var(--ha-primary))";
-  const inactive = "#E5E7EB";
+  const inactive = "rgb(var(--ha-card-border))";
   const trackBg = `linear-gradient(to right, ${inactive} 0%, ${inactive} ${pctLow}%, ${pink} ${pctLow}%, ${pink} ${pctHigh}%, ${inactive} ${pctHigh}%, ${inactive} 100%)`;
   return (
     <div data-testid={testId}>
@@ -449,7 +449,7 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
         <div className="relative max-w-[480px] mx-auto px-4 h-[56px] flex items-center justify-between">
           <span
             className="text-[13px] font-bold rounded-[8px] shrink-0 flex items-center px-3"
-            style={{ height: "30px", backgroundColor: "rgb(var(--ha-primary))", color: "#ffffff" }}
+            style={{ height: "30px", backgroundColor: "rgb(var(--ha-primary))", color: "white" }}
             data-testid="badge-modal-step"
           >
             {stepNumber}/{totalOverall}
@@ -465,14 +465,14 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
           <button
             onClick={onClose}
             className="w-[36px] h-[36px] shrink-0 flex items-center justify-center rounded-full transition-opacity hover:opacity-70 active:opacity-50"
-            style={{ backgroundColor: "#F2F2F2", color: "#444444" }}
+            style={{ backgroundColor: "rgb(var(--ha-surface))", color: "rgb(var(--ha-text-muted))" }}
             data-testid="button-modal-close"
           >
             <X className="w-[20px] h-[20px]" />
           </button>
         </div>
         {/* Progress bar */}
-        <div className="mx-4 h-[3px] bg-[#F0F0F0] rounded-full overflow-hidden">
+        <div className="mx-4 h-[3px] bg-ha-divider rounded-full overflow-hidden">
           <div
             className="h-full rounded-full transition-all duration-500"
             style={{
@@ -495,7 +495,7 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
               <button
                 onClick={onClose}
                 className="w-full flex items-center gap-3 mb-5 ha-field-web text-left"
-                style={{ backgroundColor: OBW.inputBg, borderColor: "#CFCFCF", color: OBW.text }}
+                style={{ backgroundColor: OBW.inputBg, borderColor: "rgb(var(--ha-border-input))", color: OBW.text }}
                 data-testid="field-city-display"
               >
                 <MapPin className="w-[17px] h-[17px] shrink-0" style={{ color: "rgb(var(--ha-primary))" }} />
@@ -506,7 +506,7 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
               {/* Tab selector */}
               <div
                 className="flex items-center gap-1 p-[4px] rounded-full mb-5"
-                style={{ backgroundColor: "#F0F4F8" }}
+                style={{ backgroundColor: "rgb(var(--ha-toggle-bg))" }}
                 data-testid="location-tabs"
               >
                 {locationTabOptions.map((tab) => {
@@ -518,7 +518,7 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
                       className="flex-1 py-[8px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
                       style={{
                         backgroundColor: isActive ? "rgb(var(--ha-primary))" : "transparent",
-                        color: isActive ? "#ffffff" : "#111111",
+                        color: isActive ? "white" : "rgb(var(--ha-text))",
                       }}
                       data-testid={`tab-${tab.value}`}
                     >
@@ -534,7 +534,7 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
                   <button
                     onClick={() => setShowDistrictPicker(!showDistrictPicker)}
                     className="w-full flex items-center justify-between ha-field-web text-left mb-4"
-                    style={{ backgroundColor: OBW.inputBg, borderColor: "#CFCFCF" }}
+                    style={{ backgroundColor: OBW.inputBg, borderColor: "rgb(var(--ha-border-input))" }}
                     data-testid="dropdown-districts"
                   >
                     <span className="text-[15px] font-medium" style={{ color: OBW.text }}>{districtSummary}</span>
@@ -546,7 +546,7 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
                   {showDistrictPicker && hasDistricts && (
                     <div
                       className="rounded-[12px] overflow-hidden border mb-4"
-                      style={{ borderColor: "#EAEAEA", maxHeight: "180px", overflowY: "auto" }}
+                      style={{ borderColor: "rgb(var(--ha-divider))", maxHeight: "180px", overflowY: "auto" }}
                       data-testid="district-list"
                     >
                       {districtList.map((d, i) => {
@@ -555,8 +555,8 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
                           <button
                             key={d}
                             onClick={() => toggleDistrict(d)}
-                            className="w-full flex items-center justify-between hover:bg-[#F7F7F7] transition-colors"
-                            style={{ padding: "11px 16px", borderBottom: i < districtList.length - 1 ? "1px solid #F0F0F0" : "none" }}
+                            className="w-full flex items-center justify-between hover:bg-ha-hover-bg transition-colors"
+                            style={{ padding: "11px 16px", borderBottom: i < districtList.length - 1 ? "1px solid rgb(var(--ha-divider))" : "none" }}
                             data-testid={`district-${d}`}
                           >
                             <span className="text-[14px] font-medium" style={{ color: active ? OBW.text : OBW.textSecondary }}>
@@ -583,10 +583,10 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
                 <div data-testid="section-radius">
                   <style>{`
                     .ha-modal-radius-slider{-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer;width:100%;height:4px}
-                    .ha-modal-radius-slider::-webkit-slider-runnable-track{background:linear-gradient(to right,rgb(var(--ha-primary)) 0%,rgb(var(--ha-primary)) var(--sl-pct,0%),#E5E7EB var(--sl-pct,0%),#E5E7EB 100%);border-radius:9999px;height:4px}
-                    .ha-modal-radius-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,0.18),0 0 0 1.5px rgba(0,0,0,0.07);margin-top:-9px;cursor:pointer}
-                    .ha-modal-radius-slider::-moz-range-track{background:#E5E7EB;border-radius:9999px;height:4px}
-                    .ha-modal-radius-slider::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,0.18);border:none;cursor:pointer}
+                    .ha-modal-radius-slider::-webkit-slider-runnable-track{background:linear-gradient(to right,rgb(var(--ha-primary)) 0%,rgb(var(--ha-primary)) var(--sl-pct,0%),rgb(var(--ha-card-border)) var(--sl-pct,0%),rgb(var(--ha-card-border)) 100%);border-radius:9999px;height:4px}
+                    .ha-modal-radius-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:white;box-shadow:0 1px 6px rgba(0,0,0,0.18),0 0 0 1.5px rgba(0,0,0,0.07);margin-top:-9px;cursor:pointer}
+                    .ha-modal-radius-slider::-moz-range-track{background:rgb(var(--ha-card-border));border-radius:9999px;height:4px}
+                    .ha-modal-radius-slider::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:white;box-shadow:0 1px 6px rgba(0,0,0,0.18);border:none;cursor:pointer}
                   `}</style>
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-[14px] font-semibold" style={{ color: OBW.textSecondary }}>
@@ -655,13 +655,13 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
 
               <section>
                 <SectionLabel>{t("onboarding.filters.propertyTypeLabel")}</SectionLabel>
-                <div className="flex items-center gap-[4px] p-[4px] rounded-full" style={{ backgroundColor: "#F0F4F8" }} data-testid="property-type">
+                <div className="flex items-center gap-[4px] p-[4px] rounded-full" style={{ backgroundColor: "rgb(var(--ha-toggle-bg))" }} data-testid="property-type">
                   {PROPERTY_OPTIONS.map((opt) => {
                     const isActive = filters.propertyType === opt.value;
                     return (
                       <button key={opt.value} onClick={() => updateFilters({ propertyType: opt.value })}
                         className="flex-1 py-[8px] text-[12px] font-semibold rounded-full text-center transition-all"
-                        style={{ backgroundColor: isActive ? "rgb(var(--ha-primary))" : "transparent", color: isActive ? "#fff" : "#111111" }}
+                        style={{ backgroundColor: isActive ? "rgb(var(--ha-primary))" : "transparent", color: isActive ? "white" : "rgb(var(--ha-text))" }}
                         data-testid={`property-type-${opt.value}`}
                       >
                         {opt.label}
@@ -687,7 +687,7 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
                     return (
                       <button key={opt.value} onClick={() => updateFilters({ minRooms: opt.value })}
                         className="h-[40px] px-4 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96] shrink-0"
-                        style={{ backgroundColor: active ? "rgb(var(--ha-primary))" : "#F3F4F6", color: active ? "#fff" : OBW.textSecondary }}
+                        style={{ backgroundColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-surface))", color: active ? "white" : OBW.textSecondary }}
                         data-testid={`rooms-${opt.value}`}
                       >
                         {opt.label}
@@ -725,7 +725,7 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
                     <input type="range" min={0} max={200} step={5} value={filters.minSize}
                       onChange={(e) => updateFilters({ minSize: Number(e.target.value) })}
                       className="w-full"
-                      style={{ background: `linear-gradient(to right, rgb(var(--ha-primary)) 0%, rgb(var(--ha-primary)) ${(filters.minSize / 200) * 100}%, #E5E7EB ${(filters.minSize / 200) * 100}%, #E5E7EB 100%)` }}
+                      style={{ background: `linear-gradient(to right, rgb(var(--ha-primary)) 0%, rgb(var(--ha-primary)) ${(filters.minSize / 200) * 100}%, rgb(var(--ha-card-border)) ${(filters.minSize / 200) * 100}%, rgb(var(--ha-card-border)) 100%)` }}
                     />
                   </div>
                 )}
@@ -735,13 +735,13 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
 
               <section>
                 <SectionLabel>{t("onboarding.filters.furnishedLabel")}</SectionLabel>
-                <div className="flex items-center gap-[4px] p-[4px] rounded-full" style={{ backgroundColor: "#F0F4F8" }} data-testid="furnished-selector">
+                <div className="flex items-center gap-[4px] p-[4px] rounded-full" style={{ backgroundColor: "rgb(var(--ha-toggle-bg))" }} data-testid="furnished-selector">
                   {FURNISHED_OPTIONS.map((opt) => {
                     const isActive = filters.furnished === opt.value;
                     return (
                       <button key={opt.value} onClick={() => updateFilters({ furnished: opt.value })}
                         className="flex-1 py-[8px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
-                        style={{ backgroundColor: isActive ? "rgb(var(--ha-primary))" : "transparent", color: isActive ? "#fff" : "#111111" }}
+                        style={{ backgroundColor: isActive ? "rgb(var(--ha-primary))" : "transparent", color: isActive ? "white" : "rgb(var(--ha-text))" }}
                         data-testid={`furnished-${opt.value}`}
                       >
                         {opt.label}
@@ -764,7 +764,7 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
                         style={{
                           backgroundColor: active ? "rgb(var(--ha-primary))" : "transparent",
                           borderColor: active ? "rgb(var(--ha-primary))" : OBW.cardBorder,
-                          color: active ? "#fff" : OBW.textSecondary,
+                          color: active ? "white" : OBW.textSecondary,
                         }}
                         data-testid={`amenity-${value}`}
                       >
@@ -792,7 +792,7 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
           {step === "account" && (
             <div className="flex flex-col gap-4" data-testid="modal-step-account">
               <div>
-                <h2 className="text-[22px] font-bold mb-1" style={{ color: "#111111" }}>
+                <h2 className="text-[22px] font-bold mb-1" style={{ color: "rgb(var(--ha-text))" }}>
                   {t("onboarding.password.web.title")}
                 </h2>
                 <p className="text-[14px]" style={{ color: OBW.textSecondary }}>
@@ -808,7 +808,7 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder={t("onboarding.name.firstNamePlaceholder")}
                     className="w-full ha-field-web"
-                    style={{ borderColor: "#CFCFCF", color: OBW.text, backgroundColor: OBW.inputBg }}
+                    style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg }}
                     autoFocus
                     data-testid="input-first-name"
                   />
@@ -820,7 +820,7 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
                     onChange={(e) => setLastName(e.target.value)}
                     placeholder={t("onboarding.name.lastNamePlaceholder")}
                     className="w-full ha-field-web"
-                    style={{ borderColor: "#CFCFCF", color: OBW.text, backgroundColor: OBW.inputBg }}
+                    style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg }}
                     data-testid="input-last-name"
                   />
                 </div>
@@ -833,7 +833,7 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={t("onboarding.email.placeholder")}
                   className="w-full ha-field-web"
-                  style={{ borderColor: "#CFCFCF", color: OBW.text, backgroundColor: OBW.inputBg }}
+                  style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg }}
                   data-testid="input-email"
                 />
               </div>
@@ -847,7 +847,7 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder={t("onboarding.password.placeholder")}
                     className="w-full ha-field-web pr-11"
-                    style={{ borderColor: "#CFCFCF", color: OBW.text, backgroundColor: OBW.inputBg }}
+                    style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg }}
                     data-testid="input-password"
                   />
                   <button
@@ -873,7 +873,7 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
                     placeholder={t("onboarding.password.confirmPlaceholder")}
                     className="w-full ha-field-web pr-11"
                     style={{
-                      borderColor: confirmPassword.length > 0 && !confirmOk ? "#DC2626" : "#CFCFCF",
+                      borderColor: confirmPassword.length > 0 && !confirmOk ? "rgb(var(--ha-danger))" : "rgb(var(--ha-border-input))",
                       color: OBW.text, backgroundColor: OBW.inputBg,
                     }}
                     data-testid="input-confirm-password"

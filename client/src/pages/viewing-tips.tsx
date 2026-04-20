@@ -77,12 +77,12 @@ export default function ViewingTipsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#eaeaeb] flex flex-col">
+    <div className="min-h-screen bg-ha-bg flex flex-col">
       <AppHeader title={t("viewingTips.title")} onBack={() => navigate("/dashboard?tab=tips")} />
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-32">
         <div className="mb-6">
-          <p className="text-[15px] text-[#334855] leading-relaxed">
+          <p className="text-[15px] text-ha-text-secondary leading-relaxed">
             {t("viewingTips.intro")}
           </p>
         </div>
@@ -94,14 +94,14 @@ export default function ViewingTipsPage() {
             return (
               <div
                 key={idx}
-                className="bg-white rounded-[6px] border border-[#E5E7EB] overflow-hidden"
+                className="bg-white rounded-[6px] border border-ha-card-border overflow-hidden"
                 data-testid={`card-tips-section-${idx}`}
               >
                 <div className="flex items-center gap-3 p-6 pb-3">
                   <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 bg-ha-primary/10">
                     <Icon className="w-4.5 h-4.5 text-ha-primary" />
                   </div>
-                  <h3 className="text-[16px] font-medium text-[#111111]">{section.title}</h3>
+                  <h3 className="text-[16px] font-medium text-ha-text">{section.title}</h3>
                 </div>
                 <div className="px-6 pb-6">
                   <ul className="flex flex-col gap-2.5">
@@ -119,7 +119,7 @@ export default function ViewingTipsPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-[#eaeaeb] border-t border-[#E5E7EB] p-5 z-10">
+      <div className="fixed bottom-0 left-0 right-0 bg-ha-bg border-t border-ha-card-border p-5 z-10">
         <div className="max-w-xl mx-auto">
           {markedDone ? (
             <div className="flex items-center justify-center gap-2 h-[48px] text-ha-primary">

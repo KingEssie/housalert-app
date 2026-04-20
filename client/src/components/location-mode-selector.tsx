@@ -605,7 +605,7 @@ function DistrictMultiSelect({
               <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
                 selected.includes(d)
                   ? "bg-ha-primary border-ha-primary"
-                  : "border-ha-input-border"
+                  : "border-ha-border-input"
               }`}>
                 {selected.includes(d) && <Check className="w-3.5 h-3.5 text-white" />}
               </div>

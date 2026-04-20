@@ -366,7 +366,7 @@ export default function NewSearchPage() {
 
   if (loading || (isEditMode && !editLoaded)) {
     return (
-      <div className="min-h-screen bg-[#eaeaeb] flex items-center justify-center">
+      <div className="min-h-screen bg-ha-bg flex items-center justify-center">
         <div className="w-8 h-8 rounded-full border-2 border-ha-primary border-t-transparent animate-spin" />
       </div>
     );
@@ -376,25 +376,25 @@ export default function NewSearchPage() {
 
   if (atLimit) {
     return (
-      <div className="min-h-screen bg-[#eaeaeb] flex flex-col">
-        <header className="fixed top-0 left-0 right-0 z-50 bg-[#eaeaeb]/80 backdrop-blur-md" style={{ paddingTop: "env(safe-area-inset-top)" }}>
+      <div className="min-h-screen bg-ha-bg flex flex-col">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-ha-bg/80 backdrop-blur-md" style={{ paddingTop: "env(safe-area-inset-top)" }}>
           <div className="max-w-lg mx-auto flex items-center justify-between h-[60px] px-5">
             <button
               onClick={() => window.history.length > 1 ? window.history.back() : navigate("/dashboard?tab=home")}
-              className="w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors"
+              className="w-10 h-10 rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input flex items-center justify-center transition-colors"
               data-testid="button-wizard-header-back"
             >
-              <ArrowLeft className="w-5 h-5 text-[#374151]" />
+              <ArrowLeft className="w-5 h-5 text-ha-text-secondary" />
             </button>
           </div>
         </header>
         <div className="flex-1 flex items-center justify-center px-5" style={{ paddingTop: "calc(env(safe-area-inset-top) + 76px)" }}>
           <div className="text-center max-w-sm w-full">
-            <div className="w-16 h-16 rounded-2xl bg-[#F9FAFB] flex items-center justify-center mx-auto mb-5">
+            <div className="w-16 h-16 rounded-2xl bg-ha-surface flex items-center justify-center mx-auto mb-5">
               <AlertCircle className="w-7 h-7 text-ha-primary" />
             </div>
-            <h2 className="text-[30px] font-semibold text-[#111111] mb-2">{t("newSearch.limitTitle")}</h2>
-            <p className="text-[17px] text-[#334855] mb-7 leading-relaxed">
+            <h2 className="text-[30px] font-semibold text-ha-text mb-2">{t("newSearch.limitTitle")}</h2>
+            <p className="text-[17px] text-ha-text-secondary mb-7 leading-relaxed">
               {t("newSearch.limitDesc", { max: MAX_PROFILES })}
             </p>
             <Button
@@ -413,15 +413,15 @@ export default function NewSearchPage() {
   const estimateData = estimateQuery.data ?? null;
 
   return (
-    <div className="min-h-screen bg-[#eaeaeb] flex flex-col">
-      <header className="fixed top-0 left-0 right-0 z-50 bg-[#eaeaeb]/80 backdrop-blur-md" style={{ paddingTop: "env(safe-area-inset-top)" }}>
+    <div className="min-h-screen bg-ha-bg flex flex-col">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-ha-bg/80 backdrop-blur-md" style={{ paddingTop: "env(safe-area-inset-top)" }}>
         <div className="max-w-lg mx-auto flex items-center justify-between h-[64px] px-5">
           <button
             onClick={goBack}
-            className="w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors"
+            className="w-10 h-10 rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input flex items-center justify-center transition-colors"
             data-testid="button-wizard-header-back"
           >
-            <ArrowLeft className="w-5 h-5 text-[#374151]" />
+            <ArrowLeft className="w-5 h-5 text-ha-text-secondary" />
           </button>
           <div className="flex items-center gap-1.5">
             {Array.from({ length: TOTAL_STEPS }).map((_, i) => (
@@ -430,13 +430,13 @@ export default function NewSearchPage() {
                 className="h-[5px] rounded-full transition-all duration-300"
                 style={{
                   width: i + 1 === step ? 28 : 8,
-                  backgroundColor: i + 1 <= step ? "rgb(var(--ha-primary))" : "#E5E7EB",
+                  backgroundColor: i + 1 <= step ? "rgb(var(--ha-primary))" : "rgb(var(--ha-card-border))",
                 }}
               />
             ))}
           </div>
-          <span className="text-[16px] font-bold text-[#111111] tabular-nums" data-testid="text-step-indicator">
-            {step}<span className="text-[#C4C4C4] font-semibold">/{TOTAL_STEPS}</span>
+          <span className="text-[16px] font-bold text-ha-text tabular-nums" data-testid="text-step-indicator">
+            {step}<span className="text-ha-text-placeholder font-semibold">/{TOTAL_STEPS}</span>
           </span>
         </div>
       </header>
@@ -467,7 +467,7 @@ export default function NewSearchPage() {
             {step > 1 && (
               <button
                 onClick={goBack}
-                className="h-[52px] px-5 rounded-full border border-[#E5E7EB] bg-white text-[15px] font-semibold text-[#111111] active:scale-[0.97] transition-all flex items-center gap-1.5 shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
+                className="h-[52px] px-5 rounded-full border border-ha-card-border bg-white text-[15px] font-semibold text-ha-text active:scale-[0.97] transition-all flex items-center gap-1.5 shadow-[0_2px_8px_rgba(0,0,0,0.06)]"
                 data-testid="button-wizard-footer-back"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -494,10 +494,10 @@ export default function NewSearchPage() {
 function StepHeader({ title, subtitle }: { title: string; subtitle: string }) {
   return (
     <div className="mb-8">
-      <h2 className="text-[30px] font-semibold text-[#111111] leading-[1.15] tracking-[-0.025em] mb-2.5" data-testid="text-step-title">
+      <h2 className="text-[30px] font-semibold text-ha-text leading-[1.15] tracking-[-0.025em] mb-2.5" data-testid="text-step-title">
         {title}
       </h2>
-      <p className="text-[17px] text-[#334855] leading-relaxed">
+      <p className="text-[17px] text-ha-text-secondary leading-relaxed">
         {subtitle}
       </p>
     </div>
@@ -549,9 +549,9 @@ function PillGroup({
             onClick={() => onChange(String(opt.value))}
             className="h-[40px] px-5 rounded-full text-[14px] font-medium border transition-all active:scale-[0.96]"
             style={{
-              backgroundColor: active ? "rgb(var(--ha-primary))" : "#F9FAFB",
-              borderColor: active ? "rgb(var(--ha-primary))" : "#E5E7EB",
-              color: active ? "#fff" : "#334855",
+              backgroundColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-surface))",
+              borderColor: "rgb(var(--ha-card-border))",
+              color: active ? "white" : "rgb(var(--ha-text-secondary))",
             }}
             data-testid={`${testId}-${opt.value}`}
           >
@@ -586,13 +586,13 @@ function DualSlider({
 }) {
   const pctLow = ((valueLow - min) / (max - min)) * 100;
   const pctHigh = ((valueHigh - min) / (max - min)) * 100;
-  const trackBg = `linear-gradient(to right, #E5E7EB 0%, #E5E7EB ${pctLow}%, rgb(var(--ha-primary)) ${pctLow}%, rgb(var(--ha-primary)) ${pctHigh}%, #E5E7EB ${pctHigh}%, #E5E7EB 100%)`;
+  const trackBg = `linear-gradient(to right, rgb(var(--ha-card-border)) 0%, rgb(var(--ha-card-border)) ${pctLow}%, rgb(var(--ha-primary)) ${pctLow}%, rgb(var(--ha-primary)) ${pctHigh}%, rgb(var(--ha-card-border)) ${pctHigh}%, rgb(var(--ha-card-border)) 100%)`;
 
   return (
     <div data-testid={testId}>
       <div className="flex justify-between mb-2">
-        <span className="text-[14px] font-semibold text-[#111111]">{formatLabel(valueLow)}</span>
-        <span className="text-[14px] font-semibold text-[#111111]">{formatLabel(valueHigh)}</span>
+        <span className="text-[14px] font-semibold text-ha-text">{formatLabel(valueLow)}</span>
+        <span className="text-[14px] font-semibold text-ha-text">{formatLabel(valueHigh)}</span>
       </div>
       <div className="relative h-[36px]">
         <input
@@ -657,13 +657,13 @@ function SingleSlider({
         onChange={(e) => onChange(Number(e.target.value))}
         className="w-full"
         style={{
-          background: `linear-gradient(to right, rgb(var(--ha-primary)) 0%, rgb(var(--ha-primary)) ${pct}%, #E5E7EB ${pct}%, #E5E7EB 100%)`,
+          background: `linear-gradient(to right, rgb(var(--ha-primary)) 0%, rgb(var(--ha-primary)) ${pct}%, rgb(var(--ha-card-border)) ${pct}%, rgb(var(--ha-card-border)) 100%)`,
         }}
       />
       <div className="flex justify-between mt-1">
-        <span className="text-[12px] text-[#334855]">{formatLabel(min)}</span>
+        <span className="text-[12px] text-ha-text-secondary">{formatLabel(min)}</span>
         <span className="text-[13px] font-semibold" style={{ color: "rgb(var(--ha-primary))" }}>{formatLabel(value)}</span>
-        <span className="text-[12px] text-[#334855]">{formatLabel(max)}</span>
+        <span className="text-[12px] text-ha-text-secondary">{formatLabel(max)}</span>
       </div>
     </div>
   );
@@ -686,8 +686,8 @@ function Step2Requirements({
 
       <div className="flex flex-col gap-6">
         <section>
-          <label className="text-[15px] font-medium text-[#111111] mb-3 flex items-center gap-2.5">
-            <span className="w-5 h-5 flex items-center justify-center text-[#334855]"><Euro className="w-[18px] h-[18px]" /></span>
+          <label className="text-[15px] font-medium text-ha-text mb-3 flex items-center gap-2.5">
+            <span className="w-5 h-5 flex items-center justify-center text-ha-text-secondary"><Euro className="w-[18px] h-[18px]" /></span>
             {}
           </label>
           <DualSlider
@@ -711,11 +711,11 @@ function Step2Requirements({
           </div>
         </section>
 
-        <div className="h-px bg-[#F0F0F0]" />
+        <div className="h-px bg-ha-divider" />
 
         <section>
-          <label className="text-[15px] font-medium text-[#111111] mb-3 flex items-center gap-2.5">
-            <span className="w-5 h-5 flex items-center justify-center text-[#334855]"><BedDouble className="w-[18px] h-[18px]" /></span>
+          <label className="text-[15px] font-medium text-ha-text mb-3 flex items-center gap-2.5">
+            <span className="w-5 h-5 flex items-center justify-center text-ha-text-secondary"><BedDouble className="w-[18px] h-[18px]" /></span>
             {t("newSearch.step2.bedrooms")}
           </label>
           <div
@@ -730,8 +730,8 @@ function Step2Requirements({
                   onClick={() => updateFilters({ bedroomsMin: opt.value })}
                   className="h-[40px] px-4 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96] shrink-0"
                   style={{
-                    backgroundColor: active ? "rgb(var(--ha-primary))" : "#F3F4F6",
-                    color: active ? "#fff" : "#334855",
+                    backgroundColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-surface))",
+                    color: active ? "white" : "rgb(var(--ha-text-secondary))",
                   }}
                   data-testid={`rooms-${opt.value}`}
                 >
@@ -742,11 +742,11 @@ function Step2Requirements({
           </div>
         </section>
 
-        <div className="h-px bg-[#F0F0F0]" />
+        <div className="h-px bg-ha-divider" />
 
         <section>
-          <label className="text-[15px] font-medium text-[#111111] mb-3 flex items-center gap-2.5">
-            <span className="w-5 h-5 flex items-center justify-center text-[#334855]"><Ruler className="w-[18px] h-[18px]" /></span>
+          <label className="text-[15px] font-medium text-ha-text mb-3 flex items-center gap-2.5">
+            <span className="w-5 h-5 flex items-center justify-center text-ha-text-secondary"><Ruler className="w-[18px] h-[18px]" /></span>
             {t("newSearch.step2.area")}
           </label>
           <SingleSlider
@@ -760,11 +760,11 @@ function Step2Requirements({
           />
         </section>
 
-        <div className="h-px bg-[#F0F0F0]" />
+        <div className="h-px bg-ha-divider" />
 
         <section>
-          <label className="text-[15px] font-medium text-[#111111] mb-3 flex items-center gap-2.5">
-            <span className="w-5 h-5 flex items-center justify-center text-[#334855]"><Sofa className="w-[18px] h-[18px]" /></span>
+          <label className="text-[15px] font-medium text-ha-text mb-3 flex items-center gap-2.5">
+            <span className="w-5 h-5 flex items-center justify-center text-ha-text-secondary"><Sofa className="w-[18px] h-[18px]" /></span>
             {t("newSearch.step2.furnished")}
           </label>
           <PillGroup
@@ -791,10 +791,10 @@ function ToggleSwitch({
   testId: string;
 }) {
   return (
-    <label className="flex items-center gap-3.5 cursor-pointer rounded-[12px] bg-white border border-[#DADDE3] px-4 py-4" data-testid={testId}>
+    <label className="flex items-center gap-3.5 cursor-pointer rounded-[12px] bg-white border border-ha-card-border px-4 py-4" data-testid={testId}>
       <div
         className="w-[48px] h-[28px] rounded-full p-[2px] transition-colors shrink-0 cursor-pointer"
-        style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "#D1D5DB" }}
+        style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "rgb(var(--ha-border-input))" }}
         onClick={(e) => { e.preventDefault(); onChange(!checked); }}
       >
         <div
@@ -802,7 +802,7 @@ function ToggleSwitch({
           style={{ transform: checked ? "translateX(20px)" : "translateX(0)" }}
         />
       </div>
-      <span className="text-[15px] leading-snug text-[#111111] font-medium">{label}</span>
+      <span className="text-[15px] leading-snug text-ha-text font-medium">{label}</span>
     </label>
   );
 }
@@ -826,20 +826,20 @@ function CheckboxRow({
       onClick={onToggle}
       className={`w-full flex items-center gap-4 px-4 min-h-[72px] py-4 rounded-[12px] border-2 transition-all text-left ${
         selected
-          ? "border-[rgb(var(--ha-primary))] bg-[#FFF1F4]"
-          : "border-[#E5E7EB] bg-white hover:bg-[#FAFAFA]"
+          ? "border-[rgb(var(--ha-primary))] bg-pink-50"
+          : "border-ha-card-border bg-white hover:bg-ha-surface"
       }`}
       data-testid={testId}
     >
       <div className={`w-[26px] h-[26px] rounded-[8px] flex items-center justify-center flex-shrink-0 border-2 transition-colors ${
-        selected ? "bg-ha-primary border-ha-primary" : "border-[#334855] bg-white"
+        selected ? "bg-ha-primary border-ha-primary" : "border-ha-text-secondary bg-white"
       }`}>
         {selected && <Check className="w-4 h-4 text-white" strokeWidth={3} />}
       </div>
       <div className="flex-1 min-w-0">
-        <span className="text-[16px] font-medium text-[#111111]">{label}</span>
+        <span className="text-[16px] font-medium text-ha-text">{label}</span>
         {hint && selected && (
-          <p className="text-[14px] text-[#334855] mt-1 leading-snug">{hint}</p>
+          <p className="text-[14px] text-ha-text-secondary mt-1 leading-snug">{hint}</p>
         )}
       </div>
     </button>
@@ -876,8 +876,8 @@ function Step3ExtraFeatures({
       </div>
 
       <div className="mt-10">
-        <h3 className="text-[16px] font-bold text-[#111111] mb-2">{t("newSearch.step3.preferencesTitle")}</h3>
-        <p className="text-[15px] text-[#334855] mb-4 leading-relaxed">{t("newSearch.step3.preferencesSubtitle")}</p>
+        <h3 className="text-[16px] font-bold text-ha-text mb-2">{t("newSearch.step3.preferencesTitle")}</h3>
+        <p className="text-[15px] text-ha-text-secondary mb-4 leading-relaxed">{t("newSearch.step3.preferencesSubtitle")}</p>
         <div className="space-y-4">
           {PREFERENCE_OPTIONS.map((opt) => (
             <CheckboxRow
@@ -893,7 +893,7 @@ function Step3ExtraFeatures({
       </div>
 
       {filters.extraFeatures.length === 0 && (
-        <p className="text-[15px] text-[#334855] text-center mt-7">
+        <p className="text-[15px] text-ha-text-secondary text-center mt-7">
           {t("newSearch.step3.noSelectionHint")}
         </p>
       )}
@@ -940,7 +940,7 @@ function Step4TargetCategories({
       </div>
 
       {filters.targetCategories.length === 0 && (
-        <p className="text-[15px] text-[#334855] text-center mt-7">
+        <p className="text-[15px] text-ha-text-secondary text-center mt-7">
           {t("newSearch.step4.noSelectionHint")}
         </p>
       )}
@@ -952,15 +952,15 @@ function ReviewRow({ label, value, onEdit }: { label: string; value: string; onE
   return (
     <button
       onClick={onEdit}
-      className="w-full flex items-center justify-between py-[18px] px-5 border-b border-[#F3F4F6] last:border-b-0 text-left hover:bg-[#FAFAFA] transition-colors active:bg-[#F3F4F6] group"
+      className="w-full flex items-center justify-between py-[18px] px-5 border-b border-ha-surface last:border-b-0 text-left hover:bg-ha-surface transition-colors active:bg-ha-surface group"
       data-testid={`button-review-edit-${label.toLowerCase().replace(/\s/g, "-")}`}
     >
       <div className="flex-1 min-w-0 mr-3">
-        <p className="text-[14px] font-medium text-[#334855] mb-1">{label}</p>
-        <p className="text-[17px] font-semibold text-[#111111] leading-snug">{value}</p>
+        <p className="text-[14px] font-medium text-ha-text-secondary mb-1">{label}</p>
+        <p className="text-[17px] font-semibold text-ha-text leading-snug">{value}</p>
       </div>
-      <div className="flex-shrink-0 w-9 h-9 rounded-full bg-[#F3F4F6] flex items-center justify-center group-hover:bg-[#E5E7EB] transition-colors">
-        <Pencil className="w-4 h-4 text-[#334855]" />
+      <div className="flex-shrink-0 w-9 h-9 rounded-full bg-ha-surface flex items-center justify-center group-hover:bg-ha-card-border transition-colors">
+        <Pencil className="w-4 h-4 text-ha-text-secondary" />
       </div>
     </button>
   );
@@ -1061,7 +1061,7 @@ function StepReview({
             </div>
 
             {/* Preview listing card */}
-            <p className="text-[11.5px] font-medium mb-2" style={{ color: "#374151" }}>
+            <p className="text-[11.5px] font-medium mb-2" style={{ color: "rgb(var(--ha-text-secondary))" }}>
               {t("onboarding.password.web.previewCaption")}
             </p>
             <div
@@ -1069,7 +1069,7 @@ function StepReview({
               style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.10)" }}
               data-testid="listing-preview-card"
             >
-              <div className="relative w-full h-[140px] overflow-hidden" style={{ backgroundColor: "#EDF2F7" }}>
+              <div className="relative w-full h-[140px] overflow-hidden" style={{ backgroundColor: "rgb(var(--ha-surface))" }}>
                 <img
                   src={previewImageSrc}
                   alt=""
@@ -1084,16 +1084,16 @@ function StepReview({
                   {t("onboarding.password.web.upgradeToView")}
                 </span>
               </div>
-              <div className="flex items-center gap-2 px-3.5 py-3 min-w-0" style={{ borderTop: "1px solid #F3F4F6" }}>
-                <span className="text-[14px] font-bold shrink-0" style={{ color: "#111111" }}>
+              <div className="flex items-center gap-2 px-3.5 py-3 min-w-0" style={{ borderTop: "1px solid rgb(var(--ha-surface))" }}>
+                <span className="text-[14px] font-bold shrink-0" style={{ color: "rgb(var(--ha-text))" }}>
                   {previewListing?.price ? `€${previewListing.price}` : "€850"}
                 </span>
-                <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
-                <span className="text-[12px] font-medium shrink-0" style={{ color: "#111111" }}>
+                <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "rgb(var(--ha-border-input))" }} />
+                <span className="text-[12px] font-medium shrink-0" style={{ color: "rgb(var(--ha-text))" }}>
                   {previewListing?.size_m2 ? `${previewListing.size_m2} m²` : "45 m²"}
                 </span>
-                <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "#D1D5DB" }} />
-                <span className="text-[12px] truncate min-w-0" style={{ color: "#6B7280" }}>
+                <span className="w-[3px] h-[3px] rounded-full shrink-0" style={{ backgroundColor: "rgb(var(--ha-border-input))" }} />
+                <span className="text-[12px] truncate min-w-0" style={{ color: "rgb(var(--ha-text-muted))" }}>
                   {previewListing?.fresh_label
                     ? t(`freshness.${({ net_binnen: "justIn", vandaag: "today" } as Record<string, string>)[previewListing.fresh_label] ?? "daysAgo"}`, { n: "1" })
                     : t("onboarding.password.web.fallbackFreshLabel", { n: "2" })}
@@ -1103,7 +1103,7 @@ function StepReview({
           </div>
         )}
 
-        <div className="bg-white rounded-[8px] border border-[#D1D5DB] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+        <div className="bg-white rounded-[8px] border border-ha-border-input overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
           <ReviewRow label={t("newSearch.step5.location")} value={locationLabel} onEdit={() => onEdit(1)} />
           {locationData.tab === "wijken" && (
             <ReviewRow label={t("newSearch.step5.districts")} value={districtsLabel} onEdit={() => onEdit(1)} />
@@ -1117,7 +1117,7 @@ function StepReview({
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-t border-[#F3F4F6]" style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}>
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-t border-ha-surface" style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}>
         <div className="max-w-lg mx-auto px-5 pt-4">
           <Button
             onClick={onSubmit}

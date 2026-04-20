@@ -20,7 +20,7 @@ export function LanguageSwitcher({ variant = "light" }: LanguageSwitcherProps) {
     <div className="flex items-center gap-1">
       <Globe
         className="w-3.5 h-3.5 mr-0.5"
-        style={{ color: isOnDark ? "rgba(255,255,255,0.6)" : "#334855" }}
+        style={{ color: isOnDark ? "rgba(255,255,255,0.6)" : "rgb(var(--ha-text-secondary))" }}
       />
       {LOCALES.map((l) => (
         <button
@@ -29,11 +29,11 @@ export function LanguageSwitcher({ variant = "light" }: LanguageSwitcherProps) {
           className="text-[12px] font-semibold px-1.5 py-0.5 rounded transition-colors"
           style={{
             color: isOnDark
-              ? (locale === l.code ? "#FFFFFF" : "rgba(255,255,255,0.6)")
-              : (locale === l.code ? "#111111" : "#334855"),
+              ? (locale === l.code ? "white" : "rgba(255,255,255,0.6)")
+              : (locale === l.code ? "rgb(var(--ha-text))" : "rgb(var(--ha-text-secondary))"),
             backgroundColor: isOnDark
               ? (locale === l.code ? "rgba(255,255,255,0.15)" : "transparent")
-              : (locale === l.code ? "#F0F0F0" : "transparent"),
+              : (locale === l.code ? "rgb(var(--ha-divider))" : "transparent"),
           }}
           data-testid={`lang-${l.code}`}
         >

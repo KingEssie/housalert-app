@@ -95,11 +95,11 @@ function StatCard({ label, value, icon: Icon, sub }: { label: string; value: str
   return (
     <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm" data-testid={`stat-${label.toLowerCase().replace(/\s/g, "-")}`}>
       <div className="flex items-center gap-2 mb-1">
-        <Icon className="w-4 h-4 text-[#334855]" />
-        <span className="text-xs font-medium text-[#334855] uppercase tracking-wide">{label}</span>
+        <Icon className="w-4 h-4 text-ha-text-secondary" />
+        <span className="text-xs font-medium text-ha-text-secondary uppercase tracking-wide">{label}</span>
       </div>
-      <p className="text-2xl font-bold text-[#111111]">{value}</p>
-      {sub && <p className="text-xs text-[#334855] mt-0.5">{sub}</p>}
+      <p className="text-2xl font-bold text-ha-text">{value}</p>
+      {sub && <p className="text-xs text-ha-text-secondary mt-0.5">{sub}</p>}
     </div>
   );
 }
@@ -221,18 +221,18 @@ export default function AdminIngestionPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#eaeaeb]">
-        <Loader2 className="w-8 h-8 animate-spin text-[#334855]" />
+      <div className="min-h-screen flex items-center justify-center bg-ha-bg">
+        <Loader2 className="w-8 h-8 animate-spin text-ha-text-secondary" />
       </div>
     );
   }
 
   if (error === "forbidden") {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#eaeaeb] px-6">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-ha-bg px-6">
         <XCircle className="w-12 h-12 text-ha-danger mb-4" />
-        <h1 className="text-xl font-bold text-[#111111] mb-2" data-testid="text-forbidden">Access denied</h1>
-        <p className="text-[#334855] mb-6">You do not have admin access.</p>
+        <h1 className="text-xl font-bold text-ha-text mb-2" data-testid="text-forbidden">Access denied</h1>
+        <p className="text-ha-text-secondary mb-6">You do not have admin access.</p>
         <button onClick={() => navigate("/dashboard")} className="px-6 py-2 rounded-lg bg-gray-900 text-white font-medium" data-testid="button-go-dashboard">
           Go to Dashboard
         </button>
@@ -242,10 +242,10 @@ export default function AdminIngestionPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#eaeaeb] px-6">
-        <AlertTriangle className="w-12 h-12 text-[#334855] mb-4" />
-        <h1 className="text-xl font-bold text-[#111111] mb-2">Error loading data</h1>
-        <p className="text-[#334855] mb-6">{error}</p>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-ha-bg px-6">
+        <AlertTriangle className="w-12 h-12 text-ha-text-secondary mb-4" />
+        <h1 className="text-xl font-bold text-ha-text mb-2">Error loading data</h1>
+        <p className="text-ha-text-secondary mb-6">{error}</p>
         <button onClick={() => loadData()} className="px-6 py-2 rounded-lg bg-gray-900 text-white font-medium" data-testid="button-retry">
           Retry
         </button>
@@ -261,16 +261,16 @@ export default function AdminIngestionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#eaeaeb]">
-      <header className="bg-white border-b border-[#E5E7EB] sticky top-0 z-10">
+    <div className="min-h-screen bg-ha-bg">
+      <header className="bg-white border-b border-ha-card-border sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate("/dashboard")} className="p-1.5 rounded-lg hover:bg-[#eaeaeb]" data-testid="button-back">
-              <ChevronLeft className="w-5 h-5 text-[#334855]" />
+            <button onClick={() => navigate("/dashboard")} className="p-1.5 rounded-lg hover:bg-ha-bg" data-testid="button-back">
+              <ChevronLeft className="w-5 h-5 text-ha-text-secondary" />
             </button>
             <div className="flex items-center gap-2">
-              <Activity className="w-5 h-5 text-[#111111]" />
-              <h1 className="text-lg font-bold text-[#111111]" data-testid="text-admin-title">Ingestion Monitor</h1>
+              <Activity className="w-5 h-5 text-ha-text" />
+              <h1 className="text-lg font-bold text-ha-text" data-testid="text-admin-title">Ingestion Monitor</h1>
             </div>
             {summary?.running && (
               <span className="ml-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-ha-primary/5 text-ha-primary text-xs font-semibold animate-pulse" data-testid="badge-running">
@@ -282,10 +282,10 @@ export default function AdminIngestionPage() {
           <button
             onClick={() => loadData(true)}
             disabled={refreshing}
-            className="p-2 rounded-lg hover:bg-[#eaeaeb] disabled:opacity-50"
+            className="p-2 rounded-lg hover:bg-ha-bg disabled:opacity-50"
             data-testid="button-refresh"
           >
-            <RefreshCw className={`w-4 h-4 text-[#334855] ${refreshing ? "animate-spin" : ""}`} />
+            <RefreshCw className={`w-4 h-4 text-ha-text-secondary ${refreshing ? "animate-spin" : ""}`} />
           </button>
         </div>
       </header>
@@ -311,29 +311,29 @@ export default function AdminIngestionPage() {
         {latestRun && (
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4" data-testid="section-latest-run">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-bold text-[#111111] uppercase tracking-wide">Latest Run</h2>
+              <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Latest Run</h2>
               <StatusBadge status={latestRun.status} />
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center">
               <div>
-                <p className="text-xl font-bold text-[#111111]">{latestRun.total_found}</p>
-                <p className="text-xs text-[#334855]">Found</p>
+                <p className="text-xl font-bold text-ha-text">{latestRun.total_found}</p>
+                <p className="text-xs text-ha-text-secondary">Found</p>
               </div>
               <div>
                 <p className="text-xl font-bold text-green-600">{latestRun.total_inserted}</p>
-                <p className="text-xs text-[#334855]">Inserted</p>
+                <p className="text-xs text-ha-text-secondary">Inserted</p>
               </div>
               <div>
-                <p className="text-xl font-bold text-[#334855]">{latestRun.total_duplicates}</p>
-                <p className="text-xs text-[#334855]">Duplicates</p>
+                <p className="text-xl font-bold text-ha-text-secondary">{latestRun.total_duplicates}</p>
+                <p className="text-xs text-ha-text-secondary">Duplicates</p>
               </div>
               <div>
                 <p className="text-xl font-bold text-ha-primary">{latestRun.total_matches}</p>
-                <p className="text-xs text-[#334855]">Matches</p>
+                <p className="text-xs text-ha-text-secondary">Matches</p>
               </div>
               <div>
-                <p className={`text-xl font-bold ${latestRun.total_errors > 0 ? "text-ha-danger" : "text-[#334855]"}`}>{latestRun.total_errors}</p>
-                <p className="text-xs text-[#334855]">Errors</p>
+                <p className={`text-xl font-bold ${latestRun.total_errors > 0 ? "text-ha-danger" : "text-ha-text-secondary"}`}>{latestRun.total_errors}</p>
+                <p className="text-xs text-ha-text-secondary">Errors</p>
               </div>
             </div>
           </div>
@@ -341,32 +341,32 @@ export default function AdminIngestionPage() {
 
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden" data-testid="section-cities">
           <div className="px-4 py-3 border-b border-gray-100">
-            <h2 className="text-sm font-bold text-[#111111] uppercase tracking-wide">Per City ({cities.length})</h2>
+            <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Per City ({cities.length})</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-[#eaeaeb] text-left">
-                  <th className="px-4 py-2 font-semibold text-[#334855]">City</th>
-                  <th className="px-3 py-2 font-semibold text-[#334855] text-right">Found</th>
-                  <th className="px-3 py-2 font-semibold text-[#334855] text-right">Inserted</th>
-                  <th className="px-3 py-2 font-semibold text-[#334855] text-right">Dupes</th>
-                  <th className="px-3 py-2 font-semibold text-[#334855] text-right">Matches</th>
-                  <th className="px-3 py-2 font-semibold text-[#334855] text-right">Errors</th>
-                  <th className="px-3 py-2 font-semibold text-[#334855] text-center">Status</th>
+                <tr className="bg-ha-bg text-left">
+                  <th className="px-4 py-2 font-semibold text-ha-text-secondary">City</th>
+                  <th className="px-3 py-2 font-semibold text-ha-text-secondary text-right">Found</th>
+                  <th className="px-3 py-2 font-semibold text-ha-text-secondary text-right">Inserted</th>
+                  <th className="px-3 py-2 font-semibold text-ha-text-secondary text-right">Dupes</th>
+                  <th className="px-3 py-2 font-semibold text-ha-text-secondary text-right">Matches</th>
+                  <th className="px-3 py-2 font-semibold text-ha-text-secondary text-right">Errors</th>
+                  <th className="px-3 py-2 font-semibold text-ha-text-secondary text-center">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {cities.length === 0 ? (
-                  <tr><td colSpan={7} className="px-4 py-6 text-center text-[#334855]">No data yet — waiting for first completed run</td></tr>
+                  <tr><td colSpan={7} className="px-4 py-6 text-center text-ha-text-secondary">No data yet — waiting for first completed run</td></tr>
                 ) : cities.map((row) => (
-                  <tr key={row.city} className="border-t border-gray-50 hover:bg-[#eaeaeb]" data-testid={`row-city-${row.city}`}>
-                    <td className="px-4 py-2 font-medium text-[#111111]">{row.city}</td>
-                    <td className="px-3 py-2 text-right text-[#111111]">{row.found}</td>
+                  <tr key={row.city} className="border-t border-gray-50 hover:bg-ha-bg" data-testid={`row-city-${row.city}`}>
+                    <td className="px-4 py-2 font-medium text-ha-text">{row.city}</td>
+                    <td className="px-3 py-2 text-right text-ha-text">{row.found}</td>
                     <td className="px-3 py-2 text-right text-green-700 font-medium">{row.inserted}</td>
-                    <td className="px-3 py-2 text-right text-[#334855]">{row.duplicates}</td>
+                    <td className="px-3 py-2 text-right text-ha-text-secondary">{row.duplicates}</td>
                     <td className="px-3 py-2 text-right text-ha-primary">{row.matches}</td>
-                    <td className={`px-3 py-2 text-right font-medium ${row.errors > 0 ? "text-ha-danger" : "text-[#334855]"}`}>{row.errors}</td>
+                    <td className={`px-3 py-2 text-right font-medium ${row.errors > 0 ? "text-ha-danger" : "text-ha-text-secondary"}`}>{row.errors}</td>
                     <td className="px-3 py-2 text-center"><StatusBadge status={cityStatus(row)} /></td>
                   </tr>
                 ))}
@@ -377,37 +377,37 @@ export default function AdminIngestionPage() {
 
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden" data-testid="section-sources">
           <div className="px-4 py-3 border-b border-gray-100">
-            <h2 className="text-sm font-bold text-[#111111] uppercase tracking-wide">Per Source</h2>
+            <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Per Source</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-[#eaeaeb] text-left">
-                  <th className="px-4 py-2 font-semibold text-[#334855]">Source</th>
-                  <th className="px-3 py-2 font-semibold text-[#334855] text-right">Found</th>
-                  <th className="px-3 py-2 font-semibold text-[#334855] text-right">Inserted</th>
-                  <th className="px-3 py-2 font-semibold text-[#334855] text-right">Dupes</th>
-                  <th className="px-3 py-2 font-semibold text-[#334855] text-right">Errors</th>
-                  <th className="px-3 py-2 font-semibold text-[#334855] text-center">Platform</th>
-                  <th className="px-3 py-2 font-semibold text-[#334855]">Last Success</th>
+                <tr className="bg-ha-bg text-left">
+                  <th className="px-4 py-2 font-semibold text-ha-text-secondary">Source</th>
+                  <th className="px-3 py-2 font-semibold text-ha-text-secondary text-right">Found</th>
+                  <th className="px-3 py-2 font-semibold text-ha-text-secondary text-right">Inserted</th>
+                  <th className="px-3 py-2 font-semibold text-ha-text-secondary text-right">Dupes</th>
+                  <th className="px-3 py-2 font-semibold text-ha-text-secondary text-right">Errors</th>
+                  <th className="px-3 py-2 font-semibold text-ha-text-secondary text-center">Platform</th>
+                  <th className="px-3 py-2 font-semibold text-ha-text-secondary">Last Success</th>
                 </tr>
               </thead>
               <tbody>
                 {sources.length === 0 ? (
-                  <tr><td colSpan={7} className="px-4 py-6 text-center text-[#334855]">No data yet</td></tr>
+                  <tr><td colSpan={7} className="px-4 py-6 text-center text-ha-text-secondary">No data yet</td></tr>
                 ) : sources.map((src) => {
                   const platformStatus = statuses.find(s => s.name === src.name);
                   return (
-                    <tr key={src.name} className="border-t border-gray-50 hover:bg-[#eaeaeb]" data-testid={`row-source-${src.name}`}>
-                      <td className="px-4 py-2 font-medium text-[#111111]">{src.name}</td>
-                      <td className="px-3 py-2 text-right text-[#111111]">{src.found}</td>
+                    <tr key={src.name} className="border-t border-gray-50 hover:bg-ha-bg" data-testid={`row-source-${src.name}`}>
+                      <td className="px-4 py-2 font-medium text-ha-text">{src.name}</td>
+                      <td className="px-3 py-2 text-right text-ha-text">{src.found}</td>
                       <td className="px-3 py-2 text-right text-green-700 font-medium">{src.inserted}</td>
-                      <td className="px-3 py-2 text-right text-[#334855]">{src.duplicates}</td>
-                      <td className={`px-3 py-2 text-right font-medium ${src.errors > 0 ? "text-ha-danger" : "text-[#334855]"}`}>{src.errors}</td>
+                      <td className="px-3 py-2 text-right text-ha-text-secondary">{src.duplicates}</td>
+                      <td className={`px-3 py-2 text-right font-medium ${src.errors > 0 ? "text-ha-danger" : "text-ha-text-secondary"}`}>{src.errors}</td>
                       <td className="px-3 py-2 text-center">
                         {platformStatus && <StatusBadge status={platformStatus.status} />}
                       </td>
-                      <td className="px-3 py-2 text-[#334855] text-xs">{formatTime(src.last_success)}</td>
+                      <td className="px-3 py-2 text-ha-text-secondary text-xs">{formatTime(src.last_success)}</td>
                     </tr>
                   );
                 })}
@@ -419,32 +419,32 @@ export default function AdminIngestionPage() {
         {summary && summary.runs.length > 1 && (
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden" data-testid="section-history">
             <div className="px-4 py-3 border-b border-gray-100">
-              <h2 className="text-sm font-bold text-[#111111] uppercase tracking-wide">Run History ({summary.runs.length})</h2>
+              <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Run History ({summary.runs.length})</h2>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-[#eaeaeb] text-left">
-                    <th className="px-4 py-2 font-semibold text-[#334855]">Time</th>
-                    <th className="px-3 py-2 font-semibold text-[#334855] text-right">Duration</th>
-                    <th className="px-3 py-2 font-semibold text-[#334855] text-right">Cities</th>
-                    <th className="px-3 py-2 font-semibold text-[#334855] text-right">Found</th>
-                    <th className="px-3 py-2 font-semibold text-[#334855] text-right">Inserted</th>
-                    <th className="px-3 py-2 font-semibold text-[#334855] text-right">Matches</th>
-                    <th className="px-3 py-2 font-semibold text-[#334855] text-right">Errors</th>
-                    <th className="px-3 py-2 font-semibold text-[#334855] text-center">Status</th>
+                  <tr className="bg-ha-bg text-left">
+                    <th className="px-4 py-2 font-semibold text-ha-text-secondary">Time</th>
+                    <th className="px-3 py-2 font-semibold text-ha-text-secondary text-right">Duration</th>
+                    <th className="px-3 py-2 font-semibold text-ha-text-secondary text-right">Cities</th>
+                    <th className="px-3 py-2 font-semibold text-ha-text-secondary text-right">Found</th>
+                    <th className="px-3 py-2 font-semibold text-ha-text-secondary text-right">Inserted</th>
+                    <th className="px-3 py-2 font-semibold text-ha-text-secondary text-right">Matches</th>
+                    <th className="px-3 py-2 font-semibold text-ha-text-secondary text-right">Errors</th>
+                    <th className="px-3 py-2 font-semibold text-ha-text-secondary text-center">Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {summary.runs.map((run) => (
-                    <tr key={run.id} className="border-t border-gray-50 hover:bg-[#eaeaeb]" data-testid={`row-run-${run.id}`}>
-                      <td className="px-4 py-2 text-[#111111]">{formatTime(run.finished_at)}</td>
-                      <td className="px-3 py-2 text-right text-[#111111]">{run.duration_sec}s</td>
-                      <td className="px-3 py-2 text-right text-[#111111]">{run.cities_count}</td>
-                      <td className="px-3 py-2 text-right text-[#111111]">{run.total_found}</td>
+                    <tr key={run.id} className="border-t border-gray-50 hover:bg-ha-bg" data-testid={`row-run-${run.id}`}>
+                      <td className="px-4 py-2 text-ha-text">{formatTime(run.finished_at)}</td>
+                      <td className="px-3 py-2 text-right text-ha-text">{run.duration_sec}s</td>
+                      <td className="px-3 py-2 text-right text-ha-text">{run.cities_count}</td>
+                      <td className="px-3 py-2 text-right text-ha-text">{run.total_found}</td>
                       <td className="px-3 py-2 text-right text-green-700 font-medium">{run.total_inserted}</td>
                       <td className="px-3 py-2 text-right text-ha-primary">{run.total_matches}</td>
-                      <td className={`px-3 py-2 text-right font-medium ${run.total_errors > 0 ? "text-ha-danger" : "text-[#334855]"}`}>{run.total_errors}</td>
+                      <td className={`px-3 py-2 text-right font-medium ${run.total_errors > 0 ? "text-ha-danger" : "text-ha-text-secondary"}`}>{run.total_errors}</td>
                       <td className="px-3 py-2 text-center"><StatusBadge status={run.status} /></td>
                     </tr>
                   ))}
@@ -456,10 +456,10 @@ export default function AdminIngestionPage() {
 
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden" data-testid="section-test-push">
           <div className="px-4 py-3 border-b border-gray-100">
-            <h2 className="text-sm font-bold text-[#111111] uppercase tracking-wide">Push-Benachrichtigungen testen</h2>
+            <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Push-Benachrichtigungen testen</h2>
           </div>
           <div className="p-4 flex flex-col gap-3">
-            <p className="text-sm text-[#334855]">
+            <p className="text-sm text-ha-text-secondary">
               Sendet eine Test-Push-Benachrichtigung an alle aktiven Push-Abos deines Admin-Kontos. Stelle sicher, dass Push in den Benachrichtigungseinstellungen aktiviert ist.
             </p>
             <div className="flex items-center gap-3">
@@ -487,11 +487,11 @@ export default function AdminIngestionPage() {
 
         <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden" data-testid="section-match-alignment">
           <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-            <h2 className="text-sm font-bold text-[#111111] uppercase tracking-wide">Match Alignment Debug</h2>
+            <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Match Alignment Debug</h2>
             <button
               onClick={loadDebugData}
               disabled={debugLoading}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#eaeaeb] hover:bg-[#E5E7EB] text-[#111111] text-xs font-semibold disabled:opacity-50 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-ha-bg hover:bg-ha-card-border text-ha-text text-xs font-semibold disabled:opacity-50 transition-colors"
               data-testid="button-refresh-debug"
             >
               {debugLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
@@ -500,7 +500,7 @@ export default function AdminIngestionPage() {
           </div>
           <div className="p-4">
             {!debugData && !debugLoading && !debugError && (
-              <p className="text-sm text-[#334855]">Klicke "Analyse starten" um die E-Mail/App-Sichtbarkeit deines Admin-Kontos zu vergleichen.</p>
+              <p className="text-sm text-ha-text-secondary">Klicke "Analyse starten" um die E-Mail/App-Sichtbarkeit deines Admin-Kontos zu vergleichen.</p>
             )}
             {debugError && (
               <div className="flex items-center gap-2 text-sm text-ha-danger" data-testid="text-debug-error">
@@ -511,17 +511,17 @@ export default function AdminIngestionPage() {
             {debugData && (
               <div className="flex flex-col gap-5">
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                  <div className="bg-[#eaeaeb] rounded-lg p-3">
-                    <div className="text-lg font-bold text-[#111111]">{debugData.total_match_rows ?? 0}</div>
-                    <div className="text-[10px] uppercase text-[#334855] font-medium">Match-Zeilen</div>
+                  <div className="bg-ha-bg rounded-lg p-3">
+                    <div className="text-lg font-bold text-ha-text">{debugData.total_match_rows ?? 0}</div>
+                    <div className="text-[10px] uppercase text-ha-text-secondary font-medium">Match-Zeilen</div>
                   </div>
-                  <div className="bg-[#eaeaeb] rounded-lg p-3">
-                    <div className="text-lg font-bold text-[#111111]">{debugData.app_visible_count ?? 0}</div>
-                    <div className="text-[10px] uppercase text-[#334855] font-medium">App-sichtbar</div>
+                  <div className="bg-ha-bg rounded-lg p-3">
+                    <div className="text-lg font-bold text-ha-text">{debugData.app_visible_count ?? 0}</div>
+                    <div className="text-[10px] uppercase text-ha-text-secondary font-medium">App-sichtbar</div>
                   </div>
-                  <div className="bg-[#eaeaeb] rounded-lg p-3">
-                    <div className="text-lg font-bold text-[#111111]">{debugData.recent_emailed_count ?? 0}</div>
-                    <div className="text-[10px] uppercase text-[#334855] font-medium">Zuletzt gemailt</div>
+                  <div className="bg-ha-bg rounded-lg p-3">
+                    <div className="text-lg font-bold text-ha-text">{debugData.recent_emailed_count ?? 0}</div>
+                    <div className="text-[10px] uppercase text-ha-text-secondary font-medium">Zuletzt gemailt</div>
                   </div>
                   <div className={`rounded-lg p-3 ${(debugData.mismatch_count ?? 0) > 0 ? "bg-ha-danger/5" : "bg-green-50"}`}>
                     <div className={`text-lg font-bold ${(debugData.mismatch_count ?? 0) > 0 ? "text-ha-danger" : "text-green-700"}`}>{debugData.mismatch_count ?? 0}</div>
@@ -530,8 +530,8 @@ export default function AdminIngestionPage() {
                 </div>
 
                 {debugData.subscription && (
-                  <div className="text-xs text-[#334855]">
-                    Abo: <span className="font-medium text-[#111111]">{debugData.subscription.status || "keins"}</span>
+                  <div className="text-xs text-ha-text-secondary">
+                    Abo: <span className="font-medium text-ha-text">{debugData.subscription.status || "keins"}</span>
                     {debugData.subscription.created_at && <> &middot; seit {formatTime(debugData.subscription.created_at)}</>}
                     {debugData.emailed_at && <> &middot; letzter E-Mail-Versand: {formatTime(debugData.emailed_at)}</>}
                   </div>
@@ -557,10 +557,10 @@ export default function AdminIngestionPage() {
                         <tbody>
                           {debugData.emailed_but_not_visible.map((item: any, i: number) => (
                             <tr key={i} className="border-t border-ha-danger/10">
-                              <td className="px-2 py-1.5 text-[#111111] max-w-[200px] truncate">{item.title || <span className="text-ha-danger italic">gelöscht</span>}</td>
-                              <td className="px-2 py-1.5 text-[#334855]">{item.city || "—"}</td>
-                              <td className="px-2 py-1.5 text-[#334855]">{item.source || "—"}</td>
-                              <td className="px-2 py-1.5 text-[#334855] whitespace-nowrap">{item.matched_at ? formatTime(item.matched_at) : "—"}</td>
+                              <td className="px-2 py-1.5 text-ha-text max-w-[200px] truncate">{item.title || <span className="text-ha-danger italic">gelöscht</span>}</td>
+                              <td className="px-2 py-1.5 text-ha-text-secondary">{item.city || "—"}</td>
+                              <td className="px-2 py-1.5 text-ha-text-secondary">{item.source || "—"}</td>
+                              <td className="px-2 py-1.5 text-ha-text-secondary whitespace-nowrap">{item.matched_at ? formatTime(item.matched_at) : "—"}</td>
                               <td className="px-2 py-1.5">
                                 <span className="inline-block px-1.5 py-0.5 rounded bg-ha-danger/10 text-ha-danger text-[10px] font-medium">{item.exclusion_reason}</span>
                               </td>
@@ -574,26 +574,26 @@ export default function AdminIngestionPage() {
 
                 {debugData.recent_emailed.length > 0 && (
                   <div>
-                    <h3 className="text-xs font-bold text-[#111111] uppercase tracking-wide mb-2">Zuletzt per E-Mail versendet ({debugData.recent_emailed.length})</h3>
+                    <h3 className="text-xs font-bold text-ha-text uppercase tracking-wide mb-2">Zuletzt per E-Mail versendet ({debugData.recent_emailed.length})</h3>
                     <div className="overflow-x-auto">
                       <table className="w-full text-xs">
                         <thead>
-                          <tr className="bg-[#eaeaeb] text-left">
-                            <th className="px-2 py-1.5 font-semibold text-[#334855]">Titel</th>
-                            <th className="px-2 py-1.5 font-semibold text-[#334855]">Stadt</th>
-                            <th className="px-2 py-1.5 font-semibold text-[#334855]">Quelle</th>
-                            <th className="px-2 py-1.5 font-semibold text-[#334855]">Matched</th>
-                            <th className="px-2 py-1.5 font-semibold text-[#334855]">Preis</th>
+                          <tr className="bg-ha-bg text-left">
+                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Titel</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Stadt</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Quelle</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Matched</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Preis</th>
                           </tr>
                         </thead>
                         <tbody>
                           {debugData.recent_emailed.map((item: any, i: number) => (
                             <tr key={i} className="border-t border-gray-100">
-                              <td className="px-2 py-1.5 text-[#111111] max-w-[200px] truncate">{item.title || <span className="text-[#334855] italic">—</span>}</td>
-                              <td className="px-2 py-1.5 text-[#334855]">{item.city || "—"}</td>
-                              <td className="px-2 py-1.5 text-[#334855]">{item.source || "—"}</td>
-                              <td className="px-2 py-1.5 text-[#334855] whitespace-nowrap">{item.matched_at ? formatTime(item.matched_at) : "—"}</td>
-                              <td className="px-2 py-1.5 text-[#334855]">{item.price ? `${item.price}€` : "—"}</td>
+                              <td className="px-2 py-1.5 text-ha-text max-w-[200px] truncate">{item.title || <span className="text-ha-text-secondary italic">—</span>}</td>
+                              <td className="px-2 py-1.5 text-ha-text-secondary">{item.city || "—"}</td>
+                              <td className="px-2 py-1.5 text-ha-text-secondary">{item.source || "—"}</td>
+                              <td className="px-2 py-1.5 text-ha-text-secondary whitespace-nowrap">{item.matched_at ? formatTime(item.matched_at) : "—"}</td>
+                              <td className="px-2 py-1.5 text-ha-text-secondary">{item.price ? `${item.price}€` : "—"}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -603,41 +603,41 @@ export default function AdminIngestionPage() {
                 )}
 
                 <div>
-                  <h3 className="text-xs font-bold text-[#111111] uppercase tracking-wide mb-2">
+                  <h3 className="text-xs font-bold text-ha-text uppercase tracking-wide mb-2">
                     App-sichtbare Matches ({debugData.app_visible?.length || 0} von {debugData.app_visible_count})
                   </h3>
                   {debugData.app_visible?.length > 0 ? (
                     <div className="overflow-x-auto">
                       <table className="w-full text-xs">
                         <thead>
-                          <tr className="bg-[#eaeaeb] text-left">
-                            <th className="px-2 py-1.5 font-semibold text-[#334855]">Titel</th>
-                            <th className="px-2 py-1.5 font-semibold text-[#334855]">Stadt</th>
-                            <th className="px-2 py-1.5 font-semibold text-[#334855]">Quelle</th>
-                            <th className="px-2 py-1.5 font-semibold text-[#334855]">Matched</th>
-                            <th className="px-2 py-1.5 font-semibold text-[#334855]">Preis</th>
+                          <tr className="bg-ha-bg text-left">
+                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Titel</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Stadt</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Quelle</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Matched</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Preis</th>
                           </tr>
                         </thead>
                         <tbody>
                           {debugData.app_visible.map((item: any, i: number) => (
                             <tr key={i} className="border-t border-gray-100">
-                              <td className="px-2 py-1.5 text-[#111111] max-w-[200px] truncate">{item.title || "—"}</td>
-                              <td className="px-2 py-1.5 text-[#334855]">{item.city || "—"}</td>
-                              <td className="px-2 py-1.5 text-[#334855]">{item.source || "—"}</td>
-                              <td className="px-2 py-1.5 text-[#334855] whitespace-nowrap">{item.matched_at ? formatTime(item.matched_at) : "—"}</td>
-                              <td className="px-2 py-1.5 text-[#334855]">{item.price ? `${item.price}€` : "—"}</td>
+                              <td className="px-2 py-1.5 text-ha-text max-w-[200px] truncate">{item.title || "—"}</td>
+                              <td className="px-2 py-1.5 text-ha-text-secondary">{item.city || "—"}</td>
+                              <td className="px-2 py-1.5 text-ha-text-secondary">{item.source || "—"}</td>
+                              <td className="px-2 py-1.5 text-ha-text-secondary whitespace-nowrap">{item.matched_at ? formatTime(item.matched_at) : "—"}</td>
+                              <td className="px-2 py-1.5 text-ha-text-secondary">{item.price ? `${item.price}€` : "—"}</td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
                     </div>
                   ) : (
-                    <p className="text-xs text-[#334855]">Keine app-sichtbaren Matches gefunden.</p>
+                    <p className="text-xs text-ha-text-secondary">Keine app-sichtbaren Matches gefunden.</p>
                   )}
                 </div>
 
                 {debugData.recent_emailed.length === 0 && debugData.emailed_but_not_visible.length === 0 && (
-                  <div className="flex items-center gap-2 text-sm text-[#334855] bg-[#eaeaeb] rounded-lg p-3">
+                  <div className="flex items-center gap-2 text-sm text-ha-text-secondary bg-ha-bg rounded-lg p-3">
                     <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0" />
                     Keine E-Mails in diesem Zyklus versendet — es gibt noch keine Vergleichsdaten. Warte bis zum nächsten Ingestion-Zyklus mit aktiven Matches.
                   </div>
@@ -647,7 +647,7 @@ export default function AdminIngestionPage() {
           </div>
         </div>
 
-        <div className="text-center text-xs text-[#334855] pb-6">
+        <div className="text-center text-xs text-ha-text-secondary pb-6">
           Auto-refreshes every 30s &middot; Next ingestion: {formatTime(summary?.nextRunAt || null)}
         </div>
       </main>

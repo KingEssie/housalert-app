@@ -87,7 +87,7 @@ export default function OnboardingName() {
                 {t("onboarding.name.firstNameLabel")}
               </label>
               <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#334855" }} />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "rgb(var(--ha-text-secondary))" }} />
                 <input
                   type="text"
                   value={firstName}
@@ -105,7 +105,7 @@ export default function OnboardingName() {
                 {t("onboarding.name.lastNameLabel")}
               </label>
               <div className="relative">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "#334855" }} />
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: "rgb(var(--ha-text-secondary))" }} />
                 <input
                   type="text"
                   value={lastName}
@@ -138,34 +138,34 @@ export default function OnboardingName() {
   const nameFormContent = (
     <div className="flex flex-col gap-5">
       <div>
-        <label className="text-[13px] font-medium mb-1.5 block text-[#334855]">
+        <label className="text-[13px] font-medium mb-1.5 block text-ha-text-secondary">
           {t("onboarding.name.firstNameLabel")}
         </label>
         <div className="relative">
-          <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
+          <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-secondary" />
           <input
             type="text"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             placeholder={t("onboarding.name.firstNamePlaceholder")}
-            className="w-full h-[56px] pl-12 pr-4 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+            className="w-full h-[56px] pl-12 pr-4 rounded-[8px] border border-ha-border-input bg-white text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
             autoFocus
             data-testid="input-first-name"
           />
         </div>
       </div>
       <div>
-        <label className="text-[13px] font-medium mb-1.5 block text-[#334855]">
+        <label className="text-[13px] font-medium mb-1.5 block text-ha-text-secondary">
           {t("onboarding.name.lastNameLabel")}
         </label>
         <div className="relative">
-          <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
+          <User className="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-secondary" />
           <input
             type="text"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
             placeholder={t("onboarding.name.lastNamePlaceholder")}
-            className="w-full h-[56px] pl-12 pr-4 rounded-[8px] border border-[#D1D5DB] bg-white text-[16px] font-medium text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+            className="w-full h-[56px] pl-12 pr-4 rounded-[8px] border border-ha-border-input bg-white text-[16px] font-medium text-ha-text placeholder:text-ha-text-secondary placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
             data-testid="input-last-name"
           />
         </div>

@@ -77,16 +77,16 @@ export default function SettingsPage() {
   const logoutIcon = (
     <button
       onClick={() => setShowLogoutConfirm(true)}
-      className="w-10 h-10 flex items-center justify-center rounded-full bg-[#E5E7EB] active:bg-[#D1D5DB] transition-colors"
+      className="w-10 h-10 flex items-center justify-center rounded-full bg-ha-card-border active:bg-ha-border-input transition-colors"
       aria-label={t("profile.logout")}
       data-testid="button-logout-icon"
     >
-      <LogOut className="w-[20px] h-[20px] text-[#111111]" strokeWidth={2} />
+      <LogOut className="w-[20px] h-[20px] text-ha-text" strokeWidth={2} />
     </button>
   );
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#eaeaeb" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
       <AppHeader
         title={t("settings.title")}
         onBack={() => navigate("/dashboard?tab=profile")}
@@ -96,11 +96,11 @@ export default function SettingsPage() {
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
         <div className="flex flex-col gap-4">
           <div className="app-card flex items-center gap-4" data-testid="card-profile-header">
-            <div className="w-14 h-14 rounded-full bg-[#F5F0EB] flex items-center justify-center flex-shrink-0">
-              <User className="w-[22px] h-[22px] text-[#111111]" />
+            <div className="w-14 h-14 rounded-full bg-ha-highlight flex items-center justify-center flex-shrink-0">
+              <User className="w-[22px] h-[22px] text-ha-text" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[16px] font-semibold text-[#111111] truncate" data-testid="text-profile-name">
+              <p className="text-[16px] font-semibold text-ha-text truncate" data-testid="text-profile-name">
                 {displayName}
               </p>
               <p className="text-[15px] text-ha-text-secondary truncate" data-testid="text-profile-email">
@@ -126,14 +126,14 @@ export default function SettingsPage() {
                           navigate(row.route);
                         }
                       }}
-                      className="w-full flex items-center gap-3 py-[13px] px-5 text-left active:bg-ha-surface-active transition-colors"
+                      className="w-full flex items-center gap-3 py-[13px] px-5 text-left active:bg-ha-surface transition-colors"
                       data-testid={`button-settings-${si}-${ri}`}
                     >
-                      <p className="text-[15px] font-semibold text-[#111111] flex-1">{row.label}</p>
+                      <p className="text-[15px] font-semibold text-ha-text flex-1">{row.label}</p>
                       {row.external ? (
-                        <ExternalLink className="w-4 h-4 text-[#334855] flex-shrink-0" />
+                        <ExternalLink className="w-4 h-4 text-ha-text-secondary flex-shrink-0" />
                       ) : (
-                        <ChevronRight className="w-4 h-4 text-[#334855] flex-shrink-0" />
+                        <ChevronRight className="w-4 h-4 text-ha-text-secondary flex-shrink-0" />
                       )}
                     </button>
                   </div>
@@ -145,17 +145,17 @@ export default function SettingsPage() {
           <div className="app-card !p-0">
             <button
               onClick={() => navigate("/account/delete")}
-              className="w-full flex items-center gap-3 py-[13px] px-5 text-left active:bg-ha-surface-active transition-colors"
+              className="w-full flex items-center gap-3 py-[13px] px-5 text-left active:bg-ha-surface transition-colors"
               data-testid="button-delete-account"
             >
-              <Trash2 className="w-5 h-5 text-[#334855] flex-shrink-0" />
+              <Trash2 className="w-5 h-5 text-ha-text-secondary flex-shrink-0" />
               <p className="text-[15px] text-ha-text-muted flex-1">{t("profile.deleteAccount")}</p>
             </button>
           </div>
 
           <div className="flex flex-col items-center gap-1 pt-4 pb-2">
-            <p className="text-[14px] font-semibold text-[#111111]">HousAlert</p>
-            <p className="text-[12px] text-ha-icon-secondary">v1.0.0</p>
+            <p className="text-[14px] font-semibold text-ha-text">HousAlert</p>
+            <p className="text-[12px] text-ha-text-secondary">v1.0.0</p>
           </div>
         </div>
       </div>

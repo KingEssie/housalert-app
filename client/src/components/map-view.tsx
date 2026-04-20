@@ -21,7 +21,7 @@ export default function MapView(props: MapViewProps) {
       fallback={
         <div
           className={props.className}
-          style={{ height: props.height ?? "200px", background: "#111111" }}
+          style={{ height: props.height ?? "200px", background: "rgb(var(--ha-text))" }}
         />
       }
     >

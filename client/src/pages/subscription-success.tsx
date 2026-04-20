@@ -94,7 +94,7 @@ export default function SubscriptionSuccessPage() {
           {syncing ? (
             <Loader2 className="w-8 h-8 text-ha-primary animate-spin" />
           ) : (
-            <CheckCircle className="w-8 h-8 text-[#111111]" />
+            <CheckCircle className="w-8 h-8 text-ha-text" />
           )}
         </div>
         <h1 className="text-[22px] font-medium text-ha-text mb-2" data-testid="text-success-title">

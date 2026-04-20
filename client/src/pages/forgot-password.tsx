@@ -55,24 +55,24 @@ export default function ForgotPasswordPage() {
 
   if (sent) {
     return (
-      <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: "#eaeaeb" }} data-testid="page-forgot-password-sent">
+      <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }} data-testid="page-forgot-password-sent">
         <div className="pt-[max(env(safe-area-inset-top),8px)] px-5">
           <button
             onClick={() => navigate("/")}
-            className="mt-3 w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors"
+            className="mt-3 w-10 h-10 rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input flex items-center justify-center transition-colors"
             data-testid="button-back"
             aria-label="Back"
           >
-            <ArrowLeft className="w-5 h-5 text-[#374151]" />
+            <ArrowLeft className="w-5 h-5 text-ha-text-secondary" />
           </button>
         </div>
 
         <div className="flex-1 flex flex-col items-center justify-center px-8 text-center">
           <div className="w-16 h-16 rounded-full bg-ha-success/10 flex items-center justify-center mb-6">
-            <CheckCircle2 className="w-8 h-8 text-[#111111]" />
+            <CheckCircle2 className="w-8 h-8 text-ha-text" />
           </div>
           <h1
-            className="text-[24px] font-semibold text-[#111111] tracking-[-0.02em] mb-3"
+            className="text-[24px] font-semibold text-ha-text tracking-[-0.02em] mb-3"
             data-testid="text-sent-title"
           >
             {t("forgotPassword.sentTitle")}
@@ -93,25 +93,25 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: "#eaeaeb" }} data-testid="page-forgot-password">
+    <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }} data-testid="page-forgot-password">
       <div className="pt-[max(env(safe-area-inset-top),8px)] px-5">
         <button
           onClick={() => navigate("/")}
-          className="mt-3 w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors"
+          className="mt-3 w-10 h-10 rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input flex items-center justify-center transition-colors"
           data-testid="button-back"
           aria-label="Back"
         >
-          <ArrowLeft className="w-5 h-5 text-[#374151]" />
+          <ArrowLeft className="w-5 h-5 text-ha-text-secondary" />
         </button>
       </div>
 
       <div className="flex-1 flex flex-col px-7">
         <div className="flex justify-center pt-8 pb-8">
-          <HousAlertLogo size={44} showText={true} textClassName="font-semibold text-[#111111] text-[20px] tracking-[-0.01em]" />
+          <HousAlertLogo size={44} showText={true} textClassName="font-semibold text-ha-text text-[20px] tracking-[-0.01em]" />
         </div>
 
         <h1
-          className="text-[26px] font-semibold text-[#111111] leading-[1.15] tracking-[-0.03em] mb-3 text-center"
+          className="text-[26px] font-semibold text-ha-text leading-[1.15] tracking-[-0.03em] mb-3 text-center"
           data-testid="text-forgot-title"
         >
           {t("forgotPassword.title")}
@@ -124,7 +124,7 @@ export default function ForgotPasswordPage() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div className="relative">
             <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-              <Mail className="w-[18px] h-[18px] text-ha-icon-secondary" />
+              <Mail className="w-[18px] h-[18px] text-ha-text-secondary" />
             </div>
             <input
               type="email"

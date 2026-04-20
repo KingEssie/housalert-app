@@ -13,7 +13,7 @@ export function ListingFallback({ city, source, size = "full" }: ListingFallback
   return (
     <div
       className="w-full h-full relative overflow-hidden select-none"
-      style={{ backgroundColor: "#EDF2F7" }}
+      style={{ backgroundColor: "rgb(var(--ha-surface))" }}
       data-testid="listing-fallback"
     >
       <img

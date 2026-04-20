@@ -33,15 +33,15 @@ interface CancellationStats {
 }
 
 const FUNNEL_STEPS = [
-  { key: "account_created", label: "Account Created", Icon: UserPlus, color: "#334855" },
+  { key: "account_created", label: "Account Created", Icon: UserPlus, color: "rgb(var(--ha-text-secondary))" },
   { key: "profile_created", label: "Profile Created", Icon: Search, color: "rgb(var(--ha-primary))" },
-  { key: "notifications_enabled", label: "Notifications Enabled", Icon: Bell, color: "#16A34A" },
+  { key: "notifications_enabled", label: "Notifications Enabled", Icon: Bell, color: "rgb(var(--ha-success))" },
   { key: "match_received", label: "Match Received", Icon: Inbox, color: "rgb(var(--ha-primary))" },
   { key: "first_match_viewed", label: "First Match Viewed", Icon: Eye, color: "rgb(var(--ha-primary))" },
   { key: "listing_opened", label: "Listing Opened", Icon: ExternalLink, color: "rgb(var(--ha-primary))" },
   { key: "first_reaction", label: "First Reaction", Icon: Send, color: "rgb(var(--ha-primary))" },
-  { key: "trial_started", label: "Trial Started", Icon: Crown, color: "#334855" },
-  { key: "subscription_started", label: "Subscription Started", Icon: CreditCard, color: "#334855" },
+  { key: "trial_started", label: "Trial Started", Icon: Crown, color: "rgb(var(--ha-text-secondary))" },
+  { key: "subscription_started", label: "Subscription Started", Icon: CreditCard, color: "rgb(var(--ha-text-secondary))" },
 ];
 
 export default function AdminActivationPage() {
@@ -89,15 +89,15 @@ export default function AdminActivationPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-[#eaeaeb] flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-[#334855]" />
+      <div className="min-h-screen bg-ha-bg flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-ha-text-secondary" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#eaeaeb] p-6">
+      <div className="min-h-screen bg-ha-bg p-6">
         <div className="max-w-2xl mx-auto">
           <div className="bg-ha-danger/5 text-ha-danger rounded-xl p-4">{error}</div>
         </div>
@@ -108,36 +108,36 @@ export default function AdminActivationPage() {
   const maxCount = data ? Math.max(data.totalTrackedUsers, 1) : 1;
 
   return (
-    <div className="min-h-screen bg-[#eaeaeb]">
+    <div className="min-h-screen bg-ha-bg">
       <div className="max-w-2xl mx-auto p-6">
         <div className="flex items-center gap-3 mb-6">
           <button
             onClick={() => window.history.back()}
-            className="w-9 h-9 rounded-full bg-white border border-[#E5E7EB] flex items-center justify-center"
+            className="w-9 h-9 rounded-full bg-white border border-ha-card-border flex items-center justify-center"
             data-testid="button-back"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
           <div>
-            <h1 className="text-[22px] font-bold text-[#111111]" data-testid="text-admin-title">Activation Funnel</h1>
-            <p className="text-[13px] text-[#334855]">User activation tracking & metrics</p>
+            <h1 className="text-[22px] font-bold text-ha-text" data-testid="text-admin-title">Activation Funnel</h1>
+            <p className="text-[13px] text-ha-text-secondary">User activation tracking & metrics</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 mb-6" data-testid="card-total-users">
+        <div className="bg-white rounded-2xl border border-ha-card-border p-5 mb-6" data-testid="card-total-users">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-[#eaeaeb] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-ha-bg flex items-center justify-center">
               <Users className="w-5 h-5 text-ha-primary" />
             </div>
             <div>
-              <p className="text-[13px] text-[#334855]">Total Tracked Users</p>
-              <p className="text-[28px] font-bold text-[#111111]" data-testid="text-total-users">{data?.totalTrackedUsers ?? 0}</p>
+              <p className="text-[13px] text-ha-text-secondary">Total Tracked Users</p>
+              <p className="text-[28px] font-bold text-ha-text" data-testid="text-total-users">{data?.totalTrackedUsers ?? 0}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 mb-6" data-testid="card-funnel">
-          <h2 className="text-[16px] font-bold text-[#111111] mb-4">Activation Funnel</h2>
+        <div className="bg-white rounded-2xl border border-ha-card-border p-5 mb-6" data-testid="card-funnel">
+          <h2 className="text-[16px] font-bold text-ha-text mb-4">Activation Funnel</h2>
           <div className="flex flex-col gap-3">
             {FUNNEL_STEPS.map(({ key, label, Icon, color }) => {
               const count = data?.funnel[key] ?? 0;
@@ -147,11 +147,11 @@ export default function AdminActivationPage() {
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2">
                       <Icon className="w-4 h-4" style={{ color }} />
-                      <span className="text-[13px] font-medium text-[#111111]">{label}</span>
+                      <span className="text-[13px] font-medium text-ha-text">{label}</span>
                     </div>
-                    <span className="text-[13px] font-bold text-[#111111]">{count}</span>
+                    <span className="text-[13px] font-bold text-ha-text">{count}</span>
                   </div>
-                  <div className="h-2 bg-[#eaeaeb] rounded-full overflow-hidden">
+                  <div className="h-2 bg-ha-bg rounded-full overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{ width: `${pct}%`, backgroundColor: color }}
@@ -164,20 +164,20 @@ export default function AdminActivationPage() {
         </div>
 
         {data?.sourceOfTruth && (
-          <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 mb-6" data-testid="card-source-of-truth">
-            <h2 className="text-[16px] font-bold text-[#111111] mb-4">Source of Truth (DB)</h2>
+          <div className="bg-white rounded-2xl border border-ha-card-border p-5 mb-6" data-testid="card-source-of-truth">
+            <h2 className="text-[16px] font-bold text-ha-text mb-4">Source of Truth (DB)</h2>
             <div className="grid grid-cols-2 gap-3">
               {[
-                { label: "Auth Users", value: data.sourceOfTruth.totalAuthUsers, color: "#334855" },
+                { label: "Auth Users", value: data.sourceOfTruth.totalAuthUsers, color: "rgb(var(--ha-text-secondary))" },
                 { label: "With Profile", value: data.sourceOfTruth.withSearchProfile, color: "rgb(var(--ha-primary))" },
-                { label: "Notifs Enabled", value: data.sourceOfTruth.withNotifications, color: "#16A34A" },
+                { label: "Notifs Enabled", value: data.sourceOfTruth.withNotifications, color: "rgb(var(--ha-success))" },
                 { label: "Viewed Match", value: data.sourceOfTruth.withMatchViewed, color: "rgb(var(--ha-primary))" },
                 { label: "Reacted", value: data.sourceOfTruth.withReaction, color: "rgb(var(--ha-primary))" },
-                { label: "With Trial", value: data.sourceOfTruth.withTrial, color: "#334855" },
-                { label: "Active Sub", value: data.sourceOfTruth.withActiveSubscription, color: "#334855" },
+                { label: "With Trial", value: data.sourceOfTruth.withTrial, color: "rgb(var(--ha-text-secondary))" },
+                { label: "Active Sub", value: data.sourceOfTruth.withActiveSubscription, color: "rgb(var(--ha-text-secondary))" },
               ].map(({ label, value, color }) => (
-                <div key={label} className="bg-[#eaeaeb] rounded-xl p-3" data-testid={`sot-${label.toLowerCase().replace(/\s/g, "-")}`}>
-                  <p className="text-[11px] font-medium text-[#334855]">{label}</p>
+                <div key={label} className="bg-ha-bg rounded-xl p-3" data-testid={`sot-${label.toLowerCase().replace(/\s/g, "-")}`}>
+                  <p className="text-[11px] font-medium text-ha-text-secondary">{label}</p>
                   <p className="text-[22px] font-bold" style={{ color }}>{value ?? "—"}</p>
                 </div>
               ))}
@@ -185,48 +185,48 @@ export default function AdminActivationPage() {
           </div>
         )}
 
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5 mb-6" data-testid="card-cancellation-stats">
-          <h2 className="text-[16px] font-bold text-[#111111] mb-4">Cancellation & Outcome KPIs</h2>
+        <div className="bg-white rounded-2xl border border-ha-card-border p-5 mb-6" data-testid="card-cancellation-stats">
+          <h2 className="text-[16px] font-bold text-ha-text mb-4">Cancellation & Outcome KPIs</h2>
           <div className="grid grid-cols-2 gap-3">
             {[
               { label: "Total Cancellations", value: cancelStats?.total ?? 0, Icon: XCircle, color: "rgb(var(--ha-danger))" },
-              { label: "Homes Found via HousAlert", value: cancelStats?.foundViaHousalert ?? 0, Icon: Home, color: "#16A34A" },
-              { label: "Found elsewhere", value: cancelStats?.foundNotViaHousalert ?? 0, Icon: Home, color: "#334855" },
-              { label: "Not found", value: cancelStats?.notFound ?? 0, Icon: Search, color: "#334855" },
-              { label: "Other reason", value: cancelStats?.other ?? 0, Icon: HelpCircle, color: "#334855" },
+              { label: "Homes Found via HousAlert", value: cancelStats?.foundViaHousalert ?? 0, Icon: Home, color: "rgb(var(--ha-success))" },
+              { label: "Found elsewhere", value: cancelStats?.foundNotViaHousalert ?? 0, Icon: Home, color: "rgb(var(--ha-text-secondary))" },
+              { label: "Not found", value: cancelStats?.notFound ?? 0, Icon: Search, color: "rgb(var(--ha-text-secondary))" },
+              { label: "Other reason", value: cancelStats?.other ?? 0, Icon: HelpCircle, color: "rgb(var(--ha-text-secondary))" },
             ].map(({ label, value, Icon, color }) => (
-              <div key={label} className="bg-[#eaeaeb] rounded-xl p-3" data-testid={`cancel-${label.toLowerCase().replace(/\s/g, "-")}`}>
+              <div key={label} className="bg-ha-bg rounded-xl p-3" data-testid={`cancel-${label.toLowerCase().replace(/\s/g, "-")}`}>
                 <div className="flex items-center gap-1.5 mb-1">
                   <Icon className="w-3.5 h-3.5" style={{ color }} />
-                  <p className="text-[11px] font-medium text-[#334855]">{label}</p>
+                  <p className="text-[11px] font-medium text-ha-text-secondary">{label}</p>
                 </div>
                 <p className="text-[22px] font-bold" style={{ color }}>{value}</p>
               </div>
             ))}
           </div>
           {cancelStats && cancelStats.total > 0 && cancelStats.foundViaHousalert > 0 && (
-            <div className="mt-3 bg-[#eaeaeb] rounded-xl px-4 py-2.5">
-              <p className="text-[13px] text-[#16A34A] font-medium">
+            <div className="mt-3 bg-ha-bg rounded-xl px-4 py-2.5">
+              <p className="text-[13px] text-ha-success font-medium">
                 {Math.round((cancelStats.foundViaHousalert / cancelStats.total) * 100)}% found their home via HousAlert
               </p>
             </div>
           )}
         </div>
 
-        <div className="bg-white rounded-2xl border border-[#E5E7EB] p-5" data-testid="card-recent-events">
-          <h2 className="text-[16px] font-bold text-[#111111] mb-4">Recent Events</h2>
+        <div className="bg-white rounded-2xl border border-ha-card-border p-5" data-testid="card-recent-events">
+          <h2 className="text-[16px] font-bold text-ha-text mb-4">Recent Events</h2>
           {(!data?.recentEvents || data.recentEvents.length === 0) ? (
-            <p className="text-[13px] text-[#334855]">No events recorded yet.</p>
+            <p className="text-[13px] text-ha-text-secondary">No events recorded yet.</p>
           ) : (
             <div className="flex flex-col divide-y divide-[#F7F7F7]">
               {data.recentEvents.map((evt, i) => (
                 <div key={i} className="py-2.5 flex items-center gap-3" data-testid={`event-row-${i}`}>
-                  <Activity className="w-3.5 h-3.5 text-[#334855] flex-shrink-0" />
+                  <Activity className="w-3.5 h-3.5 text-ha-text-secondary flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <span className="text-[13px] font-medium text-[#111111]">{evt.event_name}</span>
-                    <span className="text-[11px] text-[#334855] ml-2">{evt.user_id.slice(0, 8)}...</span>
+                    <span className="text-[13px] font-medium text-ha-text">{evt.event_name}</span>
+                    <span className="text-[11px] text-ha-text-secondary ml-2">{evt.user_id.slice(0, 8)}...</span>
                   </div>
-                  <span className="text-[11px] text-[#334855] flex-shrink-0">
+                  <span className="text-[11px] text-ha-text-secondary flex-shrink-0">
                     {new Date(evt.created_at).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}
                   </span>
                 </div>

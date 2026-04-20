@@ -93,63 +93,63 @@ export default function PreferencesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#eaeaeb]">
+    <div className="min-h-screen bg-ha-bg">
       <AppHeader title={t("settings.preferences")} onBack={() => navigate("/dashboard?tab=profile")} />
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
 
         {/* ONE white panel */}
-        <div className="bg-white rounded-[12px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden">
+        <div className="bg-white rounded-[12px] border border-ha-card-border shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden">
 
           {/* TAAL section */}
-          <p className="text-[18px] font-bold text-[#111111] px-4 pt-5 pb-3">
+          <p className="text-[18px] font-bold text-ha-text px-4 pt-5 pb-3">
             {t("settings.sectionLanguage")}
           </p>
 
           <div className="px-4 pb-4">
             <button
               onClick={() => setShowLangSheet(true)}
-              className="w-full flex items-center justify-between px-4 h-[60px] text-left bg-white border border-[#D1D5DB] rounded-[8px] active:bg-[#F9FAFB] transition-colors"
+              className="w-full flex items-center justify-between px-4 h-[60px] text-left bg-white border border-ha-border-input rounded-[8px] active:bg-ha-surface transition-colors"
               data-testid="button-pref-language"
             >
-              <span className="text-[15px] font-medium text-[#374151]">{t("profile.language")}</span>
+              <span className="text-[15px] font-medium text-ha-text-secondary">{t("profile.language")}</span>
               <div className="flex items-center gap-2">
-                <span className="text-[15px] font-normal text-[#6B7280]">{currentLangLabel}</span>
-                <ChevronRight className="w-[16px] h-[16px] text-[#9CA3AF] flex-shrink-0" />
+                <span className="text-[15px] font-normal text-ha-text-muted">{currentLangLabel}</span>
+                <ChevronRight className="w-[16px] h-[16px] text-ha-text-placeholder flex-shrink-0" />
               </div>
             </button>
           </div>
 
           {/* Divider before notifications */}
-          <div className="h-px bg-[#F3F4F6]" />
+          <div className="h-px bg-ha-surface" />
 
           {/* NOTIFICATIES section */}
-          <p className="text-[18px] font-bold text-[#111111] px-4 pt-5 pb-3">
+          <p className="text-[18px] font-bold text-ha-text px-4 pt-5 pb-3">
             {t("settings.sectionNotifications")}
           </p>
 
           {/* Push row */}
           <div className="flex items-center px-4 h-[52px]">
-            <span className="text-[15px] font-medium text-[#374151] flex-1">{t("profile.pushNotifications")}</span>
+            <span className="text-[15px] font-medium text-ha-text-secondary flex-1">{t("profile.pushNotifications")}</span>
             <button
               onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
               disabled={loading || notifUpdating === "push_enabled"}
-              className={`w-[48px] h-[28px] rounded-full relative transition-colors flex-shrink-0 ${notifSettings?.push_enabled ? "bg-ha-primary" : "bg-[#E5E7EB]"} ${(loading || notifUpdating === "push_enabled") ? "opacity-50" : ""}`}
+              className={`w-[48px] h-[28px] rounded-full relative transition-colors flex-shrink-0 ${notifSettings?.push_enabled ? "bg-ha-primary" : "bg-ha-card-border"} ${(loading || notifUpdating === "push_enabled") ? "opacity-50" : ""}`}
               data-testid="toggle-push"
             >
               <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[23px]" : "left-[3px]"}`} />
             </button>
           </div>
 
-          <div className="h-px bg-[#F3F4F6] mx-4" />
+          <div className="h-px bg-ha-surface mx-4" />
 
           {/* Email row */}
           <div className="flex items-center px-4 h-[52px]">
-            <span className="text-[15px] font-medium text-[#374151] flex-1">{t("profile.emailNotifications")}</span>
+            <span className="text-[15px] font-medium text-ha-text-secondary flex-1">{t("profile.emailNotifications")}</span>
             <button
               onClick={() => handleToggleNotif("email_enabled", !!notifSettings?.email_enabled)}
               disabled={loading || notifUpdating === "email_enabled"}
-              className={`w-[48px] h-[28px] rounded-full relative transition-colors flex-shrink-0 ${notifSettings?.email_enabled ? "bg-ha-primary" : "bg-[#E5E7EB]"} ${(loading || notifUpdating === "email_enabled") ? "opacity-50" : ""}`}
+              className={`w-[48px] h-[28px] rounded-full relative transition-colors flex-shrink-0 ${notifSettings?.email_enabled ? "bg-ha-primary" : "bg-ha-card-border"} ${(loading || notifUpdating === "email_enabled") ? "opacity-50" : ""}`}
               data-testid="toggle-email"
             >
               <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.email_enabled ? "left-[23px]" : "left-[3px]"}`} />
@@ -174,10 +174,10 @@ export default function PreferencesPage() {
               <button
                 key={lang.code}
                 onClick={() => handleLanguageChange(lang.code)}
-                className="w-full flex items-center justify-between py-4 px-2 text-left border-b border-[#F3F4F6] last:border-0 transition-colors active:bg-[#F9FAFB]"
+                className="w-full flex items-center justify-between py-4 px-2 text-left border-b border-ha-surface last:border-0 transition-colors active:bg-ha-surface"
                 data-testid={`button-lang-${lang.code}`}
               >
-                <span className={`text-[16px] font-semibold ${locale === lang.code ? "text-ha-primary" : "text-[#111111]"}`}>{lang.label}</span>
+                <span className={`text-[16px] font-semibold ${locale === lang.code ? "text-ha-primary" : "text-ha-text"}`}>{lang.label}</span>
                 {locale === lang.code && <Check className="w-5 h-5 text-ha-primary" />}
               </button>
             ))}

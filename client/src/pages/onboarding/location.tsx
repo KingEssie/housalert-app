@@ -107,17 +107,17 @@ export default function OnboardingLocation() {
     return (
       <div
         className="min-h-[100dvh] flex flex-col"
-        style={{ background: "#ffffff" }}
+        style={{ background: "rgb(var(--ha-card))" }}
         data-testid="screen-onboarding-location-citypicker"
       >
         <header
           className="sticky top-0 z-20 w-full"
-          style={{ backgroundColor: "#ffffff", borderBottom: `1px solid ${OBW.headerBorder}` }}
+          style={{ backgroundColor: "rgb(var(--ha-card))", borderBottom: `1px solid ${OBW.headerBorder}` }}
         >
           <div className="relative max-w-[480px] mx-auto px-4 h-[56px] flex items-center justify-between">
             <span
               className="text-[14px] font-bold rounded-[10px] shrink-0 flex items-center px-3.5"
-              style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "#ffffff" }}
+              style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "white" }}
               data-testid="badge-step"
             >
               1/4
@@ -131,7 +131,7 @@ export default function OnboardingLocation() {
             <button
               onClick={() => navigate("/")}
               className="w-[36px] h-[36px] shrink-0 flex items-center justify-center rounded-full transition-opacity hover:opacity-70 active:opacity-50"
-              style={{ backgroundColor: "#F2F2F2", color: "#444444" }}
+              style={{ backgroundColor: "rgb(var(--ha-surface))", color: "rgb(var(--ha-text-muted))" }}
               data-testid="button-close"
             >
               <X className="w-[22px] h-[22px]" />
@@ -153,8 +153,8 @@ export default function OnboardingLocation() {
                 cityGeocoder.search(e.target.value);
               }}
               placeholder={t("onboarding.location.searchPlaceholder")}
-              className="w-full ha-field-web focus:ring-0 placeholder:text-[16px] placeholder:text-[#9CA3AF]"
-              style={{ backgroundColor: OBW.inputBg, borderColor: "#CFCFCF", color: OBW.text, paddingRight: "2.5rem" }}
+              className="w-full ha-field-web focus:ring-0 placeholder:text-[16px] placeholder:text-ha-text-placeholder"
+              style={{ backgroundColor: OBW.inputBg, borderColor: "rgb(var(--ha-border-input))", color: OBW.text, paddingRight: "2.5rem" }}
               autoFocus
               data-testid="input-city-search"
             />
@@ -170,8 +170,8 @@ export default function OnboardingLocation() {
               <button
                 key={c.name}
                 onClick={() => selectCity(c.name, c.lat, c.lng)}
-                className="w-full flex items-center gap-2.5 min-h-[56px] text-left transition-colors hover:bg-[#F7F7F7] active:bg-[#F0F1F2]"
-                style={{ paddingTop: "14px", paddingBottom: "14px", borderBottom: "1px solid #EAEAEA" }}
+                className="w-full flex items-center gap-2.5 min-h-[56px] text-left transition-colors hover:bg-ha-hover-bg active:bg-ha-surface"
+                style={{ paddingTop: "14px", paddingBottom: "14px", borderBottom: "1px solid rgb(var(--ha-divider))" }}
                 data-testid={`city-option-${c.name}`}
               >
                 <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.pink, opacity: 0.8 }} />
@@ -183,8 +183,8 @@ export default function OnboardingLocation() {
               <button
                 key={(r as any).placeId || i}
                 onClick={() => selectCity((r as any).city, (r as any).lat ?? 0, (r as any).lng ?? 0)}
-                className="w-full flex items-center gap-2.5 min-h-[56px] text-left transition-colors hover:bg-[#F7F7F7] active:bg-[#F0F1F2]"
-                style={{ paddingTop: "14px", paddingBottom: "14px", borderBottom: "1px solid #EAEAEA" }}
+                className="w-full flex items-center gap-2.5 min-h-[56px] text-left transition-colors hover:bg-ha-hover-bg active:bg-ha-surface"
+                style={{ paddingTop: "14px", paddingBottom: "14px", borderBottom: "1px solid rgb(var(--ha-divider))" }}
                 data-testid={`city-geocoder-${i}`}
               >
                 <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.pink, opacity: 0.8 }} />
@@ -264,18 +264,18 @@ export default function OnboardingLocation() {
     return (
       <div
         className="min-h-[100dvh] flex flex-col"
-        style={{ background: "#ffffff" }}
+        style={{ background: "rgb(var(--ha-card))" }}
         data-testid="screen-onboarding-location"
       >
         {/* Header — matches city.tsx: badge | centered title | close circle */}
         <header
           className="sticky top-0 z-20 w-full"
-          style={{ backgroundColor: "#ffffff", borderBottom: `1px solid ${OBW.headerBorder}` }}
+          style={{ backgroundColor: "rgb(var(--ha-card))", borderBottom: `1px solid ${OBW.headerBorder}` }}
         >
           <div className="relative max-w-[480px] mx-auto px-4 h-[56px] flex items-center justify-between">
             <span
               className="text-[14px] font-bold rounded-[10px] shrink-0 flex items-center px-3.5"
-              style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "#ffffff" }}
+              style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "white" }}
               data-testid="badge-step"
             >
               1/4
@@ -289,7 +289,7 @@ export default function OnboardingLocation() {
             <button
               onClick={handleClose}
               className="w-[36px] h-[36px] shrink-0 flex items-center justify-center rounded-full transition-opacity hover:opacity-70 active:opacity-50"
-              style={{ backgroundColor: "#F2F2F2", color: "#444444" }}
+              style={{ backgroundColor: "rgb(var(--ha-surface))", color: "rgb(var(--ha-text-muted))" }}
               data-testid="button-location-close"
             >
               <X className="w-[22px] h-[22px]" />
@@ -308,7 +308,7 @@ export default function OnboardingLocation() {
           <button
             onClick={() => navigate("/")}
             className="w-full flex items-center gap-3 mb-5 ha-field-web text-left"
-            style={{ backgroundColor: OBW.inputBg, borderColor: "#CFCFCF", color: OBW.text }}
+            style={{ backgroundColor: OBW.inputBg, borderColor: "rgb(var(--ha-border-input))", color: OBW.text }}
             data-testid="field-city-display"
           >
             <Search className="w-[18px] h-[18px] shrink-0" style={{ color: OBW.textMuted }} />
@@ -319,7 +319,7 @@ export default function OnboardingLocation() {
           {/* Segmented tab control */}
           <div
             className="flex items-center gap-1 p-[4px] rounded-full mb-5"
-            style={{ backgroundColor: "#F0F4F8" }}
+            style={{ backgroundColor: "rgb(var(--ha-toggle-bg))" }}
             data-testid="location-tabs"
           >
             {webTabs.map((tab) => {
@@ -331,7 +331,7 @@ export default function OnboardingLocation() {
                   className="flex-1 py-[8px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
                   style={{
                     backgroundColor: isActive ? "rgb(var(--ha-primary))" : "transparent",
-                    color: isActive ? "#ffffff" : "#111111",
+                    color: isActive ? "white" : "rgb(var(--ha-text))",
                   }}
                   data-testid={`tab-${tab.value}`}
                 >
@@ -350,7 +350,7 @@ export default function OnboardingLocation() {
               <button
                 onClick={() => setShowDistrictPicker(!showDistrictPicker)}
                 className="w-full flex items-center justify-between ha-field-web text-left mb-4"
-                style={{ backgroundColor: OBW.inputBg, borderColor: "#CFCFCF", color: OBW.text }}
+                style={{ backgroundColor: OBW.inputBg, borderColor: "rgb(var(--ha-border-input))", color: OBW.text }}
                 data-testid="dropdown-districts"
               >
                 <span className="text-[16px] font-medium" style={{ color: OBW.text }}>{districtSummary}</span>
@@ -366,7 +366,7 @@ export default function OnboardingLocation() {
               {showDistrictPicker && hasDistricts && (
                 <div
                   className="rounded-[12px] overflow-hidden border mb-4"
-                  style={{ borderColor: "#EAEAEA", maxHeight: "200px", overflowY: "auto" }}
+                  style={{ borderColor: "rgb(var(--ha-divider))", maxHeight: "200px", overflowY: "auto" }}
                   data-testid="district-list"
                 >
                   {districtList.map((d, i) => {
@@ -375,10 +375,10 @@ export default function OnboardingLocation() {
                       <button
                         key={d}
                         onClick={() => toggleDistrict(d)}
-                        className="w-full flex items-center justify-between hover:bg-[#F7F7F7] transition-colors"
+                        className="w-full flex items-center justify-between hover:bg-ha-hover-bg transition-colors"
                         style={{
                           padding: "12px 16px",
-                          borderBottom: i < districtList.length - 1 ? "1px solid #F0F0F0" : "none",
+                          borderBottom: i < districtList.length - 1 ? "1px solid rgb(var(--ha-divider))" : "none",
                         }}
                         data-testid={`district-${d}`}
                       >
@@ -415,11 +415,11 @@ export default function OnboardingLocation() {
               {/* Slider CSS — scoped via class, injected inline to stay within this file */}
               <style>{`
                 .ha-radius-slider { -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; width: 100%; height: 4px; }
-                .ha-radius-slider::-webkit-slider-runnable-track { background: linear-gradient(to right, rgb(var(--ha-primary)) 0%, rgb(var(--ha-primary)) var(--sl-pct,0%), #E5E7EB var(--sl-pct,0%), #E5E7EB 100%); border-radius: 9999px; height: 4px; }
-                .ha-radius-slider::-moz-range-track { background: #E5E7EB; border-radius: 9999px; height: 4px; }
+                .ha-radius-slider::-webkit-slider-runnable-track { background: linear-gradient(to right, rgb(var(--ha-primary)) 0%, rgb(var(--ha-primary)) var(--sl-pct,0%), rgb(var(--ha-card-border)) var(--sl-pct,0%), rgb(var(--ha-card-border)) 100%); border-radius: 9999px; height: 4px; }
+                .ha-radius-slider::-moz-range-track { background:rgb(var(--ha-card-border)); border-radius: 9999px; height: 4px; }
                 .ha-radius-slider::-moz-range-progress { background: rgb(var(--ha-primary)); border-radius: 9999px; height: 4px; }
-                .ha-radius-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%; background: #ffffff; box-shadow: 0 1px 6px rgba(0,0,0,0.18), 0 0 0 1.5px rgba(0,0,0,0.07); margin-top: -9px; cursor: pointer; }
-                .ha-radius-slider::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: #ffffff; box-shadow: 0 1px 6px rgba(0,0,0,0.18), 0 0 0 1.5px rgba(0,0,0,0.07); border: none; cursor: pointer; }
+                .ha-radius-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%; background:white; box-shadow: 0 1px 6px rgba(0,0,0,0.18), 0 0 0 1.5px rgba(0,0,0,0.07); margin-top: -9px; cursor: pointer; }
+                .ha-radius-slider::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background:white; box-shadow: 0 1px 6px rgba(0,0,0,0.18), 0 0 0 1.5px rgba(0,0,0,0.07); border: none; cursor: pointer; }
               `}</style>
 
               {/* Header row: distance label + city name */}
@@ -540,12 +540,12 @@ export default function OnboardingLocation() {
     <>
       <button
         onClick={() => navigate("/")}
-        className="w-full flex items-center gap-3 mb-5 h-[56px] rounded-[8px] border border-[#D1D5DB] bg-white px-4"
+        className="w-full flex items-center gap-3 mb-5 h-[56px] rounded-[8px] border border-ha-border-input bg-white px-4"
         data-testid="field-city-display"
       >
-        <Search className="w-[16px] h-[16px] shrink-0 text-[#334855]" />
-        <span className="flex-1 text-left text-[15px] font-medium text-[#111111]">{city}</span>
-        <X className="w-[14px] h-[14px] shrink-0 text-[#334855]" />
+        <Search className="w-[16px] h-[16px] shrink-0 text-ha-text-secondary" />
+        <span className="flex-1 text-left text-[15px] font-medium text-ha-text">{city}</span>
+        <X className="w-[14px] h-[14px] shrink-0 text-ha-text-secondary" />
       </button>
 
       <div className="flex items-center gap-2 mb-5" data-testid="location-tabs">
@@ -557,8 +557,8 @@ export default function OnboardingLocation() {
               onClick={() => setMode(tab.value)}
               className={`px-3.5 py-[6px] text-[13px] rounded-full border transition-all duration-200 active:scale-[0.96] ${
                 isActive
-                  ? "bg-[#111111] text-white font-semibold border-[#111111]"
-                  : "bg-[#F3F4F6] text-[#111111] font-medium border-transparent"
+                  ? "bg-ha-text text-white font-semibold border-ha-text"
+                  : "bg-ha-surface text-ha-text font-medium border-transparent"
               }`}
               data-testid={`tab-${tab.value}`}
             >
@@ -570,22 +570,22 @@ export default function OnboardingLocation() {
 
       {mode === "districts" && hasDistricts && (
         <div>
-          <p className="text-[14px] font-medium mb-2 text-[#334855]">{t("onboarding.location.neighborhoodsTab")}</p>
+          <p className="text-[14px] font-medium mb-2 text-ha-text-secondary">{t("onboarding.location.neighborhoodsTab")}</p>
           <button
             onClick={() => setShowDistrictPicker(!showDistrictPicker)}
-            className="w-full flex items-center justify-between h-[56px] rounded-[8px] border border-[#D1D5DB] bg-white px-4"
+            className="w-full flex items-center justify-between h-[56px] rounded-[8px] border border-ha-border-input bg-white px-4"
             data-testid="dropdown-districts"
           >
-            <span className="text-[15px] font-medium text-[#111111]">{districtSummary}</span>
+            <span className="text-[15px] font-medium text-ha-text">{districtSummary}</span>
             <ChevronDown
-              className="w-[16px] h-[16px] shrink-0 transition-transform text-[#334855]"
+              className="w-[16px] h-[16px] shrink-0 transition-transform text-ha-text-secondary"
               style={{ transform: showDistrictPicker ? "rotate(180deg)" : "none" }}
             />
           </button>
 
           {showDistrictPicker && (
             <div
-              className="mt-2 rounded-[12px] overflow-hidden border border-[#E5E7EB] bg-white"
+              className="mt-2 rounded-[12px] overflow-hidden border border-ha-card-border bg-white"
               style={{ maxHeight: "200px", overflowY: "auto" }}
               data-testid="district-list"
             >
@@ -595,14 +595,14 @@ export default function OnboardingLocation() {
                   <button
                     key={d}
                     onClick={() => toggleDistrict(d)}
-                    className="w-full flex items-center justify-between px-4 transition-colors hover:bg-[#F7F7F7]"
+                    className="w-full flex items-center justify-between px-4 transition-colors hover:bg-ha-hover-bg"
                     style={{
                       padding: "12px 16px",
-                      borderBottom: i < districtList.length - 1 ? "1px solid #F0F0F0" : "none",
+                      borderBottom: i < districtList.length - 1 ? "1px solid rgb(var(--ha-divider))" : "none",
                     }}
                     data-testid={`district-${d}`}
                   >
-                    <span className={`text-[14px] font-medium ${active ? "text-[#111111]" : "text-[#334855]"}`}>{d}</span>
+                    <span className={`text-[14px] font-medium ${active ? "text-ha-text" : "text-ha-text-secondary"}`}>{d}</span>
                     {active && <Check className="w-4 h-4 text-ha-primary" />}
                   </button>
                 );
@@ -625,7 +625,7 @@ export default function OnboardingLocation() {
 
       {mode === "radius" && (
         <div>
-          <p className="text-[14px] font-medium mb-3 text-[#334855]">{t("onboarding.location.radiusTab")}</p>
+          <p className="text-[14px] font-medium mb-3 text-ha-text-secondary">{t("onboarding.location.radiusTab")}</p>
           <div className="flex flex-wrap gap-2" data-testid="radius-options">
             {RADIUS_OPTIONS.map((km) => {
               const active = radiusKm === km;
@@ -635,9 +635,9 @@ export default function OnboardingLocation() {
                   onClick={() => setRadiusKm(km)}
                   className="px-4 py-2.5 rounded-full text-[14px] font-medium transition-all"
                   style={{
-                    border: active ? "1.5px solid rgba(217,26,104,0.6)" : "1px solid #E5E7EB",
+                    border: active ? "1.5px solid rgba(217,26,104,0.6)" : "1px solid rgb(var(--ha-card-border))",
                     backgroundColor: active ? "rgba(217,26,104,0.08)" : "transparent",
-                    color: active ? "rgb(var(--ha-primary))" : "#111111",
+                    color: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-text))",
                   }}
                   data-testid={`radius-${km}`}
                 >
@@ -662,11 +662,11 @@ export default function OnboardingLocation() {
 
       {mode === "city" && (
         <div>
-          <div className="rounded-[12px] p-4 flex items-center gap-3 border border-[#E5E7EB] bg-white">
+          <div className="rounded-[12px] p-4 flex items-center gap-3 border border-ha-card-border bg-white">
             <div className="w-10 h-10 rounded-[8px] flex items-center justify-center shrink-0 bg-ha-primary/8">
               <Check className="w-5 h-5 text-ha-primary" />
             </div>
-            <p className="text-[14px] leading-relaxed text-[#334855]">
+            <p className="text-[14px] leading-relaxed text-ha-text-secondary">
               {t("onboardingLocation.searchingInCity").replace("{city}", city)}
             </p>
           </div>

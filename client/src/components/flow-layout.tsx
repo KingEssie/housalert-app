@@ -39,26 +39,26 @@ export function FlowLayout({
   const isLastStep = currentStep === totalSteps - 1;
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#eaeaeb] flex flex-col" data-testid="flow-layout">
+    <div className="fixed inset-0 z-50 bg-ha-bg flex flex-col" data-testid="flow-layout">
       <div className="bg-white">
         <div className="flex items-center justify-between px-5 h-[64px]">
           <div className="flex-1 min-w-0">
-            <p className="text-[17px] font-semibold text-[#111111] truncate" data-testid="text-flow-title">{flowTitle}</p>
+            <p className="text-[17px] font-semibold text-ha-text truncate" data-testid="text-flow-title">{flowTitle}</p>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-[16px] font-bold text-[#111111] tabular-nums whitespace-nowrap" data-testid="text-flow-progress">
-              {currentStep + 1}<span className="text-[#C4C4C4] font-semibold">/{totalSteps}</span>
+            <span className="text-[16px] font-bold text-ha-text tabular-nums whitespace-nowrap" data-testid="text-flow-progress">
+              {currentStep + 1}<span className="text-ha-text-placeholder font-semibold">/{totalSteps}</span>
             </span>
             <button
               onClick={onClose}
-              className="w-9 h-9 flex items-center justify-center rounded-full bg-[#F4F4F5] hover:bg-[#E5E7EB] transition-colors"
+              className="w-9 h-9 flex items-center justify-center rounded-full bg-ha-surface hover:bg-ha-card-border transition-colors"
               data-testid="button-flow-close"
             >
-              <X className="w-[18px] h-[18px] text-[#111111]" strokeWidth={2.5} />
+              <X className="w-[18px] h-[18px] text-ha-text" strokeWidth={2.5} />
             </button>
           </div>
         </div>
-        <div className="h-[6px] bg-[#F0F0F0] mx-5 rounded-full overflow-hidden">
+        <div className="h-[6px] bg-ha-divider mx-5 rounded-full overflow-hidden">
           <div
             className="h-full bg-ha-primary rounded-full transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
@@ -71,11 +71,11 @@ export function FlowLayout({
         <div className="max-w-lg mx-auto px-4 pt-6 pb-8">
           <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.06)] px-6 py-7">
             <div className="text-left mb-6">
-              <h1 className="text-[22px] font-bold text-[#111111] leading-tight mb-3" data-testid="text-step-title">
+              <h1 className="text-[22px] font-bold text-ha-text leading-tight mb-3" data-testid="text-step-title">
                 <span className="text-ha-primary mr-1.5">{currentStep + 1}</span>
                 {stepTitle}
               </h1>
-              <p className="text-[15px] text-[#334855] leading-relaxed" data-testid="text-step-description">
+              <p className="text-[15px] text-ha-text-secondary leading-relaxed" data-testid="text-step-description">
                 {stepDescription}
               </p>
             </div>
@@ -89,7 +89,7 @@ export function FlowLayout({
         </div>
       </div>
 
-      <div className="bg-white border-t border-[#E5E7EB]">
+      <div className="bg-white border-t border-ha-card-border">
         {completionType === "manual" && onMarkComplete && (
           <div className="max-w-lg mx-auto px-5 pt-5 pb-2 flex justify-center">
             <button
@@ -98,10 +98,10 @@ export function FlowLayout({
               className="flex items-center gap-2 group"
               data-testid="button-flow-mark-complete"
             >
-              <div className={`w-[20px] h-[20px] rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${isCompleted ? "bg-ha-primary border-ha-primary" : "border-[#D1D5DB] group-hover:border-[#334855]"}`}>
+              <div className={`w-[20px] h-[20px] rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${isCompleted ? "bg-ha-primary border-ha-primary" : "border-ha-border-input group-hover:border-ha-text-secondary"}`}>
                 {isCompleted && <Check className="w-3 h-3 text-white" strokeWidth={3} />}
               </div>
-              <span className={`text-[14px] font-medium transition-colors ${isCompleted ? "text-[#111111]" : "text-[#111111] group-hover:text-[#000000]"}`}>
+              <span className={`text-[14px] font-medium transition-colors ${isCompleted ? "text-ha-text" : "text-ha-text group-hover:text-ha-text"}`}>
                 {isPending ? "..." : "Afgerond"}
               </span>
             </button>
@@ -111,7 +111,7 @@ export function FlowLayout({
           <button
             onClick={onPrev ?? undefined}
             disabled={!onPrev}
-            className="h-[48px] px-6 rounded-full border border-[#E5E7EB] text-[15px] font-semibold text-[#111111] disabled:opacity-20 disabled:cursor-not-allowed hover:bg-[#F9FAFB] active:scale-[0.97] transition-all flex items-center gap-1.5"
+            className="h-[48px] px-6 rounded-full border border-ha-card-border text-[15px] font-semibold text-ha-text disabled:opacity-20 disabled:cursor-not-allowed hover:bg-ha-surface active:scale-[0.97] transition-all flex items-center gap-1.5"
             data-testid="button-flow-prev"
           >
             <ChevronLeft className="w-4 h-4" />

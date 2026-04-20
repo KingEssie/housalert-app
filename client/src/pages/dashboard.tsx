@@ -232,12 +232,12 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
       <div data-testid="section-search-profiles-empty">
         <div className="flex items-center gap-2 mb-3">
           <Search className="w-4 h-4 text-ha-primary flex-shrink-0" />
-          <p className="text-[15px] font-semibold text-[#111111]">{t("searchProfiles.sectionTitle")}</p>
+          <p className="text-[15px] font-semibold text-ha-text">{t("searchProfiles.sectionTitle")}</p>
         </div>
         <div className="flex flex-col items-center text-center py-6 px-2">
           <img src={EMPTY_STATE_IMAGES.createSearch} alt="" className="w-[72px] max-h-[72px] h-auto mb-5 object-contain" draggable={false} />
-          <p className="text-[16px] font-bold text-[#000000] mb-1" data-testid="text-empty-title">{t("searchProfiles.emptyTitle")}</p>
-          <p className="text-[14px] text-[#334855] mb-5 leading-relaxed max-w-[260px]" data-testid="text-empty-subtitle">{t("searchProfiles.emptySubtitle")}</p>
+          <p className="text-[16px] font-bold text-ha-text mb-1" data-testid="text-empty-title">{t("searchProfiles.emptyTitle")}</p>
+          <p className="text-[14px] text-ha-text-secondary mb-5 leading-relaxed max-w-[260px]" data-testid="text-empty-subtitle">{t("searchProfiles.emptySubtitle")}</p>
           <button
             onClick={() => navigate("/dashboard/searches/new")}
             className="w-full h-[48px] rounded-full bg-ha-primary text-white font-semibold text-[16px] hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
@@ -255,14 +255,14 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
       <div data-testid="section-search-profiles">
         <div className="flex items-center gap-2 mb-2.5">
           <Search className="w-4 h-4 text-ha-primary flex-shrink-0" />
-          <p className="text-[15px] font-semibold text-[#111111] flex-1">{t("searchProfiles.sectionTitle")}</p>
-          <span className="text-[12px] text-[#C4C4C4]">{profiles.length}/{MAX_PROFILES}</span>
+          <p className="text-[15px] font-semibold text-ha-text flex-1">{t("searchProfiles.sectionTitle")}</p>
+          <span className="text-[12px] text-ha-text-placeholder">{profiles.length}/{MAX_PROFILES}</span>
         </div>
         <div className="flex flex-col gap-1.5">
           {profiles.map((p) => (
             <div
               key={p.id}
-              className="flex items-center gap-3 py-3 px-3.5 rounded-[12px] bg-white cursor-pointer hover:bg-[#F9FAFB] transition-colors active:scale-[0.99]"
+              className="flex items-center gap-3 py-3 px-3.5 rounded-[12px] bg-white cursor-pointer hover:bg-ha-surface transition-colors active:scale-[0.99]"
               onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
               data-testid={`card-search-profile-${p.id}`}
             >
@@ -272,14 +272,14 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
                   const locationLine = getProfileLocationLine(p, t);
                   return (
                     <>
-                      <p className="text-[14px] font-semibold text-[#111111]" data-testid={`text-profile-title-${p.id}`}>
+                      <p className="text-[14px] font-semibold text-ha-text" data-testid={`text-profile-title-${p.id}`}>
                         {getProfileTitle(p, t, locale)}
                       </p>
-                      <p className="text-[12px] text-[#334855] mt-0.5" data-testid={`text-profile-summary-${p.id}`}>
+                      <p className="text-[12px] text-ha-text-secondary mt-0.5" data-testid={`text-profile-summary-${p.id}`}>
                         {getProfilePriceLine(p, t)}
                       </p>
                       {locationLine && (
-                        <p className="text-[11px] text-[#B0B5BE] mt-0.5" data-testid={`text-profile-location-${p.id}`}>
+                        <p className="text-[11px] text-ha-text-placeholder mt-0.5" data-testid={`text-profile-location-${p.id}`}>
                           {locationLine}
                         </p>
                       )}
@@ -292,7 +292,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
                     <button
                       onClick={(e) => e.stopPropagation()}
                       onPointerDown={(e) => e.stopPropagation()}
-                      className="w-9 h-9 rounded-full flex items-center justify-center text-[#334855] hover:bg-ha-surface-hover transition-colors flex-shrink-0"
+                      className="w-9 h-9 rounded-full flex items-center justify-center text-ha-text-secondary hover:bg-ha-surface transition-colors flex-shrink-0"
                       data-testid={`button-menu-${p.id}`}
                     >
                       <MoreVertical className="w-[18px] h-[18px]" />
@@ -304,7 +304,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
                       className="flex items-center gap-2.5 cursor-pointer"
                       data-testid={`menu-edit-${p.id}`}
                     >
-                      <Pencil className="w-4 h-4 text-[#334855]" />
+                      <Pencil className="w-4 h-4 text-ha-text-secondary" />
                       {t("common.edit")}
                     </DropdownMenuItem>
                     <DropdownMenuItem
@@ -329,7 +329,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
               {t("searchProfiles.addProfile")}
             </button>
           ) : (
-            <p className="mt-2 text-[12px] text-[#C4C4C4] text-center" data-testid="text-max-profiles-reached">
+            <p className="mt-2 text-[12px] text-ha-text-placeholder text-center" data-testid="text-max-profiles-reached">
               {t("searchProfiles.maxReached")}
             </p>
           )}
@@ -400,35 +400,35 @@ function NotificationsInline({ accessToken }: { accessToken: string | undefined 
     }
   }
 
-  if (!settings) return <div className="flex justify-center py-3"><Loader2 className="w-5 h-5 animate-spin text-[#334855]" /></div>;
+  if (!settings) return <div className="flex justify-center py-3"><Loader2 className="w-5 h-5 animate-spin text-ha-text-secondary" /></div>;
 
   return (
     <div className="flex flex-col gap-2" data-testid="inline-notif-toggles">
-      <div className="flex items-center gap-3 bg-white rounded-[12px] px-4 py-3 border border-[#F0F0F0]">
-        <Bell className="w-[18px] h-[18px] text-[#334855] flex-shrink-0" />
+      <div className="flex items-center gap-3 bg-white rounded-[12px] px-4 py-3 border border-ha-divider">
+        <Bell className="w-[18px] h-[18px] text-ha-text-secondary flex-shrink-0" />
         <div className="flex-1 min-w-0">
-          <p className="text-[14px] font-medium text-[#111111]">{t("taskFlow.notif.pushLabel")}</p>
-          <p className="text-[12px] text-[#334855]">{t("taskFlow.notif.pushDesc")}</p>
+          <p className="text-[14px] font-medium text-ha-text">{t("taskFlow.notif.pushLabel")}</p>
+          <p className="text-[12px] text-ha-text-secondary">{t("taskFlow.notif.pushDesc")}</p>
         </div>
         <button
           onClick={() => toggle("push_enabled")}
           disabled={updating === "push_enabled"}
-          className={`w-[44px] h-[26px] rounded-full relative transition-colors flex-shrink-0 ${settings.push_enabled ? "bg-ha-primary" : "bg-[#E5E7EB]"} ${updating === "push_enabled" ? "opacity-50" : ""}`}
+          className={`w-[44px] h-[26px] rounded-full relative transition-colors flex-shrink-0 ${settings.push_enabled ? "bg-ha-primary" : "bg-ha-card-border"} ${updating === "push_enabled" ? "opacity-50" : ""}`}
           data-testid="inline-toggle-push"
         >
           <span className={`absolute top-[3px] w-[20px] h-[20px] rounded-full bg-white shadow-sm transition-transform ${settings.push_enabled ? "left-[21px]" : "left-[3px]"}`} />
         </button>
       </div>
-      <div className="flex items-center gap-3 bg-white rounded-[12px] px-4 py-3 border border-[#F0F0F0]">
-        <Mail className="w-[18px] h-[18px] text-[#334855] flex-shrink-0" />
+      <div className="flex items-center gap-3 bg-white rounded-[12px] px-4 py-3 border border-ha-divider">
+        <Mail className="w-[18px] h-[18px] text-ha-text-secondary flex-shrink-0" />
         <div className="flex-1 min-w-0">
-          <p className="text-[14px] font-medium text-[#111111]">{t("taskFlow.notif.emailLabel")}</p>
-          <p className="text-[12px] text-[#334855]">{t("taskFlow.notif.emailDesc")}</p>
+          <p className="text-[14px] font-medium text-ha-text">{t("taskFlow.notif.emailLabel")}</p>
+          <p className="text-[12px] text-ha-text-secondary">{t("taskFlow.notif.emailDesc")}</p>
         </div>
         <button
           onClick={() => toggle("email_enabled")}
           disabled={updating === "email_enabled"}
-          className={`w-[44px] h-[26px] rounded-full relative transition-colors flex-shrink-0 ${settings.email_enabled ? "bg-ha-primary" : "bg-[#E5E7EB]"} ${updating === "email_enabled" ? "opacity-50" : ""}`}
+          className={`w-[44px] h-[26px] rounded-full relative transition-colors flex-shrink-0 ${settings.email_enabled ? "bg-ha-primary" : "bg-ha-card-border"} ${updating === "email_enabled" ? "opacity-50" : ""}`}
           data-testid="inline-toggle-email"
         >
           <span className={`absolute top-[3px] w-[20px] h-[20px] rounded-full bg-white shadow-sm transition-transform ${settings.email_enabled ? "left-[21px]" : "left-[3px]"}`} />
@@ -481,19 +481,19 @@ function BuddyInline({ accessToken }: { accessToken: string | undefined }) {
 
   return (
     <div className="flex flex-col gap-2.5" data-testid="inline-buddy">
-      <p className="text-[13px] text-[#334855] leading-relaxed">{t("taskFlow.desc.searchBuddy")}</p>
+      <p className="text-[13px] text-ha-text-secondary leading-relaxed">{t("taskFlow.desc.searchBuddy")}</p>
       <div className="relative">
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("profileEdit.searchBuddyPlaceholder")}
-          className="w-full h-[56px] rounded-[8px] border border-[#D1D5DB] bg-white px-4 text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all pr-10"
+          className="w-full h-[56px] rounded-[8px] border border-ha-border-input bg-white px-4 text-[16px] text-ha-text placeholder:text-ha-text-secondary placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all pr-10"
           data-testid="inline-buddy-email"
         />
         {email && (
-          <button onClick={() => setEmail("")} className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#F3F4F6] flex items-center justify-center" data-testid="inline-buddy-clear">
-            <X className="w-3 h-3 text-[#334855]" />
+          <button onClick={() => setEmail("")} className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-ha-surface flex items-center justify-center" data-testid="inline-buddy-clear">
+            <X className="w-3 h-3 text-ha-text-secondary" />
           </button>
         )}
       </div>
@@ -597,20 +597,20 @@ function LetterModal({ accessToken, open, onClose }: { accessToken: string | und
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-5 pt-5 pb-3">
-          <h2 className="text-[18px] font-bold text-[#111111]" data-testid="modal-letter-title">{t("taskFlow.applicationLetter")}</h2>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-[#F3F4F6] flex items-center justify-center active:scale-90" data-testid="modal-letter-close">
-            <X className="w-4 h-4 text-[#334855]" />
+          <h2 className="text-[18px] font-bold text-ha-text" data-testid="modal-letter-title">{t("taskFlow.applicationLetter")}</h2>
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-ha-surface flex items-center justify-center active:scale-90" data-testid="modal-letter-close">
+            <X className="w-4 h-4 text-ha-text-secondary" />
           </button>
         </div>
         <div className="flex-1 overflow-y-auto px-5 pb-5">
           {!loaded ? (
-            <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-[#334855]" /></div>
+            <div className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin text-ha-text-secondary" /></div>
           ) : (
             <>
-              <p className="text-[13px] text-[#334855] mb-3 leading-relaxed">{t("applicationLetter.helperText")}</p>
+              <p className="text-[13px] text-ha-text-secondary mb-3 leading-relaxed">{t("applicationLetter.helperText")}</p>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[12px] font-semibold text-[#334855] uppercase tracking-wide">{t("applicationLetter.letterLabel")}</span>
-                <button onClick={handleRegenerate} className="flex items-center gap-1 text-[13px] text-[#334855] active:text-[#111111]" data-testid="modal-letter-reset">
+                <span className="text-[12px] font-semibold text-ha-text-secondary uppercase tracking-wide">{t("applicationLetter.letterLabel")}</span>
+                <button onClick={handleRegenerate} className="flex items-center gap-1 text-[13px] text-ha-text-secondary active:text-ha-text" data-testid="modal-letter-reset">
                   <RotateCcw className="w-3.5 h-3.5" />
                   {t("applicationLetter.resetDefault")}
                 </button>
@@ -619,16 +619,16 @@ function LetterModal({ accessToken, open, onClose }: { accessToken: string | und
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
                 placeholder={t("applicationLetter.placeholderText")}
-                className="w-full min-h-[220px] rounded-[8px] border border-[#D1D5DB] bg-[#F9FAFB] px-4 py-3 text-[16px] text-[#111111] leading-relaxed resize-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all"
+                className="w-full min-h-[220px] rounded-[8px] border border-ha-border-input bg-ha-surface px-4 py-3 text-[16px] text-ha-text leading-relaxed resize-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all"
                 data-testid="modal-letter-textarea"
               />
               {template.length > 0 && template.trim().length < 20 && (
-                <p className="text-[12px] text-[#334855] mt-1">{t("applicationLetter.minChars")}</p>
+                <p className="text-[12px] text-ha-text-secondary mt-1">{t("applicationLetter.minChars")}</p>
               )}
             </>
           )}
         </div>
-        <div className="px-5 pb-5 pt-2 border-t border-[#F0F0F0]">
+        <div className="px-5 pb-5 pt-2 border-t border-ha-divider">
           <button
             onClick={handleSave}
             disabled={saving || template.trim().length < 20}
@@ -755,11 +755,11 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
     <div
       data-testid="section-search-profiles"
       className="bg-white rounded-[12px] p-5"
-      style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}
+      style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid rgb(var(--ha-card-border))" }}
     >
       <div className="flex items-center gap-2.5 mb-1.5">
         <Search className="w-[20px] h-[20px] text-ha-primary flex-shrink-0" />
-        <h2 className="text-[21px] font-semibold text-[#111111] flex-1" data-testid="text-search-profiles-title">
+        <h2 className="text-[21px] font-semibold text-ha-text flex-1" data-testid="text-search-profiles-title">
           {t("home.zoekopdrachtenTitle")}
         </h2>
         {profiles.length > 0 && (
@@ -771,7 +771,7 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
           </span>
         )}
       </div>
-      <p className="text-[15px] text-[#334855] mb-4" data-testid="text-filters-expected">
+      <p className="text-[15px] text-ha-text-secondary mb-4" data-testid="text-filters-expected">
         {estimatedCount
           ? t("home.filtersExpected", { count: estimatedCount })
           : t("home.filtersExpectedFallback")}
@@ -786,16 +786,16 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
             return (
               <div
                 key={p.id}
-                className={`rounded-[10px] bg-[#f3f4f6] p-4 flex items-center ${buddyMode ? "cursor-default" : "cursor-pointer active:opacity-80"} transition-all`}
+                className={`rounded-[10px] bg-ha-surface p-4 flex items-center ${buddyMode ? "cursor-default" : "cursor-pointer active:opacity-80"} transition-all`}
                 onClick={buddyMode ? undefined : () => navigate(`/dashboard/searches/edit/${p.id}`)}
                 data-testid={`row-search-profile-${p.id}`}
               >
                 <div className="w-[11px] h-[11px] rounded-full flex-shrink-0 mr-3.5" style={{ backgroundColor: "#22c55e", boxShadow: "0 0 0 3px rgba(34,197,94,0.15)" }} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[18px] font-semibold text-[#111111] truncate">{title}</p>
-                  <p className="text-[14px] text-[#6B7280] mt-1 truncate">{priceLine}</p>
+                  <p className="text-[18px] font-semibold text-ha-text truncate">{title}</p>
+                  <p className="text-[14px] text-ha-text-muted mt-1 truncate">{priceLine}</p>
                   {locationLine && (
-                    <p className="text-[14px] text-[#6B7280] mt-0.5 truncate">{locationLine}</p>
+                    <p className="text-[14px] text-ha-text-muted mt-0.5 truncate">{locationLine}</p>
                   )}
                 </div>
                 {!buddyMode && (
@@ -804,7 +804,7 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
                       <button
                         onClick={(e) => e.stopPropagation()}
                         onPointerDown={(e) => e.stopPropagation()}
-                        className="w-10 h-10 rounded-full flex items-center justify-center text-[#6B7280] hover:bg-white/70 active:bg-white transition-colors flex-shrink-0 ml-2"
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-ha-text-muted hover:bg-white/70 active:bg-white transition-colors flex-shrink-0 ml-2"
                         data-testid={`button-menu-${p.id}`}
                       >
                         <MoreVertical className="w-[18px] h-[18px]" />
@@ -816,7 +816,7 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
                         className="flex items-center gap-2.5 cursor-pointer"
                         data-testid={`menu-edit-${p.id}`}
                       >
-                        <Pencil className="w-4 h-4 text-[#334855]" />
+                        <Pencil className="w-4 h-4 text-ha-text-secondary" />
                         {t("home.menuEdit")}
                       </DropdownMenuItem>
                       <DropdownMenuItem
@@ -835,10 +835,10 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
           })}
         </div>
       ) : (
-        <div className="rounded-[12px] bg-white border border-[#E5E7EB] p-7 flex flex-col items-center justify-center text-center min-h-[calc(100dvh-260px)]" data-testid="card-search-profiles-empty">
+        <div className="rounded-[12px] bg-white border border-ha-card-border p-7 flex flex-col items-center justify-center text-center min-h-[calc(100dvh-260px)]" data-testid="card-search-profiles-empty">
           <img src={EMPTY_STATE_IMAGES.createSearch} alt="" className="w-[72px] max-h-[72px] h-auto mb-5 object-contain" draggable={false} />
-          <p className="text-[20px] font-bold text-[#000000] mb-2">{t("home.emptyTitle")}</p>
-          <p className="text-[16px] text-[#334855] mb-6 leading-relaxed max-w-[280px]">{t("home.emptySubtitle")}</p>
+          <p className="text-[20px] font-bold text-ha-text mb-2">{t("home.emptyTitle")}</p>
+          <p className="text-[16px] text-ha-text-secondary mb-6 leading-relaxed max-w-[280px]">{t("home.emptySubtitle")}</p>
           {!buddyMode && (
             <button
               onClick={() => navigate("/dashboard/searches/new")}
@@ -861,23 +861,23 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
         </button>
       )}
       {!buddyMode && profiles.length >= MAX_PROFILES && (
-        <p className="mt-3 text-[12px] text-[#C4C4C4] text-center" data-testid="text-search-max-reached">
+        <p className="mt-3 text-[12px] text-ha-text-placeholder text-center" data-testid="text-search-max-reached">
           {t("searchProfiles.maxReached")}
         </p>
       )}
 
       {confirmDeleteId && (
-        <div className="fixed inset-0 z-50 bg-[#eaeaeb] flex flex-col">
+        <div className="fixed inset-0 z-50 bg-ha-bg flex flex-col">
           <header className="sticky top-0 z-10">
             <div className="max-w-lg mx-auto flex items-center h-[48px] px-4">
               <button
                 onClick={() => setConfirmDeleteId(null)}
-                className="w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors"
+                className="w-10 h-10 rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input flex items-center justify-center transition-colors"
                 data-testid="button-delete-back"
               >
-                <ArrowLeft className="w-5 h-5 text-[#374151]" />
+                <ArrowLeft className="w-5 h-5 text-ha-text-secondary" />
               </button>
-              <h1 className="text-[17px] font-semibold text-[#111111] flex-1 text-center">{t("home.deleteTitle")}</h1>
+              <h1 className="text-[17px] font-semibold text-ha-text flex-1 text-center">{t("home.deleteTitle")}</h1>
               <div className="w-10 shrink-0" />
             </div>
           </header>
@@ -885,10 +885,10 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
             <div className="w-16 h-16 rounded-[10px] bg-ha-primary flex items-center justify-center mb-6">
               <Trash2 className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-[22px] font-semibold text-[#111111] mb-3 text-center" data-testid="text-delete-title">
+            <h2 className="text-[22px] font-semibold text-ha-text mb-3 text-center" data-testid="text-delete-title">
               {t("home.deleteTitle")}
             </h2>
-            <p className="text-[15px] text-[#111111]/70 text-center max-w-[320px] mb-10 leading-relaxed" data-testid="text-delete-body">
+            <p className="text-[15px] text-ha-text/70 text-center max-w-[320px] mb-10 leading-relaxed" data-testid="text-delete-body">
               {t("home.deleteDesc")}
             </p>
             <div className="w-full max-w-[320px] flex flex-col gap-3">
@@ -904,7 +904,7 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
               </button>
               <button
                 onClick={() => setConfirmDeleteId(null)}
-                className="w-full h-[48px] rounded-full border border-[#E5E7EB] text-[#111111] text-[16px] font-medium hover:bg-white/5 transition-colors"
+                className="w-full h-[48px] rounded-full border border-ha-card-border text-ha-text text-[16px] font-medium hover:bg-white/5 transition-colors"
                 data-testid="button-delete-no"
               >
                 {t("home.deleteNo")}
@@ -973,12 +973,12 @@ function HomeTab({
       {showBuddyUnlinked && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]" data-testid="modal-buddy-unlinked">
           <div className="bg-white rounded-[20px] w-full max-w-[420px] p-6 flex flex-col gap-4 shadow-xl">
-            <div className="w-12 h-12 rounded-full bg-[#F3F4F6] flex items-center justify-center mx-auto">
-              <Link2Off className="w-6 h-6 text-[#6B7280]" strokeWidth={1.8} />
+            <div className="w-12 h-12 rounded-full bg-ha-surface flex items-center justify-center mx-auto">
+              <Link2Off className="w-6 h-6 text-ha-text-muted" strokeWidth={1.8} />
             </div>
             <div className="text-center">
-              <h2 className="text-[19px] font-bold text-[#111827] mb-2">{t("buddyUnlinked.title")}</h2>
-              <p className="text-[15px] text-[#6B7280] leading-snug">{t("buddyUnlinked.body")}</p>
+              <h2 className="text-[19px] font-bold text-ha-text mb-2">{t("buddyUnlinked.title")}</h2>
+              <p className="text-[15px] text-ha-text-muted leading-snug">{t("buddyUnlinked.body")}</p>
             </div>
             <button
               onClick={() => { onDismissBuddyUnlinked?.(); navigate("/onboarding/setup?from=buddy_unlinked"); }}
@@ -1051,14 +1051,14 @@ function HomeTab({
             <button
               onClick={() => navigate("/application-letter")}
               className="w-full text-left bg-white rounded-[12px] p-5 flex flex-col gap-3 active:scale-[0.985] transition-transform"
-              style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}
+              style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid rgb(var(--ha-card-border))" }}
               data-testid="card-application-letter-status"
             >
               <div className="flex items-center gap-2.5">
                 <FileText className="w-[20px] h-[20px] text-ha-primary flex-shrink-0" />
-                <h2 className="text-[21px] font-semibold text-[#111111] flex-1">{t("profile.reactionLetter2")}</h2>
+                <h2 className="text-[21px] font-semibold text-ha-text flex-1">{t("profile.reactionLetter2")}</h2>
                 {!buddyMode && (
-                  <span className="text-[14px] font-medium" style={{ color: "#0891B2" }}>
+                  <span className="text-[14px] font-medium" style={{ color: "rgb(var(--ha-info))" }}>
                     {hasLetter ? t("common.manage") : t("common.generate")}
                   </span>
                 )}
@@ -1066,13 +1066,13 @@ function HomeTab({
               <div className="flex items-center gap-2 pl-[30px]">
                 {hasLetter ? (
                   <>
-                    <Check className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "#16A34A" }} />
-                    <span className="text-[13px] font-medium" style={{ color: "#16A34A" }}>{t("home.reactionLetterConfigured")}</span>
+                    <Check className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "rgb(var(--ha-success))" }} />
+                    <span className="text-[13px] font-medium" style={{ color: "rgb(var(--ha-success))" }}>{t("home.reactionLetterConfigured")}</span>
                   </>
                 ) : (
                   <>
-                    <X className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "#DC2626" }} />
-                    <span className="text-[13px] font-medium" style={{ color: "#DC2626" }}>{t("home.reactionLetterMissing")}</span>
+                    <X className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "rgb(var(--ha-danger))" }} />
+                    <span className="text-[13px] font-medium" style={{ color: "rgb(var(--ha-danger))" }}>{t("home.reactionLetterMissing")}</span>
                   </>
                 )}
               </div>
@@ -1088,29 +1088,29 @@ function HomeTab({
             <button
               onClick={() => navigate("/profile/search-buddy")}
               className="w-full text-left bg-white rounded-[12px] p-5 flex flex-col gap-3 active:scale-[0.985] transition-transform"
-              style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}
+              style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid rgb(var(--ha-card-border))" }}
               data-testid="card-search-buddy-status"
             >
               <div className="flex items-center gap-2.5">
                 <Users className="w-[20px] h-[20px] text-ha-primary flex-shrink-0" />
-                <h2 className="text-[21px] font-semibold text-[#111111] flex-1">{t("profile.searchBuddy")}</h2>
-                <span className="text-[14px] font-medium" style={{ color: "#0891B2" }}>{t("common.manage")}</span>
+                <h2 className="text-[21px] font-semibold text-ha-text flex-1">{t("profile.searchBuddy")}</h2>
+                <span className="text-[14px] font-medium" style={{ color: "rgb(var(--ha-info))" }}>{t("common.manage")}</span>
               </div>
               <div className="flex items-center gap-2 pl-[30px]">
                 {hasBuddy ? (
                   <>
-                    <Check className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "#16A34A" }} />
-                    <span className="text-[13px] font-medium" style={{ color: "#16A34A" }}>{t("home.zoekbuddyConfigured")}</span>
+                    <Check className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "rgb(var(--ha-success))" }} />
+                    <span className="text-[13px] font-medium" style={{ color: "rgb(var(--ha-success))" }}>{t("home.zoekbuddyConfigured")}</span>
                   </>
                 ) : (
                   <>
-                    <X className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "#DC2626" }} />
-                    <span className="text-[13px] font-medium" style={{ color: "#DC2626" }}>{t("home.zoekbuddyMissing")}</span>
+                    <X className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "rgb(var(--ha-danger))" }} />
+                    <span className="text-[13px] font-medium" style={{ color: "rgb(var(--ha-danger))" }}>{t("home.zoekbuddyMissing")}</span>
                   </>
                 )}
               </div>
               {!hasBuddy && (
-                <p className="text-[13px] leading-snug pl-[30px]" style={{ color: "#6B7280" }}>
+                <p className="text-[13px] leading-snug pl-[30px]" style={{ color: "rgb(var(--ha-text-muted))" }}>
                   {t("profile.buddyDescription")}
                 </p>
               )}
@@ -1198,23 +1198,23 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
     [accessToken, favoriteIds, fetchFavoriteListings],
   );
 
-  const cardStyle = { boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" };
+  const cardStyle = { boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid rgb(var(--ha-card-border))" };
 
   if (!hasAccess) {
     return (
       <div className="flex flex-col pb-8" data-testid="favorites-locked">
-        <div className="sticky top-0 z-10 bg-white px-5 pb-4 border-b border-[#E5E7EB]" style={{ paddingTop: "max(env(safe-area-inset-top), 24px)" }}>
-          <h1 className="text-[22px] font-bold text-[#111111]">{t("nav.favorites")}</h1>
+        <div className="sticky top-0 z-10 bg-white px-5 pb-4 border-b border-ha-card-border" style={{ paddingTop: "max(env(safe-area-inset-top), 24px)" }}>
+          <h1 className="text-[22px] font-bold text-ha-text">{t("nav.favorites")}</h1>
         </div>
         <div className="px-5 pt-16">
           <div className="flex flex-col items-center text-center px-6 pb-4">
-            <div className="w-16 h-16 rounded-full bg-[#F5F0EB] flex items-center justify-center mb-6">
-              <Lock className="w-7 h-7 text-[#111111]" />
+            <div className="w-16 h-16 rounded-full bg-ha-highlight flex items-center justify-center mb-6">
+              <Lock className="w-7 h-7 text-ha-text" />
             </div>
-            <h2 className="text-[20px] font-semibold text-[#111111] mb-2.5" data-testid="text-fav-locked-headline">
+            <h2 className="text-[20px] font-semibold text-ha-text mb-2.5" data-testid="text-fav-locked-headline">
               {t("matches.locked.headline")}
             </h2>
-            <p className="text-[15px] text-[#334855] leading-relaxed max-w-[280px] mb-8" data-testid="text-fav-locked-desc">
+            <p className="text-[15px] text-ha-text-secondary leading-relaxed max-w-[280px] mb-8" data-testid="text-fav-locked-desc">
               {t("matches.locked.desc")}
             </p>
             <button
@@ -1232,9 +1232,9 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="sticky top-0 z-10 bg-white px-5 pb-4 border-b border-[#E5E7EB]" style={{ paddingTop: "max(env(safe-area-inset-top), 24px)" }}>
+      <div className="sticky top-0 z-10 bg-white px-5 pb-4 border-b border-ha-card-border" style={{ paddingTop: "max(env(safe-area-inset-top), 24px)" }}>
         <div className="flex items-center gap-2.5">
-          <h1 className="text-[22px] font-bold text-[#111111]">{t("nav.favorites")}</h1>
+          <h1 className="text-[22px] font-bold text-ha-text">{t("nav.favorites")}</h1>
           {favoriteListings.length > 0 && (
             <span className="text-[12px] font-semibold text-white bg-[#FF385C] px-[9px] py-[3px] rounded-full" data-testid="badge-favorites-count">
               {favoriteListings.length}
@@ -1248,12 +1248,12 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
           <div className="bg-white rounded-[12px] p-4 flex flex-col gap-4" style={cardStyle}>
             {[1, 2].map((i) => (
               <div key={i} className="animate-pulse">
-                <div className="bg-[#F3F4F6] rounded-[10px]" style={{ aspectRatio: "16/9" }} />
+                <div className="bg-ha-surface rounded-[10px]" style={{ aspectRatio: "16/9" }} />
                 <div className="pt-3 flex flex-col gap-2">
-                  <div className="h-4 bg-[#F3F4F6] rounded-full w-3/4" />
-                  <div className="h-3 bg-[#F3F4F6] rounded-full w-1/2" />
+                  <div className="h-4 bg-ha-surface rounded-full w-3/4" />
+                  <div className="h-3 bg-ha-surface rounded-full w-1/2" />
                   <div className="flex gap-1.5 mt-1">
-                    {[1, 2, 3].map((j) => <div key={j} className="h-[22px] bg-[#F3F4F6] rounded-[8px] w-14" />)}
+                    {[1, 2, 3].map((j) => <div key={j} className="h-[22px] bg-ha-surface rounded-[8px] w-14" />)}
                   </div>
                 </div>
               </div>
@@ -1493,13 +1493,13 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
 
         <div className="px-5 pt-16">
           <div className="flex flex-col items-center text-center px-6 pb-4">
-            <div className="w-16 h-16 rounded-full bg-[#F5F0EB] flex items-center justify-center mb-6">
-              <Lock className="w-7 h-7 text-[#111111]" />
+            <div className="w-16 h-16 rounded-full bg-ha-highlight flex items-center justify-center mb-6">
+              <Lock className="w-7 h-7 text-ha-text" />
             </div>
-            <h2 className="text-[20px] font-semibold text-[#111111] mb-2.5" data-testid="text-locked-headline">
+            <h2 className="text-[20px] font-semibold text-ha-text mb-2.5" data-testid="text-locked-headline">
               {t("matches.locked.headline")}
             </h2>
-            <p className="text-[15px] text-[#334855] leading-relaxed max-w-[280px] mb-8" data-testid="text-locked-desc">
+            <p className="text-[15px] text-ha-text-secondary leading-relaxed max-w-[280px] mb-8" data-testid="text-locked-desc">
               {t("matches.locked.desc")}
             </p>
             <button
@@ -1515,11 +1515,11 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
     );
   }
 
-  const cardStyle = { boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" };
+  const cardStyle = { boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid rgb(var(--ha-card-border))" };
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="sticky top-0 z-10 bg-white pb-0 border-b border-[#E5E7EB]" style={{ paddingTop: "max(env(safe-area-inset-top), 24px)" }}>
+      <div className="sticky top-0 z-10 bg-white pb-0 border-b border-ha-card-border" style={{ paddingTop: "max(env(safe-area-inset-top), 24px)" }}>
         <div className="flex w-full" data-testid="matches-top-tabs">
           {topTabs.map(({ key, label }) => {
             const isActive = topTab === key;
@@ -1529,8 +1529,8 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
                 onClick={() => setTopTab(key)}
                 className={`flex-1 text-center pb-3 text-[15px] transition-all duration-200 border-b-2 ${
                   isActive
-                    ? "text-[#111111] font-semibold border-[#111111]"
-                    : "text-[#9CA3AF] font-medium border-transparent"
+                    ? "text-ha-text font-semibold border-ha-text"
+                    : "text-ha-text-placeholder font-medium border-transparent"
                 }`}
                 style={{ marginBottom: "-1px" }}
                 data-testid={`tab-matches-${key}`}
@@ -1546,13 +1546,13 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
         {topTab === "matches" && (
           <div className="bg-white rounded-[12px] p-4 flex flex-col gap-4" style={cardStyle}>
             <div className="relative">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[17px] h-[17px] text-[#9CA3AF] pointer-events-none" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[17px] h-[17px] text-ha-text-placeholder pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t("matches.searchPlaceholder")}
-                className="w-full h-[44px] pl-10 pr-4 rounded-[14px] bg-[#F3F4F6] border border-transparent text-[15px] text-[#111111] placeholder-[#9CA3AF] outline-none focus:bg-white focus:border-[#E5E7EB] transition-all"
+                className="w-full h-[44px] pl-10 pr-4 rounded-[14px] bg-ha-surface border border-transparent text-[15px] text-ha-text placeholder-ha-text-placeholder outline-none focus:bg-white focus:border-ha-card-border transition-all"
                 data-testid="input-search-matches"
               />
             </div>
@@ -1572,9 +1572,9 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
               </div>
             ) : apiMatchesQuery.isError ? (
               <div className="flex flex-col items-center text-center gap-4 py-6">
-                <AlertCircle className="w-[24px] h-[24px] text-[#111111]" />
-                <p className="text-[18px] font-semibold text-[#111111]">{t("matches.loadError")}</p>
-                <p className="text-[15px] text-[#334855] leading-relaxed max-w-[280px]">{t("matches.loadErrorDesc")}</p>
+                <AlertCircle className="w-[24px] h-[24px] text-ha-text" />
+                <p className="text-[18px] font-semibold text-ha-text">{t("matches.loadError")}</p>
+                <p className="text-[15px] text-ha-text-secondary leading-relaxed max-w-[280px]">{t("matches.loadErrorDesc")}</p>
                 <button
                   onClick={() => apiMatchesQuery.refetch()}
                   className="text-[15px] font-semibold text-ha-primary active:opacity-70 transition-opacity"
@@ -1594,7 +1594,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
                 compact
               />
             ) : filteredMatches.length === 0 ? (
-              <p className="text-center text-[15px] text-[#6B7280] py-8" data-testid="text-no-search-results">
+              <p className="text-center text-[15px] text-ha-text-muted py-8" data-testid="text-no-search-results">
                 {t("matches.noSearchResults").replace("{query}", searchQuery)}
               </p>
             ) : (
@@ -1659,17 +1659,17 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
   const { t } = useTranslation();
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#eaeaeb] flex flex-col">
+    <div className="fixed inset-0 z-50 bg-ha-bg flex flex-col">
       <header className="sticky top-0 z-10">
         <div className="max-w-lg mx-auto flex items-center h-[48px] px-4">
           <button
             onClick={onCancel}
-            className="w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors"
+            className="w-10 h-10 rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input flex items-center justify-center transition-colors"
             data-testid="button-delete-back"
           >
-            <ArrowLeft className="w-5 h-5 text-[#374151]" />
+            <ArrowLeft className="w-5 h-5 text-ha-text-secondary" />
           </button>
-          <h1 className="text-[17px] text-title text-[#111111] flex-1 text-center">{t("filters.deleteTitle")}</h1>
+          <h1 className="text-[17px] text-title text-ha-text flex-1 text-center">{t("filters.deleteTitle")}</h1>
           <div className="w-10 shrink-0" />
         </div>
       </header>
@@ -1678,10 +1678,10 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
         <div className="w-16 h-16 rounded-[--ha-card-inner-radius] bg-ha-primary flex items-center justify-center mb-6">
           <Trash2 className="w-8 h-8 text-white" />
         </div>
-        <h2 className="text-[22px] text-title text-[#111111] mb-3 text-center" data-testid="text-delete-title">
+        <h2 className="text-[22px] text-title text-ha-text mb-3 text-center" data-testid="text-delete-title">
           {t("filters.deleteQuestion")}
         </h2>
-        <p className="text-[15px] text-[#111111]/70 text-center max-w-[320px] mb-10 leading-relaxed" data-testid="text-delete-body">
+        <p className="text-[15px] text-ha-text/70 text-center max-w-[320px] mb-10 leading-relaxed" data-testid="text-delete-body">
           {t("filters.deleteConfirm")}
         </p>
         <div className="w-full max-w-[320px] flex flex-col gap-3">
@@ -1694,7 +1694,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
           </button>
           <button
             onClick={onCancel}
-            className="w-full h-[48px] rounded-[--ha-btn-radius] border border-white/20 text-[#111111] text-[16px] font-medium hover:bg-white/5 transition-colors"
+            className="w-full h-[48px] rounded-[--ha-btn-radius] border border-white/20 text-ha-text text-[16px] font-medium hover:bg-white/5 transition-colors"
             data-testid="button-delete-cancel"
           >
             {t("filters.deleteNo")}
@@ -1716,9 +1716,9 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
         className="relative w-full max-w-[480px] bg-white rounded-t-[--ha-card-radius] pb-10 pt-3 animate-in slide-in-from-bottom duration-300"
         onClick={e => e.stopPropagation()}
       >
-        <div className="w-10 h-1 bg-ha-surface-hover rounded-full mx-auto mb-6" />
+        <div className="w-10 h-1 bg-ha-surface rounded-full mx-auto mb-6" />
         <div className="px-4">
-          <h3 className="text-[18px] text-title text-[#111111] mb-6">{t("profile.photo.title")}</h3>
+          <h3 className="text-[18px] text-title text-ha-text mb-6">{t("profile.photo.title")}</h3>
 
           {photoUrl && (
             <div className="flex justify-center mb-5">
@@ -1745,7 +1745,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
             {photoUrl && (
               <button
                 onClick={onRemove}
-                className="mt-3 w-full h-[48px] flex items-center justify-center gap-2 rounded-[--ha-btn-radius] border border-[#E5E7EB] text-[#111111] text-[15px] font-medium active:bg-ha-surface-hover transition-colors"
+                className="mt-3 w-full h-[48px] flex items-center justify-center gap-2 rounded-[--ha-btn-radius] border border-ha-card-border text-ha-text text-[15px] font-medium active:bg-ha-surface transition-colors"
                 data-testid="button-remove-photo"
               >
                 <Trash2 className="w-[18px] h-[18px]" />
@@ -1755,7 +1755,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
 
             <button
               onClick={onClose}
-              className="mt-3 w-full h-[48px] flex items-center justify-center rounded-[--ha-btn-radius] text-[#111111]/70 text-[15px] font-medium active:bg-ha-surface-hover transition-colors"
+              className="mt-3 w-full h-[48px] flex items-center justify-center rounded-[--ha-btn-radius] text-ha-text/70 text-[15px] font-medium active:bg-ha-surface transition-colors"
               data-testid="button-cancel-photo"
             >
               {t("common.cancel")}
@@ -1787,19 +1787,19 @@ function formatBlockedSourceDisplay(source: string): string {
 }
 
 const SectionTitle = ({ children }: { children: string }) => (
-  <p className="text-[13px] font-semibold text-[#334855] uppercase tracking-wide px-1 mb-2.5">{children}</p>
+  <p className="text-[13px] font-semibold text-ha-text-secondary uppercase tracking-wide px-1 mb-2.5">{children}</p>
 );
 
 const ToggleRow = ({ label, subtitle, checked, onToggle, testId, last }: { label: string; subtitle?: string; checked: boolean; onToggle: (v: boolean) => void; testId?: string; last?: boolean }) => (
   <>
     <div className="flex items-center justify-between min-h-[64px] px-5 py-4" data-testid={testId}>
       <div className="flex-1 min-w-0">
-        <span className="text-[15px] font-medium text-[#111111]">{label}</span>
-        {subtitle && <p className="text-[13px] text-[#334855] mt-0.5 leading-tight">{subtitle}</p>}
+        <span className="text-[15px] font-medium text-ha-text">{label}</span>
+        {subtitle && <p className="text-[13px] text-ha-text-secondary mt-0.5 leading-tight">{subtitle}</p>}
       </div>
       <button
         onClick={() => onToggle(!checked)}
-        className={`relative w-[48px] h-[28px] rounded-full transition-colors duration-200 flex-shrink-0 ml-3 ${checked ? "bg-ha-primary" : "bg-[#D1D5DB]"}`}
+        className={`relative w-[48px] h-[28px] rounded-full transition-colors duration-200 flex-shrink-0 ml-3 ${checked ? "bg-ha-primary" : "bg-ha-border-input"}`}
         role="switch"
         aria-checked={checked}
         data-testid={testId ? `${testId}-toggle` : undefined}
@@ -1807,7 +1807,7 @@ const ToggleRow = ({ label, subtitle, checked, onToggle, testId, last }: { label
         <span className={`absolute top-[2px] w-[24px] h-[24px] rounded-full bg-white shadow-sm transition-transform duration-200 ${checked ? "left-[22px]" : "left-[2px]"}`} />
       </button>
     </div>
-    {!last && <div className="h-px bg-[#F3F4F6] mx-5" />}
+    {!last && <div className="h-px bg-ha-surface mx-5" />}
   </>
 );
 
@@ -1850,8 +1850,8 @@ function BuddyNotifPrefsSection() {
   return (
     <div>
       <SectionTitle>{t("buddyV2.prefsTitle")}</SectionTitle>
-      <p className="text-[13px] text-[#334855] mb-3 px-1">{t("buddyV2.prefsSubtitle")}</p>
-      <div className="rounded-[12px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
+      <p className="text-[13px] text-ha-text-secondary mb-3 px-1">{t("buddyV2.prefsSubtitle")}</p>
+      <div className="rounded-[12px] bg-white border border-ha-card-border shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
         <ToggleRow
           label={t("buddyV2.prefsPush")}
           checked={pushOn}
@@ -1919,11 +1919,11 @@ function BuddyV2Section({ subscription }: { subscription: { isActive: boolean; i
   return (
     <div>
       <SectionTitle>{t("buddyV2.ownerSection")}</SectionTitle>
-      <div className="rounded-[12px] bg-white border border-[#E5E7EB] shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
+      <div className="rounded-[12px] bg-white border border-ha-card-border shadow-[0_1px_3px_rgba(0,0,0,0.03)] overflow-hidden">
         {currentBuddy ? (
           <div className="px-5 py-4">
             <div className="flex items-center gap-3.5">
-              <div className="w-10 h-10 rounded-full bg-[#FFF0F5] flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center flex-shrink-0">
                 {isConnected ? (
                   <UserCheck className="w-[20px] h-[20px] text-ha-primary" />
                 ) : (
@@ -1931,7 +1931,7 @@ function BuddyV2Section({ subscription }: { subscription: { isActive: boolean; i
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[15px] font-medium text-[#111111] truncate" data-testid="text-buddy-email">
+                <p className="text-[15px] font-medium text-ha-text truncate" data-testid="text-buddy-email">
                   {currentBuddy.invite_email}
                 </p>
                 <p className="text-[13px] mt-0.5">
@@ -1944,9 +1944,9 @@ function BuddyV2Section({ subscription }: { subscription: { isActive: boolean; i
               </div>
             </div>
             {showRevokeConfirm ? (
-              <div className="mt-4 pt-4 border-t border-[#F3F4F6]">
-                <p className="text-[13px] font-semibold text-[#111827] mb-1">{t("buddyV2.revokeTitle")}</p>
-                <p className="text-[13px] text-[#334855] mb-3">{t("buddyV2.revokeDesc")}</p>
+              <div className="mt-4 pt-4 border-t border-ha-surface">
+                <p className="text-[13px] font-semibold text-ha-text mb-1">{t("buddyV2.revokeTitle")}</p>
+                <p className="text-[13px] text-ha-text-secondary mb-3">{t("buddyV2.revokeDesc")}</p>
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleRevoke(currentBuddy.id)}
@@ -1958,7 +1958,7 @@ function BuddyV2Section({ subscription }: { subscription: { isActive: boolean; i
                   </button>
                   <button
                     onClick={() => setShowRevokeConfirm(false)}
-                    className="h-[36px] px-4 rounded-[10px] border border-[#E5E7EB] text-[13px] font-semibold text-[#334855] active:scale-[0.97]"
+                    className="h-[36px] px-4 rounded-[10px] border border-ha-card-border text-[13px] font-semibold text-ha-text-secondary active:scale-[0.97]"
                     data-testid="button-buddy-revoke-cancel"
                   >
                     {t("buddyV2.revokeCancel")}
@@ -1977,7 +1977,7 @@ function BuddyV2Section({ subscription }: { subscription: { isActive: boolean; i
           </div>
         ) : (
           <div className="px-5 py-5">
-            <p className="text-[14px] text-[#334855] leading-relaxed mb-4">{t("buddyV2.inviteSubtitle")}</p>
+            <p className="text-[14px] text-ha-text-secondary leading-relaxed mb-4">{t("buddyV2.inviteSubtitle")}</p>
             {!hasActiveSub ? (
               <p className="text-[13px] text-amber-600 font-medium">{t("buddyV2.inviteSubRequired")}</p>
             ) : (
@@ -1989,7 +1989,7 @@ function BuddyV2Section({ subscription }: { subscription: { isActive: boolean; i
                     onChange={(e) => setInviteEmail(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleInvite()}
                     placeholder={t("buddyV2.inviteEmailPlaceholder")}
-                    className="w-full h-[44px] px-4 rounded-[12px] border border-[#E5E7EB] bg-white text-[14px] text-[#111111] placeholder:text-[#999] focus:outline-none focus:border-ha-primary transition-colors"
+                    className="w-full h-[44px] px-4 rounded-[12px] border border-ha-card-border bg-white text-[14px] text-ha-text placeholder:text-ha-text-placeholder focus:outline-none focus:border-ha-primary transition-colors"
                     data-testid="input-buddy-invite-email"
                   />
                 </div>
@@ -2074,35 +2074,35 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
       <button
         type="button"
         onClick={onClick}
-        className="w-full flex items-center justify-between px-4 h-[42px] text-left active:bg-[#F9FAFB] transition-colors"
+        className="w-full flex items-center justify-between px-4 h-[42px] text-left active:bg-ha-surface transition-colors"
         data-testid={`menu-item-${label.toLowerCase().replace(/\s+/g, "-")}`}
       >
-        <span className="text-[15px] font-semibold text-[#111111]">{label}</span>
+        <span className="text-[15px] font-semibold text-ha-text">{label}</span>
         {external
-          ? <ExternalLink className="w-[16px] h-[16px] text-[#9CA3AF] flex-shrink-0" />
-          : <ChevronRight className="w-[16px] h-[16px] text-[#D1D5DB] flex-shrink-0" />
+          ? <ExternalLink className="w-[16px] h-[16px] text-ha-text-placeholder flex-shrink-0" />
+          : <ChevronRight className="w-[16px] h-[16px] text-ha-border-input flex-shrink-0" />
         }
       </button>
-      {!last && <div className="h-px bg-[#F3F4F6] mx-4" />}
+      {!last && <div className="h-px bg-ha-surface mx-4" />}
     </>
   );
 
   const SectionInline = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <div>
-      <div className="h-px bg-[#F3F4F6]" />
-      <p className="text-[11px] font-semibold text-[#9CA3AF] px-4 pt-4 pb-1">{title}</p>
+      <div className="h-px bg-ha-surface" />
+      <p className="text-[11px] font-semibold text-ha-text-placeholder px-4 pt-4 pb-1">{title}</p>
       {children}
     </div>
   );
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-[#eaeaeb]">
+    <div className="min-h-[calc(100vh-80px)] bg-ha-bg">
 
       {/* ── MAIN PANEL ── */}
       <div className="px-4 pb-8 max-w-[480px] mx-auto" style={{ paddingTop: "max(env(safe-area-inset-top), 24px)" }}>
 
         {/* Single white container */}
-        <div className="bg-white rounded-[12px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden mb-4">
+        <div className="bg-white rounded-[12px] border border-ha-card-border shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden mb-4">
 
           {/* Profile row */}
           <div className="flex items-center gap-3 px-4 py-4" data-testid="row-account-profile">
@@ -2110,16 +2110,16 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
               <span className="text-[16px] font-bold text-white" data-testid="text-account-initials">{initials}</span>
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[15px] font-semibold text-[#111111] truncate" data-testid="text-account-name">{displayName}</p>
-              <p className="text-[13px] text-[#000000] truncate" data-testid="text-account-email">{user.email}</p>
+              <p className="text-[15px] font-semibold text-ha-text truncate" data-testid="text-account-name">{displayName}</p>
+              <p className="text-[13px] text-ha-text truncate" data-testid="text-account-email">{user.email}</p>
             </div>
             <button
               onClick={() => setShowLogoutConfirm(true)}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-[#E5E7EB] active:bg-[#D1D5DB] transition-colors shrink-0"
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-ha-card-border active:bg-ha-border-input transition-colors shrink-0"
               aria-label={t("profile.logout")}
               data-testid="button-logout-icon"
             >
-              <LogOut className="w-[20px] h-[20px] text-[#111111]" strokeWidth={2} />
+              <LogOut className="w-[20px] h-[20px] text-ha-text" strokeWidth={2} />
             </button>
           </div>
 
@@ -2145,12 +2145,12 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
           {/* ZOEKBUDDY DISCONNECT (buddy mode only) */}
           {buddyMode && activeBuddyRel && (
             <div>
-              <div className="h-px bg-[#F3F4F6]" />
-              <p className="text-[11px] font-semibold text-[#9CA3AF] px-4 pt-4 pb-1">{t("buddyV2.modeBadge")}</p>
+              <div className="h-px bg-ha-surface" />
+              <p className="text-[11px] font-semibold text-ha-text-placeholder px-4 pt-4 pb-1">{t("buddyV2.modeBadge")}</p>
               <button
                 type="button"
                 onClick={() => setShowBuddyDisconnectConfirm(true)}
-                className="w-full flex items-center justify-between px-4 h-[42px] text-left active:bg-[#F9FAFB] transition-colors"
+                className="w-full flex items-center justify-between px-4 h-[42px] text-left active:bg-ha-surface transition-colors"
                 data-testid="button-buddy-disconnect"
               >
                 <span className="text-[15px] font-semibold text-red-600">{t("buddyV2.buddyDisconnectLabel")}</span>
@@ -2194,7 +2194,7 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
         </div>
 
         <div className="flex flex-col items-center gap-3 pt-4 pb-4">
-          <p className="text-[13px] text-[#D1D5DB]">HousAlert v1.0.0</p>
+          <p className="text-[13px] text-ha-border-input">HousAlert v1.0.0</p>
         </div>
 
         {isAdmin && <div className="h-16" />}
@@ -2204,7 +2204,7 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
       {isAdmin && (
         <button
           onClick={() => navigate("/admin/portal")}
-          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+62px)] left-1/2 -translate-x-1/2 z-40 bg-ha-profile-header text-white text-[14px] font-medium px-4 py-2.5 rounded-[--ha-btn-radius] shadow-[0_1px_2px_rgba(0,0,0,0.1)] active:scale-95 transition-transform"
+          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+62px)] left-1/2 -translate-x-1/2 z-40 bg-ha-text text-white text-[14px] font-medium px-4 py-2.5 rounded-[--ha-btn-radius] shadow-[0_1px_2px_rgba(0,0,0,0.1)] active:scale-95 transition-transform"
           data-testid="button-admin-portal"
         >
           {t("profile.adminMode")}
@@ -2380,10 +2380,10 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#eaeaeb] flex items-center justify-center">
+      <div className="min-h-screen bg-ha-bg flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 rounded-[6px] bg-white animate-pulse" />
-          <p className="text-[#111111]/70 text-sm">{t("common.loading")}</p>
+          <p className="text-ha-text/70 text-sm">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -2401,7 +2401,7 @@ export default function DashboardPage() {
     : (apiMatchesQuery.data?.canonicalStats?.applied ?? 0);
 
   return (
-    <div className="min-h-screen bg-[#eaeaeb] flex flex-col">
+    <div className="min-h-screen bg-ha-bg flex flex-col">
       {inBuddyMode && activeBuddyRel && (
         <div className="bg-[#2D3748] px-4 py-3 flex items-center gap-3 max-w-xl mx-auto w-full" data-testid="banner-buddy-mode">
           <Users className="w-5 h-5 text-white/80 flex-shrink-0" />
@@ -2468,7 +2468,7 @@ export default function DashboardPage() {
         )}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-[#E5E7EB]" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-ha-card-border" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
         <nav className="max-w-xl mx-auto flex h-[72px]" data-testid="bottom-nav">
           {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
             const isActive = activeTab === key;
@@ -2485,9 +2485,9 @@ export default function DashboardPage() {
                     <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <Icon className={`w-[26px] h-[26px] transition-colors ${isActive ? "text-ha-primary" : "text-[#334855]"}`} strokeWidth={isActive ? 2.2 : 1.6} />
+                  <Icon className={`w-[26px] h-[26px] transition-colors ${isActive ? "text-ha-primary" : "text-ha-text-secondary"}`} strokeWidth={isActive ? 2.2 : 1.6} />
                 )}
-                <span className={`text-[11px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-[#334855]"}`}>
+                <span className={`text-[11px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-ha-text-secondary"}`}>
                   {t(labelKey)}
                 </span>
               </button>

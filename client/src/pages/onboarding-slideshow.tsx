@@ -164,7 +164,7 @@ export default function OnboardingSlideshow() {
   return (
     <div
       className="h-[100dvh] flex flex-col overflow-hidden"
-      style={{ background: "#FFFFFF" }}
+      style={{ background: "rgb(var(--ha-card))" }}
       data-testid="onboarding-slideshow"
       role="region"
       aria-label="Onboarding slides"
@@ -217,7 +217,7 @@ export default function OnboardingSlideshow() {
           />
           <span
             style={{
-              color: "#FFFFFF",
+              color: "white",
               fontSize: "17px",
               fontWeight: 600,
               fontFamily: "'Poppins', sans-serif",
@@ -236,7 +236,7 @@ export default function OnboardingSlideshow() {
         className="flex-1 flex flex-col px-5 relative overflow-y-auto"
         style={{
           marginTop: "-20px",
-          background: "#FFFFFF",
+          background: "rgb(var(--ha-card))",
           borderRadius: "20px 20px 0 0",
           boxShadow: "0 -4px 20px rgba(0,0,0,0.06)",
           zIndex: 4,
@@ -254,7 +254,7 @@ export default function OnboardingSlideshow() {
                 width: current === i ? 22 : 7,
                 height: 7,
                 borderRadius: 4,
-                backgroundColor: current === i ? "rgb(var(--ha-primary))" : "#E5E7EB",
+                backgroundColor: current === i ? "rgb(var(--ha-primary))" : "rgb(var(--ha-card-border))",
                 border: "none",
                 padding: 0,
                 cursor: "pointer",
@@ -267,14 +267,14 @@ export default function OnboardingSlideshow() {
 
         <h2
           className="text-[22px] font-bold leading-[1.2] tracking-[-0.02em] mb-1 text-center"
-          style={{ color: "#111111" }}
+          style={{ color: "rgb(var(--ha-text))" }}
           data-testid="text-slide-title"
         >
           {SLIDES[current].title}
         </h2>
         <p
           className="text-[14px] leading-[1.5] mb-4 text-center"
-          style={{ color: "#334855" }}
+          style={{ color: "rgb(var(--ha-text-secondary))" }}
           data-testid="text-slide-subtitle"
         >
           {SLIDES[current].subtitle}
@@ -284,7 +284,7 @@ export default function OnboardingSlideshow() {
           <div className="relative">
             <MapPin
               className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[17px] h-[17px] pointer-events-none"
-              style={{ color: selectedCity ? "rgb(var(--ha-primary))" : "#9CA3AF" }}
+              style={{ color: selectedCity ? "rgb(var(--ha-primary))" : "rgb(var(--ha-text-placeholder))" }}
             />
             <input
               ref={inputRef}
@@ -295,35 +295,35 @@ export default function OnboardingSlideshow() {
               placeholder={t("slideshow.citySearchPlaceholder")}
               className="w-full h-[48px] rounded-[12px] border pl-10 pr-10 text-[15px] font-medium outline-none transition-all"
               style={{
-                borderColor: selectedCity ? "rgb(var(--ha-primary))" : "#E5E7EB",
-                backgroundColor: selectedCity ? "rgba(var(--ha-primary),0.04)" : "#F9FAFB",
-                color: "#111111",
+                borderColor: "rgb(var(--ha-card-border))",
+                backgroundColor: selectedCity ? "rgba(var(--ha-primary),0.04)" : "rgb(var(--ha-surface))",
+                color: "rgb(var(--ha-text))",
               }}
               data-testid="input-city-search"
             />
             <div className="absolute right-3.5 top-1/2 -translate-y-1/2 flex items-center">
               {geocoder.loading && !selectedCity ? (
-                <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#9CA3AF" }} />
+                <Loader2 className="w-4 h-4 animate-spin" style={{ color: "rgb(var(--ha-text-placeholder))" }} />
               ) : selectedCity ? (
                 <button
                   onClick={handleClearCity}
                   className="w-5 h-5 rounded-full flex items-center justify-center"
-                  style={{ backgroundColor: "#E5E7EB" }}
+                  style={{ backgroundColor: "rgb(var(--ha-card-border))" }}
                   data-testid="button-clear-city"
                 >
-                  <X className="w-3 h-3" style={{ color: "#6B7280" }} />
+                  <X className="w-3 h-3" style={{ color: "rgb(var(--ha-text-muted))" }} />
                 </button>
               ) : searchText.length > 0 ? (
                 <button
                   onClick={handleClearCity}
                   className="w-5 h-5 rounded-full flex items-center justify-center"
-                  style={{ backgroundColor: "#E5E7EB" }}
+                  style={{ backgroundColor: "rgb(var(--ha-card-border))" }}
                   data-testid="button-clear-search"
                 >
-                  <X className="w-3 h-3" style={{ color: "#6B7280" }} />
+                  <X className="w-3 h-3" style={{ color: "rgb(var(--ha-text-muted))" }} />
                 </button>
               ) : (
-                <Search className="w-4 h-4" style={{ color: "#9CA3AF" }} />
+                <Search className="w-4 h-4" style={{ color: "rgb(var(--ha-text-placeholder))" }} />
               )}
             </div>
           </div>
@@ -332,29 +332,29 @@ export default function OnboardingSlideshow() {
             <div
               ref={dropdownRef}
               className="absolute left-0 right-0 top-[52px] z-50 rounded-[12px] border overflow-hidden shadow-lg"
-              style={{ borderColor: "#E5E7EB", backgroundColor: "#FFFFFF" }}
+              style={{ borderColor: "rgb(var(--ha-card-border))", backgroundColor: "rgb(var(--ha-card))" }}
               data-testid="city-dropdown"
             >
               {geocoder.loading && (
                 <div className="flex items-center justify-center py-4">
-                  <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#9CA3AF" }} />
+                  <Loader2 className="w-4 h-4 animate-spin" style={{ color: "rgb(var(--ha-text-placeholder))" }} />
                 </div>
               )}
               {showGeoResults && geocoder.results.map((r, i) => (
                 <button
                   key={i}
                   onClick={() => handleSelectGeoResult(r as any)}
-                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[#F9FAFB] transition-colors text-left"
-                  style={{ borderBottom: i < geocoder.results.length - 1 ? "1px solid #F3F4F6" : "none" }}
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-ha-surface transition-colors text-left"
+                  style={{ borderBottom: i < geocoder.results.length - 1 ? "1px solid rgb(var(--ha-surface))" : "none" }}
                   data-testid={`city-result-${i}`}
                 >
                   <MapPin className="w-4 h-4 shrink-0" style={{ color: "rgb(var(--ha-primary))", opacity: 0.7 }} />
                   <div>
-                    <span className="text-[14px] font-semibold block" style={{ color: "#111111" }}>
+                    <span className="text-[14px] font-semibold block" style={{ color: "rgb(var(--ha-text))" }}>
                       {(r as any).city}
                     </span>
                     {(r as any).label && (r as any).label !== (r as any).city && (
-                      <span className="text-[12px]" style={{ color: "#9CA3AF" }}>
+                      <span className="text-[12px]" style={{ color: "rgb(var(--ha-text-placeholder))" }}>
                         {(r as any).label.replace(`${(r as any).city}, `, "")}
                       </span>
                     )}
@@ -365,12 +365,12 @@ export default function OnboardingSlideshow() {
                 <button
                   key={city.name}
                   onClick={() => handleSelectCity(city)}
-                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[#F9FAFB] transition-colors text-left"
-                  style={{ borderBottom: i < filteredTopCities.length - 1 ? "1px solid #F3F4F6" : "none" }}
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-ha-surface transition-colors text-left"
+                  style={{ borderBottom: i < filteredTopCities.length - 1 ? "1px solid rgb(var(--ha-surface))" : "none" }}
                   data-testid={`city-suggestion-${city.name.toLowerCase()}`}
                 >
                   <MapPin className="w-4 h-4 shrink-0" style={{ color: "rgb(var(--ha-primary))", opacity: 0.7 }} />
-                  <span className="text-[14px] font-semibold" style={{ color: "#111111" }}>{city.name}</span>
+                  <span className="text-[14px] font-semibold" style={{ color: "rgb(var(--ha-text))" }}>{city.name}</span>
                 </button>
               ))}
             </div>
@@ -386,7 +386,7 @@ export default function OnboardingSlideshow() {
               height: "52px",
               borderRadius: "14px",
               background: "rgb(var(--ha-primary))",
-              color: "#FFFFFF",
+              color: "white",
               fontSize: "16px",
               fontWeight: 600,
               boxShadow: selectedCity ? "0 4px 15px rgba(217,26,104,0.25)" : "none",

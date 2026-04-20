@@ -120,18 +120,18 @@ export default function OnboardingPreferences() {
   return (
     <div
       className="min-h-[100dvh] flex flex-col"
-      style={{ background: "#ffffff" }}
+      style={{ background: "rgb(var(--ha-card))" }}
       data-testid="screen-onboarding-preferences"
     >
       {/* Header — matches 3/4 exactly: left badge | centered title | right X */}
       <header
         className="sticky top-0 z-20 w-full"
-        style={{ backgroundColor: "#ffffff", borderBottom: `1px solid ${OBW.headerBorder}` }}
+        style={{ backgroundColor: "rgb(var(--ha-card))", borderBottom: `1px solid ${OBW.headerBorder}` }}
       >
         <div className="relative max-w-[480px] mx-auto px-4 h-[56px] flex items-center justify-between">
           <span
             className="text-[14px] font-bold rounded-[10px] shrink-0 flex items-center px-3.5"
-            style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "#ffffff" }}
+            style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "white" }}
             data-testid="badge-step"
           >
             4/4
@@ -145,7 +145,7 @@ export default function OnboardingPreferences() {
           <button
             onClick={handleClose}
             className="w-[36px] h-[36px] shrink-0 flex items-center justify-center rounded-full transition-opacity hover:opacity-70 active:opacity-50"
-            style={{ backgroundColor: "#F2F2F2", color: "#444444" }}
+            style={{ backgroundColor: "rgb(var(--ha-surface))", color: "rgb(var(--ha-text-muted))" }}
             data-testid="button-preferences-close"
           >
             <X className="w-[22px] h-[22px]" />
@@ -171,10 +171,10 @@ export default function OnboardingPreferences() {
             onChange={(e) => setSearchName(e.target.value)}
             className="w-full ha-field-web"
             style={{
-              backgroundColor: "#ffffff",
+              backgroundColor: "rgb(var(--ha-card))",
               borderColor: OBW.inputBorder,
               borderRadius: 6,
-              color: "#111111",
+              color: "rgb(var(--ha-text))",
             }}
             placeholder={city}
             data-testid="input-search-name"
@@ -183,7 +183,7 @@ export default function OnboardingPreferences() {
 
         {/* Suitable for */}
         <section className="mb-7">
-          <label className={sLabel} style={{ color: "#111111" }}>
+          <label className={sLabel} style={{ color: "rgb(var(--ha-text))" }}>
             {t("onboardingWebPreferences.suitableForLabel")}
           </label>
           <div className="flex gap-1.5" data-testid="suitable-for-chips">
@@ -195,13 +195,13 @@ export default function OnboardingPreferences() {
                   onClick={() => toggleSuitableFor(opt.value)}
                   className="h-[36px] px-3 rounded-full text-[13px] font-medium border transition-all active:scale-[0.96] flex items-center gap-[4px] shrink-0"
                   style={{
-                    backgroundColor: active ? "rgb(var(--ha-primary))" : "#F9FAFB",
-                    borderColor: active ? "rgb(var(--ha-primary))" : "#D1D5DB",
-                    color: active ? "#ffffff" : "#111111",
+                    backgroundColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-surface))",
+                    borderColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-border-input))",
+                    color: active ? "white" : "rgb(var(--ha-text))",
                   }}
                   data-testid={`chip-suitable-${opt.value}`}
                 >
-                  {!active && <Plus className="w-[11px] h-[11px] shrink-0" style={{ color: "#6B7280" }} />}
+                  {!active && <Plus className="w-[11px] h-[11px] shrink-0" style={{ color: "rgb(var(--ha-text-muted))" }} />}
                   {opt.label}
                 </button>
               );
@@ -212,12 +212,12 @@ export default function OnboardingPreferences() {
           <div
             className="mt-4 rounded-[8px] flex items-start gap-2.5"
             style={{
-              backgroundColor: "#F7F8F9",
+              backgroundColor: "rgb(var(--ha-hover-bg))",
               padding: "11px 13px",
             }}
           >
-            <Info className="w-[13px] h-[13px] shrink-0 mt-[2px]" style={{ color: "#9CA3AF" }} />
-            <p className="text-[12.5px] leading-[1.55]" style={{ color: "#374151" }}>
+            <Info className="w-[13px] h-[13px] shrink-0 mt-[2px]" style={{ color: "rgb(var(--ha-text-placeholder))" }} />
+            <p className="text-[12.5px] leading-[1.55]" style={{ color: "rgb(var(--ha-text-secondary))" }}>
               {t("onboardingWebPreferences.suitableForInfo")}
             </p>
           </div>
@@ -225,7 +225,7 @@ export default function OnboardingPreferences() {
 
         {/* Search filter */}
         <section className="mb-7">
-          <label className={sLabel} style={{ color: "#111111" }}>
+          <label className={sLabel} style={{ color: "rgb(var(--ha-text))" }}>
             {t("onboardingWebPreferences.filterLabel")}
           </label>
           <div className="flex flex-col" data-testid="search-filter-rows">
@@ -238,18 +238,18 @@ export default function OnboardingPreferences() {
                   className="w-full flex items-start justify-between gap-3 py-[11px] text-left transition-colors"
                   data-testid={`toggle-filter-${row.key}`}
                 >
-                  <span className="text-[14px] leading-[1.45] flex-1" style={{ color: "#111111" }}>
+                  <span className="text-[14px] leading-[1.45] flex-1" style={{ color: "rgb(var(--ha-text))" }}>
                     {row.label}
                     {row.info && (
                       <Info
                         className="inline-block ml-1 relative"
-                        style={{ width: 12, height: 12, color: "#9CA3AF", top: -1, verticalAlign: "middle" }}
+                        style={{ width: 12, height: 12, color: "rgb(var(--ha-text-placeholder))", top: -1, verticalAlign: "middle" }}
                       />
                     )}
                   </span>
                   <div
                     className="w-[44px] h-[26px] rounded-full p-[3px] transition-colors shrink-0 flex items-center mt-[1px]"
-                    style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "#E5E7EB" }}
+                    style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "rgb(var(--ha-card-border))" }}
                   >
                     <div
                       className="w-[20px] h-[20px] rounded-full bg-white transition-all"
@@ -267,7 +267,7 @@ export default function OnboardingPreferences() {
 
         {/* Save settings */}
         <section className="mb-2">
-          <label className={sLabel} style={{ color: "#111111" }}>
+          <label className={sLabel} style={{ color: "rgb(var(--ha-text))" }}>
             {t("onboardingWebPreferences.settingsLabel")}
           </label>
           <button
@@ -275,12 +275,12 @@ export default function OnboardingPreferences() {
             className="w-full flex items-start justify-between gap-3 py-[11px] text-left transition-colors"
             data-testid="toggle-apply-to-all"
           >
-            <span className="text-[14px] leading-[1.45] flex-1" style={{ color: "#111111" }}>
+            <span className="text-[14px] leading-[1.45] flex-1" style={{ color: "rgb(var(--ha-text))" }}>
               {t("onboardingWebPreferences.applyToAllLabel")}
             </span>
             <div
               className="w-[44px] h-[26px] rounded-full p-[3px] transition-colors shrink-0 flex items-center mt-[1px]"
-              style={{ backgroundColor: applyToAllProfiles ? "rgb(var(--ha-primary))" : "#E5E7EB" }}
+              style={{ backgroundColor: applyToAllProfiles ? "rgb(var(--ha-primary))" : "rgb(var(--ha-card-border))" }}
             >
               <div
                 className="w-[20px] h-[20px] rounded-full bg-white transition-all"

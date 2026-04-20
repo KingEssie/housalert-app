@@ -10,7 +10,7 @@ import { validatePassword, isPasswordValid } from "@/lib/password-validation";
 import { PasswordRules } from "@/components/password-rules";
 
 const INPUT_CLASS =
-  "w-full h-[56px] border border-[#D1D5DB] rounded-[8px] bg-white px-4 pr-12 text-[15px] text-[#111111] placeholder:text-[#9CA3AF] outline-none transition-all focus:border-ha-primary";
+  "w-full h-[56px] border border-ha-border-input rounded-[8px] bg-white px-4 pr-12 text-[15px] text-ha-text placeholder:text-ha-text-placeholder outline-none transition-all focus:border-ha-primary";
 
 export default function ResetPasswordPage() {
   const [, navigate] = useLocation();
@@ -89,8 +89,8 @@ export default function ResetPasswordPage() {
 
   if (sessionError) {
     return (
-      <div className="h-[100dvh] flex flex-col items-center justify-center px-8 text-center" style={{ backgroundColor: "#eaeaeb" }} data-testid="page-reset-error">
-        <h1 className="text-[30px] font-semibold text-[#111111] mb-3" data-testid="text-error-title">
+      <div className="h-[100dvh] flex flex-col items-center justify-center px-8 text-center" style={{ backgroundColor: "rgb(var(--ha-bg))" }} data-testid="page-reset-error">
+        <h1 className="text-[30px] font-semibold text-ha-text mb-3" data-testid="text-error-title">
           {t("resetPassword.expiredTitle")}
         </h1>
         <p className="text-[15px] text-ha-text-muted leading-[1.5] max-w-[320px] mb-6">
@@ -109,19 +109,19 @@ export default function ResetPasswordPage() {
 
   if (!ready) {
     return (
-      <div className="h-[100dvh] flex flex-col items-center justify-center" style={{ backgroundColor: "#eaeaeb" }}>
-        <Loader2 className="w-8 h-8 animate-spin text-[#111111]" />
+      <div className="h-[100dvh] flex flex-col items-center justify-center" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
+        <Loader2 className="w-8 h-8 animate-spin text-ha-text" />
       </div>
     );
   }
 
   if (success) {
     return (
-      <div className="h-[100dvh] flex flex-col items-center justify-center px-8 text-center" style={{ backgroundColor: "#eaeaeb" }} data-testid="page-reset-success">
-        <div className="w-16 h-16 rounded-full bg-[#DCFCE7] flex items-center justify-center mb-6">
-          <CheckCircle2 className="w-8 h-8 text-[#16A34A]" />
+      <div className="h-[100dvh] flex flex-col items-center justify-center px-8 text-center" style={{ backgroundColor: "rgb(var(--ha-bg))" }} data-testid="page-reset-success">
+        <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-6">
+          <CheckCircle2 className="w-8 h-8 text-ha-success" />
         </div>
-        <h1 className="text-[24px] font-semibold text-[#111111] tracking-[-0.02em] mb-3" data-testid="text-success-title">
+        <h1 className="text-[24px] font-semibold text-ha-text tracking-[-0.02em] mb-3" data-testid="text-success-title">
           {t("resetPassword.successTitle")}
         </h1>
         <p className="text-[15px] text-ha-text-muted leading-[1.55] max-w-[320px] mb-8">
@@ -139,16 +139,16 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: "#eaeaeb" }} data-testid="page-reset-password">
+    <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }} data-testid="page-reset-password">
       <div className="pt-[max(env(safe-area-inset-top),8px)]" />
 
       <div className="flex-1 flex flex-col px-7">
         <div className="flex justify-center pt-8 pb-8">
-          <HousAlertLogo size={44} showText={true} textClassName="font-semibold text-[#111111] text-[20px] tracking-[-0.01em]" />
+          <HousAlertLogo size={44} showText={true} textClassName="font-semibold text-ha-text text-[20px] tracking-[-0.01em]" />
         </div>
 
         <h1
-          className="text-[26px] font-semibold text-[#111111] leading-[1.15] tracking-[-0.03em] mb-3 text-center"
+          className="text-[26px] font-semibold text-ha-text leading-[1.15] tracking-[-0.03em] mb-3 text-center"
           data-testid="text-reset-title"
         >
           {t("resetPassword.title")}
@@ -160,7 +160,7 @@ export default function ResetPasswordPage() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
           <div>
-            <label className="block text-[15px] font-semibold text-[#111111] mb-2">
+            <label className="block text-[15px] font-semibold text-ha-text mb-2">
               {t("resetPassword.newPassword")}
             </label>
             <div className="relative">
@@ -177,7 +177,7 @@ export default function ResetPasswordPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#6B7280] transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-ha-text-placeholder hover:text-ha-text-muted transition-colors"
                 data-testid="button-toggle-password"
               >
                 {showPassword
@@ -189,7 +189,7 @@ export default function ResetPasswordPage() {
           </div>
 
           <div>
-            <label className="block text-[15px] font-semibold text-[#111111] mb-2">
+            <label className="block text-[15px] font-semibold text-ha-text mb-2">
               {t("resetPassword.confirmPassword")}
             </label>
             <div className="relative">
@@ -205,7 +205,7 @@ export default function ResetPasswordPage() {
               <button
                 type="button"
                 onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#6B7280] transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-ha-text-placeholder hover:text-ha-text-muted transition-colors"
                 data-testid="button-toggle-confirm"
               >
                 {showConfirm
@@ -214,7 +214,7 @@ export default function ResetPasswordPage() {
               </button>
             </div>
             {mismatch && (
-              <p className="text-[13px] mt-2 text-[#E11D48]" data-testid="text-error-mismatch">
+              <p className="text-[13px] mt-2 text-ha-danger" data-testid="text-error-mismatch">
                 {t("resetPassword.mismatch")}
               </p>
             )}

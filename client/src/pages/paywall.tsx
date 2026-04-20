@@ -34,7 +34,7 @@ function getPlans(t: (k: string) => string): Plan[] {
       perMonth: "€15,00 " + t("paywall.perMonth"),
       popular: false,
       discountLabel: "-40%",
-      discountColor: "#16A34A",
+      discountColor: "rgb(var(--ha-success))",
     },
     {
       id: "two_month",
@@ -43,7 +43,7 @@ function getPlans(t: (k: string) => string): Plan[] {
       perMonth: "€17,50 " + t("paywall.perMonth"),
       popular: true,
       discountLabel: "-30%",
-      discountColor: "#d91a68",
+      discountColor: "rgb(var(--ha-primary))",
     },
     {
       id: "monthly",
@@ -52,7 +52,7 @@ function getPlans(t: (k: string) => string): Plan[] {
       perMonth: "€24,99 " + t("paywall.perMonth"),
       popular: false,
       discountLabel: "0%",
-      discountColor: "#334855",
+      discountColor: "rgb(var(--ha-text-secondary))",
     },
   ];
 }
@@ -101,7 +101,7 @@ function WebsitePaywall({
   return (
     <div
       className="min-h-[100dvh] flex flex-col"
-      style={{ background: "#ffffff" }}
+      style={{ background: "rgb(var(--ha-card))" }}
       data-testid="screen-paywall-website"
     >
       <OBWebHeader />
@@ -122,7 +122,7 @@ function WebsitePaywall({
           <div
             className="rounded-[4px] p-3.5 mb-5 flex items-start gap-3"
             style={{
-              backgroundColor: "#F9FAFB",
+              backgroundColor: "rgb(var(--ha-surface))",
               border: "1px solid rgba(217,26,104,0.15)",
             }}
             data-testid="search-summary-card"
@@ -163,7 +163,7 @@ function WebsitePaywall({
                   >
                     <span
                       className="text-[11px] font-semibold px-3.5 py-[3px] rounded-full"
-                      style={{ backgroundColor: "rgb(var(--ha-success))", color: "#ffffff" }}
+                      style={{ backgroundColor: "rgb(var(--ha-success))", color: "white" }}
                       data-testid="badge-popular"
                     >
                       {t("paywall.website.mostChosen")}
@@ -175,7 +175,7 @@ function WebsitePaywall({
                   className="w-full text-left transition-colors"
                   style={{
                     borderBottom: !isLast ? `1px solid ${OBW.cardBorder}` : "none",
-                    backgroundColor: isSelected ? "rgba(217,26,104,0.04)" : "#ffffff",
+                    backgroundColor: isSelected ? "rgba(217,26,104,0.04)" : "rgb(var(--ha-card))",
                     padding: plan.popular ? "20px 16px 16px 16px" : "16px 16px",
                   }}
                   data-testid={`card-plan-${plan.id}`}
@@ -276,12 +276,12 @@ function WebsitePaywall({
 
         <div
           className="rounded-[10px] p-4"
-          style={{ backgroundColor: "#F9FAFB" }}
+          style={{ backgroundColor: "rgb(var(--ha-surface))" }}
         >
-          <p className="text-[15px] font-semibold mb-1" style={{ color: "#111111" }}>
+          <p className="text-[15px] font-semibold mb-1" style={{ color: "rgb(var(--ha-text))" }}>
             {t("paywall.website.guaranteeTitle")}
           </p>
-          <p className="text-[13px] leading-[1.55]" style={{ color: "#334855" }}>
+          <p className="text-[13px] leading-[1.55]" style={{ color: "rgb(var(--ha-text-secondary))" }}>
             {t("paywall.website.guaranteeBody")}
           </p>
         </div>
@@ -402,10 +402,10 @@ export default function PaywallPage() {
         <div className="max-w-xl mx-auto px-6 h-[60px] flex items-center gap-3">
           <button
             onClick={() => navigate("/dashboard")}
-            className="w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors"
+            className="w-10 h-10 rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input flex items-center justify-center transition-colors"
             data-testid="button-paywall-back"
           >
-            <ArrowLeft className="w-5 h-5 text-[#374151]" />
+            <ArrowLeft className="w-5 h-5 text-ha-text-secondary" />
           </button>
           <HousAlertLogo size={28} />
           <div className="ml-auto flex items-center gap-1.5">
@@ -425,7 +425,7 @@ export default function PaywallPage() {
           {BENEFIT_KEYS.map((b, i) => (
             <div key={i} className="flex items-start gap-3" data-testid={`paywall-benefit-${i}`}>
               <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgb(var(--ha-success) / 0.15)" }}>
-                <Check className="w-3.5 h-3.5 text-[#111111]" />
+                <Check className="w-3.5 h-3.5 text-ha-text" />
               </div>
               <div>
                 <p className="text-[15px] font-semibold" style={{ color: TEXT_PRIMARY }}>{t(b.titleKey)}</p>
@@ -449,7 +449,7 @@ export default function PaywallPage() {
                 data-testid={`card-plan-${plan.id}`}
               >
                 {plan.popular && (
-                  <div className="w-full text-center py-1 text-[11px] font-semibold" style={{ backgroundColor: BRAND, color: "#fff" }} data-testid="badge-popular">
+                  <div className="w-full text-center py-1 text-[11px] font-semibold" style={{ backgroundColor: BRAND, color: "white" }} data-testid="badge-popular">
                     {t("paywall.mostChosen")}
                   </div>
                 )}

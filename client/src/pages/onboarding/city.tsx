@@ -155,17 +155,17 @@ export default function OnboardingCity() {
     return (
       <div
         className="min-h-[100dvh] flex flex-col"
-        style={{ background: "#ffffff" }}
+        style={{ background: "rgb(var(--ha-card))" }}
         data-testid="screen-onboarding-city"
       >
         <header
           className="sticky top-0 z-20 w-full"
-          style={{ backgroundColor: "#ffffff", borderBottom: `1px solid ${OBW.headerBorder}` }}
+          style={{ backgroundColor: "rgb(var(--ha-card))", borderBottom: `1px solid ${OBW.headerBorder}` }}
         >
           <div className="relative max-w-[480px] mx-auto px-4 h-[56px] flex items-center justify-between">
             <span
               className="text-[14px] font-bold rounded-[10px] shrink-0 flex items-center px-3.5"
-              style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "#ffffff" }}
+              style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "white" }}
               data-testid="badge-step"
             >
               1/4
@@ -179,7 +179,7 @@ export default function OnboardingCity() {
             <button
               onClick={handleClose}
               className="w-[36px] h-[36px] shrink-0 flex items-center justify-center rounded-full transition-opacity hover:opacity-70 active:opacity-50"
-              style={{ backgroundColor: "#F2F2F2", color: "#444444" }}
+              style={{ backgroundColor: "rgb(var(--ha-surface))", color: "rgb(var(--ha-text-muted))" }}
               data-testid="button-close"
             >
               <X className="w-[22px] h-[22px]" />
@@ -201,8 +201,8 @@ export default function OnboardingCity() {
                 if (selectedCity) setSelectedCity(null);
               }}
               placeholder={t("onboarding.location.searchPlaceholder")}
-              className="w-full ha-field-web focus:ring-0 placeholder:text-[16px] placeholder:text-[#9CA3AF]"
-              style={{ backgroundColor: OBW.inputBg, borderColor: "#CFCFCF", color: OBW.text }}
+              className="w-full ha-field-web focus:ring-0 placeholder:text-[16px] placeholder:text-ha-text-placeholder"
+              style={{ backgroundColor: OBW.inputBg, borderColor: "rgb(var(--ha-border-input))", color: OBW.text }}
               autoFocus
               data-testid="input-city-search"
             />
@@ -217,11 +217,11 @@ export default function OnboardingCity() {
                 <button
                   key={city.name}
                   onClick={() => selectPresetCity(city)}
-                  className="w-full flex items-center gap-2.5 min-h-[56px] text-left transition-colors hover:bg-[#F7F7F7] active:bg-[#F0F1F2]"
+                  className="w-full flex items-center gap-2.5 min-h-[56px] text-left transition-colors hover:bg-ha-hover-bg active:bg-ha-surface"
                   style={{
                     paddingTop: "14px",
                     paddingBottom: "14px",
-                    borderBottom: "1px solid #EAEAEA",
+                    borderBottom: "1px solid rgb(var(--ha-divider))",
                   }}
                   data-testid={`city-option-${city.name}`}
                 >
@@ -234,11 +234,11 @@ export default function OnboardingCity() {
                 <button
                   key={r.placeId || i}
                   onClick={() => selectGeocoderCity(r)}
-                  className="w-full flex items-center gap-2.5 min-h-[56px] text-left transition-colors hover:bg-[#F7F7F7] active:bg-[#F0F1F2]"
+                  className="w-full flex items-center gap-2.5 min-h-[56px] text-left transition-colors hover:bg-ha-hover-bg active:bg-ha-surface"
                   style={{
                     paddingTop: "14px",
                     paddingBottom: "14px",
-                    borderBottom: "1px solid #EAEAEA",
+                    borderBottom: "1px solid rgb(var(--ha-divider))",
                   }}
                   data-testid={`city-nominatim-${i}`}
                 >
@@ -275,14 +275,14 @@ export default function OnboardingCity() {
             if (selectedCity) setSelectedCity(null);
           }}
           placeholder={t("onboarding.location.searchPlaceholder")}
-          className="w-full h-[56px] rounded-[8px] border border-[#D1D5DB] bg-white px-4 pr-12 text-[16px] text-[#111111] placeholder:text-[#334855] placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
+          className="w-full h-[56px] rounded-[8px] border border-ha-border-input bg-white px-4 pr-12 text-[16px] text-ha-text placeholder:text-ha-text-secondary placeholder:opacity-55 outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25"
           autoFocus
           data-testid="input-city-search"
         />
         {geocoder.loading ? (
-          <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] animate-spin text-[#334855]" />
+          <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] animate-spin text-ha-text-secondary" />
         ) : (
-          <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#334855]" />
+          <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text-secondary" />
         )}
       </div>
 
@@ -292,15 +292,15 @@ export default function OnboardingCity() {
             <button
               key={city.name}
               onClick={() => selectPresetCity(city)}
-              className="w-full flex items-center gap-3 text-left transition-colors hover:bg-[#F9FAFB] rounded-lg px-1"
+              className="w-full flex items-center gap-3 text-left transition-colors hover:bg-ha-surface rounded-lg px-1"
               style={{
                 padding: "14px 4px",
-                borderBottom: i < presetMatches.length - 1 ? "1px solid #F0F0F0" : "none",
+                borderBottom: i < presetMatches.length - 1 ? "1px solid rgb(var(--ha-divider))" : "none",
               }}
               data-testid={`city-option-${city.name}`}
             >
               <MapPin className="w-[18px] h-[18px] shrink-0 text-ha-primary" />
-              <span className="text-[16px] font-medium text-[#111111]">{city.name}</span>
+              <span className="text-[16px] font-medium text-ha-text">{city.name}</span>
             </button>
           ))}
 
@@ -308,25 +308,25 @@ export default function OnboardingCity() {
               <button
                 key={r.placeId || i}
                 onClick={() => selectGeocoderCity(r)}
-                className="w-full flex items-center gap-3 text-left transition-colors hover:bg-[#F9FAFB] rounded-lg px-1"
+                className="w-full flex items-center gap-3 text-left transition-colors hover:bg-ha-surface rounded-lg px-1"
                 style={{
                   padding: "14px 4px",
-                  borderBottom: "1px solid #F0F0F0",
+                  borderBottom: "1px solid rgb(var(--ha-divider))",
                 }}
                 data-testid={`city-nominatim-${i}`}
               >
                 <MapPin className="w-[18px] h-[18px] shrink-0 text-ha-primary" />
                 <div>
-                  <span className="text-[16px] font-medium block text-[#111111]">{r.city}</span>
+                  <span className="text-[16px] font-medium block text-ha-text">{r.city}</span>
                   {r.label !== r.city && (
-                    <span className="text-[12px] text-[#334855]">{r.label.replace(`${r.city}, `, "")}</span>
+                    <span className="text-[12px] text-ha-text-secondary">{r.label.replace(`${r.city}, `, "")}</span>
                   )}
                 </div>
               </button>
           ))}
 
           {presetMatches.length === 0 && geocoder.results.length === 0 && !geocoder.loading && search.trim().length >= 3 && (
-            <p className="text-[13px] text-center py-4 text-[#334855]">
+            <p className="text-[13px] text-center py-4 text-ha-text-secondary">
               {t("onboardingLocation.noResults")}
             </p>
           )}
@@ -336,14 +336,14 @@ export default function OnboardingCity() {
       {selectedCity && (
         <div
           className="flex items-center gap-3 rounded-lg px-1"
-          style={{ padding: "14px 4px", borderBottom: "1px solid #F0F0F0" }}
+          style={{ padding: "14px 4px", borderBottom: "1px solid rgb(var(--ha-divider))" }}
           data-testid="city-selected"
         >
           <MapPin className="w-[18px] h-[18px] shrink-0 text-ha-primary" />
-          <span className="text-[16px] font-medium flex-1 text-[#111111]">{selectedCity.name}</span>
+          <span className="text-[16px] font-medium flex-1 text-ha-text">{selectedCity.name}</span>
           <button
             onClick={() => { setSelectedCity(null); setSearch(""); }}
-            className="text-[13px] font-medium px-3 py-1.5 rounded-lg transition-colors hover:bg-[#F9FAFB] text-[#334855]"
+            className="text-[13px] font-medium px-3 py-1.5 rounded-lg transition-colors hover:bg-ha-surface text-ha-text-secondary"
             data-testid="button-city-change"
           >
             {t("common.edit")}

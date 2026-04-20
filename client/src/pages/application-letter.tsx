@@ -296,14 +296,14 @@ export default function ApplicationLetterPage() {
         <select
           value={value}
           onChange={e => onChange(e.target.value)}
-          className={`app-select ${hasValue ? "" : "text-ha-icon-secondary"}`}
+          className={`app-select ${hasValue ? "" : "text-ha-text-secondary"}`}
           data-testid={testId}
         >
           {options.map(opt => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </select>
-        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#111111] pointer-events-none" />
+        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-ha-text pointer-events-none" />
       </div>
     );
   }
@@ -312,30 +312,30 @@ export default function ApplicationLetterPage() {
 
   if (isLoading || ownerLoading) {
     return (
-      <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
+      <div className="min-h-screen flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
         <AppHeader title={t("applicationLetter.title")} onBack={() => navigate("/dashboard?tab=home")} />
         <div className="flex-1 flex items-center justify-center">
-          <Loader2 className="w-6 h-6 animate-spin text-ha-icon-secondary" />
+          <Loader2 className="w-6 h-6 animate-spin text-ha-text-secondary" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#eaeaeb" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
       <AppHeader title={t("applicationLetter.title")} onBack={handleBack} />
 
       <main className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-32">
 
         {step === 1 && (
           <div className="flex flex-col gap-4" data-testid="step-intro">
-            <h1 className="text-[28px] font-bold text-[#000000] px-1" data-testid="text-intro-heading">
+            <h1 className="text-[28px] font-bold text-ha-text px-1" data-testid="text-intro-heading">
               {t("applicationLetter.introHeading")}
             </h1>
 
             <div className="ha-card">
-              <div className="rounded-[--ha-card-inner-radius] bg-[#F9FAFB] px-4 py-4 mb-5" data-testid="card-speech-bubble">
-                <p className="text-[15px] text-[#111111] leading-relaxed">
+              <div className="rounded-[--ha-card-inner-radius] bg-ha-surface px-4 py-4 mb-5" data-testid="card-speech-bubble">
+                <p className="text-[15px] text-ha-text leading-relaxed">
                   {t("applicationLetter.introBody")}
                 </p>
               </div>
@@ -349,7 +349,7 @@ export default function ApplicationLetterPage() {
                   data-testid="img-elise-photo"
                 />
                 <div>
-                  <p className="text-[16px] font-semibold text-[#111111]">Elise</p>
+                  <p className="text-[16px] font-semibold text-ha-text">Elise</p>
                   <p className="text-[13px] text-ha-text-muted mt-0.5">COO</p>
                 </div>
               </div>
@@ -368,8 +368,8 @@ export default function ApplicationLetterPage() {
         {step === 2 && (
           <div className="flex flex-col gap-4" data-testid="step-personal">
             <div className="px-1">
-              <p className="text-[13px] font-medium text-[#6B7280] mb-1" data-testid="text-step-indicator">{t("applicationLetter.step1of2")}</p>
-              <h1 className="text-[28px] font-bold text-[#000000]" data-testid="text-personal-heading">
+              <p className="text-[13px] font-medium text-ha-text-muted mb-1" data-testid="text-step-indicator">{t("applicationLetter.step1of2")}</p>
+              <h1 className="text-[28px] font-bold text-ha-text" data-testid="text-personal-heading">
                 {t("applicationLetter.personalDataHeading")}
               </h1>
             </div>
@@ -396,7 +396,7 @@ export default function ApplicationLetterPage() {
                       <select
                         value={bDay}
                         onChange={e => handleBirthChange("day", e.target.value)}
-                        className={`app-select ${bDay ? "" : "text-ha-icon-secondary"}`}
+                        className={`app-select ${bDay ? "" : "text-ha-text-secondary"}`}
                         data-testid="select-birth-day"
                       >
                         <option value="">{t("profileDetails.birthDay")}</option>
@@ -404,14 +404,14 @@ export default function ApplicationLetterPage() {
                           <option key={d} value={String(d).padStart(2, "0")}>{d}</option>
                         ))}
                       </select>
-                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[#111111] pointer-events-none" />
+                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text pointer-events-none" />
                     </div>
                     {/* Month */}
                     <div className="relative">
                       <select
                         value={bMonth}
                         onChange={e => handleBirthChange("month", e.target.value)}
-                        className={`app-select ${bMonth ? "" : "text-ha-icon-secondary"}`}
+                        className={`app-select ${bMonth ? "" : "text-ha-text-secondary"}`}
                         data-testid="select-birth-month"
                       >
                         <option value="">{t("profileDetails.birthMonth")}</option>
@@ -419,14 +419,14 @@ export default function ApplicationLetterPage() {
                           <option key={i} value={String(i + 1).padStart(2, "0")}>{m}</option>
                         ))}
                       </select>
-                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[#111111] pointer-events-none" />
+                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text pointer-events-none" />
                     </div>
                     {/* Year */}
                     <div className="relative">
                       <select
                         value={bYear}
                         onChange={e => handleBirthChange("year", e.target.value)}
-                        className={`app-select ${bYear ? "" : "text-ha-icon-secondary"}`}
+                        className={`app-select ${bYear ? "" : "text-ha-text-secondary"}`}
                         data-testid="select-birth-year"
                       >
                         <option value="">{t("profileDetails.birthYear")}</option>
@@ -434,7 +434,7 @@ export default function ApplicationLetterPage() {
                           <option key={y} value={String(y)}>{y}</option>
                         ))}
                       </select>
-                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[#111111] pointer-events-none" />
+                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text pointer-events-none" />
                     </div>
                   </div>
                 </div>
@@ -461,8 +461,8 @@ export default function ApplicationLetterPage() {
         {step === 3 && (
           <div className="flex flex-col gap-4" data-testid="step-housing">
             <div className="px-1">
-              <p className="text-[13px] font-medium text-[#6B7280] mb-1" data-testid="text-step-indicator-3">{t("applicationLetter.step2of2")}</p>
-              <h1 className="text-[28px] font-bold text-[#000000]" data-testid="text-housing-heading">
+              <p className="text-[13px] font-medium text-ha-text-muted mb-1" data-testid="text-step-indicator-3">{t("applicationLetter.step2of2")}</p>
+              <h1 className="text-[28px] font-bold text-ha-text" data-testid="text-housing-heading">
                 {t("applicationLetter.housingHeading")}
               </h1>
             </div>
@@ -518,21 +518,21 @@ export default function ApplicationLetterPage() {
         {step === 4 && (
           <div className="flex flex-col gap-4" data-testid="step-preview">
             {isBuddy && (
-              <div className="flex items-center gap-2 px-1 py-2 bg-[#F3F4F6] rounded-[8px]">
-                <Lock className="w-4 h-4 text-[#6B7280] flex-shrink-0" />
-                <p className="text-[13px] text-[#6B7280]">{t("applicationLetter.readOnlyBuddy")}</p>
+              <div className="flex items-center gap-2 px-1 py-2 bg-ha-surface rounded-[8px]">
+                <Lock className="w-4 h-4 text-ha-text-muted flex-shrink-0" />
+                <p className="text-[13px] text-ha-text-muted">{t("applicationLetter.readOnlyBuddy")}</p>
               </div>
             )}
-            <div className="bg-white rounded-[12px] border border-[#E5E7EB] shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-5">
+            <div className="bg-white rounded-[12px] border border-ha-card-border shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-5">
               {/* Card header */}
               <div className="flex items-center justify-between mb-4">
-                <span className="text-[16px] font-semibold text-[#000000]">
+                <span className="text-[16px] font-semibold text-ha-text">
                   {t("applicationLetter.yourLetter")}
                 </span>
                 {!isBuddy && (
                   <button
                     onClick={handleReset}
-                    className="flex items-center gap-1.5 text-[14px] text-[#6B7280] hover:text-[#374151] transition-colors active:scale-95"
+                    className="flex items-center gap-1.5 text-[14px] text-ha-text-muted hover:text-ha-text-secondary transition-colors active:scale-95"
                     data-testid="button-reset-template"
                   >
                     <RotateCcw className="w-[14px] h-[14px]" strokeWidth={2} />
@@ -543,7 +543,7 @@ export default function ApplicationLetterPage() {
 
               {/* Helper text */}
               {!isBuddy && (
-                <p className="text-[13px] text-[#6B7280] mb-3 leading-snug">
+                <p className="text-[13px] text-ha-text-muted mb-3 leading-snug">
                   {t("applicationLetter.addressHelper")}
                 </p>
               )}
@@ -558,13 +558,13 @@ export default function ApplicationLetterPage() {
                   style={{
                     width: "100%",
                     minHeight: "340px",
-                    border: "1px solid #C7CDD4",
+                    border: "1px solid rgb(var(--ha-border-input))",
                     borderRadius: "8px",
                     padding: "16px",
                     fontSize: "16px",
                     lineHeight: "1.65",
-                    color: "#000000",
-                    background: isBuddy ? "#F9FAFB" : "#FFFFFF",
+                    color: "rgb(var(--ha-text))",
+                    background: isBuddy ? "rgb(var(--ha-surface))" : "rgb(var(--ha-card))",
                     outline: "none",
                     resize: isBuddy ? "none" : "vertical",
                     fontFamily: "inherit",
@@ -572,16 +572,16 @@ export default function ApplicationLetterPage() {
                     cursor: isBuddy ? "default" : "text",
                   }}
                   onFocus={isBuddy ? undefined : e => { e.currentTarget.style.borderColor = "rgb(217,26,104)"; }}
-                  onBlur={isBuddy ? undefined : e => { e.currentTarget.style.borderColor = "#C7CDD4"; }}
+                  onBlur={isBuddy ? undefined : e => { e.currentTarget.style.borderColor = "rgb(var(--ha-border-input))"; }}
                   data-testid="input-template"
                 />
               ) : (
                 isBuddy && (
-                  <p className="text-[15px] text-[#9CA3AF] py-8 text-center">{t("applicationLetter.noLetterBuddy")}</p>
+                  <p className="text-[15px] text-ha-text-placeholder py-8 text-center">{t("applicationLetter.noLetterBuddy")}</p>
                 )
               )}
               {!isBuddy && template.length > 0 && template.trim().length < 20 && (
-                <p className="text-[12px] text-[#9CA3AF] mt-2">{t("applicationLetter.minChars")}</p>
+                <p className="text-[12px] text-ha-text-placeholder mt-2">{t("applicationLetter.minChars")}</p>
               )}
             </div>
           </div>
@@ -591,7 +591,7 @@ export default function ApplicationLetterPage() {
 
       {/* Sticky bottom bar — only for step 4 and non-buddy users */}
       {step === 4 && !isBuddy && (
-        <div className="sticky bottom-0 bg-white border-t border-[#E5E7EB] px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <div className="sticky bottom-0 bg-white border-t border-ha-card-border px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
           <div className="max-w-[480px] mx-auto flex flex-col gap-3">
             <button
               onClick={() => saveMutation.mutate(template)}

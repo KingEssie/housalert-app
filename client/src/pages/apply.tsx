@@ -245,17 +245,17 @@ export default function ApplyPage() {
   }
 
   const StickyHeader = ({ children }: { children?: React.ReactNode }) => (
-    <div className="sticky top-0 z-30 bg-white border-b border-[#E5E7EB]" style={{ paddingTop: "env(safe-area-inset-top)" }}>
+    <div className="sticky top-0 z-30 bg-white border-b border-ha-card-border" style={{ paddingTop: "env(safe-area-inset-top)" }}>
       <div className="flex items-center h-12 px-4">
         <button
           onClick={handleBack}
-          className="w-10 h-10 rounded-full bg-[#E5E7EB] hover:bg-[#D1D5DB] active:bg-[#D1D5DB] flex items-center justify-center transition-colors shrink-0"
+          className="w-10 h-10 rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input flex items-center justify-center transition-colors shrink-0"
           aria-label="Back"
           data-testid="button-back-apply"
         >
-          <ArrowLeft className="w-5 h-5 text-[#374151]" />
+          <ArrowLeft className="w-5 h-5 text-ha-text-secondary" />
         </button>
-        <span className="flex-1 text-center text-[16px] font-semibold text-[#111111] mx-3 truncate">
+        <span className="flex-1 text-center text-[16px] font-semibold text-ha-text mx-3 truncate">
           {t("applySheet.pageTitle")}
         </span>
         {children}
@@ -265,24 +265,24 @@ export default function ApplyPage() {
 
   if (listingLoading || !listing) {
     return (
-      <div className="min-h-screen flex flex-col bg-[#eaeaeb]">
+      <div className="min-h-screen flex flex-col bg-ha-bg">
         <StickyHeader />
-        <div className="animate-pulse mx-4 mt-4 bg-white rounded-[12px] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}>
-          <div className="w-full bg-[#E5E7EB]" style={{ aspectRatio: "16/9" }} />
+        <div className="animate-pulse mx-4 mt-4 bg-white rounded-[12px] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid rgb(var(--ha-card-border))" }}>
+          <div className="w-full bg-ha-card-border" style={{ aspectRatio: "16/9" }} />
           <div className="px-5 pt-4 pb-5 space-y-3">
-            <div className="h-5 bg-[#E5E7EB] rounded-md w-4/5" />
-            <div className="h-4 bg-[#E5E7EB] rounded-md w-3/5" />
+            <div className="h-5 bg-ha-card-border rounded-md w-4/5" />
+            <div className="h-4 bg-ha-card-border rounded-md w-3/5" />
             <div className="flex gap-1.5 mt-3">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="h-[29px] bg-[#E5E7EB] rounded-[8px] w-16" />
+                <div key={i} className="h-[29px] bg-ha-card-border rounded-[8px] w-16" />
               ))}
             </div>
           </div>
         </div>
-        <div className="animate-pulse mx-4 mt-4 bg-white rounded-[12px] p-5 space-y-3" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" }}>
-          <div className="h-5 bg-[#F3F4F6] rounded w-32" />
-          <div className="h-3.5 bg-[#F3F4F6] rounded w-56" />
-          <div className="h-[220px] bg-[#F3F4F6] rounded-[10px]" />
+        <div className="animate-pulse mx-4 mt-4 bg-white rounded-[12px] p-5 space-y-3" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid rgb(var(--ha-card-border))" }}>
+          <div className="h-5 bg-ha-surface rounded w-32" />
+          <div className="h-3.5 bg-ha-surface rounded w-56" />
+          <div className="h-[220px] bg-ha-surface rounded-[10px]" />
         </div>
       </div>
     );
@@ -365,10 +365,10 @@ export default function ApplyPage() {
   const metaLine = [timeAgoLabel, sourceLabel].filter(Boolean).join(" · ");
   const postedLabel = listing.first_seen_at ? postedTime(listing.first_seen_at) : "";
 
-  const cardStyle: React.CSSProperties = { boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid #E5E7EB" };
+  const cardStyle: React.CSSProperties = { boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid rgb(var(--ha-card-border))" };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#eaeaeb]">
+    <div className="min-h-screen flex flex-col bg-ha-bg">
       {/* Sticky white header */}
       <StickyHeader>
         {listing.source && (
@@ -379,7 +379,7 @@ export default function ApplyPage() {
             aria-label="Block source"
             data-testid="button-block-source-apply"
           >
-            <ShieldBan className="w-[18px] h-[18px] text-[#111111]" strokeWidth={2} />
+            <ShieldBan className="w-[18px] h-[18px] text-ha-text" strokeWidth={2} />
           </button>
         )}
       </StickyHeader>
@@ -423,54 +423,54 @@ export default function ApplyPage() {
         {/* Listing info */}
         <div className="px-5 pt-4 pb-5">
           <h2
-            className="text-[18px] font-bold text-[#111111] leading-snug line-clamp-2"
+            className="text-[18px] font-bold text-ha-text leading-snug line-clamp-2"
             data-testid="text-apply-title"
           >
             {listing.title}
           </h2>
           {metaLine && (
-            <p className="text-[13px] text-[#111111] mt-1" data-testid="text-apply-meta">
+            <p className="text-[13px] text-ha-text mt-1" data-testid="text-apply-meta">
               {metaLine}
             </p>
           )}
           <div className="flex flex-nowrap gap-1.5 mt-3 overflow-hidden">
             {listing.city && (
               <span
-                className="inline-flex items-center gap-[4px] bg-[#F9FAFB] text-[13px] font-medium text-[#111111] px-2 py-[5px] rounded-[6px] min-w-0 shrink"
+                className="inline-flex items-center gap-[4px] bg-ha-surface text-[13px] font-medium text-ha-text px-2 py-[5px] rounded-[6px] min-w-0 shrink"
                 style={pillStyle}
                 data-testid="detail-city-apply"
               >
-                <MapPin className="w-[19px] h-[19px] flex-shrink-0 text-[#111111]" strokeWidth={1.7} />
+                <MapPin className="w-[19px] h-[19px] flex-shrink-0 text-ha-text" strokeWidth={1.7} />
                 <span className="truncate">{listing.city}</span>
               </span>
             )}
             {listing.bedrooms != null && listing.bedrooms > 0 && (
               <span
-                className="inline-flex items-center gap-[4px] bg-[#F9FAFB] text-[13px] font-medium text-[#111111] px-2 py-[5px] rounded-[6px] shrink-0"
+                className="inline-flex items-center gap-[4px] bg-ha-surface text-[13px] font-medium text-ha-text px-2 py-[5px] rounded-[6px] shrink-0"
                 style={pillStyle}
                 data-testid="detail-bedrooms-apply"
               >
-                <BedDouble className="w-[19px] h-[19px] flex-shrink-0 text-[#111111]" strokeWidth={1.7} />
+                <BedDouble className="w-[19px] h-[19px] flex-shrink-0 text-ha-text" strokeWidth={1.7} />
                 {listing.bedrooms}
               </span>
             )}
             {listing.size_m2 != null && listing.size_m2 > 0 && (
               <span
-                className="inline-flex items-center gap-[4px] bg-[#F9FAFB] text-[13px] font-medium text-[#111111] px-2 py-[5px] rounded-[6px] shrink-0"
+                className="inline-flex items-center gap-[4px] bg-ha-surface text-[13px] font-medium text-ha-text px-2 py-[5px] rounded-[6px] shrink-0"
                 style={pillStyle}
                 data-testid="detail-size-apply"
               >
-                <Maximize2 className="w-[19px] h-[19px] flex-shrink-0 text-[#111111]" strokeWidth={1.7} />
+                <Maximize2 className="w-[19px] h-[19px] flex-shrink-0 text-ha-text" strokeWidth={1.7} />
                 {listing.size_m2} m²
               </span>
             )}
             {listing.price > 0 && (
               <span
-                className="inline-flex items-center gap-[4px] bg-[#F9FAFB] text-[13px] font-semibold text-[#111111] px-2 py-[5px] rounded-[6px] shrink-0"
+                className="inline-flex items-center gap-[4px] bg-ha-surface text-[13px] font-semibold text-ha-text px-2 py-[5px] rounded-[6px] shrink-0"
                 style={pillStyle}
                 data-testid="detail-price-apply"
               >
-                <Tag className="w-[19px] h-[19px] flex-shrink-0 text-[#111111]" strokeWidth={1.7} />
+                <Tag className="w-[19px] h-[19px] flex-shrink-0 text-ha-text" strokeWidth={1.7} />
                 {listing.price}
               </span>
             )}
@@ -480,14 +480,14 @@ export default function ApplyPage() {
 
       {/* Reactiebrief — separate white card */}
       <div className="mx-4 mt-4 mb-[140px] bg-white rounded-[12px] p-5" style={cardStyle}>
-        <h2 className="text-[18px] font-semibold text-[#111111] mb-1" data-testid="text-letter-title">
+        <h2 className="text-[18px] font-semibold text-ha-text mb-1" data-testid="text-letter-title">
           {t("applySheet.applicationLetter")}
         </h2>
-        <p className="text-[12px] text-[#334855] mb-3" data-testid="text-letter-helper">
+        <p className="text-[12px] text-ha-text-secondary mb-3" data-testid="text-letter-helper">
           {t("applySheet.autoGenerated")}
         </p>
         <textarea
-          className="w-full min-h-[220px] leading-[1.75] bg-[#F9FAFB] border border-[#D1D5DB] rounded-[8px] p-4 text-[16px] text-[#111111] outline-none resize-vertical focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25 transition-all"
+          className="w-full min-h-[220px] leading-[1.75] bg-ha-surface border border-ha-border-input rounded-[8px] p-4 text-[16px] text-ha-text outline-none resize-vertical focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25 transition-all"
           value={editedLetter ?? filledLetter}
           onChange={(e) => !inBuddyMode && setEditedLetter(e.target.value)}
           readOnly={inBuddyMode}
@@ -499,16 +499,16 @@ export default function ApplyPage() {
 
       {/* Sticky bottom CTA — hidden for buddy (read-only mode) */}
       {!inBuddyMode && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5E7EB] z-10 pb-[env(safe-area-inset-bottom)]">
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-ha-card-border z-10 pb-[env(safe-area-inset-bottom)]">
           <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-4">
             {listing.price > 0 ? (
               <div className="flex flex-col" data-testid="text-sticky-price">
-                <span className="text-[20px] font-semibold text-[#111111]">
+                <span className="text-[20px] font-semibold text-ha-text">
                   €{listing.price}
-                  <span className="text-[13px] font-normal text-[#334855] ml-1">{t("common.perMonthShort")}</span>
+                  <span className="text-[13px] font-normal text-ha-text-secondary ml-1">{t("common.perMonthShort")}</span>
                 </span>
                 {postedLabel && (
-                  <span className="text-[11px] text-[#334855] leading-none mt-0.5" data-testid="text-footer-posted">
+                  <span className="text-[11px] text-ha-text-secondary leading-none mt-0.5" data-testid="text-footer-posted">
                     {postedLabel}
                   </span>
                 )}
@@ -533,14 +533,14 @@ export default function ApplyPage() {
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowBlockModal(false)}>
           <div className="bg-white w-full max-w-[400px] rounded-t-[20px] sm:rounded-[12px] px-6 pt-8 pb-6 animate-in slide-in-from-bottom-4 duration-200" onClick={e => e.stopPropagation()}>
             <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 rounded-full bg-[#F5F0EB] flex items-center justify-center">
-                <ShieldBan className="w-6 h-6 text-[#111111]" />
+              <div className="w-12 h-12 rounded-full bg-ha-highlight flex items-center justify-center">
+                <ShieldBan className="w-6 h-6 text-ha-text" />
               </div>
             </div>
-            <p className="text-[17px] font-semibold text-[#111111] text-center" data-testid="text-block-title-apply">
+            <p className="text-[17px] font-semibold text-ha-text text-center" data-testid="text-block-title-apply">
               {t("listing.blockSource.title")}
             </p>
-            <p className="text-[15px] text-[#334855] text-center mt-2 mb-6" data-testid="text-block-desc-apply">
+            <p className="text-[15px] text-ha-text-secondary text-center mt-2 mb-6" data-testid="text-block-desc-apply">
               {t("listing.blockSource.description", { source: formatSourceDisplay(listing.source) })}
             </p>
             <button
@@ -553,7 +553,7 @@ export default function ApplyPage() {
             </button>
             <button
               onClick={() => setShowBlockModal(false)}
-              className="w-full h-[48px] rounded-full text-[#111111] text-[15px] font-medium active:bg-[#F9FAFB] transition-colors"
+              className="w-full h-[48px] rounded-full text-ha-text text-[15px] font-medium active:bg-ha-surface transition-colors"
               data-testid="button-block-cancel-apply"
             >
               {t("listing.blockSource.cancel")}

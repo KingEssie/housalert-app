@@ -45,7 +45,7 @@ function DualRangeSlider({
   formatLabel: (v: number) => string;
   testId: string;
 }) {
-  const inactive = "#E5E7EB";
+  const inactive = "rgb(var(--ha-card-border))";
   const pink = "rgb(var(--ha-primary))";
   const pL = ((valueLow - min) / (max - min)) * 100;
   const pH = ((valueHigh - min) / (max - min)) * 100;
@@ -79,7 +79,7 @@ function RangeSlider({
   onChange: (v: number) => void; formatLabel: (v: number) => string; testId: string;
 }) {
   const pink = "rgb(var(--ha-primary))";
-  const inactive = "#E5E7EB";
+  const inactive = "rgb(var(--ha-card-border))";
   const pct = ((value - min) / (max - min)) * 100;
   return (
     <div data-testid={testId}>
@@ -101,9 +101,9 @@ function WebToggle({ checked, onChange, label, testId }: {
 }) {
   return (
     <label className="flex items-center gap-3 cursor-pointer h-[52px] px-4 rounded-[10px]"
-      style={{ border: "1px solid #E8EAED" }} data-testid={testId}>
+      style={{ border: "1px solid rgb(var(--ha-card-border))" }} data-testid={testId}>
       <div className="w-[44px] h-[26px] rounded-full p-[3px] transition-colors shrink-0 flex items-center"
-        style={{ backgroundColor: checked ? "#111111" : "#E5E7EB" }}
+        style={{ backgroundColor: checked ? "rgb(var(--ha-text))" : "rgb(var(--ha-card-border))" }}
         onClick={(e) => { e.preventDefault(); onChange(!checked); }}>
         <div className="w-[20px] h-[20px] rounded-full bg-white transition-all"
           style={{ transform: checked ? "translateX(18px)" : "translateX(0)", boxShadow: "0 1px 3px rgba(0,0,0,0.15)" }} />
@@ -120,12 +120,12 @@ function PrefsToggle({ checked, onChange, label, info, testId }: {
     <button onClick={() => onChange(!checked)}
       className="w-full flex items-start justify-between gap-3 py-[11px] text-left transition-colors"
       data-testid={testId}>
-      <span className="text-[14px] leading-[1.45] flex-1" style={{ color: "#111111" }}>
+      <span className="text-[14px] leading-[1.45] flex-1" style={{ color: "rgb(var(--ha-text))" }}>
         {label}
-        {info && <Info className="inline-block ml-1 relative" style={{ width: 12, height: 12, color: "#9CA3AF", top: -1, verticalAlign: "middle" }} />}
+        {info && <Info className="inline-block ml-1 relative" style={{ width: 12, height: 12, color: "rgb(var(--ha-text-placeholder))", top: -1, verticalAlign: "middle" }} />}
       </span>
       <div className="w-[44px] h-[26px] rounded-full p-[3px] transition-colors shrink-0 flex items-center mt-[1px]"
-        style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "#E5E7EB" }}>
+        style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "rgb(var(--ha-card-border))" }}>
         <div className="w-[20px] h-[20px] rounded-full bg-white transition-all"
           style={{ transform: checked ? "translateX(18px)" : "translateX(0)", boxShadow: "0 1px 3px rgba(0,0,0,0.15)" }} />
       </div>
@@ -186,10 +186,10 @@ const INIT_PREFS: PrefState = {
 function StepHeader({ step, title, onClose }: { step: number; title: string; onClose: () => void }) {
   return (
     <header className="sticky top-0 z-20 w-full"
-      style={{ backgroundColor: "#ffffff", borderBottom: `1px solid ${OBW.headerBorder}` }}>
+      style={{ backgroundColor: "rgb(var(--ha-card))", borderBottom: `1px solid ${OBW.headerBorder}` }}>
       <div className="relative max-w-[480px] mx-auto px-4 h-[56px] flex items-center justify-between">
         <span className="text-[14px] font-bold rounded-[10px] shrink-0 flex items-center px-3.5"
-          style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "#ffffff" }}
+          style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "white" }}
           data-testid="badge-step">
           {step}/4
         </span>
@@ -199,7 +199,7 @@ function StepHeader({ step, title, onClose }: { step: number; title: string; onC
         </span>
         <button onClick={onClose}
           className="w-[36px] h-[36px] shrink-0 flex items-center justify-center rounded-full transition-opacity hover:opacity-70 active:opacity-50"
-          style={{ backgroundColor: "#F2F2F2", color: "#444444" }}
+          style={{ backgroundColor: "rgb(var(--ha-surface))", color: "rgb(var(--ha-text-muted))" }}
           data-testid="button-step-close">
           <X className="w-[22px] h-[22px]" />
         </button>
@@ -496,7 +496,7 @@ export default function AppSearchWizard() {
   // ── Loading state ──
   if (loading || (isEdit && !editLoaded)) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center" style={{ background: "#ffffff" }}>
+      <div className="min-h-[100dvh] flex items-center justify-center" style={{ background: "rgb(var(--ha-card))" }}>
         <Loader2 className="w-8 h-8 animate-spin" style={{ color: "rgb(var(--ha-primary))" }} />
       </div>
     );
@@ -507,14 +507,14 @@ export default function AppSearchWizard() {
   // ── Profile limit screen ──
   if (atLimit) {
     return (
-      <div className="min-h-[100dvh] flex flex-col" style={{ background: "#ffffff" }}>
+      <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-card))" }}>
         <StepHeader step={1} title="" onClose={goClose} />
         <div className="flex-1 flex items-center justify-center px-5 pb-10">
           <div className="text-center max-w-sm w-full">
-            <div className="w-16 h-16 rounded-2xl bg-[#F9FAFB] flex items-center justify-center mx-auto mb-5">
+            <div className="w-16 h-16 rounded-2xl bg-ha-surface flex items-center justify-center mx-auto mb-5">
               <AlertCircle className="w-7 h-7" style={{ color: "rgb(var(--ha-primary))" }} />
             </div>
-            <h2 className="text-[26px] font-bold mb-2" style={{ color: "#111111" }}>{t("newSearch.limitTitle")}</h2>
+            <h2 className="text-[26px] font-bold mb-2" style={{ color: "rgb(var(--ha-text))" }}>{t("newSearch.limitTitle")}</h2>
             <p className="text-[16px] leading-relaxed mb-7" style={{ color: OBW.textSecondary }}>
               {t("newSearch.limitDesc", { max: MAX_PROFILES })}
             </p>
@@ -547,7 +547,7 @@ export default function AppSearchWizard() {
     }
 
     return (
-      <div className="min-h-[100dvh] flex flex-col" style={{ background: "#ffffff" }}
+      <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-card))" }}
         data-testid="screen-wizard-city">
         <StepHeader step={1} title={t("onboarding.city.title")} onClose={goClose} />
 
@@ -569,12 +569,12 @@ export default function AppSearchWizard() {
 
           {/* Geocoder results */}
           {geocoder.results.length > 0 && search.length >= 3 && (
-            <div className="mb-5 rounded-[12px] overflow-hidden border" style={{ borderColor: "#EAEAEA" }}>
+            <div className="mb-5 rounded-[12px] overflow-hidden border" style={{ borderColor: "rgb(var(--ha-divider))" }}>
               {geocoder.results.map((r, i) => (
                 <button key={i}
                   onClick={() => selectCity(r.city_name, r.latitude, r.longitude)}
-                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[#F9FAFB] transition-colors text-left"
-                  style={{ borderBottom: i < geocoder.results.length - 1 ? "1px solid #F0F0F0" : "none" }}
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-ha-surface transition-colors text-left"
+                  style={{ borderBottom: i < geocoder.results.length - 1 ? "1px solid rgb(var(--ha-divider))" : "none" }}
                   data-testid={`geocoder-result-${i}`}>
                   <span className="text-[15px] font-medium" style={{ color: OBW.text }}>{r.city_name}</span>
                   {r.country_code && <span className="text-[13px]" style={{ color: OBW.textMuted }}>{r.country_code}</span>}
@@ -593,8 +593,8 @@ export default function AppSearchWizard() {
                 onClick={() => selectCity(c.name, c.lat, c.lng)}
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-[10px] border text-left transition-all active:scale-[0.98]"
                 style={{
-                  borderColor: city?.name === c.name ? "rgb(var(--ha-primary))" : "#E5E7EB",
-                  backgroundColor: city?.name === c.name ? "rgba(217,26,104,0.04)" : "#FAFAFA",
+                  borderColor: "rgb(var(--ha-card-border))",
+                  backgroundColor: city?.name === c.name ? "rgba(217,26,104,0.04)" : "rgb(var(--ha-surface))",
                 }}
                 data-testid={`city-preset-${c.name}`}>
                 <span className="text-[15px] font-medium flex-1" style={{ color: OBW.text }}>{c.name}</span>
@@ -652,7 +652,7 @@ export default function AppSearchWizard() {
     const lng = city?.lng ?? 13.405;
 
     return (
-      <div className="min-h-[100dvh] flex flex-col" style={{ background: "#ffffff" }}
+      <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-card))" }}
         data-testid="screen-wizard-location">
         <StepHeader step={2} title={t("onboarding.filters.headerTitle")} onClose={goClose} />
 
@@ -663,7 +663,7 @@ export default function AppSearchWizard() {
           </label>
           <button onClick={() => setStep(1)}
             className="w-full flex items-center gap-3 mb-5 ha-field-web text-left"
-            style={{ backgroundColor: OBW.inputBg, borderColor: "#CFCFCF", color: OBW.text }}
+            style={{ backgroundColor: OBW.inputBg, borderColor: "rgb(var(--ha-border-input))", color: OBW.text }}
             data-testid="field-city-display">
             <Search className="w-[18px] h-[18px] shrink-0" style={{ color: OBW.textMuted }} />
             <span className="flex-1 text-[16px] font-medium" style={{ color: OBW.text }}>{city?.name}</span>
@@ -671,13 +671,13 @@ export default function AppSearchWizard() {
           </button>
 
           {/* Mode tabs */}
-          <div className="flex items-center gap-1 p-[4px] rounded-full mb-5" style={{ backgroundColor: "#F0F4F8" }} data-testid="location-tabs">
+          <div className="flex items-center gap-1 p-[4px] rounded-full mb-5" style={{ backgroundColor: "rgb(var(--ha-toggle-bg))" }} data-testid="location-tabs">
             {tabs.map((tab) => {
               const isActive = loc.mode === tab.value;
               return (
                 <button key={tab.value} onClick={() => setLoc((prev) => ({ ...prev, mode: tab.value }))}
                   className="flex-1 py-[8px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
-                  style={{ backgroundColor: isActive ? "rgb(var(--ha-primary))" : "transparent", color: isActive ? "#ffffff" : "#111111" }}
+                  style={{ backgroundColor: isActive ? "rgb(var(--ha-primary))" : "transparent", color: isActive ? "white" : "rgb(var(--ha-text))" }}
                   data-testid={`tab-${tab.value}`}>
                   {tab.label}
                 </button>
@@ -693,7 +693,7 @@ export default function AppSearchWizard() {
               </p>
               <button onClick={() => setShowDistrictPicker((v) => !v)}
                 className="w-full flex items-center justify-between ha-field-web text-left mb-4"
-                style={{ backgroundColor: OBW.inputBg, borderColor: "#CFCFCF" }}
+                style={{ backgroundColor: OBW.inputBg, borderColor: "rgb(var(--ha-border-input))" }}
                 data-testid="dropdown-districts">
                 <span className="text-[16px] font-medium" style={{ color: OBW.text }}>{districtSummary}</span>
                 <ChevronDown className="w-[18px] h-[18px] shrink-0 transition-transform duration-200"
@@ -701,14 +701,14 @@ export default function AppSearchWizard() {
               </button>
               {showDistrictPicker && hasDistricts && (
                 <div className="rounded-[12px] overflow-hidden border mb-4"
-                  style={{ borderColor: "#EAEAEA", maxHeight: "200px", overflowY: "auto" }}
+                  style={{ borderColor: "rgb(var(--ha-divider))", maxHeight: "200px", overflowY: "auto" }}
                   data-testid="district-list">
                   {districtList.map((d, i) => {
                     const active = loc.districts.includes(d);
                     return (
                       <button key={d} onClick={() => toggleDistrict(d)}
-                        className="w-full flex items-center justify-between hover:bg-[#F7F7F7] transition-colors"
-                        style={{ padding: "12px 16px", borderBottom: i < districtList.length - 1 ? "1px solid #F0F0F0" : "none" }}
+                        className="w-full flex items-center justify-between hover:bg-ha-hover-bg transition-colors"
+                        style={{ padding: "12px 16px", borderBottom: i < districtList.length - 1 ? "1px solid rgb(var(--ha-divider))" : "none" }}
                         data-testid={`district-${d}`}>
                         <span className="text-[14px] font-medium" style={{ color: active ? OBW.text : OBW.textSecondary }}>{d}</span>
                         {active && <Check className="w-4 h-4" style={{ color: "rgb(var(--ha-primary))" }} />}
@@ -729,11 +729,11 @@ export default function AppSearchWizard() {
             <div data-testid="section-radius">
               <style>{`
                 .ha-radius-slider{-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer;width:100%;height:4px}
-                .ha-radius-slider::-webkit-slider-runnable-track{background:linear-gradient(to right,rgb(var(--ha-primary)) 0%,rgb(var(--ha-primary)) var(--sl-pct,0%),#E5E7EB var(--sl-pct,0%),#E5E7EB 100%);border-radius:9999px;height:4px}
-                .ha-radius-slider::-moz-range-track{background:#E5E7EB;border-radius:9999px;height:4px}
+                .ha-radius-slider::-webkit-slider-runnable-track{background:linear-gradient(to right,rgb(var(--ha-primary)) 0%,rgb(var(--ha-primary)) var(--sl-pct,0%),rgb(var(--ha-card-border)) var(--sl-pct,0%),rgb(var(--ha-card-border)) 100%);border-radius:9999px;height:4px}
+                .ha-radius-slider::-moz-range-track{background:rgb(var(--ha-card-border));border-radius:9999px;height:4px}
                 .ha-radius-slider::-moz-range-progress{background:rgb(var(--ha-primary));border-radius:9999px;height:4px}
-                .ha-radius-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:#ffffff;box-shadow:0 1px 6px rgba(0,0,0,.18),0 0 0 1.5px rgba(0,0,0,.07);margin-top:-9px;cursor:pointer}
-                .ha-radius-slider::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#ffffff;box-shadow:0 1px 6px rgba(0,0,0,.18),0 0 0 1.5px rgba(0,0,0,.07);border:none;cursor:pointer}
+                .ha-radius-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;background:white;box-shadow:0 1px 6px rgba(0,0,0,.18),0 0 0 1.5px rgba(0,0,0,.07);margin-top:-9px;cursor:pointer}
+                .ha-radius-slider::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:white;box-shadow:0 1px 6px rgba(0,0,0,.18),0 0 0 1.5px rgba(0,0,0,.07);border:none;cursor:pointer}
               `}</style>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[15px] font-semibold" style={{ color: OBW.textSecondary }}>{t("onboarding.location.distanceLabel")}</span>
@@ -813,13 +813,13 @@ export default function AppSearchWizard() {
       value: string; onChange: (v: string) => void; testId: string;
     }) {
       return (
-        <div className="flex items-center gap-[4px] p-[4px] rounded-full" style={{ backgroundColor: "#F0F4F8" }} data-testid={testId}>
+        <div className="flex items-center gap-[4px] p-[4px] rounded-full" style={{ backgroundColor: "rgb(var(--ha-toggle-bg))" }} data-testid={testId}>
           {options.map((opt) => {
             const isActive = value === opt.value;
             return (
               <button key={opt.value} onClick={() => onChange(opt.value)}
                 className="flex-1 py-[8px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
-                style={{ backgroundColor: isActive ? "rgb(var(--ha-primary))" : "transparent", color: isActive ? "#ffffff" : "#111111" }}
+                style={{ backgroundColor: isActive ? "rgb(var(--ha-primary))" : "transparent", color: isActive ? "white" : "rgb(var(--ha-text))" }}
                 data-testid={`${testId}-${opt.value}`}>
                 {opt.label}
               </button>
@@ -830,7 +830,7 @@ export default function AppSearchWizard() {
     }
 
     return (
-      <div className="min-h-[100dvh] flex flex-col" style={{ background: "#ffffff" }}
+      <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-card))" }}
         data-testid="screen-wizard-filters">
         <StepHeader step={3} title={t("onboarding.filters.headerTitle")} onClose={goClose} />
 
@@ -849,7 +849,7 @@ export default function AppSearchWizard() {
                   </button>
                   {showPriceInfo && (
                     <div className="absolute left-0 top-[22px] z-20 w-[210px] rounded-[10px] px-3 py-2.5"
-                      style={{ backgroundColor: "#ffffff", border: `1px solid ${OBW.cardBorder}`, boxShadow: "0 4px 14px rgba(0,0,0,0.09)" }}
+                      style={{ backgroundColor: "rgb(var(--ha-card))", border: `1px solid ${OBW.cardBorder}`, boxShadow: "0 4px 14px rgba(0,0,0,0.09)" }}
                       data-testid="tooltip-price-info">
                       <p className="text-[12px] leading-relaxed" style={{ color: OBW.textSecondary }}>
                         {t("onboarding.filters.priceTooltip")}
@@ -869,7 +869,7 @@ export default function AppSearchWizard() {
               </div>
             </section>
 
-            <div className="h-px bg-[#F0F0F0]" />
+            <div className="h-px bg-ha-divider" />
 
             {/* Property type */}
             <section>
@@ -884,7 +884,7 @@ export default function AppSearchWizard() {
               </div>
             </section>
 
-            <div className="h-px bg-[#F0F0F0]" />
+            <div className="h-px bg-ha-divider" />
 
             {/* Bedrooms */}
             <section>
@@ -897,7 +897,7 @@ export default function AppSearchWizard() {
                   return (
                     <button key={opt.value} onClick={() => update({ minRooms: opt.value })}
                       className="py-[8px] px-4 text-[12px] font-semibold rounded-full whitespace-nowrap shrink-0 transition-all active:scale-[0.96]"
-                      style={{ backgroundColor: active ? "rgb(var(--ha-primary))" : "#F0F4F8", color: active ? "#ffffff" : "#111111" }}
+                      style={{ backgroundColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-toggle-bg))", color: active ? "white" : "rgb(var(--ha-text))" }}
                       data-testid={`rooms-${opt.value}`}>
                       {opt.label}
                     </button>
@@ -906,7 +906,7 @@ export default function AppSearchWizard() {
               </div>
             </section>
 
-            <div className="h-px bg-[#F0F0F0]" />
+            <div className="h-px bg-ha-divider" />
 
             {/* Min size */}
             <section>
@@ -917,7 +917,7 @@ export default function AppSearchWizard() {
                 <button onClick={() => update({ sizeNA: !f.sizeNA, minSize: f.sizeNA ? 30 : 0 })}
                   className="text-[12px] font-semibold px-3 py-[5px] rounded-full border transition-all"
                   style={{
-                    borderColor: f.sizeNA ? "rgba(217,26,104,0.3)" : "#E5E7EB",
+                    borderColor: "rgb(var(--ha-card-border))",
                     backgroundColor: f.sizeNA ? "rgba(217,26,104,0.06)" : "transparent",
                     color: f.sizeNA ? "rgb(var(--ha-primary))" : OBW.textSecondary,
                   }}
@@ -932,7 +932,7 @@ export default function AppSearchWizard() {
               )}
             </section>
 
-            <div className="h-px bg-[#F0F0F0]" />
+            <div className="h-px bg-ha-divider" />
 
             {/* Furnished */}
             <section>
@@ -943,7 +943,7 @@ export default function AppSearchWizard() {
                 onChange={(v) => update({ furnished: v })} testId="furnished-selector" />
             </section>
 
-            <div className="h-px bg-[#F0F0F0]" />
+            <div className="h-px bg-ha-divider" />
 
             {/* Amenities */}
             <section>
@@ -959,7 +959,7 @@ export default function AppSearchWizard() {
                       style={{
                         backgroundColor: active ? "rgb(var(--ha-primary))" : "transparent",
                         borderColor: active ? "rgb(var(--ha-primary))" : OBW.chipBorder,
-                        color: active ? "#fff" : OBW.textSecondary,
+                        color: active ? "white" : OBW.textSecondary,
                       }}
                       data-testid={`amenity-${value}`}>
                       {active ? <Check className="w-3 h-3 shrink-0" /> : <Icon className="w-3.5 h-3.5 shrink-0" />}
@@ -970,7 +970,7 @@ export default function AppSearchWizard() {
               </div>
             </section>
 
-            <div className="h-px bg-[#F0F0F0]" />
+            <div className="h-px bg-ha-divider" />
 
             {/* Send unclear */}
             <section>
@@ -1006,7 +1006,7 @@ export default function AppSearchWizard() {
   }
 
   return (
-    <div className="min-h-[100dvh] flex flex-col" style={{ background: "#ffffff" }}
+    <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-card))" }}
       data-testid="screen-wizard-preferences">
       <StepHeader step={4} title={t("onboardingWebPreferences.headerTitle")} onClose={goClose} />
 
@@ -1022,14 +1022,14 @@ export default function AppSearchWizard() {
             value={pref.searchName}
             onChange={(e) => setPref((p) => ({ ...p, searchName: e.target.value }))}
             className="w-full ha-field-web"
-            style={{ backgroundColor: "#ffffff", borderColor: OBW.inputBorder, borderRadius: 6, color: "#111111" }}
+            style={{ backgroundColor: "rgb(var(--ha-card))", borderColor: OBW.inputBorder, borderRadius: 6, color: "rgb(var(--ha-text))" }}
             placeholder={city?.name || ""}
             data-testid="input-search-name" />
         </div>
 
         {/* Suitable for */}
         <section className="mb-7">
-          <label className={sLabel} style={{ color: "#111111" }}>
+          <label className={sLabel} style={{ color: "rgb(var(--ha-text))" }}>
             {t("onboardingWebPreferences.suitableForLabel")}
           </label>
           <div className="flex gap-1.5 flex-wrap" data-testid="suitable-for-chips">
@@ -1039,20 +1039,20 @@ export default function AppSearchWizard() {
                 <button key={opt.value} onClick={() => toggleSuitable(opt.value)}
                   className="h-[36px] px-3 rounded-full text-[13px] font-medium border transition-all active:scale-[0.96] flex items-center gap-[4px] shrink-0"
                   style={{
-                    backgroundColor: active ? "rgb(var(--ha-primary))" : "#F9FAFB",
-                    borderColor: active ? "rgb(var(--ha-primary))" : "#D1D5DB",
-                    color: active ? "#ffffff" : "#111111",
+                    backgroundColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-surface))",
+                    borderColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-border-input))",
+                    color: active ? "white" : "rgb(var(--ha-text))",
                   }}
                   data-testid={`chip-suitable-${opt.value}`}>
-                  {!active && <Plus className="w-[11px] h-[11px] shrink-0" style={{ color: "#6B7280" }} />}
+                  {!active && <Plus className="w-[11px] h-[11px] shrink-0" style={{ color: "rgb(var(--ha-text-muted))" }} />}
                   {opt.label}
                 </button>
               );
             })}
           </div>
-          <div className="mt-4 rounded-[8px] flex items-start gap-2.5" style={{ backgroundColor: "#F7F8F9", padding: "11px 13px" }}>
-            <Info className="w-[13px] h-[13px] shrink-0 mt-[2px]" style={{ color: "#9CA3AF" }} />
-            <p className="text-[12.5px] leading-[1.55]" style={{ color: "#374151" }}>
+          <div className="mt-4 rounded-[8px] flex items-start gap-2.5" style={{ backgroundColor: "rgb(var(--ha-hover-bg))", padding: "11px 13px" }}>
+            <Info className="w-[13px] h-[13px] shrink-0 mt-[2px]" style={{ color: "rgb(var(--ha-text-placeholder))" }} />
+            <p className="text-[12.5px] leading-[1.55]" style={{ color: "rgb(var(--ha-text-secondary))" }}>
               {t("onboardingWebPreferences.suitableForInfo")}
             </p>
           </div>
@@ -1060,7 +1060,7 @@ export default function AppSearchWizard() {
 
         {/* Search filters */}
         <section className="mb-7">
-          <label className={sLabel} style={{ color: "#111111" }}>
+          <label className={sLabel} style={{ color: "rgb(var(--ha-text))" }}>
             {t("onboardingWebPreferences.filterLabel")}
           </label>
           <div className="flex flex-col" data-testid="search-filter-rows">
