@@ -992,30 +992,24 @@ function HomeTab({
       )}
 
       <div
-        className="px-5 pb-10"
-        style={{
-          backgroundColor: "rgb(var(--ha-primary-hover))",
-          borderBottomLeftRadius: 24,
-          borderBottomRightRadius: 24,
-          paddingTop: "max(env(safe-area-inset-top), 32px)",
-        }}
+        className="px-5 pb-10 bg-ha-bg"
+        style={{ paddingTop: "max(env(safe-area-inset-top), 32px)" }}
         data-testid="section-welcome"
       >
         <div className="flex items-center justify-between mb-6">
-          <span className="text-[16px] font-semibold tracking-[-0.01em]" style={{ color: "rgba(255,255,255,0.8)" }} data-testid="text-brand">HousAlert</span>
+          <span className="text-[16px] font-semibold tracking-[-0.01em] text-ha-primary-hover" data-testid="text-brand">HousAlert</span>
           <button
             onClick={() => navigate("/settings/preferences")}
-            className="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
-            style={{ background: "rgba(255,255,255,0.12)" }}
+            className="w-9 h-9 rounded-full bg-ha-card-border flex items-center justify-center transition-colors active:bg-ha-border-input"
             data-testid="button-help"
           >
-            <HelpCircle className="w-[22px] h-[22px] text-white" />
+            <HelpCircle className="w-[22px] h-[22px] text-ha-text" />
           </button>
         </div>
-        <h1 className="text-[34px] font-semibold tracking-[-0.025em] leading-[1.15] text-white" data-testid="text-greeting">
+        <h1 className="text-[34px] font-semibold tracking-[-0.025em] leading-[1.15] text-ha-text" data-testid="text-greeting">
           {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")} 👋
         </h1>
-        <p className="text-[17px] mt-2 leading-relaxed" style={{ color: "rgba(255,255,255,0.8)" }} data-testid="text-welcome-subtitle">
+        <p className="text-[17px] mt-2 leading-relaxed text-ha-text-secondary" data-testid="text-welcome-subtitle">
           {t("home.welcomeSubtitle")}
         </p>
       </div>
@@ -1036,8 +1030,9 @@ function HomeTab({
             ctaLabel={t("tips.referralShareCta")}
             onClick={handleReferralShare}
             testId="card-home-referral"
-            bgColor="rgb(var(--ha-mint) / 0.22)"
+            bgColor="rgb(var(--ha-primary))"
             layout="horizontal"
+            inverted
           />
         )}
 

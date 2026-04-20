@@ -10,9 +10,10 @@ interface HighlightCardProps {
   testId?: string;
   bgColor?: string;
   layout?: "centered" | "horizontal";
+  inverted?: boolean;
 }
 
-export function HighlightCard({ icon: Icon, title, subtitle, overline, ctaLabel, onClick, testId, bgColor, layout = "centered" }: HighlightCardProps) {
+export function HighlightCard({ icon: Icon, title, subtitle, overline, ctaLabel, onClick, testId, bgColor, layout = "centered", inverted = false }: HighlightCardProps) {
   const bg = bgColor ?? "rgb(var(--ha-highlight))";
 
   if (layout === "horizontal") {
@@ -22,21 +23,32 @@ export function HighlightCard({ icon: Icon, title, subtitle, overline, ctaLabel,
         className="w-full rounded-[12px] p-4 text-left transition-colors"
         style={{
           backgroundColor: bg,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
-          border: "1px solid rgb(var(--ha-card-border))",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+          border: inverted ? "none" : "1px solid rgb(var(--ha-card-border))",
         }}
         data-testid={testId}
       >
         <div className="flex items-center gap-3 mb-2">
-          <Icon className="w-[26px] h-[26px] shrink-0 text-ha-text" strokeWidth={1.6} />
-          <p className="text-[17px] font-semibold text-ha-text leading-snug">{title}</p>
+          <Icon
+            className={`w-[26px] h-[26px] shrink-0 ${inverted ? "text-white" : "text-ha-text"}`}
+            strokeWidth={1.6}
+          />
+          <p className={`text-[17px] font-semibold leading-snug ${inverted ? "text-white" : "text-ha-text"}`}>
+            {title}
+          </p>
         </div>
         {subtitle && (
-          <p className="text-[14px] text-ha-text-secondary leading-relaxed mb-3">{subtitle}</p>
+          <p className={`text-[14px] leading-relaxed mb-3 ${inverted ? "text-white/80" : "text-ha-text-secondary"}`}>
+            {subtitle}
+          </p>
         )}
         {ctaLabel && (
           <span
-            className="inline-flex h-[52px] px-8 rounded-[4px] bg-ha-primary-hover text-white text-[14px] font-semibold items-center transition-colors"
+            className={`inline-flex h-[48px] px-7 rounded-[10px] text-[14px] font-semibold items-center transition-colors ${
+              inverted
+                ? "bg-white text-ha-text"
+                : "bg-ha-primary-hover text-white"
+            }`}
           >
             {ctaLabel}
           </span>

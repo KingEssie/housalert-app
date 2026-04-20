@@ -1,0 +1,88 @@
+Apply the following exact UI changes to the Home screen only.
+
+Do NOT redesign anything else.
+Do NOT change layout structure beyond what is described.
+Use semantic tokens where possible (create mappings if needed).
+No hardcoded inline styling unless unavoidable.
+
+--------------------------------------------------
+1. HEADER (Welcome Martin section)
+--------------------------------------------------
+
+- Remove the dark blue background completely
+- Set header background to the global app background (#EFF0F4)
+- Change all text inside the header to: #0e2c4f
+- Keep layout and spacing the same
+
+--------------------------------------------------
+2. GLOBAL BACKGROUND
+--------------------------------------------------
+
+- Ensure the entire app background uses: #EFF0F4
+- This should already map to --ha-bg, confirm consistency
+
+--------------------------------------------------
+3. "Maak je account af" & "Vergroot je kansen"
+--------------------------------------------------
+
+Replace the current circular progress UI with a horizontal progress layout.
+
+For BOTH sections:
+
+A. Top row:
+- Left icon: color #6192FC
+- Title text: unchanged
+- Right side: percentage text (e.g. "50% voltooid")
+
+B. Progress bar:
+- Full width horizontal bar
+- Height: thicker than default (visually prominent)
+- Completed part: #7CEF66
+- Remaining part: #EFF0F4
+- Rounded corners
+
+C. Expanded state (list view):
+For each item:
+- Left: number (1, 2, 3, ...)
+- Middle: title text
+- Right:
+  - circle with background #EFF0F4
+  - inside: black check icon for completed items
+  - incomplete = empty circle (same style without check)
+
+Remove:
+- circular progress rings completely
+
+--------------------------------------------------
+4. REFERRAL CARD ("Geef een vriend 25% korting")
+--------------------------------------------------
+
+- Card background: #6192FC
+- Title text: white
+- Body text: white
+- Icon: white
+
+Button:
+- Background: white
+- Text color: black
+- No shadow
+- Keep existing shape unless specified elsewhere
+
+--------------------------------------------------
+RULES
+--------------------------------------------------
+
+- Only modify Home screen and directly used components
+- Do not introduce random new colors
+- Keep spacing and layout stable
+- Use existing token system where possible
+- Maintain clean, minimal look (no extra decoration)
+
+--------------------------------------------------
+OUTPUT
+--------------------------------------------------
+
+Return:
+1. files changed
+2. exact elements updated
+3. confirmation no other screens were affected

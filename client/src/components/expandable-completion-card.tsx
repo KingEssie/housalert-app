@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, ChevronDown, ChevronRight } from "lucide-react";
+import { Check, ChevronDown, ChevronRight, ClipboardList, CheckCircle2 } from "lucide-react";
 
 export type StepType = "navigate" | "modal" | "inline";
 
@@ -22,48 +22,10 @@ interface ExpandableCompletionCardProps {
   defaultExpanded?: boolean;
 }
 
-function CircularProgress({ percentage, size = 52 }: { percentage: number; size?: number }) {
-  const strokeWidth = 3.5;
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (percentage / 100) * circumference;
-
-  return (
-    <div className="relative flex-shrink-0" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="-rotate-90">
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="none"
-          stroke="rgb(var(--ha-divider))"
-          strokeWidth={strokeWidth}
-        />
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="none"
-          stroke="rgb(var(--ha-emerald))"
-          strokeWidth={strokeWidth}
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          strokeLinecap="round"
-          className="transition-all duration-500"
-        />
-      </svg>
-      <span className="absolute inset-0 flex items-center justify-center text-[13px] font-bold text-ha-text">
-        {percentage}%
-      </span>
-    </div>
-  );
-}
-
 export function ExpandableCompletionCard({
   title,
   steps,
   completedLabel,
-  subtitleFormat,
   testId,
   defaultExpanded = false,
 }: ExpandableCompletionCardProps) {
@@ -93,30 +55,43 @@ export function ExpandableCompletionCard({
       data-testid={testId}
     >
       <button
-        className="w-full px-5 py-5 flex items-center gap-4 text-left active:bg-ha-surface transition-colors"
+        className="w-full px-5 py-5 text-left active:bg-ha-surface transition-colors"
         onClick={() => setExpanded(!expanded)}
         data-testid={`${testId}-toggle`}
       >
-        {allDone ? (
-          <div className="w-[52px] h-[52px] rounded-full bg-ha-success/10 flex items-center justify-center flex-shrink-0">
-            <Check className="w-7 h-7 text-ha-success" strokeWidth={2.5} />
-          </div>
-        ) : (
-          <CircularProgress percentage={percentage} />
-        )}
-        <div className="flex-1 min-w-0">
-          <p className="text-[17px] font-bold text-ha-text leading-snug tracking-[-0.01em]">{title}</p>
-          {allDone && (
-            <p className="text-[13px] mt-1 text-ha-success font-semibold">
-              {completedLabel}
-            </p>
+        <div className="flex items-center gap-3">
+          {allDone ? (
+            <CheckCircle2 className="w-5 h-5 text-ha-success flex-shrink-0" />
+          ) : (
+            <ClipboardList className="w-5 h-5 text-ha-primary flex-shrink-0" />
           )}
+          <p className="text-[17px] font-bold text-ha-text leading-snug tracking-[-0.01em] flex-1 min-w-0">
+            {title}
+          </p>
+          <span
+            className={`text-[13px] font-semibold flex-shrink-0 ${
+              allDone ? "text-ha-success" : "text-ha-text-muted"
+            }`}
+          >
+            {percentage}%
+          </span>
+          <ChevronDown
+            className={`w-5 h-5 text-ha-text-secondary flex-shrink-0 transition-transform duration-200 ${
+              expanded ? "rotate-180" : ""
+            }`}
+          />
         </div>
-        <ChevronDown
-          className={`w-5 h-5 text-ha-text-secondary flex-shrink-0 transition-transform duration-200 ${
-            expanded ? "rotate-180" : ""
-          }`}
-        />
+
+        <div className="mt-3 h-[8px] rounded-full overflow-hidden bg-ha-bg">
+          <div
+            className="h-full rounded-full bg-ha-highlight transition-all duration-500"
+            style={{ width: `${percentage}%` }}
+          />
+        </div>
+
+        {allDone && (
+          <p className="text-[12px] mt-2 text-ha-success font-semibold">{completedLabel}</p>
+        )}
       </button>
 
       <div
@@ -158,8 +133,8 @@ export function ExpandableCompletionCard({
                   </span>
                   <div className="flex-shrink-0">
                     {step.completed ? (
-                      <div className="w-[26px] h-[26px] rounded-full bg-ha-success flex items-center justify-center">
-                        <Check className="w-[14px] h-[14px] text-white" strokeWidth={3} />
+                      <div className="w-[26px] h-[26px] rounded-full bg-ha-bg border border-ha-card-border flex items-center justify-center">
+                        <Check className="w-[14px] h-[14px] text-ha-text" strokeWidth={3} />
                       </div>
                     ) : step.stepType === "inline" ? (
                       <ChevronDown
