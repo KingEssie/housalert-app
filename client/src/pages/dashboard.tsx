@@ -765,7 +765,7 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
         {profiles.length > 0 && (
           <span
             className="text-[12px] font-medium px-[10px] py-[4px] rounded-full"
-            style={{ backgroundColor: "var(--ha-primary-light)", color: "rgb(var(--ha-primary))" }}
+            style={{ backgroundColor: "var(--ha-primary-light)", color: "rgb(var(--ha-primary-hover))" }}
           >
             {profiles.length}/4
           </span>
@@ -994,7 +994,7 @@ function HomeTab({
       <div
         className="px-5 pb-10"
         style={{
-          backgroundColor: "rgb(var(--ha-primary))",
+          backgroundColor: "rgb(var(--ha-primary-hover))",
           borderBottomLeftRadius: 24,
           borderBottomRightRadius: 24,
           paddingTop: "max(env(safe-area-inset-top), 32px)",
@@ -2481,13 +2481,13 @@ export default function DashboardPage() {
                 data-testid={`tab-${key}`}
               >
                 {isProfileWithPhoto ? (
-                  <div className={`w-[28px] h-[28px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-ha-primary ring-offset-1 ring-offset-white" : ""}`}>
+                  <div className={`w-[28px] h-[28px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-ha-primary-hover ring-offset-1 ring-offset-white" : ""}`}>
                     <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
                   </div>
                 ) : (
-                  <Icon className={`w-[26px] h-[26px] transition-colors ${isActive ? "text-ha-primary" : "text-ha-text-secondary"}`} strokeWidth={isActive ? 2.2 : 1.6} />
+                  <Icon className={`w-[26px] h-[26px] transition-colors ${isActive ? "text-ha-primary-hover" : "text-ha-text-secondary"}`} strokeWidth={isActive ? 2.2 : 1.6} />
                 )}
-                <span className={`text-[11px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-ha-text-secondary"}`}>
+                <span className={`text-[11px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary-hover" : "font-medium text-ha-text-secondary"}`}>
                   {t(labelKey)}
                 </span>
               </button>
