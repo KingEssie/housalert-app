@@ -213,7 +213,7 @@ function StepHeader({ step, title, onClose }: { step: number; title: string; onC
 
 function EditHeader({ cityName, onBack, onMenu }: { cityName: string; onBack: () => void; onMenu: () => void }) {
   return (
-    <header className="sticky top-0 z-20 w-full bg-white border-b border-ha-card-border">
+    <header className="sticky top-0 z-20 w-full bg-white">
       <div className="max-w-[480px] mx-auto px-3.5 h-[52px] flex items-center gap-2">
         <button
           onClick={onBack}
@@ -296,16 +296,22 @@ function StepFooter({
 }) {
   const { t } = useTranslation();
   const count = estimate?.matchesLast7Days ?? null;
+  const footerBg = editMode ? "#E3ECFF" : OBW.footerBg;
+  const footerBorderStyle = editMode ? "none" : `1px solid ${OBW.footerBorder}`;
+  const countColor = editMode ? "rgb(var(--ha-primary))" : OBW.text;
+  const btnHeight = editMode ? "h-[52px]" : "h-[40px]";
+  const btnRadius = editMode ? "rounded-[4px]" : "rounded-[8px]";
+
   return (
     <div className="fixed bottom-0 left-0 right-0 z-30"
-      style={{ borderTop: `1px solid ${OBW.footerBorder}`, backgroundColor: OBW.footerBg, paddingBottom: "max(8px, env(safe-area-inset-bottom, 8px))" }}>
+      style={{ borderTop: footerBorderStyle, backgroundColor: footerBg, paddingBottom: "max(8px, env(safe-area-inset-bottom, 8px))" }}>
       <div className="max-w-[480px] mx-auto px-4 py-2.5 flex items-center gap-3">
         {showCount && (
           <div className="flex-1 min-w-0">
-            <p className="text-[10.5px] font-medium leading-tight" style={{ color: OBW.textMuted }}>
+            <p className={`${editMode ? "text-[12px]" : "text-[10.5px]"} font-medium leading-tight`} style={{ color: OBW.textMuted }}>
               {t("onboarding.location.estimatedMatches")}
             </p>
-            <p className="text-[15px] font-semibold leading-snug" style={{ color: OBW.text }}>
+            <p className="text-[15px] font-semibold leading-snug" style={{ color: countColor }}>
               {fetching ? (
                 <span style={{ color: OBW.textMuted }}>…</span>
               ) : count != null ? (
@@ -328,7 +334,7 @@ function StepFooter({
             </button>
           )}
           <button onClick={onNext} disabled={nextDisabled || saving}
-            className="h-[40px] px-5 rounded-[8px] text-[14.5px] font-semibold text-white flex items-center justify-center gap-1.5 active:scale-[0.97] transition-transform disabled:opacity-40"
+            className={`${btnHeight} px-5 ${btnRadius} text-[14.5px] font-semibold text-white flex items-center justify-center gap-1.5 active:scale-[0.97] transition-transform disabled:opacity-40`}
             style={{ background: OBW.primary, boxShadow: "0 3px 10px rgb(var(--ha-primary) / 0.18)" }}
             data-testid="button-step-next">
             {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
@@ -757,8 +763,8 @@ export default function AppSearchWizard() {
         {isEdit && <EditTabBar activeStep={2} onStep={setStep} />}
 
         <main className="flex-1 max-w-[480px] mx-auto w-full px-4 pt-3.5 pb-[110px] overflow-y-auto">
-          {/* City display (create mode only) */}
-          {!isEdit && (
+          {/* City display — editable in create mode, read-only in edit mode */}
+          {!isEdit ? (
             <>
               <label className="text-[15px] font-semibold mb-2 block" style={{ color: OBW.textSecondary }}>
                 {t("onboarding.location.cityLabel")}
@@ -772,20 +778,27 @@ export default function AppSearchWizard() {
                 <X className="w-[15px] h-[15px] shrink-0" style={{ color: OBW.textMuted }} />
               </button>
             </>
+          ) : (
+            <div className="w-full flex items-center gap-3 mb-3 ha-field-web"
+              style={{ backgroundColor: OBW.inputBg, borderColor: "rgb(var(--ha-border-input))" }}
+              data-testid="field-city-display-readonly">
+              <Search className="w-[17px] h-[17px] shrink-0" style={{ color: OBW.textMuted }} />
+              <span className="flex-1 text-[15px] font-medium" style={{ color: OBW.text }}>{city?.name}</span>
+            </div>
           )}
 
-          {/* Mode segmented control — Rentbird style (white active pill) */}
-          <div className="flex items-center gap-0.5 p-1 rounded-[8px] mb-4" style={{ backgroundColor: "rgb(var(--ha-toggle-bg))" }} data-testid="location-tabs">
+          {/* Mode segmented control — Rentbird style (primary blue active pill) */}
+          <div className="flex items-center gap-0.5 p-1 rounded-[10px] mb-4" style={{ backgroundColor: "#E3ECFF" }} data-testid="location-tabs">
             {tabs.map((tab) => {
               const isActive = loc.mode === tab.value;
               return (
                 <button key={tab.value} onClick={() => setLoc((prev) => ({ ...prev, mode: tab.value }))}
-                  className="flex-1 py-[7px] text-[12.5px] rounded-[6px] text-center transition-all whitespace-nowrap overflow-hidden"
+                  className="flex-1 py-[8px] text-[12.5px] rounded-[8px] text-center transition-all whitespace-nowrap overflow-hidden"
                   style={{
-                    backgroundColor: isActive ? "rgb(var(--ha-card))" : "transparent",
-                    color: isActive ? "rgb(var(--ha-text))" : "rgb(var(--ha-text-muted))",
+                    backgroundColor: isActive ? "#6192FC" : "transparent",
+                    color: isActive ? "#ffffff" : "rgb(var(--ha-text-secondary))",
                     fontWeight: isActive ? 600 : 400,
-                    boxShadow: isActive ? "0 1px 3px rgba(0,0,0,0.09)" : "none",
+                    boxShadow: isActive ? "0 1px 4px rgba(97,146,252,0.25)" : "none",
                   }}
                   data-testid={`tab-${tab.value}`}>
                   {tab.label}

@@ -1,0 +1,129 @@
+Apply the following exact UI corrections to the search profile edit/detail screen only.
+
+Important:
+- We are correcting the current version to match the Rentbird reference more closely.
+- Do not affect other screens.
+- Do not change logic except where explicitly needed for this screen.
+- Keep the existing working functionality intact.
+
+Scope:
+- Search profile edit/detail screen only
+- Includes:
+  - top title row
+  - city input row
+  - the 3-option segmented control
+  - bottom sticky footer/action area
+
+==================================================
+1. REMOVE THE LINE ABOVE THE 3 TABS
+==================================================
+
+- Remove the horizontal divider line between the top title row ("Amsterdam" / city title) and the 3 tabs
+- There should be no separator line there
+- Keep spacing clean and intentional
+
+==================================================
+2. CITY / WOONPLAATS INPUT MUST BE VISIBLE
+==================================================
+
+The city input row is missing in the current version.
+
+Add/show the fixed city input again:
+- it should be visible above the 3-option control
+- it is NOT editable, but it must still be displayed
+- use the same height and corner radius feel as the Rentbird reference
+- keep the search icon on the left
+- display the selected city/place value inside
+- preserve the rule that the place is fixed and not editable in edit mode
+
+Style:
+- clean input-style field
+- same visual rhythm as Rentbird
+- same height and rounded corners as reference
+
+==================================================
+3. 3-OPTION CONTROL — MATCH RENTBIRD EXACTLY
+==================================================
+
+Target:
+- Buurten
+- Straal
+- Gehele woonplaats
+
+Make this control match the reference more closely:
+
+Container background:
+- #E3ECFF
+
+Active pill:
+- background: #6192FC
+- rounded pill shape
+- clean white text if needed for contrast
+
+Inactive options:
+- visually lighter, but still readable
+- match Rentbird proportions
+
+Also:
+- match Rentbird height, inner padding, spacing, and proportions as closely as possible
+- do not leave the current styling as-is if it differs
+
+==================================================
+4. BOTTOM STICKY FOOTER
+==================================================
+
+Target the bottom sticky action area.
+
+Background:
+- change the footer background to: #E3ECFF
+
+Top border:
+- remove the top border / top divider line completely
+- there should be NO line at the top of this footer
+
+Text:
+- "Geschatte matches" should be slightly larger
+- the value text like "209 per week" should use color: #6192FC
+
+Buttons:
+- the main action button should have 4px border radius
+- make the button noticeably taller, closer to Rentbird
+- keep the layout balanced
+- preserve functionality
+
+Overall:
+- make the footer feel softer and closer to Rentbird
+- keep spacing clean and premium
+
+==================================================
+5. KEEP AS-IS
+==================================================
+
+These parts are already good and should stay as they are:
+- the dropdown with buurten
+- the map block
+- general layout and functionality of the screen
+
+==================================================
+6. RULES
+==================================================
+
+- Only update this screen
+- Do not affect other flows
+- Do not change navigation behavior
+- Do not break edit-mode logic
+- Use semantic tokens where possible
+- If new exact values are needed for this screen, map them cleanly
+- Prioritize visual match with Rentbird
+
+==================================================
+7. OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. confirmation the city input is visible again and not editable
+3. confirmation the divider line above the tabs is removed
+4. exact segmented control changes
+5. exact footer changes
+6. confirmation unrelated screens were not modified
