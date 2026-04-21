@@ -53,6 +53,7 @@ export default function OnboardingPassword() {
   const [referralCode, setReferralCode] = useState(storedRef || "");
   const [showReferral, setShowReferral] = useState(!!storedRef);
   const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string>("");
   const [accordionOpen, setAccordionOpen] = useState(true);
   const submittingRef = useRef(false);
 
@@ -123,15 +124,29 @@ export default function OnboardingPassword() {
   }
 
   async function handleCreateAccount() {
+    setSubmitError("");
     const pwOk = isPasswordValid(validatePassword(password));
-    if (!email || !pwOk || password !== confirmPassword) return;
-    if (w && !firstName.trim()) return;
+
+    // Website mode has no confirm-password field — skip that check.
+    // Non-website (in-app wizard) still requires matching confirm password.
+    if (!email || !pwOk) {
+      console.warn("[signup] Blocked — invalid email or weak password");
+      return;
+    }
+    if (!w && password !== confirmPassword) {
+      console.warn("[signup] Blocked — passwords do not match");
+      return;
+    }
+    if (w && !firstName.trim()) {
+      console.warn("[signup] Blocked — missing first name");
+      return;
+    }
     if (loading || submittingRef.current) return;
     submittingRef.current = true;
     setLoading(true);
 
     const fullName = [firstName, lastName].filter(Boolean).join(" ");
-    console.log(`[IDENTITY] Signup attempt — email="${email}"`);
+    console.log(`[signup] Account creation started — email="${email}", w=${w}`);
     clearAllUserData();
 
     try {
@@ -147,11 +162,15 @@ export default function OnboardingPassword() {
         const msg = result.error === "user_exists"
           ? t("common.authAccountExists")
           : (result.message || result.error || t("auth.signup.failed"));
+        console.error(`[signup] Signup API failed — ${msg}`);
+        setSubmitError(msg);
         toast({ title: t("auth.signup.failed"), description: msg, variant: "destructive" });
         setLoading(false);
         submittingRef.current = false;
         return;
       }
+
+      console.log("[signup] Signup API succeeded — signing in…");
 
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
@@ -159,11 +178,15 @@ export default function OnboardingPassword() {
       });
 
       if (signInError) {
+        console.error("[signup] Sign-in after signup failed:", signInError.message);
+        setSubmitError(signInError.message);
         toast({ title: t("common.error"), description: signInError.message, variant: "destructive" });
         setLoading(false);
         submittingRef.current = false;
         return;
       }
+
+      console.log("[signup] Sign-in succeeded");
 
       const { data: sessionData } = await supabase.auth.getSession();
       const userId = sessionData?.session?.user?.id;
@@ -228,12 +251,16 @@ export default function OnboardingPassword() {
           const val = params.get(key);
           if (val) paywallParams.set(key, val);
         });
+        console.log(`[signup] Navigating to /paywall — city=${params.get("city")}`);
         navigate(`/paywall?${paywallParams.toString()}`);
       } else {
         navigate("/onboarding/setup");
       }
     } catch (err: any) {
-      toast({ title: t("common.error"), description: err.message, variant: "destructive" });
+      const msg = err?.message || t("common.error");
+      console.error("[signup] Unexpected error:", err);
+      setSubmitError(msg);
+      toast({ title: t("common.error"), description: msg, variant: "destructive" });
     } finally {
       setLoading(false);
       submittingRef.current = false;
@@ -534,8 +561,8 @@ export default function OnboardingPassword() {
                 disabled={!canSubmit}
                 className="w-full mt-5 h-[52px] rounded-[8px] text-[16px] font-bold text-white transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2"
                 style={{
-                  background: "rgb(var(--ha-accent))",
-                  boxShadow: canSubmit ? "0 8px 24px rgba(243,107,46,0.35)" : "none",
+                  background: "rgb(var(--ha-primary))",
+                  boxShadow: canSubmit ? "0 4px 14px rgb(var(--ha-primary) / 0.25)" : "none",
                 }}
                 data-testid="button-create-account"
               >
@@ -548,6 +575,17 @@ export default function OnboardingPassword() {
                   t("onboarding.password.cta")
                 )}
               </button>
+
+              {/* Inline error — shown when submission fails */}
+              {submitError && (
+                <p
+                  className="text-[13px] text-center mt-2 font-medium"
+                  style={{ color: "rgb(var(--ha-danger))" }}
+                  data-testid="text-submit-error"
+                >
+                  {submitError}
+                </p>
+              )}
 
               {/* Legal text */}
               <p className="text-center text-[12px] leading-[1.65] mt-3 mx-4" style={{ color: "rgb(var(--ha-text-placeholder))" }}>

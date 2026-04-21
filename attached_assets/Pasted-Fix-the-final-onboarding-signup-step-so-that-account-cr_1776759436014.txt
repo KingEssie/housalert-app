@@ -1,0 +1,111 @@
+Fix the final onboarding/signup step so that account creation uses the correct HousAlert branding and successfully continues to payment.
+
+Current issues on the last step:
+1. The "Account aanmaken" button is using the wrong color
+2. Clicking it does not continue to the payment step
+3. The screen appears to hang instead of progressing
+
+Goal:
+- make the CTA use the correct HousAlert brand color
+- make the submit flow work reliably
+- after successful account creation, continue to the payment step
+
+Scope:
+- final onboarding/signup step only
+- submission handler for account creation
+- transition from signup completion -> payment screen
+
+Do NOT redesign unrelated screens.
+Do NOT change the earlier onboarding steps unless required for data flow.
+
+==================================================
+1. CTA BRAND COLOR
+==================================================
+
+Target:
+- the final button: "Account aanmaken"
+
+Fix:
+- replace the current orange CTA color with the correct HousAlert primary CTA brand color
+- use the same HousAlert primary button style already established elsewhere in the app
+- keep text readable and high contrast
+
+==================================================
+2. FIX SUBMIT / CONTINUE FLOW
+==================================================
+
+Current issue:
+- after clicking "Account aanmaken", the flow stays on the same screen and appears stuck
+
+Required behavior:
+- validate the form
+- create the account successfully
+- continue to the payment step immediately after successful account creation
+
+Tasks:
+- inspect the submit handler on the final step
+- identify why it is not continuing:
+  - silent validation failure
+  - auth/signup request succeeds but navigation is never triggered
+  - auth/signup request fails silently
+  - loading state never resolves
+  - payment route not being called
+  - legacy flow logic still blocking the transition
+- fix the root cause
+
+==================================================
+3. ERROR HANDLING / LOADING STATE
+==================================================
+
+Improve this flow so it is clear what happens:
+
+- if submission is in progress, show a proper loading state on the CTA
+- if submission fails, show a visible error message
+- do not let the screen appear frozen with no feedback
+- if signup succeeds, remove loading and navigate to payment
+
+==================================================
+4. PAYMENT TRANSITION
+==================================================
+
+After successful account creation:
+- navigate to the payment screen/step that should follow this final onboarding step
+- use the correct current payment route used in the app
+- do not redirect to legacy flow
+- do not leave the user on the signup screen
+
+==================================================
+5. DATA PRESERVATION
+==================================================
+
+Ensure the collected onboarding data from previous steps is preserved and passed forward correctly into the account creation / payment transition.
+
+Check that:
+- city/place
+- preferences
+- filters
+- name/email/password
+are all still available when the final submit happens
+
+==================================================
+6. DEBUGGING
+==================================================
+
+Add enough logging or defensive handling to identify:
+- whether signup succeeded
+- whether navigation to payment fired
+- whether any validation blocked submission
+- whether any async request is unresolved
+
+If there is still an issue, the app should show the actual reason instead of appearing stuck.
+
+==================================================
+7. OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. root cause of why the last step was hanging
+3. confirmation the CTA now uses the correct HousAlert brand color
+4. confirmation clicking "Account aanmaken" now proceeds to payment
+5. what loading/error handling was added
