@@ -1,0 +1,119 @@
+Apply the following exact UI changes.
+
+Scope:
+- Matches screen utility buttons
+- Match detail screen utility buttons
+- Favorites screen
+- Account screen
+
+Do NOT affect unrelated screens.
+Do NOT change logic unless explicitly requested.
+Use the existing semantic token system where possible.
+
+--------------------------------------------------
+1. UTILITY BUTTONS / GREY ACTION BUTTONS
+--------------------------------------------------
+
+Target:
+- the filter / sort / utility-style grey buttons on the Matches screen
+- the "Blokkeren" button on the match detail screen
+- any similar small circular utility action buttons directly related to these screens
+
+Changes:
+- use the SAME grey background as the current back buttons
+- match the same visual style as the back buttons exactly:
+  - same grey tone
+  - same feel
+  - same clean neutral utility appearance
+
+For the "Blokkeren" button on the detail match screen:
+- use that same grey utility style
+- remove any extra colored background treatment
+- make it feel like a neutral utility action, not a primary CTA
+
+Important:
+- keep icon alignment and spacing clean
+- do not affect actual primary CTA buttons
+
+--------------------------------------------------
+2. FAVORITES SCREEN
+--------------------------------------------------
+
+Make the Favorites listings visually identical to the listing cards on the Matches screen.
+
+This means:
+- same card layout
+- same image treatment
+- same card background
+- same pill styling
+- same icon styling in pills
+- same heart treatment
+- same spacing and hierarchy
+- same euro symbol formatting before price
+
+Goal:
+Favorites cards should look and feel exactly like Matches cards, only with Favorites-specific data/state.
+
+Do NOT:
+- redesign the Favorites screen structure
+- break favorite logic
+- affect non-listing parts of Favorites unless required for consistency
+
+--------------------------------------------------
+3. ACCOUNT SCREEN
+--------------------------------------------------
+
+A. Menu item spacing
+- reduce the vertical spacing between the account menu items slightly
+- keep it readable and clean
+- do not make it cramped
+
+B. Initials circle next to the name
+Target:
+- the circle/avatar showing "ME" next to the user name
+
+Changes:
+- background color: #11358B
+- text color: white
+
+C. Admin mode button
+Target:
+- the button that switches to admin mode
+
+Problems to solve:
+- it currently overlaps the bottom tab bar
+- it needs a clearer visual treatment
+
+Changes:
+- move it slightly higher so it no longer overlaps the bottom tab bar
+- background color: #C7EF66
+- make it fully rounded / pill-shaped
+- keep text readable
+- keep functionality unchanged
+
+--------------------------------------------------
+RULES
+--------------------------------------------------
+
+- Use semantic tokens where possible
+- If needed:
+  - #11358B should map to the existing primary-hover / dark blue token
+  - #C7EF66 should map to the existing highlight token
+- Do not introduce random new colors
+- Do not change navigation logic
+- Do not redesign unrelated components
+- Keep the UI consistent with the current Matches styling direction
+
+--------------------------------------------------
+OUTPUT
+--------------------------------------------------
+
+Return:
+1. files changed
+2. exact elements updated for:
+   - Matches utility buttons
+   - Match detail utility buttons
+   - Favorites listings
+   - Account screen
+3. confirmation that Favorites listings now match Matches listings
+4. confirmation that the admin mode button no longer overlaps the bottom tab bar

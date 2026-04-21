@@ -265,12 +265,11 @@ export default function ApplyPage() {
         {showBlock && listing?.source && (
           <button
             onClick={() => setShowBlockModal(true)}
-            className="w-9 h-9 rounded-full flex items-center justify-center active:scale-95 transition-transform shrink-0"
-            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.1)" }}
+            className="w-10 h-10 rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input flex items-center justify-center transition-colors shrink-0"
             aria-label="Block source"
             data-testid="button-block-source-apply"
           >
-            <ShieldBan className="w-[18px] h-[18px] text-ha-text" strokeWidth={2} />
+            <ShieldBan className="w-[18px] h-[18px] text-ha-text-secondary" strokeWidth={2} />
           </button>
         )}
       </div>

@@ -1246,15 +1246,15 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
 
       <div className="px-2 pt-3">
         {favLoading ? (
-          <div className="bg-white rounded-[12px] p-4 flex flex-col gap-4" style={cardStyle}>
+          <div className="bg-white rounded-[12px] p-3 flex flex-col gap-3" style={cardStyle}>
             {[1, 2].map((i) => (
-              <div key={i} className="animate-pulse">
-                <div className="bg-ha-surface rounded-[10px]" style={{ aspectRatio: "16/9" }} />
-                <div className="pt-3 flex flex-col gap-2">
-                  <div className="h-4 bg-ha-surface rounded-full w-3/4" />
-                  <div className="h-3 bg-ha-surface rounded-full w-1/2" />
+              <div key={i} className="animate-pulse rounded-[12px] overflow-hidden" style={{ backgroundColor: "#EBF1FF" }}>
+                <div style={{ aspectRatio: "2/1", backgroundColor: "rgba(97,146,252,0.15)" }} />
+                <div className="p-4 flex flex-col gap-2">
+                  <div className="h-4 bg-white/60 rounded-full w-3/4" />
+                  <div className="h-3 bg-white/60 rounded-full w-1/2" />
                   <div className="flex gap-1.5 mt-1">
-                    {[1, 2, 3].map((j) => <div key={j} className="h-[22px] bg-ha-surface rounded-[8px] w-14" />)}
+                    {[1, 2, 3].map((j) => <div key={j} className="h-[29px] bg-white/60 rounded-[6px] w-14" />)}
                   </div>
                 </div>
               </div>
@@ -1271,7 +1271,7 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
             />
           </div>
         ) : (
-          <div className="bg-white rounded-[12px] p-4 flex flex-col gap-4" style={cardStyle}>
+          <div className="bg-white rounded-[12px] p-3 flex flex-col gap-3" style={cardStyle}>
             {favoriteListings.map((m) => (
               <ListingCardFull
                 key={m.listing_id}
@@ -1283,6 +1283,7 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
                   navigate(`/apply/${m.listing_id}`);
                 }}
                 locked={false}
+                matchVariant
               />
             ))}
           </div>
@@ -1574,10 +1575,10 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
               </div>
               <button
                 onClick={() => setSortSheetOpen(true)}
-                className="w-[52px] h-[52px] rounded-full bg-ha-surface flex items-center justify-center flex-shrink-0 active:bg-ha-card-border transition-colors"
+                className="w-[52px] h-[52px] rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input flex items-center justify-center flex-shrink-0 transition-colors"
                 data-testid="button-sort-matches"
               >
-                <SlidersHorizontal className="w-[20px] h-[20px] text-ha-text" strokeWidth={1.8} />
+                <SlidersHorizontal className="w-[20px] h-[20px] text-ha-text-secondary" strokeWidth={1.8} />
               </button>
             </div>
 
@@ -2148,7 +2149,7 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
       <button
         type="button"
         onClick={onClick}
-        className="w-full flex items-center justify-between px-4 h-[42px] text-left active:bg-ha-surface transition-colors"
+        className="w-full flex items-center justify-between px-4 h-[38px] text-left active:bg-ha-surface transition-colors"
         data-testid={`menu-item-${label.toLowerCase().replace(/\s+/g, "-")}`}
       >
         <span className="text-[15px] font-semibold text-ha-text">{label}</span>
@@ -2164,7 +2165,7 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
   const SectionInline = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <div>
       <div className="h-px bg-ha-surface" />
-      <p className="text-[11px] font-semibold text-ha-text-muted px-4 pt-4 pb-1">{title}</p>
+      <p className="text-[11px] font-semibold text-ha-text-muted px-4 pt-3 pb-1">{title}</p>
       {children}
     </div>
   );
@@ -2278,7 +2279,8 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
       {isAdmin && (
         <button
           onClick={() => navigate("/admin/portal")}
-          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+62px)] left-1/2 -translate-x-1/2 z-40 bg-ha-text text-white text-[14px] font-medium px-4 py-2.5 rounded-[--ha-btn-radius] shadow-[0_1px_2px_rgba(0,0,0,0.1)] active:scale-95 transition-transform"
+          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+88px)] left-1/2 -translate-x-1/2 z-40 text-black text-[14px] font-semibold px-6 py-3 rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.15)] active:scale-95 transition-transform"
+          style={{ backgroundColor: "rgb(var(--ha-highlight))" }}
           data-testid="button-admin-portal"
         >
           {t("profile.adminMode")}
