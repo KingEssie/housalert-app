@@ -1,0 +1,138 @@
+Apply the following exact UI refinements.
+
+Scope:
+- Home screen only
+- Global app horizontal page padding
+- Bottom navigation spacing only
+- Remove the top-right question mark on Home only
+
+Do NOT change logic or routing.
+Do NOT affect unrelated screens beyond the global horizontal padding and bottom-nav spacing.
+Use the existing semantic token system where possible.
+
+--------------------------------------------------
+1. HOME — PROGRESS SECTION TEXT
+--------------------------------------------------
+
+Target both sections:
+- "Rond je account af"
+- "Vergroot je kansen met deze tips"
+
+Changes:
+- The text "75% voltooid" (and equivalent progress text) should be black, not green
+- Keep the progress bar fill color unchanged
+- Keep the layout unchanged except where noted below
+
+--------------------------------------------------
+2. HOME — TITLE + ICON SCALE
+--------------------------------------------------
+
+Target:
+- the titles of the two progress sections
+- the icons in those sections
+- the icons used on the Home screen cards/sections generally
+
+Changes:
+- Increase the two progress section titles by one clear step
+- Make them visually match the title scale of the "Zoekopdrachten" title on the Home screen
+- Increase the icons for these sections so they visually match the icon size used in "Geef een vriend 25% korting"
+
+Goal:
+- consistent title scale on Home
+- consistent icon scale on Home
+
+--------------------------------------------------
+3. HOME — REFERRAL BUTTON
+--------------------------------------------------
+
+Target:
+- "Deel je link" button inside the referral card
+
+Changes:
+- Make the button span the full usable width inside the card
+- Keep existing styling otherwise unless width/padding needs slight adjustment
+- Keep it visually balanced inside the blue card
+
+--------------------------------------------------
+4. HOME — SEARCH PROFILE CARD COMPACTNESS
+--------------------------------------------------
+
+Target:
+- the grey search profile cards inside "Zoekopdrachten"
+
+Changes:
+- Reduce vertical padding between the title and description/meta text
+- Make the card content feel slightly more compact
+- Do NOT compress it too much
+- Preserve readability and alignment
+
+Goal:
+- cleaner, slightly tighter card rhythm
+
+--------------------------------------------------
+5. GLOBAL — HORIZONTAL PAGE PADDING
+--------------------------------------------------
+
+Apply a small increase in horizontal page padding across the app.
+
+Current issue:
+- side padding feels slightly too tight
+
+Changes:
+- increase left/right page padding a little across the app
+- keep consistency across main screens
+- do not overdo it
+- maintain responsive behavior
+
+Goal:
+- a bit more breathing room at the edges globally
+
+--------------------------------------------------
+6. HOME — REMOVE QUESTION MARK
+--------------------------------------------------
+
+Target:
+- the question mark icon/button at the top-right of the Home screen
+
+Changes:
+- remove it completely from Home
+- do not leave an awkward gap
+- re-balance the header spacing cleanly
+
+--------------------------------------------------
+7. BOTTOM NAVIGATION — SPACING
+--------------------------------------------------
+
+Target:
+- the bottom tab bar
+
+Changes:
+- reduce the horizontal space between the tab items slightly
+- make the group feel a bit more centered and tighter
+- do NOT change icon order
+- do NOT make it cramped
+- preserve current colors and behavior
+
+Goal:
+- slightly more compact visual grouping
+
+--------------------------------------------------
+RULES
+--------------------------------------------------
+
+- Keep all current functionality intact
+- Do not introduce random new colors
+- Do not redesign unrelated components
+- Use semantic tokens and existing spacing systems where possible
+- Keep everything clean and premium
+
+--------------------------------------------------
+OUTPUT
+--------------------------------------------------
+
+Return:
+1. files changed
+2. exact Home elements updated
+3. exact global padding change applied
+4. exact bottom-nav spacing change applied
+5. confirmation the Home question mark was removed
