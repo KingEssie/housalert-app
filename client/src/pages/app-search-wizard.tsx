@@ -249,30 +249,28 @@ function EditTabBar({ activeStep, onStep }: { activeStep: number; onStep: (s: nu
   ];
   return (
     <div className="sticky top-[52px] z-10 bg-white border-b border-ha-card-border">
-      <div className="max-w-[480px] mx-auto flex">
-        {tabs.map(({ step, label }) => {
-          const active = activeStep === step;
-          return (
-            <button
-              key={step}
-              onClick={() => onStep(step)}
-              className="flex-1 relative pt-2.5 pb-2.5 text-[13px] transition-colors"
-              style={{
-                color: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-text-muted))",
-                fontWeight: active ? 600 : 400,
-              }}
-              data-testid={`tab-edit-section-${step}`}
-            >
-              {label}
-              {active && (
-                <span
-                  className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full"
-                  style={{ backgroundColor: "rgb(var(--ha-primary))" }}
-                />
-              )}
-            </button>
-          );
-        })}
+      <div className="max-w-[480px] mx-auto px-4 py-2">
+        <div className="inline-flex rounded-full p-[3px]" style={{ backgroundColor: "#E3ECFF" }}>
+          {tabs.map(({ step, label }) => {
+            const active = activeStep === step;
+            return (
+              <button
+                key={step}
+                onClick={() => onStep(step)}
+                className="relative px-3.5 py-[6px] text-[12.5px] rounded-full transition-all whitespace-nowrap"
+                style={{
+                  backgroundColor: active ? "#6192FC" : "transparent",
+                  color: active ? "#ffffff" : "rgb(var(--ha-text-secondary))",
+                  fontWeight: active ? 700 : 500,
+                  boxShadow: active ? "0 1px 4px rgba(97,146,252,0.3)" : "none",
+                }}
+                data-testid={`tab-edit-section-${step}`}
+              >
+                {label}
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -296,11 +294,12 @@ function StepFooter({
 }) {
   const { t } = useTranslation();
   const count = estimate?.matchesLast7Days ?? null;
-  const footerBg = editMode ? "#E3ECFF" : OBW.footerBg;
+  const footerBg = editMode ? "#EEFADE" : OBW.footerBg;
   const footerBorderStyle = editMode ? "none" : `1px solid ${OBW.footerBorder}`;
-  const countColor = editMode ? "rgb(var(--ha-primary))" : OBW.text;
+  const countColor = editMode ? "#7BA123" : OBW.text;
   const btnHeight = editMode ? "h-[52px]" : "h-[40px]";
   const btnRadius = editMode ? "rounded-[4px]" : "rounded-[8px]";
+  const btnMinWidth = editMode ? "min-w-[140px]" : "";
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-30"
@@ -334,7 +333,7 @@ function StepFooter({
             </button>
           )}
           <button onClick={onNext} disabled={nextDisabled || saving}
-            className={`${btnHeight} px-5 ${btnRadius} text-[14.5px] font-semibold text-white flex items-center justify-center gap-1.5 active:scale-[0.97] transition-transform disabled:opacity-40`}
+            className={`${btnHeight} px-6 ${btnRadius} ${btnMinWidth} text-[14.5px] font-semibold text-white flex items-center justify-center gap-1.5 active:scale-[0.97] transition-transform disabled:opacity-40`}
             style={{ background: OBW.primary, boxShadow: "0 3px 10px rgb(var(--ha-primary) / 0.18)" }}
             data-testid="button-step-next">
             {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
@@ -779,11 +778,11 @@ export default function AppSearchWizard() {
               </button>
             </>
           ) : (
-            <div className="w-full flex items-center gap-3 mb-3 ha-field-web"
-              style={{ backgroundColor: OBW.inputBg, borderColor: "rgb(var(--ha-border-input))" }}
+            <div className="w-full flex items-center gap-3 mb-3 ha-field-web cursor-not-allowed"
+              style={{ backgroundColor: "rgb(var(--ha-surface))", borderColor: "rgb(var(--ha-card-border))", opacity: 0.72 }}
               data-testid="field-city-display-readonly">
               <Search className="w-[17px] h-[17px] shrink-0" style={{ color: OBW.textMuted }} />
-              <span className="flex-1 text-[15px] font-medium" style={{ color: OBW.text }}>{city?.name}</span>
+              <span className="flex-1 text-[15px] font-medium" style={{ color: OBW.textSecondary }}>{city?.name}</span>
             </div>
           )}
 
@@ -839,7 +838,7 @@ export default function AppSearchWizard() {
                   })}
                 </div>
               )}
-              <div style={{ aspectRatio: "4/3" }} className="rounded-[10px] overflow-hidden w-full">
+              <div style={{ aspectRatio: "1/1" }} className="rounded-[10px] overflow-hidden w-full">
                 <MapView lat={lat} lng={lng} zoom={13} markers={[{ lat, lng, type: "primary" }]}
                   circles={[{ lat, lng, radiusMeters: 1500 }]} height="100%" className="" />
               </div>
@@ -871,7 +870,7 @@ export default function AppSearchWizard() {
                   {loc.radiusKm} km
                 </span>
               </div>
-              <div style={{ aspectRatio: "4/3" }} className="rounded-[10px] overflow-hidden w-full">
+              <div style={{ aspectRatio: "1/1" }} className="rounded-[10px] overflow-hidden w-full">
                 <MapView lat={lat} lng={lng} zoom={10} markers={[{ lat, lng, type: "primary" }]}
                   circles={[{ lat, lng, radiusMeters: loc.radiusKm * 1000 }]} height="100%" className="" />
               </div>
@@ -881,7 +880,7 @@ export default function AppSearchWizard() {
           {/* City mode */}
           {loc.mode === "city" && (
             <div data-testid="section-city">
-              <div style={{ aspectRatio: "4/3" }} className="rounded-[10px] overflow-hidden w-full">
+              <div style={{ aspectRatio: "1/1" }} className="rounded-[10px] overflow-hidden w-full">
                 <MapView lat={lat} lng={lng} zoom={10} markers={[{ lat, lng, type: "primary" }]} height="100%" className="" />
               </div>
             </div>
@@ -889,9 +888,9 @@ export default function AppSearchWizard() {
         </main>
 
         <StepFooter estimate={estimate} fetching={estimateFetching}
-          onBack={goBack} onNext={isEdit ? handleSave : () => setStep(3)}
-          nextLabel={isEdit ? t("common.save") : t("common.next")}
-          editMode={isEdit} saving={isEdit ? submitting : undefined} />
+          onBack={goBack} onNext={() => setStep(3)}
+          nextLabel={t("common.next")}
+          editMode={isEdit} />
 
         {/* Delete action sheet */}
         {showDeleteSheet && (
@@ -1159,9 +1158,9 @@ export default function AppSearchWizard() {
         </main>
 
         <StepFooter estimate={estimate} fetching={estimateFetching}
-          onBack={goBack} onNext={isEdit ? handleSave : () => setStep(4)}
-          nextLabel={isEdit ? t("common.save") : t("common.next")}
-          editMode={isEdit} saving={isEdit ? submitting : undefined} />
+          onBack={goBack} onNext={() => setStep(4)}
+          nextLabel={t("common.next")}
+          editMode={isEdit} />
 
         {showDeleteSheet && (
           <div className="fixed inset-0 z-50 flex flex-col justify-end" data-testid="sheet-delete-action">

@@ -1,0 +1,139 @@
+Apply the following exact corrections to the search profile edit/detail flow.
+
+Important:
+- This is for the search profile edit flow only
+- Do not affect unrelated screens
+- Keep existing edit-mode logic intact
+- Prioritize visual match with Rentbird and correct tab/button behavior
+
+Scope:
+- Search profile edit/detail screens:
+  - Locatie
+  - Woonwensen
+  - Zoekfilters
+- Includes:
+  - fixed city input
+  - top tabs
+  - map
+  - bottom sticky footer/button logic
+
+==================================================
+1. FIXED CITY INPUT
+==================================================
+
+The city/place input must remain visible but not editable.
+
+Style changes:
+- background color: light grey
+- make it clearly look disabled / non-editable
+- keep the search icon on the left
+- keep the selected city text visible
+- keep the same general height and rounded shape as Rentbird
+
+Goal:
+- the field should clearly communicate “this place is fixed and cannot be edited”
+
+==================================================
+2. TOP TABS — MATCH RENTBIRD BETTER
+==================================================
+
+Target:
+- Locatie
+- Woonwensen
+- Zoekfilters
+
+Changes:
+- make the tab labels slightly bolder / thicker
+- the 3-tab group should be fully rounded
+- it should NOT stretch over the full available width
+- align the 3-tab group to the left, like Rentbird
+- keep proportions tighter and closer to Rentbird
+
+Also:
+- tabs must still navigate correctly between:
+  - Locatie screen
+  - Woonwensen screen
+  - Zoekfilters screen
+
+==================================================
+3. MAP
+==================================================
+
+- make the map area use a 1:1 aspect ratio
+- keep rounded corners
+- keep the map visually dominant and clean
+
+==================================================
+4. BOTTOM FOOTER
+==================================================
+
+Footer background:
+- change to: #EEFADE
+
+Text:
+- "Geschatte matches" can stay subtle but readable
+- the value text like "209 per week" should use: #7BA123
+
+Button logic:
+- On Locatie tab: button text = "Volgende"
+- On Woonwensen tab: button text = "Volgende"
+- On Zoekfilters tab: button text = "Opslaan"
+
+Important:
+- this logic must actually work correctly based on the current tab
+- do not hardcode one label for all tabs
+
+Button styling:
+- make the button wider, closer to Rentbird proportions
+- keep 4px border radius
+- keep it visually strong and balanced
+
+==================================================
+5. KEEP / PRESERVE
+==================================================
+
+- keep edit-mode behavior
+- city remains fixed and not editable
+- keep current functionality unless explicitly changed above
+- do not affect unrelated screens
+
+==================================================
+6. TAB NAVIGATION BEHAVIOR
+==================================================
+
+The tabs must link correctly:
+- Locatie -> location settings screen
+- Woonwensen -> preferences/interests screen
+- Zoekfilters -> filters screen
+
+And footer button logic must follow the current tab:
+- Locatie -> Volgende
+- Woonwensen -> Volgende
+- Zoekfilters -> Opslaan
+
+==================================================
+7. RULES
+==================================================
+
+- Only update this search profile edit flow
+- Do not affect other screens
+- Do not break data persistence
+- Use semantic tokens where possible
+- If these exact values need local mapping, do it cleanly
+- Match Rentbird more closely in spacing, pill shape, alignment, and footer behavior
+
+==================================================
+8. OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. confirmation the city input is visible, light grey, and non-editable
+3. confirmation the tab group is fully rounded and left-aligned
+4. confirmation the map is now 1:1
+5. confirmation footer background/text colors were updated
+6. confirmation button text logic is:
+   - Volgende on Locatie
+   - Volgende on Woonwensen
+   - Opslaan on Zoekfilters
+7. confirmation tabs link to the correct screens
