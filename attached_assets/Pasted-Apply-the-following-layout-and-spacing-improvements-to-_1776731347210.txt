@@ -1,0 +1,115 @@
+Apply the following layout and spacing improvements to the Account screen.
+
+Goal:
+Match the compact, structured list style of Rentbird’s settings screen.
+
+Do NOT change logic.
+Do NOT change navigation.
+Only adjust spacing, layout, and visual structure.
+
+--------------------------------------------------
+1. MENU ITEM SPACING
+--------------------------------------------------
+
+Reduce vertical spacing between all menu items.
+
+Current problem:
+- too much space between rows
+- items feel disconnected
+
+Fix:
+- decrease padding top and bottom for each item
+- target a tighter list feel
+
+Each item should feel like part of ONE continuous list.
+
+--------------------------------------------------
+2. ADD DIVIDERS BETWEEN ITEMS
+--------------------------------------------------
+
+Add thin divider lines between all menu items.
+
+Style:
+- 1px height
+- color: use existing border/divider token (ha-card-border or similar)
+
+Divider behavior:
+- full width inside the card
+- subtle but clearly visible
+
+--------------------------------------------------
+3. SECTION HEADER SPACING
+--------------------------------------------------
+
+For section labels like:
+- Account
+- Persoonlijke gegevens
+- Zoeken en reageren
+- Help
+- Voorwaarden
+
+Fix:
+- reduce spacing above and below
+- make them feel like small labels, not blocks
+
+Style:
+- smaller font size than items
+- muted color (ha-text-muted)
+
+--------------------------------------------------
+4. TOP PROFILE BLOCK (NAME + EMAIL)
+--------------------------------------------------
+
+Reduce padding inside the top profile section.
+
+Fix:
+- slightly reduce vertical padding
+- keep horizontal padding unchanged
+
+Goal:
+- more compact
+- less “empty air”
+
+--------------------------------------------------
+5. CONSISTENT LIST STRUCTURE
+--------------------------------------------------
+
+Ensure:
+- all menu items have the same height
+- same padding
+- same alignment
+
+Left side:
+- text aligned consistently
+
+Right side:
+- arrow icons aligned consistently
+
+--------------------------------------------------
+6. FINAL RESULT
+--------------------------------------------------
+
+The screen should:
+- feel like one clean vertical list
+- have tighter spacing
+- use dividers for structure
+- match Rentbird’s compact look
+
+--------------------------------------------------
+RULES
+--------------------------------------------------
+
+- Do not change colors except for divider usage
+- Do not change functionality
+- Do not affect other screens
+- Keep it clean and minimal
+
+--------------------------------------------------
+OUTPUT
+--------------------------------------------------
+
+Return:
+1. files changed
+2. exact spacing values applied
+3. confirmation dividers added
+4. confirmation layout now matches Rentbird-style compact list

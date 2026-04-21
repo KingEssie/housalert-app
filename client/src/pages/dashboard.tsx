@@ -2149,23 +2149,23 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
       <button
         type="button"
         onClick={onClick}
-        className="w-full flex items-center justify-between px-4 h-[38px] text-left active:bg-ha-surface transition-colors"
+        className="w-full flex items-center justify-between px-4 h-[44px] text-left active:bg-ha-surface transition-colors"
         data-testid={`menu-item-${label.toLowerCase().replace(/\s+/g, "-")}`}
       >
-        <span className="text-[15px] font-semibold text-ha-text">{label}</span>
+        <span className="text-[15px] text-ha-text">{label}</span>
         {external
-          ? <ExternalLink className="w-[16px] h-[16px] text-ha-text-placeholder flex-shrink-0" />
-          : <ChevronRight className="w-[16px] h-[16px] text-ha-text-muted flex-shrink-0" />
+          ? <ExternalLink className="w-[15px] h-[15px] text-ha-text-placeholder flex-shrink-0" />
+          : <ChevronRight className="w-[15px] h-[15px] text-ha-text-muted flex-shrink-0" />
         }
       </button>
-      {!last && <div className="h-px bg-ha-surface mx-4" />}
+      {!last && <div className="h-px bg-ha-card-border" />}
     </>
   );
 
   const SectionInline = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <div>
-      <div className="h-px bg-ha-surface" />
-      <p className="text-[11px] font-semibold text-ha-text-muted px-4 pt-3 pb-1">{title}</p>
+      <div className="h-px bg-ha-card-border" />
+      <p className="text-[11px] font-medium text-ha-text-muted px-4 pt-2 pb-0.5 uppercase tracking-wide">{title}</p>
       {children}
     </div>
   );
@@ -2180,7 +2180,7 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
         <div className="bg-white rounded-[12px] border border-ha-card-border shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden mb-4">
 
           {/* Profile row */}
-          <div className="flex items-center gap-3 px-4 py-4" data-testid="row-account-profile">
+          <div className="flex items-center gap-3 px-4 py-3" data-testid="row-account-profile">
             <div className="w-[44px] h-[44px] rounded-full bg-ha-primary-hover flex items-center justify-center flex-shrink-0">
               <span className="text-[16px] font-bold text-white" data-testid="text-account-initials">{initials}</span>
             </div>
@@ -2220,12 +2220,12 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
           {/* ZOEKBUDDY DISCONNECT (buddy mode only) */}
           {buddyMode && activeBuddyRel && (
             <div>
-              <div className="h-px bg-ha-surface" />
-              <p className="text-[11px] font-semibold text-ha-text-muted px-4 pt-4 pb-1">{t("buddyV2.modeBadge")}</p>
+              <div className="h-px bg-ha-card-border" />
+              <p className="text-[11px] font-medium text-ha-text-muted px-4 pt-2 pb-0.5 uppercase tracking-wide">{t("buddyV2.modeBadge")}</p>
               <button
                 type="button"
                 onClick={() => setShowBuddyDisconnectConfirm(true)}
-                className="w-full flex items-center justify-between px-4 h-[42px] text-left active:bg-ha-surface transition-colors"
+                className="w-full flex items-center justify-between px-4 h-[44px] text-left active:bg-ha-surface transition-colors"
                 data-testid="button-buddy-disconnect"
               >
                 <span className="text-[15px] font-semibold text-ha-danger">{t("buddyV2.buddyDisconnectLabel")}</span>
