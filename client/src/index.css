@@ -539,19 +539,19 @@ input[type="range"]::-webkit-slider-thumb {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: rgb(var(--ha-primary));
-  border: 3px solid rgb(var(--ha-card));
+  background: white;
+  border: 2px solid rgb(var(--ha-primary));
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
 }
 input[type="range"]::-moz-range-thumb {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: rgb(var(--ha-primary));
-  border: 3px solid rgb(var(--ha-card));
+  background: white;
+  border: 2px solid rgb(var(--ha-primary));
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
 }
 
 .ha-field {

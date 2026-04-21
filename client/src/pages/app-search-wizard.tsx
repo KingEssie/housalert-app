@@ -245,7 +245,7 @@ function EditTabBar({ activeStep, onStep }: { activeStep: number; onStep: (s: nu
     { step: 4, label: "Zoekfilters" },
   ];
   return (
-    <div className="sticky top-[52px] z-10 bg-white border-b border-ha-card-border">
+    <div className="sticky top-[52px] z-10 bg-white border-b border-ha-card-border pt-1">
       <div className="max-w-[480px] mx-auto flex">
         {tabs.map(({ step, label }) => {
           const active = activeStep === step;
@@ -253,7 +253,7 @@ function EditTabBar({ activeStep, onStep }: { activeStep: number; onStep: (s: nu
             <button
               key={step}
               onClick={() => onStep(step)}
-              className="relative px-4 pt-2.5 pb-2.5 text-[14px] transition-colors whitespace-nowrap"
+              className="relative flex-1 text-center pt-3 pb-2.5 text-[14px] transition-colors whitespace-nowrap"
               style={{
                 color: active ? "rgb(var(--ha-text))" : "rgb(var(--ha-text-secondary))",
                 fontWeight: active ? 600 : 500,
@@ -309,7 +309,7 @@ function StepFooter({
             <p className="text-[10.5px] font-medium leading-tight" style={{ color: OBW.textMuted }}>
               {t("onboarding.location.estimatedMatches")}
             </p>
-            <p className="text-[14px] font-semibold leading-snug" style={{ color: countColor }}>
+            <p className="text-[15px] font-semibold leading-snug" style={{ color: countColor }}>
               {fetching ? (
                 <span style={{ color: OBW.textMuted }}>…</span>
               ) : count != null ? (
@@ -764,7 +764,7 @@ export default function AppSearchWizard() {
           {/* City display — editable in create mode, read-only in edit mode */}
           {!isEdit ? (
             <>
-              <label className="text-[15px] font-semibold mb-2 block" style={{ color: OBW.textSecondary }}>
+              <label className="text-[15px] font-bold mb-2 block" style={{ color: "rgb(var(--ha-text))" }}>
                 {t("onboarding.location.cityLabel")}
               </label>
               <button onClick={() => setStep(1)}
@@ -777,17 +777,22 @@ export default function AppSearchWizard() {
               </button>
             </>
           ) : (
+            <>
+              <label className="text-[15px] font-bold mb-2 block" style={{ color: "rgb(var(--ha-text))" }}>
+                {t("onboarding.location.cityLabel")}
+              </label>
             <div className="w-full flex items-center gap-3 mb-3 ha-field-web cursor-not-allowed"
               style={{ backgroundColor: "rgb(var(--ha-surface))", borderColor: "rgb(var(--ha-card-border))", opacity: 0.72 }}
               data-testid="field-city-display-readonly">
               <Search className="w-[17px] h-[17px] shrink-0" style={{ color: OBW.textMuted }} />
               <span className="flex-1 text-[15px] font-medium" style={{ color: OBW.textSecondary }}>{city?.name}</span>
             </div>
+            </>
           )}
 
           {/* Mode segmented control — pill-style, left-aligned */}
           <div className="mb-4" data-testid="location-tabs">
-            <div className="inline-flex rounded-full p-[3px]" style={{ backgroundColor: "#E3ECFF" }}>
+            <div className="inline-flex rounded-full p-[3px]" style={{ backgroundColor: "#EEFADE" }}>
               {tabs.map((tab) => {
                 const isActive = loc.mode === tab.value;
                 return (
@@ -810,7 +815,7 @@ export default function AppSearchWizard() {
           {/* Districts mode */}
           {loc.mode === "districts" && (
             <div data-testid="section-districts">
-              <p className="text-[13.5px] font-semibold mb-2.5" style={{ color: OBW.textSecondary }}>
+              <p className="text-[14px] font-bold mb-2.5" style={{ color: "rgb(var(--ha-text))" }}>
                 {t("onboarding.location.neighborhoodsTab")}
               </p>
               <button onClick={() => setShowDistrictPicker((v) => !v)}
@@ -986,13 +991,13 @@ export default function AppSearchWizard() {
       value: string; onChange: (v: string) => void; testId: string;
     }) {
       return (
-        <div className="flex items-center gap-[4px] p-[4px] rounded-full" style={{ backgroundColor: "rgb(var(--ha-toggle-bg))" }} data-testid={testId}>
+        <div className="flex items-center gap-[4px] p-[4px] rounded-full" style={{ backgroundColor: "#EEFADE" }} data-testid={testId}>
           {options.map((opt) => {
             const isActive = value === opt.value;
             return (
               <button key={opt.value} onClick={() => onChange(opt.value)}
-                className="flex-1 py-[8px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
-                style={{ backgroundColor: isActive ? "rgb(var(--ha-primary))" : "transparent", color: isActive ? "white" : "rgb(var(--ha-text))" }}
+                className="flex-1 py-[9px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
+                style={{ backgroundColor: isActive ? "#C7EF66" : "transparent", color: isActive ? "rgb(var(--ha-text))" : "rgb(var(--ha-text-secondary))", boxShadow: isActive ? "0 1px 4px rgba(0,0,0,0.08)" : "none" }}
                 data-testid={`${testId}-${opt.value}`}>
                 {opt.label}
               </button>
@@ -1074,8 +1079,8 @@ export default function AppSearchWizard() {
                   const active = f.minRooms === opt.value;
                   return (
                     <button key={opt.value} onClick={() => update({ minRooms: opt.value })}
-                      className="py-[8px] px-4 text-[12px] font-semibold rounded-full whitespace-nowrap shrink-0 transition-all active:scale-[0.96]"
-                      style={{ backgroundColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-toggle-bg))", color: active ? "white" : "rgb(var(--ha-text))" }}
+                      className="py-[9px] px-4 text-[12px] font-semibold rounded-full whitespace-nowrap shrink-0 transition-all active:scale-[0.96]"
+                      style={{ backgroundColor: active ? "#C7EF66" : "#EEFADE", color: active ? "rgb(var(--ha-text))" : "rgb(var(--ha-text-secondary))", boxShadow: active ? "0 1px 4px rgba(0,0,0,0.08)" : "none" }}
                       data-testid={`rooms-${opt.value}`}>
                       {opt.label}
                     </button>
@@ -1135,9 +1140,9 @@ export default function AppSearchWizard() {
                     <button key={value} onClick={() => toggleAmenity(value)}
                       className="flex items-center gap-1.5 h-[36px] px-3.5 rounded-full text-[13px] font-medium border transition-all active:scale-[0.96]"
                       style={{
-                        backgroundColor: active ? "rgb(var(--ha-primary))" : "transparent",
-                        borderColor: active ? "rgb(var(--ha-primary))" : OBW.chipBorder,
-                        color: active ? "white" : OBW.textSecondary,
+                        backgroundColor: active ? "#C7EF66" : "transparent",
+                        borderColor: active ? "#C7EF66" : OBW.chipBorder,
+                        color: active ? "rgb(var(--ha-text))" : OBW.textSecondary,
                       }}
                       data-testid={`amenity-${value}`}>
                       {active ? <Check className="w-3 h-3 shrink-0" /> : <Icon className="w-3.5 h-3.5 shrink-0" />}
@@ -1263,9 +1268,9 @@ export default function AppSearchWizard() {
                 <button key={opt.value} onClick={() => toggleSuitable(opt.value)}
                   className="h-[36px] px-3 rounded-full text-[13px] font-medium border transition-all active:scale-[0.96] flex items-center gap-[4px] shrink-0"
                   style={{
-                    backgroundColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-surface))",
-                    borderColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-border-input))",
-                    color: active ? "white" : "rgb(var(--ha-text))",
+                    backgroundColor: active ? "#C7EF66" : "rgb(var(--ha-surface))",
+                    borderColor: active ? "#C7EF66" : "rgb(var(--ha-border-input))",
+                    color: active ? "rgb(var(--ha-text))" : "rgb(var(--ha-text))",
                   }}
                   data-testid={`chip-suitable-${opt.value}`}>
                   {!active && <Plus className="w-[11px] h-[11px] shrink-0" style={{ color: "rgb(var(--ha-text-muted))" }} />}

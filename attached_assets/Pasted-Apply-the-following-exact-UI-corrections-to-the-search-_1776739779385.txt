@@ -1,0 +1,165 @@
+Apply the following exact UI corrections to the search profile flow.
+
+Scope:
+- Search profile screens only:
+  - Locatie
+  - Woonwensen
+  - Zoekfilters
+- Do not affect unrelated screens
+- Do not change logic
+
+Important:
+- We are refining the current search profile UI only
+- Keep existing functionality intact
+- Use the existing semantic token system where possible
+
+==================================================
+1. TOP TAB BAR — LOCATIE / WOONWENSEN / ZOEKFILTERS
+==================================================
+
+Target:
+- the upper tab bar with:
+  - Locatie
+  - Woonwensen
+  - Zoekfilters
+
+Changes:
+- make the tab label text slightly larger
+- keep this tab bar full width (do NOT left-align it)
+- preserve the clean tab-with-underline style
+- keep active/inactive behavior intact
+
+Also:
+- add a little more vertical spacing between the screen title row (city title / top bar title) and this upper tab bar
+
+==================================================
+2. SECTION TITLES ABOVE INPUTS
+==================================================
+
+Target:
+- the title above the city input field ("Woonplaats")
+- the title above the neighbourhood selector ("Buurten")
+
+Changes:
+- ensure the title "Woonplaats" is visible again above the input field
+- style both "Woonplaats" and "Buurten" the same way
+- make both slightly bolder
+- make both black
+
+Goal:
+- both section titles should feel clearly like section headers
+- same style and hierarchy
+
+==================================================
+3. LOWER TAB / PILL GROUPS
+==================================================
+
+Target:
+- the lower tab groups inside the search profile screens
+- especially the group like:
+  - Buurten
+  - Straal
+  - Gehele woonplaats
+
+Changes:
+- keep the tabs themselves as they are now
+- change the background/container color behind these tabs to be the SAME as the footer background color
+- do this consistently for the lower tab groups across the search profile screens
+
+Important:
+- do not restyle the active pill itself if it is already correct
+- only align the surrounding tab-group background to match the footer background
+
+==================================================
+4. WOONWENSEN SCREEN — OTHER TAB GROUPS
+==================================================
+
+Target:
+- the other tab bars / segmented controls on the Woonwensen screen
+
+Changes:
+- make them visually match the lower tab bar style used on the Locatie screen
+- same overall style language
+- same height/proportions
+- same background treatment
+- same active/inactive feel
+
+Goal:
+- all lower tab groups across the search profile flow should feel like one consistent component family
+
+==================================================
+5. SLIDERS
+==================================================
+
+Target:
+- slider controls on the search profile screens
+
+Changes:
+- make the slider thumb / knob (the draggable circular handle) white
+
+Keep:
+- current slider behavior intact
+- current track logic intact unless needed for visual consistency
+
+==================================================
+6. ACTIVE PILLS — OVERIGE WENSEN / WONING GESCHIKT VOOR
+==================================================
+
+Target:
+- pill selections in sections such as:
+  - Overige wensen
+  - Woning geschikt voor
+
+Changes:
+- when a pill is active/selected, use background color: #C7EF66
+
+Keep:
+- readable text contrast
+- existing selection behavior intact
+
+==================================================
+7. FOOTER TEXT
+==================================================
+
+Target:
+- the text like "200 per week" / "209 per week" in the footer
+
+Changes:
+- make this value text slightly larger than it is now
+- keep the existing color behavior unless already set as requested in previous steps
+
+==================================================
+8. KEEP
+==================================================
+
+Do not change:
+- city input behavior (still fixed / not editable)
+- map ratio
+- footer button logic (Volgende vs Opslaan)
+- top bar utility buttons
+- unrelated app screens
+
+==================================================
+9. RULES
+==================================================
+
+- only update the search profile flow screens
+- do not affect unrelated screens
+- do not break navigation
+- do not break data persistence
+- use semantic tokens where possible
+- if exact values need local mapping, do it cleanly
+
+==================================================
+10. OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. confirmation top tab labels are larger and full width
+3. confirmation "Woonplaats" and "Buurten" titles are visible, black, and slightly bolder
+4. confirmation lower tab-group backgrounds now match the footer background
+5. confirmation Woonwensen tab groups now match the lower tab style from Locatie
+6. confirmation slider thumbs are white
+7. confirmation active pills in "Overige wensen" and "Woning geschikt voor" now use #C7EF66
+8. confirmation footer value text is slightly larger
