@@ -1,0 +1,185 @@
+Apply a full visual refinement pass to the search profile detail/edit screen so it matches the Rentbird reference as closely as possible.
+
+Important:
+- This is not a small tweak pass.
+- The goal is a near 1:1 Rentbird-style copy for this screen’s layout, spacing, typography weight, controls, and bottom action area.
+- Keep functionality intact.
+- Do not change unrelated screens.
+
+Scope:
+- Search profile detail/edit screen only
+- This includes:
+  - top bar
+  - tabs
+  - segmented control
+  - map section
+  - bottom action bar
+  - delete modal / confirmation sheet if part of this flow
+
+==================================================
+1. TOP BAR — EXACT STYLE MATCH
+==================================================
+
+Make the top bar visually match Rentbird as closely as possible.
+
+Left:
+- back button inside a light grey circular button
+- use the EXACT SAME grey background style already used elsewhere in the app for utility/back buttons
+- do not invent a new grey
+
+Title:
+- title sits directly to the right of the back button
+- left aligned, not centered
+- medium/semibold weight, not overly bold
+- same visual hierarchy as Rentbird
+
+Right:
+- menu button (3 dots) inside the SAME grey circular button style as the back button
+- same size, same background, same visual weight
+
+Adjust:
+- reduce extra spacing in this top bar
+- make the full row feel tighter and more premium like Rentbird
+
+==================================================
+2. TABS — LOCATIE / WOONWENSEN / ZOEKFILTERS
+==================================================
+
+Match Rentbird’s tab styling closely:
+
+- lighter visual weight
+- less heavy typography
+- active tab more precise
+- inactive tabs softer grey
+- thinner underline
+- tighter vertical spacing
+
+Goal:
+- cleaner, less bulky
+- closer to Rentbird rhythm and proportions
+
+==================================================
+3. SEGMENTED CONTROL — BUURTEN / STRAAL / GEHELE WOONPLAATS
+==================================================
+
+Make this segmented control look much closer to Rentbird:
+
+- lighter grey outer background
+- more compact pill height
+- active segment softer and more refined
+- reduce visual heaviness
+- improve spacing between labels and edges
+- match Rentbird’s proportions as closely as possible
+
+==================================================
+4. MAP AREA
+==================================================
+
+Adjust the map block to better match Rentbird:
+
+- reduce unnecessary padding around the map
+- make the map area feel larger and more dominant
+- keep rounded corners
+- closer to Rentbird width/height balance
+
+==================================================
+5. BOTTOM ACTION AREA
+==================================================
+
+Make the bottom bar closely match Rentbird:
+
+Left side:
+- “Geschatte matches” typography smaller and tighter
+- value line stronger but not oversized
+
+Buttons:
+- tighter spacing
+- less bulky button sizes
+- less exaggerated rounding
+- closer to Rentbird proportions
+
+Overall:
+- reduce height and excess padding
+- make the bottom area feel compact and app-like
+
+==================================================
+6. GLOBAL SPACING ON THIS SCREEN
+==================================================
+
+This screen is still too spacious compared with Rentbird.
+
+Reduce spacing across this screen so it feels like a true Rentbird copy:
+- less vertical gap between top bar and tabs
+- less vertical gap between tabs and form elements
+- less vertical gap between controls and map
+- tighter overall spacing rhythm
+
+Do NOT make it cramped.
+Goal = Rentbird compactness, not compression.
+
+==================================================
+7. TYPOGRAPHY / VISUAL WEIGHT
+==================================================
+
+Current problem:
+- some text still feels too bold / too heavy / too large
+
+Fix:
+- use a more refined type hierarchy like Rentbird
+- titles and labels should be strong but not oversized
+- inactive items should be softer
+- avoid chunky/heavy UI feeling
+
+==================================================
+8. DELETE FLOW / BOTTOM SHEETS
+==================================================
+
+If the overflow menu and delete confirmation belong to this screen, make them match Rentbird more closely too:
+
+- top-right menu uses the same grey circular utility button
+- action sheet clean and minimal
+- confirmation sheet typography and spacing closer to Rentbird
+- keep functionality correct
+
+==================================================
+9. UTILITY BUTTON COLOR RULE
+==================================================
+
+Critical:
+- the back button and the top-right menu button MUST use the same grey background style as the other back buttons you already use elsewhere in the app
+- do not create a new grey
+- keep this utility button style consistent
+
+==================================================
+10. GOAL
+==================================================
+
+The end result should feel like:
+- same structure as Rentbird
+- same compactness as Rentbird
+- same utility button treatment as Rentbird
+- same visual rhythm as Rentbird
+- same precision, not just “inspired by”
+
+This should be a near-copy in feel and layout, while preserving existing HousAlert functionality.
+
+==================================================
+11. RULES
+==================================================
+
+- Do not affect unrelated screens
+- Do not break functionality
+- Do not change data behavior unless already required by this edit flow
+- Use existing semantic tokens and existing grey utility button style where possible
+- Prioritize matching Rentbird over preserving current spacing
+
+==================================================
+12. OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. exact visual changes made
+3. confirmation that the back button and top-right menu button now use the same grey utility style as the other back buttons in the app
+4. confirmation that the screen was tightened to closely match Rentbird
+5. note any remaining gaps that still prevent a true Rentbird-level match
