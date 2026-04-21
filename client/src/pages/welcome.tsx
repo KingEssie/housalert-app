@@ -140,8 +140,8 @@ export default function WelcomePage() {
   }
 
   const inputStyle = (extraPadding?: string): React.CSSProperties => ({
-    height: "58px",
-    borderRadius: "10px",
+    height: "62px",
+    borderRadius: "4px",
     background: "#FFFFFF",
     border: "1.5px solid rgba(0,0,0,0.08)",
     padding: extraPadding ?? "0 16px",
@@ -252,7 +252,7 @@ export default function WelcomePage() {
                 type="button"
                 onClick={handleForgotPassword}
                 className="bg-transparent border-0 cursor-pointer hover:underline"
-                style={{ fontSize: "13px", fontWeight: 500, color: PRIMARY }}
+                style={{ fontSize: "13px", fontWeight: 500, color: "#C7EF66" }}
                 data-testid="button-forgot-password"
               >
                 {t("v2.welcome.forgotPassword")}
@@ -267,7 +267,7 @@ export default function WelcomePage() {
             className="w-full border-0 cursor-pointer flex items-center justify-center gap-2 transition-all active:scale-[0.97]"
             style={{
               height: "58px",
-              borderRadius: "12px",
+              borderRadius: "4px",
               background: PRIMARY,
               color: "white",
               fontSize: "17px",
@@ -305,8 +305,8 @@ export default function WelcomePage() {
           className="w-full cursor-pointer flex items-center justify-center gap-2 transition-all active:scale-[0.97]"
           style={{
             height: "58px",
-            borderRadius: "12px",
             border: `2px solid ${PRIMARY}`,
+            borderRadius: "4px",
             color: PRIMARY,
             backgroundColor: "transparent",
             fontSize: "17px",
