@@ -127,7 +127,7 @@ function RootRoute() {
   if (loading) return null;
   if (isRecoveryMode()) return <Redirect to="/reset-password" />;
   if (hasRef && !user) return <ReferralLandingPage />;
-  if (!user) return <OnboardingSlideshow />;
+  if (!user) return <WelcomePage />;
 
   const pendingBuddyToken = localStorage.getItem("housalert_buddy_accept_token");
   if (pendingBuddyToken) {

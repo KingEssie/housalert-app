@@ -1,0 +1,166 @@
+Replace the current start/login screen with a near 1:1 Rentbird-style layout, but using HousAlert branding.
+
+Important:
+- This is the new primary start/login screen.
+- The current HousAlert start/login screen should be replaced by this new structure.
+- Copy the Rentbird layout system closely:
+  spacing, proportions, hierarchy, input heights, button heights, section order, and overall composition.
+- Do NOT copy Rentbird branding. Use HousAlert branding/colors/content.
+
+==================================================
+1. OVERALL SCREEN STRUCTURE
+==================================================
+
+Rebuild the start/login screen to match Rentbird’s structure closely:
+
+Top area:
+- HousAlert logo / branding at top-left
+- language selector at top-right (if already present or easy to preserve)
+- large welcome heading below
+- then the login form
+
+Middle:
+- email field
+- password field
+- forgot password link
+- primary login button
+- separator text "OF"
+- secondary outlined CTA button
+
+Bottom:
+- Trustpilot row / trust element positioned near the bottom like Rentbird
+- preserve mobile-first layout
+
+The current onboarding/hero-image style start screen should no longer be used as the default login/start screen.
+
+==================================================
+2. BACKGROUND / BRANDING
+==================================================
+
+Background color:
+- use #11358B for the full page background
+
+Branding:
+- use HousAlert logo / name
+- do not use Rentbird assets or wording except for structural inspiration
+
+==================================================
+3. TYPOGRAPHY / SPACING / SIZES
+==================================================
+
+Match Rentbird closely in:
+- left/right page padding
+- vertical spacing between sections
+- heading size and weight
+- label spacing above inputs
+- input field height
+- button height
+- gap between primary button, "OF", and secondary button
+- trust section placement at the bottom
+
+Goal:
+- the screen should feel like a Rentbird-level polished login screen
+- but clearly branded as HousAlert
+
+==================================================
+4. LOGIN FORM
+==================================================
+
+Fields:
+- Email input
+- Password input
+- Password visibility icon in the password field
+
+Style:
+- white input fields
+- same proportions and height feel as Rentbird
+- clean rounded corners
+- good contrast on the dark blue background
+
+Forgot password:
+- right aligned under the password field
+- styled cleanly and readable
+
+==================================================
+5. PRIMARY BUTTON
+==================================================
+
+Primary login button:
+- filled background: #6192FC
+- white text
+- use the same size/proportions as the Rentbird primary CTA
+- label should be appropriate for HousAlert login (for example "Inloggen" or "Login" depending on current language logic)
+
+==================================================
+6. SECONDARY BUTTON
+==================================================
+
+Secondary button below "OF":
+- outlined button
+- border color: #6192FC
+- text color: #6192FC
+- transparent background
+- same size/proportions as Rentbird’s outlined secondary CTA
+
+This button should replace the current “account aanmaken” style on this screen with a Rentbird-style outlined CTA structure.
+
+==================================================
+7. CONTENT / COPY
+==================================================
+
+Use HousAlert-appropriate copy, not Rentbird wording.
+
+For example:
+- welcome heading should fit HousAlert
+- primary button = login
+- secondary button = create account / sign up
+- forgot password stays relevant
+
+Keep the copy minimal and conversion-focused.
+
+==================================================
+8. TRUST SECTION
+==================================================
+
+At the bottom:
+- include the Trustpilot section / trust row similar in placement and visual weight to Rentbird
+- preserve Trustpilot green branding if already used as a third-party brand color
+- keep it clean and minimal
+
+==================================================
+9. REMOVE CURRENT START SCREEN STYLE
+==================================================
+
+The current screen with:
+- large hero image
+- onboarding-style first impression
+- city field on top of CTA
+should no longer be the main default start/login screen
+
+This new Rentbird-style login screen replaces it as the primary entry screen.
+
+==================================================
+10. RULES
+==================================================
+
+- Prioritize matching Rentbird’s spacing, proportions, and layout
+- Use HousAlert colors:
+  - background #11358B
+  - primary CTA #6192FC
+  - secondary outline #6192FC
+- Use HousAlert branding/content
+- Keep functionality intact
+- Do not break auth
+- Do not affect unrelated screens
+
+==================================================
+11. OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. exact structure used for the new start/login screen
+3. confirmation the old hero-style start screen is no longer the default
+4. confirmation the primary CTA uses #6192FC
+5. confirmation the outlined secondary CTA uses #6192FC
+6. note any small differences that still remain from the Rentbird reference
