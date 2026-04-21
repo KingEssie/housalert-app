@@ -301,7 +301,7 @@ export default function WelcomePage() {
         {/* Secondary: sign up — stronger border */}
         <button
           type="button"
-          onClick={() => navigate("/onboarding/location")}
+          onClick={() => navigate("/onboarding/location?source=website")}
           className="w-full cursor-pointer flex items-center justify-center gap-2 transition-all active:scale-[0.97]"
           style={{
             height: "58px",

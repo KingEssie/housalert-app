@@ -1,0 +1,60 @@
+Audit the app for any remaining legacy onboarding / legacy signup / legacy search-profile creation flow entry points, then remove or reroute them to the new onboarding flow.
+
+Goal:
+There should be only ONE onboarding/signup flow in the app:
+the current new onboarding flow that is already used by the website.
+
+Current problem:
+- at least one button ("Ik ben nieuw bij HousAlert") was still pointing to the old flow
+- there may be other hidden entry points still linked to the legacy flow
+
+Tasks:
+
+1. Search the full codebase for all routes, links, buttons, redirects, and navigation actions related to:
+- old onboarding flow
+- old signup flow
+- old search profile creation flow
+- legacy account creation flow
+- legacy onboarding screens
+- any old route names or old onboarding component references
+
+2. Identify every remaining entry point that can still open the old flow.
+
+3. For each legacy entry point:
+- either remove it entirely if it should no longer exist
+- or reroute it to the new onboarding flow used by the website
+
+4. Ensure there is only one shared onboarding route/flow implementation.
+- do not duplicate screens
+- do not keep parallel onboarding logic
+- do not leave dead links to removed routes
+
+5. Check all common entry points, including:
+- login/start screen
+- website CTA buttons
+- mobile app CTAs
+- checklist / dashboard actions
+- account creation buttons
+- empty states
+- modal CTAs
+- deeplinks / redirects if any exist
+
+6. If old onboarding routes still exist in the router:
+- remove them if safe
+- otherwise mark them as legacy and redirect them immediately to the new onboarding entry route
+
+7. Keep the current new onboarding flow unchanged.
+- this task is about eliminating legacy access paths, not redesigning onboarding
+
+8. After cleanup, verify:
+- all signup/onboarding entry points now open the same new onboarding flow
+- no user-facing path still opens the legacy flow
+- no broken navigation is introduced
+
+After completion, return:
+1. all legacy entry points found
+2. which ones were removed
+3. which ones were rerouted
+4. files changed
+5. confirmation that only the new onboarding flow remains reachable for users
+6. any legacy routes still present internally and why
