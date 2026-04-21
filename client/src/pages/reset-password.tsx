@@ -1,16 +1,57 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { HousAlertLogo } from "@/components/housalert-logo";
+import { logoSrc } from "@/components/housalert-logo";
 import { supabase } from "@/lib/supabase";
 import { setRecoveryMode } from "@/lib/auth";
 import { useTranslation } from "@/i18n";
 import { useToast } from "@/hooks/use-toast";
-import { Eye, EyeOff, CheckCircle2, Loader2 } from "lucide-react";
+import { Eye, EyeOff, CheckCircle2, Loader2, ArrowRight, ArrowLeft } from "lucide-react";
 import { validatePassword, isPasswordValid } from "@/lib/password-validation";
 import { PasswordRules } from "@/components/password-rules";
 
-const INPUT_CLASS =
-  "w-full h-[56px] border border-ha-border-input rounded-[8px] bg-white px-4 pr-12 text-[15px] text-ha-text placeholder:text-ha-text-placeholder outline-none transition-all focus:border-ha-primary";
+const OUTER_BG = "#6192FC";
+const CARD_BG = "#11358B";
+const ACCENT = "#C7EF66";
+
+const inputStyle = (extraPadding?: string): React.CSSProperties => ({
+  height: "58px",
+  borderRadius: "4px",
+  background: "#FFFFFF",
+  border: "1.5px solid rgba(0,0,0,0.08)",
+  padding: extraPadding ?? "0 16px",
+  fontSize: "16px",
+  color: "#111111",
+  width: "100%",
+  outline: "none",
+  transition: "border-color 0.15s",
+  boxSizing: "border-box",
+});
+
+function CardShell({ children, testId }: { children: React.ReactNode; testId?: string }) {
+  return (
+    <div
+      className="h-[100dvh] flex flex-col items-center justify-center px-5"
+      style={{ backgroundColor: OUTER_BG }}
+      data-testid={testId}
+    >
+      <div
+        className="w-full max-w-[420px] rounded-[12px] px-7 py-8"
+        style={{ backgroundColor: CARD_BG }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function CardLogo() {
+  return (
+    <div className="flex items-center gap-2 mb-8">
+      <img src={logoSrc} alt="HousAlert" width={30} height={30} className="object-contain" style={{ width: 30, height: 30 }} />
+      <span className="font-bold text-white" style={{ fontSize: "17px", letterSpacing: "-0.01em" }}>HousAlert</span>
+    </div>
+  );
+}
 
 export default function ResetPasswordPage() {
   const [, navigate] = useLocation();
@@ -87,158 +128,229 @@ export default function ResetPasswordPage() {
     setSuccess(true);
   }
 
+  /* ── Loading state ── */
+  if (!ready && !sessionError) {
+    return (
+      <div
+        className="h-[100dvh] flex items-center justify-center"
+        style={{ backgroundColor: OUTER_BG }}
+      >
+        <Loader2 className="w-8 h-8 animate-spin text-white" />
+      </div>
+    );
+  }
+
+  /* ── Session error / expired link ── */
   if (sessionError) {
     return (
-      <div className="h-[100dvh] flex flex-col items-center justify-center px-8 text-center" style={{ backgroundColor: "rgb(var(--ha-bg))" }} data-testid="page-reset-error">
-        <h1 className="text-[30px] font-semibold text-ha-text mb-3" data-testid="text-error-title">
+      <CardShell testId="page-reset-error">
+        <CardLogo />
+        <h1
+          className="font-bold text-white tracking-[-0.025em] mb-3"
+          style={{ fontSize: "28px", lineHeight: "1.1" }}
+          data-testid="text-error-title"
+        >
           {t("resetPassword.expiredTitle")}
         </h1>
-        <p className="text-[15px] text-ha-text-muted leading-[1.5] max-w-[320px] mb-6">
+        <p
+          className="mb-7 leading-[1.5]"
+          style={{ fontSize: "15px", color: "rgba(255,255,255,0.65)" }}
+        >
           {t("resetPassword.expiredDesc")}
         </p>
         <button
           onClick={() => { setRecoveryMode(false); navigate("/forgot-password"); }}
-          className="h-[48px] px-8 rounded-[10px] text-[15px] font-semibold text-white bg-ha-primary hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
+          className="w-full flex items-center justify-center gap-2 font-bold transition-all active:scale-[0.97]"
+          style={{
+            height: "58px",
+            borderRadius: "4px",
+            backgroundColor: ACCENT,
+            color: "#000000",
+            fontSize: "17px",
+            border: "none",
+            cursor: "pointer",
+            letterSpacing: "-0.01em",
+          }}
           data-testid="button-try-again"
         >
           {t("resetPassword.tryAgain")}
+          <ArrowRight className="w-[17px] h-[17px]" strokeWidth={2.5} />
         </button>
-      </div>
+      </CardShell>
     );
   }
 
-  if (!ready) {
-    return (
-      <div className="h-[100dvh] flex flex-col items-center justify-center" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
-        <Loader2 className="w-8 h-8 animate-spin text-ha-text" />
-      </div>
-    );
-  }
-
+  /* ── Success state ── */
   if (success) {
     return (
-      <div className="h-[100dvh] flex flex-col items-center justify-center px-8 text-center" style={{ backgroundColor: "rgb(var(--ha-bg))" }} data-testid="page-reset-success">
-        <div className="w-16 h-16 rounded-full bg-ha-success/10 flex items-center justify-center mb-6">
-          <CheckCircle2 className="w-8 h-8 text-ha-success" />
+      <CardShell testId="page-reset-success">
+        <div
+          className="w-14 h-14 rounded-full flex items-center justify-center mb-6"
+          style={{ backgroundColor: `${ACCENT}22` }}
+        >
+          <CheckCircle2 className="w-7 h-7" style={{ color: ACCENT }} />
         </div>
-        <h1 className="text-[24px] font-semibold text-ha-text tracking-[-0.02em] mb-3" data-testid="text-success-title">
+        <h1
+          className="font-bold text-white tracking-[-0.02em] mb-3"
+          style={{ fontSize: "26px", lineHeight: "1.15" }}
+          data-testid="text-success-title"
+        >
           {t("resetPassword.successTitle")}
         </h1>
-        <p className="text-[15px] text-ha-text-muted leading-[1.55] max-w-[320px] mb-8">
+        <p
+          className="mb-8 leading-[1.55]"
+          style={{ fontSize: "15px", color: "rgba(255,255,255,0.65)", maxWidth: "300px" }}
+        >
           {t("resetPassword.successDesc")}
         </p>
         <button
           onClick={() => navigate("/")}
-          className="h-[48px] px-8 rounded-[10px] text-[15px] font-semibold text-white bg-ha-primary hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
+          className="w-full flex items-center justify-center gap-2 font-bold transition-all active:scale-[0.97]"
+          style={{
+            height: "58px",
+            borderRadius: "4px",
+            backgroundColor: ACCENT,
+            color: "#000000",
+            fontSize: "17px",
+            border: "none",
+            cursor: "pointer",
+            letterSpacing: "-0.01em",
+          }}
           data-testid="button-go-login"
         >
           {t("resetPassword.goToLogin")}
+          <ArrowRight className="w-[17px] h-[17px]" strokeWidth={2.5} />
         </button>
-      </div>
+      </CardShell>
     );
   }
 
+  /* ── Main form ── */
   return (
-    <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }} data-testid="page-reset-password">
-      <div className="pt-[max(env(safe-area-inset-top),8px)]" />
+    <CardShell testId="page-reset-password">
+      <CardLogo />
 
-      <div className="flex-1 flex flex-col px-7">
-        <div className="flex justify-center pt-8 pb-8">
-          <HousAlertLogo size={44} showText={true} textClassName="font-semibold text-ha-text text-[20px] tracking-[-0.01em]" />
+      <h1
+        className="font-bold text-white tracking-[-0.025em] mb-3"
+        style={{ fontSize: "30px", lineHeight: "1.1" }}
+        data-testid="text-reset-title"
+      >
+        {t("resetPassword.title")}
+      </h1>
+
+      <p
+        className="mb-7 leading-[1.5]"
+        style={{ fontSize: "15px", color: "rgba(255,255,255,0.65)" }}
+      >
+        {t("resetPassword.description")}
+      </p>
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        {/* New password */}
+        <div className="flex flex-col gap-[7px]">
+          <label className="font-semibold text-white" style={{ fontSize: "13px" }}>
+            {t("resetPassword.newPassword")}
+          </label>
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              style={inputStyle("0 50px 0 16px")}
+              autoComplete="new-password"
+              autoFocus
+              onFocus={(e) => { e.currentTarget.style.borderColor = ACCENT; }}
+              onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(0,0,0,0.08)"; }}
+              data-testid="input-new-password"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 bg-transparent border-0 cursor-pointer p-0"
+              style={{ color: "#555" }}
+              data-testid="button-toggle-password"
+            >
+              {showPassword ? <EyeOff className="w-[19px] h-[19px]" /> : <Eye className="w-[19px] h-[19px]" />}
+            </button>
+          </div>
+          <PasswordRules password={password} />
         </div>
 
-        <h1
-          className="text-[26px] font-semibold text-ha-text leading-[1.15] tracking-[-0.03em] mb-3 text-center"
-          data-testid="text-reset-title"
+        {/* Confirm password */}
+        <div className="flex flex-col gap-[7px]">
+          <label className="font-semibold text-white" style={{ fontSize: "13px" }}>
+            {t("resetPassword.confirmPassword")}
+          </label>
+          <div className="relative">
+            <input
+              type={showConfirm ? "text" : "password"}
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              placeholder="••••••••"
+              style={inputStyle("0 50px 0 16px")}
+              autoComplete="new-password"
+              onFocus={(e) => { e.currentTarget.style.borderColor = ACCENT; }}
+              onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(0,0,0,0.08)"; }}
+              data-testid="input-confirm-password"
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirm(!showConfirm)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 bg-transparent border-0 cursor-pointer p-0"
+              style={{ color: "#555" }}
+              data-testid="button-toggle-confirm"
+            >
+              {showConfirm ? <EyeOff className="w-[19px] h-[19px]" /> : <Eye className="w-[19px] h-[19px]" />}
+            </button>
+          </div>
+          {mismatch && (
+            <p className="text-[13px]" style={{ color: "#ffb3b3" }} data-testid="text-error-mismatch">
+              {t("resetPassword.mismatch")}
+            </p>
+          )}
+        </div>
+
+        {/* Submit */}
+        <button
+          type="submit"
+          disabled={!canSubmit}
+          className="w-full flex items-center justify-center gap-2 font-bold transition-all active:scale-[0.97]"
+          style={{
+            height: "58px",
+            borderRadius: "4px",
+            backgroundColor: canSubmit ? ACCENT : `${ACCENT}55`,
+            color: "#000000",
+            fontSize: "17px",
+            border: "none",
+            cursor: canSubmit ? "pointer" : "not-allowed",
+            letterSpacing: "-0.01em",
+            marginTop: "2px",
+          }}
+          data-testid="button-submit"
         >
-          {t("resetPassword.title")}
-        </h1>
+          {loading ? (
+            <Loader2 className="w-5 h-5 animate-spin" />
+          ) : (
+            <>
+              {t("resetPassword.submit")}
+              <ArrowRight className="w-[17px] h-[17px]" strokeWidth={2.5} />
+            </>
+          )}
+        </button>
+      </form>
 
-        <p className="text-[15px] text-ha-text-muted leading-[1.55] text-center max-w-[340px] mx-auto mb-8">
-          {t("resetPassword.description")}
-        </p>
-
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          <div>
-            <label className="block text-[15px] font-semibold text-ha-text mb-2">
-              {t("resetPassword.newPassword")}
-            </label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder={t("changePassword.newPlaceholder")}
-                className={INPUT_CLASS}
-                autoComplete="new-password"
-                autoFocus
-                data-testid="input-new-password"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-ha-text-placeholder hover:text-ha-text-muted transition-colors"
-                data-testid="button-toggle-password"
-              >
-                {showPassword
-                  ? <EyeOff className="w-[18px] h-[18px]" />
-                  : <Eye className="w-[18px] h-[18px]" />}
-              </button>
-            </div>
-            <PasswordRules password={password} />
-          </div>
-
-          <div>
-            <label className="block text-[15px] font-semibold text-ha-text mb-2">
-              {t("resetPassword.confirmPassword")}
-            </label>
-            <div className="relative">
-              <input
-                type={showConfirm ? "text" : "password"}
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-                placeholder={t("changePassword.confirmPlaceholder")}
-                className={INPUT_CLASS}
-                autoComplete="new-password"
-                data-testid="input-confirm-password"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-ha-text-placeholder hover:text-ha-text-muted transition-colors"
-                data-testid="button-toggle-confirm"
-              >
-                {showConfirm
-                  ? <EyeOff className="w-[18px] h-[18px]" />
-                  : <Eye className="w-[18px] h-[18px]" />}
-              </button>
-            </div>
-            {mismatch && (
-              <p className="text-[13px] mt-2 text-ha-danger" data-testid="text-error-mismatch">
-                {t("resetPassword.mismatch")}
-              </p>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            disabled={!canSubmit}
-            className={`w-full h-[52px] rounded-[10px] text-[15px] font-semibold transition-all active:scale-[0.97] flex items-center justify-center ${
-              canSubmit
-                ? "bg-ha-primary hover:bg-ha-primary-hover text-white"
-                : "bg-ha-primary/30 text-white cursor-not-allowed"
-            }`}
-            data-testid="button-submit"
-          >
-            {loading
-              ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />{t("common.save")}...</>
-              : t("common.save")
-            }
-          </button>
-        </form>
-      </div>
-
-      <div className="pb-[max(env(safe-area-inset-bottom),20px)]" />
-    </div>
+      {/* Back to login */}
+      <button
+        type="button"
+        onClick={() => navigate("/")}
+        className="flex items-center gap-2 mt-5 bg-transparent border-0 cursor-pointer hover:underline"
+        style={{ fontSize: "14px", fontWeight: 600, color: "#FFFFFF" }}
+        data-testid="button-back-to-login"
+      >
+        <ArrowLeft className="w-4 h-4" strokeWidth={2.5} />
+        {t("forgotPassword.backToLogin")}
+      </button>
+    </CardShell>
   );
 }

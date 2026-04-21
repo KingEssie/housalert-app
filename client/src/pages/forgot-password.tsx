@@ -220,7 +220,7 @@ export default function ForgotPasswordPage() {
           type="button"
           onClick={() => navigate("/")}
           className="flex items-center gap-2 mt-5 bg-transparent border-0 cursor-pointer hover:underline"
-          style={{ fontSize: "14px", fontWeight: 600, color: "rgba(255,255,255,0.75)" }}
+          style={{ fontSize: "14px", fontWeight: 600, color: "#FFFFFF" }}
           data-testid="button-back-to-login"
         >
           <ArrowLeft className="w-4 h-4" strokeWidth={2.5} />

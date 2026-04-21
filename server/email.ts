@@ -91,8 +91,8 @@ const C = {
   text: "#111827",
   textSecondary: "#6B7280",
   border: "#E5E7EB",
-  primary: "#d91a68",
-  primaryHover: "#b31556",
+  primary: "#11358B",
+  primaryHover: "#0e2b72",
   lightBg: "#F9FAFB",
 };
 
