@@ -44,7 +44,7 @@ export function HighlightCard({ icon: Icon, title, subtitle, overline, ctaLabel,
         )}
         {ctaLabel && (
           <span
-            className={`inline-flex h-[48px] px-7 rounded-[10px] text-[14px] font-semibold items-center transition-colors ${
+            className={`flex w-full h-[48px] rounded-[10px] text-[14px] font-semibold items-center justify-center transition-colors ${
               inverted
                 ? "bg-white text-ha-text"
                 : "bg-ha-primary-hover text-white"

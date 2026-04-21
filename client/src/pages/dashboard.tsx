@@ -31,7 +31,6 @@ import {
   MoreVertical,
   Shield,
   ShieldBan,
-  HelpCircle,
   Heart,
   Lock,
   MapPin,
@@ -264,7 +263,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           {profiles.map((p) => (
             <div
               key={p.id}
-              className="flex items-center gap-3 py-3 px-3.5 rounded-[12px] bg-white cursor-pointer hover:bg-ha-surface transition-colors active:scale-[0.99]"
+              className="flex items-center gap-3 py-2 px-3.5 rounded-[12px] bg-white cursor-pointer hover:bg-ha-surface transition-colors active:scale-[0.99]"
               onClick={() => navigate(`/dashboard/searches/edit/${p.id}`)}
               data-testid={`card-search-profile-${p.id}`}
             >
@@ -997,15 +996,8 @@ function HomeTab({
         style={{ paddingTop: "max(env(safe-area-inset-top), 32px)" }}
         data-testid="section-welcome"
       >
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center mb-6">
           <span className="text-[16px] font-semibold tracking-[-0.01em] text-ha-primary-hover" data-testid="text-brand">HousAlert</span>
-          <button
-            onClick={() => navigate("/settings/preferences")}
-            className="w-9 h-9 rounded-full bg-ha-card-border flex items-center justify-center transition-colors active:bg-ha-border-input"
-            data-testid="button-help"
-          >
-            <HelpCircle className="w-[22px] h-[22px] text-ha-text" />
-          </button>
         </div>
         <h1 className="text-[34px] font-semibold tracking-[-0.025em] leading-[1.15] text-ha-text" data-testid="text-greeting">
           {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")} 👋
@@ -1015,7 +1007,7 @@ function HomeTab({
         </p>
       </div>
 
-      <div className="flex flex-col gap-5 px-2 pt-5">
+      <div className="flex flex-col gap-5 px-4 pt-5">
         {!buddyMode && (
           <div className="flex flex-col gap-3.5" style={{ marginTop: 20 }} data-testid="section-gamification">
             <TaskFlowCard accessToken={accessToken} flow={ACCOUNT_FLOW} taskSource="tasks" navigate={navigate} testId="card-account-completion" searchProfileCount={profiles.length} />
@@ -2551,7 +2543,7 @@ export default function DashboardPage() {
         style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 0px)" }}
       >
         <div
-          className="max-w-xl mx-auto px-4"
+          className="max-w-xl mx-auto px-6"
           style={{ paddingBottom: "max(calc(env(safe-area-inset-bottom, 0px) + 8px), 14px)" }}
         >
           <nav

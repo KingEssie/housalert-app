@@ -67,9 +67,9 @@ export function ExpandableCompletionCard({
           {allDone ? (
             <CheckCircle2 className="w-5 h-5 text-ha-success flex-shrink-0" />
           ) : (
-            <CardIcon className="w-5 h-5 text-ha-primary flex-shrink-0" />
+            <CardIcon className="w-[24px] h-[24px] text-ha-primary flex-shrink-0" />
           )}
-          <p className="text-[17px] font-bold text-ha-text leading-snug tracking-[-0.01em] flex-1 min-w-0">
+          <p className="text-[22px] font-semibold text-ha-text leading-snug tracking-[-0.01em] flex-1 min-w-0">
             {title}
           </p>
           <ChevronDown
@@ -88,7 +88,7 @@ export function ExpandableCompletionCard({
           </div>
           <span
             className={`text-[13px] flex-shrink-0 whitespace-nowrap ${
-              allDone ? "text-ha-success font-semibold" : "text-ha-highlight font-bold"
+              allDone ? "text-ha-success font-semibold" : "text-black font-bold"
             }`}
           >
             {percentage}% voltooid
