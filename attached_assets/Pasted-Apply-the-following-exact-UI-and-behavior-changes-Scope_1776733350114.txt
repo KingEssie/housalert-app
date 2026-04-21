@@ -1,0 +1,94 @@
+Apply the following exact UI and behavior changes.
+
+Scope:
+- All screens that use a top bar with a back arrow
+- Account / Settings screen menu actions only
+
+Do NOT affect unrelated screens beyond the top-bar alignment rule.
+Do NOT redesign layouts beyond what is explicitly requested.
+
+--------------------------------------------------
+1. TOP BAR TITLE ALIGNMENT (GLOBAL RULE)
+--------------------------------------------------
+
+For every screen that has:
+- a back arrow on the left
+- a page title in the top bar
+
+Change the title alignment so that:
+- the title sits directly to the right of the back arrow
+- the title is left-aligned
+- the title is NOT centered anymore
+
+Match the visual style already used on the match detail screen:
+- back arrow on the left
+- title immediately next to it
+- clean spacing between arrow and title
+- right-side action/menu button can remain on the far right if present
+
+Apply this consistently across all relevant screens, for example:
+- Voorkeuren
+- detail screens
+- settings subpages
+- any other screen with a back arrow + title pattern
+
+Do NOT apply this to screens without a back arrow.
+
+--------------------------------------------------
+2. ACCOUNT SCREEN MENU LINKS / ACTIONS
+--------------------------------------------------
+
+Update the following menu items on the Account / Settings screen:
+
+A. "Contacteer ons"
+Behavior:
+- open the user's default mail app
+- compose to: hello@housalert.com
+
+Use a mailto link:
+- mailto:hello@housalert.com
+
+B. "Veelgestelde vragen"
+Behavior:
+- open:
+  https://www.housalert.com/veelgestelde-vragen
+
+C. "Algemene voorwaarden"
+Behavior:
+- open:
+  https://www.housalert.com/algemene-voorwaarden
+
+D. "Privacy" / "Privacybeleid"
+Behavior:
+- open:
+  https://www.housalert.com/privacy
+
+--------------------------------------------------
+3. LINK BEHAVIOR RULES
+--------------------------------------------------
+
+- External web links should open correctly from the app/webview/browser context
+- Mail link should trigger the user's email app if available
+- Keep existing row styling intact
+- Keep icons / external-link indicators if already present and appropriate
+- Do not change unrelated menu items
+
+--------------------------------------------------
+4. RULES
+--------------------------------------------------
+
+- Do not redesign the account screen
+- Do not change menu text unless needed to match the existing label exactly
+- Do not affect unrelated navigation logic
+- Only implement the top-bar alignment rule and the requested link behaviors
+
+--------------------------------------------------
+OUTPUT
+--------------------------------------------------
+
+Return:
+1. files changed
+2. which screens were updated for top-bar left alignment
+3. confirmation that "Contacteer ons" now opens mailto:hello@housalert.com
+4. confirmation that the three requested web links now open the correct URLs
+5. confirmation that unrelated screens were not modified
