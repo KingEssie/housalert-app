@@ -28,7 +28,11 @@ async function adminFetch(path: string, options?: RequestInit) {
     headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", ...(options?.headers || {}) },
   });
   if (res.status === 403) throw new Error("ACCESS_DENIED");
-  if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+  if (!res.ok) {
+    let body: any = {};
+    try { body = await res.json(); } catch {}
+    throw new Error(body?.error || body?.message || `Request failed: ${res.status}`);
+  }
   return res.json();
 }
 
@@ -923,11 +927,16 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
     setDeleteLoading(true);
     setDeleteError(null);
     try {
-      await adminFetch(`/api/admin/portal/users/${profile.user_id}/permanent-delete`, { method: "DELETE" });
-      setShowDeleteModal(false);
-      onBack();
+      const result = await adminFetch(`/api/admin/portal/users/${profile.user_id}/permanent-delete`, { method: "DELETE" });
+      if (result?.success) {
+        setShowDeleteModal(false);
+        onBack();
+      } else {
+        setDeleteError(result?.error || "Delete failed");
+      }
     } catch (err: any) {
-      setDeleteError(err.message || "Delete failed");
+      const msg = err.message || "Delete failed";
+      setDeleteError(msg);
     }
     setDeleteLoading(false);
   }

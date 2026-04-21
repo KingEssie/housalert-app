@@ -1,0 +1,160 @@
+Fix the admin permanent user deletion flow end-to-end.
+
+Current issue:
+- deleting a user from admin fails with a 500 error
+- deletion must be made robust and complete
+- buddy relationships must also be fully cleaned up
+
+Goal:
+Create a safe, complete permanent delete flow that removes the user from:
+1. app database
+2. Supabase Auth
+3. notifications / push / email pipelines
+4. buddy relationships
+5. any access/session state
+
+This must work for:
+- normal users
+- buddy users
+- main account users who have a buddy
+- users who may have subscriptions, matches, search profiles, feedback, tokens, etc.
+
+==================================================
+1. DEBUG AND FIX THE 500 ERROR
+==================================================
+
+Tasks:
+- Trace the exact backend failure causing the 500 when permanent delete is triggered
+- Add proper server-side logging around every deletion step
+- Return useful admin-facing error messages instead of a generic 500 where possible
+- Identify whether the failure is caused by:
+  - foreign key constraints
+  - Supabase Auth deletion
+  - missing cascade cleanup
+  - transaction ordering
+  - null/relationship assumptions
+- Fix the root cause, not just the symptom
+
+==================================================
+2. PERMANENT DELETE MUST FULLY REMOVE USER ACCESS
+==================================================
+
+When a user is permanently deleted:
+
+- remove the user from app database tables
+- remove the user from Supabase Auth
+- invalidate login/access immediately
+- ensure the user can no longer access the app
+- ensure the email address becomes reusable for a future signup
+
+If necessary:
+- use service-role/admin APIs to delete the auth user safely
+
+==================================================
+3. STOP ALL EMAIL / PUSH / ALERTS
+==================================================
+
+On permanent deletion:
+- remove push tokens
+- remove notification settings
+- stop all scheduled alerts, queued sends, or background jobs tied to the user
+- ensure deleted users never receive emails or notifications again
+
+This includes:
+- buddy-related emails
+- match alerts
+- onboarding / retention emails
+- any other automated communication
+
+==================================================
+4. BUDDY RELATIONSHIP CLEANUP
+==================================================
+
+If the deleted user is a buddy:
+- remove the buddy relationship from the main user account
+- remove any shared access / buddy mapping
+- ensure the main user no longer sees that buddy as linked
+- ensure the buddy no longer receives anything related to that account
+
+If the deleted user is the main user:
+- remove all buddy relationships tied to that user
+- ensure buddies are not left linked to a deleted account
+- clear any access or association created through that relationship
+
+If there are invite tables / shared search profile mappings / collaboration tables:
+- clean those too
+
+==================================================
+5. DATA CLEANUP ORDER
+==================================================
+
+Implement deletion in a safe order, ideally inside a robust server-side workflow.
+
+Suggested order:
+1. load user + related entities
+2. remove/stop notifications, tokens, jobs
+3. remove buddy relationships and shared mappings
+4. delete dependent app records or detach them safely
+5. delete app user record(s)
+6. delete Supabase Auth user
+7. return success summary
+
+If a transaction is appropriate, use one where possible.
+If Auth deletion cannot be in the same DB transaction, handle it safely with rollback/error logging strategy.
+
+==================================================
+6. ADMIN UX
+==================================================
+
+Improve the admin delete modal behavior:
+- if delete fails, show the actual reason if safe
+- show which cleanup step failed
+- if delete succeeds, show a clear success message
+- refresh admin state so the deleted user disappears immediately
+
+==================================================
+7. SAFETY
+==================================================
+
+Keep the protected admin account exclusion logic if already present.
+Do not allow accidental deletion of the protected account if that rule exists.
+
+==================================================
+8. VERIFICATION
+==================================================
+
+After implementing, verify all of the following:
+
+A. Delete a normal user:
+- user removed from database
+- auth removed
+- cannot log in
+- email reusable
+- no notifications
+
+B. Delete a buddy user:
+- buddy removed fully
+- buddy link removed from main user
+- buddy gets no emails/push
+- buddy cannot log in
+- email reusable
+
+C. Delete a main user with buddy relationship:
+- main user removed fully
+- buddy mapping cleaned up
+- no orphaned references remain
+- no further alerts/emails are sent
+
+==================================================
+9. OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. root cause of the original 500 error
+3. exact deletion order implemented
+4. which related tables/entities are cleaned up
+5. how Supabase Auth deletion is handled
+6. confirmation that deleted users lose access immediately
+7. confirmation that deleted emails can be used again for new signup
+8. confirmation that buddy/main-user relationships are fully cleaned up both ways

@@ -7122,36 +7122,166 @@ export async function registerRoutes(
 
   const ADMIN_PROTECTED_EMAIL = "martin.essie87@gmail.com";
 
-  async function permanentlyDeleteUser(userId: string): Promise<void> {
+  /**
+   * Permanently removes a user and ALL related data.
+   *
+   * Deletion order matters:
+   *  1. user_matches (pgPool) — before Supabase matches in case of any join
+   *  2. matches (Supabase, service-role) — before search_profiles (FK: matches.search_profile_id → search_profiles.id)
+   *  3. search_profiles (Supabase, service-role)
+   *  4. subscriptions (Supabase, service-role)
+   *  5. user_notification_settings (Supabase, service-role, NO cascade — must delete before auth user)
+   *  6. push_subscriptions (Supabase, service-role, has cascade, explicit to stop push)
+   *  7. onboarding_drafts (Supabase, service-role)
+   *  8. search_profile_buddies (pgPool) — buddy relationships both ways
+   *  9. referrals (pgPool)
+   * 10. cancellation_feedback (pgPool)
+   * 11. user_profile_data (pgPool)
+   * 12. auth.admin.deleteUser — triggers any remaining CASCADE rules on auth.users
+   *
+   * Uses the service-role Supabase client for ALL Supabase table operations so that
+   * RLS policies (which restrict anon/user keys) do not block the deletion.
+   */
+  async function permanentlyDeleteUser(userId: string): Promise<string[]> {
     const adminSb = getSupabaseAdmin();
-    await supabase.from("matches").delete().eq("user_id", userId);
-    await supabase.from("search_profiles").delete().eq("user_id", userId);
-    await supabase.from("subscriptions").delete().eq("user_id", userId);
-    await supabase.from("user_notification_settings").delete().eq("user_id", userId);
-    await supabase.from("push_subscriptions").delete().eq("user_id", userId).catch(() => {});
-    await pgPool.query("DELETE FROM user_matches WHERE user_id = $1", [userId]).catch(() => {});
-    await pgPool.query("DELETE FROM cancellation_feedback WHERE user_id = $1", [userId]).catch(() => {});
-    await pgPool.query("DELETE FROM search_profile_buddies WHERE owner_user_id = $1 OR buddy_user_id = $1", [userId]).catch(() => {});
-    await pgPool.query("DELETE FROM user_profile_data WHERE user_id = $1", [userId]);
+    const steps: string[] = [];
+
+    function step(label: string, ok: boolean, msg?: string) {
+      const entry = ok ? `✓ ${label}` : `✗ ${label}: ${msg}`;
+      steps.push(entry);
+      log(`[admin-delete] ${entry}`);
+    }
+
+    // 1. user_matches (pgPool)
+    try {
+      await pgPool.query("DELETE FROM user_matches WHERE user_id = $1", [userId]);
+      step("user_matches", true);
+    } catch (e: any) { step("user_matches", false, e.message); }
+
+    // 2. matches (Supabase — MUST precede search_profiles due to FK)
+    try {
+      const { error } = await adminSb.from("matches").delete().eq("user_id", userId);
+      if (error) throw error;
+      step("matches", true);
+    } catch (e: any) {
+      step("matches", false, e.message);
+      throw new Error(`matches: ${e.message}`);
+    }
+
+    // 3. search_profiles (Supabase)
+    try {
+      const { error } = await adminSb.from("search_profiles").delete().eq("user_id", userId);
+      if (error) throw error;
+      step("search_profiles", true);
+    } catch (e: any) {
+      step("search_profiles", false, e.message);
+      throw new Error(`search_profiles: ${e.message}`);
+    }
+
+    // 4. subscriptions (Supabase)
+    try {
+      const { error } = await adminSb.from("subscriptions").delete().eq("user_id", userId);
+      if (error) throw error;
+      step("subscriptions", true);
+    } catch (e: any) {
+      step("subscriptions", false, e.message);
+      throw new Error(`subscriptions: ${e.message}`);
+    }
+
+    // 5. user_notification_settings (Supabase — no cascade, must delete before auth user)
+    try {
+      const { error } = await adminSb.from("user_notification_settings").delete().eq("user_id", userId);
+      if (error) throw error;
+      step("user_notification_settings", true);
+    } catch (e: any) {
+      step("user_notification_settings", false, e.message);
+      throw new Error(`user_notification_settings: ${e.message}`);
+    }
+
+    // 6. push_subscriptions (Supabase — has cascade but explicit to immediately stop push)
+    try {
+      await adminSb.from("push_subscriptions").delete().eq("user_id", userId);
+      step("push_subscriptions", true);
+    } catch (e: any) { step("push_subscriptions", false, e.message); }
+
+    // 7. onboarding_drafts (Supabase)
+    try {
+      await adminSb.from("onboarding_drafts").delete().eq("claimed_by", userId);
+      step("onboarding_drafts", true);
+    } catch (e: any) { step("onboarding_drafts", false, e.message); }
+
+    // 8. search_profile_buddies — both as owner and as buddy (pgPool)
+    try {
+      await pgPool.query(
+        "DELETE FROM search_profile_buddies WHERE owner_user_id = $1 OR buddy_user_id = $1",
+        [userId]
+      );
+      step("search_profile_buddies", true);
+    } catch (e: any) { step("search_profile_buddies", false, e.message); }
+
+    // 9. referrals (pgPool)
+    try {
+      await pgPool.query(
+        "DELETE FROM referrals WHERE referrer_user_id = $1 OR referred_user_id = $1",
+        [userId]
+      );
+      step("referrals", true);
+    } catch (e: any) { step("referrals", false, e.message); }
+
+    // 10. cancellation_feedback (pgPool)
+    try {
+      await pgPool.query("DELETE FROM cancellation_feedback WHERE user_id = $1", [userId]);
+      step("cancellation_feedback", true);
+    } catch (e: any) { step("cancellation_feedback", false, e.message); }
+
+    // 10b. favorites (pgPool)
+    try {
+      await pgPool.query("DELETE FROM favorites WHERE user_id = $1", [userId]);
+      step("favorites", true);
+    } catch (e: any) { step("favorites", false, e.message); }
+
+    // 10c. activation_events (pgPool)
+    try {
+      await pgPool.query("DELETE FROM activation_events WHERE user_id = $1", [userId]);
+      step("activation_events", true);
+    } catch (e: any) { step("activation_events", false, e.message); }
+
+    // 11. user_profile_data (pgPool)
+    try {
+      await pgPool.query("DELETE FROM user_profile_data WHERE user_id = $1", [userId]);
+      step("user_profile_data", true);
+    } catch (e: any) {
+      step("user_profile_data", false, e.message);
+      throw new Error(`user_profile_data: ${e.message}`);
+    }
+
+    // 12. Supabase Auth — MUST be last; triggers CASCADE on tables with ON DELETE CASCADE
     const { error: deleteErr } = await adminSb.auth.admin.deleteUser(userId);
-    if (deleteErr) throw new Error(`Auth delete failed: ${deleteErr.message}`);
+    if (deleteErr) {
+      step("auth.deleteUser", false, deleteErr.message);
+      throw new Error(`Auth delete failed: ${deleteErr.message}`);
+    }
+    step("auth.deleteUser", true);
+
+    return steps;
   }
 
   app.delete("/api/admin/portal/users/:userId/permanent-delete", requireAdmin, async (req, res) => {
+    const { userId } = req.params;
     try {
-      const { userId } = req.params;
       const adminSb = getSupabaseAdmin();
       const { data: authData } = await adminSb.auth.admin.getUserById(userId);
       const email = authData?.user?.email || "";
       if (email.toLowerCase() === ADMIN_PROTECTED_EMAIL.toLowerCase()) {
         return res.status(403).json({ error: `Account ${ADMIN_PROTECTED_EMAIL} is protected and cannot be deleted.` });
       }
-      await permanentlyDeleteUser(userId);
-      log(`[admin-delete] Permanently deleted user ${userId} (${email})`);
-      res.json({ success: true, deleted: email });
+      log(`[admin-delete] Starting permanent delete of ${userId} (${email})`);
+      const steps = await permanentlyDeleteUser(userId);
+      log(`[admin-delete] Completed: ${userId} (${email})`);
+      res.json({ success: true, deleted: email, steps });
     } catch (err: any) {
-      log(`[admin-delete] Error: ${err.message}`);
-      res.status(500).json({ error: err.message });
+      log(`[admin-delete] FAILED for ${userId}: ${err.message}`);
+      res.status(500).json({ error: err.message, step: err.message.split(":")[0] });
     }
   });
 
@@ -7173,8 +7303,8 @@ export async function registerRoutes(
       const errorLog: string[] = [];
       for (const authUser of usersToDelete) {
         try {
-          await permanentlyDeleteUser(authUser.id);
-          log(`[admin-bulk-delete] Deleted ${authUser.email || authUser.id}`);
+          const steps = await permanentlyDeleteUser(authUser.id);
+          log(`[admin-bulk-delete] Deleted ${authUser.email || authUser.id} (${steps.length} steps)`);
           deleted++;
         } catch (err: any) {
           log(`[admin-bulk-delete] Failed ${authUser.email || authUser.id}: ${err.message}`);
