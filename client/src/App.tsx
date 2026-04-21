@@ -45,7 +45,6 @@ import SubscriptionSuccessPage from "@/pages/subscription-success";
 import CheckoutSuccessPage from "@/pages/checkout-success";
 import EmbedSuccessPage from "@/pages/embed-success";
 import PaywallPage from "@/pages/paywall";
-import OnboardingSlideshow from "@/pages/onboarding-slideshow";
 import AdminIngestionPage from "@/pages/admin-ingestion";
 import AdminPortalPage from "@/pages/admin-portal";
 import AdminMatchAuditPage from "@/pages/admin-match-audit";

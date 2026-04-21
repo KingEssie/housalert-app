@@ -100,7 +100,7 @@ export default function ContinueDraftPage() {
 
   useEffect(() => {
     if (status === "needs-auth") {
-      navigate(`/signup?redirect=/continue?draft=${draftId}`);
+      navigate("/");
     }
   }, [status, draftId, navigate]);
 
