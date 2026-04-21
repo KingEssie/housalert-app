@@ -1,0 +1,127 @@
+Apply the following exact UI changes.
+
+Scope:
+- Match detail screen only
+- Plus one shared listing detail formatting fix for the price display on:
+  1. match detail listing card
+  2. Matches screen listing cards
+
+Do NOT affect unrelated screens.
+Do NOT change logic except where explicitly described.
+Keep functionality intact.
+
+--------------------------------------------------
+1. TOP BAR (MATCH DETAIL SCREEN)
+--------------------------------------------------
+
+In the top bar of the match detail screen:
+- Keep the back arrow on the left
+- Add the text: "Huurwoning" next to the back arrow
+- Keep the right-side action/menu area intact unless needed for alignment
+- Keep the top bar clean, minimal, and readable
+
+--------------------------------------------------
+2. CONTENT LAYOUT
+--------------------------------------------------
+
+Under the top bar:
+- show a white content block / white section container
+- inside that white area, show the title:
+  "Is dit jouw droomhuis?"
+
+Keep this title visually separate and clearly above the listing card.
+
+--------------------------------------------------
+3. MATCH CARD ON DETAIL SCREEN
+--------------------------------------------------
+
+The listing card shown on the detail screen should use the SAME layout and styling as the listing card on the Matches screen.
+
+This means:
+- same card structure
+- same image treatment
+- same favorite heart treatment
+- same background color
+- same detail pills styling
+- same typography hierarchy
+
+Do not keep a different custom detail-card style if it visually differs from Matches.
+Unify it.
+
+--------------------------------------------------
+4. NO ACTIVE SUBSCRIPTION STATE
+--------------------------------------------------
+
+If the user has NO active subscription:
+
+A. Inside the white content area below the match card:
+- show a button:
+  text: "Upgrade om te reageren"
+  button background: #C7EF66
+  button text: black
+  icon in button: black
+
+B. Below that button:
+- show a grey information block, styled similar to Rentbird
+- include an icon on the left
+- include the text:
+  "Je hebt op dit moment geen actief abonnement en kan daarom deze woning niet bekijken."
+
+- Copy this text exactly
+- Keep the grey block visually calm and readable
+
+C. In the bottom sticky action bar:
+- instead of the current active-subscriber action UI, show only:
+  button text: "Upgraden"
+  button background: #C7EF66
+  button text color: black
+  icon color: black
+
+--------------------------------------------------
+5. ACTIVE SUBSCRIPTION STATE
+--------------------------------------------------
+
+If the user DOES have an active subscription:
+- keep showing the reactiebrief section as it works now
+- keep the bottom action bar behavior as it currently is
+- do not remove the existing active-subscriber flow
+
+--------------------------------------------------
+6. PRICE FORMATTING FIX
+--------------------------------------------------
+
+For the price shown in the listing detail pills/cards:
+- always show a euro symbol before the amount
+
+Examples:
+- 480 -> €480
+- 2150 -> €2150
+
+Apply this on:
+1. the listing card on the match detail screen
+2. the listing card on the Matches screen
+
+Do not change any other numeric formatting unless needed for the euro symbol.
+
+--------------------------------------------------
+RULES
+--------------------------------------------------
+
+- Use existing semantic tokens where possible
+- If needed, map #C7EF66 cleanly to the existing highlight token
+- Do not introduce random new colors
+- Do not redesign unrelated components
+- Do not break existing subscription logic
+- Do not change routing
+- Keep spacing clean and premium
+
+--------------------------------------------------
+OUTPUT
+--------------------------------------------------
+
+Return:
+1. files changed
+2. exact elements updated on the match detail screen
+3. confirmation that the match detail card now matches the Matches card layout
+4. confirmation that the no-subscription and active-subscription states both work correctly
+5. confirmation that euro symbols now appear on both Matches and detail listings

@@ -19,8 +19,11 @@ import {
   MapPin,
   Maximize2,
   ShieldBan,
+  Info,
+  Zap,
 } from "lucide-react";
 import { ListingFallback, isValidImageUrl } from "@/components/listing-fallback";
+import { useSubscription } from "@/lib/subscription";
 
 function useRelativeTime() {
   const { t } = useTranslation();
@@ -112,6 +115,8 @@ export default function ApplyPage() {
   const { t, locale } = useTranslation();
   const buddyConns = useBuddyConnections();
   const inBuddyMode = isBuddyMode(buddyConns.data);
+  const sub = useSubscription();
+  const hasAccess = sub.isActive || sub.isTrial;
   const [marked, setMarked] = useState(false);
   const [editedLetter, setEditedLetter] = useState<string | null>(null);
   const [imgError, setImgError] = useState(false);
@@ -244,9 +249,9 @@ export default function ApplyPage() {
     }
   }
 
-  const StickyHeader = ({ children }: { children?: React.ReactNode }) => (
+  const StickyHeader = ({ showBlock = false }: { showBlock?: boolean }) => (
     <div className="sticky top-0 z-30 bg-white border-b border-ha-card-border" style={{ paddingTop: "env(safe-area-inset-top)" }}>
-      <div className="flex items-center h-12 px-4">
+      <div className="flex items-center h-12 px-4 gap-2">
         <button
           onClick={handleBack}
           className="w-10 h-10 rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input flex items-center justify-center transition-colors shrink-0"
@@ -255,10 +260,19 @@ export default function ApplyPage() {
         >
           <ArrowLeft className="w-5 h-5 text-ha-text-secondary" />
         </button>
-        <span className="flex-1 text-center text-[16px] font-semibold text-ha-text mx-3 truncate">
-          {t("applySheet.pageTitle")}
-        </span>
-        {children}
+        <span className="text-[16px] font-semibold text-ha-text">Huurwoning</span>
+        <div className="flex-1" />
+        {showBlock && listing?.source && (
+          <button
+            onClick={() => setShowBlockModal(true)}
+            className="w-9 h-9 rounded-full flex items-center justify-center active:scale-95 transition-transform shrink-0"
+            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.1)" }}
+            aria-label="Block source"
+            data-testid="button-block-source-apply"
+          >
+            <ShieldBan className="w-[18px] h-[18px] text-ha-text" strokeWidth={2} />
+          </button>
+        )}
       </div>
     </div>
   );
@@ -268,7 +282,7 @@ export default function ApplyPage() {
       <div className="min-h-screen flex flex-col bg-ha-bg">
         <StickyHeader />
         <div className="animate-pulse mx-4 mt-4 bg-white rounded-[12px] overflow-hidden" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid rgb(var(--ha-card-border))" }}>
-          <div className="w-full bg-ha-card-border" style={{ aspectRatio: "16/9" }} />
+          <div className="w-full bg-ha-card-border" style={{ aspectRatio: "2/1" }} />
           <div className="px-5 pt-4 pb-5 space-y-3">
             <div className="h-5 bg-ha-card-border rounded-md w-4/5" />
             <div className="h-4 bg-ha-card-border rounded-md w-3/5" />
@@ -369,161 +383,197 @@ export default function ApplyPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-ha-bg">
-      {/* Sticky white header */}
-      <StickyHeader>
-        {listing.source && (
-          <button
-            onClick={() => setShowBlockModal(true)}
-            className="w-9 h-9 rounded-full flex items-center justify-center active:scale-95 transition-transform shrink-0"
-            style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.1)" }}
-            aria-label="Block source"
-            data-testid="button-block-source-apply"
-          >
-            <ShieldBan className="w-[18px] h-[18px] text-ha-text" strokeWidth={2} />
-          </button>
-        )}
-      </StickyHeader>
+      {/* Sticky header: back + "Huurwoning" left, block button right */}
+      <StickyHeader showBlock />
 
-      {/* Main listing card — image + info in one rounded white card */}
+      {/* White content section */}
       <div className="mx-4 mt-4 bg-white rounded-[12px] overflow-hidden" style={cardStyle}>
-        {/* Image with floating heart */}
-        <div className="relative">
-          {hasImage && !imgError ? (
-            <img
-              src={listing.image_url!}
-              alt={listing.title}
-              className="w-full object-cover"
-              style={{ aspectRatio: "16/9" }}
-              onError={() => setImgError(true)}
-              referrerPolicy="no-referrer"
-              data-testid="img-apply-hero"
-            />
-          ) : (
-            <div className="w-full" style={{ aspectRatio: "16/9" }}>
-              <ListingFallback title={listing.title} source={listing.source || undefined} city={listing.city} size="hero" />
-            </div>
-          )}
-          <button
-            onClick={handleToggleFavorite}
-            disabled={favLoading}
-            className="absolute top-3 right-3 w-[38px] h-[38px] flex items-center justify-center transition-all duration-150 active:scale-110"
-            aria-label="Favorite"
-            data-testid="button-favorite-apply"
-          >
-            <Heart
-              className="w-[22px] h-[22px] transition-all duration-150"
-              fill={isFavorited ? "#FF385C" : "none"}
-              stroke={isFavorited ? "#FF385C" : "#ffffff"}
-              strokeWidth={2.5}
-              style={{ filter: "drop-shadow(0 1px 4px rgba(0,0,0,0.55))" }}
-            />
-          </button>
+
+        {/* Section title */}
+        <div className="px-4 pt-5 pb-3">
+          <h2 className="text-[20px] font-semibold text-ha-text" data-testid="text-detail-section-title">
+            Is dit jouw droomhuis?
+          </h2>
         </div>
 
-        {/* Listing info */}
-        <div className="px-5 pt-4 pb-5">
-          <h2
-            className="text-[18px] font-bold text-ha-text leading-snug line-clamp-2"
-            data-testid="text-apply-title"
-          >
-            {listing.title}
-          </h2>
-          {metaLine && (
-            <p className="text-[13px] text-ha-text mt-1" data-testid="text-apply-meta">
-              {metaLine}
-            </p>
-          )}
-          <div className="flex flex-nowrap gap-1.5 mt-3 overflow-hidden">
-            {listing.city && (
-              <span
-                className="inline-flex items-center gap-[4px] bg-ha-surface text-[13px] font-medium text-ha-text px-2 py-[5px] rounded-[6px] min-w-0 shrink"
-                style={pillStyle}
-                data-testid="detail-city-apply"
-              >
-                <MapPin className="w-[19px] h-[19px] flex-shrink-0 text-ha-text" strokeWidth={1.7} />
-                <span className="truncate">{listing.city}</span>
-              </span>
+        {/* Listing card — matchVariant style (matches the Matches screen) */}
+        <div className="mx-3 mb-4 rounded-[12px] overflow-hidden" style={{ backgroundColor: "#EBF1FF", boxShadow: "0 2px 8px rgba(0,0,0,0.07)" }}>
+          <div className="relative">
+            {hasImage && !imgError ? (
+              <img
+                src={listing.image_url!}
+                alt={listing.title}
+                className="w-full object-cover"
+                style={{ aspectRatio: "2/1" }}
+                onError={() => setImgError(true)}
+                referrerPolicy="no-referrer"
+                data-testid="img-apply-hero"
+              />
+            ) : (
+              <div className="w-full" style={{ aspectRatio: "2/1" }}>
+                <ListingFallback title={listing.title} source={listing.source || undefined} city={listing.city} size="hero" />
+              </div>
             )}
-            {listing.bedrooms != null && listing.bedrooms > 0 && (
-              <span
-                className="inline-flex items-center gap-[4px] bg-ha-surface text-[13px] font-medium text-ha-text px-2 py-[5px] rounded-[6px] shrink-0"
-                style={pillStyle}
-                data-testid="detail-bedrooms-apply"
-              >
-                <BedDouble className="w-[19px] h-[19px] flex-shrink-0 text-ha-text" strokeWidth={1.7} />
-                {listing.bedrooms}
-              </span>
+            <button
+              onClick={handleToggleFavorite}
+              disabled={favLoading}
+              className="absolute top-3 right-3 w-[36px] h-[36px] rounded-full bg-white flex items-center justify-center transition-all duration-150 active:scale-110"
+              aria-label="Favorite"
+              data-testid="button-favorite-apply"
+            >
+              <Heart
+                className="w-[20px] h-[20px] transition-all duration-150"
+                fill={isFavorited ? "rgb(var(--ha-primary))" : "none"}
+                stroke="rgb(var(--ha-primary))"
+                strokeWidth={2.5}
+              />
+            </button>
+          </div>
+
+          <div className="p-4 flex flex-col gap-1.5">
+            <h3
+              className="text-[16px] font-bold leading-snug line-clamp-2 text-black"
+              data-testid="text-apply-title"
+            >
+              {listing.title}
+            </h3>
+            {metaLine && (
+              <p className="text-[13px] text-ha-text-muted" data-testid="text-apply-meta">
+                {metaLine}
+              </p>
             )}
-            {listing.size_m2 != null && listing.size_m2 > 0 && (
-              <span
-                className="inline-flex items-center gap-[4px] bg-ha-surface text-[13px] font-medium text-ha-text px-2 py-[5px] rounded-[6px] shrink-0"
-                style={pillStyle}
-                data-testid="detail-size-apply"
-              >
-                <Maximize2 className="w-[19px] h-[19px] flex-shrink-0 text-ha-text" strokeWidth={1.7} />
-                {listing.size_m2} m²
-              </span>
-            )}
-            {listing.price > 0 && (
-              <span
-                className="inline-flex items-center gap-[4px] bg-ha-surface text-[13px] font-semibold text-ha-text px-2 py-[5px] rounded-[6px] shrink-0"
-                style={pillStyle}
-                data-testid="detail-price-apply"
-              >
-                <Tag className="w-[19px] h-[19px] flex-shrink-0 text-ha-text" strokeWidth={1.7} />
-                {listing.price}
-              </span>
-            )}
+            <div className="flex flex-nowrap gap-1.5 mt-0.5 overflow-hidden">
+              {listing.city && (
+                <span
+                  className="inline-flex items-center gap-[4px] bg-white text-[13px] font-medium text-black px-2 py-[5px] rounded-[6px] min-w-0 shrink"
+                  style={pillStyle}
+                  data-testid="detail-city-apply"
+                >
+                  <MapPin className="w-[19px] h-[19px] flex-shrink-0 text-ha-primary" strokeWidth={1.7} />
+                  <span className="truncate">{listing.city}</span>
+                </span>
+              )}
+              {listing.bedrooms != null && listing.bedrooms > 0 && (
+                <span
+                  className="inline-flex items-center gap-[4px] bg-white text-[13px] font-medium text-black px-2 py-[5px] rounded-[6px] shrink-0"
+                  style={pillStyle}
+                  data-testid="detail-bedrooms-apply"
+                >
+                  <BedDouble className="w-[19px] h-[19px] flex-shrink-0 text-ha-primary" strokeWidth={1.7} />
+                  {listing.bedrooms}
+                </span>
+              )}
+              {listing.size_m2 != null && listing.size_m2 > 0 && (
+                <span
+                  className="inline-flex items-center gap-[4px] bg-white text-[13px] font-medium text-black px-2 py-[5px] rounded-[6px] shrink-0"
+                  style={pillStyle}
+                  data-testid="detail-size-apply"
+                >
+                  <Maximize2 className="w-[19px] h-[19px] flex-shrink-0 text-ha-primary" strokeWidth={1.7} />
+                  {listing.size_m2} m²
+                </span>
+              )}
+              {listing.price > 0 && (
+                <span
+                  className="inline-flex items-center gap-[4px] bg-white text-[13px] font-semibold text-black px-2 py-[5px] rounded-[6px] shrink-0"
+                  style={pillStyle}
+                  data-testid="detail-price-apply"
+                >
+                  <Tag className="w-[19px] h-[19px] flex-shrink-0 text-ha-primary" strokeWidth={1.7} />
+                  €{listing.price}
+                </span>
+              )}
+            </div>
           </div>
         </div>
+
+        {/* No-subscription: upgrade CTA + info block */}
+        {!hasAccess && (
+          <div className="px-3 pb-5 flex flex-col gap-3">
+            <button
+              onClick={() => navigate("/paywall")}
+              className="w-full h-[48px] rounded-[12px] text-black text-[15px] font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
+              style={{ backgroundColor: "rgb(var(--ha-highlight))" }}
+              data-testid="button-upgrade-to-react"
+            >
+              <Zap className="w-[18px] h-[18px] text-black" strokeWidth={2} />
+              Upgrade om te reageren
+            </button>
+            <div className="rounded-[10px] bg-ha-surface px-4 py-3.5 flex items-start gap-3" data-testid="info-no-subscription">
+              <Info className="w-[18px] h-[18px] flex-shrink-0 text-ha-text-muted mt-0.5" strokeWidth={2} />
+              <p className="text-[14px] text-ha-text-secondary leading-[1.55]">
+                Je hebt op dit moment geen actief abonnement en kan daarom deze woning niet bekijken.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Active subscription: reactiebrief inside white section */}
+        {hasAccess && (
+          <div className="px-3 pb-5">
+            <h2 className="text-[18px] font-semibold text-ha-text mb-1" data-testid="text-letter-title">
+              {t("applySheet.applicationLetter")}
+            </h2>
+            <p className="text-[12px] text-ha-text-secondary mb-3" data-testid="text-letter-helper">
+              {t("applySheet.autoGenerated")}
+            </p>
+            <textarea
+              className="w-full min-h-[220px] leading-[1.75] bg-ha-surface border border-ha-border-input rounded-[8px] p-4 text-[16px] text-ha-text outline-none resize-vertical focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25 transition-all"
+              value={editedLetter ?? filledLetter}
+              onChange={(e) => !inBuddyMode && setEditedLetter(e.target.value)}
+              readOnly={inBuddyMode}
+              data-testid="apply-letter-preview"
+              autoComplete="off"
+              autoCorrect="on"
+            />
+          </div>
+        )}
       </div>
 
-      {/* Reactiebrief — separate white card */}
-      <div className="mx-4 mt-4 mb-[140px] bg-white rounded-[12px] p-5" style={cardStyle}>
-        <h2 className="text-[18px] font-semibold text-ha-text mb-1" data-testid="text-letter-title">
-          {t("applySheet.applicationLetter")}
-        </h2>
-        <p className="text-[12px] text-ha-text-secondary mb-3" data-testid="text-letter-helper">
-          {t("applySheet.autoGenerated")}
-        </p>
-        <textarea
-          className="w-full min-h-[220px] leading-[1.75] bg-ha-surface border border-ha-border-input rounded-[8px] p-4 text-[16px] text-ha-text outline-none resize-vertical focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25 transition-all"
-          value={editedLetter ?? filledLetter}
-          onChange={(e) => !inBuddyMode && setEditedLetter(e.target.value)}
-          readOnly={inBuddyMode}
-          data-testid="apply-letter-preview"
-          autoComplete="off"
-          autoCorrect="on"
-        />
-      </div>
+      {/* Bottom spacer */}
+      <div className="mb-[140px]" />
 
       {/* Sticky bottom CTA — hidden for buddy (read-only mode) */}
       {!inBuddyMode && (
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-ha-card-border z-10 pb-[env(safe-area-inset-bottom)]">
           <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-4">
-            {listing.price > 0 ? (
-              <div className="flex flex-col" data-testid="text-sticky-price">
-                <span className="text-[20px] font-semibold text-ha-text">
-                  €{listing.price}
-                  <span className="text-[13px] font-normal text-ha-text-secondary ml-1">{t("common.perMonthShort")}</span>
-                </span>
-                {postedLabel && (
-                  <span className="text-[11px] text-ha-text-secondary leading-none mt-0.5" data-testid="text-footer-posted">
-                    {postedLabel}
-                  </span>
+            {hasAccess ? (
+              <>
+                {listing.price > 0 ? (
+                  <div className="flex flex-col" data-testid="text-sticky-price">
+                    <span className="text-[20px] font-semibold text-ha-text">
+                      €{listing.price}
+                      <span className="text-[13px] font-normal text-ha-text-secondary ml-1">{t("common.perMonthShort")}</span>
+                    </span>
+                    {postedLabel && (
+                      <span className="text-[11px] text-ha-text-secondary leading-none mt-0.5" data-testid="text-footer-posted">
+                        {postedLabel}
+                      </span>
+                    )}
+                  </div>
+                ) : (
+                  <div />
                 )}
-              </div>
+                <Button
+                  onClick={handleCopyAndRespond}
+                  className={`ha-btn bg-ha-primary hover:bg-ha-primary-hover text-white font-semibold ${listing.price > 0 ? "" : "w-full"}`}
+                  data-testid="button-copy-and-respond"
+                >
+                  <Copy className="w-4 h-4 mr-2" />
+                  {t("applySheet.copyAndApply")}
+                </Button>
+              </>
             ) : (
-              <div />
+              <button
+                onClick={() => navigate("/paywall")}
+                className="w-full h-[48px] rounded-full text-black text-[15px] font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
+                style={{ backgroundColor: "rgb(var(--ha-highlight))" }}
+                data-testid="button-upgraden-sticky"
+              >
+                <Zap className="w-[18px] h-[18px] text-black" strokeWidth={2} />
+                Upgraden
+              </button>
             )}
-            <Button
-              onClick={handleCopyAndRespond}
-              className={`ha-btn bg-ha-primary hover:bg-ha-primary-hover text-white font-semibold ${listing.price > 0 ? "" : "w-full"}`}
-              data-testid="button-copy-and-respond"
-            >
-              <Copy className="w-4 h-4 mr-2" />
-              {t("applySheet.copyAndApply")}
-            </Button>
           </div>
         </div>
       )}
