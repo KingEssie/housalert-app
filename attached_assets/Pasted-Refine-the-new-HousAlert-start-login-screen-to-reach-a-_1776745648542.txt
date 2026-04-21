@@ -1,0 +1,242 @@
+Refine the new HousAlert start/login screen to reach a near pixel-perfect Rentbird-level finish, while keeping HousAlert branding and colors.
+
+Important:
+- Do NOT redesign the structure from scratch.
+- Keep the current HousAlert branding and content.
+- This is a precision polish pass focused on spacing, proportions, contrast, and visual weight.
+- Preserve functionality.
+- Scope only this start/login screen.
+
+==================================================
+1. OVERALL GOAL
+==================================================
+
+Keep:
+- HousAlert branding
+- dark blue background
+- login form structure
+- primary filled CTA
+- secondary outlined CTA
+- Trustpilot section
+
+But refine the screen so it matches Rentbird’s level of polish in:
+- spacing
+- sizing
+- proportions
+- visual rhythm
+- button weight
+- input feel
+- trust section placement
+
+==================================================
+2. TOP AREA SPACING
+==================================================
+
+Current issue:
+- the upper area feels slightly too compressed
+- logo/title/form spacing does not yet match Rentbird’s rhythm
+
+Fix:
+- add more space between:
+  - logo row and welcome heading
+  - welcome heading and first form label
+- make the vertical rhythm feel more like Rentbird
+
+Target feel:
+- airy, premium, intentional
+- not cramped
+- not overly spacious
+
+==================================================
+3. LANGUAGE SWITCH
+==================================================
+
+Current issue:
+- the language switch feels slightly too large / padded
+
+Fix:
+- reduce its visual bulk slightly
+- keep it aligned top-right
+- make it feel cleaner and tighter
+- preserve readability and tapability
+
+==================================================
+4. HEADING + LABEL TYPOGRAPHY
+==================================================
+
+Heading:
+- keep it strong
+- make sure size/weight/line-height match a premium login screen
+- closer to Rentbird proportions
+
+Labels ("E-mailadres", "Wachtwoord"):
+- slightly smaller and tighter than now if needed
+- medium weight
+- clean and readable on dark background
+
+Goal:
+- stronger typographic hierarchy
+- slightly more refined than the current version
+
+==================================================
+5. INPUT FIELDS
+==================================================
+
+Current issues:
+- inputs feel a bit too soft / rounded
+- they need a more polished Rentbird-style proportion
+
+Fix:
+- make inputs slightly taller
+- reduce corner roundness slightly (do not make them sharp)
+- use a cleaner, more premium border treatment
+- keep background fully white for stronger contrast
+- keep internal padding comfortable and balanced
+
+Also:
+- placeholder text should remain clearly lighter than typed text
+- password eye icon should feel slightly darker / more intentional, not washed out
+
+Goal:
+- the inputs should feel closer to Rentbird quality:
+  crisp, premium, and conversion-optimized
+
+==================================================
+6. FORGOT PASSWORD LINK
+==================================================
+
+Current issue:
+- may feel slightly too detached / too large / too soft
+
+Fix:
+- refine spacing under password field
+- keep it right aligned
+- ensure its color and weight feel clear but secondary
+
+Goal:
+- elegant secondary action, not visually dominant
+
+==================================================
+7. PRIMARY BUTTON
+==================================================
+
+Target:
+- "Inloggen"
+
+Current issue:
+- button still feels a bit too flat compared with Rentbird’s CTA quality
+
+Fix:
+- make the button feel more premium and stronger:
+  - slightly taller if needed
+  - stronger text weight
+  - more balanced internal vertical padding
+- ensure the blue fill feels rich and intentional
+- if needed, add a very subtle shadow or depth treatment, but keep it modern and minimal
+
+Do NOT:
+- make it bulky
+- make it cartoonish
+- overshadow the rest of the layout
+
+Goal:
+- clear conversion button with Rentbird-level polish
+
+==================================================
+8. OUTLINED SECONDARY BUTTON
+==================================================
+
+Target:
+- "Ik ben nieuw bij HousAlert"
+
+Current issue:
+- button feels a bit too weak compared with Rentbird’s outlined CTA
+
+Fix:
+- make the outline clearer and more premium
+- slightly strengthen border visibility
+- ensure text weight and contrast are strong enough
+- keep it secondary, but clearly clickable
+
+Goal:
+- strong secondary CTA with clean outline treatment
+
+==================================================
+9. "OF" DIVIDER
+==================================================
+
+Current issue:
+- divider still does not feel as refined as Rentbird
+
+Fix:
+- make the horizontal lines thinner and subtler
+- align them more precisely with the "OF" text
+- refine spacing around the divider block
+
+Goal:
+- clean, minimal separation between login and signup actions
+
+==================================================
+10. TRUSTPILOT BLOCK
+==================================================
+
+Current issue:
+- Trustpilot section feels slightly too low / disconnected from the main form
+
+Fix:
+- move the Trustpilot block a bit higher
+- keep it near the bottom, but more integrated into the full screen rhythm
+- preserve Trustpilot brand colors
+- make the spacing between CTA section and Trustpilot feel intentional
+
+Goal:
+- trust element feels placed, not dropped
+
+==================================================
+11. BOTTOM SAFE AREA / FINAL SPACING
+==================================================
+
+- ensure bottom spacing above the safe area is balanced
+- the screen should not feel empty below the Trustpilot row
+- but also should not feel cramped
+
+Goal:
+- polished finish from top to bottom
+
+==================================================
+12. COLOR / CONTRAST QUALITY
+==================================================
+
+Keep HousAlert colors:
+- background: #11358B
+- primary CTA: #6192FC
+- outlined CTA: #6192FC
+
+But refine contrast quality:
+- white inputs should feel crisp against the blue background
+- text should feel high quality and readable
+- no washed-out or muddy combinations
+
+==================================================
+13. DO NOT CHANGE
+==================================================
+
+Do not change:
+- app branding
+- copy structure unless necessary for alignment
+- login logic
+- signup logic
+- trustpilot content
+- overall Rentbird-inspired layout order
+
+==================================================
+14. OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. exact spacing/proportion changes made
+3. exact input adjustments made
+4. exact CTA refinements made
+5. exact Trustpilot spacing adjustment made
+6. note any remaining differences that still keep it from a fully Rentbird-level finish
