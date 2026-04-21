@@ -226,10 +226,11 @@ export default function ApplicationLetterPage() {
   };
 
   function handleBack() {
-    if (isBuddy) { navigate(returnPath); return; }
-    if (step === 1) navigate(returnPath);
-    else if (step === 4 && profileData?.application_template && profileData.application_template.trim().length > 0) navigate(returnPath);
-    else setStep((step - 1) as Step);
+    const goBack = () => { if (window.history.length > 1) window.history.back(); else navigate(returnPath); };
+    if (isBuddy) { goBack(); return; }
+    if (step === 1) { goBack(); return; }
+    if (step === 4 && profileData?.application_template && profileData.application_template.trim().length > 0) { goBack(); return; }
+    setStep((step - 1) as Step);
   }
 
   function handleBirthChange(part: "year" | "month" | "day", value: string) {
@@ -313,7 +314,7 @@ export default function ApplicationLetterPage() {
   if (isLoading || ownerLoading) {
     return (
       <div className="min-h-screen flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
-        <AppHeader title={t("applicationLetter.title")} onBack={() => navigate("/dashboard?tab=home")} />
+        <AppHeader title={t("applicationLetter.title")} onBack={() => { if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=home"); }} />
         <div className="flex-1 flex items-center justify-center">
           <Loader2 className="w-6 h-6 animate-spin text-ha-text-secondary" />
         </div>
@@ -529,23 +530,13 @@ export default function ApplicationLetterPage() {
                 <span className="text-[16px] font-semibold text-ha-text">
                   {t("applicationLetter.yourLetter")}
                 </span>
-                {!isBuddy && (
-                  <button
-                    onClick={handleReset}
-                    className="flex items-center gap-1.5 text-[14px] text-ha-text-muted hover:text-ha-text-secondary transition-colors active:scale-95"
-                    data-testid="button-reset-template"
-                  >
-                    <RotateCcw className="w-[14px] h-[14px]" strokeWidth={2} />
-                    {t("applicationLetter.resetDefault")}
-                  </button>
-                )}
               </div>
 
               {/* Helper text */}
               {!isBuddy && (
-                <div className="flex items-start gap-2.5 bg-ha-surface rounded-[8px] px-3 py-3 mb-4">
-                  <Lightbulb className="w-4 h-4 text-ha-text-muted flex-shrink-0 mt-0.5" />
-                  <p className="text-[13px] text-ha-text-muted leading-snug">
+                <div className="flex items-start gap-2.5 bg-ha-card-border rounded-[8px] px-3 py-3 mb-4">
+                  <Lightbulb className="w-4 h-4 text-ha-text flex-shrink-0 mt-0.5" />
+                  <p className="text-[13px] text-ha-text leading-snug">
                     {t("applicationLetter.addressHelper")}
                   </p>
                 </div>
@@ -566,7 +557,7 @@ export default function ApplicationLetterPage() {
                     padding: "16px",
                     fontSize: "14px",
                     lineHeight: "1.7",
-                    color: "rgb(var(--ha-text))",
+                    color: "#000000",
                     background: isBuddy ? "rgb(var(--ha-surface))" : "rgb(var(--ha-card))",
                     outline: "none",
                     resize: isBuddy ? "none" : "vertical",
@@ -608,10 +599,10 @@ export default function ApplicationLetterPage() {
 
             <button
               onClick={() => setStep(2)}
-              className="w-full py-2 text-ha-text-muted text-[14px] hover:text-ha-text transition-colors active:opacity-70 flex items-center justify-center gap-1.5"
+              className="w-full py-2 text-ha-primary text-[16px] font-semibold hover:opacity-80 transition-opacity active:opacity-60 flex items-center justify-center gap-1.5"
               data-testid="button-regenerate-letter"
             >
-              <RotateCcw className="w-[13px] h-[13px]" strokeWidth={2} />
+              <RotateCcw className="w-[14px] h-[14px]" strokeWidth={2} />
               {t("applicationLetter.regenerate")}
             </button>
           </div>

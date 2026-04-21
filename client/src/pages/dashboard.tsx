@@ -686,6 +686,7 @@ function TaskFlowCard({
     if (searchProfileCount != null) {
       overrides["search_profile"] = {
         completedOverride: searchProfileCount >= 2,
+        action: () => navigate("/dashboard/searches/new"),
       };
     }
   }

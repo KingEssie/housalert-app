@@ -78,7 +78,7 @@ export default function ViewingTipsPage() {
 
   return (
     <div className="min-h-screen bg-ha-bg flex flex-col">
-      <AppHeader title={t("viewingTips.title")} onBack={() => navigate("/dashboard?tab=tips")} />
+      <AppHeader title={t("viewingTips.title")} onBack={() => { if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=tips"); }} />
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pb-32">
         <div className="mb-6">

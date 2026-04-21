@@ -63,7 +63,7 @@ export default function TipDetailPage() {
     <div className="min-h-screen bg-ha-bg flex flex-col">
       <AppHeader
         title={`${t("tips.tipLabel")} ${currentIndex + 1}/${TIP_IDS.length}`}
-        onBack={() => navigate("/dashboard?tab=tips")}
+        onBack={() => { if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=tips"); }}
       />
 
       <div className="max-w-xl mx-auto w-full px-5 pt-3">

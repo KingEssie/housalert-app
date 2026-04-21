@@ -1,0 +1,103 @@
+Apply the following exact fixes.
+
+Scope:
+- Home screen checklist action
+- Reactiebrief screen
+- Global back button behavior across the app
+
+Do NOT redesign unrelated screens.
+Do NOT change unrelated logic.
+
+==================================================
+1. HOME SCREEN — "MAAK EEN EXTRA ZOEKOPDRACHT"
+==================================================
+
+Current issue:
+- clicking "Maak een extra zoekopdracht" under "Rond je account af" keeps the user on Home
+- it does not start the onboarding/search profile creation flow
+
+Fix:
+- make this item correctly navigate to the start of the search profile creation flow
+- it must open screen 1/4:
+  "Waar wil je wonen"
+
+Important:
+- it must not stay on Home
+- it must behave as a real navigation action
+- confirm the route is correct and actually opens the first step
+
+==================================================
+2. REACTIEBRIEF SCREEN — VISUAL CLEANUP
+==================================================
+
+Target:
+- the Reactiebrief screen only
+
+A. Help/info block
+Current issue:
+- the “Wijzig [ADRES] niet ...” description still looks too grey
+
+Fix:
+- make the text black
+- change the background of that info block to the same grey used for the back buttons
+- keep the icon and layout intact unless needed for alignment
+
+B. "Standaard herstellen"
+- remove the "Standaard herstellen" action/button entirely from this screen
+
+C. Text inside the input / textarea
+- make the text inside the input field truly black
+- not muted grey
+- preserve readability and formatting
+
+D. "Nieuwe AI reactiebrief maken"
+- keep this as a text button
+- change the text color to: #6192FC
+- make the font weight stronger / bolder
+- make the text size match the text size used in the main button above ("Brief opslaan")
+
+==================================================
+3. GLOBAL BACK BUTTON BEHAVIOR
+==================================================
+
+Current issue:
+- not every back button actually returns to the screen the user came from
+
+Fix this globally:
+- every back button should navigate to the previous screen in the real navigation history
+- do not hardcode incorrect destinations
+- preserve special flows if they intentionally require a custom back behavior, but otherwise default to true back navigation
+
+Goal:
+- back button should feel reliable everywhere
+- user returns to the screen they actually came from
+
+Check this especially on:
+- Reactiebrief
+- search profile flow screens
+- detail screens
+- settings subpages
+- any screen using the circular back button
+
+==================================================
+4. RULES
+==================================================
+
+- Do not affect unrelated screens
+- Do not redesign layout unnecessarily
+- Keep the existing styling system
+- Use semantic tokens where possible
+- Keep behavior stable except for the requested fixes
+
+==================================================
+5. OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. confirmation that "Maak een extra zoekopdracht" now opens flow step 1/4
+3. exact Reactiebrief screen elements updated
+4. confirmation that "Standaard herstellen" was removed
+5. confirmation that input text is now black
+6. confirmation that "Nieuwe AI reactiebrief maken" is blue, bolder, and same size as the main button text
+7. confirmation that back buttons now use real previous-screen navigation

@@ -89,7 +89,7 @@ export default function SettingsPage() {
     <div className="min-h-screen" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
       <AppHeader
         title={t("settings.title")}
-        onBack={() => navigate("/dashboard?tab=profile")}
+        onBack={() => { if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=profile"); }}
         trailing={logoutIcon}
       />
 

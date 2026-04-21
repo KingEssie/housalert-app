@@ -91,7 +91,7 @@ export default function ProfileEditPage() {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
-      <AppHeader title={config.question} onBack={() => navigate("/dashboard?tab=profile")} />
+      <AppHeader title={config.question} onBack={() => { if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=profile"); }} />
 
       <div className="flex-1 max-w-xl mx-auto px-5 w-full">
         {loading ? (

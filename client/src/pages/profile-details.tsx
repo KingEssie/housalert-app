@@ -129,7 +129,7 @@ export default function ProfileDetailsPage() {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
-      <AppHeader title={t("profileDetails.title")} onBack={() => navigate("/dashboard?tab=profile")} />
+      <AppHeader title={t("profileDetails.title")} onBack={() => { if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=profile"); }} />
 
       <div className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-4">
         {loading ? (

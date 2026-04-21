@@ -82,7 +82,7 @@ export default function SubscriptionDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
-        <AppHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profile")} />
+        <AppHeader title={t("subscription.title")} onBack={() => { if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=profile"); }} />
         <div className="max-w-lg mx-auto px-4 pt-4">
           <div className="app-card animate-pulse space-y-4">
             <div className="h-4 bg-ha-surface rounded w-1/4" />
@@ -133,7 +133,7 @@ export default function SubscriptionDetailPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "rgb(var(--ha-bg))" }} data-testid="page-subscription-detail">
-      <AppHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profile")} />
+      <AppHeader title={t("subscription.title")} onBack={() => { if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=profile"); }} />
 
       <div className="max-w-lg mx-auto px-4 pt-2 pb-12 flex flex-col gap-3">
 
