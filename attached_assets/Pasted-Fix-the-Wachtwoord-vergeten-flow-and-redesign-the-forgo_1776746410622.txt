@@ -1,0 +1,159 @@
+Fix the "Wachtwoord vergeten?" flow and redesign the forgot-password screen to match the Rentbird reference layout, but in HousAlert branding.
+
+Important:
+- This is for the forgot-password link + forgot-password screen only
+- Do not affect unrelated screens
+- Keep auth/reset functionality intact
+
+==================================================
+1. FIX THE LINK BEHAVIOR
+==================================================
+
+Current bug:
+- when clicking "Wachtwoord vergeten?" from the login screen, it tries to validate the login form and shows an error that the email field must be filled in
+
+Fix:
+- clicking "Wachtwoord vergeten?" should always navigate directly to the forgot-password screen
+- it must NOT require the login email field to be filled in first
+- it must NOT trigger login form validation
+
+Goal:
+- this behaves like a normal route/link to the reset-password page
+
+==================================================
+2. FORGOT-PASSWORD SCREEN — STRUCTURE
+==================================================
+
+Rebuild the forgot-password screen so it visually matches the Rentbird reference closely in:
+- overall composition
+- spacing
+- card-on-background layout
+- input placement
+- CTA hierarchy
+- secondary back-to-login action
+
+Use HousAlert branding/colors instead of Rentbird colors.
+
+==================================================
+3. BACKGROUND / CARD COLORS
+==================================================
+
+Full screen background:
+- use #6192FC
+
+Inner main content card/panel that sits on top:
+- use #11358B
+
+Goal:
+- the screen should have the same layered look as the reference:
+  outer colored background + darker centered content block/card
+
+==================================================
+4. COLOR MAPPING
+==================================================
+
+Everything that is pink/magenta in the Rentbird reference should become:
+- #C7EF66
+
+This applies especially to:
+- primary CTA button
+- accent graphics/details if present
+- other equivalent highlighted elements on this screen
+
+Do NOT use Rentbird pink.
+Map all those accent roles to #C7EF66.
+
+==================================================
+5. COMPONENTS / CONTENT
+==================================================
+
+Keep the same component structure as the reference:
+
+- HousAlert logo / branding near the top
+- title:
+  "Wachtwoord vergeten?"
+- descriptive helper text underneath
+- label: "E-mail"
+- email input field
+- primary CTA button
+- secondary text action:
+  "Terug naar inloggen"
+
+Use the same visual hierarchy and spacing feel as the Rentbird example.
+
+==================================================
+6. INPUT FIELD
+==================================================
+
+Style the email input to match the reference closely:
+- white background
+- subtle rounding
+- clean border
+- comfortable internal padding
+- placeholder text visible but lighter
+
+Do not over-round the field.
+Keep it crisp and premium.
+
+==================================================
+7. PRIMARY CTA
+==================================================
+
+Target:
+- "Verstuur reset link"
+
+Style:
+- background color: #C7EF66
+- text color: black
+- if there is an icon in the button, it should also match the new accent style cleanly
+- same strong CTA hierarchy as the reference
+
+==================================================
+8. SECONDARY ACTION
+==================================================
+
+Target:
+- "Terug naar inloggen"
+
+Style:
+- keep it as a text/link-style secondary action
+- position it like the reference
+- clean and clearly tappable
+- this should navigate back to the login screen
+
+==================================================
+9. BRANDING / DECORATIVE ELEMENTS
+==================================================
+
+If the current screen already has decorative elements, keep them minimal.
+Do not add random decorative elements unless needed to mirror the reference structure.
+
+Main priority:
+- same layout rhythm
+- same card-on-background feel
+- same CTA placement
+- same spacing
+- same form composition
+
+==================================================
+10. RULES
+==================================================
+
+- Do not affect other auth screens unless needed for routing
+- Do not break reset-password functionality
+- Do not require email to be filled before entering this screen
+- Use semantic tokens where possible
+- If exact colors need local mapping for this screen, do it cleanly
+
+==================================================
+11. OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. confirmation that "Wachtwoord vergeten?" now routes directly without requiring email input
+3. exact forgot-password screen layout changes made
+4. confirmation outer background is #6192FC
+5. confirmation inner content card is #11358B
+6. confirmation all pink reference roles were mapped to #C7EF66
+7. confirmation "Terug naar inloggen" returns to the login screen

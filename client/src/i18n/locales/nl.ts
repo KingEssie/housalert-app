@@ -1377,10 +1377,11 @@ export const nl: Record<string, any> = {
   },
 
   forgotPassword: {
-    title: "Wachtwoord vergeten",
-    description: "Wachtwoord vergeten? Voer hieronder uw e-mailadres in en wij sturen u per e-mail instructies voor het instellen van een nieuw wachtwoord.",
-    emailPlaceholder: "E-mailadres",
-    submit: "Doorgaan",
+    title: "Wachtwoord vergeten?",
+    description: "Vul je e-mailadres in en wij sturen een link om je wachtwoord te resetten.",
+    emailLabel: "E-mail",
+    emailPlaceholder: "jouwnaam@email.nl",
+    submit: "Verstuur reset link",
     error: "Fout",
     enterEmail: "Voer een geldig e-mailadres in.",
     sentTitle: "E-mail verzonden",

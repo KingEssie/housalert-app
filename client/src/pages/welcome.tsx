@@ -250,7 +250,7 @@ export default function WelcomePage() {
             <div className="flex justify-end" style={{ marginTop: "2px" }}>
               <button
                 type="button"
-                onClick={handleForgotPassword}
+                onClick={(e) => { e.preventDefault(); navigate("/forgot-password"); }}
                 className="bg-transparent border-0 cursor-pointer hover:underline"
                 style={{ fontSize: "13px", fontWeight: 500, color: "#C7EF66" }}
                 data-testid="button-forgot-password"

@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { HousAlertLogo } from "@/components/housalert-logo";
+import { logoSrc } from "@/components/housalert-logo";
 import { useTranslation } from "@/i18n";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Mail, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+
+const OUTER_BG = "#6192FC";
+const CARD_BG = "#11358B";
+const ACCENT = "#C7EF66";
 
 export default function ForgotPasswordPage() {
   const [, navigate] = useLocation();
@@ -55,37 +59,51 @@ export default function ForgotPasswordPage() {
 
   if (sent) {
     return (
-      <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }} data-testid="page-forgot-password-sent">
-        <div className="pt-[max(env(safe-area-inset-top),8px)] px-5">
-          <button
-            onClick={() => navigate("/")}
-            className="mt-3 w-10 h-10 rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input flex items-center justify-center transition-colors"
-            data-testid="button-back"
-            aria-label="Back"
+      <div
+        className="h-[100dvh] flex flex-col items-center justify-center px-5"
+        style={{ backgroundColor: OUTER_BG }}
+        data-testid="page-forgot-password-sent"
+      >
+        <div
+          className="w-full max-w-[420px] rounded-[12px] px-7 py-10 flex flex-col items-center text-center"
+          style={{ backgroundColor: CARD_BG }}
+        >
+          <div
+            className="w-16 h-16 rounded-full flex items-center justify-center mb-6"
+            style={{ backgroundColor: `${ACCENT}22` }}
           >
-            <ArrowLeft className="w-5 h-5 text-ha-text-secondary" />
-          </button>
-        </div>
-
-        <div className="flex-1 flex flex-col items-center justify-center px-8 text-center">
-          <div className="w-16 h-16 rounded-full bg-ha-success/10 flex items-center justify-center mb-6">
-            <CheckCircle2 className="w-8 h-8 text-ha-text" />
+            <CheckCircle2 className="w-8 h-8" style={{ color: ACCENT }} />
           </div>
           <h1
-            className="text-[24px] font-semibold text-ha-text tracking-[-0.02em] mb-3"
+            className="font-bold tracking-[-0.02em] mb-3 text-white"
+            style={{ fontSize: "26px", lineHeight: "1.15" }}
             data-testid="text-sent-title"
           >
             {t("forgotPassword.sentTitle")}
           </h1>
-          <p className="text-[15px] text-ha-text-muted leading-[1.55] max-w-[320px] mb-8" data-testid="text-sent-desc">
+          <p
+            className="leading-[1.55] mb-8"
+            style={{ fontSize: "15px", color: "rgba(255,255,255,0.7)", maxWidth: "300px" }}
+            data-testid="text-sent-desc"
+          >
             {t("forgotPassword.sentDesc")}
           </p>
           <button
             onClick={() => navigate("/")}
-            className="h-[48px] px-8 rounded-[6px] text-[15px] font-semibold text-white bg-ha-primary hover:bg-ha-primary-hover transition-colors active:scale-[0.97]"
+            className="w-full flex items-center justify-center gap-2 font-bold transition-all active:scale-[0.97]"
+            style={{
+              height: "56px",
+              borderRadius: "4px",
+              backgroundColor: ACCENT,
+              color: "#000000",
+              fontSize: "16px",
+              border: "none",
+              cursor: "pointer",
+            }}
             data-testid="button-back-to-login"
           >
             {t("forgotPassword.backToLogin")}
+            <ArrowRight className="w-[17px] h-[17px]" strokeWidth={2.5} />
           </button>
         </div>
       </div>
@@ -93,62 +111,122 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="h-[100dvh] flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }} data-testid="page-forgot-password">
-      <div className="pt-[max(env(safe-area-inset-top),8px)] px-5">
-        <button
-          onClick={() => navigate("/")}
-          className="mt-3 w-10 h-10 rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input flex items-center justify-center transition-colors"
-          data-testid="button-back"
-          aria-label="Back"
-        >
-          <ArrowLeft className="w-5 h-5 text-ha-text-secondary" />
-        </button>
-      </div>
-
-      <div className="flex-1 flex flex-col px-7">
-        <div className="flex justify-center pt-8 pb-8">
-          <HousAlertLogo size={44} showText={true} textClassName="font-semibold text-ha-text text-[20px] tracking-[-0.01em]" />
+    <div
+      className="h-[100dvh] flex flex-col items-center justify-center px-5"
+      style={{ backgroundColor: OUTER_BG }}
+      data-testid="page-forgot-password"
+    >
+      <div
+        className="w-full max-w-[420px] rounded-[12px] px-7 py-8"
+        style={{ backgroundColor: CARD_BG }}
+      >
+        {/* Logo */}
+        <div className="flex items-center gap-2 mb-8">
+          <img
+            src={logoSrc}
+            alt="HousAlert"
+            width={30}
+            height={30}
+            className="object-contain"
+            style={{ width: 30, height: 30 }}
+          />
+          <span className="font-bold text-white" style={{ fontSize: "17px", letterSpacing: "-0.01em" }}>
+            HousAlert
+          </span>
         </div>
 
+        {/* Heading */}
         <h1
-          className="text-[26px] font-semibold text-ha-text leading-[1.15] tracking-[-0.03em] mb-3 text-center"
+          className="font-bold text-white tracking-[-0.025em] mb-3"
+          style={{ fontSize: "30px", lineHeight: "1.1" }}
           data-testid="text-forgot-title"
         >
           {t("forgotPassword.title")}
         </h1>
 
-        <p className="text-[15px] text-ha-text-muted leading-[1.55] text-center max-w-[340px] mx-auto mb-8" data-testid="text-forgot-desc">
+        {/* Description */}
+        <p
+          className="mb-7 leading-[1.5]"
+          style={{ fontSize: "15px", color: "rgba(255,255,255,0.65)" }}
+          data-testid="text-forgot-desc"
+        >
           {t("forgotPassword.description")}
         </p>
 
+        {/* Form */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          <div className="relative">
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-              <Mail className="w-[18px] h-[18px] text-ha-text-secondary" />
-            </div>
+          <div className="flex flex-col gap-[7px]">
+            <label
+              className="font-semibold text-white"
+              style={{ fontSize: "13px" }}
+              htmlFor="forgot-email"
+            >
+              {t("forgotPassword.emailLabel")}
+            </label>
             <input
+              id="forgot-email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("forgotPassword.emailPlaceholder")}
               required
-              className="app-input !pl-11"
+              className="w-full outline-none"
+              style={{
+                height: "58px",
+                borderRadius: "4px",
+                background: "#FFFFFF",
+                border: "1.5px solid rgba(0,0,0,0.08)",
+                padding: "0 16px",
+                fontSize: "16px",
+                color: "#111111",
+                transition: "border-color 0.15s",
+              }}
+              onFocus={(e) => { e.currentTarget.style.borderColor = ACCENT; }}
+              onBlur={(e) => { e.currentTarget.style.borderColor = "rgba(0,0,0,0.08)"; }}
               data-testid="input-email"
             />
           </div>
 
+          {/* Primary CTA */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full h-[48px] rounded-[6px] text-[15px] font-semibold text-white bg-ha-primary hover:bg-ha-primary-hover transition-colors active:scale-[0.97] disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-2 font-bold transition-all active:scale-[0.97]"
+            style={{
+              height: "58px",
+              borderRadius: "4px",
+              backgroundColor: ACCENT,
+              color: "#000000",
+              fontSize: "17px",
+              border: "none",
+              cursor: "pointer",
+              letterSpacing: "-0.01em",
+            }}
             data-testid="button-submit"
           >
-            {loading ? t("common.loading") : t("forgotPassword.submit")}
+            {loading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <>
+                {t("forgotPassword.submit")}
+                <ArrowRight className="w-[17px] h-[17px]" strokeWidth={2.5} />
+              </>
+            )}
           </button>
         </form>
-      </div>
 
-      <div className="pb-[max(env(safe-area-inset-bottom),20px)]" />
+        {/* Back to login */}
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          className="flex items-center gap-2 mt-5 bg-transparent border-0 cursor-pointer hover:underline"
+          style={{ fontSize: "14px", fontWeight: 600, color: "rgba(255,255,255,0.75)" }}
+          data-testid="button-back-to-login"
+        >
+          <ArrowLeft className="w-4 h-4" strokeWidth={2.5} />
+          {t("forgotPassword.backToLogin")}
+        </button>
+      </div>
     </div>
   );
 }

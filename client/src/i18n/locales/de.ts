@@ -1377,10 +1377,11 @@ export const de: Record<string, any> = {
   },
 
   forgotPassword: {
-    title: "Passwort vergessen",
-    description: "Passwort vergessen? Gib unten deine E-Mail-Adresse ein und wir senden dir Anweisungen zum Festlegen eines neuen Passworts.",
-    emailPlaceholder: "E-Mail-Adresse",
-    submit: "Weiter",
+    title: "Passwort vergessen?",
+    description: "Gib deine E-Mail-Adresse ein und wir senden dir einen Link zum Zurücksetzen deines Passworts.",
+    emailLabel: "E-Mail",
+    emailPlaceholder: "deinname@email.de",
+    submit: "Reset-Link senden",
     error: "Fehler",
     enterEmail: "Bitte gib eine gültige E-Mail-Adresse ein.",
     sentTitle: "E-Mail gesendet",
