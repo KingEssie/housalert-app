@@ -921,6 +921,31 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleteResult, setDeleteResult] = useState<{ steps: string[]; authWasPresent: boolean; deleted: string } | null>(null);
+
+  function parseDeleteSummary(steps: string[]) {
+    function stepStatus(keys: string[]): "deleted" | "already_clean" | "error" | "missing" {
+      const found = steps.find(s => keys.some(k => s.includes(k)));
+      if (!found) return "missing";
+      if (found.startsWith("✓")) {
+        const lower = found.toLowerCase();
+        if (lower.includes("already missing") || lower.includes("already cleaned") || lower.includes("skipped") || lower.includes("no search profiles") || lower.includes("(0 rows)") || (lower.includes(" 0 ") && lower.includes("rows"))) return "already_clean";
+        return "deleted";
+      }
+      return "error";
+    }
+    return [
+      { label: "App user record", status: stepStatus(["user_profile_data"]) },
+      { label: "Auth account", status: stepStatus(["auth.deleteUser"]) },
+      { label: "Search profiles", status: stepStatus(["search_profiles"]) },
+      { label: "Matches & alerts", status: stepStatus(["matches(user)", "matches(via_search_profiles)", "user_matches"]) },
+      { label: "Subscription", status: stepStatus(["subscriptions"]) },
+      { label: "Notification settings", status: stepStatus(["user_notification_settings"]) },
+      { label: "Push tokens", status: stepStatus(["push_subscriptions"]) },
+      { label: "Buddy relationships", status: stepStatus(["search_profile_buddies"]) },
+      { label: "Referrals", status: stepStatus(["referrals"]) },
+    ];
+  }
 
   async function permanentDeleteUser() {
     if (!profile?.user_id) return;
@@ -929,14 +954,12 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
     try {
       const result = await adminFetch(`/api/admin/portal/users/${profile.user_id}/permanent-delete`, { method: "DELETE" });
       if (result?.success) {
-        setShowDeleteModal(false);
-        onBack();
+        setDeleteResult({ steps: result.steps || [], authWasPresent: result.authWasPresent ?? true, deleted: result.deleted || profile?.email || profile?.user_id });
       } else {
         setDeleteError(result?.error || "Delete failed");
       }
     } catch (err: any) {
-      const msg = err.message || "Delete failed";
-      setDeleteError(msg);
+      setDeleteError(err.message || "Delete failed");
     }
     setDeleteLoading(false);
   }
@@ -1106,7 +1129,7 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
               <XCircle className="w-3.5 h-3.5 mr-1" />
               {actionLoading === "deactivate" ? "Deactivating..." : "Deactivate user"}
             </Button>
-            <Button variant="outline" size="sm" onClick={() => setShowDeleteModal(true)} className="rounded-full text-red-600 border-red-300 hover:bg-red-50 font-semibold" data-testid="button-permanent-delete">
+            <Button variant="outline" size="sm" onClick={() => { setDeleteResult(null); setDeleteError(null); setShowDeleteModal(true); }} className="rounded-full text-red-600 border-red-300 hover:bg-red-50 font-semibold" data-testid="button-permanent-delete">
               <Trash2 className="w-3.5 h-3.5 mr-1" />
               Delete permanently
             </Button>
@@ -1116,38 +1139,83 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
 
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" data-testid="modal-permanent-delete">
-          <div className="absolute inset-0 bg-black/50" onClick={() => { setShowDeleteModal(false); setDeleteError(null); }} />
-          <div className="relative bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-                <AlertTriangle className="w-5 h-5 text-red-600" />
+          <div className="absolute inset-0 bg-black/50" onClick={() => { if (!deleteLoading && !deleteResult) { setShowDeleteModal(false); setDeleteError(null); } }} />
+          <div className="relative bg-white rounded-2xl w-full max-w-sm shadow-xl overflow-hidden">
+
+            {/* Success summary view */}
+            {deleteResult ? (() => {
+              const summary = parseDeleteSummary(deleteResult.steps);
+              return (
+                <div className="p-6">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                      <CheckCircle className="w-5 h-5 text-green-600" />
+                    </div>
+                    <div>
+                      <h2 className="text-[15px] font-bold text-ha-text">User deleted</h2>
+                      <p className="text-[11px] text-ha-text-secondary truncate max-w-[200px]">{deleteResult.deleted}</p>
+                    </div>
+                  </div>
+                  <div className="space-y-1.5 mb-5" data-testid="delete-summary">
+                    {summary.map(({ label, status }) => (
+                      <div key={label} className="flex items-center justify-between text-[12px]">
+                        <span className="text-ha-text-secondary">{label}</span>
+                        <span className={`font-medium flex items-center gap-1 ${status === "deleted" ? "text-green-600" : status === "already_clean" ? "text-ha-text-secondary" : status === "error" ? "text-red-500" : "text-ha-text-secondary"}`}
+                          data-testid={`delete-summary-${label.toLowerCase().replace(/\s+/g, "-")}`}>
+                          {status === "deleted" && <CheckCircle className="w-3 h-3" />}
+                          {status === "already_clean" && <span className="w-3 h-3 inline-flex items-center justify-center text-[10px]">–</span>}
+                          {status === "error" && <AlertTriangle className="w-3 h-3" />}
+                          {status === "deleted" ? "Deleted" : status === "already_clean" ? "Already clean" : status === "error" ? "Failed" : "—"}
+                        </span>
+                      </div>
+                    ))}
+                    {!deleteResult.authWasPresent && (
+                      <p className="text-[11px] text-ha-text-secondary mt-2 pt-2 border-t border-ha-divider">Auth account was already missing — app data cleaned up</p>
+                    )}
+                  </div>
+                  <button onClick={onBack}
+                    className="w-full h-10 rounded-lg bg-ha-text text-white text-[13px] font-semibold hover:opacity-90 transition-opacity"
+                    data-testid="button-delete-done">
+                    Done
+                  </button>
+                </div>
+              );
+            })() : (
+              /* Confirmation view */
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                    <AlertTriangle className="w-5 h-5 text-red-600" />
+                  </div>
+                  <h2 className="text-[16px] font-bold text-ha-text">Delete user permanently?</h2>
+                </div>
+                <p className="text-[13px] text-ha-text-secondary leading-relaxed mb-1">
+                  This will permanently delete <span className="font-semibold text-ha-text">{profile?.email}</span> and all related data:
+                </p>
+                <ul className="text-[12px] text-ha-text-secondary mb-4 space-y-0.5 ml-3 list-disc">
+                  <li>Search profiles & matches</li>
+                  <li>Subscription records</li>
+                  <li>Notification settings & push tokens</li>
+                  <li>Profile data & cancellation feedback</li>
+                  <li>Supabase Auth account</li>
+                </ul>
+                {deleteError && <p className="text-[12px] text-red-600 mb-3 font-medium" data-testid="delete-error-msg">{deleteError}</p>}
+                <div className="flex gap-2">
+                  <button onClick={() => { setShowDeleteModal(false); setDeleteError(null); }}
+                    className="flex-1 h-10 rounded-lg border border-ha-card-border text-[13px] font-medium text-ha-text-secondary hover:bg-ha-surface transition-colors"
+                    data-testid="button-cancel-permanent-delete">
+                    Cancel
+                  </button>
+                  <button onClick={permanentDeleteUser} disabled={deleteLoading}
+                    className="flex-1 h-10 rounded-lg bg-red-600 text-white text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-red-700 transition-colors disabled:opacity-50"
+                    data-testid="button-confirm-permanent-delete">
+                    {deleteLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                    {deleteLoading ? "Deleting..." : "Delete permanently"}
+                  </button>
+                </div>
               </div>
-              <h2 className="text-[16px] font-bold text-ha-text">Delete user permanently?</h2>
-            </div>
-            <p className="text-[13px] text-ha-text-secondary leading-relaxed mb-1">
-              This will permanently delete <span className="font-semibold text-ha-text">{profile?.email}</span> and all related data:
-            </p>
-            <ul className="text-[12px] text-ha-text-secondary mb-4 space-y-0.5 ml-3 list-disc">
-              <li>Search profiles & matches</li>
-              <li>Subscription records</li>
-              <li>Notification settings & push tokens</li>
-              <li>Profile data & cancellation feedback</li>
-              <li>Supabase Auth account</li>
-            </ul>
-            {deleteError && <p className="text-[12px] text-red-600 mb-3 font-medium">{deleteError}</p>}
-            <div className="flex gap-2">
-              <button onClick={() => { setShowDeleteModal(false); setDeleteError(null); }}
-                className="flex-1 h-10 rounded-lg border border-ha-card-border text-[13px] font-medium text-ha-text-secondary hover:bg-ha-surface transition-colors"
-                data-testid="button-cancel-permanent-delete">
-                Cancel
-              </button>
-              <button onClick={permanentDeleteUser} disabled={deleteLoading}
-                className="flex-1 h-10 rounded-lg bg-red-600 text-white text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-red-700 transition-colors disabled:opacity-50"
-                data-testid="button-confirm-permanent-delete">
-                {deleteLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
-                Delete permanently
-              </button>
-            </div>
+            )}
+
           </div>
         </div>
       )}
