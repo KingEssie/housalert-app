@@ -1,0 +1,155 @@
+Fix the permanent user deletion flow so it also works for users who are already deactivated.
+
+Current bug:
+- Permanent delete still fails with a 500 error
+- This happens when trying to delete a user that is already deactivated
+- The delete flow must work for both active users and deactivated users
+
+Goal:
+Make permanent deletion robust regardless of user state:
+- active
+- deactivated
+- buddy
+- main account with buddy relationship
+- user with partial/missing related records
+
+==================================================
+1. DEBUG THE CURRENT 500 SPECIFICALLY FOR DEACTIVATED USERS
+==================================================
+
+Tasks:
+- Trace the exact failing step when deleting an already deactivated user
+- Add detailed server-side logging for each cleanup step
+- Identify which operation fails only for deactivated users:
+  - auth lookup
+  - auth delete
+  - notification cleanup
+  - subscription cleanup
+  - buddy relationship cleanup
+  - dependent row deletes
+  - null assumptions / missing records
+  - already-deleted records
+
+Return the exact root cause in the output.
+
+==================================================
+2. MAKE DELETE IDEMPOTENT / SAFE FOR PARTIAL STATES
+==================================================
+
+The delete flow must tolerate partially cleaned-up users.
+
+That means:
+- if auth user is already missing, do not fail
+- if push tokens are already missing, do not fail
+- if subscription rows are already missing, do not fail
+- if notification settings are already missing, do not fail
+- if buddy relationship is already removed, do not fail
+- if some optional profile data is missing, do not fail
+
+Implement deletion so cleanup steps are safe when records do not exist.
+Deletion should continue wherever safe instead of crashing.
+
+==================================================
+3. HANDLE BOTH ACTIVE AND DEACTIVATED USERS
+==================================================
+
+For active users:
+- full delete should still work normally
+
+For deactivated users:
+- full delete must also work
+- do not assume the user still has:
+  - active auth session
+  - active subscription
+  - active buddy mapping
+  - complete related records
+
+==================================================
+4. BUDDY CLEANUP MUST STILL BE COMPLETE
+==================================================
+
+If deleting a deactivated buddy:
+- remove any remaining buddy links from the main user
+- ensure they receive no further emails/push notifications
+- ensure they cannot access the app
+- ensure email becomes reusable
+
+If deleting a deactivated main user:
+- remove all buddy links tied to that user
+- ensure no orphaned buddy associations remain
+- ensure all communication/access is fully removed
+
+==================================================
+5. AUTH DELETION MUST BE DEFENSIVE
+==================================================
+
+When deleting from Supabase Auth:
+- if auth record exists, delete it
+- if auth record does not exist, do not crash
+- treat “already missing” as a valid state, not an error
+
+If the deactivated flow stores auth identifiers differently or nulls them out:
+- handle that safely
+
+==================================================
+6. CLEANUP ORDER
+==================================================
+
+Refactor the delete flow into a defensive sequence:
+
+1. load app user
+2. load related entities defensively
+3. stop notifications / push / jobs if present
+4. remove buddy/shared relations if present
+5. delete dependent app rows if present
+6. delete app user record
+7. delete auth user if present
+8. return structured success summary
+
+Each step should tolerate missing records where appropriate.
+
+==================================================
+7. ADMIN ERROR HANDLING
+==================================================
+
+Replace generic "Request failed: 500" with a useful message if deletion fails.
+
+Show something like:
+- which cleanup stage failed
+- whether the user was active or deactivated
+- whether auth record was missing
+- whether app row deletion succeeded
+
+Do not expose secrets, but give enough detail for admin debugging.
+
+==================================================
+8. VERIFICATION
+==================================================
+
+Verify all of these cases:
+
+A. Delete active normal user
+B. Delete deactivated normal user
+C. Delete active buddy user
+D. Delete deactivated buddy user
+E. Delete active main user with buddy link
+F. Delete deactivated main user with buddy link
+
+For each case confirm:
+- no app access remains
+- no emails or push notifications remain
+- no broken buddy links remain
+- email address can be used again for signup
+- admin UI shows success instead of 500
+
+==================================================
+9. OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. exact root cause of the 500 for deactivated users
+3. what was changed to make deletion safe for already-deactivated users
+4. how missing records are now handled
+5. confirmation that both active and deactivated users can now be permanently deleted
+6. confirmation that buddy cleanup still works in both directions
