@@ -29,7 +29,7 @@ export function AppHeader({ title, onBack, closeButton, trailing }: AppHeaderPro
       style={{ paddingTop: "env(safe-area-inset-top)" }}
       data-testid="app-header"
     >
-      <div className="flex items-center h-12 px-4">
+      <div className="flex items-center h-12 px-4 gap-2">
         <button
           onClick={handleBack}
           className="w-10 h-10 flex items-center justify-center rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input transition-colors shrink-0"
@@ -38,13 +38,11 @@ export function AppHeader({ title, onBack, closeButton, trailing }: AppHeaderPro
         >
           <Icon className="w-5 h-5 text-ha-text-secondary" strokeWidth={2} />
         </button>
-        <h1 className="flex-1 text-center text-[17px] font-semibold text-ha-text" data-testid="text-page-title">
+        <h1 className="flex-1 text-[17px] font-semibold text-ha-text" data-testid="text-page-title">
           {title}
         </h1>
-        {trailing ? (
-          <div className="w-10 shrink-0 flex justify-end">{trailing}</div>
-        ) : (
-          <div className="w-10 shrink-0" />
+        {trailing && (
+          <div className="shrink-0 flex justify-end">{trailing}</div>
         )}
       </div>
     </div>

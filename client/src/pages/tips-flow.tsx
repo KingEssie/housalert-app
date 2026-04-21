@@ -186,7 +186,7 @@ export default function TipsFlowPage() {
           >
             <ArrowLeft className="w-5 h-5 text-ha-text-secondary" />
           </button>
-          <h1 className="flex-1 text-center text-[16px] font-semibold text-ha-text">
+          <h1 className="flex-1 ml-1 text-[16px] font-semibold text-ha-text">
             {t("tipsFlow.pageTitle")}
           </h1>
           <button

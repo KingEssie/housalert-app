@@ -883,8 +883,7 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
               >
                 <ArrowLeft className="w-5 h-5 text-ha-text-secondary" />
               </button>
-              <h1 className="text-[17px] font-semibold text-ha-text flex-1 text-center">{t("home.deleteTitle")}</h1>
-              <div className="w-10 shrink-0" />
+              <h1 className="text-[17px] font-semibold text-ha-text flex-1 ml-2">{t("home.deleteTitle")}</h1>
             </div>
           </header>
           <main className="flex-1 flex flex-col items-center justify-center px-4">
@@ -1744,8 +1743,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
           >
             <ArrowLeft className="w-5 h-5 text-ha-text-secondary" />
           </button>
-          <h1 className="text-[17px] text-title text-ha-text flex-1 text-center">{t("filters.deleteTitle")}</h1>
-          <div className="w-10 shrink-0" />
+          <h1 className="text-[17px] text-title text-ha-text flex-1 ml-2">{t("filters.deleteTitle")}</h1>
         </div>
       </header>
 
@@ -2262,14 +2260,14 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
 
           {/* HELP */}
           <SectionInline title={t("settings.sectionHelp")}>
-            <MenuItem label={t("settings.faq")} onClick={() => window.open("https://www.housalert.com/faq", "_blank")} external />
-            <MenuItem label={t("settings.contactUs")} onClick={() => { window.location.href = "mailto:support@housalert.com"; }} external last />
+            <MenuItem label={t("settings.faq")} onClick={() => window.open("https://www.housalert.com/veelgestelde-vragen", "_blank")} external />
+            <MenuItem label={t("settings.contactUs")} onClick={() => { window.location.href = "mailto:hello@housalert.com"; }} external last />
           </SectionInline>
 
           {/* VOORWAARDEN */}
           <SectionInline title={t("settings.sectionLegal")}>
-            <MenuItem label={t("settings.termsConditions")} onClick={() => navigate("/terms")} />
-            <MenuItem label={t("settings.privacyPolicy")} onClick={() => navigate("/datenschutz")} last />
+            <MenuItem label={t("settings.termsConditions")} onClick={() => window.open("https://www.housalert.com/algemene-voorwaarden", "_blank")} external />
+            <MenuItem label={t("settings.privacyPolicy")} onClick={() => window.open("https://www.housalert.com/privacy", "_blank")} external last />
           </SectionInline>
 
           {/* bottom padding */}
