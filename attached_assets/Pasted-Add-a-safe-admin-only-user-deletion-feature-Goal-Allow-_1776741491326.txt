@@ -1,0 +1,62 @@
+Add a safe admin-only user deletion feature.
+
+Goal:
+Allow me to permanently delete users from the admin panel, not just deactivate them.
+
+Important:
+I want to remove all accounts except this one:
+Martin.essie87@gmail.com
+
+Requirements:
+
+1. Admin user management
+- In the admin users screen, add a real "Delete user" action per user
+- Keep the existing deactivate action if it already exists
+- Deleting a user must permanently remove the user account and all directly related user records if appropriate
+- If hard delete is unsafe because of relational constraints, implement a safe cascading delete or a clearly documented cleanup strategy
+
+2. Bulk delete action
+- Add an admin-only bulk action:
+  "Delete all users except Martin.essie87@gmail.com"
+- This must exclude the account:
+  Martin.essie87@gmail.com
+- It must not be possible for this protected account to be deleted through the bulk action
+
+3. Safety protections
+- Add a confirmation modal before any permanent deletion
+- For bulk delete, require typing:
+  DELETE
+  before the action can run
+- Prevent deletion of the protected account:
+  Martin.essie87@gmail.com
+- If roles/admin flags exist, ensure the system cannot accidentally delete the current protected admin account
+
+4. UI
+- Put this on the admin users page
+- Make destructive actions clearly separated from normal actions
+- Use the existing destructive styling pattern already used elsewhere in the app
+
+5. Data handling
+- Check all related tables/entities linked to users
+- Ensure deletion does not leave broken references
+- If some records should be anonymized instead of deleted, explain that in the output and implement the safest consistent behavior
+
+6. Logging
+- Log which users were deleted and when
+- Show a result summary after bulk delete:
+  - total deleted
+  - total skipped
+  - protected account preserved
+
+7. Constraints
+- Admin-only access
+- Do not affect public/user-facing screens
+- Do not break authentication
+- Do not touch Martin.essie87@gmail.com except to protect it from deletion
+
+After completion, return:
+1. files changed
+2. how user deletion works technically
+3. what related data is also deleted or preserved
+4. confirmation that Martin.essie87@gmail.com cannot be deleted by the bulk action
+5. how to use the new admin controls

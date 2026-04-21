@@ -7120,6 +7120,76 @@ export async function registerRoutes(
     }
   });
 
+  const ADMIN_PROTECTED_EMAIL = "martin.essie87@gmail.com";
+
+  async function permanentlyDeleteUser(userId: string): Promise<void> {
+    const adminSb = getSupabaseAdmin();
+    await supabase.from("matches").delete().eq("user_id", userId);
+    await supabase.from("search_profiles").delete().eq("user_id", userId);
+    await supabase.from("subscriptions").delete().eq("user_id", userId);
+    await supabase.from("user_notification_settings").delete().eq("user_id", userId);
+    await supabase.from("push_subscriptions").delete().eq("user_id", userId).catch(() => {});
+    await pgPool.query("DELETE FROM user_matches WHERE user_id = $1", [userId]).catch(() => {});
+    await pgPool.query("DELETE FROM cancellation_feedback WHERE user_id = $1", [userId]).catch(() => {});
+    await pgPool.query("DELETE FROM search_profile_buddies WHERE owner_user_id = $1 OR buddy_user_id = $1", [userId]).catch(() => {});
+    await pgPool.query("DELETE FROM user_profile_data WHERE user_id = $1", [userId]);
+    const { error: deleteErr } = await adminSb.auth.admin.deleteUser(userId);
+    if (deleteErr) throw new Error(`Auth delete failed: ${deleteErr.message}`);
+  }
+
+  app.delete("/api/admin/portal/users/:userId/permanent-delete", requireAdmin, async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const adminSb = getSupabaseAdmin();
+      const { data: authData } = await adminSb.auth.admin.getUserById(userId);
+      const email = authData?.user?.email || "";
+      if (email.toLowerCase() === ADMIN_PROTECTED_EMAIL.toLowerCase()) {
+        return res.status(403).json({ error: `Account ${ADMIN_PROTECTED_EMAIL} is protected and cannot be deleted.` });
+      }
+      await permanentlyDeleteUser(userId);
+      log(`[admin-delete] Permanently deleted user ${userId} (${email})`);
+      res.json({ success: true, deleted: email });
+    } catch (err: any) {
+      log(`[admin-delete] Error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/admin/portal/users/bulk-delete-except-protected", requireAdmin, async (req, res) => {
+    try {
+      const adminSb = getSupabaseAdmin();
+      let allUsers: any[] = [];
+      let page = 1;
+      while (true) {
+        const { data, error } = await adminSb.auth.admin.listUsers({ page, perPage: 1000 });
+        if (error) throw error;
+        allUsers = [...allUsers, ...(data.users || [])];
+        if (!data.users || data.users.length < 1000) break;
+        page++;
+      }
+      const usersToDelete = allUsers.filter(u => u.email?.toLowerCase() !== ADMIN_PROTECTED_EMAIL.toLowerCase());
+      const protectedPreserved = allUsers.some(u => u.email?.toLowerCase() === ADMIN_PROTECTED_EMAIL.toLowerCase());
+      let deleted = 0, skipped = 0;
+      const errorLog: string[] = [];
+      for (const authUser of usersToDelete) {
+        try {
+          await permanentlyDeleteUser(authUser.id);
+          log(`[admin-bulk-delete] Deleted ${authUser.email || authUser.id}`);
+          deleted++;
+        } catch (err: any) {
+          log(`[admin-bulk-delete] Failed ${authUser.email || authUser.id}: ${err.message}`);
+          errorLog.push(`${authUser.email || authUser.id}: ${err.message}`);
+          skipped++;
+        }
+      }
+      log(`[admin-bulk-delete] Done — deleted=${deleted}, skipped=${skipped}, protected_preserved=${protectedPreserved}`);
+      res.json({ success: true, deleted, skipped, protectedPreserved, protectedEmail: ADMIN_PROTECTED_EMAIL, errors: errorLog.slice(0, 10) });
+    } catch (err: any) {
+      log(`[admin-bulk-delete] Error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   app.post("/api/admin/portal/backfill-source", requireAdmin, async (req, res) => {
     try {
       const { source, limit: batchLimit } = req.body || {};

@@ -914,6 +914,23 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
   const { profile, subscription, searchProfiles, recentMatches, cancellationFeedback, notificationSettings, diagnostics } = detail;
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [trialDays, setTrialDays] = useState("7");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  async function permanentDeleteUser() {
+    if (!profile?.user_id) return;
+    setDeleteLoading(true);
+    setDeleteError(null);
+    try {
+      await adminFetch(`/api/admin/portal/users/${profile.user_id}/permanent-delete`, { method: "DELETE" });
+      setShowDeleteModal(false);
+      onBack();
+    } catch (err: any) {
+      setDeleteError(err.message || "Delete failed");
+    }
+    setDeleteLoading(false);
+  }
 
   async function extendTrial() {
     if (!profile?.user_id) return;
@@ -1075,14 +1092,56 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
               {actionLoading === "resend" ? "Sending..." : "Resend undelivered matches"}
             </Button>
           </div>
-          <div className="pt-2 border-t border-ha-hover-bg">
+          <div className="pt-2 border-t border-ha-hover-bg flex flex-col gap-2">
             <Button variant="outline" size="sm" onClick={deactivateUser} disabled={actionLoading === "deactivate"} className="rounded-full text-ha-danger border-ha-danger/30 hover:bg-ha-danger/5" data-testid="button-deactivate">
               <XCircle className="w-3.5 h-3.5 mr-1" />
               {actionLoading === "deactivate" ? "Deactivating..." : "Deactivate user"}
             </Button>
+            <Button variant="outline" size="sm" onClick={() => setShowDeleteModal(true)} className="rounded-full text-red-600 border-red-300 hover:bg-red-50 font-semibold" data-testid="button-permanent-delete">
+              <Trash2 className="w-3.5 h-3.5 mr-1" />
+              Delete permanently
+            </Button>
           </div>
         </div>
       </div>
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" data-testid="modal-permanent-delete">
+          <div className="absolute inset-0 bg-black/50" onClick={() => { setShowDeleteModal(false); setDeleteError(null); }} />
+          <div className="relative bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                <AlertTriangle className="w-5 h-5 text-red-600" />
+              </div>
+              <h2 className="text-[16px] font-bold text-ha-text">Delete user permanently?</h2>
+            </div>
+            <p className="text-[13px] text-ha-text-secondary leading-relaxed mb-1">
+              This will permanently delete <span className="font-semibold text-ha-text">{profile?.email}</span> and all related data:
+            </p>
+            <ul className="text-[12px] text-ha-text-secondary mb-4 space-y-0.5 ml-3 list-disc">
+              <li>Search profiles & matches</li>
+              <li>Subscription records</li>
+              <li>Notification settings & push tokens</li>
+              <li>Profile data & cancellation feedback</li>
+              <li>Supabase Auth account</li>
+            </ul>
+            {deleteError && <p className="text-[12px] text-red-600 mb-3 font-medium">{deleteError}</p>}
+            <div className="flex gap-2">
+              <button onClick={() => { setShowDeleteModal(false); setDeleteError(null); }}
+                className="flex-1 h-10 rounded-lg border border-ha-card-border text-[13px] font-medium text-ha-text-secondary hover:bg-ha-surface transition-colors"
+                data-testid="button-cancel-permanent-delete">
+                Cancel
+              </button>
+              <button onClick={permanentDeleteUser} disabled={deleteLoading}
+                className="flex-1 h-10 rounded-lg bg-red-600 text-white text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-red-700 transition-colors disabled:opacity-50"
+                data-testid="button-confirm-permanent-delete">
+                {deleteLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                Delete permanently
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {searchProfiles && searchProfiles.length > 0 && (
         <div className={`${CARD} p-5`}>
@@ -1142,6 +1201,24 @@ function UsersTab() {
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [userDetail, setUserDetail] = useState<any>(null);
   const [detailLoading, setDetailLoading] = useState(false);
+  const [showBulkDeleteModal, setShowBulkDeleteModal] = useState(false);
+  const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState("");
+  const [bulkDeleteLoading, setBulkDeleteLoading] = useState(false);
+  const [bulkDeleteResult, setBulkDeleteResult] = useState<any>(null);
+
+  async function handleBulkDelete() {
+    if (bulkDeleteConfirm !== "DELETE") return;
+    setBulkDeleteLoading(true);
+    try {
+      const result = await adminFetch("/api/admin/portal/users/bulk-delete-except-protected", { method: "POST" });
+      setBulkDeleteResult(result);
+      setBulkDeleteConfirm("");
+      loadUsers();
+    } catch (err: any) {
+      setBulkDeleteResult({ error: err.message });
+    }
+    setBulkDeleteLoading(false);
+  }
 
   const loadUsers = useCallback(() => {
     setLoading(true);
@@ -1181,7 +1258,83 @@ function UsersTab() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-[24px] font-bold text-ha-text">Users</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-[24px] font-bold text-ha-text">Users</h1>
+        <button onClick={() => { setShowBulkDeleteModal(true); setBulkDeleteConfirm(""); setBulkDeleteResult(null); }}
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold text-red-600 border border-red-200 bg-white hover:bg-red-50 transition-colors"
+          data-testid="button-bulk-delete-users">
+          <Trash2 className="w-3.5 h-3.5" />
+          Bulk delete
+        </button>
+      </div>
+
+      {showBulkDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" data-testid="modal-bulk-delete">
+          <div className="absolute inset-0 bg-black/50" onClick={() => !bulkDeleteLoading && setShowBulkDeleteModal(false)} />
+          <div className="relative bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl">
+            {bulkDeleteResult ? (
+              <>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${bulkDeleteResult.error ? "bg-red-100" : "bg-green-100"}`}>
+                    {bulkDeleteResult.error ? <AlertTriangle className="w-5 h-5 text-red-600" /> : <CheckCircle className="w-5 h-5 text-green-600" />}
+                  </div>
+                  <h2 className="text-[16px] font-bold text-ha-text">{bulkDeleteResult.error ? "Delete failed" : "Bulk delete complete"}</h2>
+                </div>
+                {bulkDeleteResult.error ? (
+                  <p className="text-[13px] text-red-600 mb-4">{bulkDeleteResult.error}</p>
+                ) : (
+                  <div className="text-[13px] text-ha-text-secondary space-y-1 mb-4">
+                    <p><span className="font-semibold text-ha-text">{bulkDeleteResult.deleted}</span> users deleted</p>
+                    {bulkDeleteResult.skipped > 0 && <p><span className="font-semibold text-ha-text">{bulkDeleteResult.skipped}</span> failed (see logs)</p>}
+                    {bulkDeleteResult.protectedPreserved && <p className="text-green-700 font-medium">Protected account preserved: {bulkDeleteResult.protectedEmail}</p>}
+                  </div>
+                )}
+                <button onClick={() => setShowBulkDeleteModal(false)}
+                  className="w-full h-10 rounded-lg border border-ha-card-border text-[13px] font-medium text-ha-text hover:bg-ha-surface transition-colors"
+                  data-testid="button-close-bulk-delete-result">
+                  Close
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                    <AlertTriangle className="w-5 h-5 text-red-600" />
+                  </div>
+                  <h2 className="text-[16px] font-bold text-ha-text">Bulk delete all users?</h2>
+                </div>
+                <p className="text-[13px] text-ha-text-secondary leading-relaxed mb-2">
+                  This will permanently delete <span className="font-semibold text-ha-text">all users</span> and their data, except the protected admin account.
+                </p>
+                <p className="text-[12px] text-ha-text-secondary mb-3">
+                  Protected: <span className="font-semibold text-ha-text">martin.essie87@gmail.com</span>
+                </p>
+                <p className="text-[12px] font-semibold text-ha-text mb-1.5">Type DELETE to confirm:</p>
+                <input
+                  value={bulkDeleteConfirm}
+                  onChange={e => setBulkDeleteConfirm(e.target.value)}
+                  placeholder="DELETE"
+                  className="w-full h-10 px-3 rounded-lg border border-ha-card-border text-[13px] text-ha-text focus:outline-none focus:border-red-400 mb-4 font-mono"
+                  data-testid="input-bulk-delete-confirm"
+                />
+                <div className="flex gap-2">
+                  <button onClick={() => setShowBulkDeleteModal(false)}
+                    className="flex-1 h-10 rounded-lg border border-ha-card-border text-[13px] font-medium text-ha-text-secondary hover:bg-ha-surface transition-colors"
+                    data-testid="button-cancel-bulk-delete">
+                    Cancel
+                  </button>
+                  <button onClick={handleBulkDelete} disabled={bulkDeleteConfirm !== "DELETE" || bulkDeleteLoading}
+                    className="flex-1 h-10 rounded-lg bg-red-600 text-white text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-red-700 transition-colors disabled:opacity-40"
+                    data-testid="button-confirm-bulk-delete">
+                    {bulkDeleteLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                    {bulkDeleteLoading ? "Deleting..." : "Delete all"}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className={`${CARD} px-4 py-3 flex items-center gap-3`}>
         <Search className="w-5 h-5 text-ha-text-secondary flex-shrink-0" />
