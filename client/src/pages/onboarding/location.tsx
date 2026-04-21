@@ -29,9 +29,9 @@ export default function OnboardingLocation() {
   const T = w ? OBW : OB;
   const params = new URLSearchParams(searchString);
 
-  const city = params.get("city") || "";
-  const lat = params.get("lat") || "0";
-  const lng = params.get("lng") || "0";
+  const [city, setCity] = useState(() => params.get("city") || "");
+  const [lat, setLat] = useState(() => params.get("lat") || "0");
+  const [lng, setLng] = useState(() => params.get("lng") || "0");
 
   const districtList = cityDistricts[city] || [];
   const hasDistricts = districtList.length > 0;
@@ -55,11 +55,9 @@ export default function OnboardingLocation() {
     : TOP_CITIES;
 
   function selectCity(name: string, clat: number, clng: number) {
-    const p = new URLSearchParams(searchString);
-    p.set("city", name);
-    p.set("lat", String(clat));
-    p.set("lng", String(clng));
-    navigate(appendWebsiteParams(`/onboarding/location?${p.toString()}`, searchString));
+    setCity(name);
+    setLat(String(clat));
+    setLng(String(clng));
   }
 
   const [debounced, setDebounced] = useState({ mode, selectedDistricts, radiusKm });
