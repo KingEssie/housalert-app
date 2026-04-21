@@ -1,0 +1,121 @@
+Apply the following exact UI refinements.
+
+Scope:
+- All screens in the app that use a top bar with utility icon buttons
+- All search profile edit screens / search profile tabs flow
+- Toggles inside the search profile flow only
+
+Do NOT affect unrelated components beyond these explicit rules.
+Do NOT change logic.
+
+==================================================
+1. GLOBAL TOP BAR UTILITY BUTTONS
+==================================================
+
+For every screen in the app that has utility icon buttons in the top bar
+(for example back button, close button, menu button, logout button, etc.):
+
+Make all these buttons use:
+- the same light grey circular background
+- the same size
+- the same visual treatment as the current logout button
+
+Important:
+- all top bar utility buttons should be visually consistent
+- same circle diameter
+- same background grey
+- same icon alignment
+- same padding feel
+
+This applies app-wide to top bar icon buttons only.
+
+==================================================
+2. SEARCH PROFILE FLOW — LOWER PILL TABS
+==================================================
+
+Target the lower pill-style tabs inside the search profile screens:
+- Buurten
+- Straal
+- Gehele woonplaats
+
+Changes:
+- make these pill tabs slightly taller
+- right now they feel too flat
+- increase height / vertical padding a bit
+- keep them compact, but give them more presence
+
+Apply this consistently across all search profile screens where this pill tab group appears.
+
+Background color for these pill-style tabs:
+- use: #C7EF66 for the active pill background
+
+Inactive pills:
+- keep visually softer and readable
+- use existing light background if already appropriate unless a small adjustment is needed
+
+==================================================
+3. SEARCH PROFILE FLOW — TOP TABS
+==================================================
+
+Target the upper tabs:
+- Locatie
+- Woonwensen
+- Zoekfilters
+
+Changes:
+- make the tab labels slightly larger
+- make inactive tabs a darker grey than they are now
+- keep active tab clearly stronger
+- preserve the clean tab-with-underline style
+
+Goal:
+- easier to read
+- clearer hierarchy
+
+==================================================
+4. SEARCH PROFILE FLOW — TOGGLES
+==================================================
+
+Target toggles on the search profile screens only.
+
+Current issue:
+- active toggle color is black
+
+Fix:
+- active toggle color should be: #6192FC
+
+Keep:
+- inactive toggle state unchanged unless needed for contrast
+- existing toggle behavior/functionality intact
+
+==================================================
+5. KEEP
+==================================================
+
+Do not change:
+- city input behavior
+- map ratio
+- button logic (Volgende / Opslaan)
+- other unrelated app controls
+
+==================================================
+6. RULES
+==================================================
+
+- Use semantic tokens where possible
+- If exact values need local mapping, do it cleanly
+- Do not redesign unrelated screens
+- Do not break functionality
+- Keep the visual result clean and consistent
+
+==================================================
+7. OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. confirmation all top bar utility buttons now match the logout button style globally
+3. confirmation lower pill tabs are taller and active background is #C7EF66
+4. confirmation upper tab labels are larger and inactive tabs are darker grey
+5. confirmation active toggles in search profile screens are now #6192FC
+6. confirmation unrelated screens were not modified beyond the global top-bar utility button rule

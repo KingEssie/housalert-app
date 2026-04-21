@@ -464,11 +464,10 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
           </span>
           <button
             onClick={onClose}
-            className="w-[36px] h-[36px] shrink-0 flex items-center justify-center rounded-full transition-opacity hover:opacity-70 active:opacity-50"
-            style={{ backgroundColor: "rgb(var(--ha-surface))", color: "rgb(var(--ha-text-muted))" }}
+            className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input transition-colors"
             data-testid="button-modal-close"
           >
-            <X className="w-[20px] h-[20px]" />
+            <X className="w-[18px] h-[18px] text-ha-text-secondary" />
           </button>
         </div>
         {/* Progress bar */}

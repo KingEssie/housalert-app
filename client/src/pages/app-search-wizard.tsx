@@ -104,7 +104,7 @@ function WebToggle({ checked, onChange, label, testId }: {
     <label className="flex items-center gap-3 cursor-pointer h-[52px] px-4 rounded-[10px]"
       style={{ border: "1px solid rgb(var(--ha-card-border))" }} data-testid={testId}>
       <div className="w-[44px] h-[26px] rounded-full p-[3px] transition-colors shrink-0 flex items-center"
-        style={{ backgroundColor: checked ? "rgb(var(--ha-text))" : "rgb(var(--ha-card-border))" }}
+        style={{ backgroundColor: checked ? "#6192FC" : "rgb(var(--ha-card-border))" }}
         onClick={(e) => { e.preventDefault(); onChange(!checked); }}>
         <div className="w-[20px] h-[20px] rounded-full bg-white transition-all"
           style={{ transform: checked ? "translateX(18px)" : "translateX(0)", boxShadow: "0 1px 3px rgba(0,0,0,0.15)" }} />
@@ -199,10 +199,9 @@ function StepHeader({ step, title, onClose }: { step: number; title: string; onC
           {title}
         </span>
         <button onClick={onClose}
-          className="w-[36px] h-[36px] shrink-0 flex items-center justify-center rounded-full transition-opacity hover:opacity-70 active:opacity-50"
-          style={{ backgroundColor: "rgb(var(--ha-surface))", color: "rgb(var(--ha-text-muted))" }}
+          className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input transition-colors"
           data-testid="button-step-close">
-          <X className="w-[22px] h-[22px]" />
+          <X className="w-[18px] h-[18px] text-ha-text-secondary" />
         </button>
       </div>
     </header>
@@ -217,22 +216,20 @@ function EditHeader({ cityName, onBack, onMenu }: { cityName: string; onBack: ()
       <div className="max-w-[480px] mx-auto px-3.5 h-[52px] flex items-center gap-2">
         <button
           onClick={onBack}
-          className="w-[34px] h-[34px] shrink-0 flex items-center justify-center rounded-full transition-colors active:opacity-70"
-          style={{ backgroundColor: OBW.closeBtnBg }}
+          className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input transition-colors"
           data-testid="button-edit-back"
         >
-          <ChevronLeft className="w-[20px] h-[20px]" style={{ color: OBW.text }} />
+          <ChevronLeft className="w-[18px] h-[18px] text-ha-text-secondary" />
         </button>
         <span className="flex-1 text-[17px] font-semibold truncate" style={{ color: OBW.text }} data-testid="text-edit-city">
           {cityName}
         </span>
         <button
           onClick={onMenu}
-          className="w-[34px] h-[34px] shrink-0 flex items-center justify-center rounded-full transition-colors active:opacity-70"
-          style={{ backgroundColor: OBW.closeBtnBg }}
+          className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input transition-colors"
           data-testid="button-edit-menu"
         >
-          <MoreVertical className="w-[18px] h-[18px]" style={{ color: OBW.text }} />
+          <MoreVertical className="w-[18px] h-[18px] text-ha-text-secondary" />
         </button>
       </div>
     </header>
@@ -256,10 +253,10 @@ function EditTabBar({ activeStep, onStep }: { activeStep: number; onStep: (s: nu
             <button
               key={step}
               onClick={() => onStep(step)}
-              className="relative px-4 pt-2.5 pb-2.5 text-[13px] transition-colors whitespace-nowrap"
+              className="relative px-4 pt-2.5 pb-2.5 text-[14px] transition-colors whitespace-nowrap"
               style={{
-                color: active ? "rgb(var(--ha-text))" : "rgb(var(--ha-text-muted))",
-                fontWeight: active ? 600 : 400,
+                color: active ? "rgb(var(--ha-text))" : "rgb(var(--ha-text-secondary))",
+                fontWeight: active ? 600 : 500,
               }}
               data-testid={`tab-edit-section-${step}`}
             >
@@ -795,12 +792,12 @@ export default function AppSearchWizard() {
                 const isActive = loc.mode === tab.value;
                 return (
                   <button key={tab.value} onClick={() => setLoc((prev) => ({ ...prev, mode: tab.value }))}
-                    className="px-3.5 py-[6px] text-[12.5px] rounded-full text-center transition-all whitespace-nowrap"
+                    className="px-3.5 py-[9px] text-[12.5px] rounded-full text-center transition-all whitespace-nowrap"
                     style={{
-                      backgroundColor: isActive ? "#6192FC" : "transparent",
-                      color: isActive ? "#ffffff" : "rgb(var(--ha-text-secondary))",
+                      backgroundColor: isActive ? "#C7EF66" : "transparent",
+                      color: isActive ? "rgb(var(--ha-text))" : "rgb(var(--ha-text-secondary))",
                       fontWeight: isActive ? 600 : 500,
-                      boxShadow: isActive ? "0 1px 4px rgba(97,146,252,0.25)" : "none",
+                      boxShadow: isActive ? "0 1px 4px rgba(0,0,0,0.1)" : "none",
                     }}
                     data-testid={`tab-${tab.value}`}>
                     {tab.label}
