@@ -1,0 +1,189 @@
+Rework the Account screen again so it visually matches the Rentbird settings screen much more closely.
+
+Important:
+- The previous spacing reduction went too far.
+- Do NOT make it flatter or tighter than Rentbird.
+- We want compact, structured, and premium — not cramped.
+
+Scope:
+- Account screen only
+- Do not affect other screens
+- Do not change logic or navigation
+
+Goal:
+Match the Rentbird-style settings screen layout, hierarchy, and row rhythm.
+
+--------------------------------------------------
+1. TOP BAR
+--------------------------------------------------
+
+Update the Account screen top bar to match Rentbird more closely:
+
+- Add a proper page title: "Instellingen"
+- Keep the back button on the left
+- Keep the right-side logout/exit action
+- Ensure the title is clearly visible and bold
+- Use the same visual hierarchy as Rentbird:
+  - title prominent
+  - controls secondary
+
+--------------------------------------------------
+2. MAIN WHITE CARD
+--------------------------------------------------
+
+Keep the white card container, but make it feel like one clean settings panel:
+
+- preserve rounded corners
+- preserve white background
+- keep enough inner horizontal padding
+- do not let content feel edge-to-edge
+
+--------------------------------------------------
+3. PROFILE BLOCK
+--------------------------------------------------
+
+Profile row should feel like Rentbird:
+
+- keep avatar/initials on the left
+- keep name bold and prominent
+- keep email smaller and secondary
+- keep enough vertical breathing room
+- do NOT compress this row too much
+
+Avatar:
+- keep background color #11358B
+- text white
+
+--------------------------------------------------
+4. SECTION LABELS
+--------------------------------------------------
+
+For labels like:
+- Account
+- Persoonlijke gegevens
+- Zoeken en reageren
+- Help
+- Voorwaarden
+
+Style them like Rentbird:
+- small
+- light grey / muted
+- normal weight, not bold
+- sentence case or existing casing if already set
+- give them some top breathing room before the first row
+- but keep them visually tied to the group below
+
+Important:
+- Do NOT make them too dark
+- Do NOT make them too large
+- Do NOT push them too close to dividers
+
+--------------------------------------------------
+5. MENU ROWS
+--------------------------------------------------
+
+This is the most important part.
+
+Each menu row should match Rentbird’s rhythm:
+
+- restore more vertical padding than the current version
+- rows should feel comfortably tappable
+- item text should be clearly bolder / stronger
+- do NOT use light-weight text
+- row height should feel balanced, not compressed
+
+For each row:
+- title text should be darker and more prominent
+- use a semibold or bold weight close to Rentbird
+- keep arrow/external-link icon aligned on the right
+- keep icons lighter than the text
+
+Target effect:
+- rows feel clean, premium, and easy to scan
+- visually closer to Rentbird’s stronger labels
+
+--------------------------------------------------
+6. DIVIDERS
+--------------------------------------------------
+
+Use thin divider lines between rows, like Rentbird.
+
+But:
+- keep them subtle
+- not too dark
+- not too close to the row text
+
+Dividers should help structure, not dominate.
+
+--------------------------------------------------
+7. GROUP SPACING
+--------------------------------------------------
+
+Between each section group:
+- keep a small but noticeable spacing rhythm
+- enough to separate groups
+- not so much that the screen feels loose
+- not so little that everything blends together
+
+This was better in Rentbird than in the current version.
+
+--------------------------------------------------
+8. ADMIN BUTTON
+--------------------------------------------------
+
+The admin mode button should NOT interfere with the settings list.
+
+Fix:
+- move it completely out of the flow of the list
+- it must not overlap rows or visually interrupt the settings groups
+- place it lower, with clear separation from the settings card and from the bottom tab bar
+
+Style:
+- keep background #C7EF66
+- fully rounded / pill-shaped
+- text readable
+- keep current function
+
+--------------------------------------------------
+9. BOTTOM TAB BAR
+--------------------------------------------------
+
+Keep the current bottom tab bar styling unless it needs tiny positional adjustment.
+
+But:
+- ensure the Account screen content does not visually collide with it
+- the settings content and admin button should have enough bottom spacing above the tab bar
+
+--------------------------------------------------
+10. TEXT / WEIGHT / HIERARCHY
+--------------------------------------------------
+
+Critical fixes:
+- make menu item labels clearly bolder than they are now
+- restore hierarchy:
+  - page title strongest
+  - profile name strong
+  - menu items strong
+  - section labels muted/light
+  - email secondary
+- avoid the washed-out feel of the current version
+
+--------------------------------------------------
+RULES
+--------------------------------------------------
+
+- Do not affect other screens
+- Do not change navigation or logic
+- Do not redesign the information architecture
+- Only fix spacing, hierarchy, typography weight, divider rhythm, and admin button placement
+- Keep the result clearly closer to Rentbird than the current implementation
+
+--------------------------------------------------
+OUTPUT
+--------------------------------------------------
+
+Return:
+1. files changed
+2. exact spacing / typography / weight adjustments made
+3. how the row height and section spacing were changed
+4. confirmation that the Account screen now visually matches Rentbird’s style much more closely

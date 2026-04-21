@@ -2149,13 +2149,13 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
       <button
         type="button"
         onClick={onClick}
-        className="w-full flex items-center justify-between px-4 h-[44px] text-left active:bg-ha-surface transition-colors"
+        className="w-full flex items-center justify-between px-4 h-[50px] text-left active:bg-ha-surface transition-colors"
         data-testid={`menu-item-${label.toLowerCase().replace(/\s+/g, "-")}`}
       >
-        <span className="text-[15px] text-ha-text">{label}</span>
+        <span className="text-[15px] font-semibold text-ha-text">{label}</span>
         {external
-          ? <ExternalLink className="w-[15px] h-[15px] text-ha-text-placeholder flex-shrink-0" />
-          : <ChevronRight className="w-[15px] h-[15px] text-ha-text-muted flex-shrink-0" />
+          ? <ExternalLink className="w-[16px] h-[16px] text-ha-text-muted flex-shrink-0" />
+          : <ChevronRight className="w-[16px] h-[16px] text-ha-text-muted flex-shrink-0" />
         }
       </button>
       {!last && <div className="h-px bg-ha-card-border" />}
@@ -2165,7 +2165,7 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
   const SectionInline = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <div>
       <div className="h-px bg-ha-card-border" />
-      <p className="text-[11px] font-medium text-ha-text-muted px-4 pt-2 pb-0.5 uppercase tracking-wide">{title}</p>
+      <p className="text-[12px] font-normal text-ha-text-muted px-4 pt-3 pb-1">{title}</p>
       {children}
     </div>
   );
@@ -2173,29 +2173,37 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
   return (
     <div className="min-h-[calc(100vh-80px)] bg-ha-bg">
 
+      {/* ── STICKY PAGE TITLE ── */}
+      <div
+        className="sticky top-0 z-10 bg-white border-b border-ha-card-border px-5 flex items-center justify-between"
+        style={{ paddingTop: "max(env(safe-area-inset-top), 16px)", paddingBottom: "14px" }}
+      >
+        <h1 className="text-[22px] font-bold text-ha-text" data-testid="text-account-title">Instellingen</h1>
+        <button
+          onClick={() => setShowLogoutConfirm(true)}
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-ha-card-border active:bg-ha-border-input transition-colors shrink-0"
+          aria-label={t("profile.logout")}
+          data-testid="button-logout-icon"
+        >
+          <LogOut className="w-[18px] h-[18px] text-ha-text" strokeWidth={2} />
+        </button>
+      </div>
+
       {/* ── MAIN PANEL ── */}
-      <div className="px-2 pb-8 max-w-[480px] mx-auto" style={{ paddingTop: "max(env(safe-area-inset-top), 24px)" }}>
+      <div className="px-3 pb-8 max-w-[480px] mx-auto pt-4">
 
         {/* Single white container */}
         <div className="bg-white rounded-[12px] border border-ha-card-border shadow-[0_2px_8px_rgba(0,0,0,0.04)] overflow-hidden mb-4">
 
           {/* Profile row */}
-          <div className="flex items-center gap-3 px-4 py-3" data-testid="row-account-profile">
-            <div className="w-[44px] h-[44px] rounded-full bg-ha-primary-hover flex items-center justify-center flex-shrink-0">
-              <span className="text-[16px] font-bold text-white" data-testid="text-account-initials">{initials}</span>
+          <div className="flex items-center gap-3 px-4 py-4" data-testid="row-account-profile">
+            <div className="w-[46px] h-[46px] rounded-full bg-ha-primary-hover flex items-center justify-center flex-shrink-0">
+              <span className="text-[17px] font-bold text-white" data-testid="text-account-initials">{initials}</span>
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-[15px] font-semibold text-ha-text truncate" data-testid="text-account-name">{displayName}</p>
+              <p className="text-[16px] font-semibold text-ha-text truncate" data-testid="text-account-name">{displayName}</p>
               <p className="text-[13px] text-ha-text-secondary truncate" data-testid="text-account-email">{user.email}</p>
             </div>
-            <button
-              onClick={() => setShowLogoutConfirm(true)}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-ha-card-border active:bg-ha-border-input transition-colors shrink-0"
-              aria-label={t("profile.logout")}
-              data-testid="button-logout-icon"
-            >
-              <LogOut className="w-[20px] h-[20px] text-ha-text" strokeWidth={2} />
-            </button>
           </div>
 
           {/* ACCOUNT */}
@@ -2221,11 +2229,11 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
           {buddyMode && activeBuddyRel && (
             <div>
               <div className="h-px bg-ha-card-border" />
-              <p className="text-[11px] font-medium text-ha-text-muted px-4 pt-2 pb-0.5 uppercase tracking-wide">{t("buddyV2.modeBadge")}</p>
+              <p className="text-[12px] font-normal text-ha-text-muted px-4 pt-3 pb-1">{t("buddyV2.modeBadge")}</p>
               <button
                 type="button"
                 onClick={() => setShowBuddyDisconnectConfirm(true)}
-                className="w-full flex items-center justify-between px-4 h-[44px] text-left active:bg-ha-surface transition-colors"
+                className="w-full flex items-center justify-between px-4 h-[50px] text-left active:bg-ha-surface transition-colors"
                 data-testid="button-buddy-disconnect"
               >
                 <span className="text-[15px] font-semibold text-ha-danger">{t("buddyV2.buddyDisconnectLabel")}</span>
