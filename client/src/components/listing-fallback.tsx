@@ -54,25 +54,18 @@ function formatSourceLabel(source: string): string {
   return map[s] || s;
 }
 
-export function isValidImageUrl(url: string | null | undefined): boolean {
+// Mirrors server/match-estimate.ts PLACEHOLDER_PATTERNS and server/image-backfill.ts.
+// "default" catches portal CDN no-photo URLs like mms.immowelt.de/default.jpg.
+const PLACEHOLDER_PATTERNS =
+  /placeholder|no[-_]image|no[-_]img|no[-_]photo|noimage|nophoto|nopicture|no[-_]picture|default|missing|dummy|blank|fallback|spacer|1x1|pixel\.gif|static\/img\/no_pic/i;
+
+export function hasRealListingPhoto(url: string | null | undefined): boolean {
   if (!url) return false;
   const trimmed = url.trim();
-  if (!trimmed) return false;
+  if (!trimmed || !/^https?:\/\//i.test(trimmed)) return false;
+  return !PLACEHOLDER_PATTERNS.test(trimmed);
+}
 
-  const placeholders = [
-    "placeholder",
-    "no-image",
-    "noimage",
-    "default-listing",
-    "missing",
-    "dummy",
-    "blank",
-    "fallback",
-  ];
-  const lower = trimmed.toLowerCase();
-  if (placeholders.some((p) => lower.includes(p))) return false;
-
-  if (!/^https?:\/\//i.test(trimmed)) return false;
-
-  return true;
+export function isValidImageUrl(url: string | null | undefined): boolean {
+  return hasRealListingPhoto(url);
 }

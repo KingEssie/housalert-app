@@ -87,17 +87,16 @@ function freshLabel(createdAt: string): string {
   return days === 1 ? "gisteren" : `${days} dagen geleden`;
 }
 
-const PLACEHOLDER_PATTERNS = [
-  "placeholder", "no-image", "noimage", "default-listing",
-  "missing", "dummy", "blank", "fallback",
-];
+// Aligned with server/image-backfill.ts PLACEHOLDER_PATTERNS + common portal no-photo variants.
+// "default" covers mms.immowelt.de/default.jpg, default-image, default-apartment, etc.
+const PLACEHOLDER_PATTERNS =
+  /placeholder|no[-_]image|no[-_]img|no[-_]photo|noimage|nophoto|nopicture|no[-_]picture|default|missing|dummy|blank|fallback|spacer|1x1|pixel\.gif|static\/img\/no_pic/i;
 
 function isValidImageUrl(url: string | null | undefined): boolean {
   if (!url) return false;
   const t = url.trim();
   if (!t || !/^https?:\/\//i.test(t)) return false;
-  const lower = t.toLowerCase();
-  return !PLACEHOLDER_PATTERNS.some((p) => lower.includes(p));
+  return !PLACEHOLDER_PATTERNS.test(t);
 }
 
 // ── DB fields to select from listings ────────────────────────────────────────
