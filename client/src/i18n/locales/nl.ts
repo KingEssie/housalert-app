@@ -2093,6 +2093,7 @@ export const nl: Record<string, any> = {
     searchProfileZero: "Maak een zoekprofiel aan",
     phone: "Voeg telefoonnummer toe",
     searchBuddy: "Voeg zoekbuddy toe",
+    searchBuddyInvite: "Nodig een Zoekbuddy uit",
     profileDetails: "Vul je profiel in",
     tipDocuments: "Verzamel vereiste documenten",
     tipFinances: "Check je financiële situatie",

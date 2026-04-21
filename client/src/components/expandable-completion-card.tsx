@@ -87,8 +87,8 @@ export function ExpandableCompletionCard({
             />
           </div>
           <span
-            className={`text-[13px] font-semibold flex-shrink-0 whitespace-nowrap ${
-              allDone ? "text-ha-success" : "text-ha-text-muted"
+            className={`text-[13px] flex-shrink-0 whitespace-nowrap ${
+              allDone ? "text-ha-success font-semibold" : "text-ha-highlight font-bold"
             }`}
           >
             {percentage}% voltooid
@@ -115,14 +115,14 @@ export function ExpandableCompletionCard({
                   className="w-full min-h-[52px] flex items-center gap-3 text-left transition-all duration-150 active:opacity-70 active:scale-[0.99]"
                   data-testid={`${testId}-step-${step.id}`}
                 >
-                  <span className="text-[14px] font-bold text-ha-text-muted w-[20px] text-center flex-shrink-0">
+                  <span className="text-[14px] font-bold text-ha-text w-[20px] text-center flex-shrink-0">
                     {index + 1}
                   </span>
                   <span
                     className={`text-[14px] flex-1 leading-snug ${
                       step.completed
-                        ? "text-ha-text-secondary font-normal"
-                        : "text-ha-text font-medium"
+                        ? "text-ha-text-secondary font-normal line-through"
+                        : "text-black font-semibold"
                     }`}
                   >
                     {step.label}

@@ -2057,6 +2057,7 @@ export const de: Record<string, any> = {
     searchProfileZero: "Suchprofil erstellen",
     phone: "Telefonnummer hinzufügen",
     searchBuddy: "Suchpartner hinzufügen",
+    searchBuddyInvite: "Einen Suchpartner einladen",
     profileDetails: "Profil ausfüllen",
     tipDocuments: "Erforderliche Dokumente sammeln",
     tipFinances: "Finanzielle Situation prüfen",

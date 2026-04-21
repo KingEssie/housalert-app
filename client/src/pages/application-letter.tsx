@@ -8,7 +8,7 @@ import { queryClient } from "@/lib/queryClient";
 import { useTranslation } from "@/i18n";
 import { generateOnboardingLetter, type OnboardingLetterData } from "@/lib/application-letter";
 import { useBuddyConnections, isBuddyMode } from "@/lib/buddy";
-import { RotateCcw, Loader2, ChevronDown, Lock } from "lucide-react";
+import { RotateCcw, Loader2, ChevronDown, Lock, Lightbulb } from "lucide-react";
 import { AppHeader } from "@/components/ui/app-header";
 import elisePhoto from "@assets/A5C2A5AD-87B0-4076-94E3-D2ED9BAC419E_1774778653522.png";
 
@@ -543,9 +543,12 @@ export default function ApplicationLetterPage() {
 
               {/* Helper text */}
               {!isBuddy && (
-                <p className="text-[13px] text-ha-text-muted mb-3 leading-snug">
-                  {t("applicationLetter.addressHelper")}
-                </p>
+                <div className="flex items-start gap-2.5 bg-ha-surface rounded-[8px] px-3 py-3 mb-4">
+                  <Lightbulb className="w-4 h-4 text-ha-text-muted flex-shrink-0 mt-0.5" />
+                  <p className="text-[13px] text-ha-text-muted leading-snug">
+                    {t("applicationLetter.addressHelper")}
+                  </p>
+                </div>
               )}
 
               {/* Textarea — read-only for buddy */}
@@ -557,12 +560,12 @@ export default function ApplicationLetterPage() {
                   placeholder={t("applicationLetter.placeholderText")}
                   style={{
                     width: "100%",
-                    minHeight: "340px",
+                    minHeight: "480px",
                     border: "1px solid rgb(var(--ha-border-input))",
                     borderRadius: "8px",
                     padding: "16px",
-                    fontSize: "16px",
-                    lineHeight: "1.65",
+                    fontSize: "14px",
+                    lineHeight: "1.7",
                     color: "rgb(var(--ha-text))",
                     background: isBuddy ? "rgb(var(--ha-surface))" : "rgb(var(--ha-card))",
                     outline: "none",
@@ -605,9 +608,10 @@ export default function ApplicationLetterPage() {
 
             <button
               onClick={() => setStep(2)}
-              className="w-full h-[48px] rounded-[10px] border border-ha-primary text-ha-primary text-[15px] font-semibold hover:bg-ha-primary/5 transition-colors active:scale-[0.98] flex items-center justify-center gap-2"
+              className="w-full py-2 text-ha-text-muted text-[14px] hover:text-ha-text transition-colors active:opacity-70 flex items-center justify-center gap-1.5"
               data-testid="button-regenerate-letter"
             >
+              <RotateCcw className="w-[13px] h-[13px]" strokeWidth={2} />
               {t("applicationLetter.regenerate")}
             </button>
           </div>

@@ -1,0 +1,122 @@
+Apply the following exact UI and behavior changes.
+
+Scope:
+- Home screen only
+- The "Rond je account af" checklist flow on Home
+- The Reactiebrief screen only
+
+Do NOT affect unrelated screens.
+Do NOT redesign other flows.
+Keep logic intact except where navigation behavior is explicitly changed below.
+
+--------------------------------------------------
+1. HOME SCREEN — TEXT COLOR IN THE 2 PROGRESS SECTIONS
+--------------------------------------------------
+
+Target both sections:
+- "Rond je account af"
+- "Vergroot je kansen met deze tips"
+
+Changes:
+- Make the checklist item texts black instead of grey
+- Keep hierarchy clean and readable
+
+Also:
+- The text showing progress like "75% voltooid"
+  - color: #C7EF66
+  - make it slightly bolder / stronger than it is now
+
+--------------------------------------------------
+2. ACCOUNT AVATAR CIRCLE
+--------------------------------------------------
+
+Target:
+- the circle with initials "ME" next to the user name
+
+Change:
+- background color: #6192FC
+- text stays white
+
+--------------------------------------------------
+3. HOME CHECKLIST — REMOVE FLOW / MAKE ITEMS DIRECT LINKS
+--------------------------------------------------
+
+Current behavior:
+- "Rond je account af" behaves like a 4-step flow when an item is clicked
+
+New behavior:
+Each item should directly navigate to the correct target screen.
+
+Update the checklist items to this exact set and routing:
+
+1. "Vul je profiel in"
+   -> navigate to: "Mijn gegevens"
+
+2. "Maak een extra zoekprofiel aan"
+   -> navigate to: onboarding screen 1/4 "Waar wil je wonen"
+
+3. "Genereer een AI reactiebrief"
+   -> navigate to: "Reactiebrief"
+
+4. "Nodig een Zoekbuddy uit"
+   -> navigate to: "Zoekbuddy beheren"
+
+Important:
+- Remove/replace the old item "Zet notificaties aan"
+- Do not keep the old step-flow behavior
+- Clicking each item should simply open the correct screen directly
+
+--------------------------------------------------
+4. REACTIEBRIEF SCREEN — MATCH RENTBIRD STYLE
+--------------------------------------------------
+
+Make the Reactiebrief screen visually much closer to the Rentbird example.
+
+A. Intro/help block
+Target:
+- the block that currently starts with "Wijzig het veld..."
+
+Changes:
+- place the full help text inside one grey info block
+- add a lamp/lightbulb icon on the left
+- keep the text readable and clearly secondary
+- style should feel like the Rentbird example
+
+B. Text input / letter field
+Changes:
+- make the input/textarea area taller
+- make the text inside slightly smaller than it is now
+- keep readability strong
+- preserve current functionality and content handling
+
+C. Bottom actions
+Changes:
+- the lower button "Nieuwe AI reactiebrief maken" should become a text button
+- do NOT keep it as a large outlined/filled button
+- it should look like a text action under the main save button
+
+Keep:
+- the primary save button as the main CTA
+- current save functionality intact
+
+--------------------------------------------------
+5. RULES
+--------------------------------------------------
+
+- Use semantic tokens where possible
+- Do not introduce random colors
+- Do not affect unrelated screens
+- Do not break existing form logic
+- Do not change copy except where explicitly requested
+- Keep the result clean and close to the Rentbird visual hierarchy
+
+--------------------------------------------------
+OUTPUT
+--------------------------------------------------
+
+Return:
+1. files changed
+2. exact Home checklist items and routes updated
+3. confirmation that the old flow behavior is removed
+4. exact Reactiebrief screen elements updated
+5. confirmation that "Nieuwe AI reactiebrief maken" is now a text button

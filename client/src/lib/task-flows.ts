@@ -27,10 +27,10 @@ export const ACCOUNT_FLOW: TaskFlow = {
   subtitleKey: "taskFlow.accountSubtitle",
   flowPrefix: "/flow/account",
   steps: [
-    { id: "profile_details", labelKey: "taskFlow.profileDetails", descriptionKey: "taskFlow.desc.profileDetails", icon: "UserCircle", route: "/profile/details", completionType: "auto", inline: true },
-    { id: "search_profile", labelKey: "taskFlow.searchProfile", descriptionKey: "taskFlow.desc.searchProfile", icon: "Search", route: "/dashboard/searches/new", completionType: "auto" },
-    { id: "notifications", labelKey: "taskFlow.notifications", descriptionKey: "taskFlow.desc.notifications", icon: "Bell", route: "/settings/preferences", completionType: "auto", inline: true },
-    { id: "search_buddy", labelKey: "taskFlow.searchBuddy", descriptionKey: "taskFlow.desc.searchBuddy", icon: "Users", route: "/profile/edit/search_buddy_email", completionType: "auto", inline: true },
+    { id: "profile_details", labelKey: "taskFlow.profileDetails", descriptionKey: "taskFlow.desc.profileDetails", icon: "UserCircle", route: "/profile/details", completionType: "auto" },
+    { id: "search_profile", labelKey: "taskFlow.searchProfile", descriptionKey: "taskFlow.desc.searchProfile", icon: "Search", route: "/onboarding/start", completionType: "auto" },
+    { id: "application_letter", labelKey: "taskFlow.applicationLetter", descriptionKey: "taskFlow.desc.applicationLetter", icon: "FileText", route: "/application-letter", completionType: "auto" },
+    { id: "search_buddy", labelKey: "taskFlow.searchBuddyInvite", descriptionKey: "taskFlow.desc.searchBuddy", icon: "Users", route: "/profile/search-buddy", completionType: "auto" },
   ],
 };
 
@@ -106,7 +106,7 @@ export function resolveFlowSteps(
       id: step.id,
       label: override?.labelOverride ?? t(step.labelKey),
       completed: override?.completedOverride ?? completionMap[step.id] ?? false,
-      action: override?.action ?? (() => navigate(getFlowStepRoute(flow, step.id))),
+      action: override?.action ?? (() => navigate(step.route)),
       stepType: override?.stepType,
       inlineContent: override?.inlineContent,
     };
