@@ -1,0 +1,99 @@
+Refine the two bottom sheet modals for deleting a search profile.
+
+Scope:
+- ONLY affect the delete search profile modals
+- Do not change logic or structure
+- Only visual and typography updates
+
+==================================================
+MODAL 1 — SIMPLE ACTION MODAL
+("Verwijder deze zoekopdracht")
+==================================================
+
+Target:
+- the first bottom sheet with:
+  - "Verwijder deze zoekopdracht"
+  - trash icon on the right
+
+Changes:
+- text color → black
+- icon color → black
+- increase font weight (make it clearly bold)
+
+Goal:
+- looks like a strong primary action (not destructive yet, just entry point)
+
+==================================================
+MODAL 2 — CONFIRMATION MODAL
+("Deze zoekopdracht verwijderen?")
+==================================================
+
+1. TITLE
+- keep bold
+- keep black
+
+2. DESCRIPTION TEXT
+- make text color → black (not grey)
+- increase font size slightly
+- keep good line-height for readability
+
+Goal:
+- more readable and stronger emphasis (Rentbird style)
+
+==================================================
+BUTTONS
+==================================================
+
+PRIMARY BUTTON:
+("Ja, definitief verwijderen")
+
+- background color → #6192FC
+- text color → white
+- icon color → white (trash icon)
+- increase vertical padding (taller button)
+- keep full width
+- keep rounded corners consistent with app
+
+SECONDARY BUTTON:
+("Zoekopdracht behouden")
+
+- style → outlined
+- border color → #6192FC
+- text color → #6192FC
+- no fill (transparent background)
+- increase vertical padding (same height as primary)
+- keep full width
+- same border radius as primary
+
+==================================================
+SPACING
+==================================================
+
+- add slightly more spacing between:
+  - description text and primary button
+  - primary and secondary button
+
+Goal:
+- buttons feel less cramped
+- more premium spacing (Rentbird level)
+
+==================================================
+DO NOT CHANGE
+==================================================
+
+- modal animation
+- modal height behavior
+- delete functionality
+- navigation flow
+
+==================================================
+OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. confirmation modal 1 text + icon are black and bold
+3. confirmation modal 2 description is larger and black
+4. confirmation primary button uses #6192FC
+5. confirmation secondary button is outlined #6192FC
+6. confirmation both buttons have increased vertical padding

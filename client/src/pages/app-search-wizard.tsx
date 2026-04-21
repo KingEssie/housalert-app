@@ -909,8 +909,8 @@ export default function AppSearchWizard() {
                 className="w-full flex items-center justify-between px-5 py-3.5 text-left transition-colors hover:bg-ha-surface active:bg-ha-surface"
                 data-testid="button-delete-action"
               >
-                <span className="text-[15px] font-semibold text-ha-danger">Verwijder deze zoekopdracht</span>
-                <Trash2 className="w-4 h-4 text-ha-danger" />
+                <span className="text-[15px] font-bold text-ha-text">Verwijder deze zoekopdracht</span>
+                <Trash2 className="w-4 h-4 text-ha-text" />
               </button>
             </div>
           </div>
@@ -925,13 +925,14 @@ export default function AppSearchWizard() {
               <h2 className="text-[20px] font-bold text-ha-text mb-2" data-testid="text-delete-confirm-title">
                 Deze zoekopdracht verwijderen?
               </h2>
-              <p className="text-[13.5px] text-ha-text-secondary leading-relaxed mb-5" data-testid="text-delete-confirm-body">
+              <p className="text-[14.5px] text-ha-text leading-relaxed mb-7" data-testid="text-delete-confirm-body">
                 Weet je het zeker? Ook alle woningmatches die bij deze zoekopdracht horen worden definitief verwijderd.
               </p>
               <button
                 onClick={handleDelete}
                 disabled={deleting}
-                className="w-full h-[48px] rounded-[8px] bg-ha-danger text-white text-[15px] font-semibold flex items-center justify-center gap-2 mb-3 disabled:opacity-50 active:scale-[0.98] transition-transform"
+                className="w-full h-[56px] rounded-[8px] text-white text-[15px] font-semibold flex items-center justify-center gap-2 mb-4 disabled:opacity-50 active:scale-[0.98] transition-transform"
+                style={{ backgroundColor: "#6192FC" }}
                 data-testid="button-confirm-delete"
               >
                 {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
@@ -939,7 +940,8 @@ export default function AppSearchWizard() {
               </button>
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="w-full py-2.5 text-ha-text-muted text-[14px] font-medium active:opacity-70 transition-opacity"
+                className="w-full h-[56px] rounded-[8px] border-2 text-[15px] font-semibold flex items-center justify-center active:opacity-70 transition-opacity"
+                style={{ borderColor: "#6192FC", color: "#6192FC" }}
                 data-testid="button-cancel-delete"
               >
                 Zoekopdracht behouden
@@ -1178,8 +1180,8 @@ export default function AppSearchWizard() {
                 className="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-ha-surface active:bg-ha-surface transition-colors"
                 data-testid="button-delete-action"
               >
-                <span className="text-[15px] font-semibold text-ha-danger">Verwijder deze zoekopdracht</span>
-                <Trash2 className="w-4 h-4 text-ha-danger" />
+                <span className="text-[15px] font-bold text-ha-text">Verwijder deze zoekopdracht</span>
+                <Trash2 className="w-4 h-4 text-ha-text" />
               </button>
             </div>
           </div>
