@@ -249,28 +249,30 @@ function EditTabBar({ activeStep, onStep }: { activeStep: number; onStep: (s: nu
   ];
   return (
     <div className="sticky top-[52px] z-10 bg-white border-b border-ha-card-border">
-      <div className="max-w-[480px] mx-auto px-4 py-2">
-        <div className="inline-flex rounded-full p-[3px]" style={{ backgroundColor: "#E3ECFF" }}>
-          {tabs.map(({ step, label }) => {
-            const active = activeStep === step;
-            return (
-              <button
-                key={step}
-                onClick={() => onStep(step)}
-                className="relative px-3.5 py-[6px] text-[12.5px] rounded-full transition-all whitespace-nowrap"
-                style={{
-                  backgroundColor: active ? "#6192FC" : "transparent",
-                  color: active ? "#ffffff" : "rgb(var(--ha-text-secondary))",
-                  fontWeight: active ? 700 : 500,
-                  boxShadow: active ? "0 1px 4px rgba(97,146,252,0.3)" : "none",
-                }}
-                data-testid={`tab-edit-section-${step}`}
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
+      <div className="max-w-[480px] mx-auto flex">
+        {tabs.map(({ step, label }) => {
+          const active = activeStep === step;
+          return (
+            <button
+              key={step}
+              onClick={() => onStep(step)}
+              className="relative px-4 pt-2.5 pb-2.5 text-[13px] transition-colors whitespace-nowrap"
+              style={{
+                color: active ? "rgb(var(--ha-text))" : "rgb(var(--ha-text-muted))",
+                fontWeight: active ? 600 : 400,
+              }}
+              data-testid={`tab-edit-section-${step}`}
+            >
+              {label}
+              {active && (
+                <span
+                  className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full"
+                  style={{ backgroundColor: "rgb(var(--ha-primary))" }}
+                />
+              )}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
@@ -296,7 +298,7 @@ function StepFooter({
   const count = estimate?.matchesLast7Days ?? null;
   const footerBg = editMode ? "#EEFADE" : OBW.footerBg;
   const footerBorderStyle = editMode ? "none" : `1px solid ${OBW.footerBorder}`;
-  const countColor = editMode ? "#7BA123" : OBW.text;
+  const countColor = editMode ? "#0FBA80" : OBW.text;
   const btnHeight = editMode ? "h-[52px]" : "h-[40px]";
   const btnRadius = editMode ? "rounded-[4px]" : "rounded-[8px]";
   const btnMinWidth = editMode ? "min-w-[140px]" : "";
@@ -304,13 +306,13 @@ function StepFooter({
   return (
     <div className="fixed bottom-0 left-0 right-0 z-30"
       style={{ borderTop: footerBorderStyle, backgroundColor: footerBg, paddingBottom: "max(8px, env(safe-area-inset-bottom, 8px))" }}>
-      <div className="max-w-[480px] mx-auto px-4 py-2.5 flex items-center gap-3">
+      <div className={`max-w-[480px] mx-auto px-4 ${editMode ? "py-1.5" : "py-2.5"} flex items-center gap-3`}>
         {showCount && (
           <div className="flex-1 min-w-0">
-            <p className={`${editMode ? "text-[12px]" : "text-[10.5px]"} font-medium leading-tight`} style={{ color: OBW.textMuted }}>
+            <p className="text-[10.5px] font-medium leading-tight" style={{ color: OBW.textMuted }}>
               {t("onboarding.location.estimatedMatches")}
             </p>
-            <p className="text-[15px] font-semibold leading-snug" style={{ color: countColor }}>
+            <p className="text-[14px] font-semibold leading-snug" style={{ color: countColor }}>
               {fetching ? (
                 <span style={{ color: OBW.textMuted }}>…</span>
               ) : count != null ? (
@@ -786,24 +788,26 @@ export default function AppSearchWizard() {
             </div>
           )}
 
-          {/* Mode segmented control — Rentbird style (primary blue active pill) */}
-          <div className="flex items-center gap-0.5 p-1 rounded-[10px] mb-4" style={{ backgroundColor: "#E3ECFF" }} data-testid="location-tabs">
-            {tabs.map((tab) => {
-              const isActive = loc.mode === tab.value;
-              return (
-                <button key={tab.value} onClick={() => setLoc((prev) => ({ ...prev, mode: tab.value }))}
-                  className="flex-1 py-[8px] text-[12.5px] rounded-[8px] text-center transition-all whitespace-nowrap overflow-hidden"
-                  style={{
-                    backgroundColor: isActive ? "#6192FC" : "transparent",
-                    color: isActive ? "#ffffff" : "rgb(var(--ha-text-secondary))",
-                    fontWeight: isActive ? 600 : 400,
-                    boxShadow: isActive ? "0 1px 4px rgba(97,146,252,0.25)" : "none",
-                  }}
-                  data-testid={`tab-${tab.value}`}>
-                  {tab.label}
-                </button>
-              );
-            })}
+          {/* Mode segmented control — pill-style, left-aligned */}
+          <div className="mb-4" data-testid="location-tabs">
+            <div className="inline-flex rounded-full p-[3px]" style={{ backgroundColor: "#E3ECFF" }}>
+              {tabs.map((tab) => {
+                const isActive = loc.mode === tab.value;
+                return (
+                  <button key={tab.value} onClick={() => setLoc((prev) => ({ ...prev, mode: tab.value }))}
+                    className="px-3.5 py-[6px] text-[12.5px] rounded-full text-center transition-all whitespace-nowrap"
+                    style={{
+                      backgroundColor: isActive ? "#6192FC" : "transparent",
+                      color: isActive ? "#ffffff" : "rgb(var(--ha-text-secondary))",
+                      fontWeight: isActive ? 600 : 500,
+                      boxShadow: isActive ? "0 1px 4px rgba(97,146,252,0.25)" : "none",
+                    }}
+                    data-testid={`tab-${tab.value}`}>
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Districts mode */}

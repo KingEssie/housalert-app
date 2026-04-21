@@ -1,0 +1,109 @@
+Correct the search profile edit screen again.
+
+Important:
+We are fixing tab styling hierarchy and footer proportions.
+
+Scope:
+- search profile edit/detail screen only
+- do not affect other screens
+
+==================================================
+1. TOP TABS — LOCATIE / WOONWENSEN / ZOEKFILTERS
+==================================================
+
+Current issue:
+- these are styled as pill buttons
+
+Fix:
+- convert these into clean text tabs
+- no background fill
+- no pill container
+- active tab:
+  - darker text
+  - thin underline
+- inactive tabs:
+  - lighter grey text
+
+Goal:
+- minimal, clean Rentbird-style navigation tabs
+
+==================================================
+2. SECOND TAB GROUP — BUURTEN / STRAAL / GEHELE WOONPLAATS
+==================================================
+
+These should NOT be the same as top tabs.
+
+Fix:
+- use pill-style tabs (like the current top tabs design)
+- left aligned (not stretched full width)
+- rounded pill container
+- active pill:
+  - blue background (#6192FC)
+  - white text
+- inactive:
+  - light background (#E3ECFF)
+  - darker text
+
+Spacing:
+- keep compact and tight
+- do not stretch across the full width
+
+Goal:
+- this should visually match how the top tabs looked BEFORE the previous change
+
+==================================================
+3. FOOTER HEIGHT
+==================================================
+
+Current issue:
+- footer is too tall
+
+Fix:
+- reduce vertical height
+- reduce padding top and bottom
+- tighten spacing between:
+  - "Geschatte matches"
+  - "200 per week"
+  - button
+
+Keep:
+- layout intact
+- just more compact like Rentbird
+
+==================================================
+4. FOOTER TEXT COLOR
+==================================================
+
+Change:
+- "200 per week" color → #0FBA80
+
+==================================================
+5. KEEP
+==================================================
+
+Do NOT change:
+- city input (light grey, non-editable)
+- map (1:1 ratio)
+- button logic (Volgende vs Opslaan)
+- grey utility buttons (back + menu)
+
+==================================================
+6. RULES
+==================================================
+
+- only update this screen
+- do not affect other screens
+- do not change functionality
+- use existing tokens where possible
+
+==================================================
+7. OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. confirmation top tabs are now clean underline style
+3. confirmation second tabs are pill-style and left aligned
+4. confirmation footer height reduced
+5. confirmation "200 per week" is now #0FBA80
+6. confirmation no other screens were affected
