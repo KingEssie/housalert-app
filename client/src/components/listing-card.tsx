@@ -168,7 +168,7 @@ export function ListingCardFull({
           <Heart
             className="w-[20px] h-[20px] transition-all duration-150"
             fill={isFavorited ? heartActiveFill : "none"}
-            stroke={matchVariant ? "#6192FC" : isFavorited ? "#FF385C" : "#ffffff"}
+            stroke={matchVariant ? "rgb(var(--ha-primary))" : isFavorited ? "#FF385C" : "#ffffff"}
             strokeWidth={2.5}
             style={matchVariant ? undefined : { filter: "drop-shadow(0 1px 4px rgba(0,0,0,0.55))" }}
           />

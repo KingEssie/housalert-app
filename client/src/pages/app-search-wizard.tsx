@@ -14,6 +14,7 @@ import {
   updateSearchProfile,
   getSearchProfile,
   getSearchProfiles,
+  deleteSearchProfile,
 } from "@/lib/search-profiles";
 import {
   matchEstimateQueryKey,
@@ -26,7 +27,7 @@ import MapView from "@/components/map-view";
 import { defaultCities, cityDistricts } from "../../../config/market";
 import {
   X, ChevronLeft, Check, ChevronDown, Search, Bath, Sun, Trees, Leaf,
-  Info, Loader2, AlertCircle, Plus,
+  Info, Loader2, AlertCircle, Plus, MoreVertical, Trash2,
 } from "lucide-react";
 
 const MAX_PROFILES = 4;
@@ -208,6 +209,34 @@ function StepHeader({ step, title, onClose }: { step: number; title: string; onC
   );
 }
 
+// ── Edit-mode top bar (Rentbird style) ───────────────────────────────────────
+
+function EditHeader({ cityName, onBack, onMenu }: { cityName: string; onBack: () => void; onMenu: () => void }) {
+  return (
+    <header className="sticky top-0 z-20 w-full bg-white border-b border-ha-card-border">
+      <div className="max-w-[480px] mx-auto px-4 h-[56px] flex items-center gap-3">
+        <button
+          onClick={onBack}
+          className="w-[36px] h-[36px] shrink-0 flex items-center justify-center rounded-full bg-ha-surface active:bg-ha-border-input transition-colors"
+          data-testid="button-edit-back"
+        >
+          <ChevronLeft className="w-[22px] h-[22px] text-ha-text" />
+        </button>
+        <span className="flex-1 text-[19px] font-bold text-ha-text truncate" data-testid="text-edit-city">
+          {cityName}
+        </span>
+        <button
+          onClick={onMenu}
+          className="w-[36px] h-[36px] shrink-0 flex items-center justify-center rounded-full bg-ha-surface active:bg-ha-border-input transition-colors"
+          data-testid="button-edit-menu"
+        >
+          <MoreVertical className="w-[20px] h-[20px] text-ha-text" />
+        </button>
+      </div>
+    </header>
+  );
+}
+
 // ── Shared footer with match count ────────────────────────────────────────────
 
 function StepFooter({
@@ -283,6 +312,9 @@ export default function AppSearchWizard() {
   const [step, setStep] = useState(1);
   const [editLoaded, setEditLoaded] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [showDeleteSheet, setShowDeleteSheet] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   // ── Step 1: city ──
   const [search, setSearch] = useState("");
@@ -364,6 +396,7 @@ export default function AppSearchWizard() {
       });
       setSearch(profile.city_name || profile.city || "");
       setEditLoaded(true);
+      setStep(2);
     });
   }, [editId, editLoaded, navigate, toast, t]);
 
@@ -417,8 +450,25 @@ export default function AppSearchWizard() {
     else navigate("/home");
   }
   function goBack() {
-    if (step === 1) goClose();
+    if (step === 1 || (isEdit && step === 2)) goClose();
     else setStep((s) => s - 1);
+  }
+
+  // ── Delete handler ──
+  async function handleDelete() {
+    if (!editId) return;
+    setDeleting(true);
+    try {
+      await deleteSearchProfile(editId);
+      queryClient.invalidateQueries({ queryKey: ["/search-profiles"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
+      toast({ title: t("filters.deleted") });
+      navigate("/home");
+    } catch {
+      toast({ title: t("common.error"), variant: "destructive" });
+    } finally {
+      setDeleting(false);
+    }
   }
 
   // ── Submit (step 4) ──
@@ -654,21 +704,29 @@ export default function AppSearchWizard() {
     return (
       <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-card))" }}
         data-testid="screen-wizard-location">
-        <StepHeader step={2} title={t("onboarding.filters.headerTitle")} onClose={goClose} />
+        {isEdit ? (
+          <EditHeader cityName={city?.name || ""} onBack={goBack} onMenu={() => setShowDeleteSheet(true)} />
+        ) : (
+          <StepHeader step={2} title={t("onboarding.filters.headerTitle")} onClose={goClose} />
+        )}
 
         <main className="flex-1 max-w-[480px] mx-auto w-full px-5 pt-5 pb-[140px] overflow-y-auto">
-          {/* City display (tap to go back to step 1) */}
-          <label className="text-[18px] font-semibold mb-2 block" style={{ color: OBW.textSecondary }}>
-            {t("onboarding.location.cityLabel")}
-          </label>
-          <button onClick={() => setStep(1)}
-            className="w-full flex items-center gap-3 mb-5 ha-field-web text-left"
-            style={{ backgroundColor: OBW.inputBg, borderColor: "rgb(var(--ha-border-input))", color: OBW.text }}
-            data-testid="field-city-display">
-            <Search className="w-[18px] h-[18px] shrink-0" style={{ color: OBW.textMuted }} />
-            <span className="flex-1 text-[16px] font-medium" style={{ color: OBW.text }}>{city?.name}</span>
-            <X className="w-[16px] h-[16px] shrink-0" style={{ color: OBW.textMuted }} />
-          </button>
+          {/* City display */}
+          {!isEdit && (
+            <>
+              <label className="text-[18px] font-semibold mb-2 block" style={{ color: OBW.textSecondary }}>
+                {t("onboarding.location.cityLabel")}
+              </label>
+              <button onClick={() => setStep(1)}
+                className="w-full flex items-center gap-3 mb-5 ha-field-web text-left"
+                style={{ backgroundColor: OBW.inputBg, borderColor: "rgb(var(--ha-border-input))", color: OBW.text }}
+                data-testid="field-city-display">
+                <Search className="w-[18px] h-[18px] shrink-0" style={{ color: OBW.textMuted }} />
+                <span className="flex-1 text-[16px] font-medium" style={{ color: OBW.text }}>{city?.name}</span>
+                <X className="w-[16px] h-[16px] shrink-0" style={{ color: OBW.textMuted }} />
+              </button>
+            </>
+          )}
 
           {/* Mode tabs */}
           <div className="flex items-center gap-1 p-[4px] rounded-full mb-5" style={{ backgroundColor: "rgb(var(--ha-toggle-bg))" }} data-testid="location-tabs">
@@ -769,6 +827,56 @@ export default function AppSearchWizard() {
         <StepFooter estimate={estimate} fetching={estimateFetching}
           onBack={goBack} onNext={() => setStep(3)}
           nextLabel={t("common.next")} />
+
+        {/* Delete action sheet */}
+        {showDeleteSheet && (
+          <div className="fixed inset-0 z-50 flex flex-col justify-end" data-testid="sheet-delete-action">
+            <div className="absolute inset-0 bg-black/40" onClick={() => setShowDeleteSheet(false)} />
+            <div className="relative bg-white rounded-t-[20px] max-w-[480px] mx-auto w-full" style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}>
+              <div className="w-[40px] h-[4px] rounded-full bg-ha-card-border mx-auto mt-3 mb-4" />
+              <button
+                onClick={() => { setShowDeleteSheet(false); setShowDeleteConfirm(true); }}
+                className="w-full flex items-center justify-between px-5 py-4 text-left transition-colors hover:bg-ha-surface active:bg-ha-surface"
+                data-testid="button-delete-action"
+              >
+                <span className="text-[16px] font-semibold text-ha-danger">Verwijder deze zoekopdracht</span>
+                <Trash2 className="w-5 h-5 text-ha-danger" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Delete confirmation sheet */}
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 z-50 flex flex-col justify-end" data-testid="sheet-delete-confirm">
+            <div className="absolute inset-0 bg-black/40" onClick={() => setShowDeleteConfirm(false)} />
+            <div className="relative bg-white rounded-t-[20px] max-w-[480px] mx-auto w-full px-5 pt-6" style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}>
+              <div className="w-[40px] h-[4px] rounded-full bg-ha-card-border mx-auto mb-6" />
+              <h2 className="text-[22px] font-bold text-ha-text mb-2" data-testid="text-delete-confirm-title">
+                Deze zoekopdracht verwijderen?
+              </h2>
+              <p className="text-[14px] text-ha-text-secondary leading-relaxed mb-6" data-testid="text-delete-confirm-body">
+                Weet je het zeker? Ook alle woningmatches die bij deze zoekopdracht horen worden definitief verwijderd.
+              </p>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="w-full h-[52px] rounded-[10px] bg-ha-danger text-white text-[16px] font-semibold flex items-center justify-center gap-2 mb-3 disabled:opacity-50 active:scale-[0.98] transition-transform"
+                data-testid="button-confirm-delete"
+              >
+                {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                Ja, definitief verwijderen
+              </button>
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="w-full py-3 text-ha-text-secondary text-[15px] font-medium active:opacity-70 transition-opacity"
+                data-testid="button-cancel-delete"
+              >
+                Zoekopdracht behouden
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -832,7 +940,11 @@ export default function AppSearchWizard() {
     return (
       <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-card))" }}
         data-testid="screen-wizard-filters">
-        <StepHeader step={3} title={t("onboarding.filters.headerTitle")} onClose={goClose} />
+        {isEdit ? (
+          <EditHeader cityName={city?.name || ""} onBack={goBack} onMenu={() => setShowDeleteSheet(true)} />
+        ) : (
+          <StepHeader step={3} title={t("onboarding.filters.headerTitle")} onClose={goClose} />
+        )}
 
         <main className="flex-1 max-w-[480px] mx-auto w-full px-5 pt-5 pb-[140px] overflow-y-auto">
           <div className="flex flex-col gap-5">
@@ -983,6 +1095,46 @@ export default function AppSearchWizard() {
         <StepFooter estimate={estimate} fetching={estimateFetching}
           onBack={goBack} onNext={() => setStep(4)}
           nextLabel={t("common.next")} />
+
+        {showDeleteSheet && (
+          <div className="fixed inset-0 z-50 flex flex-col justify-end" data-testid="sheet-delete-action">
+            <div className="absolute inset-0 bg-black/40" onClick={() => setShowDeleteSheet(false)} />
+            <div className="relative bg-white rounded-t-[20px] max-w-[480px] mx-auto w-full" style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}>
+              <div className="w-[40px] h-[4px] rounded-full bg-ha-card-border mx-auto mt-3 mb-4" />
+              <button
+                onClick={() => { setShowDeleteSheet(false); setShowDeleteConfirm(true); }}
+                className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-ha-surface active:bg-ha-surface transition-colors"
+                data-testid="button-delete-action"
+              >
+                <span className="text-[16px] font-semibold text-ha-danger">Verwijder deze zoekopdracht</span>
+                <Trash2 className="w-5 h-5 text-ha-danger" />
+              </button>
+            </div>
+          </div>
+        )}
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 z-50 flex flex-col justify-end" data-testid="sheet-delete-confirm">
+            <div className="absolute inset-0 bg-black/40" onClick={() => setShowDeleteConfirm(false)} />
+            <div className="relative bg-white rounded-t-[20px] max-w-[480px] mx-auto w-full px-5 pt-6" style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}>
+              <div className="w-[40px] h-[4px] rounded-full bg-ha-card-border mx-auto mb-6" />
+              <h2 className="text-[22px] font-bold text-ha-text mb-2">Deze zoekopdracht verwijderen?</h2>
+              <p className="text-[14px] text-ha-text-secondary leading-relaxed mb-6">
+                Weet je het zeker? Ook alle woningmatches die bij deze zoekopdracht horen worden definitief verwijderd.
+              </p>
+              <button onClick={handleDelete} disabled={deleting}
+                className="w-full h-[52px] rounded-[10px] bg-ha-danger text-white text-[16px] font-semibold flex items-center justify-center gap-2 mb-3 disabled:opacity-50 active:scale-[0.98] transition-transform"
+                data-testid="button-confirm-delete">
+                {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                Ja, definitief verwijderen
+              </button>
+              <button onClick={() => setShowDeleteConfirm(false)}
+                className="w-full py-3 text-ha-text-secondary text-[15px] font-medium active:opacity-70 transition-opacity"
+                data-testid="button-cancel-delete">
+                Zoekopdracht behouden
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -1008,7 +1160,11 @@ export default function AppSearchWizard() {
   return (
     <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-card))" }}
       data-testid="screen-wizard-preferences">
-      <StepHeader step={4} title={t("onboardingWebPreferences.headerTitle")} onClose={goClose} />
+      {isEdit ? (
+        <EditHeader cityName={city?.name || ""} onBack={goBack} onMenu={() => setShowDeleteSheet(true)} />
+      ) : (
+        <StepHeader step={4} title={t("onboardingWebPreferences.headerTitle")} onClose={goClose} />
+      )}
 
       <main className="flex-1 max-w-[480px] mx-auto w-full px-5 pt-6 pb-[100px] overflow-y-auto">
 
@@ -1078,8 +1234,48 @@ export default function AppSearchWizard() {
       {/* Footer — save button, no match count */}
       <StepFooter estimate={null} fetching={false} showCount={false}
         onBack={goBack} onNext={handleSave}
-        nextLabel={isEdit ? t("common.save") : t("common.save")}
+        nextLabel={t("common.save")}
         saving={submitting} />
+
+      {showDeleteSheet && (
+        <div className="fixed inset-0 z-50 flex flex-col justify-end" data-testid="sheet-delete-action">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setShowDeleteSheet(false)} />
+          <div className="relative bg-white rounded-t-[20px] max-w-[480px] mx-auto w-full" style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}>
+            <div className="w-[40px] h-[4px] rounded-full bg-ha-card-border mx-auto mt-3 mb-4" />
+            <button
+              onClick={() => { setShowDeleteSheet(false); setShowDeleteConfirm(true); }}
+              className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-ha-surface active:bg-ha-surface transition-colors"
+              data-testid="button-delete-action"
+            >
+              <span className="text-[16px] font-semibold text-ha-danger">Verwijder deze zoekopdracht</span>
+              <Trash2 className="w-5 h-5 text-ha-danger" />
+            </button>
+          </div>
+        </div>
+      )}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 z-50 flex flex-col justify-end" data-testid="sheet-delete-confirm">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setShowDeleteConfirm(false)} />
+          <div className="relative bg-white rounded-t-[20px] max-w-[480px] mx-auto w-full px-5 pt-6" style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}>
+            <div className="w-[40px] h-[4px] rounded-full bg-ha-card-border mx-auto mb-6" />
+            <h2 className="text-[22px] font-bold text-ha-text mb-2">Deze zoekopdracht verwijderen?</h2>
+            <p className="text-[14px] text-ha-text-secondary leading-relaxed mb-6">
+              Weet je het zeker? Ook alle woningmatches die bij deze zoekopdracht horen worden definitief verwijderd.
+            </p>
+            <button onClick={handleDelete} disabled={deleting}
+              className="w-full h-[52px] rounded-[10px] bg-ha-danger text-white text-[16px] font-semibold flex items-center justify-center gap-2 mb-3 disabled:opacity-50 active:scale-[0.98] transition-transform"
+              data-testid="button-confirm-delete">
+              {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+              Ja, definitief verwijderen
+            </button>
+            <button onClick={() => setShowDeleteConfirm(false)}
+              className="w-full py-3 text-ha-text-secondary text-[15px] font-medium active:opacity-70 transition-opacity"
+              data-testid="button-cancel-delete">
+              Zoekopdracht behouden
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

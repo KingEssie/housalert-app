@@ -1,0 +1,182 @@
+Apply the following exact UI + behavior changes for the search profile detail flow.
+
+Scope:
+- Home screen search profiles section
+- Search profile detail screen (currently the editable search profile flow)
+- The 3-dots / overflow menu for search profiles
+- The bottom-sheet delete flow for search profiles
+
+Important:
+- Start with this flow only
+- Do not redesign other screens yet
+- Match the Rentbird structure and behavior as closely as possible
+- Keep functionality correct
+
+==================================================
+1. HOME SCREEN — ICON SIZE CONSISTENCY
+==================================================
+
+Target the Home screen cards/sections:
+- Zoekopdrachten
+- Zoekbuddy
+- Reactiebrief
+
+Problem:
+- these icons are still smaller than the icon size used in the other Home sections
+
+Fix:
+- make the icons for Zoekopdrachten, Zoekbuddy, and Reactiebrief visually the same size as the larger icons already used elsewhere on the Home screen
+- keep stroke weight and alignment clean
+- do not oversize them
+
+==================================================
+2. HOME SCREEN — 3 DOTS ON SEARCH PROFILES
+==================================================
+
+Target:
+- the 3 dots / overflow menu shown on each search profile card in the Home screen
+
+New behavior:
+- the 3 dots should no longer have direct function from the card itself
+- clicking the search profile card itself should open the editable search profile detail flow
+- the 3 dots can remain visible on the card, but the editing/navigation should be driven by tapping the search profile card
+
+==================================================
+3. CLICKING A SEARCH PROFILE CARD
+==================================================
+
+When the user taps a search profile card from Home:
+
+- open the search profile detail flow
+- land directly on step 2 style / editable profile experience
+- all settings should already be filled based on that existing search profile
+- the selected place/city should already be loaded from that profile
+- the place should NOT be editable in this edit flow
+
+Goal:
+- user is editing an existing search profile
+- not creating a new one from scratch
+- place remains locked/fixed to the chosen city/location of that profile
+
+==================================================
+4. SEARCH PROFILE DETAIL SCREEN — TOP BAR
+==================================================
+
+Replace the current onboarding-style step header on this edit screen.
+
+We do NOT want:
+- the 1/4 step counter
+- onboarding-style title bar
+
+We DO want a Rentbird-style top bar:
+
+Left:
+- a back arrow inside a light grey circular background
+
+Next to it:
+- the title of the place / city name (for example: Amsterdam)
+
+Right:
+- a menu / 3 dots button in a light grey circular background
+
+Layout:
+- title left-aligned next to the back button
+- not centered
+- clean and minimal like Rentbird
+
+==================================================
+5. SEARCH PROFILE DETAIL SCREEN — MENU ACTION
+==================================================
+
+When the user taps the top-right menu button:
+
+Open a bottom modal / action sheet.
+
+First bottom sheet:
+- one action only:
+  "Verwijder deze zoekopdracht"
+- include a trash icon on the right side
+- style it like Rentbird: clean white sheet, minimal, no clutter
+
+==================================================
+6. DELETE CONFIRMATION FLOW
+==================================================
+
+When the user taps "Verwijder deze zoekopdracht":
+
+Open a second confirmation modal / bottom sheet.
+
+This confirmation sheet should match Rentbird closely.
+
+Content:
+Title:
+- "Deze zoekopdracht verwijderen?"
+
+Body:
+- "Weet je het zeker? Ook alle woningmatches die bij deze zoekopdracht horen worden definitief verwijderd."
+
+Primary button:
+- "Ja, definitief verwijderen"
+- use the current destructive styling already established in the app if possible
+- include trash icon
+
+Secondary action:
+- "Zoekopdracht behouden"
+- styled as secondary / outlined / text action matching Rentbird structure
+
+Behavior:
+- primary button actually deletes the search profile
+- secondary action closes the confirmation modal and keeps the profile
+
+==================================================
+7. FUNCTIONALITY REQUIREMENTS
+==================================================
+
+Must work correctly:
+
+- tapping a search profile card opens that existing profile in edit mode
+- profile values are prefilled
+- city/place is fixed and not editable
+- top-right menu opens the delete action sheet
+- tapping delete opens the confirmation sheet
+- confirming delete actually removes the search profile
+- cancel/keep action closes the modal without deleting
+
+==================================================
+8. VISUAL MATCHING
+==================================================
+
+Match Rentbird as closely as possible for this flow in:
+- top bar structure
+- light grey circular utility buttons
+- bottom sheet layout
+- delete confirmation hierarchy
+- spacing
+- left-aligned title
+
+Do NOT:
+- keep the onboarding step counter
+- keep create-flow styling
+- redesign the actual filter form unless needed to support edit mode
+
+==================================================
+9. RULES
+==================================================
+
+- only work on this search profile detail/edit flow and the Home search profile entry behavior
+- do not affect unrelated screens
+- do not change app-wide styles unless required for this flow
+- preserve existing filter logic and data model
+- keep the UI clean and as close to Rentbird as possible
+
+==================================================
+10. OUTPUT
+==================================================
+
+Return:
+1. files changed
+2. exact Home search profile card behavior changes
+3. exact top bar changes on the search profile detail screen
+4. confirmation that place/city is prefilled and not editable
+5. confirmation that the delete action sheet and confirmation modal are both functional
+6. confirmation that deleting the search profile actually works

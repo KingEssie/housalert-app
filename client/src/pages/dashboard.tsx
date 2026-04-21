@@ -759,7 +759,7 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
       style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid rgb(var(--ha-card-border))" }}
     >
       <div className="flex items-center gap-2.5 mb-1.5">
-        <Search className="w-[20px] h-[20px] text-ha-primary flex-shrink-0" />
+        <Search className="w-[24px] h-[24px] text-ha-primary flex-shrink-0" />
         <h2 className="text-[21px] font-semibold text-ha-text flex-1" data-testid="text-search-profiles-title">
           {t("home.zoekopdrachtenTitle")}
         </h2>
@@ -799,38 +799,6 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
                     <p className="text-[14px] text-ha-text-muted mt-0.5 truncate">{locationLine}</p>
                   )}
                 </div>
-                {!buddyMode && (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        onClick={(e) => e.stopPropagation()}
-                        onPointerDown={(e) => e.stopPropagation()}
-                        className="w-10 h-10 rounded-full flex items-center justify-center text-ha-text-muted hover:bg-white/70 active:bg-white transition-colors flex-shrink-0 ml-2"
-                        data-testid={`button-menu-${p.id}`}
-                      >
-                        <MoreVertical className="w-[18px] h-[18px]" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="min-w-[140px]" onClick={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
-                      <DropdownMenuItem
-                        onClick={(e) => { e.stopPropagation(); navigate(`/dashboard/searches/edit/${p.id}`); }}
-                        className="flex items-center gap-2.5 cursor-pointer"
-                        data-testid={`menu-edit-${p.id}`}
-                      >
-                        <Pencil className="w-4 h-4 text-ha-text-secondary" />
-                        {t("home.menuEdit")}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(p.id); }}
-                        className="flex items-center gap-2.5 text-ha-danger focus:text-ha-danger cursor-pointer"
-                        data-testid={`menu-delete-${p.id}`}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        {t("home.menuDelete")}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )}
               </div>
             );
           })}
@@ -1043,7 +1011,7 @@ function HomeTab({
               data-testid="card-application-letter-status"
             >
               <div className="flex items-center gap-2.5">
-                <FileText className="w-[20px] h-[20px] text-ha-primary flex-shrink-0" />
+                <FileText className="w-[24px] h-[24px] text-ha-primary flex-shrink-0" />
                 <h2 className="text-[21px] font-semibold text-ha-text flex-1">{t("profile.reactionLetter2")}</h2>
                 {!buddyMode && (
                   <span className="text-[14px] font-medium" style={{ color: "rgb(var(--ha-primary-hover))" }}>
@@ -1080,7 +1048,7 @@ function HomeTab({
               data-testid="card-search-buddy-status"
             >
               <div className="flex items-center gap-2.5">
-                <Users className="w-[20px] h-[20px] text-ha-primary flex-shrink-0" />
+                <Users className="w-[24px] h-[24px] text-ha-primary flex-shrink-0" />
                 <h2 className="text-[21px] font-semibold text-ha-text flex-1">{t("profile.searchBuddy")}</h2>
                 <span className="text-[14px] font-medium" style={{ color: "rgb(var(--ha-primary-hover))" }}>{t("common.manage")}</span>
               </div>
