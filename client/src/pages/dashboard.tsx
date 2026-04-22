@@ -8,7 +8,6 @@ import { fetchApiMatches, fetchBuddySharedMatches, type ApiMatch, type ApiMatche
 import { queryClient } from "@/lib/queryClient";
 import { supabase } from "@/lib/supabase";
 import { useSubscription } from "@/lib/subscription";
-import { SubscriptionGate } from "@/components/subscription-gate";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
 import { trackEvent } from "@/lib/track-event";
@@ -1086,8 +1085,6 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
   const [favoriteListings, setFavoriteListings] = useState<ApiMatch[]>([]);
   const [favLoading, setFavLoading] = useState(true);
   const { t } = useTranslation();
-  const sub = useSubscription();
-  const hasAccess = sub.isActive || sub.isTrial;
 
   const fetchFavoriteListings = useCallback(() => {
     if (!accessToken) return;
@@ -1104,7 +1101,7 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
   }, [accessToken]);
 
   useEffect(() => {
-    if (!accessToken || !hasAccess) return;
+    if (!accessToken) return;
     fetchFavoriteListings();
     apiFetch("/api/favorites", {
       headers: { Authorization: `Bearer ${accessToken}` },
@@ -1116,7 +1113,7 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
         }
       })
       .catch(() => {});
-  }, [accessToken, hasAccess, fetchFavoriteListings]);
+  }, [accessToken, fetchFavoriteListings]);
 
   const toggleFavorite = useCallback(
     async (listingId: string) => {
@@ -1156,36 +1153,6 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
   );
 
   const cardStyle = { boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid rgb(var(--ha-card-border))" };
-
-  if (!hasAccess) {
-    return (
-      <div className="flex flex-col pb-8" data-testid="favorites-locked">
-        <div className="sticky top-0 z-10 bg-white px-5 pb-4 border-b border-ha-card-border" style={{ paddingTop: "max(env(safe-area-inset-top), 24px)" }}>
-          <h1 className="text-[22px] font-bold text-ha-text">{t("nav.favorites")}</h1>
-        </div>
-        <div className="px-2 pt-16">
-          <div className="flex flex-col items-center text-center px-6 pb-4">
-            <div className="w-16 h-16 rounded-full bg-ha-surface flex items-center justify-center mb-6">
-              <Lock className="w-7 h-7 text-ha-text-muted" />
-            </div>
-            <h2 className="text-[20px] font-semibold text-ha-text mb-2.5" data-testid="text-fav-locked-headline">
-              {t("matches.locked.headline")}
-            </h2>
-            <p className="text-[15px] text-ha-text-secondary leading-relaxed max-w-[280px] mb-8" data-testid="text-fav-locked-desc">
-              {t("matches.locked.desc")}
-            </p>
-            <button
-              onClick={() => navigate("/paywall")}
-              className="h-[48px] px-10 rounded-[12px] bg-ha-primary-hover text-white text-[15px] font-semibold hover:bg-ha-primary transition-colors active:scale-[0.97]"
-              data-testid="button-fav-locked-subscribe"
-            >
-              {t("matches.locked.cta")}
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex flex-col pb-8">
@@ -1260,13 +1227,10 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
   const { t, locale } = useTranslation();
   const { toast } = useToast();
   const [, navigate] = useLocation();
-  const sub = useSubscription();
-  const hasAccess = buddyMode ? (ownerSubActive ?? false) : (sub.isActive || sub.isTrial);
-
   const apiMatchesQuery = useQuery<ApiMatchesResponse>({
     queryKey: buddyMode ? ["/api/buddy/shared-matches"] : ["/api/matches"],
     queryFn: () => buddyMode ? fetchBuddySharedMatches(accessToken!) : fetchApiMatches(accessToken!),
-    enabled: !!accessToken && hasAccess,
+    enabled: !!accessToken,
     staleTime: 30_000,
     refetchOnWindowFocus: true,
   });
@@ -1290,12 +1254,12 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
   }, [accessToken, buddyMode]);
 
   useEffect(() => {
-    if (!accessToken || !hasAccess || buddyMode) return;
+    if (!accessToken || buddyMode) return;
     fetchAppliedListings();
-  }, [accessToken, hasAccess, fetchAppliedListings, buddyMode]);
+  }, [accessToken, fetchAppliedListings, buddyMode]);
 
   useEffect(() => {
-    if (!accessToken || !hasAccess || buddyMode) return;
+    if (!accessToken || buddyMode) return;
     apiFetch("/api/matches/applied", {
       headers: { Authorization: `Bearer ${accessToken}` },
     })
@@ -1334,11 +1298,10 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
         }
       })
       .catch(() => {});
-  }, [accessToken, hasAccess]);
+  }, [accessToken]);
 
   useEffect(() => {
     if (!accessToken) return;
-    if (!hasAccess) return;
     apiFetch("/api/favorites", {
       headers: { Authorization: `Bearer ${accessToken}` },
     })
@@ -1349,7 +1312,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
         }
       })
       .catch(() => {});
-  }, [accessToken, hasAccess]);
+  }, [accessToken]);
 
   const toggleFavorite = useCallback(
     async (listingId: string) => {
@@ -1451,41 +1414,6 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
     { key: "matches", label: t("matches.title") },
     { key: "applied", label: t("matches.subtabs.applied") },
   ];
-
-  if (!hasAccess) {
-    return (
-      <div className="flex flex-col pb-8" data-testid="matches-locked">
-        <div className="sticky top-0 z-10 bg-white px-5 pb-4" style={{ paddingTop: "max(env(safe-area-inset-top), 32px)" }}>
-          <h1 className="text-page-title">{t("matches.title")}</h1>
-        </div>
-
-        <div className="px-3 pt-4">
-          <div
-            className="rounded-[20px] p-6 flex flex-col items-center text-center"
-            style={{ backgroundColor: "rgb(var(--ha-primary))" }}
-          >
-            <div className="w-14 h-14 rounded-full flex items-center justify-center mb-5" style={{ backgroundColor: "rgba(255,255,255,0.2)" }}>
-              <Lock className="w-7 h-7 text-white" />
-            </div>
-            <h2 className="text-[20px] font-bold text-white mb-3" data-testid="text-locked-headline">
-              {t("matches.locked.headline")}
-            </h2>
-            <p className="text-[15px] leading-relaxed max-w-[280px] mb-6" style={{ color: "rgba(255,255,255,0.88)" }} data-testid="text-locked-desc">
-              {t("matches.locked.desc")}
-            </p>
-            <button
-              onClick={() => navigate("/paywall")}
-              className="h-[48px] px-8 rounded-[12px] bg-white text-black text-[15px] font-semibold flex items-center gap-2 active:scale-[0.97] transition-transform"
-              data-testid="button-locked-subscribe"
-            >
-              <ChevronRight className="w-4 h-4 text-black" />
-              {t("matches.locked.cta")}
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   const cardStyle = { boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid rgb(var(--ha-card-border))" };
 
@@ -1590,7 +1518,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
                     refreshStatuses();
                     navigate(`/apply/${m.listing_id}`);
                   }}
-                  locked={!hasAccess}
+                  locked={false}
                   matchVariant
                 />
               ))
@@ -1622,7 +1550,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
                       markViewed(m.listing_id);
                       navigate(`/apply/${m.listing_id}`);
                     }}
-                    locked={!hasAccess}
+                    locked={false}
                     respondedLabel={formatRespondedDate(m)}
                     onRemoveResponse={() => removeApplied(m.listing_id)}
                     removeResponseLabel={t("matches.removeResponse")}

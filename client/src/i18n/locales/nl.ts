@@ -1101,7 +1101,7 @@ export const nl: Record<string, any> = {
     perMonth: "p/m",
     mostChosen: "Populairst",
     outOf: "van",
-    selectPlan: "Selecteer pakket",
+    selectPlan: "Abonnement kiezen",
     skipFree: "Doorgaan zonder abonnement",
     benefits: {
       speed: {

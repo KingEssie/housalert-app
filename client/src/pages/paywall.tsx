@@ -81,12 +81,14 @@ function WebsitePaywall({
   setSelectedPlan,
   loading,
   handleCheckout,
+  onSkip,
   queryParams,
 }: {
   selectedPlan: string;
   setSelectedPlan: (id: string) => void;
   loading: boolean;
   handleCheckout: () => void;
+  onSkip: () => void;
   queryParams: URLSearchParams;
 }) {
   const { t } = useTranslation();
@@ -225,10 +227,10 @@ function WebsitePaywall({
         <button
           onClick={handleCheckout}
           disabled={loading}
-          className="w-full h-[52px] rounded-[10px] text-[15px] font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2.5 mb-6"
+          className="w-full h-[52px] rounded-[10px] text-[15px] font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2.5"
           style={{
-            background: "rgb(var(--ha-accent))",
-            boxShadow: "0 4px 14px rgba(243,107,46,0.25)",
+            background: "rgb(var(--ha-primary))",
+            boxShadow: "0 4px 14px rgb(var(--ha-primary) / 0.25)",
           }}
           data-testid="button-select-payment"
         >
@@ -236,10 +238,19 @@ function WebsitePaywall({
             <Loader2 className="w-5 h-5 animate-spin" />
           ) : (
             <>
-              {t("paywall.website.activateAlerts")}
+              {t("paywall.selectPlan")}
               <CircleArrowRight className="w-[18px] h-[18px]" />
             </>
           )}
+        </button>
+
+        <button
+          onClick={onSkip}
+          className="w-full h-[44px] rounded-[10px] text-[14px] font-medium mt-2 mb-4 transition-colors flex items-center justify-center"
+          style={{ color: OBW.textSecondary }}
+          data-testid="button-skip-subscription"
+        >
+          {t("paywall.skipFree")}
         </button>
 
         <div className="flex flex-col gap-3 mb-6">
@@ -388,6 +399,10 @@ export default function PaywallPage() {
     }
   }
 
+  function handleSkip() {
+    navigate("/dashboard");
+  }
+
   if (isWebsiteMode) {
     return (
       <WebsitePaywall
@@ -395,6 +410,7 @@ export default function PaywallPage() {
         setSelectedPlan={setSelectedPlan}
         loading={loading}
         handleCheckout={handleCheckout}
+        onSkip={handleSkip}
         queryParams={queryParams}
       />
     );
@@ -491,8 +507,8 @@ export default function PaywallPage() {
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-ha-bg border-t border-ha-card-border p-5 z-10">
-        <div className="max-w-xl mx-auto">
+      <div className="fixed bottom-0 left-0 right-0 bg-ha-bg border-t border-ha-card-border px-5 pt-4 pb-5 z-10">
+        <div className="max-w-xl mx-auto flex flex-col gap-2">
           <button
             className="w-full ha-btn text-white font-semibold"
             style={{ backgroundColor: BRAND }}
@@ -508,6 +524,13 @@ export default function PaywallPage() {
             ) : (
               <>{t("paywall.selectPlan")} →</>
             )}
+          </button>
+          <button
+            onClick={handleSkip}
+            className="w-full h-[44px] text-[14px] font-medium text-ha-text-secondary transition-colors active:opacity-70"
+            data-testid="button-skip-subscription"
+          >
+            {t("paywall.skipFree")}
           </button>
         </div>
       </div>

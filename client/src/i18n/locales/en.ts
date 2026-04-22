@@ -990,7 +990,7 @@ export const en: Record<string, any> = {
     perMonth: "p/m",
     mostChosen: "Most popular",
     outOf: "out of",
-    selectPlan: "Select plan",
+    selectPlan: "Choose subscription",
     skipFree: "Continue without subscription",
     benefits: {
       speed: {

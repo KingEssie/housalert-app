@@ -1,0 +1,107 @@
+Fix subscription logic and free vs trial behavior to match Rentbird exactly.
+
+GOAL:
+Create a clear distinction between:
+1. Trial (premium access)
+2. Free (limited access)
+
+==================================================
+1. USER STATES
+==================================================
+
+Define three states:
+
+FREE USER:
+- no subscription
+- limited access
+
+TRIAL USER:
+- active Stripe subscription with trialing status
+- full premium access
+
+PAID USER:
+- active subscription
+- full premium access
+
+==================================================
+2. FREE USER BEHAVIOR
+==================================================
+
+FREE users:
+- can see matches
+- can open listing details
+- can NOT respond
+- can NOT open external listing links
+
+Update messaging:
+Replace:
+"Je hebt geen actief abonnement"
+
+With:
+"Je gebruikt beperkte toegang"
+
+Replace:
+"Je kan deze woning niet bekijken"
+
+With:
+"Je kunt deze woning bekijken, maar reageren is alleen mogelijk met een abonnement."
+
+==================================================
+3. TRIAL USER BEHAVIOR
+==================================================
+
+TRIAL users:
+- must have FULL access
+- same as paid users
+
+No restrictions:
+- responding allowed
+- external links allowed
+- application letter allowed
+
+==================================================
+4. STRIPE LOGIC
+==================================================
+
+When user clicks "Selecteer pakket":
+
+- create Stripe subscription immediately
+- set trial period = 14 days
+- attach payment method
+- status = trialing
+
+After 14 days:
+- automatically charge
+- convert to active subscription
+
+==================================================
+5. PAYWALL BUTTONS
+==================================================
+
+Button 1:
+"Abonnement kiezen"
+→ starts Stripe trial
+
+Button 2:
+"Doorgaan zonder abonnement"
+→ sets user to FREE state
+
+==================================================
+6. CLEAN UX
+==================================================
+
+- remove contradictory messages
+- ensure all screens use same logic
+- no hard blocking of listing viewing for free users
+- only block actions that convert (responding)
+
+==================================================
+OUTPUT
+==================================================
+
+Return:
+1. subscription state logic
+2. Stripe integration confirmation
+3. UI messages updated
+4. confirmation trial users have full access
+5. confirmation free users cannot respond or bypass

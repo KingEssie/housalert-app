@@ -501,7 +501,7 @@ export default function ApplyPage() {
             <div className="rounded-[10px] bg-ha-surface px-4 py-3.5 flex items-start gap-3" data-testid="info-no-subscription">
               <Info className="w-[18px] h-[18px] flex-shrink-0 text-ha-text-muted mt-0.5" strokeWidth={2} />
               <p className="text-[14px] text-ha-text-secondary leading-[1.55]">
-                Je hebt op dit moment geen actief abonnement en kan daarom deze woning niet bekijken.
+                Je kunt deze woning bekijken, maar reageren is alleen mogelijk met een abonnement.
               </p>
             </div>
           </div>
