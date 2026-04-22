@@ -13,9 +13,11 @@ import { useBuddyConnections, isBuddyMode } from "@/lib/buddy";
 import {
   ArrowLeft,
   BedDouble,
+  Check,
   Copy,
   Tag,
   Heart,
+  Loader2,
   MapPin,
   Maximize2,
   ShieldBan,
@@ -106,6 +108,186 @@ function formatSourceDisplay(source: string): string {
 
 const pillStyle: React.CSSProperties = { boxShadow: "0 1px 2px rgba(0,0,0,0.06)" };
 
+const UPGRADE_PLANS = [
+  { id: "three_month", label: "3 maanden", price: "€44,99", perMonth: "€15,00/m", discount: "-40%", popular: false },
+  { id: "two_month",   label: "2 maanden", price: "€34,99", perMonth: "€17,50/m", discount: "-30%", popular: true },
+  { id: "monthly",     label: "1 maand",   price: "€24,99", perMonth: "€24,99/m", discount: "",     popular: false },
+] as const;
+
+const UPGRADE_BULLETS = [
+  "Ontvang razendsnelle pushmeldingen",
+  "Bespaar tijd en stress",
+  "Probeer 14 dagen zonder risico",
+];
+
+function UpgradeSheet({
+  open,
+  onClose,
+  accessToken,
+}: {
+  open: boolean;
+  onClose: () => void;
+  accessToken?: string;
+}) {
+  const [selectedPlan, setSelectedPlan] = useState<string>("two_month");
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const { toast } = useToast();
+
+  async function handleCheckout() {
+    if (!accessToken || checkoutLoading) return;
+    setCheckoutLoading(true);
+    try {
+      const res = await apiFetch("/api/checkout/session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ plan: selectedPlan }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        if ((window as any).ReactNativeWebView) {
+          (window as any).ReactNativeWebView.postMessage(JSON.stringify({ type: "OPEN_EXTERNAL_URL", url: data.url }));
+        } else {
+          window.location.href = data.url;
+        }
+      } else {
+        toast({ title: "Betaling niet beschikbaar", description: "Probeer het later opnieuw.", variant: "destructive" });
+      }
+    } catch {
+      toast({ title: "Er is iets misgegaan", description: "Probeer het later opnieuw.", variant: "destructive" });
+    } finally {
+      setCheckoutLoading(false);
+    }
+  }
+
+  if (!open) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center"
+      style={{ backgroundColor: "rgba(0,0,0,0.45)" }}
+      onClick={onClose}
+      data-testid="overlay-upgrade-sheet"
+    >
+      <div
+        className="relative w-full max-w-[480px] bg-white rounded-t-[20px] px-5 pt-4 animate-in slide-in-from-bottom-4 duration-200"
+        style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 20px)" }}
+        onClick={(e) => e.stopPropagation()}
+        data-testid="sheet-upgrade"
+      >
+        {/* Drag handle */}
+        <div className="w-10 h-1 rounded-full mx-auto mb-4" style={{ backgroundColor: "rgb(var(--ha-card-border))" }} />
+
+        {/* Title */}
+        <h2 className="text-[20px] font-bold text-ha-text mb-4" data-testid="text-upgrade-title">
+          Upgrade jouw abonnement
+        </h2>
+
+        {/* 3 benefit bullets */}
+        <div className="flex flex-col gap-2.5 mb-5">
+          {UPGRADE_BULLETS.map((bullet) => (
+            <div key={bullet} className="flex items-center gap-3">
+              <div
+                className="w-[22px] h-[22px] rounded-full flex items-center justify-center shrink-0"
+                style={{ backgroundColor: "rgb(var(--ha-success))" }}
+              >
+                <Check className="w-3.5 h-3.5 text-white" />
+              </div>
+              <p className="text-[14px] text-ha-text">{bullet}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Plan options */}
+        <div
+          className="flex flex-col mb-4 rounded-[10px] overflow-hidden"
+          style={{ border: "1px solid rgb(var(--ha-card-border))" }}
+          data-testid="upgrade-plan-options"
+        >
+          {UPGRADE_PLANS.map((plan, i) => {
+            const isSelected = selectedPlan === plan.id;
+            const isLast = i === UPGRADE_PLANS.length - 1;
+            return (
+              <div key={plan.id} className="relative">
+                {plan.popular && (
+                  <div className="flex justify-center" style={{ marginBottom: "-10px", position: "relative", zIndex: 2 }}>
+                    <span
+                      className="text-[11px] font-semibold px-3 py-[3px] rounded-full text-white"
+                      style={{ backgroundColor: "rgb(var(--ha-success))" }}
+                      data-testid="badge-most-chosen"
+                    >
+                      Meest gekozen
+                    </span>
+                  </div>
+                )}
+                <button
+                  onClick={() => setSelectedPlan(plan.id)}
+                  className="w-full flex items-center justify-between text-left transition-colors"
+                  style={{
+                    padding: plan.popular ? "18px 14px 14px" : "13px 14px",
+                    borderBottom: !isLast ? "1px solid rgb(var(--ha-card-border))" : "none",
+                    backgroundColor: isSelected ? "var(--ha-primary-light)" : "white",
+                  }}
+                  data-testid={`button-plan-${plan.id}`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-[20px] h-[20px] rounded-full flex items-center justify-center shrink-0"
+                      style={{
+                        border: isSelected ? "none" : "1.5px solid rgb(var(--ha-card-border))",
+                        backgroundColor: isSelected ? "rgb(var(--ha-primary))" : "transparent",
+                      }}
+                    >
+                      {isSelected && <Check className="w-3 h-3 text-white" />}
+                    </div>
+                    <div>
+                      <p className="text-[14px] font-semibold text-ha-text">{plan.label}</p>
+                      <p className="text-[12px] text-ha-text-secondary">{plan.perMonth}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[15px] font-semibold text-ha-text">{plan.price}</span>
+                    {plan.discount && (
+                      <span
+                        className="text-[11px] font-semibold px-[7px] py-[2px] rounded-[4px]"
+                        style={{ backgroundColor: "var(--ha-success-light)", color: "rgb(var(--ha-success))" }}
+                      >
+                        {plan.discount}
+                      </span>
+                    )}
+                  </div>
+                </button>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Primary CTA */}
+        <button
+          onClick={handleCheckout}
+          disabled={checkoutLoading}
+          className="w-full h-[50px] rounded-[12px] text-white text-[15px] font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform disabled:opacity-50 mb-3"
+          style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 14px rgb(var(--ha-primary) / 0.25)" }}
+          data-testid="button-upgrade-checkout"
+        >
+          {checkoutLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Korting selecteren →"}
+        </button>
+
+        {/* Secondary CTA — closes modal only, no navigation */}
+        <button
+          onClick={onClose}
+          className="w-full h-[44px] text-[14px] font-medium text-ha-text-secondary flex items-center justify-center active:opacity-70 transition-opacity"
+          data-testid="button-upgrade-skip"
+        >
+          Doorgaan zonder abonnement →
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function ApplyPage() {
   const [, navigate] = useLocation();
   const [, params] = useRoute("/apply/:id");
@@ -124,6 +306,7 @@ export default function ApplyPage() {
   const [favLoading, setFavLoading] = useState(false);
   const [showBlockModal, setShowBlockModal] = useState(false);
   const [blockLoading, setBlockLoading] = useState(false);
+  const [showUpgradeSheet, setShowUpgradeSheet] = useState(false);
   const relativeTime = useRelativeTime();
   const postedTime = usePostedTime();
 
@@ -490,13 +673,13 @@ export default function ApplyPage() {
         {!hasAccess && (
           <div className="px-3 pb-5 flex flex-col gap-3">
             <button
-              onClick={() => navigate("/paywall")}
+              onClick={() => setShowUpgradeSheet(true)}
               className="w-full h-[48px] rounded-[12px] text-black text-[15px] font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
               style={{ backgroundColor: "rgb(var(--ha-highlight))" }}
               data-testid="button-upgrade-to-react"
             >
               <Zap className="w-[18px] h-[18px] text-black" strokeWidth={2} />
-              Upgrade om te reageren
+              Upgrade om te kunnen reageren
             </button>
             <div className="rounded-[10px] bg-ha-surface px-4 py-3.5 flex items-start gap-3" data-testid="info-no-subscription">
               <Info className="w-[18px] h-[18px] flex-shrink-0 text-ha-text-muted mt-0.5" strokeWidth={2} />
@@ -564,18 +747,25 @@ export default function ApplyPage() {
               </>
             ) : (
               <button
-                onClick={() => navigate("/paywall")}
+                onClick={() => setShowUpgradeSheet(true)}
                 className="w-full h-[48px] rounded-full text-black text-[15px] font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
                 style={{ backgroundColor: "rgb(var(--ha-highlight))" }}
                 data-testid="button-upgraden-sticky"
               >
                 <Zap className="w-[18px] h-[18px] text-black" strokeWidth={2} />
-                Upgraden
+                Upgrade om te kunnen reageren
               </button>
             )}
           </div>
         </div>
       )}
+
+      {/* Upgrade bottom sheet */}
+      <UpgradeSheet
+        open={showUpgradeSheet}
+        onClose={() => setShowUpgradeSheet(false)}
+        accessToken={accessToken}
+      />
 
       {/* Block source modal */}
       {showBlockModal && listing?.source && (
