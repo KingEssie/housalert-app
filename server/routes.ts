@@ -1237,7 +1237,8 @@ export async function registerRoutes(
     const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
 
     const urlOk = url.startsWith("https://") && url.includes("supabase.co");
-    const keyOk = key.startsWith("eyJ") && key.length > 100;
+    // Accept both legacy JWT format (eyJ...) and Supabase's newer sb_secret_ format
+    const keyOk = (key.startsWith("eyJ") && key.length > 100) || (key.startsWith("sb_secret_") && key.length >= 20);
 
     if (!urlOk || !keyOk) {
       return res.status(503).json({
@@ -1247,10 +1248,10 @@ export async function registerRoutes(
         keyOk,
         urlLength: url.length,
         keyLength: key.length,
-        keyPrefix: key.substring(0, 8) || "(empty)",
+        keyPrefix: key.substring(0, 10) || "(empty)",
         hint: !urlOk
           ? "VITE_SUPABASE_URL must be https://[ref].supabase.co"
-          : "SUPABASE_SERVICE_ROLE_KEY must be a JWT (starts with eyJ, 200+ chars). Get it from Supabase dashboard → Settings → API.",
+          : "SUPABASE_SERVICE_ROLE_KEY must be either a JWT (eyJ...) or sb_secret_... key from Supabase dashboard → Settings → API.",
       });
     }
 
