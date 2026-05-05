@@ -114,7 +114,7 @@ export default function WelcomePage() {
       return;
     }
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/account/change-password`,
+      redirectTo: `${window.location.origin}/reset-password`,
     });
     if (error) {
       toast({ title: t("auth.login.failed"), description: error.message, variant: "destructive" });

@@ -4,6 +4,7 @@ import { logoSrc } from "@/components/housalert-logo";
 import { useTranslation } from "@/i18n";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 const OUTER_BG = "#6192FC";
 const CARD_BG = "#11358B";
@@ -11,7 +12,7 @@ const ACCENT = "#C7EF66";
 
 export default function ForgotPasswordPage() {
   const [, navigate] = useLocation();
-  const { t, locale } = useTranslation();
+  const { t } = useTranslation();
   const { toast } = useToast();
 
   const [email, setEmail] = useState("");
@@ -32,28 +33,21 @@ export default function ForgotPasswordPage() {
 
     setLoading(true);
 
-    try {
-      const resp = await fetch("/api/auth/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), lang: locale }),
-      });
+    const redirectTo = `${window.location.origin}/reset-password`;
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo });
 
-      if (!resp.ok) {
-        const data = await resp.json().catch(() => ({}));
-        throw new Error(data.error || "Request failed");
-      }
-    } catch (err: any) {
-      setLoading(false);
+    setLoading(false);
+
+    if (error) {
+      console.error("[forgot-password] resetPasswordForEmail error:", error.message);
       toast({
         title: t("forgotPassword.error"),
-        description: err.message,
+        description: error.message,
         variant: "destructive",
       });
       return;
     }
 
-    setLoading(false);
     setSent(true);
   }
 

@@ -2145,7 +2145,10 @@ export async function registerRoutes(
       });
 
       if (error || !data?.properties?.action_link) {
-        log(`[FORGOT-PW] generateLink failed for ${maskedEmail}: ${error?.message || "no link"}`);
+        log(`[FORGOT-PW] generateLink failed for ${maskedEmail}: ${error?.message || "no link"} — falling back to direct reset`);
+        const { error: fallbackErr } = await adminSb.auth.resetPasswordForEmail(email.trim(), { redirectTo });
+        if (fallbackErr) log(`[FORGOT-PW] Fallback resetPasswordForEmail also failed for ${maskedEmail}: ${fallbackErr.message}`);
+        else log(`[FORGOT-PW] Fallback resetPasswordForEmail sent for ${maskedEmail}`);
         return res.json({ ok: true });
       }
 
