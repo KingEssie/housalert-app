@@ -3,6 +3,20 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 const SUPABASE_URL = (process.env.VITE_SUPABASE_URL ?? "").replace(/\/$/, "");
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
 
+(function validateSupabaseConfig() {
+  const urlOk = SUPABASE_URL.startsWith("https://") && SUPABASE_URL.includes("supabase.co");
+  const keyOk = SERVICE_ROLE_KEY.startsWith("eyJ") && SERVICE_ROLE_KEY.length > 100;
+  if (!urlOk) {
+    console.error(`[supabase-admin] INVALID SUPABASE_URL: length=${SUPABASE_URL.length} value="${SUPABASE_URL}". Must be https://[ref].supabase.co`);
+  }
+  if (!keyOk) {
+    console.error(`[supabase-admin] INVALID SERVICE_ROLE_KEY: length=${SERVICE_ROLE_KEY.length}, prefix="${SERVICE_ROLE_KEY.substring(0, 10)}". Must be a JWT (eyJ...) from Supabase dashboard → Settings → API.`);
+  }
+  if (urlOk && keyOk) {
+    console.log(`[supabase-admin] Config OK — URL=${SUPABASE_URL}, key length=${SERVICE_ROLE_KEY.length}`);
+  }
+})();
+
 let _client: SupabaseClient | null = null;
 
 export function getSupabaseAdmin(): SupabaseClient {

@@ -355,7 +355,9 @@ export async function insertAndMatchListings(
           }
         }
       } else {
-        log(`Insert error for ${listing.source_id}: ${insertErr.message}`);
+        const cause = (insertErr as any)?.cause?.message ?? (insertErr as any)?.cause?.code ?? "";
+        const causeStr = cause ? ` (cause: ${cause})` : "";
+        log(`Insert error for ${listing.source_id}: ${insertErr.message}${causeStr}`);
         errors++;
       }
       continue;

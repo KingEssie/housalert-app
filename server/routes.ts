@@ -1232,6 +1232,56 @@ export async function registerRoutes(
     });
   });
 
+  app.get("/api/health/supabase", async (_req, res) => {
+    const url = (process.env.VITE_SUPABASE_URL ?? "").replace(/\/$/, "");
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
+
+    const urlOk = url.startsWith("https://") && url.includes("supabase.co");
+    const keyOk = key.startsWith("eyJ") && key.length > 100;
+
+    if (!urlOk || !keyOk) {
+      return res.status(503).json({
+        ok: false,
+        stage: "credentials",
+        urlOk,
+        keyOk,
+        urlLength: url.length,
+        keyLength: key.length,
+        keyPrefix: key.substring(0, 8) || "(empty)",
+        hint: !urlOk
+          ? "VITE_SUPABASE_URL must be https://[ref].supabase.co"
+          : "SUPABASE_SERVICE_ROLE_KEY must be a JWT (starts with eyJ, 200+ chars). Get it from Supabase dashboard → Settings → API.",
+      });
+    }
+
+    try {
+      const probeRes = await fetch(`${url}/rest/v1/`, {
+        headers: { apikey: key, Authorization: `Bearer ${key}` },
+        signal: AbortSignal.timeout(8000),
+      });
+      const body = await probeRes.text().catch(() => "");
+      return res.json({
+        ok: probeRes.ok || probeRes.status === 404,
+        stage: "network",
+        httpStatus: probeRes.status,
+        hint: probeRes.ok ? "Supabase is reachable and credentials are accepted." : `HTTP ${probeRes.status} — check credentials or project status.`,
+      });
+    } catch (err: any) {
+      const cause = err?.cause?.message ?? err?.cause?.code ?? err?.message ?? String(err);
+      return res.status(503).json({
+        ok: false,
+        stage: "network",
+        error: err?.message,
+        cause,
+        hint: cause.includes("ENOTFOUND")
+          ? "DNS lookup failed — Supabase project may be paused/deleted. Go to supabase.com → your project → Resume."
+          : cause.includes("ECONNREFUSED")
+          ? "Connection refused — Supabase project is likely paused."
+          : "Network error reaching Supabase. Check project status at supabase.com.",
+      });
+    }
+  });
+
   app.get("/api/ingest/status", (_req, res) => {
     return res.json(getLastRunStatus());
   });
