@@ -36,6 +36,37 @@ export interface SubscriptionStatus {
 
 const GRACE_PERIOD_MS = 48 * 60 * 60 * 1000;
 
+/**
+ * Centralized Stripe → HousAlert DB status mapping.
+ *
+ * Stripe status        │ HousAlert DB status │ Access rule
+ * ─────────────────────┼─────────────────────┼──────────────────────────────────────────
+ * active               │ active              │ full access while period current
+ * trialing             │ (trial path)        │ handled separately via updateSubscriptionFromCheckout
+ * past_due             │ past_due            │ 48-hour grace from first invoice.payment_failed
+ * canceled             │ canceled            │ access until current_period_end, then blocked
+ * unpaid               │ canceled            │ no access (Stripe exhausted all retries)
+ * incomplete           │ expired             │ no access (initial payment never completed)
+ * incomplete_expired   │ expired             │ no access
+ * (any other/unknown)  │ expired             │ no access (safe default)
+ *
+ * Note: "trialing" is intentionally absent — callers that receive it must use
+ * updateSubscriptionFromCheckout() to also persist trial_ends_at.
+ */
+export function stripeStatusToDb(
+  stripeStatus: string
+): "active" | "past_due" | "canceled" | "expired" {
+  switch (stripeStatus) {
+    case "active":            return "active";
+    case "past_due":          return "past_due";
+    case "canceled":
+    case "unpaid":            return "canceled";
+    case "incomplete":
+    case "incomplete_expired":
+    default:                  return "expired";
+  }
+}
+
 export async function ensureTrialSubscription(userId: string): Promise<SubscriptionRow | null> {
   const { data: existing } = await supabase
     .from("subscriptions")
@@ -220,7 +251,8 @@ export async function updateSubscriptionFromCheckout(
 export async function updateSubscriptionStatus(
   stripeSubscriptionId: string,
   status: "active" | "past_due" | "canceled" | "expired",
-  currentPeriodEnd?: Date
+  currentPeriodEnd?: Date,
+  skipIfAlreadyInStatus = false
 ): Promise<void> {
   const updateData: Record<string, any> = {
     status,
@@ -230,15 +262,24 @@ export async function updateSubscriptionStatus(
     updateData.current_period_ends_at = currentPeriodEnd.toISOString();
   }
 
-  const { error } = await supabase
+  // When skipIfAlreadyInStatus=true the update is a no-op if the row is already
+  // in the target status. This is critical for past_due: Stripe Smart Retries fire
+  // multiple invoice.payment_failed events, and each one would otherwise reset
+  // updated_at, extending the 48-hour grace window indefinitely.
+  let query = supabase
     .from("subscriptions")
     .update(updateData)
     .eq("stripe_subscription_id", stripeSubscriptionId);
 
+  if (skipIfAlreadyInStatus) {
+    query = (query as any).neq("status", status);
+  }
+
+  const { error } = await query;
   if (error) {
-    log(`[subscriptions] Error updating status for stripe_sub=${stripeSubscriptionId}: ${error.message}`);
+    log(`[subscriptions] DB ERROR updating stripe_sub=${stripeSubscriptionId} → ${status}: ${error.message}`);
   } else {
-    log(`[subscriptions] Updated subscription ${stripeSubscriptionId} to status=${status}`);
+    log(`[subscriptions] stripe_sub=${stripeSubscriptionId} → ${status}${skipIfAlreadyInStatus ? " (no-op if already in status)" : ""}`);
   }
 }
 

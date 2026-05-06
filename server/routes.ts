@@ -22,6 +22,7 @@ import {
   updateSubscriptionFromCheckout,
   updateSubscriptionStatus,
   findUserByStripeCustomerId,
+  stripeStatusToDb,
 } from "./subscriptions";
 import { log } from "./log";
 import { validateBuddyUnsubscribeToken, sendBuddyInvitationEmail, sendBuddyCollaborationEmail, sendBuddyRevokedEmail, sendBuddyRevokedOwnerEmail } from "./email";
@@ -3092,18 +3093,14 @@ export async function registerRoutes(
                 log(`[stripe-webhook] DB UPDATE: user=${userId} → active, plan=${plan}, periodEnd=${periodEnd.toISOString()}`);
                 await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubId, plan, periodEnd, null);
               }
-            } else if (subStatus === "canceled" || subStatus === "unpaid") {
-              log(`[stripe-webhook] DB UPDATE: sub=${stripeSubId} → canceled`);
-              await updateSubscriptionStatus(stripeSubId, "canceled");
-            } else if (subStatus === "past_due") {
-              log(`[stripe-webhook] DB UPDATE: sub=${stripeSubId} → past_due (temporary access, payment retrying)`);
-              await updateSubscriptionStatus(stripeSubId, "past_due");
-            } else if (subStatus === "incomplete") {
-              log(`[stripe-webhook] DB UPDATE: sub=${stripeSubId} → expired (incomplete — initial payment never finished)`);
-              await updateSubscriptionStatus(stripeSubId, "expired");
-            } else if (subStatus === "incomplete_expired") {
-              log(`[stripe-webhook] DB UPDATE: sub=${stripeSubId} → expired`);
-              await updateSubscriptionStatus(stripeSubId, "expired");
+            } else {
+              // All other statuses — use centralized Stripe → HousAlert mapping (see stripeStatusToDb).
+              // past_due uses skipIfAlreadyInStatus=true so Stripe Smart Retry events
+              // don't reset updated_at and extend the 48-hour grace window.
+              const dbStatus = stripeStatusToDb(subStatus);
+              const isPastDue = dbStatus === "past_due";
+              log(`[stripe-webhook] DB UPDATE: sub=${stripeSubId}, user=${userId} → ${dbStatus} (stripe: ${subStatus})`);
+              await updateSubscriptionStatus(stripeSubId, dbStatus, undefined, isPastDue);
             }
           } else {
             log(`[stripe-webhook] NO USER FOUND for customer=${stripeCustomerId} — cannot process ${event.type}`);
@@ -3113,7 +3110,8 @@ export async function registerRoutes(
 
         case "customer.subscription.deleted": {
           const sub = event.data.object as any;
-          log(`[stripe-webhook] subscription.deleted — subId=${sub.id}, customerId=${sub.customer}`);
+          const userId = await findUserByStripeCustomerId(sub.customer);
+          log(`[stripe-webhook] subscription.deleted — subId=${sub.id}, customerId=${sub.customer}, userId=${userId ?? "unknown"}`);
           await updateSubscriptionStatus(sub.id, "canceled");
           break;
         }
@@ -3124,8 +3122,9 @@ export async function registerRoutes(
           const stripeCustomerId = invoice.customer as string;
           log(`[stripe-webhook] invoice.paid — subId=${stripeSubId}, customerId=${stripeCustomerId}, amount=${invoice.amount_paid}`);
           if (stripeSubId) {
+            const userId = await findUserByStripeCustomerId(stripeCustomerId);
             const sub = await stripe.subscriptions.retrieve(stripeSubId);
-            log(`[stripe-webhook] invoice.paid — Stripe sub status after payment: ${sub.status}`);
+            log(`[stripe-webhook] invoice.paid — userId=${userId ?? "unknown"}, Stripe sub status after payment: ${sub.status}`);
             if (sub.status === "active") {
               const rawEnd = (sub as any).current_period_end
                 ?? (sub as any).items?.data?.[0]?.current_period_end
@@ -3133,7 +3132,7 @@ export async function registerRoutes(
               const periodEnd = rawEnd && rawEnd > 0
                 ? new Date(rawEnd * 1000)
                 : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-              log(`[stripe-webhook] invoice.paid DB UPDATE: sub=${stripeSubId} → active, periodEnd=${periodEnd.toISOString()}`);
+              log(`[stripe-webhook] invoice.paid DB UPDATE: sub=${stripeSubId}, user=${userId ?? "unknown"} → active, periodEnd=${periodEnd.toISOString()}`);
               await updateSubscriptionStatus(stripeSubId, "active", periodEnd);
             }
           }
@@ -3146,15 +3145,50 @@ export async function registerRoutes(
           const stripeCustomerId = invoice.customer as string;
           log(`[stripe-webhook] invoice.payment_failed — subId=${stripeSubId}, customerId=${stripeCustomerId}, attempt=${invoice.attempt_count}`);
           if (stripeSubId) {
+            const userId = await findUserByStripeCustomerId(stripeCustomerId);
             const sub = await stripe.subscriptions.retrieve(stripeSubId);
-            log(`[stripe-webhook] invoice.payment_failed — Stripe sub status: ${sub.status}`);
+            log(`[stripe-webhook] invoice.payment_failed — userId=${userId ?? "unknown"}, Stripe sub status: ${sub.status}`);
             if (sub.status === "past_due") {
-              log(`[stripe-webhook] invoice.payment_failed DB UPDATE: sub=${stripeSubId} → past_due (temporary access, retrying payment)`);
-              await updateSubscriptionStatus(stripeSubId, "past_due");
-            } else if (sub.status === "canceled" || sub.status === "unpaid") {
-              log(`[stripe-webhook] invoice.payment_failed DB UPDATE: sub=${stripeSubId} → canceled`);
-              await updateSubscriptionStatus(stripeSubId, "canceled");
+              // skipIfAlreadyInStatus=true: if the row is already past_due (Smart Retry),
+              // do NOT reset updated_at — that would extend the 48-hour grace window.
+              log(`[stripe-webhook] invoice.payment_failed DB UPDATE: sub=${stripeSubId}, user=${userId ?? "unknown"} → past_due (grace clock preserved if already past_due)`);
+              await updateSubscriptionStatus(stripeSubId, "past_due", undefined, true);
+            } else {
+              const dbStatus = stripeStatusToDb(sub.status);
+              log(`[stripe-webhook] invoice.payment_failed DB UPDATE: sub=${stripeSubId}, user=${userId ?? "unknown"} → ${dbStatus} (stripe: ${sub.status})`);
+              await updateSubscriptionStatus(stripeSubId, dbStatus);
             }
+          }
+          break;
+        }
+
+        case "invoice.payment_action_required": {
+          // Fired when a payment requires customer action (e.g. 3D Secure authentication).
+          // Treat identically to payment_failed: mark past_due to start the 48-hour grace
+          // clock. skipIfAlreadyInStatus=true preserves the clock if already past_due.
+          const invoice = event.data.object as any;
+          const stripeSubId = invoice.subscription as string;
+          const stripeCustomerId = invoice.customer as string;
+          log(`[stripe-webhook] invoice.payment_action_required — subId=${stripeSubId}, customerId=${stripeCustomerId}`);
+          if (stripeSubId) {
+            const userId = await findUserByStripeCustomerId(stripeCustomerId);
+            log(`[stripe-webhook] invoice.payment_action_required DB UPDATE: sub=${stripeSubId}, user=${userId ?? "unknown"} → past_due (action required; grace clock preserved if already past_due)`);
+            await updateSubscriptionStatus(stripeSubId, "past_due", undefined, true);
+          }
+          break;
+        }
+
+        case "invoice.marked_uncollectible": {
+          // Stripe has given up collecting this invoice. Block access immediately — no grace
+          // period applies because Stripe itself has decided the debt is unrecoverable.
+          const invoice = event.data.object as any;
+          const stripeSubId = invoice.subscription as string;
+          const stripeCustomerId = invoice.customer as string;
+          log(`[stripe-webhook] invoice.marked_uncollectible — subId=${stripeSubId}, customerId=${stripeCustomerId}`);
+          if (stripeSubId) {
+            const userId = await findUserByStripeCustomerId(stripeCustomerId);
+            log(`[stripe-webhook] invoice.marked_uncollectible DB UPDATE: sub=${stripeSubId}, user=${userId ?? "unknown"} → canceled (access blocked immediately)`);
+            await updateSubscriptionStatus(stripeSubId, "canceled");
           }
           break;
         }
