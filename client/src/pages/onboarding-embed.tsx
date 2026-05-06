@@ -21,12 +21,12 @@ import { OBW } from "@/components/onboarding-ui";
 import {
   MapPin, ChevronLeft, ChevronRight, ChevronDown,
   Check, X, Eye, EyeOff, Loader2, Search,
-  Bath, Sun, Trees, Leaf,
+  Bath, Sun, Trees, Leaf, Info, Plus,
 } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type EmbedStep = 1 | 2 | 3;
+type EmbedStep = 1 | 2 | 3 | 4;
 type LocationMode = "districts" | "radius" | "city";
 
 interface CityData { name: string; lat: number; lng: number; }
@@ -49,6 +49,14 @@ interface FiltersData {
   furnished: string;
   amenities: string[];
   sendUnclear: boolean;
+}
+
+interface SearchDetailsData {
+  searchName: string;
+  suitableFor: string[];
+  vrijeSector: boolean;
+  payToReply: boolean;
+  loting: boolean;
 }
 
 const INIT_FILTERS: FiltersData = {
@@ -306,9 +314,9 @@ export default function OnboardingEmbedPage() {
     districts: locationData.mode === "districts" && locationData.selectedDistricts.length > 0
       ? locationData.selectedDistricts : undefined,
     price_min: debouncedFilters.minPrice,
-    price_max: debouncedFilters.maxPrice,
+    price_max: debouncedFilters.maxPrice === INIT_FILTERS.maxPrice ? 0 : debouncedFilters.maxPrice,
     bedrooms_min: debouncedFilters.minRooms === "any" ? 0 : parseInt(debouncedFilters.minRooms, 10),
-    size_min: debouncedFilters.sizeNA ? 0 : debouncedFilters.minSize,
+    size_min: debouncedFilters.sizeNA ? 0 : (debouncedFilters.minSize === INIT_FILTERS.minSize ? 0 : debouncedFilters.minSize),
     furnished: debouncedFilters.furnished !== "any" ? debouncedFilters.furnished : undefined,
     property_types: debouncedFilters.propertyType !== "any" ? [debouncedFilters.propertyType] : undefined,
     extra_features: debouncedFilters.amenities.length > 0 ? debouncedFilters.amenities : undefined,
@@ -319,9 +327,25 @@ export default function OnboardingEmbedPage() {
   const { data: filEstimate, isFetching: filFetching } = useQuery<MatchEstimateResult>({
     queryKey: matchEstimateQueryKey(filEstFilters),
     queryFn: () => fetchMatchEstimate(filEstFilters),
-    enabled: !!city && (step === 2 || step === 3),
+    enabled: !!city && (step === 2 || step === 3 || step === 4),
     staleTime: 2 * 60 * 1000,
   });
+
+  // Step 3: Search details
+  const [searchDetails, setSearchDetails] = useState<SearchDetailsData>({
+    searchName: "",
+    suitableFor: [],
+    vrijeSector: true,
+    payToReply: true,
+    loting: true,
+  });
+
+  function toggleSuitableFor(v: string) {
+    setSearchDetails((p) => ({
+      ...p,
+      suitableFor: p.suitableFor.includes(v) ? p.suitableFor.filter((x) => x !== v) : [...p.suitableFor, v],
+    }));
+  }
 
   // Step 4: Account
   const [firstName, setFirstName] = useState("");
@@ -473,6 +497,8 @@ export default function OnboardingEmbedPage() {
             extra_features: filters.amenities.length > 0 ? filters.amenities : undefined,
             send_unclear: filters.sendUnclear,
             price_flexible: filters.priceFlexible,
+            search_name: searchDetails.searchName.trim() || city.name,
+            target_categories: searchDetails.suitableFor.length > 0 ? searchDetails.suitableFor : undefined,
           });
         } catch (err) {
           console.error("[OnboardingEmbed] Failed to save search profile:", err);
@@ -529,7 +555,7 @@ export default function OnboardingEmbedPage() {
     <div className="flex flex-col" style={{ minHeight: "100dvh", backgroundColor: "rgb(var(--ha-card))" }}
       data-testid="onboarding-embed">
 
-      <EmbedHeader step={step} title={step === 3 ? "Create account" : HEADER_TITLE} />
+      <EmbedHeader step={step} title={step === 4 ? "Create account" : HEADER_TITLE} />
 
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto">
@@ -828,8 +854,96 @@ export default function OnboardingEmbedPage() {
             </div>
           )}
 
-          {/* ── STEP 3: ACCOUNT ───────────────────────────────────────────── */}
+          {/* ── STEP 3: SEARCH DETAILS ────────────────────────────────────── */}
           {step === 3 && (
+            <div className="flex flex-col gap-6" data-testid="embed-step-details">
+              {/* Search name */}
+              <section>
+                <SectionLabel>Search name</SectionLabel>
+                <input
+                  type="text"
+                  value={searchDetails.searchName}
+                  onChange={(e) => setSearchDetails((p) => ({ ...p, searchName: e.target.value }))}
+                  placeholder={city?.name ?? "e.g. Berlin"}
+                  className="w-full ha-field-web"
+                  style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg }}
+                  data-testid="input-search-name"
+                />
+              </section>
+
+              <Divider />
+
+              {/* Suitable for */}
+              <section>
+                <SectionLabel>Suitable for</SectionLabel>
+                <div className="flex gap-2 flex-wrap" data-testid="suitable-for-chips">
+                  {[
+                    { value: "studenten",    label: "Students" },
+                    { value: "woningdelers", label: "Roommates" },
+                    { value: "huisdieren",   label: "Pets allowed" },
+                  ].map((opt) => {
+                    const active = searchDetails.suitableFor.includes(opt.value);
+                    return (
+                      <button key={opt.value} onClick={() => toggleSuitableFor(opt.value)}
+                        className="h-[38px] px-3.5 rounded-full text-[13px] font-medium border transition-all active:scale-[0.96] flex items-center gap-[5px]"
+                        style={{
+                          backgroundColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-surface))",
+                          borderColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-border-input))",
+                          color: active ? "white" : OBW.text,
+                        }}
+                        data-testid={`chip-suitable-${opt.value}`}>
+                        {!active && <Plus className="w-[11px] h-[11px] shrink-0" style={{ color: "rgb(var(--ha-text-muted))" }} />}
+                        {active && <Check className="w-[11px] h-[11px] shrink-0" />}
+                        {opt.label}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="mt-3 rounded-[8px] flex items-start gap-2"
+                  style={{ backgroundColor: "rgb(var(--ha-hover-bg))", padding: "10px 12px" }}>
+                  <Info className="w-[13px] h-[13px] shrink-0 mt-[2px]" style={{ color: "rgb(var(--ha-text-placeholder))" }} />
+                  <p className="text-[12px] leading-relaxed" style={{ color: OBW.textSecondary }}>
+                    Select which type of tenant best suits the property. Leave empty if it doesn't matter.
+                  </p>
+                </div>
+              </section>
+
+              <Divider />
+
+              {/* Search filter toggles */}
+              <section>
+                <SectionLabel>Search filter</SectionLabel>
+                <div className="flex flex-col" data-testid="search-filter-rows">
+                  {([
+                    { key: "vrijeSector" as const, label: "Free sector housing from housing corporations" },
+                    { key: "payToReply"  as const, label: "Listings on sites that require payment to respond", info: true },
+                    { key: "loting"      as const, label: "Lottery housing (social housing)", info: true },
+                  ] as { key: keyof SearchDetailsData & string; label: string; info?: boolean }[]).map((row) => {
+                    const checked = searchDetails[row.key] as boolean;
+                    return (
+                      <button key={row.key}
+                        onClick={() => setSearchDetails((p) => ({ ...p, [row.key]: !checked }))}
+                        className="w-full flex items-start justify-between gap-3 py-[11px] text-left"
+                        data-testid={`toggle-filter-${row.key}`}>
+                        <span className="text-[14px] leading-snug flex-1" style={{ color: OBW.text }}>
+                          {row.label}
+                          {row.info && <Info className="inline-block ml-1 relative w-3 h-3" style={{ color: "rgb(var(--ha-text-placeholder))", top: -1, verticalAlign: "middle" }} />}
+                        </span>
+                        <div className="w-[44px] h-[26px] rounded-full p-[3px] transition-colors shrink-0 flex items-center mt-[1px]"
+                          style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "rgb(var(--ha-card-border))" }}>
+                          <div className="w-[20px] h-[20px] rounded-full bg-white transition-all"
+                            style={{ transform: checked ? "translateX(18px)" : "translateX(0)", boxShadow: "0 1px 3px rgba(0,0,0,0.15)" }} />
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </section>
+            </div>
+          )}
+
+          {/* ── STEP 4: ACCOUNT ───────────────────────────────────────────── */}
+          {step === 4 && (
             <div className="flex flex-col gap-4" data-testid="embed-step-account">
               <div>
                 <h2 className="text-[22px] font-bold mb-1" style={{ color: OBW.text }}>
@@ -959,7 +1073,17 @@ export default function OnboardingEmbedPage() {
       )}
       {step === 3 && (
         <EmbedFooter
+          matchCount={filEstimate?.matchesLast7Days}
+          fetching={filFetching}
           onBack={() => setStep(2)}
+          onNext={() => setStep(4)}
+          nextLabel="Next"
+          showMatch={true}
+        />
+      )}
+      {step === 4 && (
+        <EmbedFooter
+          onBack={() => setStep(3)}
           onNext={handleCreateAccount}
           nextLabel="Create account"
           nextDisabled={!canSubmit}
