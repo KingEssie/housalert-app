@@ -37,7 +37,6 @@ import OnboardingNameNew from "@/pages/onboarding/name";
 import OnboardingEmailNew from "@/pages/onboarding/email";
 import OnboardingPasswordNew from "@/pages/onboarding/password";
 import OnboardingPreferencesNew from "@/pages/onboarding/preferences";
-import OnboardingSlideshow from "@/pages/onboarding-slideshow";
 import ContinueDraftPage from "@/pages/continue-draft";
 import AuthCallbackPage from "@/pages/auth-callback";
 import { DocumentenGuidePage, SchufaGuidePage, ZoekstrategieGuidePage, NetwerkGuidePage } from "@/pages/guide";
@@ -218,7 +217,7 @@ function Router() {
       <Route path="/reset-password" component={ResetPasswordPage} />
       <Route path="/onboarding-embed" component={OnboardingEmbedPage} />
       <Route path="/continue" component={ContinueDraftPage} />
-      <Route path="/new-search" component={OnboardingSlideshow} />
+      <Route path="/new-search" component={() => <QueryPreservingRedirect to="/onboarding-embed" />} />
       <Route path="/onboarding/intro" component={() => <QueryPreservingRedirect to="/onboarding/start" />} />
       <Route path="/onboarding/city" component={() => <QueryPreservingRedirect to="/onboarding/start" />} />
       <Route path="/onboarding/start" component={() => <WebFunnelRoute component={OnboardingLocationNew} />} />
