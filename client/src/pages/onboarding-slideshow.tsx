@@ -35,6 +35,20 @@ export default function OnboardingSlideshow() {
   const [current, setCurrent] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
 
+  // Pre-fill city from ?city= query param (e.g. from website CTA)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const cityParam = params.get("city");
+    if (!cityParam) return;
+    const match = defaultCities.find(
+      (c) => c.name.toLowerCase() === cityParam.toLowerCase()
+    );
+    if (match) {
+      setSelectedCity(match);
+      setSearchText(match.name);
+    }
+  }, []);
+
   const SLIDES = [
     { image: SLIDE_IMAGES[0], title: t("slideshow.slide1Title"), subtitle: t("slideshow.slide1Subtitle") },
     { image: SLIDE_IMAGES[1], title: t("slideshow.slide2Title"), subtitle: t("slideshow.slide2Subtitle") },
