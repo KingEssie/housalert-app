@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
-import { useTranslation } from "@/i18n";
 import { useGeocoderSearch } from "@/hooks/use-geocoder-search";
 import { supabase } from "@/lib/supabase";
 import { apiFetch } from "@/lib/api-base";
@@ -60,10 +59,10 @@ const INIT_FILTERS: FiltersData = {
 };
 
 const AMENITY_OPTIONS = [
-  { value: "bath",     labelKey: "amenities.bath",     fallback: "Bad",             Icon: Bath  },
-  { value: "balcony",  labelKey: "amenities.balcony",  fallback: "Balkon",          Icon: Sun   },
-  { value: "garden",   labelKey: "amenities.garden",   fallback: "Garten",          Icon: Trees },
-  { value: "energy_c", labelKey: "amenities.energyC",  fallback: "Energieklasse C+", Icon: Leaf  },
+  { value: "bath",     label: "Bathroom",      Icon: Bath  },
+  { value: "balcony",  label: "Balcony",        Icon: Sun   },
+  { value: "garden",   label: "Garden",         Icon: Trees },
+  { value: "energy_c", label: "Energy class C+", Icon: Leaf  },
 ];
 
 const TOP_CITIES = defaultCities.slice(0, 6);
@@ -168,7 +167,6 @@ function EmbedFooter({
   onBack: () => void; onNext: () => void;
   nextLabel: string; nextDisabled?: boolean; loading?: boolean; showMatch?: boolean;
 }) {
-  const { t } = useTranslation();
   return (
     <div className="sticky bottom-0 shrink-0 z-20"
       style={{
@@ -180,13 +178,13 @@ function EmbedFooter({
         {showMatch && (
           <div className="flex-1 min-w-0">
             <p className="text-[10.5px] font-medium leading-tight" style={{ color: OBW.textMuted }}>
-              {t("onboarding.location.estimatedMatches")}
+              Estimated matches
             </p>
             <p className="text-[15px] font-semibold leading-snug" style={{ color: OBW.text }}>
               {fetching
                 ? <span style={{ color: OBW.textMuted }}>…</span>
                 : matchCount != null
-                  ? <>{Math.max(1, matchCount)} {t("onboardingUI.perWeek")}{Math.max(1, matchCount) > 10 ? " 🔥" : ""}</>
+                  ? <>{Math.max(1, matchCount)} / week{Math.max(1, matchCount) > 10 ? " 🔥" : ""}</>
                   : <span style={{ color: OBW.textMuted }}>—</span>
               }
             </p>
@@ -222,7 +220,6 @@ function EmbedFooter({
 
 export default function OnboardingEmbedPage() {
   const [, navigate] = useLocation();
-  const { t } = useTranslation();
   const { toast } = useToast();
 
   // Step
@@ -365,17 +362,17 @@ export default function OnboardingEmbedPage() {
 
   // Location mode tabs
   const locationTabs: { value: LocationMode; label: string }[] = [
-    ...(hasDistricts ? [{ value: "districts" as LocationMode, label: t("onboarding.location.neighborhoodsTab") }] : []),
-    { value: "radius" as LocationMode, label: t("onboarding.location.radiusTab") },
-    { value: "city" as LocationMode, label: t("onboarding.location.wholePlaceTab") },
+    ...(hasDistricts ? [{ value: "districts" as LocationMode, label: "Districts" }] : []),
+    { value: "radius" as LocationMode, label: "Radius" },
+    { value: "city" as LocationMode, label: "Entire city" },
   ];
 
   const districtCount = locationData.selectedDistricts.length;
   const districtSummary = districtCount === 0 || districtCount === districtList.length
-    ? t("onboarding.location.allNeighborhoodsSelected")
+    ? "All districts selected"
     : districtCount === 1
-      ? t("onboarding.location.neighborhoodsSelected").replace("{n}", "1")
-      : t("onboarding.location.neighborhoodsPluralSelected").replace("{n}", String(districtCount));
+      ? "1 district selected"
+      : `${districtCount} districts selected`;
 
   function toggleDistrict(d: string) {
     setLocationData((prev) => ({
@@ -437,15 +434,15 @@ export default function OnboardingEmbedPage() {
       const result = await res.json();
       if (!res.ok) {
         const msg = result.error === "user_exists"
-          ? t("common.authAccountExists")
-          : (result.message || result.error || t("auth.signup.failed"));
-        toast({ title: t("auth.signup.failed"), description: msg, variant: "destructive" });
+          ? "An account with this email already exists"
+          : (result.message || result.error || "Sign up failed");
+        toast({ title: "Sign up failed", description: msg, variant: "destructive" });
         setLoading(false); submittingRef.current = false; return;
       }
 
       const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
       if (signInError) {
-        toast({ title: t("common.error"), description: signInError.message, variant: "destructive" });
+        toast({ title: "Error", description: signInError.message, variant: "destructive" });
         setLoading(false); submittingRef.current = false; return;
       }
 
@@ -484,7 +481,7 @@ export default function OnboardingEmbedPage() {
 
       navigate("/paywall");
     } catch (err: any) {
-      toast({ title: t("common.error"), description: err.message, variant: "destructive" });
+      toast({ title: "Error", description: err.message, variant: "destructive" });
     } finally {
       setLoading(false); submittingRef.current = false;
     }
@@ -508,22 +505,22 @@ export default function OnboardingEmbedPage() {
   );
 
   const ROOM_OPTIONS = [
-    { value: "any", label: t("onboarding.filters.doesntMatter") },
+    { value: "any", label: "Any" },
     { value: "1", label: "1+" }, { value: "2", label: "2+" },
     { value: "3", label: "3+" }, { value: "4", label: "4+" }, { value: "5", label: "5+" },
   ];
   const PROPERTY_OPTIONS = [
-    { value: "any", label: t("onboarding.filters.doesntMatter") },
-    { value: "apartment", label: t("onboarding.propertyType.apartment") },
-    { value: "house", label: t("onboarding.filters.house") },
+    { value: "any", label: "Any" },
+    { value: "apartment", label: "Apartment" },
+    { value: "house", label: "House" },
   ];
   const FURNISHED_OPTIONS = [
-    { value: "any", label: t("onboarding.filters.furnishedAny") },
-    { value: "furnished", label: t("onboarding.filters.furnishedYes") },
-    { value: "unfurnished", label: t("onboarding.filters.furnishedNo") },
+    { value: "any", label: "Any" },
+    { value: "furnished", label: "Furnished" },
+    { value: "unfurnished", label: "Unfurnished" },
   ];
 
-  const HEADER_TITLE = "Zoekopdracht maken";
+  const HEADER_TITLE = "Create search";
   const missed30 = filEstimate?.matchesLast30Days ?? null;
 
   // ─── Render ─────────────────────────────────────────────────────────────────
@@ -532,7 +529,7 @@ export default function OnboardingEmbedPage() {
     <div className="flex flex-col" style={{ minHeight: "100dvh", backgroundColor: "rgb(var(--ha-card))" }}
       data-testid="onboarding-embed">
 
-      <EmbedHeader step={step} title={step === 3 ? "Account aanmaken" : HEADER_TITLE} />
+      <EmbedHeader step={step} title={step === 3 ? "Create account" : HEADER_TITLE} />
 
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto">
@@ -542,7 +539,7 @@ export default function OnboardingEmbedPage() {
           {step === 1 && (
             <div data-testid="embed-step-location">
               {/* Inline city search */}
-              <SectionLabel>{t("onboarding.location.cityLabel")}</SectionLabel>
+              <SectionLabel>City</SectionLabel>
               <div className="relative mb-5" data-testid="city-search-container">
                 <div className="relative">
                   <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[17px] h-[17px] pointer-events-none"
@@ -550,9 +547,10 @@ export default function OnboardingEmbedPage() {
                   <input ref={inputRef} type="text" value={searchText}
                     onChange={(e) => handleSearchChange(e.target.value)}
                     onFocus={() => setDropdownOpen(true)}
-                    placeholder="Zoek een stad..."
-                    className="w-full ha-field-web pl-10 pr-10"
+                    placeholder="Search for a city..."
+                    className="w-full ha-field-web pr-10"
                     style={{
+                      paddingLeft: "46px",
                       borderColor: city ? "rgb(var(--ha-primary))" : "rgb(var(--ha-border-input))",
                       backgroundColor: city ? "rgb(var(--ha-primary-light))" : OBW.inputBg,
                       color: OBW.text,
@@ -622,7 +620,7 @@ export default function OnboardingEmbedPage() {
                 })}
               </div>
 
-              {/* Buurten (districts) */}
+              {/* Districts */}
               {locationData.mode === "districts" && (
                 <div data-testid="section-districts">
                   <button onClick={() => setShowDistrictPicker(!showDistrictPicker)}
@@ -660,7 +658,7 @@ export default function OnboardingEmbedPage() {
                 </div>
               )}
 
-              {/* Straal (radius) */}
+              {/* Radius */}
               {locationData.mode === "radius" && (
                 <div data-testid="section-radius">
                   <style>{`
@@ -672,7 +670,7 @@ export default function OnboardingEmbedPage() {
                   `}</style>
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-[14px] font-semibold" style={{ color: OBW.textSecondary }}>
-                      {t("onboarding.location.distanceLabel")}
+                      Distance from
                     </span>
                     <span className="text-[13px] font-medium" style={{ color: OBW.textMuted }}>{city.name}</span>
                   </div>
@@ -697,7 +695,7 @@ export default function OnboardingEmbedPage() {
                 </div>
               )}
 
-              {/* Gehele woonplaats */}
+              {/* Entire city */}
               {locationData.mode === "city" && (
                 <div data-testid="section-city">
                   <div style={{ aspectRatio: "1/1" }} className="rounded-[12px] overflow-hidden w-full">
@@ -715,7 +713,7 @@ export default function OnboardingEmbedPage() {
           {step === 2 && (
             <div className="flex flex-col gap-5" data-testid="embed-step-filters">
               <section>
-                <SectionLabel>{t("onboarding.filters.rentLabel")}</SectionLabel>
+                <SectionLabel>Rent</SectionLabel>
                 <DualRangeSlider
                   min={0} max={3000} step={50}
                   valueLow={filters.minPrice} valueHigh={filters.maxPrice}
@@ -724,25 +722,25 @@ export default function OnboardingEmbedPage() {
                   formatLabel={(v) => `€${v}`} testId="slider-rent-price" />
                 <div className="mt-3">
                   <Toggle checked={filters.priceFlexible} onChange={(v) => updateFilters({ priceFlexible: v })}
-                    label={t("onboarding.filters.priceFlexible")} testId="toggle-price-flexible" />
+                    label="Also send slightly more expensive perfect matches" testId="toggle-price-flexible" />
                 </div>
               </section>
 
               <Divider />
 
               <section>
-                <SectionLabel>{t("onboarding.filters.propertyTypeLabel")}</SectionLabel>
+                <SectionLabel>Property type</SectionLabel>
                 {chipRow(PROPERTY_OPTIONS, filters.propertyType, (v) => updateFilters({ propertyType: v }), "property-type")}
                 <div className="mt-3">
                   <Toggle checked={filters.includeRooms} onChange={(v) => updateFilters({ includeRooms: v })}
-                    label={t("onboarding.filters.includeRooms")} testId="toggle-include-rooms" />
+                    label="Also search for rooms / shared housing" testId="toggle-include-rooms" />
                 </div>
               </section>
 
               <Divider />
 
               <section>
-                <SectionLabel>{t("onboarding.filters.bedroomsLabel")}</SectionLabel>
+                <SectionLabel>Bedrooms</SectionLabel>
                 <div className="flex gap-2 overflow-x-auto no-scrollbar" data-testid="rooms-selector">
                   {ROOM_OPTIONS.map((opt) => {
                     const active = filters.minRooms === opt.value;
@@ -762,7 +760,7 @@ export default function OnboardingEmbedPage() {
 
               <section>
                 <div className="flex items-center justify-between mb-2.5">
-                  <SectionLabel>{t("onboarding.filters.minSizeLabel")}</SectionLabel>
+                  <SectionLabel>Minimum size</SectionLabel>
                   <button onClick={() => updateFilters({ sizeNA: !filters.sizeNA, minSize: filters.sizeNA ? 30 : 0 })}
                     className="text-[12px] font-medium px-2.5 py-1 rounded-full border transition-all"
                     style={{
@@ -771,7 +769,7 @@ export default function OnboardingEmbedPage() {
                       color: filters.sizeNA ? "rgb(var(--ha-primary))" : OBW.textSecondary,
                     }}
                     data-testid="button-size-na">
-                    {t("common.na")}
+                    N/A
                   </button>
                 </div>
                 {!filters.sizeNA && (
@@ -792,16 +790,16 @@ export default function OnboardingEmbedPage() {
               <Divider />
 
               <section>
-                <SectionLabel>{t("onboarding.filters.furnishedLabel")}</SectionLabel>
+                <SectionLabel>Furnished</SectionLabel>
                 {chipRow(FURNISHED_OPTIONS, filters.furnished, (v) => updateFilters({ furnished: v }), "furnished-selector")}
               </section>
 
               <Divider />
 
               <section>
-                <SectionLabel>{t("onboarding.filters.amenitiesLabel")}</SectionLabel>
+                <SectionLabel>Other preferences</SectionLabel>
                 <div className="flex flex-wrap gap-2" data-testid="amenity-chips">
-                  {AMENITY_OPTIONS.map(({ value, labelKey, fallback, Icon }) => {
+                  {AMENITY_OPTIONS.map(({ value, label, Icon }) => {
                     const active = filters.amenities.includes(value);
                     return (
                       <button key={value} onClick={() => toggleAmenity(value)}
@@ -814,7 +812,7 @@ export default function OnboardingEmbedPage() {
                         data-testid={`amenity-${value}`}>
                         {active && <Check className="w-3 h-3" />}
                         <Icon className="w-3.5 h-3.5" />
-                        {t(labelKey) || fallback}
+                        {label}
                       </button>
                     );
                   })}
@@ -825,7 +823,7 @@ export default function OnboardingEmbedPage() {
 
               <section>
                 <Toggle checked={filters.sendUnclear} onChange={(v) => updateFilters({ sendUnclear: v })}
-                  label={t("onboarding.filters.sendUnclear")} testId="toggle-send-unclear" />
+                  label="Also send listings where my criteria aren't clearly listed" testId="toggle-send-unclear" />
               </section>
             </div>
           )}
@@ -835,10 +833,10 @@ export default function OnboardingEmbedPage() {
             <div className="flex flex-col gap-4" data-testid="embed-step-account">
               <div>
                 <h2 className="text-[22px] font-bold mb-1" style={{ color: OBW.text }}>
-                  Waar kunnen we je matches heen sturen?
+                  Where should we send your matches?
                 </h2>
                 <p className="text-[14px]" style={{ color: OBW.textSecondary }}>
-                  {t("onboarding.name.subtitle")}
+                  Create your free account to receive alerts
                 </p>
               </div>
 
@@ -852,7 +850,7 @@ export default function OnboardingEmbedPage() {
                     <span className="text-white text-[15px] font-bold">{Math.max(1, missed30)}</span>
                   </div>
                   <p className="text-[13px] font-medium leading-snug" style={{ color: OBW.text }}>
-                    Je hebt <span className="font-bold">{Math.max(1, missed30)} woningmatches</span> gemist in de laatste 30 dagen
+                    You've missed <span className="font-bold">{Math.max(1, missed30)} rental matches</span> in the last 30 days
                   </p>
                 </div>
               )}
@@ -860,17 +858,17 @@ export default function OnboardingEmbedPage() {
               {/* Name fields */}
               <div className="flex gap-3">
                 <div className="flex-1">
-                  <SectionLabel>{t("onboarding.name.firstNameLabel")}</SectionLabel>
+                  <SectionLabel>First name</SectionLabel>
                   <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)}
-                    placeholder={t("onboarding.name.firstNamePlaceholder")}
+                    placeholder="First name"
                     className="w-full ha-field-web"
                     style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg }}
                     autoFocus data-testid="input-first-name" />
                 </div>
                 <div className="flex-1">
-                  <SectionLabel>{t("onboarding.name.lastNameLabel")}</SectionLabel>
+                  <SectionLabel>Last name</SectionLabel>
                   <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)}
-                    placeholder={t("onboarding.name.lastNamePlaceholder")}
+                    placeholder="Last name"
                     className="w-full ha-field-web"
                     style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg }}
                     data-testid="input-last-name" />
@@ -878,20 +876,20 @@ export default function OnboardingEmbedPage() {
               </div>
 
               <div>
-                <SectionLabel>{t("onboarding.email.label")}</SectionLabel>
+                <SectionLabel>Email address</SectionLabel>
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t("onboarding.email.placeholder")}
+                  placeholder="your@email.com"
                   className="w-full ha-field-web"
                   style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg }}
                   data-testid="input-email" />
               </div>
 
               <div>
-                <SectionLabel>{t("onboarding.password.label")}</SectionLabel>
+                <SectionLabel>Password</SectionLabel>
                 <div className="relative">
                   <input type={showPassword ? "text" : "password"} value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder={t("onboarding.password.placeholder")}
+                    placeholder="Create a password"
                     className="w-full ha-field-web pr-11"
                     style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg }}
                     data-testid="input-password" />
@@ -905,11 +903,11 @@ export default function OnboardingEmbedPage() {
               </div>
 
               <div>
-                <SectionLabel>{t("onboarding.password.confirmLabel")}</SectionLabel>
+                <SectionLabel>Confirm password</SectionLabel>
                 <div className="relative">
                   <input type={showConfirm ? "text" : "password"} value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder={t("onboarding.password.confirmPlaceholder")}
+                    placeholder="Repeat your password"
                     className="w-full ha-field-web pr-11"
                     style={{
                       borderColor: confirmPassword.length > 0 && !confirmOk ? "rgb(var(--ha-danger))" : "rgb(var(--ha-border-input))",
@@ -926,10 +924,10 @@ export default function OnboardingEmbedPage() {
 
               {/* Legal text */}
               <p className="text-[11px] leading-relaxed" style={{ color: OBW.textMuted }}>
-                Door een account aan te maken ga je akkoord met onze{" "}
-                <a href="/terms" target="_blank" className="underline" style={{ color: OBW.textSecondary }}>Gebruiksvoorwaarden</a>{" "}
-                en{" "}
-                <a href="/privacy" target="_blank" className="underline" style={{ color: OBW.textSecondary }}>Privacybeleid</a>.
+                By creating an account you agree to our{" "}
+                <a href="/terms" target="_blank" className="underline" style={{ color: OBW.textSecondary }}>Terms of Service</a>{" "}
+                and{" "}
+                <a href="/privacy" target="_blank" className="underline" style={{ color: OBW.textSecondary }}>Privacy Policy</a>.
               </p>
             </div>
           )}
@@ -944,7 +942,7 @@ export default function OnboardingEmbedPage() {
           fetching={locFetching}
           onBack={() => {}}
           onNext={() => { if (city) setStep(2); }}
-          nextLabel={t("common.next")}
+          nextLabel="Next"
           nextDisabled={!city}
           showMatch={!!city}
         />
@@ -955,7 +953,7 @@ export default function OnboardingEmbedPage() {
           fetching={filFetching}
           onBack={() => setStep(1)}
           onNext={() => setStep(3)}
-          nextLabel={t("common.next")}
+          nextLabel="Next"
           showMatch={true}
         />
       )}
@@ -963,7 +961,7 @@ export default function OnboardingEmbedPage() {
         <EmbedFooter
           onBack={() => setStep(2)}
           onNext={handleCreateAccount}
-          nextLabel="Account aanmaken"
+          nextLabel="Create account"
           nextDisabled={!canSubmit}
           loading={loading}
           showMatch={false}
