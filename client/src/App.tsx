@@ -217,6 +217,7 @@ function Router() {
       <Route path="/reset-password" component={ResetPasswordPage} />
       <Route path="/onboarding-embed" component={OnboardingEmbedPage} />
       <Route path="/continue" component={ContinueDraftPage} />
+      <Route path="/new-search" component={() => <QueryPreservingRedirect to="/onboarding/start" />} />
       <Route path="/onboarding/intro" component={() => <QueryPreservingRedirect to="/onboarding/start" />} />
       <Route path="/onboarding/city" component={() => <QueryPreservingRedirect to="/onboarding/start" />} />
       <Route path="/onboarding/start" component={() => <WebFunnelRoute component={OnboardingLocationNew} />} />
