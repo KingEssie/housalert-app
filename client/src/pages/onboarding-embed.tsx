@@ -27,7 +27,7 @@ import {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type EmbedStep = 1 | 2 | 3 | 4;
+type EmbedStep = 1 | 2 | 3;
 type LocationMode = "districts" | "radius" | "city";
 
 interface CityData { name: string; lat: number; lng: number; }
@@ -228,9 +228,10 @@ export default function OnboardingEmbedPage() {
   // Step
   const [step, setStep] = useState<EmbedStep>(1);
 
-  // Step 1: City
-  const [city, setCity] = useState<CityData | null>(null);
-  const [searchText, setSearchText] = useState("");
+  // City — pre-filled with Berlin, editable inline on step 1
+  const BERLIN = defaultCities.find((c) => c.name === "Berlin") ?? { name: "Berlin", lat: 52.52, lng: 13.405 };
+  const [city, setCity] = useState<CityData | null>(BERLIN);
+  const [searchText, setSearchText] = useState(BERLIN.name);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -291,7 +292,7 @@ export default function OnboardingEmbedPage() {
   const { data: locEstimate, isFetching: locFetching } = useQuery<MatchEstimateResult>({
     queryKey: matchEstimateQueryKey(locEstFilters),
     queryFn: () => fetchMatchEstimate(locEstFilters),
-    enabled: !!city && step === 2,
+    enabled: !!city && step === 1,
     staleTime: 2 * 60 * 1000,
   });
 
@@ -321,7 +322,7 @@ export default function OnboardingEmbedPage() {
   const { data: filEstimate, isFetching: filFetching } = useQuery<MatchEstimateResult>({
     queryKey: matchEstimateQueryKey(filEstFilters),
     queryFn: () => fetchMatchEstimate(filEstFilters),
-    enabled: !!city && (step === 3 || step === 4),
+    enabled: !!city && (step === 2 || step === 3),
     staleTime: 2 * 60 * 1000,
   });
 
@@ -481,22 +482,7 @@ export default function OnboardingEmbedPage() {
         }
       }
 
-      if (sessionData?.session?.access_token) {
-        try {
-          await apiFetch("/api/profile-data", {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${sessionData.session.access_token}`,
-            },
-            body: JSON.stringify({ onboarding_completed: true }),
-          });
-        } catch (err) {
-          console.error("[OnboardingEmbed] Failed to set onboarding_completed:", err);
-        }
-      }
-
-      navigate("/onboarding/setup");
+      navigate("/paywall");
     } catch (err: any) {
       toast({ title: t("common.error"), description: err.message, variant: "destructive" });
     } finally {
@@ -546,21 +532,18 @@ export default function OnboardingEmbedPage() {
     <div className="flex flex-col" style={{ minHeight: "100dvh", backgroundColor: "rgb(var(--ha-card))" }}
       data-testid="onboarding-embed">
 
-      <EmbedHeader step={step} title={step === 4 ? "Account aanmaken" : HEADER_TITLE} />
+      <EmbedHeader step={step} title={step === 3 ? "Account aanmaken" : HEADER_TITLE} />
 
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-[480px] mx-auto px-4 pt-5 pb-[120px]">
 
-          {/* ── STEP 1: CITY ──────────────────────────────────────────────── */}
+          {/* ── STEP 1: LOCATION (city editable inline) ───────────────────── */}
           {step === 1 && (
-            <div data-testid="embed-step-city">
-              <p className="text-[15px] font-medium mb-5" style={{ color: OBW.textSecondary }}>
-                In welke stad zoek je een woning?
-              </p>
-
-              {/* Search input */}
-              <div className="relative mb-4" data-testid="city-search-container">
+            <div data-testid="embed-step-location">
+              {/* Inline city search */}
+              <SectionLabel>{t("onboarding.location.cityLabel")}</SectionLabel>
+              <div className="relative mb-5" data-testid="city-search-container">
                 <div className="relative">
                   <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[17px] h-[17px] pointer-events-none"
                     style={{ color: city ? "rgb(var(--ha-primary))" : "rgb(var(--ha-text-placeholder))" }} />
@@ -568,17 +551,17 @@ export default function OnboardingEmbedPage() {
                     onChange={(e) => handleSearchChange(e.target.value)}
                     onFocus={() => setDropdownOpen(true)}
                     placeholder="Zoek een stad..."
-                    className="w-full h-[48px] rounded-[10px] border pl-10 pr-10 text-[15px] font-medium outline-none transition-all"
+                    className="w-full ha-field-web pl-10 pr-10"
                     style={{
-                      borderColor: "rgb(var(--ha-card-border))",
-                      backgroundColor: city ? "var(--ha-primary-light)" : "rgb(var(--ha-surface))",
-                      color: "rgb(var(--ha-text))",
+                      borderColor: city ? "rgb(var(--ha-primary))" : "rgb(var(--ha-border-input))",
+                      backgroundColor: city ? "rgb(var(--ha-primary-light))" : OBW.inputBg,
+                      color: OBW.text,
                     }}
                     data-testid="input-city-search" />
                   <div className="absolute right-3.5 top-1/2 -translate-y-1/2">
                     {geocoder.loading && !city
                       ? <Loader2 className="w-4 h-4 animate-spin" style={{ color: "rgb(var(--ha-text-placeholder))" }} />
-                      : city || searchText.length > 0
+                      : searchText.length > 0
                         ? <button onClick={handleClearCity} className="w-5 h-5 rounded-full flex items-center justify-center"
                             style={{ backgroundColor: "rgb(var(--ha-card-border))" }} data-testid="button-clear-city">
                             <X className="w-3 h-3" style={{ color: "rgb(var(--ha-text-muted))" }} />
@@ -621,46 +604,8 @@ export default function OnboardingEmbedPage() {
                 )}
               </div>
 
-              {/* Top cities list */}
-              {!searchText.trim() && (
-                <div className="rounded-[10px] border overflow-hidden" style={{ borderColor: "rgb(var(--ha-card-border))" }}>
-                  {TOP_CITIES.map((c, i) => (
-                    <button key={c.name} onClick={() => handleSelectCity(c)}
-                      className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-ha-surface transition-colors text-left"
-                      style={{
-                        borderBottom: i < TOP_CITIES.length - 1 ? "1px solid rgb(var(--ha-card-border))" : "none",
-                        backgroundColor: city?.name === c.name ? "rgb(var(--ha-primary-light))" : undefined,
-                      }}
-                      data-testid={`city-option-${c.name.toLowerCase()}`}>
-                      <div className="flex items-center gap-3">
-                        <MapPin className="w-4 h-4 shrink-0" style={{ color: "rgb(var(--ha-primary))", opacity: 0.7 }} />
-                        <span className="text-[15px] font-semibold" style={{ color: "rgb(var(--ha-text))" }}>{c.name}</span>
-                      </div>
-                      {city?.name === c.name
-                        ? <Check className="w-4 h-4" style={{ color: "rgb(var(--ha-primary))" }} />
-                        : <ChevronRight className="w-4 h-4" style={{ color: "rgb(var(--ha-text-placeholder))" }} />
-                      }
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* ── STEP 2: LOCATION ──────────────────────────────────────────── */}
-          {step === 2 && city && (
-            <div data-testid="embed-step-location">
-              {/* City display (click → back to step 1) */}
-              <SectionLabel>{t("onboarding.location.cityLabel")}</SectionLabel>
-              <button onClick={() => setStep(1)}
-                className="w-full flex items-center gap-3 mb-5 ha-field-web text-left"
-                style={{ backgroundColor: OBW.inputBg, borderColor: "rgb(var(--ha-border-input))", color: OBW.text }}
-                data-testid="field-city-display">
-                <MapPin className="w-[17px] h-[17px] shrink-0" style={{ color: "rgb(var(--ha-primary))" }} />
-                <span className="flex-1 text-[16px] font-medium" style={{ color: OBW.text }}>{city.name}</span>
-                <X className="w-[15px] h-[15px] shrink-0" style={{ color: OBW.textMuted }} />
-              </button>
-
+              {/* ── Location tabs + map (shown once city is confirmed) ─────── */}
+              {city && (<>
               {/* Location mode tabs */}
               <div className="flex items-center gap-1 p-[4px] rounded-full mb-5"
                 style={{ backgroundColor: "rgb(var(--ha-toggle-bg))" }} data-testid="location-tabs">
@@ -762,11 +707,12 @@ export default function OnboardingEmbedPage() {
                   </div>
                 </div>
               )}
+              </>)}
             </div>
           )}
 
-          {/* ── STEP 3: FILTERS ───────────────────────────────────────────── */}
-          {step === 3 && (
+          {/* ── STEP 2: FILTERS ───────────────────────────────────────────── */}
+          {step === 2 && (
             <div className="flex flex-col gap-5" data-testid="embed-step-filters">
               <section>
                 <SectionLabel>{t("onboarding.filters.rentLabel")}</SectionLabel>
@@ -884,8 +830,8 @@ export default function OnboardingEmbedPage() {
             </div>
           )}
 
-          {/* ── STEP 4: ACCOUNT ───────────────────────────────────────────── */}
-          {step === 4 && (
+          {/* ── STEP 3: ACCOUNT ───────────────────────────────────────────── */}
+          {step === 3 && (
             <div className="flex flex-col gap-4" data-testid="embed-step-account">
               <div>
                 <h2 className="text-[22px] font-bold mb-1" style={{ color: OBW.text }}>
@@ -994,17 +940,19 @@ export default function OnboardingEmbedPage() {
       {/* ── Sticky footer ───────────────────────────────────────────────────── */}
       {step === 1 && (
         <EmbedFooter
+          matchCount={locEstimate?.matchesLast7Days}
+          fetching={locFetching}
           onBack={() => {}}
           onNext={() => { if (city) setStep(2); }}
           nextLabel={t("common.next")}
           nextDisabled={!city}
-          showMatch={false}
+          showMatch={!!city}
         />
       )}
       {step === 2 && (
         <EmbedFooter
-          matchCount={locEstimate?.matchesLast7Days}
-          fetching={locFetching}
+          matchCount={filEstimate?.matchesLast7Days}
+          fetching={filFetching}
           onBack={() => setStep(1)}
           onNext={() => setStep(3)}
           nextLabel={t("common.next")}
@@ -1013,17 +961,7 @@ export default function OnboardingEmbedPage() {
       )}
       {step === 3 && (
         <EmbedFooter
-          matchCount={filEstimate?.matchesLast7Days}
-          fetching={filFetching}
           onBack={() => setStep(2)}
-          onNext={() => setStep(4)}
-          nextLabel={t("common.next")}
-          showMatch={true}
-        />
-      )}
-      {step === 4 && (
-        <EmbedFooter
-          onBack={() => setStep(3)}
           onNext={handleCreateAccount}
           nextLabel="Account aanmaken"
           nextDisabled={!canSubmit}
