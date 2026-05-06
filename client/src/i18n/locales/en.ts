@@ -1127,7 +1127,7 @@ export const en: Record<string, any> = {
     cancelled: "Your subscription has been cancelled",
     pastDue: {
       title: "Payment failed",
-      desc: "We couldn't process your last payment. Update your payment method to keep access.",
+      desc: "Payment failed. Please update your payment method to keep receiving matches.",
       action: "Update",
     },
     gate: {

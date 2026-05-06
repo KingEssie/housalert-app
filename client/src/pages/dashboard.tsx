@@ -2384,7 +2384,7 @@ export default function DashboardPage() {
           <p className="text-[13px] text-ha-text">{t("buddyV2.subPaused").replace("{name}", activeBuddyRel.owner_name || "")}</p>
         </div>
       )}
-      {sub.isPastDue && !inBuddyMode && (
+      {sub.inGracePeriod && !inBuddyMode && (
         <div className="bg-ha-warning/10 border-b border-ha-warning/25 px-4 py-3 flex items-center gap-3 max-w-xl mx-auto w-full" data-testid="banner-past-due">
           <AlertTriangle className="w-5 h-5 text-ha-warning flex-shrink-0" />
           <div className="flex-1 min-w-0">

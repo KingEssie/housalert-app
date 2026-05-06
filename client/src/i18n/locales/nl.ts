@@ -1210,7 +1210,7 @@ export const nl: Record<string, any> = {
     redirecting: "Je wordt doorgestuurd naar je dashboard...",
     pastDue: {
       title: "Betaling mislukt",
-      desc: "We konden je laatste betaling niet verwerken. Werk je betaalmethode bij om toegang te behouden.",
+      desc: "Betaling mislukt. Werk je betaalmethode bij om matches te blijven ontvangen.",
       action: "Bijwerken",
     },
     gate: {

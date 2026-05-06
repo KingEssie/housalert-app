@@ -11,6 +11,8 @@ export interface SubscriptionState {
   isActive: boolean;
   isTrial: boolean;
   isPastDue: boolean;
+  inGracePeriod: boolean;
+  gracePeriodEndsAt: string | null;
   isExpired: boolean;
   cancelAtPeriodEnd: boolean;
 }
@@ -19,7 +21,7 @@ async function fetchSubscriptionStatus(): Promise<SubscriptionState> {
   const { data: session } = await supabase.auth.getSession();
   const token = session?.session?.access_token;
   if (!token) {
-    return { status: "none", plan: null, trial_ends_at: null, current_period_ends_at: null, created_at: null, isActive: false, isTrial: false, isPastDue: false, isExpired: true, cancelAtPeriodEnd: false };
+    return { status: "none", plan: null, trial_ends_at: null, current_period_ends_at: null, created_at: null, isActive: false, isTrial: false, isPastDue: false, inGracePeriod: false, gracePeriodEndsAt: null, isExpired: true, cancelAtPeriodEnd: false };
   }
 
   const res = await apiFetch("/api/subscription/status", {
@@ -27,7 +29,7 @@ async function fetchSubscriptionStatus(): Promise<SubscriptionState> {
   });
 
   if (!res.ok) {
-    return { status: "none", plan: null, trial_ends_at: null, current_period_ends_at: null, created_at: null, isActive: false, isTrial: false, isPastDue: false, isExpired: true, cancelAtPeriodEnd: false };
+    return { status: "none", plan: null, trial_ends_at: null, current_period_ends_at: null, created_at: null, isActive: false, isTrial: false, isPastDue: false, inGracePeriod: false, gracePeriodEndsAt: null, isExpired: true, cancelAtPeriodEnd: false };
   }
 
   return res.json();
@@ -50,6 +52,8 @@ export function useSubscription() {
     isActive: query.data?.isActive ?? false,
     isTrial: query.data?.isTrial ?? false,
     isPastDue: query.data?.isPastDue ?? false,
+    inGracePeriod: query.data?.inGracePeriod ?? false,
+    gracePeriodEndsAt: query.data?.gracePeriodEndsAt ?? null,
     isExpired: query.data?.isExpired ?? true,
     cancelAtPeriodEnd: query.data?.cancelAtPeriodEnd ?? false,
     trialEndsAt: query.data?.trial_ends_at ?? null,

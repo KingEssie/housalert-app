@@ -28,9 +28,13 @@ export interface SubscriptionStatus {
   isActive: boolean;
   isTrial: boolean;
   isPastDue: boolean;
+  inGracePeriod: boolean;
+  gracePeriodEndsAt: string | null;
   isExpired: boolean;
   cancelAtPeriodEnd: boolean;
 }
+
+const GRACE_PERIOD_MS = 48 * 60 * 60 * 1000;
 
 export async function ensureTrialSubscription(userId: string): Promise<SubscriptionRow | null> {
   const { data: existing } = await supabase
@@ -82,6 +86,8 @@ export async function getSubscriptionStatus(userId: string): Promise<Subscriptio
       isActive: false,
       isTrial: false,
       isPastDue: false,
+      inGracePeriod: false,
+      gracePeriodEndsAt: null,
       isExpired: true,
       cancelAtPeriodEnd: false,
     };
@@ -148,12 +154,16 @@ export async function getSubscriptionStatus(userId: string): Promise<Subscriptio
     row.current_period_ends_at === null || new Date(row.current_period_ends_at) > now
   );
   const isPastDue = row.status === "past_due";
+  const gracePeriodEndsAt = isPastDue
+    ? new Date(new Date(row.updated_at).getTime() + GRACE_PERIOD_MS)
+    : null;
+  const inGracePeriod = isPastDue && gracePeriodEndsAt !== null && gracePeriodEndsAt > now;
   const canceledButStillActive = row.status === "canceled" && row.current_period_ends_at !== null && new Date(row.current_period_ends_at) > now;
-  const hasAccess = isTrial || isActiveStatus || isPastDue || canceledButStillActive;
+  const hasAccess = isTrial || isActiveStatus || inGracePeriod || canceledButStillActive;
   const isExpired = !hasAccess;
   const cancelAtPeriodEnd = row.status === "canceled" || row.cancel_at_period_end === true;
 
-  log(`[getSubscriptionStatus] user=${userId} DB row: status=${row.status}, trial_ends=${row.trial_ends_at}, period_ends=${row.current_period_ends_at}, cancel_at_period_end=${row.cancel_at_period_end} → computed: isTrial=${isTrial}, isPastDue=${isPastDue}, isActive=${hasAccess}, isExpired=${isExpired}`);
+  log(`[getSubscriptionStatus] user=${userId} DB row: status=${row.status}, trial_ends=${row.trial_ends_at}, period_ends=${row.current_period_ends_at}, updated_at=${row.updated_at} → computed: isTrial=${isTrial}, isPastDue=${isPastDue}, inGracePeriod=${inGracePeriod}, gracePeriodEndsAt=${gracePeriodEndsAt?.toISOString() ?? null}, isActive=${hasAccess}, isExpired=${isExpired}`);
 
   return {
     status: row.status,
@@ -164,6 +174,8 @@ export async function getSubscriptionStatus(userId: string): Promise<Subscriptio
     isActive: hasAccess,
     isTrial,
     isPastDue,
+    inGracePeriod,
+    gracePeriodEndsAt: gracePeriodEndsAt?.toISOString() ?? null,
     isExpired,
     cancelAtPeriodEnd,
   };

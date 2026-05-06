@@ -1210,7 +1210,7 @@ export const de: Record<string, any> = {
     redirecting: "Du wirst zu deinem Dashboard weitergeleitet...",
     pastDue: {
       title: "Zahlung fehlgeschlagen",
-      desc: "Wir konnten deine letzte Zahlung nicht verarbeiten. Aktualisiere deine Zahlungsmethode, um den Zugang zu behalten.",
+      desc: "Zahlung fehlgeschlagen. Bitte aktualisiere deine Zahlungsmethode, um weiterhin Matches zu erhalten.",
       action: "Aktualisieren",
     },
     gate: {
