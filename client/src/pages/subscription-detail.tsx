@@ -110,7 +110,7 @@ export default function SubscriptionDetailPage() {
       value: formatDate(startDate, locale),
       testId: "text-start-date",
     },
-    {
+    ...(renewalDate && !subscription?.isExpired ? [{
       label: subscription?.isTrial
         ? t("subscription.trialEnds")
         : isCanceled
@@ -118,7 +118,7 @@ export default function SubscriptionDetailPage() {
           : t("subscription.nextRenewal"),
       value: formatDate(renewalDate, locale),
       testId: "text-renewal-date",
-    },
+    }] : []),
     {
       label: t("subscription.autoRenew"),
       value: !isCanceled && subscription?.isActive && !subscription?.isTrial ? t("subscription.on") : t("subscription.off"),
@@ -170,8 +170,8 @@ export default function SubscriptionDetailPage() {
               </span>
             </div>
 
-            {/* Renewal message — black, no fade */}
-            {renewalDate && (
+            {/* Renewal message — only when subscription is not expired */}
+            {renewalDate && !subscription?.isExpired && (
               <p className="text-[14px] font-medium text-ha-text mt-3" data-testid="text-renewal-hero">
                 {isCanceled
                   ? `${t("subscription.endsAt")} ${formatDate(renewalDate, locale)}`
