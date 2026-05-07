@@ -3356,7 +3356,7 @@ export async function registerRoutes(
 
       const { data: profile } = await supabase
         .from("search_profiles")
-        .select("user_id")
+        .select("user_id, city_name, city")
         .eq("id", searchProfileId)
         .single();
 
@@ -3364,11 +3364,27 @@ export async function registerRoutes(
         return res.status(403).json({ error: "Forbidden" });
       }
 
+      const profileCity = (profile as any).city_name || (profile as any).city || "unknown";
+      log(`[BACKFILL] Request: user=${user.id.substring(0, 8)} profile=${searchProfileId} city="${profileCity}"`);
+
       const matchCount = await backfillMatchesForSearchProfile(searchProfileId);
+
+      // Query user_matches count so we can log it for diagnostics
+      let userMatchesCount = 0;
+      try {
+        const umRes = await pgPool.query(
+          "SELECT COUNT(*) AS cnt FROM user_matches WHERE user_id = $1",
+          [user.id]
+        );
+        userMatchesCount = parseInt(umRes.rows[0]?.cnt ?? "0", 10);
+      } catch {}
+
+      log(`[BACKFILL DONE] user=${user.id.substring(0, 8)} profile=${searchProfileId} city="${profileCity}" inserted=${matchCount} user_matches_total=${userMatchesCount}`);
+
       if (matchCount > 0) {
         await flushUserAlerts(user.id, supabase);
       }
-      return res.json({ matches: matchCount });
+      return res.json({ matches: matchCount, user_matches_total: userMatchesCount });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }

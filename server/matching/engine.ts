@@ -1000,7 +1000,8 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
   const matchStartDate = sevenDaysAgo;
 
   const profileCityRaw = sp.city_name || sp.city || "";
-  log(`[MATCH ENGINE] Backfill profile=${searchProfileId} user=${sp.user_id.substring(0, 8)} city="${profileCityRaw}" window=${matchStartDate}`);
+  const backfillSearchTerms = getCitySearchTerms(profileCityRaw);
+  log(`[BACKFILL START] profile=${searchProfileId} user=${sp.user_id.substring(0, 8)} city="${profileCityRaw}" searchTerms=[${backfillSearchTerms.join(",")}] window=${matchStartDate}`);
 
   let listings: any[] | null = null;
   let lErr: any = null;
