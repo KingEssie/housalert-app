@@ -140,39 +140,6 @@ function DualRangeSlider({ min, max, step, valueLow, valueHigh, onChangeLow, onC
   );
 }
 
-// ─── Shared step header ───────────────────────────────────────────────────────
-
-function EmbedHeader({ step }: { step: EmbedStep }) {
-  return (
-    <header className="sticky top-0 z-20 shrink-0"
-      style={{ backgroundColor: "rgb(var(--ha-card))", borderBottom: `1px solid ${OBW.headerBorder}` }}>
-      <div className="max-w-[480px] mx-auto px-5 py-4 flex items-center" data-testid="step-progress">
-        {([1, 2, 3, 4] as EmbedStep[]).map((s, i) => (
-          <div key={s} className={`flex items-center${i < 3 ? " flex-1" : ""}`}>
-            <div
-              className="rounded-full shrink-0 transition-all duration-300"
-              style={{
-                width: s === step ? "12px" : "9px",
-                height: s === step ? "12px" : "9px",
-                backgroundColor: s <= step ? "rgb(var(--ha-primary))" : "transparent",
-                border: s > step ? "1.5px solid rgb(var(--ha-card-border))" : "none",
-              }}
-              data-testid={`step-dot-${s}`}
-            />
-            {i < 3 && (
-              <div className="flex-1 ml-[6px]"
-                style={{
-                  height: "1.5px",
-                  backgroundColor: s < step ? "rgb(var(--ha-primary))" : "rgb(var(--ha-card-border))",
-                }} />
-            )}
-          </div>
-        ))}
-      </div>
-    </header>
-  );
-}
-
 // ─── Shared sticky footer ─────────────────────────────────────────────────────
 
 function EmbedFooter({
@@ -359,16 +326,13 @@ export default function OnboardingEmbedPage() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const submittingRef = useRef(false);
 
   const pwStrength = validatePassword(password);
   const passwordOk = isPasswordValid(pwStrength);
-  const confirmOk = confirmPassword.length > 0 && password === confirmPassword;
-  const canSubmit = firstName.trim() !== "" && isValidEmail(email) && passwordOk && confirmOk && !loading;
+  const canSubmit = firstName.trim() !== "" && isValidEmail(email) && passwordOk && !loading;
 
   // Pre-fill city from ?city= query param
   useEffect(() => {
@@ -512,7 +476,12 @@ export default function OnboardingEmbedPage() {
         }
       }
 
-      navigate("/paywall");
+      const paywallUrl = "/paywall?source=website";
+      if (window.top && window.top !== window.self) {
+        window.top.location.href = paywallUrl;
+      } else {
+        navigate(paywallUrl);
+      }
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
     } finally {
@@ -562,19 +531,42 @@ export default function OnboardingEmbedPage() {
     <div className="flex flex-col" style={{ minHeight: "100dvh", backgroundColor: "rgb(var(--ha-card))" }}
       data-testid="onboarding-embed">
 
-      <EmbedHeader step={step} />
-
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-[480px] mx-auto px-4 pt-5 pb-[120px]">
+        <div className="max-w-[480px] mx-auto px-4 pt-6 pb-[120px]">
 
           {/* Headline — steps 1-3 */}
           {step < 4 && (
-            <h1 className="text-[22px] font-bold leading-snug mb-5" style={{ color: OBW.text }}
+            <h1 className="text-[22px] font-bold leading-snug mb-4" style={{ color: OBW.text }}
               data-testid="embed-headline">
               Discover how many matches we can find for you
             </h1>
           )}
+
+          {/* Progress dots — all steps, below headline */}
+          <div className="flex items-center mb-6" data-testid="step-progress">
+            {([1, 2, 3, 4] as EmbedStep[]).map((s, i) => (
+              <div key={s} className={`flex items-center${i < 3 ? " flex-1" : ""}`}>
+                <div
+                  className="rounded-full shrink-0 transition-all duration-300"
+                  style={{
+                    width: s === step ? "12px" : "9px",
+                    height: s === step ? "12px" : "9px",
+                    backgroundColor: s <= step ? "rgb(var(--ha-primary))" : "transparent",
+                    border: s > step ? "1.5px solid rgb(var(--ha-card-border))" : "none",
+                  }}
+                  data-testid={`step-dot-${s}`}
+                />
+                {i < 3 && (
+                  <div className="flex-1 ml-[6px]"
+                    style={{
+                      height: "1.5px",
+                      backgroundColor: s < step ? "rgb(var(--ha-primary))" : "rgb(var(--ha-card-border))",
+                    }} />
+                )}
+              </div>
+            ))}
+          </div>
 
           {/* ── STEP 1: LOCATION (city editable inline) ───────────────────── */}
           {step === 1 && (
@@ -1031,27 +1023,6 @@ export default function OnboardingEmbedPage() {
                   </button>
                 </div>
                 <PasswordRules password={password} />
-              </div>
-
-              <div>
-                <SectionLabel>Confirm password</SectionLabel>
-                <div className="relative">
-                  <input type={showConfirm ? "text" : "password"} value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="Repeat your password"
-                    className="w-full ha-field-web pr-11"
-                    style={{
-                      borderColor: confirmPassword.length > 0 && !confirmOk ? "rgb(var(--ha-danger))" : "rgb(var(--ha-border-input))",
-                      color: OBW.text, backgroundColor: OBW.inputBg,
-                      height: "48px", borderRadius: "4px",
-                    }}
-                    data-testid="input-confirm-password" />
-                  <button type="button" onClick={() => setShowConfirm(!showConfirm)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2"
-                    style={{ color: OBW.textMuted }} data-testid="button-toggle-confirm">
-                    {showConfirm ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
-                  </button>
-                </div>
               </div>
 
               {/* Legal text */}
