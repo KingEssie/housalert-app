@@ -476,11 +476,11 @@ export default function OnboardingEmbedPage() {
         }
       }
 
-      const paywallUrl = "/paywall?source=website";
+      const setupUrl = "/onboarding/setup";
       if (window.top && window.top !== window.self) {
-        window.top.location.href = paywallUrl;
+        window.top.location.href = setupUrl;
       } else {
-        navigate(paywallUrl);
+        navigate(setupUrl);
       }
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
