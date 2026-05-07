@@ -147,7 +147,7 @@ function EmbedHeader({ step, title }: { step: EmbedStep; title: string }) {
     <header className="sticky top-0 z-20 shrink-0"
       style={{ backgroundColor: "rgb(var(--ha-card))", borderBottom: `1px solid ${OBW.headerBorder}` }}>
       <div className="relative max-w-[480px] mx-auto px-4 h-[56px] flex items-center justify-between">
-        <span className="text-[13px] font-bold rounded-[8px] shrink-0 flex items-center px-3"
+        <span className="text-[13px] font-bold rounded-[4px] shrink-0 flex items-center px-3"
           style={{ height: "30px", backgroundColor: "rgb(var(--ha-primary))", color: "white" }}
           data-testid="badge-embed-step">
           {step}/4
@@ -211,7 +211,7 @@ function EmbedFooter({
           <button
             onClick={onNext}
             disabled={nextDisabled || loading}
-            className="h-[44px] px-6 rounded-[8px] text-[15px] font-semibold text-white flex items-center justify-center gap-1.5 active:scale-[0.97] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            className="h-[44px] px-6 rounded-[6px] text-[15px] font-semibold text-white flex items-center justify-center gap-1.5 active:scale-[0.97] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
             style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 14px rgba(37,60,150,0.2)" }}
             data-testid="button-embed-next">
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -515,12 +515,12 @@ export default function OnboardingEmbedPage() {
 
   // Chip selector helper
   const chipRow = (opts: { value: string; label: string }[], current: string, onChange: (v: string) => void, testId: string) => (
-    <div className="flex items-center gap-[4px] p-[4px] rounded-full" style={{ backgroundColor: "rgb(var(--ha-toggle-bg))" }} data-testid={testId}>
+    <div className="flex items-center gap-[4px] p-[4px] rounded-[4px]" style={{ backgroundColor: "rgb(var(--ha-toggle-bg))" }} data-testid={testId}>
       {opts.map((o) => {
         const active = current === o.value;
         return (
           <button key={o.value} onClick={() => onChange(o.value)}
-            className="flex-1 py-[8px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
+            className="flex-1 py-[8px] text-[12px] font-semibold rounded-[4px] text-center transition-all whitespace-nowrap overflow-hidden"
             style={{ backgroundColor: active ? "rgb(var(--ha-primary))" : "transparent", color: active ? "white" : "rgb(var(--ha-text))" }}
             data-testid={`${testId}-${o.value}`}>
             {o.label}
@@ -598,7 +598,7 @@ export default function OnboardingEmbedPage() {
                 {/* Dropdown */}
                 {showDropdown && (
                   <div ref={dropdownRef}
-                    className="absolute left-0 right-0 top-[52px] z-50 rounded-[10px] border overflow-hidden shadow-lg"
+                    className="absolute left-0 right-0 top-[52px] z-50 rounded-[4px] border overflow-hidden shadow-lg"
                     style={{ borderColor: "rgb(var(--ha-card-border))", backgroundColor: "rgb(var(--ha-card))" }}
                     data-testid="city-dropdown">
                     {geocoder.loading && (
@@ -631,13 +631,13 @@ export default function OnboardingEmbedPage() {
               {/* ── Location tabs + map (shown once city is confirmed) ─────── */}
               {city && (<>
               {/* Location mode tabs */}
-              <div className="flex items-center gap-1 p-[4px] rounded-full mb-5"
+              <div className="flex items-center gap-1 p-[4px] rounded-[4px] mb-5"
                 style={{ backgroundColor: "rgb(var(--ha-toggle-bg))" }} data-testid="location-tabs">
                 {locationTabs.map((tab) => {
                   const active = locationData.mode === tab.value;
                   return (
                     <button key={tab.value} onClick={() => setLocationData((p) => ({ ...p, mode: tab.value }))}
-                      className="flex-1 py-[8px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
+                      className="flex-1 py-[8px] text-[12px] font-semibold rounded-[4px] text-center transition-all whitespace-nowrap overflow-hidden"
                       style={{ backgroundColor: active ? "rgb(var(--ha-primary))" : "transparent", color: active ? "white" : "rgb(var(--ha-text))" }}
                       data-testid={`tab-location-${tab.value}`}>
                       {tab.label}
@@ -658,7 +658,7 @@ export default function OnboardingEmbedPage() {
                       style={{ color: OBW.textMuted, transform: showDistrictPicker ? "rotate(180deg)" : "none" }} />
                   </button>
                   {showDistrictPicker && districtList.length > 0 && (
-                    <div className="rounded-[12px] overflow-hidden border mb-4"
+                    <div className="rounded-[4px] overflow-hidden border mb-4"
                       style={{ borderColor: "rgb(var(--ha-divider))", maxHeight: "180px", overflowY: "auto" }}
                       data-testid="district-list">
                       {districtList.map((d, i) => {
@@ -675,7 +675,7 @@ export default function OnboardingEmbedPage() {
                       })}
                     </div>
                   )}
-                  <div style={{ aspectRatio: "1/1" }} className="rounded-[12px] overflow-hidden w-full">
+                  <div style={{ aspectRatio: "1/1" }} className="rounded-[4px] overflow-hidden w-full">
                     <MapView lat={city.lat} lng={city.lng} zoom={13}
                       markers={[{ lat: city.lat, lng: city.lng, type: "primary" }]}
                       circles={[{ lat: city.lat, lng: city.lng, radiusMeters: 1500 }]}
@@ -712,7 +712,7 @@ export default function OnboardingEmbedPage() {
                       {locationData.radiusKm} km
                     </span>
                   </div>
-                  <div style={{ aspectRatio: "1/1" }} className="rounded-[12px] overflow-hidden w-full">
+                  <div style={{ aspectRatio: "1/1" }} className="rounded-[4px] overflow-hidden w-full">
                     <MapView lat={city.lat} lng={city.lng} zoom={10}
                       markers={[{ lat: city.lat, lng: city.lng, type: "primary" }]}
                       circles={[{ lat: city.lat, lng: city.lng, radiusMeters: locationData.radiusKm * 1000 }]}
@@ -724,7 +724,7 @@ export default function OnboardingEmbedPage() {
               {/* Entire city */}
               {locationData.mode === "city" && (
                 <div data-testid="section-city">
-                  <div style={{ aspectRatio: "1/1" }} className="rounded-[12px] overflow-hidden w-full">
+                  <div style={{ aspectRatio: "1/1" }} className="rounded-[4px] overflow-hidden w-full">
                     <MapView lat={city.lat} lng={city.lng} zoom={10}
                       markers={[{ lat: city.lat, lng: city.lng, type: "primary" }]}
                       height="100%" className="" />
@@ -772,7 +772,7 @@ export default function OnboardingEmbedPage() {
                     const active = filters.minRooms === opt.value;
                     return (
                       <button key={opt.value} onClick={() => updateFilters({ minRooms: opt.value })}
-                        className="h-[40px] px-4 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96] shrink-0"
+                        className="h-[40px] px-4 rounded-[6px] text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96] shrink-0"
                         style={{ backgroundColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-surface))", color: active ? "white" : OBW.textSecondary }}
                         data-testid={`rooms-${opt.value}`}>
                         {opt.label}
@@ -788,7 +788,7 @@ export default function OnboardingEmbedPage() {
                 <div className="flex items-center justify-between mb-2.5">
                   <SectionLabel>Minimum size</SectionLabel>
                   <button onClick={() => updateFilters({ sizeNA: !filters.sizeNA, minSize: filters.sizeNA ? 30 : 0 })}
-                    className="text-[12px] font-medium px-2.5 py-1 rounded-full border transition-all"
+                    className="text-[12px] font-medium px-2.5 py-1 rounded-[4px] border transition-all"
                     style={{
                       borderColor: filters.sizeNA ? "rgb(var(--ha-primary))" : OBW.cardBorder,
                       backgroundColor: filters.sizeNA ? "rgba(37,60,150,0.08)" : "transparent",
@@ -829,7 +829,7 @@ export default function OnboardingEmbedPage() {
                     const active = filters.amenities.includes(value);
                     return (
                       <button key={value} onClick={() => toggleAmenity(value)}
-                        className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium border transition-all"
+                        className="flex items-center gap-1.5 px-3.5 py-2 rounded-[6px] text-[13px] font-medium border transition-all"
                         style={{
                           backgroundColor: active ? "rgb(var(--ha-primary))" : "transparent",
                           borderColor: active ? "rgb(var(--ha-primary))" : OBW.cardBorder,
@@ -885,7 +885,7 @@ export default function OnboardingEmbedPage() {
                     const active = searchDetails.suitableFor.includes(opt.value);
                     return (
                       <button key={opt.value} onClick={() => toggleSuitableFor(opt.value)}
-                        className="h-[38px] px-3.5 rounded-full text-[13px] font-medium border transition-all active:scale-[0.96] flex items-center gap-[5px]"
+                        className="h-[38px] px-3.5 rounded-[6px] text-[13px] font-medium border transition-all active:scale-[0.96] flex items-center gap-[5px]"
                         style={{
                           backgroundColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-surface))",
                           borderColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-border-input))",
@@ -899,7 +899,7 @@ export default function OnboardingEmbedPage() {
                     );
                   })}
                 </div>
-                <div className="mt-3 rounded-[8px] flex items-start gap-2"
+                <div className="mt-3 rounded-[4px] flex items-start gap-2"
                   style={{ backgroundColor: "rgb(var(--ha-hover-bg))", padding: "10px 12px" }}>
                   <Info className="w-[13px] h-[13px] shrink-0 mt-[2px]" style={{ color: "rgb(var(--ha-text-placeholder))" }} />
                   <p className="text-[12px] leading-relaxed" style={{ color: OBW.textSecondary }}>
@@ -956,7 +956,7 @@ export default function OnboardingEmbedPage() {
 
               {/* Missed matches card */}
               {missed30 !== null && (
-                <div className="flex items-center gap-3 rounded-[12px] px-4 py-3.5"
+                <div className="flex items-center gap-3 rounded-[4px] px-4 py-3.5"
                   style={{ backgroundColor: "rgb(var(--ha-primary-light))", border: "1px solid rgba(37,60,150,0.12)" }}
                   data-testid="embed-missed-matches-card">
                   <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
