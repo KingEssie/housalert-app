@@ -993,13 +993,14 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
 
   const sp = profile as SearchProfile;
 
-  const profileCreatedAt = sp.created_at ? new Date(sp.created_at).toISOString() : new Date().toISOString();
+  // Always scan the full last-7-days window, regardless of when the profile was
+  // created. Using profileCreatedAt as the lower bound caused new profiles to
+  // find zero listings (their creation time == now, so no past listings qualify).
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-  const matchStartDate = profileCreatedAt > sevenDaysAgo ? profileCreatedAt : sevenDaysAgo;
-  log(`[MATCH ENGINE] Backfill start date: ${matchStartDate} (profile created: ${profileCreatedAt}, 7d ago: ${sevenDaysAgo})`);
+  const matchStartDate = sevenDaysAgo;
 
   const profileCityRaw = sp.city_name || sp.city || "";
-  const backfillSearchTerms = getCitySearchTerms(profileCityRaw);
+  log(`[MATCH ENGINE] Backfill profile=${searchProfileId} user=${sp.user_id.substring(0, 8)} city="${profileCityRaw}" window=${matchStartDate}`);
 
   let listings: any[] | null = null;
   let lErr: any = null;
@@ -1027,8 +1028,11 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
     lErr = result.error;
   }
 
+  const candidateCount = listings?.length ?? 0;
+  log(`[MATCH ENGINE] Backfill candidates=${candidateCount} for city="${profileCityRaw}"`);
+
   if (lErr || !listings || listings.length === 0) {
-    log(`[MATCH ENGINE COMPLETE] no recent listings found for city="${profileCityRaw}", 0 matches`);
+    log(`[MATCH ENGINE COMPLETE] Backfill profile=${searchProfileId} city="${profileCityRaw}" candidates=0 inserted=0`);
     return 0;
   }
 
@@ -1071,9 +1075,7 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
     }
   }
 
-  if (skippedStale > 0) {
-    log(`[MATCH ENGINE] Backfill skipped ${skippedStale} stale/removed listings`);
-  }
+  log(`[MATCH ENGINE COMPLETE] Backfill profile=${searchProfileId} city="${profileCityRaw}" candidates=${listings.length} inserted=${totalMatches} skipped_stale=${skippedStale}`);
 
   if (matchedEntries.length > 0) {
     const subStatus = await getSubscriptionStatus(sp.user_id);

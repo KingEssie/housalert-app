@@ -489,11 +489,24 @@ export default function OnboardingEmbedPage() {
         }
       }
 
-      const setupUrl = "/onboarding/setup";
+      // Build the setup URL. Include session tokens in the hash so Supabase's
+      // detectSessionInUrl picks them up on the fresh page load regardless of
+      // whether localStorage is shared across iframe/top-window contexts.
+      const session = sessionData?.session;
+      let setupUrl = "/onboarding/setup";
+      if (session?.access_token && session?.refresh_token) {
+        setupUrl =
+          `/onboarding/setup#access_token=${encodeURIComponent(session.access_token)}` +
+          `&refresh_token=${encodeURIComponent(session.refresh_token)}` +
+          `&token_type=bearer` +
+          `&expires_in=${session.expires_in ?? 3600}`;
+      }
+      // Always do a full navigation (not a SPA navigate) so the fresh page load
+      // processes the URL tokens before ProtectedRoute checks auth state.
       if (window.top && window.top !== window.self) {
         window.top.location.href = setupUrl;
       } else {
-        navigate(setupUrl);
+        window.location.href = setupUrl;
       }
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
