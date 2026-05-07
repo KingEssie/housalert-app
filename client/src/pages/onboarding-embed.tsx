@@ -472,17 +472,32 @@ export default function OnboardingEmbedPage() {
             target_categories: searchDetails.suitableFor.length > 0 ? searchDetails.suitableFor : undefined,
           });
           // Backfill: show last 7 days of matching listings immediately in the Matches tab.
-          // No push/email notifications are sent — new users have no active subscription yet
-          // (the engine already gates notifications on subscription status).
+          // IMPORTANT: must be awaited (with timeout) BEFORE window.location.href is called.
+          // A fire-and-forget fetch is cancelled by the browser when the page navigates away,
+          // so the server would never receive the request.
           if (newProfile?.id && sessionData?.session?.access_token) {
-            apiFetch("/api/search-profiles/backfill", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${sessionData.session.access_token}`,
-              },
-              body: JSON.stringify({ searchProfileId: newProfile.id }),
-            }).catch(() => {});
+            console.log(`[OnboardingEmbed] Starting backfill for profile=${newProfile.id} user=${userId}`);
+            try {
+              const backfillRes = await Promise.race([
+                apiFetch("/api/search-profiles/backfill", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${sessionData.session.access_token}`,
+                  },
+                  body: JSON.stringify({ searchProfileId: newProfile.id }),
+                }),
+                new Promise<Response>((_, reject) =>
+                  setTimeout(() => reject(new Error("backfill timeout")), 8000)
+                ),
+              ]);
+              const backfillData = await (backfillRes as Response).json().catch(() => ({}));
+              console.log(`[OnboardingEmbed] Backfill complete: matches=${(backfillData as any)?.matches ?? "?"}`);
+            } catch (err) {
+              console.error("[OnboardingEmbed] Backfill failed (non-blocking):", err);
+            }
+          } else {
+            console.warn(`[OnboardingEmbed] Skipping backfill — profileId=${newProfile?.id} hasToken=${!!sessionData?.session?.access_token}`);
           }
         } catch (err) {
           console.error("[OnboardingEmbed] Failed to save search profile:", err);
