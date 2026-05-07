@@ -2,7 +2,7 @@ import type { Locale } from "@/i18n";
 
 const TEMPLATE_DE = `Sehr geehrte/r Vermieter/in,
 
-mit großem Interesse habe ich Ihre Wohnung an [ADRES] gesehen. Gerne stelle ich mich als potenzieller Mieter vor.
+mit großem Interesse habe ich Ihre Wohnung an [[ADDRESS]] gesehen. Gerne stelle ich mich als potenzieller Mieter vor.
 
 Mein Name ist [[NAME]] und ich bin als [[JOB]] tätig. Mein monatliches Nettoeinkommen beträgt €[[INCOME]]. Die Miete von €[[PRICE]] pro Monat passt gut in mein Budget.
 
@@ -19,7 +19,7 @@ Mit freundlichen Grüßen,
 
 const TEMPLATE_EN = `Dear Sir/Madam,
 
-I am writing to express my interest in the apartment at [ADRES]. I would like to introduce myself as a potential tenant.
+I am writing to express my interest in the apartment at [[ADDRESS]]. I would like to introduce myself as a potential tenant.
 
 My name is [[NAME]] and I work as a [[JOB]]. My monthly net income is €[[INCOME]]. The rent of €[[PRICE]] per month fits well within my budget.
 
@@ -36,7 +36,7 @@ Kind regards,
 
 const TEMPLATE_NL = `Geachte verhuurder,
 
-Met grote interesse heb ik uw woning aan [ADRES] gezien. Graag stel ik mij voor als potentiële huurder.
+Met grote interesse heb ik uw woning aan [[ADDRESS]] gezien. Graag stel ik mij voor als potentiële huurder.
 
 Mijn naam is [[NAME]] en ik werk als [[JOB]]. Mijn maandelijks netto-inkomen bedraagt €[[INCOME]]. De huur van €[[PRICE]] per maand past goed binnen mijn budget.
 
@@ -69,7 +69,7 @@ export interface PlaceholderDef {
 }
 
 export const PLACEHOLDERS: PlaceholderDef[] = [
-  { key: "[ADRES]", labelKey: "applicationLetter.ph.address" },
+  { key: "[[ADDRESS]]", labelKey: "applicationLetter.ph.address" },
   { key: "[[NAME]]", labelKey: "applicationLetter.ph.name" },
   { key: "[[EMAIL]]", labelKey: "applicationLetter.ph.email" },
   { key: "[[PHONE]]", labelKey: "applicationLetter.ph.phone" },
@@ -174,7 +174,7 @@ const REASON_DE: Record<string, string> = {
 function generateLetterDE(d: OnboardingLetterData, name: string, income: string): string {
   const sal = d.gender === "male" ? "Sehr geehrter Herr" : d.gender === "female" ? "Sehr geehrte Frau" : "Sehr geehrte/r Vermieter/in";
 
-  let intro = `${sal},\n\nmit großem Interesse habe ich Ihre Wohnung an [ADRES] gesehen und möchte mich gerne als Mietinteressent/in vorstellen.\n\nMein Name ist ${name}`;
+  let intro = `${sal},\n\nmit großem Interesse habe ich Ihre Wohnung an [[ADDRESS]] gesehen und möchte mich gerne als Mietinteressent/in vorstellen.\n\nMein Name ist ${name}`;
 
   if (d.livingWith && LIVING_DE[d.livingWith]) {
     intro += ` und ich möchte ${LIVING_DE[d.livingWith]}`;
@@ -240,7 +240,7 @@ function generateLetterNL(d: OnboardingLetterData, name: string, income: string)
 
   const paragraphs: string[] = [];
 
-  paragraphs.push(`Geachte verhuurder,\n\nMet veel interesse heb ik uw woning aan [ADRES] bekeken en wil ik mij graag voorstellen als huurkandidaat.`);
+  paragraphs.push(`Geachte verhuurder,\n\nMet veel interesse heb ik uw woning aan [[ADDRESS]] bekeken en wil ik mij graag voorstellen als huurkandidaat.`);
 
   const who: string[] = [];
   who.push(`Mijn naam is ${name}`);
@@ -291,7 +291,7 @@ function generateLetterEN(d: OnboardingLetterData, name: string, income: string)
   const workEN: Record<string, string> = { employed: "employed full-time", self_employed: "self-employed", student: "a student", expat: "an expat", benefits: "currently receiving social benefits" };
   const reasonEN: Record<string, string> = { work_study: "work or study", first_together: "moving in with my partner for the first time", family_growth: "a growing family", breakup: "a change in my personal situation", first_own: "looking for my first apartment", bigger: "the need for a larger space", cheaper: "looking for a more affordable home", new_area: "wanting to move to a new area", specific_needs: "specific housing requirements", energy_efficient: "looking for a more energy-efficient home" };
 
-  let intro = `Dear Sir/Madam,\n\nI am writing to express my interest in the apartment at [ADRES] and would like to introduce myself.\n\nMy name is ${name}`;
+  let intro = `Dear Sir/Madam,\n\nI am writing to express my interest in the apartment at [[ADDRESS]] and would like to introduce myself.\n\nMy name is ${name}`;
   if (d.livingWith && livEN[d.livingWith]) {
     intro += ` and I will be ${livEN[d.livingWith]}`;
   }

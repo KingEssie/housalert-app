@@ -35,9 +35,7 @@ export default function ProfileDetailsPage() {
   const [phone, setPhone] = useState("");
   const [gender, setGender] = useState("");
 
-  const [birthDay, setBirthDay] = useState("");
-  const [birthMonth, setBirthMonth] = useState("");
-  const [birthYear, setBirthYear] = useState("");
+  const [birthDate, setBirthDate] = useState("");
 
   useEffect(() => {
     if (!session?.access_token) return;
@@ -53,10 +51,7 @@ export default function ProfileDetailsPage() {
         setGender(pd.gender || "");
         setEmailValue(user?.email || "");
         if (pd.birth_date) {
-          const [y, m, d] = pd.birth_date.split("-");
-          setBirthYear(y || "");
-          setBirthMonth(m ? String(parseInt(m, 10)) : "");
-          setBirthDay(d ? String(parseInt(d, 10)) : "");
+          setBirthDate(pd.birth_date);
         }
         setLoading(false);
       })
@@ -74,13 +69,6 @@ export default function ProfileDetailsPage() {
     { value: "prefer_not_to_say", label: t("profileDetails.genderPreferNot") },
   ];
 
-  function composeBirthDate(): string | null {
-    if (!birthYear || !birthMonth || !birthDay) return null;
-    const y = birthYear.padStart(4, "0");
-    const m = birthMonth.padStart(2, "0");
-    const d = birthDay.padStart(2, "0");
-    return `${y}-${m}-${d}`;
-  }
 
   async function handleSave() {
     if (!session?.access_token) return;
@@ -93,7 +81,7 @@ export default function ProfileDetailsPage() {
           first_name: firstName.trim() || null,
           last_name: lastName.trim() || null,
           phone: phone.trim() || null,
-          birth_date: composeBirthDate(),
+          birth_date: birthDate || null,
           gender: gender || null,
         }),
       });
@@ -203,56 +191,18 @@ export default function ProfileDetailsPage() {
                   />
                 </div>
 
-                {/* Geboortedatum — 3 dropdowns: dag / maand / jaar */}
+                {/* Date of birth — native date input */}
                 <div>
                   <label className={FIELD_LABEL}>{t("profileDetails.birthDate")}</label>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr 1fr", gap: "10px", width: "100%" }}>
-                    {/* Dag — 1fr */}
-                    <div className="relative min-w-0">
-                      <select
-                        value={birthDay}
-                        onChange={e => setBirthDay(e.target.value)}
-                        className={`${INPUT_CLS} appearance-none text-center px-2 pr-6 ${!birthDay ? "text-ha-text-placeholder" : "text-ha-text"}`}
-                        data-testid="select-birth-day"
-                      >
-                        <option value="">{t("profileDetails.birthDay")}</option>
-                        {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
-                          <option key={d} value={String(d)}>{d}</option>
-                        ))}
-                      </select>
-                      <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-[13px] h-[13px] text-ha-text pointer-events-none" strokeWidth={2} />
-                    </div>
-                    {/* Maand — 2fr, full names, left-aligned */}
-                    <div className="relative min-w-0">
-                      <select
-                        value={birthMonth}
-                        onChange={e => setBirthMonth(e.target.value)}
-                        className={`${INPUT_CLS} appearance-none text-left px-3 pr-7 ${!birthMonth ? "text-ha-text-placeholder" : "text-ha-text"}`}
-                        data-testid="select-birth-month"
-                      >
-                        <option value="">{t("profileDetails.birthMonth")}</option>
-                        {(t("profileDetails.months") as unknown as string[]).map((name, i) => (
-                          <option key={i + 1} value={String(i + 1)}>{name}</option>
-                        ))}
-                      </select>
-                      <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-[13px] h-[13px] text-ha-text pointer-events-none" strokeWidth={2} />
-                    </div>
-                    {/* Jaar — 1fr, 1940–now */}
-                    <div className="relative min-w-0">
-                      <select
-                        value={birthYear}
-                        onChange={e => setBirthYear(e.target.value)}
-                        className={`${INPUT_CLS} appearance-none text-center px-2 pr-6 ${!birthYear ? "text-ha-text-placeholder" : "text-ha-text"}`}
-                        data-testid="select-birth-year"
-                      >
-                        <option value="">{t("profileDetails.birthYear")}</option>
-                        {Array.from({ length: new Date().getFullYear() - 1939 }, (_, i) => new Date().getFullYear() - i).map(y => (
-                          <option key={y} value={String(y)}>{y}</option>
-                        ))}
-                      </select>
-                      <ChevronDown className="absolute right-1.5 top-1/2 -translate-y-1/2 w-[13px] h-[13px] text-ha-text pointer-events-none" strokeWidth={2} />
-                    </div>
-                  </div>
+                  <input
+                    type="date"
+                    value={birthDate}
+                    onChange={e => setBirthDate(e.target.value)}
+                    max={new Date().toISOString().split("T")[0]}
+                    min="1900-01-01"
+                    className={INPUT_CLS}
+                    data-testid="input-birth-date"
+                  />
                 </div>
 
                 {/* Geslacht — select with chevron */}

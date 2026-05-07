@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
+import { queryClient } from "@/lib/queryClient";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { useTranslation } from "@/i18n";
@@ -162,9 +163,7 @@ function SecondaryBtn({ onClick, children, testId }: {
 
 interface PersonalData {
   phone: string;
-  birthDay: string;
-  birthMonth: string;
-  birthYear: string;
+  birthDate: string;
   gender: string;
 }
 
@@ -660,38 +659,15 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
           <label className="text-[14px] font-semibold text-ha-text mb-2 block">
             {t("onboardingFlow.letterPersonal.birthDate")}
           </label>
-          <div className="grid grid-cols-3 gap-2">
-            <input
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              placeholder={t("onboardingFlow.letterPersonal.day")}
-              value={personalData.birthDay}
-              onChange={(e) => onChange({ birthDay: e.target.value.replace(/\D/g, "").slice(0, 2) })}
-              className={INPUT_CLS + " text-center"}
-              data-testid="input-birth-day"
-            />
-            <input
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              placeholder={t("onboardingFlow.letterPersonal.month")}
-              value={personalData.birthMonth}
-              onChange={(e) => onChange({ birthMonth: e.target.value.replace(/\D/g, "").slice(0, 2) })}
-              className={INPUT_CLS + " text-center"}
-              data-testid="input-birth-month"
-            />
-            <input
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              placeholder={t("onboardingFlow.letterPersonal.year")}
-              value={personalData.birthYear}
-              onChange={(e) => onChange({ birthYear: e.target.value.replace(/\D/g, "").slice(0, 4) })}
-              className={INPUT_CLS + " text-center"}
-              data-testid="input-birth-year"
-            />
-          </div>
+          <input
+            type="date"
+            value={personalData.birthDate}
+            onChange={(e) => onChange({ birthDate: e.target.value })}
+            max={new Date().toISOString().split("T")[0]}
+            min="1900-01-01"
+            className={INPUT_CLS}
+            data-testid="input-birth-date"
+          />
         </div>
 
         <div>
@@ -1081,7 +1057,7 @@ export default function OnboardingSetup() {
   const [profileLoaded, setProfileLoaded] = useState(false);
 
   const [personalData, setPersonalData] = useState<PersonalData>({
-    phone: "", birthDay: "", birthMonth: "", birthYear: "", gender: "",
+    phone: "", birthDate: "", gender: "",
   });
   const [livingData, setLivingData] = useState<LivingData>({
     livingWith: "", workStatus: "", moveReason: "", income: "", petsCount: "0",
@@ -1107,8 +1083,7 @@ export default function OnboardingSetup() {
 
           if (d.phone) setPersonalData((p) => ({ ...p, phone: d.phone }));
           if (d.birth_date) {
-            const [y, m, day] = d.birth_date.split("-");
-            setPersonalData((p) => ({ ...p, birthYear: y, birthMonth: String(parseInt(m)), birthDay: String(parseInt(day)) }));
+            setPersonalData((p) => ({ ...p, birthDate: d.birth_date }));
           }
           if (d.gender) setPersonalData((p) => ({ ...p, gender: d.gender }));
           if (d.living_with) setLivingData((l) => ({ ...l, livingWith: d.living_with }));
@@ -1254,13 +1229,9 @@ export default function OnboardingSetup() {
 
   async function handleLetterPersonalNext() {
     trackEvent("setup_personal_done");
-    const birthDate = personalData.birthYear && personalData.birthMonth && personalData.birthDay
-      ? `${personalData.birthYear}-${personalData.birthMonth.padStart(2, "0")}-${personalData.birthDay.padStart(2, "0")}`
-      : undefined;
-
     const fields: Record<string, any> = {};
     if (personalData.phone) fields.phone = personalData.phone;
-    if (birthDate) fields.birth_date = birthDate;
+    if (personalData.birthDate) fields.birth_date = personalData.birthDate;
     if (personalData.gender) fields.gender = personalData.gender;
     if (Object.keys(fields).length > 0) await saveProfileField(fields);
 
@@ -1298,6 +1269,7 @@ export default function OnboardingSetup() {
   async function handleLetterPreviewNext() {
     trackEvent("setup_letter_done");
     await saveProfileField({ application_template: letterText });
+    queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
     goStep("search-buddy");
   }
 

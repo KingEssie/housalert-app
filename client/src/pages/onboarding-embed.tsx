@@ -1069,9 +1069,9 @@ export default function OnboardingEmbedPage() {
               {/* Legal text */}
               <p className="text-[11px] leading-relaxed" style={{ color: OBW.textMuted }}>
                 By creating an account you agree to our{" "}
-                <a href="/terms" target="_blank" className="underline" style={{ color: OBW.textSecondary }}>Terms of Service</a>{" "}
+                <a href="https://www.housalert.com/terms-of-service" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: OBW.textSecondary }}>Terms of Service</a>{" "}
                 and{" "}
-                <a href="/privacy" target="_blank" className="underline" style={{ color: OBW.textSecondary }}>Privacy Policy</a>.
+                <a href="https://www.housalert.com/privacy" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: OBW.textSecondary }}>Privacy Policy</a>.
               </p>
             </div>
           )}
