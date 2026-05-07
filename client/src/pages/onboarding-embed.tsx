@@ -142,25 +142,32 @@ function DualRangeSlider({ min, max, step, valueLow, valueHigh, onChangeLow, onC
 
 // ─── Shared step header ───────────────────────────────────────────────────────
 
-function EmbedHeader({ step, title }: { step: EmbedStep; title: string }) {
+function EmbedHeader({ step }: { step: EmbedStep }) {
   return (
     <header className="sticky top-0 z-20 shrink-0"
       style={{ backgroundColor: "rgb(var(--ha-card))", borderBottom: `1px solid ${OBW.headerBorder}` }}>
-      <div className="relative max-w-[480px] mx-auto px-4 h-[56px] flex items-center justify-between">
-        <span className="text-[13px] font-bold rounded-[4px] shrink-0 flex items-center px-3"
-          style={{ height: "30px", backgroundColor: "rgb(var(--ha-primary))", color: "white" }}
-          data-testid="badge-embed-step">
-          {step}/4
-        </span>
-        <span className="absolute inset-0 flex items-center justify-center text-[17px] font-bold pointer-events-none"
-          style={{ color: OBW.text }}>
-          {title}
-        </span>
-        {/* Progress bar row */}
-      </div>
-      <div className="mx-4 h-[3px] rounded-full overflow-hidden" style={{ backgroundColor: "rgb(var(--ha-divider))" }}>
-        <div className="h-full rounded-full transition-all duration-500"
-          style={{ width: `${(step / 4) * 100}%`, backgroundColor: "rgb(var(--ha-primary))" }} />
+      <div className="max-w-[480px] mx-auto px-5 py-4 flex items-center" data-testid="step-progress">
+        {([1, 2, 3, 4] as EmbedStep[]).map((s, i) => (
+          <div key={s} className={`flex items-center${i < 3 ? " flex-1" : ""}`}>
+            <div
+              className="rounded-full shrink-0 transition-all duration-300"
+              style={{
+                width: s === step ? "12px" : "9px",
+                height: s === step ? "12px" : "9px",
+                backgroundColor: s <= step ? "rgb(var(--ha-primary))" : "transparent",
+                border: s > step ? "1.5px solid rgb(var(--ha-card-border))" : "none",
+              }}
+              data-testid={`step-dot-${s}`}
+            />
+            {i < 3 && (
+              <div className="flex-1 ml-[6px]"
+                style={{
+                  height: "1.5px",
+                  backgroundColor: s < step ? "rgb(var(--ha-primary))" : "rgb(var(--ha-card-border))",
+                }} />
+            )}
+          </div>
+        ))}
       </div>
     </header>
   );
@@ -555,11 +562,19 @@ export default function OnboardingEmbedPage() {
     <div className="flex flex-col" style={{ minHeight: "100dvh", backgroundColor: "rgb(var(--ha-card))" }}
       data-testid="onboarding-embed">
 
-      <EmbedHeader step={step} title={step === 4 ? "Create account" : HEADER_TITLE} />
+      <EmbedHeader step={step} />
 
       {/* Scrollable content */}
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-[480px] mx-auto px-4 pt-5 pb-[120px]">
+
+          {/* Headline — steps 1-3 */}
+          {step < 4 && (
+            <h1 className="text-[22px] font-bold leading-snug mb-5" style={{ color: OBW.text }}
+              data-testid="embed-headline">
+              Discover how many matches we can find for you
+            </h1>
+          )}
 
           {/* ── STEP 1: LOCATION (city editable inline) ───────────────────── */}
           {step === 1 && (
@@ -577,6 +592,8 @@ export default function OnboardingEmbedPage() {
                     className="w-full ha-field-web pr-10"
                     style={{
                       paddingLeft: "46px",
+                      height: "48px",
+                      borderRadius: "4px",
                       borderColor: city ? "rgb(var(--ha-primary))" : "rgb(var(--ha-border-input))",
                       backgroundColor: city ? "rgb(var(--ha-primary-light))" : OBW.inputBg,
                       color: OBW.text,
@@ -651,7 +668,7 @@ export default function OnboardingEmbedPage() {
                 <div data-testid="section-districts">
                   <button onClick={() => setShowDistrictPicker(!showDistrictPicker)}
                     className="w-full flex items-center justify-between ha-field-web text-left mb-4"
-                    style={{ backgroundColor: OBW.inputBg, borderColor: "rgb(var(--ha-border-input))" }}
+                    style={{ backgroundColor: OBW.inputBg, borderColor: "rgb(var(--ha-border-input))", height: "48px", borderRadius: "4px" }}
                     data-testid="dropdown-districts">
                     <span className="text-[15px] font-medium" style={{ color: OBW.text }}>{districtSummary}</span>
                     <ChevronDown className="w-[17px] h-[17px] shrink-0 transition-transform duration-200"
@@ -675,7 +692,7 @@ export default function OnboardingEmbedPage() {
                       })}
                     </div>
                   )}
-                  <div style={{ aspectRatio: "1/1" }} className="rounded-[4px] overflow-hidden w-full">
+                  <div style={{ aspectRatio: "4/3" }} className="rounded-[4px] overflow-hidden w-full">
                     <MapView lat={city.lat} lng={city.lng} zoom={13}
                       markers={[{ lat: city.lat, lng: city.lng, type: "primary" }]}
                       circles={[{ lat: city.lat, lng: city.lng, radiusMeters: 1500 }]}
@@ -712,7 +729,7 @@ export default function OnboardingEmbedPage() {
                       {locationData.radiusKm} km
                     </span>
                   </div>
-                  <div style={{ aspectRatio: "1/1" }} className="rounded-[4px] overflow-hidden w-full">
+                  <div style={{ aspectRatio: "4/3" }} className="rounded-[4px] overflow-hidden w-full">
                     <MapView lat={city.lat} lng={city.lng} zoom={10}
                       markers={[{ lat: city.lat, lng: city.lng, type: "primary" }]}
                       circles={[{ lat: city.lat, lng: city.lng, radiusMeters: locationData.radiusKm * 1000 }]}
@@ -724,7 +741,7 @@ export default function OnboardingEmbedPage() {
               {/* Entire city */}
               {locationData.mode === "city" && (
                 <div data-testid="section-city">
-                  <div style={{ aspectRatio: "1/1" }} className="rounded-[4px] overflow-hidden w-full">
+                  <div style={{ aspectRatio: "4/3" }} className="rounded-[4px] overflow-hidden w-full">
                     <MapView lat={city.lat} lng={city.lng} zoom={10}
                       markers={[{ lat: city.lat, lng: city.lng, type: "primary" }]}
                       height="100%" className="" />
@@ -866,7 +883,7 @@ export default function OnboardingEmbedPage() {
                   onChange={(e) => setSearchDetails((p) => ({ ...p, searchName: e.target.value }))}
                   placeholder={city?.name ?? "e.g. Berlin"}
                   className="w-full ha-field-web"
-                  style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg }}
+                  style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg, height: "48px", borderRadius: "4px" }}
                   data-testid="input-search-name"
                 />
               </section>
@@ -976,7 +993,7 @@ export default function OnboardingEmbedPage() {
                   <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)}
                     placeholder="First name"
                     className="w-full ha-field-web"
-                    style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg }}
+                    style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg, height: "48px", borderRadius: "4px" }}
                     autoFocus data-testid="input-first-name" />
                 </div>
                 <div className="flex-1">
@@ -984,7 +1001,7 @@ export default function OnboardingEmbedPage() {
                   <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)}
                     placeholder="Last name"
                     className="w-full ha-field-web"
-                    style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg }}
+                    style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg, height: "48px", borderRadius: "4px" }}
                     data-testid="input-last-name" />
                 </div>
               </div>
@@ -994,7 +1011,7 @@ export default function OnboardingEmbedPage() {
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@email.com"
                   className="w-full ha-field-web"
-                  style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg }}
+                  style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg, height: "48px", borderRadius: "4px" }}
                   data-testid="input-email" />
               </div>
 
@@ -1005,7 +1022,7 @@ export default function OnboardingEmbedPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Create a password"
                     className="w-full ha-field-web pr-11"
-                    style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg }}
+                    style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg, height: "48px", borderRadius: "4px" }}
                     data-testid="input-password" />
                   <button type="button" onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3.5 top-1/2 -translate-y-1/2"
@@ -1026,6 +1043,7 @@ export default function OnboardingEmbedPage() {
                     style={{
                       borderColor: confirmPassword.length > 0 && !confirmOk ? "rgb(var(--ha-danger))" : "rgb(var(--ha-border-input))",
                       color: OBW.text, backgroundColor: OBW.inputBg,
+                      height: "48px", borderRadius: "4px",
                     }}
                     data-testid="input-confirm-password" />
                   <button type="button" onClick={() => setShowConfirm(!showConfirm)}
