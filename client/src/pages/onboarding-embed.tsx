@@ -448,7 +448,7 @@ export default function OnboardingEmbedPage() {
 
       if (userId && city) {
         try {
-          await createSearchProfile({
+          const newProfile = await createSearchProfile({
             user_id: userId,
             city_name: city.name,
             country_code: "DE",
@@ -471,6 +471,19 @@ export default function OnboardingEmbedPage() {
             search_name: searchDetails.searchName.trim() || city.name,
             target_categories: searchDetails.suitableFor.length > 0 ? searchDetails.suitableFor : undefined,
           });
+          // Backfill: show last 7 days of matching listings immediately in the Matches tab.
+          // No push/email notifications are sent — new users have no active subscription yet
+          // (the engine already gates notifications on subscription status).
+          if (newProfile?.id && sessionData?.session?.access_token) {
+            apiFetch("/api/search-profiles/backfill", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${sessionData.session.access_token}`,
+              },
+              body: JSON.stringify({ searchProfileId: newProfile.id }),
+            }).catch(() => {});
+          }
         } catch (err) {
           console.error("[OnboardingEmbed] Failed to save search profile:", err);
         }
