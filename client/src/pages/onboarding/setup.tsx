@@ -1380,7 +1380,7 @@ export default function OnboardingSetup() {
         personalData={personalData}
         onChange={updatePersonalData}
         onNext={handleLetterPersonalNext}
-        onSkip={() => goStep("letter-living")}
+        onSkip={() => goStep("search-buddy")}
         t={t}
       />
     );
