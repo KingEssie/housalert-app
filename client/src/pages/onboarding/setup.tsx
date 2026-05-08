@@ -1144,7 +1144,7 @@ export default function OnboardingSetup() {
             setStep("welcome");
           } else {
             if (d.post_paywall_onboarding_completed) {
-              navigate("/matches");
+              navigate("/dashboard?tab=matches");
               return;
             }
 
@@ -1391,7 +1391,7 @@ export default function OnboardingSetup() {
       post_paywall_onboarding_completed: true,
       onboarding_current_step: "done",
     });
-    navigate("/matches");
+    navigate("/dashboard?tab=matches");
   }
 
   useEffect(() => {
