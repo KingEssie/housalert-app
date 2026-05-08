@@ -134,7 +134,7 @@ export default function WelcomePage() {
       return;
     }
     console.log(`[WELCOME] Login success — user.id=${signInData?.user?.id?.substring(0, 8) ?? "null"}`);
-    window.location.href = "/home";
+    window.location.href = "/matches";
   }
 
   const inputStyle = (extraPadding?: string): React.CSSProperties => ({

@@ -133,7 +133,7 @@ function RootRoute() {
     return <Redirect to={`/buddy/accept?token=${encodeURIComponent(pendingBuddyToken)}`} />;
   }
 
-  return <Redirect to="/home" />;
+  return <Redirect to="/matches" />;
 }
 
 function GuestRoute({ component: Component }: { component: React.ComponentType }) {
@@ -153,11 +153,11 @@ function GuestRoute({ component: Component }: { component: React.ComponentType }
       .then((res) => res.json())
       .then((data) => {
         const completed = data.onboarding_completed === true || data.post_paywall_onboarding_completed === true;
-        setDestination(completed ? "/home" : "/onboarding/setup");
+        setDestination(completed ? "/matches" : "/onboarding/setup");
         setChecking(false);
       })
       .catch(() => {
-        setDestination("/home");
+        setDestination("/matches");
         setChecking(false);
       });
   }, [user, session, loading]);
@@ -191,7 +191,7 @@ function WebFunnelRoute({ component: Component }: { component: React.ComponentTy
       .then((res) => res.json())
       .then((data) => {
         const completed = data.onboarding_completed === true || data.post_paywall_onboarding_completed === true;
-        setDestination(completed ? "/home" : "/onboarding/setup");
+        setDestination(completed ? "/matches" : "/onboarding/setup");
         setChecking(false);
       })
       .catch(() => {
