@@ -235,7 +235,7 @@ function SearchProfilesSection({ profiles, navigate }: { profiles: SearchProfile
           <p className="text-[15px] font-semibold text-ha-text">{t("searchProfiles.sectionTitle")}</p>
         </div>
         <div className="flex flex-col items-center text-center py-6 px-2">
-          <img src={EMPTY_STATE_IMAGES.createSearch} alt="" className="w-[240px] max-h-[240px] h-auto mb-6 object-contain" draggable={false} />
+          <img src={EMPTY_STATE_IMAGES.createSearch} alt="" style={{ width: 260, maxWidth: "80vw" }} className="h-auto mb-6 object-contain flex-shrink-0" draggable={false} />
           <p className="text-[16px] font-bold text-ha-text mb-1" data-testid="text-empty-title">{t("searchProfiles.emptyTitle")}</p>
           <p className="text-[14px] text-ha-text-secondary mb-5 leading-relaxed max-w-[260px]" data-testid="text-empty-subtitle">{t("searchProfiles.emptySubtitle")}</p>
           <button
@@ -805,7 +805,7 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
         </div>
       ) : (
         <div className="rounded-[12px] bg-white border border-ha-card-border p-7 flex flex-col items-center justify-center text-center min-h-[calc(100dvh-260px)]" data-testid="card-search-profiles-empty">
-          <img src={EMPTY_STATE_IMAGES.createSearch} alt="" className="w-[240px] max-h-[240px] h-auto mb-6 object-contain" draggable={false} />
+          <img src={EMPTY_STATE_IMAGES.createSearch} alt="" style={{ width: 260, maxWidth: "80vw" }} className="h-auto mb-6 object-contain flex-shrink-0" draggable={false} />
           <p className="text-[20px] font-bold text-ha-text mb-2">{t("home.emptyTitle")}</p>
           <p className="text-[16px] text-ha-text-secondary mb-6 leading-relaxed max-w-[280px]">{t("home.emptySubtitle")}</p>
           {!buddyMode && (

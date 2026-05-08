@@ -406,11 +406,7 @@ export default function ListingDetailPage() {
               {t("listing.applyDirect")}
             </Button>
           ) : (
-            <div className="flex flex-col gap-2 pb-1" data-testid="section-premium-lock">
-              <p className="text-[12px] text-ha-text-secondary text-center leading-snug flex items-center justify-center gap-1.5">
-                <Lock className="w-3.5 h-3.5 flex-shrink-0" />
-                {t("listing.premiumLock.title")}
-              </p>
+            <div className="pb-1" data-testid="section-premium-lock">
               <button
                 onClick={() => navigate("/paywall")}
                 className="w-full h-[44px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"

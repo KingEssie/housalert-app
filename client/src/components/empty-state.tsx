@@ -29,7 +29,8 @@ export function EmptyState({ illustration, title, description, ctaLabel, onCtaCl
       <img
         src={illustration}
         alt=""
-        className={`${compact ? "w-[148px] max-h-[148px]" : "w-[240px] max-h-[240px]"} h-auto mb-6 object-contain`}
+        style={{ width: compact ? 148 : 260, maxWidth: "80vw" }}
+        className="h-auto mb-6 object-contain flex-shrink-0"
         draggable={false}
       />
       <h2 className="text-[18px] font-semibold text-ha-text leading-snug mb-2" data-testid="text-empty-title">
