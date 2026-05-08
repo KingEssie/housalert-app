@@ -589,7 +589,10 @@ export default function OnboardingPassword() {
 
               {/* Legal text */}
               <p className="text-center text-[12px] leading-[1.65] mt-3 mx-4" style={{ color: "rgb(var(--ha-text-placeholder))" }}>
-                {t("onboarding.password.terms")}
+                {t("onboarding.password.termsAgree")}{" "}
+                <a href="https://www.housalert.com/terms-of-service" target="_blank" rel="noopener noreferrer" className="underline">{t("onboarding.password.termsLink")}</a>{" "}
+                {t("onboarding.password.termsAnd")}{" "}
+                <a href="https://www.housalert.com/privacy" target="_blank" rel="noopener noreferrer" className="underline">{t("onboarding.password.privacyLink")}</a>.
               </p>
 
               {/* Login link */}
@@ -764,7 +767,10 @@ export default function OnboardingPassword() {
   const footerTerms = (
     <div className="text-center">
       <p className="text-[12px] leading-relaxed text-ha-text-secondary">
-        {t("onboarding.password.terms")}
+        {t("onboarding.password.termsAgree")}{" "}
+        <a href="https://www.housalert.com/terms-of-service" target="_blank" rel="noopener noreferrer" className="underline text-ha-text-secondary">{t("onboarding.password.termsLink")}</a>{" "}
+        {t("onboarding.password.termsAnd")}{" "}
+        <a href="https://www.housalert.com/privacy" target="_blank" rel="noopener noreferrer" className="underline text-ha-text-secondary">{t("onboarding.password.privacyLink")}</a>.
       </p>
       <p className="text-[14px] mt-2 text-ha-text-secondary">
         {t("onboarding.intro.alreadyAccount")}{" "}

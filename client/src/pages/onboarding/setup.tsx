@@ -659,15 +659,53 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
           <label className="text-[14px] font-semibold text-ha-text mb-2 block">
             {t("onboardingFlow.letterPersonal.birthDate")}
           </label>
-          <input
-            type="date"
-            value={personalData.birthDate}
-            onChange={(e) => onChange({ birthDate: e.target.value })}
-            max={new Date().toISOString().split("T")[0]}
-            min="1900-01-01"
-            className={INPUT_CLS}
-            data-testid="input-birth-date"
-          />
+          {(() => {
+            const parts = (personalData.birthDate || "").split("-");
+            const bYear = parts[0] || "";
+            const bMonth = parts[1] || "";
+            const bDay = parts[2] || "";
+            const selCls = `w-full h-[56px] px-3 pr-10 rounded-[8px] border border-ha-border-input bg-white text-[16px] appearance-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all`;
+            function handlePart(part: "year" | "month" | "day", val: string) {
+              const y = part === "year" ? val : bYear;
+              const m = part === "month" ? val : bMonth;
+              const d = part === "day" ? val : bDay;
+              onChange({ birthDate: [y, m, d].join("-") });
+            }
+            const MONTHS = t("profileDetails.months") as unknown as string[];
+            return (
+              <div className="grid grid-cols-[1fr_2fr_1fr] gap-2" data-testid="input-birth-date">
+                <div className="relative">
+                  <select value={bDay} onChange={e => handlePart("day", e.target.value)} className={`${selCls} ${!bDay ? "text-ha-text-secondary opacity-55" : "text-ha-text"}`} data-testid="select-birth-day">
+                    <option value="">{t("profileDetails.birthDay")}</option>
+                    {Array.from({ length: 31 }, (_, i) => i + 1).map(d => (
+                      <option key={d} value={String(d).padStart(2, "0")}>{d}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text pointer-events-none" />
+                </div>
+                <div className="relative">
+                  <select value={bMonth} onChange={e => handlePart("month", e.target.value)} className={`${selCls} ${!bMonth ? "text-ha-text-secondary opacity-55" : "text-ha-text"}`} data-testid="select-birth-month">
+                    <option value="">{t("profileDetails.birthMonth")}</option>
+                    {Array.isArray(MONTHS) ? MONTHS.map((m, i) => (
+                      <option key={i} value={String(i + 1).padStart(2, "0")}>{m}</option>
+                    )) : Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
+                      <option key={m} value={String(m).padStart(2, "0")}>{String(m).padStart(2, "0")}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text pointer-events-none" />
+                </div>
+                <div className="relative">
+                  <select value={bYear} onChange={e => handlePart("year", e.target.value)} className={`${selCls} ${!bYear ? "text-ha-text-secondary opacity-55" : "text-ha-text"}`} data-testid="select-birth-year">
+                    <option value="">{t("profileDetails.birthYear")}</option>
+                    {Array.from({ length: 80 }, (_, i) => new Date().getFullYear() - 18 - i).map(y => (
+                      <option key={y} value={String(y)}>{y}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text pointer-events-none" />
+                </div>
+              </div>
+            );
+          })()}
         </div>
 
         <div>

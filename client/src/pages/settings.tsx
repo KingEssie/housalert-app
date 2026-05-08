@@ -68,8 +68,8 @@ export default function SettingsPage() {
     {
       title: t("settings.sectionLegal"),
       rows: [
-        { label: t("settings.termsConditions"), route: "/terms", external: false },
-        { label: t("settings.privacyPolicy"), route: "/datenschutz", external: false },
+        { label: t("settings.termsConditions"), route: "https://www.housalert.com/terms-of-service", external: true },
+        { label: t("settings.privacyPolicy"), route: "https://www.housalert.com/privacy", external: true },
       ],
     },
   ];

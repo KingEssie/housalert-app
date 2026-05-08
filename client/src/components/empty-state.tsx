@@ -29,7 +29,7 @@ export function EmptyState({ illustration, title, description, ctaLabel, onCtaCl
       <img
         src={illustration}
         alt=""
-        className="w-[64px] max-h-[64px] h-auto mb-4 object-contain"
+        className="w-[148px] max-h-[148px] h-auto mb-6 object-contain"
         draggable={false}
       />
       <h2 className="text-[18px] font-semibold text-ha-text leading-snug mb-2" data-testid="text-empty-title">
