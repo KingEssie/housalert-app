@@ -1168,6 +1168,12 @@ export const en: Record<string, any> = {
     lockLabel: "Subscription required to apply",
     lockedHint: "You can view this listing, but applying requires a subscription",
     upgradeCta: "Upgrade to apply directly",
+    premiumLock: {
+      title: "Unlock this listing",
+      desc1: "Be the first to respond to new rentals",
+      desc2: "Instant alerts + direct landlord links",
+      button: "Upgrade",
+    },
     openOriginal: "Open original listing",
     favoriteAdded: "Saved to favorites",
     favoriteRemoved: "Removed from favorites",

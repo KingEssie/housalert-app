@@ -1238,6 +1238,12 @@ export const nl: Record<string, any> = {
     lockLabel: "Reageren vereist abonnement",
     lockedHint: "Je ziet deze woning, maar reageren is alleen beschikbaar met een abonnement",
     upgradeCta: "Upgrade om direct te reageren",
+    premiumLock: {
+      title: "Ontgrendel deze woning",
+      desc1: "Als eerste reageren op nieuwe huurwoningen",
+      desc2: "Directe links + instant meldingen",
+      button: "Upgrade",
+    },
     openOriginal: "Originele advertentie openen",
     favoriteAdded: "Opgeslagen als favoriet",
     favoriteRemoved: "Favoriet verwijderd",

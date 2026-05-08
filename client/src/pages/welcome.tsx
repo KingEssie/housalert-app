@@ -5,7 +5,6 @@ import { useTranslation, hasExplicitLocale, detectBrowserLocale } from "@/i18n";
 import type { Locale } from "@/i18n";
 import { ChevronDown, Eye, EyeOff, Loader2, ArrowRight, Star } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { ensureTrialForCurrentUser } from "@/lib/auth";
 import { clearAllUserData } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -135,7 +134,6 @@ export default function WelcomePage() {
       return;
     }
     console.log(`[WELCOME] Login success — user.id=${signInData?.user?.id?.substring(0, 8) ?? "null"}`);
-    try { await ensureTrialForCurrentUser(); } catch {}
     window.location.href = "/home";
   }
 

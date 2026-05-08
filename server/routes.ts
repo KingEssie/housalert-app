@@ -17,7 +17,6 @@ import { supabase } from "./ingesters/matching";
 import { backfillMatchesForSearchProfile, explainMatch, explainAllProfilesForListing } from "./matching/engine";
 import { flushUserAlerts, getRecentEmailedIds } from "./notifications/buffer";
 import {
-  ensureTrialSubscription,
   getSubscriptionStatus,
   updateSubscriptionFromCheckout,
   updateSubscriptionStatus,
@@ -2294,16 +2293,10 @@ export async function registerRoutes(
       }
 
       try {
-        const sub = await ensureTrialSubscription(userId);
-        if (sub) {
-          log(`[SIGNUP] Trial subscription created: user=${userId}, plan=${sub.plan || "trial"}, status=${sub.status}`);
-          trackActivationEvent(userId, "account_created", {});
-          trackActivationEvent(userId, "trial_started", { plan: sub.plan || "trial" });
-        } else {
-          log(`[SIGNUP] Trial subscription returned null for user=${userId}`);
-        }
+        trackActivationEvent(userId, "account_created", {});
+        log(`[SIGNUP] Account created and event tracked: user=${userId}`);
       } catch (trialErr: any) {
-        log(`[SIGNUP] Trial creation FAILED for user=${userId}: ${trialErr.message}`);
+        log(`[SIGNUP] Account event tracking failed for user=${userId}: ${trialErr.message}`);
       }
 
       return res.json({ ok: true, userId });
@@ -2382,15 +2375,12 @@ export async function registerRoutes(
         log(`[ensure-trial] WARNING: user_profile_data insert failed for user=${user.id}: ${err.message}`);
       });
 
-      const sub = await ensureTrialSubscription(user.id);
-      if (!sub) {
-        return res.status(500).json({ error: "Trial creation failed" });
-      }
       hasActivationEvent(user.id, "account_created").then(has => {
         if (!has) trackActivationEvent(user.id, "account_created", {});
       }).catch(() => {});
-      trackActivationEvent(user.id, "trial_started", { plan: sub.plan || "trial" });
-      return res.json({ ok: true, subscription: sub });
+      log(`[ensure-trial] Trial auto-creation disabled — subscription must be started via Stripe checkout. user=${user.id}`);
+      const { data: existingSub } = await supabase.from("subscriptions").select("*").eq("user_id", user.id).maybeSingle();
+      return res.json({ ok: true, subscription: existingSub ?? null });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }

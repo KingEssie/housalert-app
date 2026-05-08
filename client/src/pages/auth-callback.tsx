@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { supabase } from "@/lib/supabase";
-import { ensureTrialForCurrentUser } from "@/lib/auth";
 import { apiFetch } from "@/lib/api-base";
 import { Loader2 } from "lucide-react";
 import { useI18n } from "@/i18n";
@@ -32,11 +31,6 @@ export default function AuthCallbackPage() {
         await supabase.auth.updateUser({
           data: { email_needs_verification: false },
         });
-
-        const trialOk = await ensureTrialForCurrentUser();
-        if (!trialOk) {
-          console.error("[auth-callback] Trial creation failed after email verification — continuing anyway");
-        }
 
         try {
           const { data: { session } } = await supabase.auth.getSession();

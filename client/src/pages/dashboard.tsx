@@ -1085,6 +1085,8 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
   const [favoriteListings, setFavoriteListings] = useState<ApiMatch[]>([]);
   const [favLoading, setFavLoading] = useState(true);
   const { t } = useTranslation();
+  const favSub = useSubscription();
+  const favHasActiveSub = favSub.isActive || favSub.isTrial;
 
   const fetchFavoriteListings = useCallback(() => {
     if (!accessToken) return;
@@ -1205,7 +1207,7 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
                   markViewed(m.listing_id);
                   navigate(`/apply/${m.listing_id}`);
                 }}
-                locked={false}
+                locked={!favHasActiveSub}
                 matchVariant
               />
             ))}
@@ -1220,6 +1222,8 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
   const [refreshKey, setRefreshKey] = useState(0);
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
   const [topTab, setTopTab] = useState<MatchesTopTab>(initialTopTab || "matches");
+  const matchesSub = useSubscription();
+  const matchesHasActiveSub = buddyMode ? (ownerSubActive ?? false) : (matchesSub.isActive || matchesSub.isTrial);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortOption, setSortOption] = useState<string>("date_desc");
   const [sortSheetOpen, setSortSheetOpen] = useState(false);
@@ -1518,7 +1522,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
                     refreshStatuses();
                     navigate(`/apply/${m.listing_id}`);
                   }}
-                  locked={false}
+                  locked={!matchesHasActiveSub}
                   matchVariant
                 />
               ))
@@ -1550,7 +1554,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
                       markViewed(m.listing_id);
                       navigate(`/apply/${m.listing_id}`);
                     }}
-                    locked={false}
+                    locked={!matchesHasActiveSub}
                     respondedLabel={formatRespondedDate(m)}
                     onRemoveResponse={() => removeApplied(m.listing_id)}
                     removeResponseLabel={t("matches.removeResponse")}

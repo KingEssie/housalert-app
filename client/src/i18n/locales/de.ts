@@ -1238,6 +1238,12 @@ export const de: Record<string, any> = {
     lockLabel: "Abonnement zum Bewerben erforderlich",
     lockedHint: "Du siehst diese Wohnung, aber zum Bewerben brauchst du ein Abonnement",
     upgradeCta: "Upgrade um direkt zu reagieren",
+    premiumLock: {
+      title: "Wohnung freischalten",
+      desc1: "Als Erster auf neue Mietwohnungen reagieren",
+      desc2: "Sofortige Benachrichtigungen + direkte Vermieterlinks",
+      button: "Upgrade",
+    },
     openOriginal: "Originalanzeige öffnen",
     favoriteAdded: "Als Favorit gespeichert",
     favoriteRemoved: "Favorit entfernt",
