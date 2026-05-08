@@ -325,7 +325,7 @@ export default function ListingDetailPage() {
         )}
       </div>
 
-      <main className={`flex-1 max-w-xl mx-auto w-full px-5 pt-4 ${hasActiveSub ? "pb-28" : "pb-52"}`}>
+      <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-4 pb-28">
         <h1 className="text-[20px] font-semibold text-ha-text leading-[1.3]" data-testid="text-listing-title">
           {listing.title}
         </h1>
@@ -406,16 +406,14 @@ export default function ListingDetailPage() {
               {t("listing.applyDirect")}
             </Button>
           ) : (
-            <div className="flex flex-col items-center gap-1.5 pb-1" data-testid="section-premium-lock">
-              <div className="flex items-center gap-1.5 mb-0.5">
-                <Lock className="w-4 h-4 text-ha-text-secondary" />
-                <span className="text-[15px] font-semibold text-ha-text">{t("listing.premiumLock.title")}</span>
-              </div>
-              <p className="text-[12px] text-ha-text-secondary text-center leading-snug">{t("listing.premiumLock.desc1")}</p>
-              <p className="text-[12px] text-ha-text-secondary text-center leading-snug">{t("listing.premiumLock.desc2")}</p>
+            <div className="flex flex-col gap-2 pb-1" data-testid="section-premium-lock">
+              <p className="text-[12px] text-ha-text-secondary text-center leading-snug flex items-center justify-center gap-1.5">
+                <Lock className="w-3.5 h-3.5 flex-shrink-0" />
+                {t("listing.premiumLock.title")}
+              </p>
               <button
                 onClick={() => navigate("/paywall")}
-                className="w-full h-[44px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold flex items-center justify-center gap-2 mt-1 active:scale-[0.98] transition-transform"
+                className="w-full h-[44px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
                 data-testid="button-upgrade-lock"
               >
                 {t("listing.premiumLock.button")}

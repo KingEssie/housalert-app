@@ -131,6 +131,30 @@ export default function SubscriptionDetailPage() {
     },
   ];
 
+  if (!subscription?.isActive && !subscription?.isTrial) {
+    return (
+      <div className="min-h-screen" style={{ backgroundColor: "rgb(var(--ha-bg))" }} data-testid="page-subscription-detail">
+        <AppHeader title={t("subscription.title")} onBack={() => { if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=profile"); }} />
+        <div className="max-w-lg mx-auto px-4 pt-10 pb-12 flex flex-col items-center text-center gap-5">
+          <div className="w-14 h-14 rounded-full bg-ha-surface flex items-center justify-center">
+            <Crown className="w-[26px] h-[26px] text-ha-text-secondary" strokeWidth={1.8} />
+          </div>
+          <div>
+            <p className="text-[20px] font-bold text-ha-text mb-2" data-testid="text-no-sub-title">{t("subscription.noSubTitle")}</p>
+            <p className="text-[14px] text-ha-text-secondary leading-relaxed max-w-[280px] mx-auto">{t("subscription.noSubDesc")}</p>
+          </div>
+          <button
+            onClick={() => navigate("/paywall")}
+            className="w-full max-w-[320px] h-[50px] bg-ha-primary hover:bg-ha-primary-hover text-white rounded-[10px] font-semibold text-[16px] transition-colors active:scale-[0.98]"
+            data-testid="button-upgrade-subscription"
+          >
+            {t("subscription.noSubCta")}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: "rgb(var(--ha-bg))" }} data-testid="page-subscription-detail">
       <AppHeader title={t("subscription.title")} onBack={() => { if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=profile"); }} />
