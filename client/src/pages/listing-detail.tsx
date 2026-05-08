@@ -325,7 +325,7 @@ export default function ListingDetailPage() {
         )}
       </div>
 
-      <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-4 pb-28">
+      <main className={`flex-1 max-w-xl mx-auto w-full px-5 pt-4 ${hasActiveSub ? "pb-28" : "pb-8"}`}>
         <h1 className="text-[20px] font-semibold text-ha-text leading-[1.3]" data-testid="text-listing-title">
           {listing.title}
         </h1>
@@ -393,9 +393,9 @@ export default function ListingDetailPage() {
         })()}
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-ha-divider px-5 pt-3 z-10" style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))" }}>
-        <div className="max-w-xl mx-auto">
-          {hasActiveSub ? (
+      {hasActiveSub && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-ha-divider px-5 pt-3 z-10" style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))" }}>
+          <div className="max-w-xl mx-auto">
             <Button
               onClick={() => navigate(`/apply/${listing.id}`)}
               className="w-full h-[48px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold flex items-center justify-center gap-2"
@@ -405,19 +405,9 @@ export default function ListingDetailPage() {
               <Zap className="w-4 h-4" />
               {t("listing.applyDirect")}
             </Button>
-          ) : (
-            <div className="pb-1" data-testid="section-premium-lock">
-              <button
-                onClick={() => navigate("/paywall")}
-                className="w-full h-[44px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[15px] font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
-                data-testid="button-upgrade-lock"
-              >
-                {t("listing.premiumLock.button")}
-              </button>
-            </div>
-          )}
+          </div>
         </div>
-      </div>
+      )}
 
       {showBlockModal && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowBlockModal(false)}>
