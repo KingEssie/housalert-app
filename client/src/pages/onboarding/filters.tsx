@@ -42,7 +42,7 @@ function WebToggle({
     >
       <div
         className="w-[44px] h-[26px] rounded-full p-[3px] transition-colors shrink-0 flex items-center"
-        style={{ backgroundColor: checked ? "rgb(var(--ha-text))" : "rgb(var(--ha-card-border))" }}
+        style={{ backgroundColor: checked ? "#bbadfb" : "rgb(var(--ha-card-border))" }}
         onClick={(e) => { e.preventDefault(); onChange(!checked); }}
       >
         <div
@@ -175,7 +175,7 @@ function Toggle({
     <label className="flex items-center gap-3 cursor-pointer" data-testid={testId}>
       <div
         className="w-[44px] h-[24px] rounded-full p-[2px] transition-colors shrink-0"
-        style={{ backgroundColor: checked ? OB.primary : "rgb(var(--ha-card-border))" }}
+        style={{ backgroundColor: checked ? "#bbadfb" : "rgb(var(--ha-card-border))" }}
         onClick={() => onChange(!checked)}
       >
         <div

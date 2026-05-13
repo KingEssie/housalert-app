@@ -85,7 +85,7 @@ export function ListingCardFull({
   const [imgError, setImgError] = useState(false);
   const { t, locale } = useTranslation();
   const hasImage = isValidImageUrl(match.image_url) && !imgError;
-  const seenAt = match.first_seen_at || match.matched_at;
+  const seenAt = (match as any).display_time || (match as any).published_at || (match as any).source_published_at || match.first_seen_at || match.matched_at;
   const isNew = seenAt ? (Date.now() - new Date(seenAt).getTime()) / 3600000 < 24 : false;
 
   const address = formatAddress(match);

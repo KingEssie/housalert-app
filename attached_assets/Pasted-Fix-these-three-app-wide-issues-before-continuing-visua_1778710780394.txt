@@ -1,0 +1,74 @@
+Fix these three app-wide issues before continuing visual polish.
+
+1. Toggle active color app-wide
+Current issue:
+Active toggles/switches are green.
+
+Required:
+All active toggles/switches across the entire app should use purple:
+#bbadfb
+
+Rules:
+- Green #85fb8c is only for primary CTA buttons.
+- Do not use green for switches/toggles.
+- Apply globally if possible, not screen-by-screen.
+- Check onboarding embed, setup flow, filters, account/settings, and search profile forms.
+
+2. Listing displayed time should use original publisher time
+Current issue:
+Backfilled listings all show times like “2 uur geleden”, because the app appears to use the time the listing was imported/matched instead of when it was actually published on the landlord/source website.
+
+Required:
+Investigate whether listings have a source/original publish timestamp field, for example:
+- published_at
+- source_published_at
+- listing_published_at
+- first_seen_at
+- posted_at
+- created_at from source
+- scraped_at / imported_at
+
+Expected behavior:
+- If original source publish time exists, display that time in Matches and listing detail.
+- If source publish time is missing, fall back to first_seen_at/imported_at.
+- Do NOT use user_match created_at for listing age.
+- Do NOT make all backfilled listings look newly posted.
+- Backfilled listings should show their real listing age when available.
+
+Add logs or a short report:
+- which timestamp fields exist
+- which timestamp is now used for display
+- fallback order
+
+Important:
+Do not change matching/backfill logic itself unless needed.
+Only fix display timestamp source.
+
+3. Remove duplicate locked-detail footer for free users
+Current issue:
+For users without an active subscription, listing detail shows duplicate upgrade CTAs:
+- inline upgrade section inside the listing detail content
+- sticky purple footer with upgrade button
+
+Required:
+Remove the sticky purple footer entirely for locked/free users.
+
+For free users:
+- Keep only the inline premium lock/upgrade section in the listing detail page.
+- No sticky footer.
+- No bottom purple footer.
+- No duplicate upgrade button.
+
+For premium users:
+- Keep the normal sticky action footer with “Copy & respond” if applicable.
+
+Important:
+- Do not remove premium user action footer.
+- Only remove sticky upgrade footer for users without active subscription.
+- Do not change subscription logic.
+
+Smoke check:
+- Active toggles are purple everywhere.
+- Backfilled listings show original source listing age if available.
+- Free user listing detail has only one upgrade CTA.
+- Premium user listing detail still has normal copy/respond footer.

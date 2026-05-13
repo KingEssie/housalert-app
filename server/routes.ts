@@ -667,6 +667,9 @@ export async function registerRoutes(
       const validResults = validMatches.map((m: any) => {
         const l = listingMap[m.listing_id];
         const firstSeenAt = freshnessMap[m.listing_id]?.first_seen_at || m.created_at;
+        const publishedAt = l?.published_at ?? null;
+        const sourcePublishedAt = l?.source_published_at ?? null;
+        const displayTime = publishedAt || sourcePublishedAt || firstSeenAt;
         const profile = profileMap[m.search_profile_id];
         let match_score = null;
         let match_label = null;
@@ -697,8 +700,11 @@ export async function registerRoutes(
           url: l.url ?? null,
           image_url: l.image_url ?? null,
           matched_at: m.matched_at,
+          published_at: publishedAt,
+          source_published_at: sourcePublishedAt,
           first_seen_at: firstSeenAt,
-          fresh_label: computeFreshLabel(firstSeenAt),
+          display_time: displayTime,
+          fresh_label: computeFreshLabel(displayTime),
           match_score,
           match_label,
           match_reasons,
@@ -1707,6 +1713,9 @@ export async function registerRoutes(
       const validResults = validMatches.map((m: any) => {
         const l = listingMap[m.listing_id];
         const firstSeenAt = freshnessMap[m.listing_id]?.first_seen_at || m.created_at;
+        const publishedAt = l?.published_at ?? null;
+        const sourcePublishedAt = l?.source_published_at ?? null;
+        const displayTime = publishedAt || sourcePublishedAt || firstSeenAt;
         const profile = profileMap[m.search_profile_id];
 
         let match_score = null;
@@ -1739,8 +1748,11 @@ export async function registerRoutes(
           url: l.url ?? null,
           image_url: l.image_url ?? null,
           matched_at: m.matched_at,
+          published_at: publishedAt,
+          source_published_at: sourcePublishedAt,
           first_seen_at: firstSeenAt,
-          fresh_label: computeFreshLabel(firstSeenAt),
+          display_time: displayTime,
+          fresh_label: computeFreshLabel(displayTime),
           match_score,
           match_label,
           match_reasons,
@@ -2052,6 +2064,10 @@ export async function registerRoutes(
 
       const freshnessMap = await getListingFreshness([id]);
       const firstSeenAt = freshnessMap[id]?.first_seen_at || data.created_at;
+      const publishedAt = (data as any).published_at ?? null;
+      const sourcePublishedAt = (data as any).source_published_at ?? null;
+      const displayTime = publishedAt || sourcePublishedAt || firstSeenAt;
+      console.log(`[LISTING-TIME] id=${id} published_at=${publishedAt ?? "N/A"} source_published_at=${sourcePublishedAt ?? "N/A"} first_seen_at=${freshnessMap[id]?.first_seen_at ?? "N/A"} created_at=${data.created_at} → display_time=${displayTime}`);
 
       let match_score = null;
       let match_label = null;
@@ -2097,8 +2113,11 @@ export async function registerRoutes(
 
       return res.json({
         ...data,
+        published_at: publishedAt,
+        source_published_at: sourcePublishedAt,
         first_seen_at: firstSeenAt,
-        fresh_label: computeFreshLabel(firstSeenAt),
+        display_time: displayTime,
+        fresh_label: computeFreshLabel(displayTime),
         match_score,
         match_label,
         match_reasons,

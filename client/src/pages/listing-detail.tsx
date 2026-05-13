@@ -93,7 +93,10 @@ interface Listing {
   source: string;
   url: string;
   image_url?: string | null;
+  published_at?: string | null;
+  source_published_at?: string | null;
   first_seen_at: string;
+  display_time?: string | null;
   fresh_label: string;
   match_score?: number | null;
   match_label?: string | null;
@@ -350,7 +353,7 @@ export default function ListingDetailPage() {
 
         <div className="flex items-center gap-1 mt-3 text-[12px] text-ha-text-secondary">
           <Clock className="w-3 h-3" />
-          <span data-testid="text-listing-time">{relativeTime(listing.first_seen_at)}</span>
+          <span data-testid="text-listing-time">{relativeTime(listing.display_time || listing.published_at || listing.source_published_at || listing.first_seen_at)}</span>
         </div>
 
         {(() => {

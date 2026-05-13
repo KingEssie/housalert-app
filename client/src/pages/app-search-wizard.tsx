@@ -104,7 +104,7 @@ function WebToggle({ checked, onChange, label, testId }: {
     <label className="flex items-center gap-3 cursor-pointer h-[52px] px-4 rounded-[10px]"
       style={{ border: "1px solid rgb(var(--ha-card-border))" }} data-testid={testId}>
       <div className="w-[44px] h-[26px] rounded-full p-[3px] transition-colors shrink-0 flex items-center"
-        style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "rgb(var(--ha-card-border))" }}
+        style={{ backgroundColor: checked ? "#bbadfb" : "rgb(var(--ha-card-border))" }}
         onClick={(e) => { e.preventDefault(); onChange(!checked); }}>
         <div className="w-[20px] h-[20px] rounded-full bg-white transition-all"
           style={{ transform: checked ? "translateX(18px)" : "translateX(0)", boxShadow: "0 1px 3px rgba(0,0,0,0.15)" }} />
@@ -126,7 +126,7 @@ function PrefsToggle({ checked, onChange, label, info, testId }: {
         {info && <Info className="inline-block ml-1 relative" style={{ width: 12, height: 12, color: "rgb(var(--ha-text-placeholder))", top: -1, verticalAlign: "middle" }} />}
       </span>
       <div className="w-[44px] h-[26px] rounded-full p-[3px] transition-colors shrink-0 flex items-center mt-[1px]"
-        style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "rgb(var(--ha-card-border))" }}>
+        style={{ backgroundColor: checked ? "#bbadfb" : "rgb(var(--ha-card-border))" }}>
         <div className="w-[20px] h-[20px] rounded-full bg-white transition-all"
           style={{ transform: checked ? "translateX(18px)" : "translateX(0)", boxShadow: "0 1px 3px rgba(0,0,0,0.15)" }} />
       </div>

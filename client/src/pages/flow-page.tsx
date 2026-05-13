@@ -258,7 +258,7 @@ function NotifToggleRow({ icon, label, subtitle, badge, enabled, loading, onTogg
         </div>
         <p className="text-[13px] text-ha-text-secondary mt-0.5 leading-snug">{subtitle}</p>
       </div>
-      <div className={`w-[46px] h-[26px] rounded-full transition-colors flex items-center px-0.5 flex-shrink-0 mt-0.5 ${enabled ? "bg-ha-text" : "bg-ha-border-input"}`}>
+      <div className={`w-[46px] h-[26px] rounded-full transition-colors flex items-center px-0.5 flex-shrink-0 mt-0.5 ${enabled ? "bg-[#bbadfb]" : "bg-ha-border-input"}`}>
         <div className={`w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${enabled ? "translate-x-[20px]" : "translate-x-0"}`} />
       </div>
     </button>

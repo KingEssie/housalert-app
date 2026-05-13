@@ -413,7 +413,7 @@ function NotificationsInline({ accessToken }: { accessToken: string | undefined 
         <button
           onClick={() => toggle("push_enabled")}
           disabled={updating === "push_enabled"}
-          className={`w-[44px] h-[26px] rounded-full relative transition-colors flex-shrink-0 ${settings.push_enabled ? "bg-ha-primary" : "bg-ha-card-border"} ${updating === "push_enabled" ? "opacity-50" : ""}`}
+          className={`w-[44px] h-[26px] rounded-full relative transition-colors flex-shrink-0 ${settings.push_enabled ? "bg-[#bbadfb]" : "bg-ha-card-border"} ${updating === "push_enabled" ? "opacity-50" : ""}`}
           data-testid="inline-toggle-push"
         >
           <span className={`absolute top-[3px] w-[20px] h-[20px] rounded-full bg-white shadow-sm transition-transform ${settings.push_enabled ? "left-[21px]" : "left-[3px]"}`} />
@@ -428,7 +428,7 @@ function NotificationsInline({ accessToken }: { accessToken: string | undefined 
         <button
           onClick={() => toggle("email_enabled")}
           disabled={updating === "email_enabled"}
-          className={`w-[44px] h-[26px] rounded-full relative transition-colors flex-shrink-0 ${settings.email_enabled ? "bg-ha-primary" : "bg-ha-card-border"} ${updating === "email_enabled" ? "opacity-50" : ""}`}
+          className={`w-[44px] h-[26px] rounded-full relative transition-colors flex-shrink-0 ${settings.email_enabled ? "bg-[#bbadfb]" : "bg-ha-card-border"} ${updating === "email_enabled" ? "opacity-50" : ""}`}
           data-testid="inline-toggle-email"
         >
           <span className={`absolute top-[3px] w-[20px] h-[20px] rounded-full bg-white shadow-sm transition-transform ${settings.email_enabled ? "left-[21px]" : "left-[3px]"}`} />
@@ -1763,7 +1763,7 @@ const ToggleRow = ({ label, subtitle, checked, onToggle, testId, last }: { label
       </div>
       <button
         onClick={() => onToggle(!checked)}
-        className={`relative w-[48px] h-[28px] rounded-full transition-colors duration-200 flex-shrink-0 ml-3 ${checked ? "bg-ha-primary" : "bg-ha-border-input"}`}
+        className={`relative w-[48px] h-[28px] rounded-full transition-colors duration-200 flex-shrink-0 ml-3 ${checked ? "bg-[#bbadfb]" : "bg-ha-border-input"}`}
         role="switch"
         aria-checked={checked}
         data-testid={testId ? `${testId}-toggle` : undefined}

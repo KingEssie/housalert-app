@@ -84,7 +84,10 @@ interface ListingData {
   source?: string | null;
   url?: string | null;
   image_url?: string | null;
+  published_at?: string | null;
+  source_published_at?: string | null;
   first_seen_at?: string | null;
+  display_time?: string | null;
 }
 
 const SOURCE_DISPLAY: Record<string, string> = {
@@ -561,10 +564,11 @@ export default function ApplyPage() {
   };
 
   const hasImage = isValidImageUrl(listing.image_url);
-  const timeAgoLabel = relativeTime(listing.first_seen_at);
+  const displayTime = listing.display_time || listing.published_at || listing.source_published_at || listing.first_seen_at;
+  const timeAgoLabel = relativeTime(displayTime);
   const sourceLabel = listing.source ? formatSourceDisplay(listing.source) : null;
   const metaLine = [timeAgoLabel, sourceLabel].filter(Boolean).join(" · ");
-  const postedLabel = listing.first_seen_at ? postedTime(listing.first_seen_at) : "";
+  const postedLabel = displayTime ? postedTime(displayTime) : "";
 
   const cardStyle: React.CSSProperties = { boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid rgb(var(--ha-card-border))" };
 
@@ -723,8 +727,8 @@ export default function ApplyPage() {
       {/* Bottom spacer */}
       <div className="mb-[140px]" />
 
-      {/* Sticky bottom CTA — hidden for buddy (read-only mode) */}
-      {!inBuddyMode && (
+      {/* Sticky bottom CTA — only for premium users. Free users see inline upgrade CTA above. */}
+      {!inBuddyMode && hasAccess && (
         <div
           className="fixed bottom-0 left-0 right-0 z-10"
           style={{
@@ -734,53 +738,39 @@ export default function ApplyPage() {
           }}
         >
           <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-3">
-            {hasAccess ? (
-              <>
-                {listing.price > 0 ? (
-                  <div className="flex flex-col justify-center" data-testid="text-sticky-price">
-                    <span className="text-[19px] font-semibold" style={{ color: "#111111" }}>
-                      €{listing.price}
-                      <span className="text-[13px] font-normal ml-1" style={{ color: "rgba(17,17,17,0.6)" }}>{t("common.perMonthShort")}</span>
-                    </span>
-                    {postedLabel && (
-                      <span className="text-[11px] font-medium leading-none mt-[3px]" style={{ color: "#111111" }} data-testid="text-footer-posted">
-                        {postedLabel}
-                      </span>
-                    )}
-                  </div>
-                ) : (
-                  <div />
+            {listing.price > 0 ? (
+              <div className="flex flex-col justify-center" data-testid="text-sticky-price">
+                <span className="text-[19px] font-semibold" style={{ color: "#111111" }}>
+                  €{listing.price}
+                  <span className="text-[13px] font-normal ml-1" style={{ color: "rgba(17,17,17,0.6)" }}>{t("common.perMonthShort")}</span>
+                </span>
+                {postedLabel && (
+                  <span className="text-[11px] font-medium leading-none mt-[3px]" style={{ color: "#111111" }} data-testid="text-footer-posted">
+                    {postedLabel}
+                  </span>
                 )}
-                <Button
-                  onClick={handleCopyAndRespond}
-                  className={`ha-btn font-semibold ${listing.price > 0 ? "" : "w-full"}`}
-                  style={{
-                    borderRadius: "9999px",
-                    backgroundColor: "#171429",
-                    color: "#ffffff",
-                    paddingLeft: "22px",
-                    paddingRight: "22px",
-                    minHeight: "44px",
-                    height: "44px",
-                    boxShadow: "0 6px 18px rgba(23,20,41,0.16)",
-                  }}
-                  data-testid="button-copy-and-respond"
-                >
-                  <Copy className="w-4 h-4 mr-2" />
-                  {t("applySheet.copyAndApply")}
-                </Button>
-              </>
+              </div>
             ) : (
-              <button
-                onClick={() => setShowUpgradeSheet(true)}
-                className="w-full h-[48px] rounded-full text-black text-[15px] font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
-                style={{ backgroundColor: "rgba(0,0,0,0.12)" }}
-                data-testid="button-upgraden-sticky"
-              >
-                <Zap className="w-[18px] h-[18px] text-black" strokeWidth={2} />
-                Upgrade om te kunnen reageren
-              </button>
+              <div />
             )}
+            <Button
+              onClick={handleCopyAndRespond}
+              className={`ha-btn font-semibold ${listing.price > 0 ? "" : "w-full"}`}
+              style={{
+                borderRadius: "9999px",
+                backgroundColor: "#171429",
+                color: "#ffffff",
+                paddingLeft: "22px",
+                paddingRight: "22px",
+                minHeight: "44px",
+                height: "44px",
+                boxShadow: "0 6px 18px rgba(23,20,41,0.16)",
+              }}
+              data-testid="button-copy-and-respond"
+            >
+              <Copy className="w-4 h-4 mr-2" />
+              {t("applySheet.copyAndApply")}
+            </Button>
           </div>
         </div>
       )}
