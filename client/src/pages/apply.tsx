@@ -725,18 +725,25 @@ export default function ApplyPage() {
 
       {/* Sticky bottom CTA — hidden for buddy (read-only mode) */}
       {!inBuddyMode && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-ha-card-border z-10 pb-[env(safe-area-inset-bottom)]">
-          <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-4">
+        <div
+          className="fixed bottom-0 left-0 right-0 z-10"
+          style={{
+            backgroundColor: "#bbadfb",
+            borderTop: "1px solid rgba(0,0,0,0.06)",
+            paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))",
+          }}
+        >
+          <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-5">
             {hasAccess ? (
               <>
                 {listing.price > 0 ? (
                   <div className="flex flex-col" data-testid="text-sticky-price">
-                    <span className="text-[20px] font-semibold text-ha-text">
+                    <span className="text-[20px] font-semibold" style={{ color: "#111111" }}>
                       €{listing.price}
-                      <span className="text-[13px] font-normal text-ha-text-secondary ml-1">{t("common.perMonthShort")}</span>
+                      <span className="text-[13px] font-normal ml-1" style={{ color: "rgba(17,17,17,0.6)" }}>{t("common.perMonthShort")}</span>
                     </span>
                     {postedLabel && (
-                      <span className="text-[11px] text-ha-text-secondary leading-none mt-0.5" data-testid="text-footer-posted">
+                      <span className="text-[11px] leading-none mt-0.5" style={{ color: "rgba(17,17,17,0.55)" }} data-testid="text-footer-posted">
                         {postedLabel}
                       </span>
                     )}
@@ -746,8 +753,15 @@ export default function ApplyPage() {
                 )}
                 <Button
                   onClick={handleCopyAndRespond}
-                  className={`ha-btn bg-ha-primary hover:bg-ha-primary-hover font-semibold ${listing.price > 0 ? "" : "w-full"}`}
-                  style={{ borderRadius: "9999px", color: "#111111" }}
+                  className={`ha-btn font-semibold ${listing.price > 0 ? "" : "w-full"}`}
+                  style={{
+                    borderRadius: "9999px",
+                    backgroundColor: "#171429",
+                    color: "#ffffff",
+                    paddingLeft: "24px",
+                    paddingRight: "24px",
+                    boxShadow: "0 8px 24px rgba(23,20,41,0.18)",
+                  }}
                   data-testid="button-copy-and-respond"
                 >
                   <Copy className="w-4 h-4 mr-2" />
@@ -758,7 +772,7 @@ export default function ApplyPage() {
               <button
                 onClick={() => setShowUpgradeSheet(true)}
                 className="w-full h-[48px] rounded-full text-black text-[15px] font-semibold flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
-                style={{ backgroundColor: "rgb(var(--ha-highlight))" }}
+                style={{ backgroundColor: "rgba(0,0,0,0.12)" }}
                 data-testid="button-upgraden-sticky"
               >
                 <Zap className="w-[18px] h-[18px] text-black" strokeWidth={2} />
