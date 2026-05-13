@@ -759,14 +759,16 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
       style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid rgb(var(--ha-card-border))" }}
     >
       <div className="flex items-center gap-2.5 mb-1.5">
-        <Search className="w-[24px] h-[24px] text-ha-primary flex-shrink-0" />
+        <div className="w-[40px] h-[40px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#bbadfb" }}>
+          <Search className="w-[22px] h-[22px] text-[#111111]" />
+        </div>
         <h2 className="text-[21px] font-semibold text-ha-text flex-1" data-testid="text-search-profiles-title">
           {t("home.zoekopdrachtenTitle")}
         </h2>
         {profiles.length > 0 && (
           <span
-            className="text-[12px] font-medium px-[10px] py-[4px] rounded-full"
-            style={{ backgroundColor: "var(--ha-primary-light)", color: "rgb(var(--ha-primary-hover))" }}
+            className="text-[12px] font-bold px-[10px] py-[4px] rounded-full"
+            style={{ backgroundColor: "#bbadfb", color: "#111111" }}
           >
             {profiles.length}/4
           </span>
@@ -787,11 +789,12 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
             return (
               <div
                 key={p.id}
-                className={`rounded-[10px] bg-ha-bg p-4 flex items-center ${buddyMode ? "cursor-default" : "cursor-pointer active:opacity-80"} transition-all`}
+                className={`rounded-[10px] p-4 flex items-center ${buddyMode ? "cursor-default" : "cursor-pointer active:opacity-80"} transition-all`}
+                style={{ backgroundColor: "#faf9ff" }}
                 onClick={buddyMode ? undefined : () => navigate(`/dashboard/searches/edit/${p.id}`)}
                 data-testid={`row-search-profile-${p.id}`}
               >
-                <div className="w-[11px] h-[11px] rounded-full flex-shrink-0 mr-3.5" style={{ backgroundColor: "rgb(var(--ha-success))", boxShadow: "0 0 0 3px rgba(22,163,74,0.15)" }} />
+                <div className="w-[11px] h-[11px] rounded-full flex-shrink-0 mr-3.5" style={{ backgroundColor: "#bbadfb", boxShadow: "0 0 0 3px rgba(187,173,251,0.2)" }} />
                 <div className="flex-1 min-w-0">
                   <p className="text-[18px] font-semibold text-ha-text truncate">{title}</p>
                   <p className="text-[14px] text-ha-text-muted mt-1 truncate">{priceLine}</p>
@@ -823,7 +826,8 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
       {!buddyMode && profiles.length > 0 && profiles.length < MAX_PROFILES && (
         <button
           onClick={() => navigate("/dashboard/searches/new")}
-          className="w-full mt-4 py-[14px] rounded-[10px] bg-transparent border-2 border-ha-primary text-[16px] font-semibold text-ha-primary hover:bg-ha-primary/5 transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
+          className="w-full mt-4 py-[14px] rounded-full text-[16px] font-semibold text-white hover:opacity-90 transition-colors flex items-center justify-center gap-1.5 active:scale-[0.98]"
+          style={{ backgroundColor: "#223546" }}
           data-testid="button-add-search-profile"
         >
           + {t("home.addZoekopdracht")}
@@ -965,12 +969,12 @@ function HomeTab({
         data-testid="section-welcome"
       >
         <div className="flex items-center mb-6">
-          <span className="text-[16px] font-semibold tracking-[-0.01em] text-ha-primary-hover" data-testid="text-brand">HousAlert</span>
+          <span className="text-[16px] font-semibold tracking-[-0.01em]" style={{ color: "#bbadfb" }} data-testid="text-brand">HousAlert</span>
         </div>
         <h1 className="text-[34px] font-semibold tracking-[-0.025em] leading-[1.15] text-ha-text" data-testid="text-greeting">
           {firstName ? t("home.greeting", { name: firstName }) : t("home.greetingDefault")} 👋
         </h1>
-        <p className="text-[17px] mt-2 leading-relaxed text-ha-text-secondary" data-testid="text-welcome-subtitle">
+        <p className="text-[17px] mt-2 leading-relaxed" style={{ color: "#444444" }} data-testid="text-welcome-subtitle">
           {t("home.welcomeSubtitle")}
         </p>
       </div>
@@ -991,7 +995,7 @@ function HomeTab({
             ctaLabel={t("tips.referralShareCta")}
             onClick={handleReferralShare}
             testId="card-home-referral"
-            bgColor="rgb(var(--ha-primary))"
+            bgColor="#223546"
             layout="horizontal"
             inverted
           />
@@ -1011,15 +1015,17 @@ function HomeTab({
               data-testid="card-application-letter-status"
             >
               <div className="flex items-center gap-2.5">
-                <FileText className="w-[24px] h-[24px] text-ha-primary flex-shrink-0" />
+                <div className="w-[40px] h-[40px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#bbadfb" }}>
+                  <FileText className="w-[22px] h-[22px] text-[#111111]" />
+                </div>
                 <h2 className="text-[21px] font-semibold text-ha-text flex-1">{t("profile.reactionLetter2")}</h2>
                 {!buddyMode && (
-                  <span className="text-[14px] font-medium" style={{ color: "rgb(var(--ha-primary-hover))" }}>
+                  <span className="text-[14px] font-semibold" style={{ color: "#223546" }}>
                     {hasLetter ? t("common.manage") : t("common.generate")}
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-2 pl-[30px]">
+              <div className="flex items-center gap-2 pl-[52px]">
                 {hasLetter ? (
                   <>
                     <Check className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "rgb(var(--ha-emerald))" }} />
@@ -1048,11 +1054,13 @@ function HomeTab({
               data-testid="card-search-buddy-status"
             >
               <div className="flex items-center gap-2.5">
-                <Users className="w-[24px] h-[24px] text-ha-primary flex-shrink-0" />
+                <div className="w-[40px] h-[40px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#bbadfb" }}>
+                  <Users className="w-[22px] h-[22px] text-[#111111]" />
+                </div>
                 <h2 className="text-[21px] font-semibold text-ha-text flex-1">{t("profile.searchBuddy")}</h2>
-                <span className="text-[14px] font-medium" style={{ color: "rgb(var(--ha-primary-hover))" }}>{t("common.manage")}</span>
+                <span className="text-[14px] font-semibold" style={{ color: "#223546" }}>{t("common.manage")}</span>
               </div>
-              <div className="flex items-center gap-2 pl-[30px]">
+              <div className="flex items-center gap-2 pl-[52px]">
                 {hasBuddy ? (
                   <>
                     <Check className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "rgb(var(--ha-emerald))" }} />
@@ -1066,7 +1074,7 @@ function HomeTab({
                 )}
               </div>
               {!hasBuddy && (
-                <p className="text-[13px] leading-snug pl-[30px]" style={{ color: "rgb(var(--ha-text-muted))" }}>
+                <p className="text-[13px] leading-snug pl-[52px]" style={{ color: "#444444" }}>
                   {t("profile.buddyDescription")}
                 </p>
               )}

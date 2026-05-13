@@ -29,10 +29,13 @@ export function HighlightCard({ icon: Icon, title, subtitle, overline, ctaLabel,
         data-testid={testId}
       >
         <div className="flex items-center gap-3 mb-2">
-          <Icon
-            className={`w-[26px] h-[26px] shrink-0 ${inverted ? "text-white" : "text-ha-text"}`}
-            strokeWidth={1.6}
-          />
+          {inverted ? (
+            <div className="w-[44px] h-[44px] rounded-full flex items-center justify-center flex-shrink-0 bg-white">
+              <Icon className="w-[22px] h-[22px] text-[#111111]" strokeWidth={1.6} />
+            </div>
+          ) : (
+            <Icon className="w-[26px] h-[26px] shrink-0 text-ha-text" strokeWidth={1.6} />
+          )}
           <p className={`text-[17px] font-semibold leading-snug ${inverted ? "text-white" : "text-ha-text"}`}>
             {title}
           </p>
@@ -44,9 +47,9 @@ export function HighlightCard({ icon: Icon, title, subtitle, overline, ctaLabel,
         )}
         {ctaLabel && (
           <span
-            className={`flex w-full h-[48px] rounded-[10px] text-[14px] font-semibold items-center justify-center transition-colors ${
+            className={`flex w-full h-[48px] rounded-full text-[14px] font-semibold items-center justify-center transition-colors ${
               inverted
-                ? "bg-white text-ha-text"
+                ? "bg-white text-[#111111]"
                 : "bg-ha-primary-hover text-white"
             }`}
           >

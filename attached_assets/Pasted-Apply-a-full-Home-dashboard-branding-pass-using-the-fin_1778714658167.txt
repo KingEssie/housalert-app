@@ -1,0 +1,119 @@
+Apply a full Home dashboard branding pass using the finalized HousAlert brand system.
+
+Brand rules:
+- Background app: #f9f7f8
+- Purple accent: #bbadfb
+- Dark navy: #223546
+- CTA dark button: #171429
+- Main text: #111111
+- Buttons fully pill-shaped everywhere
+- Green (#85fb8c) ONLY for primary CTA buttons
+- Remove excessive green usage from cards/icons/states
+
+1. Greeting section
+Current:
+- “HousAlert” label is green
+- subtitle gray/light
+
+Required:
+- “HousAlert” label → #bbadfb
+- “Hi, Test 👋” stays black bold
+- subtitle darker (#111111 or very dark gray)
+- improve readability/contrast
+
+2. Progress / tips cards
+Cards:
+- “Rond je account af”
+- “Vergroot je kansen met deze tips”
+
+Required:
+- icons background circle: #bbadfb
+- icons themselves: #111111
+- progress bars purple instead of green
+- percentage text black and semi-bold
+- cards background white or #faf9ff
+- subtle border/shadow only
+- remove green highlights
+
+3. Referral card (“Geef een vriend 25% korting”)
+Current:
+- full bright green card
+
+Required:
+- card background: #223546
+- title/text white
+- secondary text white with opacity
+- airplane/share icon:
+  - white circular background
+  - black icon
+- “Deel je link” button:
+  - background white
+  - text #111111
+  - fully rounded
+
+This card should feel premium/dark, not neon green.
+
+4. Search profiles card (“Zoekopdrachten”)
+Required:
+- top icon circle purple (#bbadfb)
+- icon black
+- counter badge (2/4):
+  - purple background
+  - black text
+- profile cards background: #faf9ff
+- profile title black bold
+- secondary text darker (not washed gray)
+- active status dot:
+  - purple, not green
+
+Button:
+“+ Zoekopdracht toevoegen”
+Required:
+- background #223546
+- text white
+- fully pill-shaped
+- remove green border-only style
+
+5. Reactiebrief card
+Required:
+- icon circle purple
+- icon black
+- “Genereren” text:
+  - #223546
+  - semi-bold
+- warning/error text remains red
+- helper text darker and more readable
+
+6. Zoekbuddy card
+Required:
+- icon circle purple
+- icon black
+- “Beheren” text:
+  - #223546
+  - semi-bold
+- helper text darker
+- remove faded gray appearance
+
+7. General cleanup
+Across Home dashboard:
+- reduce green usage massively
+- green only allowed for major CTA buttons
+- no pale unreadable gray text
+- improve contrast everywhere
+- all buttons/cards consistent border radius
+- keep spacing/layout intact
+
+Do not modify:
+- navigation
+- business logic
+- subscriptions
+- search profile logic
+- matching logic
+
+Smoke check:
+- referral card is dark navy
+- search profile button dark navy with white text
+- icons purple instead of green
+- status dots purple instead of green
+- helper texts readable
+- dashboard feels consistent with the new HousAlert brand system

@@ -53,7 +53,7 @@ export function ExpandableCompletionCard({
     <div
       className={`rounded-[18px] bg-white border-[1.5px] overflow-hidden transition-colors duration-300 ${
         allDone
-          ? "border-ha-success/40 shadow-[0_0_0_1px_rgb(var(--ha-success)_/_0.15)]"
+          ? "border-[#bbadfb]/40 shadow-[0_0_0_1px_rgba(187,173,251,0.15)]"
           : "border-ha-card-border shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
       }`}
       data-testid={testId}
@@ -65,9 +65,11 @@ export function ExpandableCompletionCard({
       >
         <div className="flex items-center gap-3 mb-3">
           {allDone ? (
-            <CheckCircle2 className="w-5 h-5 text-ha-success flex-shrink-0" />
+            <CheckCircle2 className="w-5 h-5 text-[#bbadfb] flex-shrink-0" />
           ) : (
-            <CardIcon className="w-[24px] h-[24px] text-ha-primary flex-shrink-0" />
+            <div className="w-[36px] h-[36px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#bbadfb" }}>
+              <CardIcon className="w-[20px] h-[20px] text-[#111111]" />
+            </div>
           )}
           <p className="text-[22px] font-semibold text-ha-text leading-snug tracking-[-0.01em] flex-1 min-w-0">
             {title}
@@ -83,12 +85,12 @@ export function ExpandableCompletionCard({
           <div className="flex-1 h-[8px] rounded-full overflow-hidden bg-ha-bg">
             <div
               className="h-full rounded-full transition-all duration-500"
-              style={{ width: `${percentage}%`, backgroundColor: "rgb(var(--ha-highlight))" }}
+              style={{ width: `${percentage}%`, backgroundColor: "#bbadfb" }}
             />
           </div>
           <span
-            className={`text-[13px] flex-shrink-0 whitespace-nowrap ${
-              allDone ? "text-ha-success font-semibold" : "text-black font-bold"
+            className={`text-[13px] flex-shrink-0 whitespace-nowrap font-semibold ${
+              allDone ? "text-[#bbadfb]" : "text-[#111111]"
             }`}
           >
             {percentage}% voltooid
@@ -96,7 +98,7 @@ export function ExpandableCompletionCard({
         </div>
 
         {allDone && (
-          <p className="text-[12px] mt-2 text-ha-success font-semibold">{completedLabel}</p>
+          <p className="text-[12px] mt-2 text-[#bbadfb] font-semibold">{completedLabel}</p>
         )}
       </button>
 
@@ -131,9 +133,9 @@ export function ExpandableCompletionCard({
                     {step.completed ? (
                       <div
                         className="w-[26px] h-[26px] rounded-full flex items-center justify-center"
-                        style={{ backgroundColor: "rgb(var(--ha-highlight))" }}
+                        style={{ backgroundColor: "#bbadfb" }}
                       >
-                        <Check className="w-[14px] h-[14px] text-black" strokeWidth={3} />
+                        <Check className="w-[14px] h-[14px] text-[#111111]" strokeWidth={3} />
                       </div>
                     ) : step.stepType === "inline" ? (
                       <div className={`transition-transform duration-200 ${isInlineOpen ? "rotate-180" : ""}`}>
