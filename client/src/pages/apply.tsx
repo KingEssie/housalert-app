@@ -733,17 +733,17 @@ export default function ApplyPage() {
             paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))",
           }}
         >
-          <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-5">
+          <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-3">
             {hasAccess ? (
               <>
                 {listing.price > 0 ? (
-                  <div className="flex flex-col" data-testid="text-sticky-price">
-                    <span className="text-[20px] font-semibold" style={{ color: "#111111" }}>
+                  <div className="flex flex-col justify-center" data-testid="text-sticky-price">
+                    <span className="text-[19px] font-semibold" style={{ color: "#111111" }}>
                       €{listing.price}
                       <span className="text-[13px] font-normal ml-1" style={{ color: "rgba(17,17,17,0.6)" }}>{t("common.perMonthShort")}</span>
                     </span>
                     {postedLabel && (
-                      <span className="text-[11px] leading-none mt-0.5" style={{ color: "rgba(17,17,17,0.55)" }} data-testid="text-footer-posted">
+                      <span className="text-[11px] font-medium leading-none mt-[3px]" style={{ color: "#111111" }} data-testid="text-footer-posted">
                         {postedLabel}
                       </span>
                     )}
@@ -758,9 +758,11 @@ export default function ApplyPage() {
                     borderRadius: "9999px",
                     backgroundColor: "#171429",
                     color: "#ffffff",
-                    paddingLeft: "24px",
-                    paddingRight: "24px",
-                    boxShadow: "0 8px 24px rgba(23,20,41,0.18)",
+                    paddingLeft: "22px",
+                    paddingRight: "22px",
+                    minHeight: "44px",
+                    height: "44px",
+                    boxShadow: "0 6px 18px rgba(23,20,41,0.16)",
                   }}
                   data-testid="button-copy-and-respond"
                 >
