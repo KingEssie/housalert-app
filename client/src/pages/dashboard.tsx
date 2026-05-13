@@ -790,7 +790,7 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
               <div
                 key={p.id}
                 className={`rounded-[10px] p-4 flex items-center ${buddyMode ? "cursor-default" : "cursor-pointer active:opacity-80"} transition-all`}
-                style={{ backgroundColor: "#faf9ff" }}
+                style={{ backgroundColor: "#f2f9e9" }}
                 onClick={buddyMode ? undefined : () => navigate(`/dashboard/searches/edit/${p.id}`)}
                 data-testid={`row-search-profile-${p.id}`}
               >
