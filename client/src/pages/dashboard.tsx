@@ -2448,8 +2448,8 @@ export default function DashboardPage() {
           style={{ paddingBottom: "max(calc(env(safe-area-inset-bottom, 0px) + 8px), 14px)" }}
         >
           <nav
-            className="flex rounded-[100px] h-[66px] overflow-hidden bg-ha-primary-hover"
-            style={{ backgroundColor: "#091043" }}
+            className="flex rounded-[100px] h-[66px] overflow-hidden"
+            style={{ backgroundColor: "#223546" }}
             data-testid="bottom-nav"
           >
             {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
@@ -2463,16 +2463,16 @@ export default function DashboardPage() {
                   data-testid={`tab-${key}`}
                 >
                   {isProfileWithPhoto ? (
-                    <div className={`w-[26px] h-[26px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-ha-primary ring-offset-1 ring-offset-ha-primary-hover" : ""}`}>
+                    <div className={`w-[26px] h-[26px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-ha-primary ring-offset-1 ring-offset-[#223546]" : ""}`}>
                       <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
                     </div>
                   ) : (
                     <Icon
-                      className={`w-[24px] h-[24px] transition-colors ${isActive ? "text-ha-primary" : "text-white"}`}
+                      className={`w-[24px] h-[24px] transition-colors ${isActive ? "text-ha-primary" : "text-white/60"}`}
                       strokeWidth={isActive ? 2.2 : 1.6}
                     />
                   )}
-                  <span className={`text-[11px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-white"}`}>
+                  <span className={`text-[11px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-white/60"}`}>
                     {t(labelKey)}
                   </span>
                 </button>

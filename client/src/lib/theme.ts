@@ -4,16 +4,17 @@ export const BRAND = {
   primaryHover: "rgb(var(--ha-primary-hover))",
   gradient: "linear-gradient(135deg, rgb(var(--ha-primary)), rgb(var(--ha-primary-hover)))",
   primaryLight: "var(--ha-primary-light)",
-  primaryLighter: "rgb(var(--ha-primary) / 0.04)",
+  primaryLighter: "rgb(var(--ha-primary) / 0.08)",
   primaryBorder: "rgb(var(--ha-primary) / 0.3)",
-  primaryShadow: "rgb(var(--ha-primary) / 0.2)",
+  primaryShadow: "rgba(133, 251, 140, 0.25)",
   accent: "rgb(var(--ha-accent))",
   accentHover: "rgb(var(--ha-accent-hover))",
   accentLight: "var(--ha-accent-light)",
-  accentShadow: "rgb(var(--ha-accent) / 0.25)",
+  accentShadow: "rgba(187, 173, 251, 0.30)",
   accentYellow: "rgb(var(--ha-accent-yellow))",
   accentYellowLight: "var(--ha-accent-yellow-light)",
   mint: "rgb(var(--ha-mint))",
+  dark: "rgb(var(--ha-dark))",
 } as const;
 
 export const theme = {
@@ -36,6 +37,7 @@ export const theme = {
     border: "rgb(var(--ha-card-border))",
     divider: "rgb(var(--ha-divider))",
     cardBackground: "rgb(var(--ha-card))",
+    dark: BRAND.dark,
   },
   radius: {
     sm: "12px",
@@ -44,8 +46,8 @@ export const theme = {
     pill: "999px",
   },
   shadow: {
-    card: "0 2px 8px rgba(0,0,0,0.04)",
-    overlay: "0 2px 6px rgba(0,0,0,0.08)",
+    card: "0 2px 8px rgba(34,53,70,0.06)",
+    overlay: "0 2px 6px rgba(34,53,70,0.10)",
   },
 };
 

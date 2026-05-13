@@ -10,90 +10,93 @@
   --elevate-2: rgba(0,0,0, .08);
 
   /* ── Shadcn compatibility tokens (HSL) ── */
-  --background: 240 3% 92%;
+  --background: 330 15% 97%;
   --foreground: 0 0% 7%;
-  --border: 220 13% 91%;
+  --border: 210 14% 89%;
   --card: 0 0% 100%;
   --card-foreground: 0 0% 7%;
-  --card-border: 220 13% 91%;
+  --card-border: 210 14% 89%;
   --sidebar: 0 0% 98%;
   --sidebar-foreground: 0 0% 7%;
-  --sidebar-border: 220 13% 91%;
-  --sidebar-primary: 228 60% 37%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 220 14% 96%;
+  --sidebar-border: 210 14% 89%;
+  --sidebar-primary: 124 93% 75%;
+  --sidebar-primary-foreground: 0 0% 7%;
+  --sidebar-accent: 251 90% 83%;
   --sidebar-accent-foreground: 0 0% 7%;
-  --sidebar-ring: 228 60% 37%;
+  --sidebar-ring: 124 93% 75%;
   --popover: 0 0% 100%;
   --popover-foreground: 0 0% 7%;
-  --popover-border: 220 13% 91%;
-  --primary: 228 60% 37%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 210 20% 98%;
+  --popover-border: 210 14% 89%;
+  --primary: 124 93% 75%;
+  --primary-foreground: 0 0% 7%;
+  --secondary: 251 90% 83%;
   --secondary-foreground: 0 0% 7%;
   --muted: 210 20% 98%;
-  --muted-foreground: 220 18% 30%;
-  --accent: 210 20% 98%;
+  --muted-foreground: 210 12% 45%;
+  --accent: 251 90% 83%;
   --accent-foreground: 0 0% 7%;
   --destructive: 0 72% 51%;
   --destructive-foreground: 0 0% 100%;
-  --input: 220 13% 91%;
-  --ring: 228 60% 37%;
-  --chart-1: 228 60% 37%;
-  --chart-2: 142 71% 45%;
+  --input: 210 14% 89%;
+  --ring: 251 90% 83%;
+  --chart-1: 124 93% 75%;
+  --chart-2: 251 90% 83%;
   --chart-3: 43 96% 56%;
   --chart-4: 0 72% 51%;
-  --chart-5: 260 60% 50%;
+  --chart-5: 208 35% 20%;
 
   /* ── HousAlert semantic color tokens (RGB space-separated) ── */
 
-  /* Brand / Primary — #6192FC Primary Blue */
-  --ha-primary: 97 146 252;           /* #6192FC */
-  --ha-primary-hover: 17 53 139;      /* #11358B */
-  --ha-primary-light: rgba(97, 146, 252, 0.08);
+  /* Brand / Primary — #85fb8c Lime Green */
+  --ha-primary: 133 251 140;           /* #85fb8c */
+  --ha-primary-hover: 108 214 115;     /* #6cd673 — darker lime */
+  --ha-primary-light: rgba(133, 251, 140, 0.12);
 
-  /* Accent — Orange / Yellow / Mint */
-  --ha-accent: 243 107 46;            /* #f36b2e — high-attention CTA orange */
-  --ha-accent-hover: 212 88 38;       /* #d45826 — accent hover */
-  --ha-accent-light: rgba(243, 107, 46, 0.08);
-  --ha-accent-yellow: 245 154 30;     /* #f59a1e — warm friendly accent */
+  /* Accent — Soft Purple */
+  --ha-accent: 187 173 251;            /* #bbadfb */
+  --ha-accent-hover: 158 142 228;      /* #9e8ee4 — deeper purple */
+  --ha-accent-light: rgba(187, 173, 251, 0.14);
+  --ha-accent-yellow: 245 154 30;      /* #f59a1e — warm friendly accent */
   --ha-accent-yellow-light: rgba(245, 154, 30, 0.08);
-  --ha-mint: 199 239 102;             /* #C7EF66 — accent highlight surface */
-  --ha-emerald: 15 186 128;           /* #0FBA80 — progress ring / confirmed status */
+  --ha-mint: 133 251 140;              /* #85fb8c — match primary */
+  --ha-emerald: 15 186 128;            /* #0FBA80 — progress ring / confirmed status */
+
+  /* Dark surface */
+  --ha-dark: 34 53 70;                 /* #223546 — dark nav/surface */
 
   /* Text */
-  --ha-text: 17 17 17;                /* #111111 — primary text */
-  --ha-text-secondary: 51 72 85;      /* #334855 — secondary / labels */
-  --ha-text-muted: 107 114 128;       /* #6B7280 — de-emphasized text */
-  --ha-text-placeholder: 156 163 175; /* #9CA3AF — placeholder / muted icons */
+  --ha-text: 17 17 17;                 /* #111111 — primary text */
+  --ha-text-secondary: 95 99 104;      /* #5f6368 — secondary / labels */
+  --ha-text-muted: 138 143 152;        /* #8a8f98 — de-emphasized text */
+  --ha-text-placeholder: 156 163 175;  /* #9CA3AF — placeholder / muted icons */
 
   /* Backgrounds */
-  --ha-bg: 239 240 244;               /* #EFF0F4 — page background */
-  --ha-card: 255 255 255;             /* #FFFFFF — card / modal / nav bg */
-  --ha-surface: 249 250 251;          /* #F9FAFB — surface / subtle bg */
-  --ha-hover-bg: 247 247 247;         /* #F7F7F7 — list item hover bg */
-  --ha-toggle-bg: 240 244 248;        /* #F0F4F8 — pill toggle group bg */
-  --ha-highlight: 199 239 102;        /* #C7EF66 — accent highlight surface */
+  --ha-bg: 249 247 248;                /* #f9f7f8 — warm off-white page bg */
+  --ha-card: 255 255 255;              /* #FFFFFF — card / modal / nav bg */
+  --ha-surface: 252 251 252;           /* #fcfbfc — surface / subtle bg */
+  --ha-hover-bg: 247 247 247;          /* #F7F7F7 — list item hover bg */
+  --ha-toggle-bg: 242 241 244;         /* #f2f1f4 — pill toggle group bg */
+  --ha-highlight: 210 252 213;         /* light lime surface tint */
 
   /* Borders */
-  --ha-card-border: 229 231 235;      /* #E5E7EB — card / nav / standard borders */
-  --ha-border-input: 209 213 219;     /* #D1D5DB — input field borders */
-  --ha-divider: 240 240 240;          /* #F0F0F0 — light section dividers */
+  --ha-card-border: 225 225 228;       /* rgba(34,53,70,0.12) on white ≈ #e1e1e4 */
+  --ha-border-input: 210 211 215;      /* input field borders */
+  --ha-divider: 241 241 243;           /* #f1f1f3 — light section dividers */
 
   /* Status */
-  --ha-success: 22 163 74;            /* #16A34A */
+  --ha-success: 22 163 74;             /* #16A34A */
   --ha-success-light: rgba(22, 163, 74, 0.08);
-  --ha-warning: 245 158 11;           /* #F59E0B */
+  --ha-warning: 245 158 11;            /* #F59E0B */
   --ha-warning-light: rgba(245, 158, 11, 0.08);
-  --ha-danger: 220 38 38;             /* #DC2626 */
+  --ha-danger: 220 38 38;              /* #DC2626 */
   --ha-danger-light: rgba(220, 38, 38, 0.08);
-  --ha-btn-destructive: 239 68 68;    /* #EF4444 — destructive action buttons */
-  --ha-info: 8 145 178;               /* #0891B2 — info / link color */
+  --ha-btn-destructive: 239 68 68;     /* #EF4444 — destructive action buttons */
+  --ha-info: 8 145 178;                /* #0891B2 — info / link color */
 
   /* Misc */
   --ha-check-unchecked: transparent;
-  --ha-shadow-card: 0 2px 8px rgba(0,0,0,0.04);
-  --ha-shadow-overlay: 0 2px 6px rgba(0,0,0,0.08);
+  --ha-shadow-card: 0 2px 8px rgba(34,53,70,0.06);
+  --ha-shadow-overlay: 0 2px 6px rgba(34,53,70,0.10);
 
   /* Layout */
   --ha-card-radius: 12px;
@@ -101,20 +104,20 @@
   --ha-btn-radius: 10px;
 
   /* Fonts */
-  --font-sans: 'Poppins', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Montserrat', 'Inter', system-ui, -apple-system, sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Menlo, monospace;
   --radius: 0.375rem;
 
   /* Shadows */
-  --shadow-2xs: 0px 1px 2px 0px rgba(0,0,0,0.03);
-  --shadow-xs: 0px 1px 3px 0px rgba(0,0,0,0.04);
-  --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
-  --shadow: 0 2px 8px rgba(0,0,0,0.04);
-  --shadow-md: 0 2px 8px rgba(0,0,0,0.04);
-  --shadow-lg: 0 2px 6px rgba(0,0,0,0.08);
-  --shadow-xl: 0 2px 6px rgba(0,0,0,0.08);
-  --shadow-2xl: 0 2px 6px rgba(0,0,0,0.08);
+  --shadow-2xs: 0px 1px 2px 0px rgba(34,53,70,0.04);
+  --shadow-xs: 0px 1px 3px 0px rgba(34,53,70,0.05);
+  --shadow-sm: 0 2px 8px rgba(34,53,70,0.06);
+  --shadow: 0 2px 8px rgba(34,53,70,0.06);
+  --shadow-md: 0 2px 8px rgba(34,53,70,0.06);
+  --shadow-lg: 0 2px 6px rgba(34,53,70,0.10);
+  --shadow-xl: 0 2px 6px rgba(34,53,70,0.10);
+  --shadow-2xl: 0 2px 6px rgba(34,53,70,0.10);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 
@@ -165,31 +168,41 @@
   [data-radix-select-trigger]:focus,
   [data-radix-select-trigger]:focus-visible {
     outline: none;
-    border-color: rgb(var(--ha-primary)) !important;
-    box-shadow: 0 0 0 2px rgba(37, 60, 150, 0.25) !important;
+    border-color: rgb(var(--ha-accent)) !important;
+    box-shadow: 0 0 0 3px rgba(187, 173, 251, 0.30) !important;
   }
 }
 
 @layer utilities {
 
+  /* ── Dark text on lime/purple CTAs (compound selector beats single utility) ── */
+  .bg-ha-primary.text-white,
+  .bg-ha-primary-hover.text-white,
+  .bg-ha-accent.text-white {
+    color: #111111;
+  }
+
   .text-page-title {
     font-size: 34px;
-    font-weight: 600;
+    font-weight: 800;
+    font-family: 'Montserrat', sans-serif;
     color: rgb(var(--ha-text));
     line-height: 1.15;
-    text-transform: none;
-    letter-spacing: -0.025em;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
   }
 
   .text-title {
-    font-weight: 600;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
     line-height: 1.25;
     letter-spacing: -0.01em;
   }
 
   .text-section-title {
     font-size: 22px;
-    font-weight: 600;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
     color: rgb(var(--ha-text));
     line-height: 1.25;
     letter-spacing: -0.01em;
@@ -197,7 +210,8 @@
 
   .text-card-title {
     font-size: 20px;
-    font-weight: 600;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
     color: rgb(var(--ha-text));
     line-height: 1.35;
     letter-spacing: -0.01em;
@@ -360,8 +374,8 @@
     opacity: 0.55;
   }
   .app-input:focus {
-    border-color: rgb(var(--ha-primary));
-    box-shadow: 0 0 0 3px rgba(37, 60, 150, 0.12);
+    border-color: rgb(var(--ha-accent));
+    box-shadow: 0 0 0 3px rgba(187, 173, 251, 0.30);
   }
   .app-input:disabled {
     background: rgb(var(--ha-surface));
@@ -383,8 +397,8 @@
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
   .app-select:focus {
-    border-color: rgb(var(--ha-primary));
-    box-shadow: 0 0 0 3px rgba(37, 60, 150, 0.12);
+    border-color: rgb(var(--ha-accent));
+    box-shadow: 0 0 0 3px rgba(187, 173, 251, 0.30);
   }
 
   .app-textarea {
@@ -404,8 +418,8 @@
     opacity: 0.55;
   }
   .app-textarea:focus {
-    border-color: rgb(var(--ha-primary));
-    box-shadow: 0 0 0 3px rgba(37, 60, 150, 0.12);
+    border-color: rgb(var(--ha-accent));
+    box-shadow: 0 0 0 3px rgba(187, 173, 251, 0.30);
   }
 
   .scrollbar-none {
@@ -514,7 +528,7 @@
   background: rgb(var(--ha-primary));
   border: 3px solid rgb(var(--ha-bg));
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(37,60,150,0.2);
+  box-shadow: 0 2px 6px rgba(133,251,140,0.35);
 }
 .v2-slider::-moz-range-thumb {
   width: 22px;
@@ -523,7 +537,7 @@
   background: rgb(var(--ha-primary));
   border: 3px solid rgb(var(--ha-bg));
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(37,60,150,0.2);
+  box-shadow: 0 2px 6px rgba(133,251,140,0.35);
 }
 
 input[type="range"] {
@@ -576,8 +590,8 @@ input[type="range"]::-moz-range-thumb {
   opacity: 0.55;
 }
 .ha-field-light:focus {
-  border-color: rgb(var(--ha-primary));
-  box-shadow: 0 0 0 3px rgba(37,60,150,0.1);
+  border-color: rgb(var(--ha-accent));
+  box-shadow: 0 0 0 3px rgba(187, 173, 251, 0.30);
 }
 .ha-field-light:disabled {
   background: rgb(var(--ha-surface));
@@ -587,6 +601,7 @@ input[type="range"]::-moz-range-thumb {
   height: 48px;
   border-radius: var(--ha-btn-radius);
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   font-size: 16px;
   padding-left: 20px;
   padding-right: 20px;
@@ -624,8 +639,8 @@ input[type="range"]::-moz-range-thumb {
   opacity: 0.55;
 }
 .ha-field-web:focus {
-  border-color: rgb(var(--ha-primary));
-  box-shadow: 0 0 0 3px rgba(37,60,150,0.1);
+  border-color: rgb(var(--ha-accent));
+  box-shadow: 0 0 0 3px rgba(187, 173, 251, 0.30);
 }
 .ha-select-web {
   height: 56px;
@@ -640,15 +655,15 @@ input[type="range"]::-moz-range-thumb {
   transition: border-color 0.2s, box-shadow 0.2s;
   appearance: none;
   -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23334855' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235f6368' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 16px;
   cursor: pointer;
 }
 .ha-select-web:focus {
-  border-color: rgb(var(--ha-primary));
-  box-shadow: 0 0 0 3px rgba(37,60,150,0.1);
+  border-color: rgb(var(--ha-accent));
+  box-shadow: 0 0 0 3px rgba(187, 173, 251, 0.30);
 }
 
 .dual-range-thumb {

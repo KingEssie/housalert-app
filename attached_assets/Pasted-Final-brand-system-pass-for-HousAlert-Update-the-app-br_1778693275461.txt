@@ -1,0 +1,101 @@
+Final brand system pass for HousAlert.
+
+Update the app branding to match the public website style.
+
+Brand tokens:
+- Font family: Montserrat
+- Page titles/headings: Montserrat Black / 900, uppercase where appropriate
+- App background: #f9f7f8
+- Primary CTA/button color: #85fb8c
+- Secondary button color: #bbadfb
+- Secondary/accent color: #bbadfb
+- Dark/nav/surface color: #223546
+- Primary text: #111111
+- Secondary text: #5f6368
+- Muted text: #8a8f98
+- Border color: rgba(34, 53, 70, 0.12)
+
+Design direction:
+- Clean, modern, premium European rental app
+- Bold Montserrat headings
+- Light warm background
+- Lime green primary CTAs
+- Soft purple accents
+- Dark blue navigation/surfaces
+- Avoid generic blue SaaS styling
+- Avoid random gradients unless already part of branding
+
+Tasks:
+1. Create/update centralized theme tokens:
+   - colors
+   - typography
+   - border radius
+   - shadows
+   - button styles
+   - input styles
+   - card styles
+
+2. Apply branding consistently across:
+   - onboarding embed
+   - onboarding setup
+   - paywall/subscription screens
+   - matches feed
+   - listing detail
+   - home/checklist
+   - account/settings
+   - bottom navigation
+   - empty states
+   - modals
+   - forms
+   - badges/chips/tabs
+
+3. Typography:
+   - Use Montserrat everywhere if available.
+   - Headings should be bold/black.
+   - Main page titles can be uppercase.
+   - Body text should stay readable, not too heavy.
+
+4. Buttons:
+   - Primary buttons: #85fb8c background, dark text #111111
+   - Secondary buttons: #bbadfb background, dark text
+   - Disabled buttons: muted background, muted text
+   - Remove old default blue button styling.
+
+5. Navigation:
+   - Use #223546 for dark nav/bottom nav surfaces where appropriate.
+   - Active states can use #85fb8c or #bbadfb.
+   - Keep bottom nav order unchanged.
+
+6. Cards and surfaces:
+   - App background should be #f9f7f8.
+   - Cards should remain white or very light.
+   - Use subtle borders/shadows only.
+   - Keep layout unchanged.
+
+7. Inputs:
+   - Clean white inputs
+   - subtle border
+   - consistent focus state using #bbadfb or #85fb8c
+   - no old blue focus styles
+
+8. Premium locks/paywall:
+   - Use lime CTA for upgrade actions
+   - Use purple accent for highlights
+   - Keep premium sections clean and not overly rounded
+
+9. Do not change functionality.
+10. Do not change routing.
+11. Do not redesign layouts from scratch.
+12. Keep changes centralized where possible.
+13. Avoid touching business logic.
+14. After changes, do a quick smoke check only:
+   - onboarding embed loads
+   - account creation still works
+   - matches page loads
+   - listing detail loads
+   - premium lock still works
+   - paywall still works
+
+Important:
+Do this as a full visual branding pass, not random individual component tweaks.
+Use centralized tokens/classes wherever possible so future brand changes are easy.

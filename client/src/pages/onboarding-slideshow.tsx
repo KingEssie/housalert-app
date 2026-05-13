@@ -403,7 +403,7 @@ export default function OnboardingSlideshow() {
               color: "white",
               fontSize: "16px",
               fontWeight: 600,
-              boxShadow: selectedCity ? "0 4px 15px rgba(243,107,46,0.28)" : "none",
+              boxShadow: selectedCity ? "0 4px 15px rgba(187,173,251,0.35)" : "none",
             }}
             data-testid="button-create-account"
           >

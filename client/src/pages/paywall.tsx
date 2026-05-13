@@ -129,7 +129,7 @@ function WebsitePaywall({
             className="rounded-[4px] p-3.5 mb-5 flex items-start gap-3"
             style={{
               backgroundColor: "rgb(var(--ha-surface))",
-              border: "1px solid rgba(37,60,150,0.15)",
+              border: "1px solid rgba(187,173,251,0.25)",
             }}
             data-testid="search-summary-card"
           >

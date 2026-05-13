@@ -104,7 +104,7 @@ function WebToggle({ checked, onChange, label, testId }: {
     <label className="flex items-center gap-3 cursor-pointer h-[52px] px-4 rounded-[10px]"
       style={{ border: "1px solid rgb(var(--ha-card-border))" }} data-testid={testId}>
       <div className="w-[44px] h-[26px] rounded-full p-[3px] transition-colors shrink-0 flex items-center"
-        style={{ backgroundColor: checked ? "#6192FC" : "rgb(var(--ha-card-border))" }}
+        style={{ backgroundColor: checked ? "rgb(var(--ha-primary))" : "rgb(var(--ha-card-border))" }}
         onClick={(e) => { e.preventDefault(); onChange(!checked); }}>
         <div className="w-[20px] h-[20px] rounded-full bg-white transition-all"
           style={{ transform: checked ? "translateX(18px)" : "translateX(0)", boxShadow: "0 1px 3px rgba(0,0,0,0.15)" }} />
@@ -931,8 +931,8 @@ export default function AppSearchWizard() {
               <button
                 onClick={handleDelete}
                 disabled={deleting}
-                className="w-full h-[56px] rounded-[8px] text-white text-[15px] font-semibold flex items-center justify-center gap-2 mb-4 disabled:opacity-50 active:scale-[0.98] transition-transform"
-                style={{ backgroundColor: "#6192FC" }}
+                className="w-full h-[56px] rounded-[8px] text-[#111111] text-[15px] font-semibold flex items-center justify-center gap-2 mb-4 disabled:opacity-50 active:scale-[0.98] transition-transform"
+                style={{ backgroundColor: "rgb(var(--ha-primary))" }}
                 data-testid="button-confirm-delete"
               >
                 {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
@@ -941,7 +941,7 @@ export default function AppSearchWizard() {
               <button
                 onClick={() => setShowDeleteConfirm(false)}
                 className="w-full h-[56px] rounded-[8px] border-2 text-[15px] font-semibold flex items-center justify-center active:opacity-70 transition-opacity"
-                style={{ borderColor: "#6192FC", color: "#6192FC" }}
+                style={{ borderColor: "rgb(var(--ha-primary))", color: "rgb(var(--ha-text))" }}
                 data-testid="button-cancel-delete"
               >
                 Zoekopdracht behouden

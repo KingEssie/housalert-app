@@ -647,7 +647,7 @@ export default function OnboardingPassword() {
                   >
                     <div
                       className="w-[38px] h-[38px] rounded-[10px] flex items-center justify-center shrink-0 text-[18px]"
-                      style={{ backgroundColor: "rgba(37,60,150,0.10)" }}
+                      style={{ backgroundColor: "rgba(187,173,251,0.15)" }}
                     >
                       {item.icon}
                     </div>

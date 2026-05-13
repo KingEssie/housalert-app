@@ -631,8 +631,8 @@ export default function OnboardingLocation() {
                   onClick={() => setRadiusKm(km)}
                   className="px-4 py-2.5 rounded-full text-[14px] font-medium transition-all"
                   style={{
-                    border: active ? "1.5px solid rgba(37,60,150,0.6)" : "1px solid rgb(var(--ha-card-border))",
-                    backgroundColor: active ? "rgba(37,60,150,0.08)" : "transparent",
+                    border: active ? "1.5px solid rgb(var(--ha-primary))" : "1px solid rgb(var(--ha-card-border))",
+                    backgroundColor: active ? "rgba(133,251,140,0.12)" : "transparent",
                     color: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-text))",
                   }}
                   data-testid={`radius-${km}`}

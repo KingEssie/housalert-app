@@ -135,7 +135,7 @@ export function OnboardingFlowLayout({
           <button
             onClick={onNext}
             disabled={nextDisabled || saving}
-            className="h-[48px] px-8 rounded-full bg-ha-primary text-white text-[15px] font-semibold disabled:opacity-20 disabled:cursor-not-allowed hover:brightness-95 active:scale-[0.97] transition-all flex items-center gap-1.5 shadow-[0_2px_8px_rgba(37,60,150,0.18)]"
+            className="h-[48px] px-8 rounded-full bg-ha-primary text-white text-[15px] font-semibold disabled:opacity-20 disabled:cursor-not-allowed hover:brightness-95 active:scale-[0.97] transition-all flex items-center gap-1.5 shadow-[0_2px_8px_rgba(133,251,140,0.30)]"
             data-testid={nextTestId || "button-ob-flow-next"}
           >
             {saving && <Loader2 className="w-4 h-4 animate-spin" />}

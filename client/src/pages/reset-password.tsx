@@ -9,9 +9,9 @@ import { Eye, EyeOff, CheckCircle2, Loader2, ArrowRight, ArrowLeft } from "lucid
 import { validatePassword, isPasswordValid } from "@/lib/password-validation";
 import { PasswordRules } from "@/components/password-rules";
 
-const OUTER_BG = "#6192FC";
-const CARD_BG = "#11358B";
-const ACCENT = "#C7EF66";
+const OUTER_BG = "#223546";
+const CARD_BG = "#1a2b38";
+const ACCENT = "#85fb8c";
 
 const inputStyle = (extraPadding?: string): React.CSSProperties => ({
   height: "58px",

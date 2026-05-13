@@ -8,8 +8,8 @@ import { supabase } from "@/lib/supabase";
 import { clearAllUserData } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
-const BG = "#11358B";
-const PRIMARY = "#6192FC";
+const BG = "#223546";
+const PRIMARY = "#85fb8c";
 
 const LANGUAGES: { code: Locale; label: string; flag: string }[] = [
   { code: "de", label: "DE", flag: "\u{1F1E9}\u{1F1EA}" },

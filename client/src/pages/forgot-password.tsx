@@ -6,9 +6,9 @@ import { useToast } from "@/hooks/use-toast";
 import { ArrowLeft, ArrowRight, CheckCircle2, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
-const OUTER_BG = "#6192FC";
-const CARD_BG = "#11358B";
-const ACCENT = "#C7EF66";
+const OUTER_BG = "#223546";
+const CARD_BG = "#1a2b38";
+const ACCENT = "#85fb8c";
 
 export default function ForgotPasswordPage() {
   const [, navigate] = useLocation();

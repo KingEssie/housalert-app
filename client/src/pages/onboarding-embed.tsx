@@ -186,7 +186,7 @@ function EmbedFooter({
             onClick={onNext}
             disabled={nextDisabled || loading}
             className="h-[44px] px-6 rounded-[6px] text-[15px] font-semibold text-white flex items-center justify-center gap-1.5 active:scale-[0.97] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 14px rgba(37,60,150,0.2)" }}
+            style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 14px rgba(133,251,140,0.25)" }}
             data-testid="button-embed-next">
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
             {!loading && nextLabel}
@@ -841,7 +841,7 @@ export default function OnboardingEmbedPage() {
                     className="text-[12px] font-medium px-2.5 py-1 rounded-[4px] border transition-all"
                     style={{
                       borderColor: filters.sizeNA ? "rgb(var(--ha-primary))" : OBW.cardBorder,
-                      backgroundColor: filters.sizeNA ? "rgba(37,60,150,0.08)" : "transparent",
+                      backgroundColor: filters.sizeNA ? "rgba(133,251,140,0.10)" : "transparent",
                       color: filters.sizeNA ? "rgb(var(--ha-primary))" : OBW.textSecondary,
                     }}
                     data-testid="button-size-na">
@@ -1007,7 +1007,7 @@ export default function OnboardingEmbedPage() {
               {/* Missed matches card */}
               {missed30 !== null && (
                 <div className="flex items-center gap-3 rounded-[4px] px-4 py-3.5"
-                  style={{ backgroundColor: "rgb(var(--ha-primary-light))", border: "1px solid rgba(37,60,150,0.12)" }}
+                  style={{ backgroundColor: "rgb(var(--ha-primary-light))", border: "1px solid rgba(133,251,140,0.20)" }}
                   data-testid="embed-missed-matches-card">
                   <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
                     style={{ backgroundColor: "rgb(var(--ha-primary))" }}>
