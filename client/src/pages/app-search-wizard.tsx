@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation, useRoute } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
-import { useSubscription } from "@/lib/subscription";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
 import { useGeocoderSearch } from "@/hooks/use-geocoder-search";
@@ -348,7 +347,6 @@ function StepFooter({
 
 export default function AppSearchWizard() {
   const { user, loading } = useAuth();
-  const sub = useSubscription();
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const { t } = useTranslation();
@@ -382,12 +380,6 @@ export default function AppSearchWizard() {
 
   // ── Step 4: prefs ──
   const [pref, setPref] = useState<PrefState>(INIT_PREFS);
-
-  // ── Auth/sub guard ──
-  useEffect(() => {
-    if (loading || sub.loading) return;
-    if (user && !sub.isActive) navigate("/paywall");
-  }, [loading, sub.loading, sub.isActive, user, navigate]);
 
   // ── Profile count check for create mode ──
   const profilesQuery = useQuery({
