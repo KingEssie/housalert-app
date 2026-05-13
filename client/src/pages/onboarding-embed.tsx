@@ -177,7 +177,7 @@ function EmbedFooter({
         <div className="flex items-center gap-2.5 shrink-0">
           <button
             onClick={onBack}
-            className="w-[44px] h-[44px] rounded-[6px] flex items-center justify-center active:scale-95 transition-transform"
+            className="w-[44px] h-[44px] rounded-full flex items-center justify-center active:scale-95 transition-transform"
             style={{ border: `1.5px solid ${OBW.backBtnBorder}`, backgroundColor: OBW.backBtnBg }}
             data-testid="button-embed-back">
             <ChevronLeft className="w-[18px] h-[18px]" style={{ color: OBW.backBtnColor }} />
@@ -185,7 +185,7 @@ function EmbedFooter({
           <button
             onClick={onNext}
             disabled={nextDisabled || loading}
-            className="h-[44px] px-6 rounded-[6px] text-[15px] font-semibold text-white flex items-center justify-center gap-1.5 active:scale-[0.97] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+            className="h-[44px] px-6 rounded-full text-[15px] font-semibold text-[#111111] flex items-center justify-center gap-1.5 active:scale-[0.97] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
             style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 14px rgba(133,251,140,0.25)" }}
             data-testid="button-embed-next">
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -532,13 +532,13 @@ export default function OnboardingEmbedPage() {
 
   // Chip selector helper
   const chipRow = (opts: { value: string; label: string }[], current: string, onChange: (v: string) => void, testId: string) => (
-    <div className="flex items-center gap-[4px] p-[4px] rounded-[4px]" style={{ backgroundColor: "rgb(var(--ha-toggle-bg))" }} data-testid={testId}>
+    <div className="flex items-center gap-[3px] p-[3px] rounded-full" style={{ backgroundColor: "rgb(var(--ha-toggle-bg))" }} data-testid={testId}>
       {opts.map((o) => {
         const active = current === o.value;
         return (
           <button key={o.value} onClick={() => onChange(o.value)}
-            className="flex-1 py-[8px] text-[12px] font-semibold rounded-[4px] text-center transition-all whitespace-nowrap overflow-hidden"
-            style={{ backgroundColor: active ? "rgb(var(--ha-primary))" : "transparent", color: active ? "white" : "rgb(var(--ha-text))" }}
+            className="flex-1 py-[8px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
+            style={{ backgroundColor: active ? "#bbadfb" : "transparent", color: active ? "#111111" : "rgb(var(--ha-text))" }}
             data-testid={`${testId}-${o.value}`}>
             {o.label}
           </button>
@@ -593,8 +593,8 @@ export default function OnboardingEmbedPage() {
                   style={{
                     width: s === step ? "12px" : "9px",
                     height: s === step ? "12px" : "9px",
-                    backgroundColor: s <= step ? "rgb(var(--ha-primary))" : "transparent",
-                    border: s > step ? "1.5px solid rgb(var(--ha-card-border))" : "none",
+                    backgroundColor: s <= step ? "#bbadfb" : "rgba(187,173,251,0.25)",
+                    border: s > step ? "1.5px solid rgba(187,173,251,0.45)" : "none",
                   }}
                   data-testid={`step-dot-${s}`}
                 />
@@ -602,7 +602,7 @@ export default function OnboardingEmbedPage() {
                   <div className="flex-1 ml-[6px]"
                     style={{
                       height: "1.5px",
-                      backgroundColor: s < step ? "rgb(var(--ha-primary))" : "rgb(var(--ha-card-border))",
+                      backgroundColor: s < step ? "#bbadfb" : "rgba(187,173,251,0.25)",
                     }} />
                 )}
               </div>
@@ -626,9 +626,9 @@ export default function OnboardingEmbedPage() {
                     style={{
                       paddingLeft: "46px",
                       height: "48px",
-                      borderRadius: "4px",
-                      borderColor: city ? "rgb(var(--ha-primary))" : "rgb(var(--ha-border-input))",
-                      backgroundColor: city ? "rgb(var(--ha-primary-light))" : OBW.inputBg,
+                      borderRadius: "18px",
+                      borderColor: city ? "#bbadfb" : "rgb(var(--ha-border-input))",
+                      backgroundColor: city ? "rgba(187,173,251,0.08)" : OBW.inputBg,
                       color: OBW.text,
                     }}
                     data-testid="input-city-search" />
@@ -681,14 +681,14 @@ export default function OnboardingEmbedPage() {
               {/* ── Location tabs + map (shown once city is confirmed) ─────── */}
               {city && (<>
               {/* Location mode tabs */}
-              <div className="flex items-center gap-1 p-[4px] rounded-[4px] mb-5"
+              <div className="flex items-center gap-[3px] p-[3px] rounded-full mb-5"
                 style={{ backgroundColor: "rgb(var(--ha-toggle-bg))" }} data-testid="location-tabs">
                 {locationTabs.map((tab) => {
                   const active = locationData.mode === tab.value;
                   return (
                     <button key={tab.value} onClick={() => setLocationData((p) => ({ ...p, mode: tab.value }))}
-                      className="flex-1 py-[8px] text-[12px] font-semibold rounded-[4px] text-center transition-all whitespace-nowrap overflow-hidden"
-                      style={{ backgroundColor: active ? "rgb(var(--ha-primary))" : "transparent", color: active ? "white" : "rgb(var(--ha-text))" }}
+                      className="flex-1 py-[8px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
+                      style={{ backgroundColor: active ? "#bbadfb" : "transparent", color: active ? "#111111" : "rgb(var(--ha-text))" }}
                       data-testid={`tab-location-${tab.value}`}>
                       {tab.label}
                     </button>
@@ -701,7 +701,7 @@ export default function OnboardingEmbedPage() {
                 <div data-testid="section-districts">
                   <button onClick={() => setShowDistrictPicker(!showDistrictPicker)}
                     className="w-full flex items-center justify-between ha-field-web text-left mb-4"
-                    style={{ backgroundColor: OBW.inputBg, borderColor: "rgb(var(--ha-border-input))", height: "48px", borderRadius: "4px" }}
+                    style={{ backgroundColor: OBW.inputBg, borderColor: "rgb(var(--ha-border-input))", height: "48px", borderRadius: "18px" }}
                     data-testid="dropdown-districts">
                     <span className="text-[15px] font-medium" style={{ color: OBW.text }}>{districtSummary}</span>
                     <ChevronDown className="w-[17px] h-[17px] shrink-0 transition-transform duration-200"
@@ -822,8 +822,8 @@ export default function OnboardingEmbedPage() {
                     const active = filters.minRooms === opt.value;
                     return (
                       <button key={opt.value} onClick={() => updateFilters({ minRooms: opt.value })}
-                        className="h-[40px] px-4 rounded-[6px] text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96] shrink-0"
-                        style={{ backgroundColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-surface))", color: active ? "white" : OBW.textSecondary }}
+                        className="h-[40px] px-4 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96] shrink-0"
+                        style={{ backgroundColor: active ? "#bbadfb" : "rgb(var(--ha-surface))", color: active ? "#111111" : OBW.textSecondary }}
                         data-testid={`rooms-${opt.value}`}>
                         {opt.label}
                       </button>
@@ -838,11 +838,11 @@ export default function OnboardingEmbedPage() {
                 <div className="flex items-center justify-between mb-2.5">
                   <SectionLabel>Minimum size</SectionLabel>
                   <button onClick={() => updateFilters({ sizeNA: !filters.sizeNA, minSize: filters.sizeNA ? 30 : 0 })}
-                    className="text-[12px] font-medium px-2.5 py-1 rounded-[4px] border transition-all"
+                    className="text-[12px] font-medium px-3 py-1 rounded-full border transition-all"
                     style={{
-                      borderColor: filters.sizeNA ? "rgb(var(--ha-primary))" : OBW.cardBorder,
-                      backgroundColor: filters.sizeNA ? "rgba(133,251,140,0.10)" : "transparent",
-                      color: filters.sizeNA ? "rgb(var(--ha-primary))" : OBW.textSecondary,
+                      borderColor: filters.sizeNA ? "#bbadfb" : OBW.cardBorder,
+                      backgroundColor: filters.sizeNA ? "rgba(187,173,251,0.15)" : "transparent",
+                      color: filters.sizeNA ? "#111111" : OBW.textSecondary,
                     }}
                     data-testid="button-size-na">
                     N/A
@@ -879,11 +879,11 @@ export default function OnboardingEmbedPage() {
                     const active = filters.amenities.includes(value);
                     return (
                       <button key={value} onClick={() => toggleAmenity(value)}
-                        className="flex items-center gap-1.5 px-3.5 py-2 rounded-[6px] text-[13px] font-medium border transition-all"
+                        className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium border transition-all"
                         style={{
-                          backgroundColor: active ? "rgb(var(--ha-primary))" : "transparent",
-                          borderColor: active ? "rgb(var(--ha-primary))" : OBW.cardBorder,
-                          color: active ? "white" : OBW.textSecondary,
+                          backgroundColor: active ? "#bbadfb" : "transparent",
+                          borderColor: active ? "#bbadfb" : OBW.cardBorder,
+                          color: active ? "#111111" : OBW.textSecondary,
                         }}
                         data-testid={`amenity-${value}`}>
                         {active && <Check className="w-3 h-3" />}
@@ -916,7 +916,7 @@ export default function OnboardingEmbedPage() {
                   onChange={(e) => setSearchDetails((p) => ({ ...p, searchName: e.target.value }))}
                   placeholder={city?.name ?? "e.g. Berlin"}
                   className="w-full ha-field-web"
-                  style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg, height: "48px", borderRadius: "4px" }}
+                  style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg, height: "48px", borderRadius: "18px" }}
                   data-testid="input-search-name"
                 />
               </section>
@@ -935,11 +935,11 @@ export default function OnboardingEmbedPage() {
                     const active = searchDetails.suitableFor.includes(opt.value);
                     return (
                       <button key={opt.value} onClick={() => toggleSuitableFor(opt.value)}
-                        className="h-[38px] px-3.5 rounded-[6px] text-[13px] font-medium border transition-all active:scale-[0.96] flex items-center gap-[5px]"
+                        className="h-[38px] px-3.5 rounded-full text-[13px] font-medium border transition-all active:scale-[0.96] flex items-center gap-[5px]"
                         style={{
-                          backgroundColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-surface))",
-                          borderColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-border-input))",
-                          color: active ? "white" : OBW.text,
+                          backgroundColor: active ? "#bbadfb" : "rgb(var(--ha-surface))",
+                          borderColor: active ? "#bbadfb" : "rgb(var(--ha-border-input))",
+                          color: active ? "#111111" : OBW.text,
                         }}
                         data-testid={`chip-suitable-${opt.value}`}>
                         {!active && <Plus className="w-[11px] h-[11px] shrink-0" style={{ color: "rgb(var(--ha-text-muted))" }} />}
@@ -1006,12 +1006,12 @@ export default function OnboardingEmbedPage() {
 
               {/* Missed matches card */}
               {missed30 !== null && (
-                <div className="flex items-center gap-3 rounded-[4px] px-4 py-3.5"
-                  style={{ backgroundColor: "rgb(var(--ha-primary-light))", border: "1px solid rgba(133,251,140,0.20)" }}
+                <div className="flex items-center gap-3 rounded-[16px] px-4 py-3.5"
+                  style={{ backgroundColor: "rgba(187,173,251,0.10)", border: "1px solid rgba(187,173,251,0.30)" }}
                   data-testid="embed-missed-matches-card">
                   <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: "rgb(var(--ha-primary))" }}>
-                    <span className="text-white text-[15px] font-bold">{Math.max(1, missed30)}</span>
+                    style={{ backgroundColor: "#bbadfb" }}>
+                    <span className="text-[#111111] text-[15px] font-bold">{Math.max(1, missed30)}</span>
                   </div>
                   <p className="text-[13px] font-medium leading-snug" style={{ color: OBW.text }}>
                     You've missed <span className="font-bold">{Math.max(1, missed30)} rental matches</span> in the last 30 days
@@ -1026,7 +1026,7 @@ export default function OnboardingEmbedPage() {
                   <input type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)}
                     placeholder="First name"
                     className="w-full ha-field-web"
-                    style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg, height: "48px", borderRadius: "4px" }}
+                    style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg, height: "48px", borderRadius: "18px" }}
                     autoFocus data-testid="input-first-name" />
                 </div>
                 <div className="flex-1">
@@ -1034,7 +1034,7 @@ export default function OnboardingEmbedPage() {
                   <input type="text" value={lastName} onChange={(e) => setLastName(e.target.value)}
                     placeholder="Last name"
                     className="w-full ha-field-web"
-                    style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg, height: "48px", borderRadius: "4px" }}
+                    style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg, height: "48px", borderRadius: "18px" }}
                     data-testid="input-last-name" />
                 </div>
               </div>
@@ -1044,7 +1044,7 @@ export default function OnboardingEmbedPage() {
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@email.com"
                   className="w-full ha-field-web"
-                  style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg, height: "48px", borderRadius: "4px" }}
+                  style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg, height: "48px", borderRadius: "18px" }}
                   data-testid="input-email" />
               </div>
 
@@ -1055,7 +1055,7 @@ export default function OnboardingEmbedPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Create a password"
                     className="w-full ha-field-web pr-11"
-                    style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg, height: "48px", borderRadius: "4px" }}
+                    style={{ borderColor: "rgb(var(--ha-border-input))", color: OBW.text, backgroundColor: OBW.inputBg, height: "48px", borderRadius: "18px" }}
                     data-testid="input-password" />
                   <button type="button" onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3.5 top-1/2 -translate-y-1/2"
