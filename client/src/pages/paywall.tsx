@@ -107,7 +107,7 @@ function WebsitePaywall({
   return (
     <div
       className="min-h-[100dvh] flex flex-col"
-      style={{ background: "rgb(var(--ha-card))" }}
+      style={{ background: "rgb(var(--ha-bg))" }}
       data-testid="screen-paywall-website"
     >
       <OBWebHeader />
@@ -169,7 +169,7 @@ function WebsitePaywall({
                   >
                     <span
                       className="text-[11px] font-semibold px-3.5 py-[3px] rounded-full"
-                      style={{ backgroundColor: "rgb(var(--ha-success))", color: "white" }}
+                      style={{ backgroundColor: "#bbadfb", color: "#111111" }}
                       data-testid="badge-popular"
                     >
                       {t("paywall.website.mostChosen")}
@@ -181,7 +181,7 @@ function WebsitePaywall({
                   className="w-full text-left transition-colors"
                   style={{
                     borderBottom: !isLast ? `1px solid ${OBW.cardBorder}` : "none",
-                    backgroundColor: isSelected ? "var(--ha-primary-light)" : "rgb(var(--ha-card))",
+                    backgroundColor: isSelected ? "rgba(187,173,251,0.12)" : "rgb(var(--ha-card))",
                     padding: plan.popular ? "20px 16px 16px 16px" : "16px 16px",
                   }}
                   data-testid={`card-plan-${plan.id}`}
@@ -192,10 +192,10 @@ function WebsitePaywall({
                         className="w-[22px] h-[22px] rounded-full flex items-center justify-center shrink-0"
                         style={{
                           border: isSelected ? "none" : `1.5px solid ${OBW.chipBorder}`,
-                          backgroundColor: isSelected ? "rgb(var(--ha-success))" : "transparent",
+                          backgroundColor: isSelected ? "#bbadfb" : "transparent",
                         }}
                       >
-                        {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
+                        {isSelected && <Check className="w-3.5 h-3.5" style={{ color: "#111111" }} />}
                       </div>
                       <span
                         className="text-[15px] font-semibold"
@@ -211,7 +211,7 @@ function WebsitePaywall({
                       {plan.discount && (
                         <span
                           className="text-[13px] font-semibold"
-                          style={{ color: "rgb(var(--ha-primary))" }}
+                          style={{ color: "#bbadfb" }}
                         >
                           {plan.discount}
                         </span>
@@ -259,9 +259,9 @@ function WebsitePaywall({
           <div className="flex items-start gap-2.5">
             <div
               className="w-[20px] h-[20px] rounded-full flex items-center justify-center shrink-0 mt-[1px]"
-              style={{ backgroundColor: "rgb(var(--ha-success))" }}
+              style={{ backgroundColor: "#bbadfb" }}
             >
-              <Check className="w-3 h-3 text-white" />
+              <Check className="w-3 h-3" style={{ color: "#111111" }} />
             </div>
             <p className="text-[13px] leading-[1.5]" style={{ color: OBW.text }}>
               <strong>{t("paywall.website.benefit1Bold")}</strong>{t("paywall.website.benefit1Rest")}
@@ -270,9 +270,9 @@ function WebsitePaywall({
           <div className="flex items-start gap-2.5">
             <div
               className="w-[20px] h-[20px] rounded-full flex items-center justify-center shrink-0 mt-[1px]"
-              style={{ backgroundColor: "rgb(var(--ha-success))" }}
+              style={{ backgroundColor: "#bbadfb" }}
             >
-              <Check className="w-3 h-3 text-white" />
+              <Check className="w-3 h-3" style={{ color: "#111111" }} />
             </div>
             <p className="text-[13px] leading-[1.5]" style={{ color: OBW.text }}>
               <strong>{t("paywall.website.benefit2Bold")}</strong>{t("paywall.website.benefit2Rest")}
@@ -281,9 +281,9 @@ function WebsitePaywall({
           <div className="flex items-start gap-2.5">
             <div
               className="w-[20px] h-[20px] rounded-full flex items-center justify-center shrink-0 mt-[1px]"
-              style={{ backgroundColor: "rgb(var(--ha-success))" }}
+              style={{ backgroundColor: "#bbadfb" }}
             >
-              <Check className="w-3 h-3 text-white" />
+              <Check className="w-3 h-3" style={{ color: "#111111" }} />
             </div>
             <p className="text-[13px] leading-[1.5]" style={{ color: OBW.text }}>
               {t("paywall.website.benefit3Pre")}<strong>{t("paywall.website.benefit3Weeks")}</strong>{t("paywall.website.benefit3Post")}
@@ -464,43 +464,42 @@ export default function PaywallPage() {
               <button
                 key={plan.id}
                 onClick={() => setSelectedPlan(plan.id)}
-                className="w-full rounded-[--ha-card-radius] border-2 transition-all text-left relative overflow-hidden bg-ha-card"
+                className="w-full text-left transition-all active:scale-[0.99] relative"
                 style={{
-                  borderColor: isSelected ? BRAND : "rgb(var(--ha-card-border))",
+                  border: isSelected ? "2px solid #bbadfb" : "2px solid rgba(17,17,17,0.10)",
+                  backgroundColor: isSelected ? "rgba(187,173,251,0.10)" : "white",
+                  borderRadius: "16px",
+                  padding: plan.popular ? "24px 18px 16px" : "16px 18px",
                 }}
                 data-testid={`card-plan-${plan.id}`}
               >
                 {plan.popular && (
-                  <div className="w-full text-center py-1 text-[11px] font-semibold" style={{ backgroundColor: BRAND, color: "white" }} data-testid="badge-popular">
-                    {t("paywall.mostChosen")}
+                  <div className="absolute -top-[11px] left-1/2 -translate-x-1/2">
+                    <span
+                      className="text-[11px] font-bold px-4 py-[3px]"
+                      style={{ backgroundColor: "#bbadfb", color: "#111111", borderRadius: "9999px" }}
+                      data-testid="badge-popular"
+                    >
+                      {t("paywall.mostChosen")}
+                    </span>
                   </div>
                 )}
-                <div className="flex items-center justify-between px-4 py-3.5">
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors"
-                      style={{
-                        borderColor: isSelected ? BRAND : "rgb(var(--ha-card-border))",
-                        backgroundColor: isSelected ? BRAND : "transparent",
-                      }}
-                    >
-                      {isSelected && <Check className="w-3 h-3 text-white" />}
-                    </div>
-                    <div>
-                      <p className="text-[15px] font-semibold text-ha-text">{plan.label}</p>
-                      <p className="text-[12px] text-ha-text-secondary">{plan.perMonth}</p>
-                    </div>
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-[22px] h-[22px] rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{
+                      border: isSelected ? "none" : "2px solid rgba(17,17,17,0.20)",
+                      backgroundColor: isSelected ? "#bbadfb" : "transparent",
+                    }}
+                  >
+                    {isSelected && <Check className="w-3 h-3" style={{ color: "#111111" }} />}
                   </div>
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-[18px] font-semibold text-ha-text">{plan.price}</span>
-                    {plan.discountLabel && (
-                      <span
-                        className="text-[11px] font-semibold px-2 py-0.5 rounded-[4px]"
-                        style={{ backgroundColor: plan.discountBgColor, color: plan.discountColor }}
-                      >
-                        {plan.discountLabel}
-                      </span>
-                    )}
+                  <div className="flex-1 flex items-start justify-between gap-2">
+                    <div>
+                      <p className="text-[22px] font-black leading-none" style={{ color: "#111111" }}>{plan.discountLabel || "—"}</p>
+                      <p className="text-[12px] mt-1" style={{ color: TEXT_SECONDARY }}>{plan.label}</p>
+                    </div>
+                    <p className="text-[15px] font-bold pt-0.5" style={{ color: "#111111" }}>{plan.perMonth}</p>
                   </div>
                 </div>
               </button>

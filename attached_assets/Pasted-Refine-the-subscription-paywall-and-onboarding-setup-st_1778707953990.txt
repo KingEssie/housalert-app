@@ -1,0 +1,118 @@
+Refine the subscription/paywall and onboarding setup styling to match the final HousAlert brand rules.
+
+IMPORTANT BRAND RULES:
+- Green #85fb8c is ONLY for primary CTA buttons.
+- Do NOT use green for selected plans, badges, highlights, check icons, cards, or backgrounds.
+- Purple #bbadfb is the accent/highlight color.
+- App-wide background must be #f9f7f8.
+
+1. App/background color
+Set the page background for the entire app and especially these flows to:
+#f9f7f8
+
+Apply to:
+- paywall/subscription screens
+- limited access screen
+- post-paywall onboarding setup screens
+- application letter onboarding screens
+- search buddy/success screens
+- home/account areas if they still use plain white/gray backgrounds
+
+Cards may remain white or purple depending on purpose, but the page background should be #f9f7f8.
+
+2. Remove green from subscription plan selection
+Current issue:
+The selected subscription plan uses green.
+This is wrong.
+
+Required:
+- Selected plan highlight = #bbadfb or a soft purple tint
+- “Popular” badge/header = #bbadfb
+- Selected radio/check circle = #bbadfb with black icon
+- Discount badges = soft purple tint with black/purple text
+- No green in pricing cards
+
+Green #85fb8c should remain ONLY on the main CTA button:
+“Abonnement kiezen”
+
+3. Redesign pricing cards to match website style
+The current pricing cards feel too app-like and messy.
+
+Use a cleaner website-style layout:
+- dark text
+- white cards
+- rounded cards/pills
+- left side: discount label, e.g.
+  “44% discount”
+  “32% discount”
+  “0% discount”
+- right side: price per month, e.g.
+  “€16,33 /mnd”
+  “€19,50 /mnd”
+  “€29,00 /mnd”
+- smaller period text underneath:
+  “3 maanden”
+  “2 maanden”
+  “1 maand”
+- selected plan should have purple accent/border/background tint
+- keep the main CTA green
+
+Do not change the Stripe price IDs or business logic.
+Only change visual presentation.
+
+4. Explanation/helper cards
+Current issue:
+COO/Elise explanation card and similar onboarding explanation cards are still white.
+
+Required:
+All explanation/helper text cards in onboarding setup should have:
+- background: #bbadfb
+- text: #111111
+- optional subtle border: rgba(17,17,17,0.08)
+- keep readable padding
+- keep profile image/signature if present
+
+Apply this to all similar explanatory cards across:
+- welcome/setup
+- limited access
+- application letter intro
+- application letter personal/living/preview helper blocks
+- search buddy explanation
+- success/info cards
+
+5. Icon circles
+For onboarding/paywall benefit icons:
+- circle background: #bbadfb
+- icon color: #111111
+- no green icon circles except true success confirmation states
+
+6. Buttons
+All buttons must stay fully pill-shaped:
+- border-radius: 9999px
+
+Primary CTA:
+- background: #85fb8c
+- text: #111111
+
+Secondary CTA:
+- background: white or #bbadfb depending on context
+- text: #111111
+- pill shaped
+
+7. Keep functionality unchanged
+Do NOT change:
+- routing
+- Stripe price IDs
+- subscription logic
+- onboarding flow logic
+- account creation
+- matching/backfill
+
+Only styling/layout for these screens.
+
+Smoke check:
+- paywall renders with purple-selected pricing cards
+- no green appears except primary CTA buttons
+- app background is #f9f7f8
+- explanation cards are purple with black text
+- all buttons are fully rounded

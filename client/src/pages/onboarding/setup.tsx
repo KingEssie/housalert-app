@@ -78,7 +78,7 @@ function getPlans(t: (k: string) => string): Plan[] {
       price: "€24,99",
       perMonth: "€24,99 " + t("paywall.perMonth"),
       popular: false,
-      discountLabel: "",
+      discountLabel: "0%",
     },
   ];
 }
@@ -101,8 +101,8 @@ function SetupShell({
   showBack?: boolean;
 }) {
   return (
-    <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-card))" }} data-testid={`setup-step-${step}`}>
-      <header className="sticky top-0 z-20 backdrop-blur-md border-b" style={{ backgroundColor: "rgb(var(--ha-card))", borderColor: "rgb(var(--ha-card-border))" }}>
+    <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-bg))" }} data-testid={`setup-step-${step}`}>
+      <header className="sticky top-0 z-20 backdrop-blur-md border-b" style={{ backgroundColor: "rgb(var(--ha-bg))", borderColor: "rgb(var(--ha-card-border))" }}>
         <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
           {showBack && onBack ? (
             <button
@@ -225,44 +225,42 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
             <button
               key={plan.id}
               onClick={() => setSelectedPlan(plan.id)}
-              className="w-full rounded-[--ha-card-radius] border-2 transition-all text-left relative overflow-hidden"
+              className="w-full text-left transition-all active:scale-[0.99] relative"
               style={{
-                borderColor: "rgb(var(--ha-card-border))",
-                backgroundColor: isSelected ? "rgba(133,251,140,0.10)" : "rgb(var(--ha-card))",
+                border: isSelected ? "2px solid #bbadfb" : "2px solid rgba(17,17,17,0.10)",
+                backgroundColor: isSelected ? "rgba(187,173,251,0.10)" : "white",
+                borderRadius: "16px",
+                padding: plan.popular ? "24px 18px 16px" : "16px 18px",
               }}
               data-testid={`card-plan-${plan.id}`}
             >
               {plan.popular && (
-                <div className="w-full text-center py-1 text-[11px] font-semibold" style={{ backgroundColor: BRAND, color: "white" }} data-testid="badge-popular">
-                  {t("paywall.mostChosen")}
+                <div className="absolute -top-[11px] left-1/2 -translate-x-1/2">
+                  <span
+                    className="text-[11px] font-bold px-4 py-[3px]"
+                    style={{ backgroundColor: "#bbadfb", color: "#111111", borderRadius: "9999px" }}
+                    data-testid="badge-popular"
+                  >
+                    {t("paywall.mostChosen")}
+                  </span>
                 </div>
               )}
-              <div className="flex items-center justify-between px-4 py-3.5">
-                <div className="flex items-center gap-3">
-                  <div
-                    className="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors"
-                    style={{
-                      borderColor: isSelected ? BRAND : "rgb(var(--ha-border-input))",
-                      backgroundColor: isSelected ? BRAND : "transparent",
-                    }}
-                  >
-                    {isSelected && <Check className="w-3 h-3 text-white" />}
-                  </div>
-                  <div>
-                    <p className="text-[16px] font-semibold" style={{ color: TEXT_PRIMARY }}>{plan.label}</p>
-                    <p className="text-[12px]" style={{ color: TEXT_SECONDARY }}>{plan.perMonth}</p>
-                  </div>
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-[22px] h-[22px] rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{
+                    border: isSelected ? "none" : "2px solid rgba(17,17,17,0.20)",
+                    backgroundColor: isSelected ? "#bbadfb" : "transparent",
+                  }}
+                >
+                  {isSelected && <Check className="w-3 h-3" style={{ color: "#111111" }} />}
                 </div>
-                <div className="flex items-center gap-2.5">
-                  <span className="text-[18px] font-semibold" style={{ color: TEXT_PRIMARY }}>{plan.price}</span>
-                  {plan.discountLabel && (
-                    <span
-                      className="text-[11px] font-semibold px-2 py-0.5 rounded-[4px]"
-                      style={{ backgroundColor: plan.discountBgColor, color: plan.discountColor }}
-                    >
-                      {plan.discountLabel}
-                    </span>
-                  )}
+                <div className="flex-1 flex items-start justify-between gap-2">
+                  <div>
+                    <p className="text-[22px] font-black leading-none" style={{ color: "#111111" }}>{plan.discountLabel || "—"}</p>
+                    <p className="text-[12px] mt-1" style={{ color: TEXT_SECONDARY }}>{plan.label}</p>
+                  </div>
+                  <p className="text-[15px] font-bold pt-0.5" style={{ color: "#111111" }}>{plan.perMonth}</p>
                 </div>
               </div>
             </button>
@@ -354,11 +352,11 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
         </button>
       </div>
 
-      <div className="mt-4 rounded-[6px] p-4" style={{ backgroundColor: "rgb(var(--ha-card))", border: "1px solid rgb(var(--ha-card-border))" }}>
-        <p className="text-[14px] font-semibold mb-1" style={{ color: "rgb(var(--ha-text))" }}>
+      <div className="mt-4 rounded-2xl p-4" style={{ backgroundColor: "#bbadfb", border: "1px solid rgba(17,17,17,0.08)" }}>
+        <p className="text-[14px] font-semibold mb-1" style={{ color: "#111111" }}>
           {t("onboardingFlow.limitedAccess.infoTitle")}
         </p>
-        <p className="text-[14px] leading-relaxed" style={{ color: "rgb(var(--ha-text-secondary))" }}>
+        <p className="text-[14px] leading-relaxed" style={{ color: "#111111" }}>
           {t("onboardingFlow.limitedAccess.infoDesc")}
         </p>
       </div>
@@ -380,8 +378,8 @@ function LightShell({
   topContent?: React.ReactNode;
 }) {
   return (
-    <div className="min-h-[100dvh] flex flex-col" style={{ backgroundColor: "rgb(var(--ha-card))" }} data-testid={`setup-step-${step}`}>
-      <header className="sticky top-0 z-20 border-b" style={{ backgroundColor: "rgb(var(--ha-card))", borderColor: "rgb(var(--ha-card-border))" }}>
+    <div className="min-h-[100dvh] flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }} data-testid={`setup-step-${step}`}>
+      <header className="sticky top-0 z-20 border-b" style={{ backgroundColor: "rgb(var(--ha-bg))", borderColor: "rgb(var(--ha-card-border))" }}>
         <div className="max-w-[480px] mx-auto px-5 h-[56px] flex items-center gap-3">
           {showBack && onBack ? (
             <button
@@ -437,13 +435,13 @@ function WelcomeStep({ onNext, t }: {
         {t("onboardingFlow.welcome.title")}
       </h1>
 
-      <div className="rounded-[6px] bg-white p-5 border border-ha-card-border" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-        <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "rgb(var(--ha-card))" }}>
+      <div className="rounded-2xl p-5 border" style={{ backgroundColor: "#bbadfb", borderColor: "rgba(17,17,17,0.08)", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+        <div className="relative rounded-xl px-5 py-5 mb-5 bg-white">
           <p className="text-[17px] font-semibold text-ha-text mb-3">{t("onboardingFlow.welcome.greeting")}</p>
           <p className="text-[16px] leading-[1.65] text-ha-text" style={{ whiteSpace: "pre-line" }}>
             {t("onboardingFlow.welcome.speechBody")}
           </p>
-          <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "rgb(var(--ha-card))" }} />
+          <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45 bg-white" />
         </div>
 
         <div className="flex items-center gap-3 pt-1">
@@ -592,15 +590,15 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
           {t("onboardingFlow.letterPersonal.title")}
         </h1>
 
-        <div className="rounded-[6px] bg-white p-5 border border-ha-card-border" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-          <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "rgb(var(--ha-card))" }}>
+        <div className="rounded-2xl p-5 border" style={{ backgroundColor: "#bbadfb", borderColor: "rgba(17,17,17,0.08)", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+          <div className="relative rounded-xl px-5 py-5 mb-5 bg-white">
             <p className="text-[17px] font-semibold text-ha-text mb-3">
               {t("onboardingFlow.letterPersonal.speechTitle")}
             </p>
             <p className="text-[16px] leading-[1.65] text-ha-text" style={{ whiteSpace: "pre-line" }}>
               {t("onboardingFlow.letterPersonal.speechBody")}
             </p>
-            <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "rgb(var(--ha-card))" }} />
+            <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45 bg-white" />
           </div>
 
           <div className="flex items-center gap-3 pt-1">
@@ -951,7 +949,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
         {t("onboardingFlow.searchBuddy.title")}
       </h1>
 
-      <div className="rounded-[6px] bg-white p-5 border border-ha-card-border" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+      <div className="rounded-2xl p-5 border" style={{ backgroundColor: "#bbadfb", borderColor: "rgba(17,17,17,0.08)", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
         <p className="text-[17px] font-semibold text-ha-text mb-1">{t("onboardingFlow.searchBuddy.subtitle")}</p>
         <p className="text-[14px] font-semibold text-ha-text mb-4">{t("onboardingFlow.searchBuddy.allowed")}</p>
         <div className="space-y-4 mb-6">
@@ -1049,15 +1047,15 @@ function SuccessStep({ onFinish, t }: {
         {t("onboardingFlow.success.title")}
       </h1>
 
-      <div className="rounded-[6px] bg-white p-5 border border-ha-card-border" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-        <div className="relative rounded-[6px] px-5 py-5 mb-5" style={{ backgroundColor: "rgb(var(--ha-card))" }}>
+      <div className="rounded-2xl p-5 border" style={{ backgroundColor: "#bbadfb", borderColor: "rgba(17,17,17,0.08)", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
+        <div className="relative rounded-xl px-5 py-5 mb-5 bg-white">
           <p className="text-[16px] font-semibold text-ha-text mb-3">
             {t("onboardingFlow.success.speechTitle")}
           </p>
           <p className="text-[14px] leading-[1.65] text-ha-text" style={{ whiteSpace: "pre-line" }}>
             {t("onboardingFlow.success.speechBody")}
           </p>
-          <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45" style={{ backgroundColor: "rgb(var(--ha-card))" }} />
+          <div className="absolute -bottom-[8px] left-10 w-4 h-4 rotate-45 bg-white" />
         </div>
 
         <div className="flex items-center gap-3 pt-1">
