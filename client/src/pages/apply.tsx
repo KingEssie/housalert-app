@@ -106,7 +106,12 @@ function formatSourceDisplay(source: string): string {
   return SOURCE_DISPLAY[s] || s;
 }
 
-const pillStyle: React.CSSProperties = { boxShadow: "0 1px 2px rgba(0,0,0,0.06)" };
+const pillStyle: React.CSSProperties = {
+  backgroundColor: "#ffffff",
+  border: "1px solid #111111",
+  borderRadius: "9999px",
+  padding: "4px 10px 4px 7px",
+};
 
 const UPGRADE_PLANS = [
   { id: "three_month", label: "3 maanden", price: "€44,99", perMonth: "€15,00/m", discount: "-40%", popular: false },
@@ -579,7 +584,7 @@ export default function ApplyPage() {
         </div>
 
         {/* Listing card — matchVariant style (matches the Matches screen) */}
-        <div className="mx-3 mb-4 rounded-[12px] overflow-hidden" style={{ backgroundColor: "#EBF1FF", boxShadow: "0 2px 8px rgba(0,0,0,0.07)" }}>
+        <div className="mx-3 mb-4 overflow-hidden" style={{ backgroundColor: "#faf9ff", borderRadius: "24px", boxShadow: "0 6px 24px rgba(0,0,0,0.04)" }}>
           <div className="relative">
             {hasImage && !imgError ? (
               <img
@@ -600,13 +605,14 @@ export default function ApplyPage() {
               onClick={handleToggleFavorite}
               disabled={favLoading}
               className="absolute top-3 right-3 w-[36px] h-[36px] rounded-full bg-white flex items-center justify-center transition-all duration-150 active:scale-110"
+              style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }}
               aria-label="Favorite"
               data-testid="button-favorite-apply"
             >
               <Heart
                 className="w-[20px] h-[20px] transition-all duration-150"
-                fill={isFavorited ? "rgb(var(--ha-primary))" : "none"}
-                stroke="rgb(var(--ha-primary))"
+                fill={isFavorited ? "#85fb8c" : "none"}
+                stroke="#85fb8c"
                 strokeWidth={2.5}
               />
             </button>
@@ -614,54 +620,55 @@ export default function ApplyPage() {
 
           <div className="p-4 flex flex-col gap-1.5">
             <h3
-              className="text-[16px] font-bold leading-snug line-clamp-2 text-black"
+              className="text-[16px] leading-snug line-clamp-2"
+              style={{ color: "#111111", fontWeight: 800 }}
               data-testid="text-apply-title"
             >
               {listing.title}
             </h3>
             {metaLine && (
-              <p className="text-[13px] text-ha-text-muted" data-testid="text-apply-meta">
+              <p className="text-[13px]" style={{ color: "#111111", fontWeight: 500 }} data-testid="text-apply-meta">
                 {metaLine}
               </p>
             )}
             <div className="flex flex-nowrap gap-1.5 mt-0.5 overflow-hidden">
               {listing.city && (
                 <span
-                  className="inline-flex items-center gap-[4px] bg-white text-[13px] font-medium text-black px-2 py-[5px] rounded-[6px] min-w-0 shrink"
+                  className="inline-flex items-center gap-[4px] text-[13px] font-medium text-black min-w-0 shrink"
                   style={pillStyle}
                   data-testid="detail-city-apply"
                 >
-                  <MapPin className="w-[19px] h-[19px] flex-shrink-0 text-ha-primary" strokeWidth={1.7} />
+                  <MapPin className="w-[17px] h-[17px] flex-shrink-0" fill="#bbadfb" stroke="#111111" strokeWidth={2.2} />
                   <span className="truncate">{listing.city}</span>
                 </span>
               )}
               {listing.bedrooms != null && listing.bedrooms > 0 && (
                 <span
-                  className="inline-flex items-center gap-[4px] bg-white text-[13px] font-medium text-black px-2 py-[5px] rounded-[6px] shrink-0"
+                  className="inline-flex items-center gap-[4px] text-[13px] font-medium text-black shrink-0"
                   style={pillStyle}
                   data-testid="detail-bedrooms-apply"
                 >
-                  <BedDouble className="w-[19px] h-[19px] flex-shrink-0 text-ha-primary" strokeWidth={1.7} />
+                  <BedDouble className="w-[17px] h-[17px] flex-shrink-0" fill="#bbadfb" stroke="#111111" strokeWidth={2.2} />
                   {listing.bedrooms}
                 </span>
               )}
               {listing.size_m2 != null && listing.size_m2 > 0 && (
                 <span
-                  className="inline-flex items-center gap-[4px] bg-white text-[13px] font-medium text-black px-2 py-[5px] rounded-[6px] shrink-0"
+                  className="inline-flex items-center gap-[4px] text-[13px] font-medium text-black shrink-0"
                   style={pillStyle}
                   data-testid="detail-size-apply"
                 >
-                  <Maximize2 className="w-[19px] h-[19px] flex-shrink-0 text-ha-primary" strokeWidth={1.7} />
+                  <Maximize2 className="w-[17px] h-[17px] flex-shrink-0" fill="#bbadfb" stroke="#111111" strokeWidth={2.2} />
                   {listing.size_m2} m²
                 </span>
               )}
               {listing.price > 0 && (
                 <span
-                  className="inline-flex items-center gap-[4px] bg-white text-[13px] font-semibold text-black px-2 py-[5px] rounded-[6px] shrink-0"
+                  className="inline-flex items-center gap-[4px] text-[13px] font-semibold text-black shrink-0"
                   style={pillStyle}
                   data-testid="detail-price-apply"
                 >
-                  <Tag className="w-[19px] h-[19px] flex-shrink-0 text-ha-primary" strokeWidth={1.7} />
+                  <Tag className="w-[17px] h-[17px] flex-shrink-0" fill="#bbadfb" stroke="#111111" strokeWidth={2.2} />
                   €{listing.price}
                 </span>
               )}
@@ -700,7 +707,8 @@ export default function ApplyPage() {
               {t("applySheet.autoGenerated")}
             </p>
             <textarea
-              className="w-full min-h-[220px] leading-[1.75] bg-ha-surface border border-ha-border-input rounded-[8px] p-4 text-[16px] text-ha-text outline-none resize-vertical focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/25 transition-all"
+              className="w-full min-h-[220px] leading-[1.75] bg-white rounded-[8px] p-4 text-[16px] text-ha-text outline-none resize-vertical transition-all"
+              style={{ border: "1.5px solid #111111" }}
               value={editedLetter ?? filledLetter}
               onChange={(e) => !inBuddyMode && setEditedLetter(e.target.value)}
               readOnly={inBuddyMode}
@@ -738,7 +746,8 @@ export default function ApplyPage() {
                 )}
                 <Button
                   onClick={handleCopyAndRespond}
-                  className={`ha-btn bg-ha-primary hover:bg-ha-primary-hover text-white font-semibold ${listing.price > 0 ? "" : "w-full"}`}
+                  className={`ha-btn rounded-full bg-ha-primary hover:bg-ha-primary-hover font-semibold ${listing.price > 0 ? "" : "w-full"}`}
+                  style={{ color: "#111111" }}
                   data-testid="button-copy-and-respond"
                 >
                   <Copy className="w-4 h-4 mr-2" />
