@@ -310,3 +310,8 @@ DO $$ BEGIN
       USING (true) WITH CHECK (true);
   END IF;
 END $$;
+
+-- -----------------------------------------------
+-- Migration 029: search_name column on search_profiles
+-- -----------------------------------------------
+ALTER TABLE search_profiles ADD COLUMN IF NOT EXISTS search_name TEXT;

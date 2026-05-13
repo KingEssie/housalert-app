@@ -3306,7 +3306,7 @@ export async function registerRoutes(
         "location_mode", "districts", "radius_km",
         "commute_destination", "commute_lat", "commute_lng", "commute_mode", "commute_minutes",
         "furnished", "property_types", "extra_features", "target_categories",
-        "send_unclear", "price_flexible",
+        "send_unclear", "price_flexible", "search_name",
       ];
       const coreFields = ["city", "price_min", "price_max", "bedrooms_min", "size_min"];
 

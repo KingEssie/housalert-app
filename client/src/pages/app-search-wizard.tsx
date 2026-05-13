@@ -423,7 +423,7 @@ export default function AppSearchWizard() {
         sendUnclear: profile.send_unclear !== false,
       });
       setPref({
-        searchName: profile.search_name || profile.city_name || profile.city || "",
+        searchName: profile.search_name || "",
         suitableFor: profile.target_categories || [],
         vrijeSector: true,
         payToReply: true,
@@ -535,7 +535,7 @@ export default function AppSearchWizard() {
         target_categories: pref.suitableFor.length > 0 ? pref.suitableFor : undefined,
         send_unclear: f.sendUnclear,
         price_flexible: f.priceFlexible,
-        search_name: (pref.searchName.trim() && pref.searchName.trim() !== city.name) ? pref.searchName.trim() : undefined,
+        search_name: pref.searchName.trim() || undefined,
       };
 
       if (isEdit && editId) {
