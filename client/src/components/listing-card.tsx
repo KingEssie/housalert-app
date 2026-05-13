@@ -197,7 +197,7 @@ export function ListingCardFull({
               className="inline-flex items-center gap-[4px] text-[13px] font-medium min-w-0 shrink"
               style={matchVariant ? {
                 backgroundColor: "#ffffff",
-                border: "1px solid rgba(0,0,0,0.06)",
+                border: "1px solid #e5e5e5",
                 borderRadius: "9999px",
                 color: "#111111",
                 padding: "4px 10px 4px 7px",
@@ -211,6 +211,7 @@ export function ListingCardFull({
             >
               <MapPin
                 className="w-[17px] h-[17px] flex-shrink-0"
+                fill={matchVariant ? "#bbadfb" : "none"}
                 stroke={matchVariant ? "#111111" : "rgb(var(--ha-text-muted))"}
                 strokeWidth={matchVariant ? 2.2 : 1.7}
               />
@@ -222,7 +223,7 @@ export function ListingCardFull({
               className="inline-flex items-center gap-[4px] text-[13px] font-medium shrink-0"
               style={matchVariant ? {
                 backgroundColor: "#ffffff",
-                border: "1px solid rgba(0,0,0,0.06)",
+                border: "1px solid #e5e5e5",
                 borderRadius: "9999px",
                 color: "#111111",
                 padding: "4px 10px 4px 7px",
@@ -235,6 +236,7 @@ export function ListingCardFull({
             >
               <BedDouble
                 className="w-[17px] h-[17px] flex-shrink-0"
+                fill={matchVariant ? "#bbadfb" : "none"}
                 stroke={matchVariant ? "#111111" : "rgb(var(--ha-text-muted))"}
                 strokeWidth={matchVariant ? 2.2 : 1.7}
               />
@@ -246,7 +248,7 @@ export function ListingCardFull({
               className="inline-flex items-center gap-[4px] text-[13px] font-medium shrink-0"
               style={matchVariant ? {
                 backgroundColor: "#ffffff",
-                border: "1px solid rgba(0,0,0,0.06)",
+                border: "1px solid #e5e5e5",
                 borderRadius: "9999px",
                 color: "#111111",
                 padding: "4px 10px 4px 7px",
@@ -259,6 +261,7 @@ export function ListingCardFull({
             >
               <Maximize2
                 className="w-[17px] h-[17px] flex-shrink-0"
+                fill={matchVariant ? "#bbadfb" : "none"}
                 stroke={matchVariant ? "#111111" : "rgb(var(--ha-text-muted))"}
                 strokeWidth={matchVariant ? 2.2 : 1.7}
               />
@@ -270,7 +273,7 @@ export function ListingCardFull({
               className="inline-flex items-center gap-[4px] text-[13px] font-semibold shrink-0"
               style={matchVariant ? {
                 backgroundColor: "#ffffff",
-                border: "1px solid rgba(0,0,0,0.06)",
+                border: "1px solid #e5e5e5",
                 borderRadius: "9999px",
                 color: "#111111",
                 padding: "4px 10px 4px 7px",
@@ -284,6 +287,7 @@ export function ListingCardFull({
             >
               <Tag
                 className="w-[17px] h-[17px] flex-shrink-0"
+                fill={matchVariant ? "#bbadfb" : "none"}
                 stroke={matchVariant ? "#111111" : "rgb(var(--ha-text-muted))"}
                 strokeWidth={matchVariant ? 2.2 : 1.7}
               />
