@@ -1,0 +1,99 @@
+Update the post-paywall onboarding flow styling and controls.
+
+Scope:
+- /onboarding/setup flow
+- application letter steps
+- search buddy step
+- shared onboarding layout/buttons
+
+1. Pet count selection
+Current behavior:
+The application letter flow uses pill buttons for number of pets.
+
+Required:
+Replace the pet count pills with a dropdown/select field.
+
+Dropdown options:
+- 0 pets
+- 1 pet
+- 2 pets
+- 3 pets
+- 4+ pets
+
+Keep the saved value compatible with the existing letter generation logic.
+
+2. Address helper card styling
+Current behavior:
+The helper text above the application letter says the address placeholder should not be changed, but the card is white.
+
+Required:
+Style this helper card as:
+- background: #bbadfb
+- text: #111111
+- font-weight: 700 or 800
+- icon remains visible
+- rounded card
+- readable spacing
+
+3. Search buddy permission icons
+Current behavior:
+The check/cross icons are colored directly on the purple background.
+
+Required:
+Each permission icon should sit inside a small white circular background.
+- circle background: #ffffff
+- icon color: #111111
+- keep spacing aligned
+- applies to both check and cross icons
+
+4. Search buddy buttons
+Update “Link kopiëren” button:
+- background: #223546
+- text: #ffffff
+- fully pill-shaped
+- icon white or matching text
+
+Update “Misschien later”:
+- text color: #111111
+- no green text
+
+Keep “Uitnodigen” as primary CTA if appropriate, but ensure it is fully pill-shaped.
+
+5. Back button across onboarding
+Add a back button to every onboarding setup page where returning is allowed.
+
+Requirements:
+- Back button visible on each step before payment and during setup
+- Back button should navigate to the previous onboarding step
+- Do NOT show/allow back navigation after completed payment where going back would break subscription/payment state
+- Do NOT break Stripe return flow
+- Use existing top-left back style if available
+
+Pages that should have back where safe:
+- limited access
+- welcome
+- application letter intro
+- application letter personal info
+- application letter living info
+- application letter preview
+- search buddy
+- success only if safe, otherwise hide
+
+6. General button rule reminder
+All buttons must remain fully pill-shaped:
+border-radius: 9999px
+
+7. Do not change:
+- routing outside onboarding
+- subscription logic
+- payment logic
+- letter generation content
+- search buddy permissions logic
+
+Smoke check:
+- pet count is dropdown
+- address helper card is purple with bold black text
+- search buddy icons have white circular backgrounds with black icons
+- link copy button is dark with white text
+- “maybe later” text is black
+- back button appears where safe and works

@@ -425,12 +425,13 @@ function LightPrimaryBtn({ onClick, children, loading, disabled, testId }: {
   );
 }
 
-function WelcomeStep({ onNext, t }: {
+function WelcomeStep({ onNext, onBack, t }: {
   onNext: () => void;
+  onBack?: () => void;
   t: (k: string, p?: Record<string, any>) => string;
 }) {
   return (
-    <LightShell step="welcome">
+    <LightShell step="welcome" showBack={!!onBack} onBack={onBack}>
       <h1 className="text-[30px] font-black tracking-[-0.025em] mb-5 text-ha-text" data-testid="text-welcome-title">
         {t("onboardingFlow.welcome.title")}
       </h1>
@@ -566,11 +567,12 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
   );
 }
 
-function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
+function LetterPersonalStep({ personalData, onChange, onNext, onSkip, onBack, t }: {
   personalData: PersonalData;
   onChange: (d: Partial<PersonalData>) => void;
   onNext: () => void;
   onSkip: () => void;
+  onBack?: () => void;
   t: (k: string, p?: Record<string, any>) => string;
 }) {
   const INPUT_CLS = "w-full h-[56px] px-4 rounded-[8px] border border-ha-border-input bg-white text-[16px] text-ha-text placeholder:text-ha-text-secondary placeholder:opacity-55 focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all";
@@ -585,7 +587,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
 
   if (!showForm) {
     return (
-      <LightShell step="letter-personal" showBack>
+      <LightShell step="letter-personal" showBack onBack={onBack}>
         <h1 className="text-[30px] font-black tracking-[-0.025em] mb-5 text-ha-text" data-testid="text-letter-personal-title">
           {t("onboardingFlow.letterPersonal.title")}
         </h1>
@@ -865,24 +867,20 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
           <label className="text-[14px] font-semibold text-ha-text mb-2 block">
             {t("onboardingFlow.letterLiving.pets")}
           </label>
-          <div className="flex gap-2" data-testid="input-pets">
-            {["0", "1", "2", "3", "4", "5+"].map((v) => {
-              const active = livingData.petsCount === v;
-              return (
-                <button
-                  key={v}
-                  onClick={() => onChange({ petsCount: v })}
-                  className="h-[40px] w-[48px] rounded-full text-[13px] font-semibold transition-all active:scale-[0.96]"
-                  style={{
-                    backgroundColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-surface))",
-                    color: active ? "white" : "rgb(var(--ha-text-secondary))",
-                  }}
-                  data-testid={`pets-${v}`}
-                >
-                  {v}
-                </button>
-              );
-            })}
+          <div className="relative" data-testid="input-pets">
+            <select
+              value={livingData.petsCount}
+              onChange={(e) => onChange({ petsCount: e.target.value })}
+              className="w-full h-[56px] px-4 pr-10 rounded-[8px] border border-ha-border-input bg-white text-[16px] text-ha-text appearance-none focus:outline-none focus:ring-1 focus:ring-ha-primary/25 focus:border-ha-primary transition-all"
+              data-testid="select-pets"
+            >
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4+">4+</option>
+            </select>
+            <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ha-text pointer-events-none" />
           </div>
         </div>
       </div>
@@ -909,9 +907,9 @@ function LetterPreviewStep({ letterText, onLetterChange, onNext, onBack, t }: {
         {t("onboardingFlow.letterPreview.title")}
       </h1>
 
-      <div className="rounded-[6px] px-4 py-3 mb-5 flex items-start gap-2.5" style={{ backgroundColor: "rgb(var(--ha-card))", border: "1px solid transparent" }}>
+      <div className="rounded-2xl px-4 py-3.5 mb-5 flex items-start gap-2.5" style={{ backgroundColor: "#bbadfb", border: "1px solid rgba(17,17,17,0.08)" }}>
         <span className="text-[16px] mt-0.5">💡</span>
-        <p className="text-[14px] leading-snug text-ha-text">
+        <p className="text-[14px] leading-snug font-bold" style={{ color: "#111111" }}>
           {t("onboardingFlow.letterPreview.addressNote")}
         </p>
       </div>
@@ -934,17 +932,18 @@ function LetterPreviewStep({ letterText, onLetterChange, onNext, onBack, t }: {
   );
 }
 
-function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, invited, loading, t }: {
+function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, onBack, invited, loading, t }: {
   buddyEmail: string;
   onBuddyEmailChange: (e: string) => void;
   onInvite: () => void;
   onSkip: () => void;
+  onBack?: () => void;
   invited: boolean;
   loading: boolean;
   t: (k: string, p?: Record<string, any>) => string;
 }) {
   return (
-    <LightShell step="search-buddy">
+    <LightShell step="search-buddy" showBack={!!onBack} onBack={onBack}>
       <h1 className="text-[30px] font-black tracking-[-0.025em] mb-5 text-ha-text" data-testid="text-buddy-title">
         {t("onboardingFlow.searchBuddy.title")}
       </h1>
@@ -959,7 +958,9 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
             t("onboardingFlow.searchBuddy.canApply"),
           ].map((text, i) => (
             <div key={i} className="flex items-center gap-3">
-              <CheckCircle2 className="w-[22px] h-[22px] flex-shrink-0" style={{ color: "rgb(var(--ha-success))" }} />
+              <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0">
+                <CheckCircle2 className="w-5 h-5" style={{ color: "#111111" }} />
+              </div>
               <span className="text-[16px] text-ha-text leading-snug">{text}</span>
             </div>
           ))}
@@ -970,7 +971,9 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
             t("onboardingFlow.searchBuddy.cannotLetter"),
           ].map((text, i) => (
             <div key={i} className="flex items-center gap-3">
-              <X className="w-[22px] h-[22px] text-ha-danger flex-shrink-0" />
+              <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0">
+                <X className="w-5 h-5" style={{ color: "#111111" }} />
+              </div>
               <span className="text-[16px] text-ha-text leading-snug">{text}</span>
             </div>
           ))}
@@ -1007,8 +1010,8 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
                   navigator.clipboard.writeText(window.location.origin + "/invite");
                 }
               }}
-              className="flex-1 h-[56px] text-[14px] font-semibold transition-all active:scale-[0.97] flex items-center justify-center gap-2 border-2"
-              style={{ borderColor: BRAND, color: BRAND, borderRadius: "9999px" }}
+              className="flex-1 h-[56px] text-[14px] font-semibold transition-all active:scale-[0.97] flex items-center justify-center gap-2"
+              style={{ backgroundColor: "#223546", color: "#ffffff", borderRadius: "9999px" }}
               data-testid="button-buddy-copy"
             >
               {t("onboardingFlow.searchBuddy.copyLink")} 📋
@@ -1027,7 +1030,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
         <button
           onClick={onSkip}
           className="w-full h-[56px] text-[14px] font-semibold transition-all active:scale-[0.97]"
-          style={{ color: BRAND }}
+          style={{ color: "#111111" }}
           data-testid="button-buddy-skip"
         >
           {t("onboardingFlow.searchBuddy.maybeLater")}
@@ -1408,7 +1411,7 @@ export default function OnboardingSetup() {
   const showBack = step !== "paywall" && step !== "welcome" && step !== "success" && step !== "limited-access";
 
   if (step === "welcome") {
-    return <WelcomeStep onNext={() => goStep("letter-personal")} t={t} />;
+    return <WelcomeStep onNext={() => goStep("letter-personal")} onBack={() => goStep("paywall")} t={t} />;
   }
   if (step === "push-test") return null;
   if (step === "letter-personal") {
@@ -1418,6 +1421,7 @@ export default function OnboardingSetup() {
         onChange={updatePersonalData}
         onNext={handleLetterPersonalNext}
         onSkip={() => goStep("search-buddy")}
+        onBack={() => goStep("welcome")}
         t={t}
       />
     );
@@ -1452,6 +1456,7 @@ export default function OnboardingSetup() {
         onBuddyEmailChange={setBuddyEmail}
         onInvite={handleBuddyInvite}
         onSkip={handleBuddySkip}
+        onBack={() => goStep("letter-preview")}
         invited={buddyInvited}
         loading={buddyLoading}
         t={t}
