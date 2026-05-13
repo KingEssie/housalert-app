@@ -102,7 +102,7 @@ export function ListingCardFull({
   const newLabel = locale === "de" ? "Neu" : locale === "en" ? "New" : "Nieuw";
 
   const cardBg = matchVariant
-    ? "#f8f7fa"
+    ? "#faf9ff"
     : "rgb(var(--ha-card))";
   const cardBorder = matchVariant
     ? "none"
@@ -183,7 +183,7 @@ export function ListingCardFull({
         {(timeAgo || sourceName) && (
           <p
             className="text-[13px]"
-            style={{ color: matchVariant ? "rgba(17,17,17,0.45)" : undefined }}
+            style={matchVariant ? { color: "#111111", fontWeight: 500 } : undefined}
             data-testid={`detail-source-${match.listing_id}`}
           >
             {!matchVariant && <span className="text-ha-text-muted">{timeAgo && sourceName ? `${timeAgo} · ${sourceName}` : timeAgo || sourceName}</span>}
@@ -197,7 +197,7 @@ export function ListingCardFull({
               className="inline-flex items-center gap-[4px] text-[13px] font-medium min-w-0 shrink"
               style={matchVariant ? {
                 backgroundColor: "#ffffff",
-                border: "1px solid #e5e5e5",
+                border: "1px solid #111111",
                 borderRadius: "9999px",
                 color: "#111111",
                 padding: "4px 10px 4px 7px",
@@ -223,7 +223,7 @@ export function ListingCardFull({
               className="inline-flex items-center gap-[4px] text-[13px] font-medium shrink-0"
               style={matchVariant ? {
                 backgroundColor: "#ffffff",
-                border: "1px solid #e5e5e5",
+                border: "1px solid #111111",
                 borderRadius: "9999px",
                 color: "#111111",
                 padding: "4px 10px 4px 7px",
@@ -248,7 +248,7 @@ export function ListingCardFull({
               className="inline-flex items-center gap-[4px] text-[13px] font-medium shrink-0"
               style={matchVariant ? {
                 backgroundColor: "#ffffff",
-                border: "1px solid #e5e5e5",
+                border: "1px solid #111111",
                 borderRadius: "9999px",
                 color: "#111111",
                 padding: "4px 10px 4px 7px",
@@ -273,7 +273,7 @@ export function ListingCardFull({
               className="inline-flex items-center gap-[4px] text-[13px] font-semibold shrink-0"
               style={matchVariant ? {
                 backgroundColor: "#ffffff",
-                border: "1px solid #e5e5e5",
+                border: "1px solid #111111",
                 borderRadius: "9999px",
                 color: "#111111",
                 padding: "4px 10px 4px 7px",
