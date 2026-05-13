@@ -46,15 +46,15 @@ function DualRangeSlider({
   testId: string;
 }) {
   const inactive = "rgb(var(--ha-card-border))";
-  const primary = "rgb(var(--ha-primary))";
+  const primary = "#bbadfb";
   const pL = ((valueLow - min) / (max - min)) * 100;
   const pH = ((valueHigh - min) / (max - min)) * 100;
   const bg = `linear-gradient(to right,${inactive} 0%,${inactive} ${pL}%,${primary} ${pL}%,${primary} ${pH}%,${inactive} ${pH}%,${inactive} 100%)`;
   return (
     <div data-testid={testId}>
       <div className="flex justify-between mb-2">
-        <span className="text-[14px] font-semibold" style={{ color: OBW.text }}>{formatLabel(valueLow)}</span>
-        <span className="text-[14px] font-semibold" style={{ color: OBW.text }}>{formatLabel(valueHigh)}</span>
+        <span className="text-[14px] font-semibold" style={{ color: "#111111" }}>{formatLabel(valueLow)}</span>
+        <span className="text-[14px] font-semibold" style={{ color: "#111111" }}>{formatLabel(valueHigh)}</span>
       </div>
       <div className="relative h-[36px]">
         <input type="range" min={min} max={max} step={step} value={valueLow}
@@ -78,7 +78,7 @@ function RangeSlider({
   min: number; max: number; step: number; value: number;
   onChange: (v: number) => void; formatLabel: (v: number) => string; testId: string;
 }) {
-  const primary = "rgb(var(--ha-primary))";
+  const primary = "#bbadfb";
   const inactive = "rgb(var(--ha-card-border))";
   const pct = ((value - min) / (max - min)) * 100;
   return (
@@ -88,9 +88,9 @@ function RangeSlider({
         className="w-full"
         style={{ background: `linear-gradient(to right,${primary} 0%,${primary} ${pct}%,${inactive} ${pct}%,${inactive} 100%)` }} />
       <div className="flex justify-between mt-1">
-        <span className="text-[12px]" style={{ color: OBW.textSecondary }}>{formatLabel(min)}</span>
-        <span className="text-[13px] font-semibold" style={{ color: primary }}>{formatLabel(value)}</span>
-        <span className="text-[12px]" style={{ color: OBW.textSecondary }}>{formatLabel(max)}</span>
+        <span className="text-[12px]" style={{ color: "#111111" }}>{formatLabel(min)}</span>
+        <span className="text-[13px] font-semibold" style={{ color: "#111111" }}>{formatLabel(value)}</span>
+        <span className="text-[12px]" style={{ color: "#111111" }}>{formatLabel(max)}</span>
       </div>
     </div>
   );
@@ -188,8 +188,8 @@ function StepHeader({ step, title, onClose }: { step: number; title: string; onC
     <header className="sticky top-0 z-20 w-full"
       style={{ backgroundColor: "rgb(var(--ha-card))", borderBottom: `1px solid ${OBW.headerBorder}` }}>
       <div className="relative max-w-[480px] mx-auto px-4 h-[56px] flex items-center justify-between">
-        <span className="text-[14px] font-bold rounded-[10px] shrink-0 flex items-center px-3.5"
-          style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "white" }}
+        <span className="text-[14px] rounded-full shrink-0 flex items-center px-3.5"
+          style={{ height: "32px", backgroundColor: "#bbadfb", color: "#111111", fontWeight: 900 }}
           data-testid="badge-step">
           {step}/4
         </span>
@@ -292,25 +292,20 @@ function StepFooter({
 }) {
   const { t } = useTranslation();
   const count = estimate?.matchesLast7Days ?? null;
-  const footerBg = editMode ? "#EEFADE" : OBW.footerBg;
-  const footerBorderStyle = editMode ? "none" : `1px solid ${OBW.footerBorder}`;
-  const countColor = editMode ? "#0FBA80" : OBW.text;
-  const btnHeight = editMode ? "h-[52px]" : "h-[40px]";
-  const btnRadius = editMode ? "rounded-[4px]" : "rounded-[8px]";
   const btnMinWidth = editMode ? "min-w-[140px]" : "";
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-30"
-      style={{ borderTop: footerBorderStyle, backgroundColor: footerBg, paddingBottom: "max(8px, env(safe-area-inset-bottom, 8px))" }}>
-      <div className={`max-w-[480px] mx-auto px-4 ${editMode ? "py-1.5" : "py-2.5"} flex items-center gap-3`}>
+      style={{ backgroundColor: "#bbadfb", paddingBottom: "max(8px, env(safe-area-inset-bottom, 8px))" }}>
+      <div className={`max-w-[480px] mx-auto px-4 ${editMode ? "py-2" : "py-3"} flex items-center gap-3`}>
         {showCount && (
           <div className="flex-1 min-w-0">
-            <p className="text-[10.5px] font-medium leading-tight" style={{ color: OBW.textMuted }}>
+            <p className="text-[10.5px] leading-tight" style={{ color: "#111111", fontWeight: 700 }}>
               {t("onboarding.location.estimatedMatches")}
             </p>
-            <p className="text-[15px] font-semibold leading-snug" style={{ color: countColor }}>
+            <p className="text-[15px] leading-snug" style={{ color: "#111111", fontWeight: 800 }}>
               {fetching ? (
-                <span style={{ color: OBW.textMuted }}>…</span>
+                <span style={{ opacity: 0.6 }}>…</span>
               ) : count != null ? (
                 <>{Math.max(1, count)} {t("onboardingUI.perWeek")}{Math.max(1, count) > 10 ? " 🔥" : ""}</>
               ) : (
@@ -319,20 +314,19 @@ function StepFooter({
             </p>
           </div>
         )}
-        {!showCount && !editMode && <div className="flex-1" />}
-        {editMode && !showCount && <div className="flex-1" />}
+        {!showCount && <div className="flex-1" />}
         <div className="flex items-center gap-2 shrink-0">
           {!editMode && (
             <button onClick={onBack}
-              className="w-[40px] h-[40px] rounded-[6px] flex items-center justify-center active:scale-95 transition-transform"
-              style={{ border: `1.5px solid ${OBW.backBtnBorder}`, backgroundColor: OBW.backBtnBg }}
+              className="w-[44px] h-[44px] rounded-full flex items-center justify-center active:scale-95 transition-transform"
+              style={{ backgroundColor: "white", border: "1.5px solid rgba(0,0,0,0.12)" }}
               data-testid="button-step-back">
-              <ChevronLeft className="w-[17px] h-[17px]" style={{ color: OBW.backBtnColor }} />
+              <ChevronLeft className="w-[18px] h-[18px]" style={{ color: "#111111" }} />
             </button>
           )}
           <button onClick={onNext} disabled={nextDisabled || saving}
-            className={`${btnHeight} px-6 ${btnRadius} ${btnMinWidth} text-[14.5px] font-semibold text-white flex items-center justify-center gap-1.5 active:scale-[0.97] transition-transform disabled:opacity-40`}
-            style={{ background: OBW.primary, boxShadow: "0 3px 10px rgb(var(--ha-primary) / 0.18)" }}
+            className={`h-[44px] px-7 rounded-full ${btnMinWidth} text-[14.5px] font-semibold text-white flex items-center justify-center gap-1.5 active:scale-[0.97] transition-transform disabled:opacity-40`}
+            style={{ background: "#223546" }}
             data-testid="button-step-next">
             {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
             {nextLabel}
@@ -541,7 +535,7 @@ export default function AppSearchWizard() {
         target_categories: pref.suitableFor.length > 0 ? pref.suitableFor : undefined,
         send_unclear: f.sendUnclear,
         price_flexible: f.priceFlexible,
-        search_name: pref.searchName.trim() || city.name,
+        search_name: (pref.searchName.trim() && pref.searchName.trim() !== city.name) ? pref.searchName.trim() : undefined,
       };
 
       if (isEdit && editId) {
@@ -645,14 +639,14 @@ export default function AppSearchWizard() {
         <main className="flex-1 max-w-[480px] mx-auto w-full px-5 pt-6 pb-[100px] overflow-y-auto">
           {/* Search input */}
           <div className="relative mb-5">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-[18px] h-[18px]" style={{ color: OBW.textMuted }} />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] pointer-events-none" style={{ color: OBW.textMuted }} />
             <input
               type="text"
               value={search}
               onChange={(e) => { setSearch(e.target.value); if (e.target.value.length >= 3) geocoder.search(e.target.value); }}
               placeholder={t("onboarding.city.searchPlaceholder")}
-              className="w-full ha-field-web pl-10 pr-4"
-              style={{ borderColor: OBW.inputBorder, color: OBW.text }}
+              className="w-full ha-field-web pr-4"
+              style={{ borderColor: OBW.inputBorder, color: OBW.text, paddingLeft: "44px" }}
               autoFocus
               data-testid="input-city-search"
             />
@@ -697,12 +691,12 @@ export default function AppSearchWizard() {
 
         {/* No footer with match count on step 1 — city not yet confirmed */}
         <div className="fixed bottom-0 left-0 right-0 z-30"
-          style={{ borderTop: `1px solid ${OBW.footerBorder}`, backgroundColor: OBW.footerBg, paddingBottom: "max(8px, env(safe-area-inset-bottom, 8px))" }}>
+          style={{ backgroundColor: "#bbadfb", paddingBottom: "max(8px, env(safe-area-inset-bottom, 8px))" }}>
           <div className="max-w-[480px] mx-auto px-5 py-3 flex justify-end">
             <button onClick={() => { if (city) setStep(2); }}
               disabled={!city}
-              className="h-[44px] px-6 rounded-[8px] text-[15px] font-semibold text-white disabled:opacity-40"
-              style={{ background: OBW.primary }}
+              className="h-[44px] px-7 rounded-full text-[15px] font-semibold text-white disabled:opacity-40"
+              style={{ background: "#223546" }}
               data-testid="button-city-next">
               {t("common.next")}
             </button>
@@ -784,15 +778,15 @@ export default function AppSearchWizard() {
 
           {/* Mode segmented control — pill-style, left-aligned */}
           <div className="mb-4" data-testid="location-tabs">
-            <div className="inline-flex rounded-full p-[3px]" style={{ backgroundColor: "#EEFADE" }}>
+            <div className="inline-flex rounded-full p-[3px]" style={{ backgroundColor: "#f3f4f6" }}>
               {tabs.map((tab) => {
                 const isActive = loc.mode === tab.value;
                 return (
                   <button key={tab.value} onClick={() => setLoc((prev) => ({ ...prev, mode: tab.value }))}
                     className="px-3.5 py-[9px] text-[12.5px] rounded-full text-center transition-all whitespace-nowrap"
                     style={{
-                      backgroundColor: isActive ? "#C7EF66" : "transparent",
-                      color: isActive ? "rgb(var(--ha-text))" : "rgb(var(--ha-text-secondary))",
+                      backgroundColor: isActive ? "#bbadfb" : "transparent",
+                      color: "#111111",
                       fontWeight: isActive ? 600 : 500,
                       boxShadow: isActive ? "0 1px 4px rgba(0,0,0,0.1)" : "none",
                     }}
@@ -848,9 +842,9 @@ export default function AppSearchWizard() {
             <div data-testid="section-radius">
               <style>{`
                 .ha-radius-slider{-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer;width:100%;height:4px}
-                .ha-radius-slider::-webkit-slider-runnable-track{background:linear-gradient(to right,rgb(var(--ha-primary)) 0%,rgb(var(--ha-primary)) var(--sl-pct,0%),rgb(var(--ha-card-border)) var(--sl-pct,0%),rgb(var(--ha-card-border)) 100%);border-radius:9999px;height:4px}
+                .ha-radius-slider::-webkit-slider-runnable-track{background:linear-gradient(to right,#bbadfb 0%,#bbadfb var(--sl-pct,0%),rgb(var(--ha-card-border)) var(--sl-pct,0%),rgb(var(--ha-card-border)) 100%);border-radius:9999px;height:4px}
                 .ha-radius-slider::-moz-range-track{background:rgb(var(--ha-card-border));border-radius:9999px;height:4px}
-                .ha-radius-slider::-moz-range-progress{background:rgb(var(--ha-primary));border-radius:9999px;height:4px}
+                .ha-radius-slider::-moz-range-progress{background:#bbadfb;border-radius:9999px;height:4px}
                 .ha-radius-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:white;box-shadow:0 1px 6px rgba(0,0,0,.18),0 0 0 1.5px rgba(0,0,0,.07);margin-top:-8px;cursor:pointer}
                 .ha-radius-slider::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:white;box-shadow:0 1px 6px rgba(0,0,0,.18),0 0 0 1.5px rgba(0,0,0,.07);border:none;cursor:pointer}
               `}</style>
@@ -864,7 +858,7 @@ export default function AppSearchWizard() {
                   className="ha-radius-slider flex-1"
                   style={{ "--sl-pct": `${((loc.radiusKm - 1) / 49) * 100}%` } as React.CSSProperties}
                   data-testid="slider-radius" />
-                <span className="text-[14px] font-semibold shrink-0 w-[48px] text-right" style={{ color: "rgb(var(--ha-primary))" }}>
+                <span className="text-[14px] font-semibold shrink-0 w-[48px] text-right" style={{ color: "#111111" }}>
                   {loc.radiusKm} km
                 </span>
               </div>
@@ -985,13 +979,13 @@ export default function AppSearchWizard() {
       value: string; onChange: (v: string) => void; testId: string;
     }) {
       return (
-        <div className="flex items-center gap-[4px] p-[4px] rounded-full" style={{ backgroundColor: "#EEFADE" }} data-testid={testId}>
+        <div className="flex items-center gap-[4px] p-[4px] rounded-full" style={{ backgroundColor: "#f3f4f6" }} data-testid={testId}>
           {options.map((opt) => {
             const isActive = value === opt.value;
             return (
               <button key={opt.value} onClick={() => onChange(opt.value)}
                 className="flex-1 py-[9px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
-                style={{ backgroundColor: isActive ? "#C7EF66" : "transparent", color: isActive ? "rgb(var(--ha-text))" : "rgb(var(--ha-text-secondary))", boxShadow: isActive ? "0 1px 4px rgba(0,0,0,0.08)" : "none" }}
+                style={{ backgroundColor: isActive ? "#bbadfb" : "transparent", color: "#111111", boxShadow: isActive ? "0 1px 4px rgba(0,0,0,0.08)" : "none" }}
                 data-testid={`${testId}-${opt.value}`}>
                 {opt.label}
               </button>
@@ -1074,7 +1068,7 @@ export default function AppSearchWizard() {
                   return (
                     <button key={opt.value} onClick={() => update({ minRooms: opt.value })}
                       className="py-[9px] px-4 text-[12px] font-semibold rounded-full whitespace-nowrap shrink-0 transition-all active:scale-[0.96]"
-                      style={{ backgroundColor: active ? "#C7EF66" : "#EEFADE", color: active ? "rgb(var(--ha-text))" : "rgb(var(--ha-text-secondary))", boxShadow: active ? "0 1px 4px rgba(0,0,0,0.08)" : "none" }}
+                      style={{ backgroundColor: active ? "#bbadfb" : "#f3f4f6", color: "#111111", boxShadow: active ? "0 1px 4px rgba(0,0,0,0.08)" : "none" }}
                       data-testid={`rooms-${opt.value}`}>
                       {opt.label}
                     </button>
@@ -1134,9 +1128,9 @@ export default function AppSearchWizard() {
                     <button key={value} onClick={() => toggleAmenity(value)}
                       className="flex items-center gap-1.5 h-[36px] px-3.5 rounded-full text-[13px] font-medium border transition-all active:scale-[0.96]"
                       style={{
-                        backgroundColor: active ? "#C7EF66" : "transparent",
-                        borderColor: active ? "#C7EF66" : OBW.chipBorder,
-                        color: active ? "rgb(var(--ha-text))" : OBW.textSecondary,
+                        backgroundColor: active ? "#bbadfb" : "transparent",
+                        borderColor: active ? "#bbadfb" : OBW.chipBorder,
+                        color: "#111111",
                       }}
                       data-testid={`amenity-${value}`}>
                       {active ? <Check className="w-3 h-3 shrink-0" /> : <Icon className="w-3.5 h-3.5 shrink-0" />}
@@ -1262,9 +1256,9 @@ export default function AppSearchWizard() {
                 <button key={opt.value} onClick={() => toggleSuitable(opt.value)}
                   className="h-[36px] px-3 rounded-full text-[13px] font-medium border transition-all active:scale-[0.96] flex items-center gap-[4px] shrink-0"
                   style={{
-                    backgroundColor: active ? "#C7EF66" : "rgb(var(--ha-surface))",
-                    borderColor: active ? "#C7EF66" : "rgb(var(--ha-border-input))",
-                    color: active ? "rgb(var(--ha-text))" : "rgb(var(--ha-text))",
+                    backgroundColor: active ? "#bbadfb" : "rgb(var(--ha-surface))",
+                    borderColor: active ? "#bbadfb" : "rgb(var(--ha-border-input))",
+                    color: "#111111",
                   }}
                   data-testid={`chip-suitable-${opt.value}`}>
                   {!active && <Plus className="w-[11px] h-[11px] shrink-0" style={{ color: "rgb(var(--ha-text-muted))" }} />}

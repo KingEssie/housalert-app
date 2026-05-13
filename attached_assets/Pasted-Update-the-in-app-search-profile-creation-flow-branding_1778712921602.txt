@@ -1,0 +1,99 @@
+Update the in-app search profile creation flow branding and one search-profile title behavior.
+
+Scope:
+- In-app “zoekopdracht toevoegen” / create search profile wizard
+- Search profile cards on Home/dashboard
+- Do NOT change onboarding embed unless shared components require it.
+
+1. Step counter badge
+Current:
+- green badge
+
+Required:
+- background: #bbadfb
+- text: #111111
+- font-weight: 800/900
+- pill shape
+- applies to 1/4, 2/4, 3/4, 4/4 badges
+
+2. City input icon alignment
+Current:
+- search/location icon overlaps the placeholder/text
+
+Required:
+- icon must be vertically centered
+- text must have enough left padding
+- no overlap with placeholder or typed city
+- check both empty and filled states
+
+3. Footer styling
+Current:
+- white footer, green next button, gray thin text
+
+Required:
+- sticky footer background: #bbadfb
+- footer text all #111111
+- footer text font-weight 700/800
+- no gray footer text
+- back and next buttons fully pill-shaped
+- next button background: #223546
+- next button text: #ffffff
+- back button white or subtle purple tint, black icon/text
+- all footer buttons border-radius: 9999px
+- keep safe-area spacing for iPhone
+
+4. Tabs / segmented controls
+For tabs like:
+- Buurten / Straal / Gehele woonplaats
+- Maakt niet uit / Appartement / Huis
+- Furnished options etc.
+
+Required:
+- container background: very light gray (#f3f4f6 or similar)
+- active tab background: #bbadfb
+- active tab text: #111111
+- inactive tab text: #111111
+- no green active states
+- pill-shaped
+
+5. Sliders
+Current:
+- green active track / green thumb
+
+Required:
+- active slider track: #bbadfb
+- slider thumb: white with #bbadfb border OR #bbadfb thumb
+- all slider value labels text: #111111
+- no green on sliders
+
+6. Text colors in the wizard
+Required:
+- labels/headings: #111111
+- section titles: #111111
+- helper text should be dark enough, preferably #111111 unless clearly secondary
+- remove overly light gray text where it hurts readability
+
+7. Home search profile title behavior
+Current:
+Home/search profile cards show default titles like “Woning in Berlijn”.
+
+Required:
+When user creates a search profile and manually enters a custom “search name”:
+- show that custom search name as the card title on the Home/dashboard search profiles list.
+
+If the user does NOT enter a custom name, or keeps the default-generated name:
+- keep current default behavior, e.g. “Woning in Berlijn”.
+
+Important:
+- Do not break existing search profile creation.
+- Do not change max 4 search profile logic.
+- Do not change matching/backfill/subscription logic.
+- Only update UI styling and title display logic.
+
+Smoke check:
+- Step badge is purple with black text.
+- City input icon no longer overlaps text.
+- Footer is purple with dark CTA.
+- Tabs active state is purple, not green.
+- Sliders are purple, not green.
+- Home shows custom search profile name when manually entered.
