@@ -136,8 +136,8 @@ function PrimaryBtn({ onClick, children, loading, disabled, testId }: {
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className="w-full h-[56px] rounded-[6px] text-[16px] font-semibold text-[#111111] transition-all active:scale-[0.97] disabled:opacity-50"
-      style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 15px rgba(133,251,140,0.30)" }}
+      className="w-full h-[56px] text-[16px] font-semibold text-[#111111] transition-all active:scale-[0.97] disabled:opacity-50"
+      style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 15px rgba(133,251,140,0.30)", borderRadius: "9999px" }}
       data-testid={testId}
     >
       {loading ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : children}
@@ -151,8 +151,8 @@ function SecondaryBtn({ onClick, children, testId }: {
   return (
     <button
       onClick={onClick}
-      className="w-full h-[56px] rounded-[6px] text-[16px] font-semibold transition-all active:scale-[0.97] border-2"
-      style={{ borderColor: "rgb(var(--ha-card-border))", color: TEXT_SECONDARY }}
+      className="w-full h-[56px] text-[16px] font-semibold transition-all active:scale-[0.97] border-2"
+      style={{ borderColor: "rgb(var(--ha-card-border))", color: TEXT_SECONDARY, borderRadius: "9999px" }}
       data-testid={testId}
     >
       {children}
@@ -200,15 +200,15 @@ function PaywallStep({ onSelectPlan, onSkip, t }: {
         </div>
       </div>
 
-      <h1 className="text-[30px] font-semibold tracking-[-0.025em] leading-[1.15] mb-6" style={{ color: TEXT_PRIMARY }} data-testid="text-paywall-title">
+      <h1 className="text-[30px] font-black tracking-[-0.025em] leading-[1.15] mb-6" style={{ color: TEXT_PRIMARY }} data-testid="text-paywall-title">
         {t("paywall.headline")}
       </h1>
 
       <div className="space-y-4 mb-8">
         {BENEFIT_KEYS.map((b, i) => (
           <div key={i} className="flex items-start gap-3" data-testid={`paywall-benefit-${i}`}>
-            <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgb(var(--ha-success) / 0.15)" }}>
-              <Check className="w-3.5 h-3.5 text-ha-text" />
+            <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "#bbadfb" }}>
+              <Check className="w-3.5 h-3.5" style={{ color: "#111111" }} />
             </div>
             <div>
               <p className="text-[16px] font-semibold" style={{ color: TEXT_PRIMARY }}>{t(b.titleKey)}</p>
@@ -317,7 +317,7 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
         </div>
       </div>
 
-      <h1 className="text-[30px] font-semibold tracking-[-0.025em] mb-6" style={{ color: "rgb(var(--ha-text))" }} data-testid="text-limited-title">
+      <h1 className="text-[30px] font-black tracking-[-0.025em] mb-6" style={{ color: "rgb(var(--ha-text))" }} data-testid="text-limited-title">
         {t("onboardingFlow.limitedAccess.title")}
       </h1>
 
@@ -341,11 +341,12 @@ function LimitedAccessStep({ onGoBack, onContinue, t }: {
         </PrimaryBtn>
         <button
           onClick={onContinue}
-          className="w-full h-[56px] rounded-[6px] text-[16px] font-semibold transition-all active:scale-[0.97]"
+          className="w-full h-[56px] text-[16px] font-semibold transition-all active:scale-[0.97]"
           style={{
             border: "1.5px solid rgb(var(--ha-card-border))",
             backgroundColor: "transparent",
             color: "rgb(var(--ha-text-secondary))",
+            borderRadius: "9999px",
           }}
           data-testid="button-limited-continue"
         >
@@ -417,8 +418,8 @@ function LightPrimaryBtn({ onClick, children, loading, disabled, testId }: {
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className="w-full h-[56px] rounded-[6px] text-[16px] font-semibold text-[#111111] transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
-      style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 15px rgba(133,251,140,0.30)" }}
+      className="w-full h-[56px] text-[16px] font-semibold text-[#111111] transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
+      style={{ background: "rgb(var(--ha-primary))", boxShadow: "0 4px 15px rgba(133,251,140,0.30)", borderRadius: "9999px" }}
       data-testid={testId}
     >
       {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <>{children} <ArrowRight className="w-4 h-4" /></>}
@@ -432,7 +433,7 @@ function WelcomeStep({ onNext, t }: {
 }) {
   return (
     <LightShell step="welcome">
-      <h1 className="text-[30px] font-semibold tracking-[-0.025em] mb-5 text-ha-text" data-testid="text-welcome-title">
+      <h1 className="text-[30px] font-black tracking-[-0.025em] mb-5 text-ha-text" data-testid="text-welcome-title">
         {t("onboardingFlow.welcome.title")}
       </h1>
 
@@ -477,7 +478,7 @@ function PushTestStep({ onNext, onEnable, pushState, t }: {
 }) {
   return (
     <LightShell step="push-test" showBack={false}>
-      <h1 className="text-[30px] font-semibold tracking-[-0.025em] mb-5 text-ha-text" data-testid="text-push-title">
+      <h1 className="text-[30px] font-black tracking-[-0.025em] mb-5 text-ha-text" data-testid="text-push-title">
         {t("onboardingFlow.pushTest.title")}
       </h1>
 
@@ -587,7 +588,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
   if (!showForm) {
     return (
       <LightShell step="letter-personal" showBack>
-        <h1 className="text-[30px] font-semibold tracking-[-0.025em] mb-5 text-ha-text" data-testid="text-letter-personal-title">
+        <h1 className="text-[30px] font-black tracking-[-0.025em] mb-5 text-ha-text" data-testid="text-letter-personal-title">
           {t("onboardingFlow.letterPersonal.title")}
         </h1>
 
@@ -635,7 +636,7 @@ function LetterPersonalStep({ personalData, onChange, onNext, onSkip, t }: {
 
   return (
     <LightShell step="letter-personal-form" showBack onBack={() => setShowForm(false)}>
-      <h1 className="text-[30px] font-semibold tracking-[-0.025em] mb-6 text-ha-text">
+      <h1 className="text-[30px] font-black tracking-[-0.025em] mb-6 text-ha-text">
         {t("onboardingFlow.letterPersonal.formTitle")}
       </h1>
 
@@ -778,7 +779,7 @@ function LetterLivingStep({ livingData, onChange, onNext, onBack, t }: {
 
   return (
     <LightShell step="letter-living" showBack onBack={onBack}>
-      <h1 className="text-[30px] font-semibold tracking-[-0.025em] mb-6 text-ha-text" data-testid="text-letter-living-title">
+      <h1 className="text-[30px] font-black tracking-[-0.025em] mb-6 text-ha-text" data-testid="text-letter-living-title">
         {t("onboardingFlow.letterLiving.title")}
       </h1>
 
@@ -906,7 +907,7 @@ function LetterPreviewStep({ letterText, onLetterChange, onNext, onBack, t }: {
 }) {
   return (
     <LightShell step="letter-preview" showBack onBack={onBack}>
-      <h1 className="text-[30px] font-semibold tracking-[-0.025em] mb-5 text-ha-text" data-testid="text-letter-preview-title">
+      <h1 className="text-[30px] font-black tracking-[-0.025em] mb-5 text-ha-text" data-testid="text-letter-preview-title">
         {t("onboardingFlow.letterPreview.title")}
       </h1>
 
@@ -946,7 +947,7 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
 }) {
   return (
     <LightShell step="search-buddy">
-      <h1 className="text-[30px] font-semibold tracking-[-0.025em] mb-5 text-ha-text" data-testid="text-buddy-title">
+      <h1 className="text-[30px] font-black tracking-[-0.025em] mb-5 text-ha-text" data-testid="text-buddy-title">
         {t("onboardingFlow.searchBuddy.title")}
       </h1>
 
@@ -1008,8 +1009,8 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
                   navigator.clipboard.writeText(window.location.origin + "/invite");
                 }
               }}
-              className="flex-1 h-[56px] rounded-[6px] text-[14px] font-semibold transition-all active:scale-[0.97] flex items-center justify-center gap-2 border-2"
-              style={{ borderColor: BRAND, color: BRAND }}
+              className="flex-1 h-[56px] text-[14px] font-semibold transition-all active:scale-[0.97] flex items-center justify-center gap-2 border-2"
+              style={{ borderColor: BRAND, color: BRAND, borderRadius: "9999px" }}
               data-testid="button-buddy-copy"
             >
               {t("onboardingFlow.searchBuddy.copyLink")} 📋
@@ -1017,8 +1018,8 @@ function SearchBuddyStep({ buddyEmail, onBuddyEmailChange, onInvite, onSkip, inv
             <button
               onClick={onInvite}
               disabled={!buddyEmail.includes("@") || loading}
-              className="flex-1 h-[56px] rounded-[6px] text-[14px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
-              style={{ background: "rgb(var(--ha-primary))" }}
+              className="flex-1 h-[56px] text-[14px] font-semibold transition-all active:scale-[0.97] disabled:opacity-50 flex items-center justify-center gap-2"
+              style={{ background: "rgb(var(--ha-primary))", borderRadius: "9999px", color: "#111111" }}
               data-testid="button-buddy-invite"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <>{t("onboardingFlow.searchBuddy.invite")} <Send className="w-4 h-4" /></>}
@@ -1044,7 +1045,7 @@ function SuccessStep({ onFinish, t }: {
 }) {
   return (
     <LightShell step="success">
-      <h1 className="text-[30px] font-semibold tracking-[-0.025em] mb-5 text-ha-text" data-testid="text-success-title">
+      <h1 className="text-[30px] font-black tracking-[-0.025em] mb-5 text-ha-text" data-testid="text-success-title">
         {t("onboardingFlow.success.title")}
       </h1>
 

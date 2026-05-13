@@ -341,7 +341,7 @@ function OpenPageButton({ step, label }: { step: TaskFlowStep; label: string }) 
   return (
     <button
       onClick={() => navigate(step.route)}
-      className="w-full h-[52px] rounded-2xl bg-ha-text text-white text-[15px] font-semibold hover:bg-ha-text transition-colors flex items-center justify-center gap-2.5"
+      className="w-full h-[52px] rounded-full bg-ha-text text-white text-[15px] font-semibold hover:bg-ha-text transition-colors flex items-center justify-center gap-2.5"
       data-testid={`button-open-step-${step.id}`}
     >
       {label}

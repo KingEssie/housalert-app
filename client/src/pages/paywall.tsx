@@ -114,7 +114,7 @@ function WebsitePaywall({
 
       <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-6 pb-10 overflow-y-auto">
         <h2
-          className="text-[30px] font-semibold tracking-[-0.025em] mb-1"
+          className="text-[30px] font-black tracking-[-0.025em] mb-1"
           style={{ color: OBW.text }}
           data-testid="text-paywall-title"
         >
@@ -227,10 +227,12 @@ function WebsitePaywall({
         <button
           onClick={handleCheckout}
           disabled={loading}
-          className="w-full h-[52px] rounded-[10px] text-[15px] font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2.5"
+          className="w-full h-[52px] text-[15px] font-semibold transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2.5"
           style={{
             background: "rgb(var(--ha-primary))",
             boxShadow: "0 4px 14px rgb(var(--ha-primary) / 0.25)",
+            borderRadius: "9999px",
+            color: "#111111",
           }}
           data-testid="button-select-payment"
         >
@@ -246,8 +248,8 @@ function WebsitePaywall({
 
         <button
           onClick={onSkip}
-          className="w-full h-[44px] rounded-[10px] text-[14px] font-medium mt-2 mb-4 transition-colors flex items-center justify-center"
-          style={{ color: OBW.textSecondary }}
+          className="w-full h-[44px] text-[14px] font-medium mt-2 mb-4 transition-colors flex items-center justify-center"
+          style={{ color: OBW.textSecondary, borderRadius: "9999px" }}
           data-testid="button-skip-subscription"
         >
           {t("paywall.skipFree")}
@@ -437,15 +439,15 @@ export default function PaywallPage() {
       </header>
 
       <main className="flex-1 max-w-xl mx-auto w-full px-6 pt-8 pb-32">
-        <h1 className="text-[28px] font-semibold tracking-[-0.03em] leading-[1.1] mb-6" style={{ color: TEXT_PRIMARY }} data-testid="text-paywall-title">
+        <h1 className="text-[28px] font-black tracking-[-0.03em] leading-[1.1] mb-6" style={{ color: TEXT_PRIMARY }} data-testid="text-paywall-title">
           {t("paywall.headline")}
         </h1>
 
         <div className="space-y-4 mb-8">
           {BENEFIT_KEYS.map((b, i) => (
             <div key={i} className="flex items-start gap-3" data-testid={`paywall-benefit-${i}`}>
-              <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "rgb(var(--ha-success) / 0.15)" }}>
-                <Check className="w-3.5 h-3.5 text-ha-text" />
+              <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "#bbadfb" }}>
+                <Check className="w-3.5 h-3.5" style={{ color: "#111111" }} />
               </div>
               <div>
                 <p className="text-[15px] font-semibold" style={{ color: TEXT_PRIMARY }}>{t(b.titleKey)}</p>
@@ -510,8 +512,8 @@ export default function PaywallPage() {
       <div className="fixed bottom-0 left-0 right-0 bg-ha-bg border-t border-ha-card-border px-5 pt-4 pb-5 z-10">
         <div className="max-w-xl mx-auto flex flex-col gap-2">
           <button
-            className="w-full ha-btn text-white font-semibold"
-            style={{ backgroundColor: BRAND }}
+            className="w-full ha-btn font-semibold"
+            style={{ backgroundColor: BRAND, borderRadius: "9999px", color: "#111111" }}
             onClick={handleCheckout}
             disabled={loading}
             data-testid="button-select-payment"

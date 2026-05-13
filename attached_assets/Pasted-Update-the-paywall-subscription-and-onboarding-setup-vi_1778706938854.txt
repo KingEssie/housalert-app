@@ -1,0 +1,88 @@
+Update the paywall/subscription and onboarding setup visual style to match the final HousAlert branding.
+
+Scope:
+- Paywall/subscription screens
+- Post-paywall onboarding setup screens
+- Application letter onboarding screens
+- Shared buttons and onboarding CTA buttons
+
+1. Headings / titles
+Make all main page titles in the onboarding and subscription flow bolder and more premium:
+- Use Montserrat Black / font-weight 900
+- Keep text black #111111
+- Apply consistently to:
+  - subscription/paywall title
+  - limited access title
+  - welcome/setup title
+  - application letter titles
+  - search buddy/success titles
+
+2. Icon circles
+For benefit icons/check icons/status icons:
+- icon circle background: #bbadfb
+- icon itself: #111111
+- no green icon circles in these flows unless it is a true success state
+- keep icon circle soft and clean
+
+3. Buttons — global rule
+All buttons in the app must be fully pill-shaped.
+
+Apply:
+- border-radius: 9999px
+
+This must affect:
+- primary buttons
+- secondary buttons
+- outline buttons
+- onboarding next buttons
+- paywall buttons
+- subscription buttons
+- “continue without subscription”
+- “later” buttons where button-styled
+
+Do not leave square or medium-rounded buttons anywhere in these flows.
+
+4. Primary button style
+Primary CTA:
+- background: #85fb8c
+- text: #111111
+- fully pill-shaped
+- bold text
+- subtle shadow only
+
+5. Secondary button style
+Secondary CTA:
+- background: #bbadfb or white depending on context
+- text: #111111
+- border if needed: rgba(17,17,17,0.14)
+- fully pill-shaped
+
+6. Explanation / helper cards
+Cards like the COO/Elise explanation card should use:
+- background: #bbadfb
+- text: #111111
+- soft border optional
+- no gray background
+- keep readable spacing
+
+7. Keep layout unchanged
+Do NOT redesign the flow.
+Do NOT change routing.
+Do NOT change subscription/business logic.
+Only update visual styling.
+
+8. Smoke check
+Check:
+- paywall screen
+- limited access screen
+- welcome screen
+- application letter personal details
+- application letter preview
+- search buddy
+- success screen
+
+Ensure:
+- headings are bold
+- icon circles are purple with black icons
+- all buttons are fully rounded
+- explanation cards use purple background with black text
