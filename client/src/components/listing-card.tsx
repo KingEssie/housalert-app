@@ -198,7 +198,7 @@ export function ListingCardFull({
               data-testid={`detail-city-${match.listing_id}`}
             >
               <MapPin
-                className={`w-[19px] h-[19px] flex-shrink-0 ${matchVariant ? "text-ha-primary" : "text-ha-text-muted"}`}
+                className={`w-[19px] h-[19px] flex-shrink-0 ${matchVariant ? "text-ha-accent" : "text-ha-text-muted"}`}
                 strokeWidth={1.7}
               />
               <span className="truncate">{address}</span>
@@ -211,7 +211,7 @@ export function ListingCardFull({
               }`}
             >
               <BedDouble
-                className={`w-[19px] h-[19px] flex-shrink-0 ${matchVariant ? "text-ha-primary" : "text-ha-text-muted"}`}
+                className={`w-[19px] h-[19px] flex-shrink-0 ${matchVariant ? "text-ha-accent" : "text-ha-text-muted"}`}
                 strokeWidth={1.7}
               />
               {match.bedrooms}
@@ -224,7 +224,7 @@ export function ListingCardFull({
               }`}
             >
               <Maximize2
-                className={`w-[19px] h-[19px] flex-shrink-0 ${matchVariant ? "text-ha-primary" : "text-ha-text-muted"}`}
+                className={`w-[19px] h-[19px] flex-shrink-0 ${matchVariant ? "text-ha-accent" : "text-ha-text-muted"}`}
                 strokeWidth={1.7}
               />
               {match.size_m2} m²
@@ -238,7 +238,7 @@ export function ListingCardFull({
               data-testid={`badge-price-${match.listing_id}`}
             >
               <Tag
-                className={`w-[19px] h-[19px] flex-shrink-0 ${matchVariant ? "text-ha-primary" : "text-ha-text-muted"}`}
+                className={`w-[19px] h-[19px] flex-shrink-0 ${matchVariant ? "text-ha-accent" : "text-ha-text-muted"}`}
                 strokeWidth={1.7}
               />
               {formatPrice(match.price, locale)}

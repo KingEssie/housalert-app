@@ -1433,7 +1433,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
                 onClick={() => setTopTab(key)}
                 className={`flex-1 text-center pb-3 text-[17px] transition-all duration-200 border-b-2 ${
                   isActive
-                    ? "text-ha-primary-hover font-semibold border-ha-primary-hover"
+                    ? "text-ha-accent font-semibold border-ha-accent"
                     : "text-ha-text-muted font-medium border-transparent"
                 }`}
                 style={{ marginBottom: "-1px" }}
