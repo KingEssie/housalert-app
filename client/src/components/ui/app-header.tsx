@@ -29,14 +29,15 @@ export function AppHeader({ title, onBack, closeButton, trailing }: AppHeaderPro
       style={{ paddingTop: "env(safe-area-inset-top)" }}
       data-testid="app-header"
     >
-      <div className="flex items-center h-12 px-4 gap-2">
+      <div className="flex items-center h-14 px-4 gap-3">
         <button
           onClick={handleBack}
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input transition-colors shrink-0"
+          className="w-10 h-10 flex items-center justify-center rounded-full hover:opacity-80 active:opacity-60 transition-opacity shrink-0"
+          style={{ backgroundColor: "#f1eef5" }}
           aria-label={closeButton ? "Close" : "Back"}
           data-testid="button-back"
         >
-          <Icon className="w-5 h-5 text-ha-text-secondary" strokeWidth={2} />
+          <Icon className="w-5 h-5 text-[#111111]" strokeWidth={2} />
         </button>
         <h1 className="flex-1 text-[17px] font-semibold text-ha-text" data-testid="text-page-title">
           {title}

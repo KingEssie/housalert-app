@@ -4,12 +4,16 @@ import { AppHeader } from "@/components/ui/app-header";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
-import { Eye, EyeOff, CheckCircle2 } from "lucide-react";
+import { Eye, EyeOff, CheckCircle2, Loader2 } from "lucide-react";
 import { validatePassword, isPasswordValid } from "@/lib/password-validation";
 import { PasswordRules } from "@/components/password-rules";
 
 const INPUT_CLASS =
-  "w-full h-[56px] border border-ha-border-input rounded-[8px] bg-white px-4 pr-12 text-[15px] text-ha-text placeholder:text-ha-text-placeholder outline-none transition-all focus:border-ha-primary";
+  "w-full h-[60px] border rounded-[18px] bg-white px-4 pr-12 text-[15px] text-[#111111] placeholder:text-[#aaa] outline-none transition-all focus:ring-2"
+
+const INPUT_STYLE = {
+  borderColor: "#d9d3e3",
+};
 
 export default function ChangePasswordPage() {
   const [, navigate] = useLocation();
@@ -48,24 +52,28 @@ export default function ChangePasswordPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-ha-bg" data-testid="page-password-success">
+      <div className="min-h-screen" style={{ backgroundColor: "#f9f7f8" }} data-testid="page-password-success">
         <AppHeader title={t("changePassword.title")} onBack={() => { if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=profile"); }} />
         <div className="max-w-xl mx-auto p-4 pb-8">
-          <div className="bg-white rounded-[12px] border border-ha-card-border shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-6 text-center">
+          <div
+            className="bg-white rounded-[28px] p-6 text-center"
+            style={{ border: "1px solid #ece7ef", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}
+          >
             <div className="flex items-center justify-center mb-5">
               <div className="w-14 h-14 rounded-full bg-ha-success/10 flex items-center justify-center">
                 <CheckCircle2 className="w-7 h-7 text-ha-success" />
               </div>
             </div>
-            <h2 className="text-[20px] font-semibold text-ha-text mb-2" data-testid="text-success-title">
+            <h2 className="text-[20px] font-bold text-[#111111] mb-2" data-testid="text-success-title">
               {t("changePassword.successTitle")}
             </h2>
-            <p className="text-[15px] text-ha-text-muted mb-6">
+            <p className="text-[15px] mb-6" style={{ color: "#444444" }}>
               {t("changePassword.successDesc")}
             </p>
             <button
               onClick={() => navigate("/dashboard?tab=profile")}
-              className="w-full h-[52px] bg-ha-primary text-white rounded-[10px] font-semibold text-[15px] transition-colors hover:bg-ha-primary-hover"
+              className="w-full h-[56px] rounded-full font-bold text-white text-[15px] transition-colors hover:opacity-90 active:scale-[0.98]"
+              style={{ backgroundColor: "#223546" }}
               data-testid="button-back-to-account"
             >
               {t("changePassword.backToAccount")}
@@ -77,16 +85,19 @@ export default function ChangePasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-ha-bg" data-testid="page-change-password">
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f9f7f8" }} data-testid="page-change-password">
       <AppHeader title={t("changePassword.title")} onBack={() => { if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=profile"); }} />
 
       <div className="flex-1 max-w-xl mx-auto w-full px-4 pt-5 pb-8">
 
-        <div className="bg-white rounded-[12px] border border-ha-card-border shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-5 flex flex-col gap-5">
+        <div
+          className="bg-white rounded-[28px] p-5 flex flex-col gap-5"
+          style={{ border: "1px solid #ece7ef", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}
+        >
 
           {/* Password field */}
           <div>
-            <label className="block text-[15px] font-semibold text-ha-text mb-2">
+            <label className="block text-[15px] font-bold text-[#111111] mb-2">
               {t("changePassword.new")}
             </label>
             <div className="relative">
@@ -96,14 +107,18 @@ export default function ChangePasswordPage() {
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder={t("changePassword.newPlaceholder")}
                 className={INPUT_CLASS}
+                style={{ ...INPUT_STYLE, "--tw-ring-color": "rgba(185,167,255,0.35)" } as any}
                 autoFocus
                 autoComplete="new-password"
                 data-testid="input-new-password"
+                onFocus={e => { e.currentTarget.style.borderColor = "#b9a7ff"; }}
+                onBlur={e => { e.currentTarget.style.borderColor = "#d9d3e3"; }}
               />
               <button
                 type="button"
                 onClick={() => setShowNew(!showNew)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-ha-text-placeholder hover:text-ha-text-muted transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors"
+                style={{ color: "#666666" }}
                 data-testid="button-toggle-new"
               >
                 {showNew
@@ -116,7 +131,7 @@ export default function ChangePasswordPage() {
 
           {/* Confirm password */}
           <div>
-            <label className="block text-[15px] font-semibold text-ha-text mb-2">
+            <label className="block text-[15px] font-bold text-[#111111] mb-2">
               {t("changePassword.confirm")}
             </label>
             <div className="relative">
@@ -126,13 +141,17 @@ export default function ChangePasswordPage() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder={t("changePassword.confirmPlaceholder")}
                 className={INPUT_CLASS}
+                style={INPUT_STYLE}
                 autoComplete="new-password"
                 data-testid="input-confirm-password"
+                onFocus={e => { e.currentTarget.style.borderColor = "#b9a7ff"; }}
+                onBlur={e => { e.currentTarget.style.borderColor = "#d9d3e3"; }}
               />
               <button
                 type="button"
                 onClick={() => setShowConfirm(!showConfirm)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-ha-text-placeholder hover:text-ha-text-muted transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors"
+                style={{ color: "#666666" }}
                 data-testid="button-toggle-confirm"
               >
                 {showConfirm
@@ -156,11 +175,11 @@ export default function ChangePasswordPage() {
           <button
             onClick={handleSubmit}
             disabled={!canSubmit}
-            className={`w-full h-[52px] rounded-[10px] font-semibold text-[15px] transition-all flex items-center justify-center ${
-              canSubmit
-                ? "bg-ha-primary text-white hover:bg-ha-primary-hover active:scale-[0.98]"
-                : "bg-ha-primary/30 text-white cursor-not-allowed"
-            }`}
+            className="w-full h-[56px] rounded-full font-bold text-[15px] transition-all flex items-center justify-center"
+            style={canSubmit
+              ? { backgroundColor: "#223546", color: "#ffffff" }
+              : { backgroundColor: "#dcefd8", color: "rgba(0,0,0,0.35)", cursor: "not-allowed" }
+            }
             data-testid="button-submit-password"
           >
             {submitting ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />{t("common.save")}...</> : t("common.save")}

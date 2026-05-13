@@ -313,7 +313,7 @@ export default function ApplicationLetterPage() {
 
   if (isLoading || ownerLoading) {
     return (
-      <div className="min-h-screen flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
+      <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f9f7f8" }}>
         <AppHeader title={t("applicationLetter.title")} onBack={() => { if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=home"); }} />
         <div className="flex-1 flex items-center justify-center">
           <Loader2 className="w-6 h-6 animate-spin text-ha-text-secondary" />
@@ -323,7 +323,7 @@ export default function ApplicationLetterPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f9f7f8" }}>
       <AppHeader title={t("applicationLetter.title")} onBack={handleBack} />
 
       <main className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-32">
@@ -334,9 +334,12 @@ export default function ApplicationLetterPage() {
               {t("applicationLetter.introHeading")}
             </h1>
 
-            <div className="ha-card">
-              <div className="rounded-[--ha-card-inner-radius] bg-ha-surface px-4 py-4 mb-5" data-testid="card-speech-bubble">
-                <p className="text-[15px] text-ha-text leading-relaxed">
+            <div
+              className="bg-white rounded-[28px] p-5"
+              style={{ border: "1px solid #ece7ef", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}
+            >
+              <div className="rounded-[16px] px-4 py-4 mb-5" style={{ backgroundColor: "#f3edff" }} data-testid="card-speech-bubble">
+                <p className="text-[15px] leading-relaxed" style={{ color: "#111111" }}>
                   {t("applicationLetter.introBody")}
                 </p>
               </div>
@@ -350,15 +353,16 @@ export default function ApplicationLetterPage() {
                   data-testid="img-elise-photo"
                 />
                 <div>
-                  <p className="text-[16px] font-semibold text-ha-text">Elise</p>
-                  <p className="text-[13px] text-ha-text-muted mt-0.5">COO</p>
+                  <p className="text-[16px] font-semibold" style={{ color: "#111111" }}>Elise</p>
+                  <p className="text-[13px] mt-0.5" style={{ color: "#666666" }}>COO</p>
                 </div>
               </div>
             </div>
 
             <button
               onClick={() => setStep(2)}
-              className="w-full h-[48px] rounded-[--ha-btn-radius] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.98]"
+              className="w-full h-[56px] rounded-full font-bold text-white text-[16px] transition-colors active:scale-[0.98]"
+              style={{ backgroundColor: "#223546" }}
               data-testid="button-intro-next"
             >
               {t("common.next")}
@@ -375,7 +379,10 @@ export default function ApplicationLetterPage() {
               </h1>
             </div>
 
-            <div className="ha-card">
+            <div
+              className="bg-white rounded-[28px] p-5"
+              style={{ border: "1px solid #ece7ef", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}
+            >
               <div className="flex flex-col gap-5">
                 <div>
                   <label className={labelClass}>{t("applicationLetter.phoneLabel")}</label>
@@ -450,7 +457,8 @@ export default function ApplicationLetterPage() {
             <button
               onClick={handleStep2Next}
               disabled={saving}
-              className="w-full h-[52px] rounded-[10px] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-[56px] rounded-full font-bold text-white text-[16px] transition-colors active:scale-[0.98] flex items-center justify-center gap-2"
+              style={saving ? { backgroundColor: "#dcefd8", color: "rgba(0,0,0,0.35)" } : { backgroundColor: "#223546" }}
               data-testid="button-personal-next"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -468,7 +476,10 @@ export default function ApplicationLetterPage() {
               </h1>
             </div>
 
-            <div className="ha-card">
+            <div
+              className="bg-white rounded-[28px] p-5"
+              style={{ border: "1px solid #ece7ef", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}
+            >
               <div className="flex flex-col gap-5">
                 <div>
                   <label className={labelClass}>{t("settings.livingWith")}</label>
@@ -507,7 +518,8 @@ export default function ApplicationLetterPage() {
             <button
               onClick={handleStep3Generate}
               disabled={saving}
-              className="w-full h-[52px] rounded-[10px] bg-ha-primary text-white text-[16px] font-semibold hover:bg-ha-primary-hover transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-[56px] rounded-full font-bold text-white text-[16px] transition-colors active:scale-[0.98] flex items-center justify-center gap-2"
+              style={saving ? { backgroundColor: "#dcefd8", color: "rgba(0,0,0,0.35)" } : { backgroundColor: "#223546" }}
               data-testid="button-generate-letter"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -524,19 +536,22 @@ export default function ApplicationLetterPage() {
                 <p className="text-[13px] text-ha-text-muted">{t("applicationLetter.readOnlyBuddy")}</p>
               </div>
             )}
-            <div className="bg-white rounded-[12px] border border-ha-card-border shadow-[0_2px_8px_rgba(0,0,0,0.04)] p-5">
+            <div
+              className="bg-white rounded-[28px] p-5"
+              style={{ border: "1px solid #ece7ef", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}
+            >
               {/* Card header */}
               <div className="flex items-center justify-between mb-4">
-                <span className="text-[16px] font-semibold text-ha-text">
+                <span className="text-[16px] font-bold" style={{ color: "#111111" }}>
                   {t("applicationLetter.yourLetter")}
                 </span>
               </div>
 
               {/* Helper text */}
               {!isBuddy && (
-                <div className="flex items-start gap-2.5 bg-ha-card-border rounded-[8px] px-3 py-3 mb-4">
-                  <Lightbulb className="w-4 h-4 text-ha-text flex-shrink-0 mt-0.5" />
-                  <p className="text-[13px] text-ha-text leading-snug">
+                <div className="flex items-start gap-2.5 rounded-[12px] px-3 py-3 mb-4" style={{ backgroundColor: "#f3edff" }}>
+                  <Lightbulb className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: "#b9a7ff" }} />
+                  <p className="text-[13px] leading-snug" style={{ color: "#111111" }}>
                     {t("applicationLetter.addressHelper")}
                   </p>
                 </div>
@@ -565,8 +580,8 @@ export default function ApplicationLetterPage() {
                     boxSizing: "border-box",
                     cursor: isBuddy ? "default" : "text",
                   }}
-                  onFocus={isBuddy ? undefined : e => { e.currentTarget.style.borderColor = "rgb(var(--ha-primary))"; }}
-                  onBlur={isBuddy ? undefined : e => { e.currentTarget.style.borderColor = "rgb(var(--ha-border-input))"; }}
+                  onFocus={isBuddy ? undefined : e => { e.currentTarget.style.borderColor = "#b9a7ff"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(185,167,255,0.2)"; }}
+                  onBlur={isBuddy ? undefined : e => { e.currentTarget.style.borderColor = "#d9d3e3"; e.currentTarget.style.boxShadow = "none"; }}
                   data-testid="input-template"
                 />
               ) : (
@@ -590,7 +605,12 @@ export default function ApplicationLetterPage() {
             <button
               onClick={() => saveMutation.mutate(template)}
               disabled={template.trim().length < 20 || saveMutation.isPending}
-              className="w-full h-[52px] rounded-[10px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-[56px] rounded-full font-bold text-white text-[16px] transition-colors active:scale-[0.98] flex items-center justify-center gap-2"
+              style={
+                template.trim().length < 20 || saveMutation.isPending
+                  ? { backgroundColor: "#dcefd8", color: "rgba(0,0,0,0.35)" }
+                  : { backgroundColor: "#223546" }
+              }
               data-testid="button-save-template"
             >
               {saveMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}

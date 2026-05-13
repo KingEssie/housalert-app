@@ -77,16 +77,17 @@ export default function SettingsPage() {
   const logoutIcon = (
     <button
       onClick={() => setShowLogoutConfirm(true)}
-      className="w-10 h-10 flex items-center justify-center rounded-full bg-ha-card-border active:bg-ha-border-input transition-colors"
+      className="w-10 h-10 flex items-center justify-center rounded-full hover:opacity-80 transition-opacity"
+      style={{ backgroundColor: "#f1eef5" }}
       aria-label={t("profile.logout")}
       data-testid="button-logout-icon"
     >
-      <LogOut className="w-[20px] h-[20px] text-ha-text" strokeWidth={2} />
+      <LogOut className="w-[20px] h-[20px] text-[#111111]" strokeWidth={2} />
     </button>
   );
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "#f9f7f8" }}>
       <AppHeader
         title={t("settings.title")}
         onBack={() => { if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=profile"); }}
@@ -95,15 +96,24 @@ export default function SettingsPage() {
 
       <div className="max-w-[480px] mx-auto px-4 py-5 pb-8">
         <div className="flex flex-col gap-4">
-          <div className="app-card flex items-center gap-4" data-testid="card-profile-header">
-            <div className="w-14 h-14 rounded-full bg-ha-highlight flex items-center justify-center flex-shrink-0">
-              <User className="w-[22px] h-[22px] text-ha-text" />
+
+          {/* Profile header card */}
+          <div
+            className="flex items-center gap-4 bg-white rounded-[28px] p-5"
+            style={{ border: "1px solid #ece7ef", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
+            data-testid="card-profile-header"
+          >
+            <div
+              className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{ backgroundColor: "#b9a7ff" }}
+            >
+              <User className="w-[22px] h-[22px] text-[#111111]" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[16px] font-semibold text-ha-text truncate" data-testid="text-profile-name">
+              <p className="text-[16px] font-bold text-[#111111] truncate" data-testid="text-profile-name">
                 {displayName}
               </p>
-              <p className="text-[15px] text-ha-text-secondary truncate" data-testid="text-profile-email">
+              <p className="text-[14px] truncate mt-0.5" style={{ color: "#444444" }} data-testid="text-profile-email">
                 {user?.email}
               </p>
             </div>
@@ -111,13 +121,20 @@ export default function SettingsPage() {
 
           {sections.map((section, si) => (
             <div key={si}>
-              <p className="text-row-section-title px-1 mb-2" data-testid={`text-section-${si}`}>
+              <p
+                className="text-[12px] font-semibold px-1 mb-2 uppercase tracking-wider"
+                style={{ color: "#8f8798" }}
+                data-testid={`text-section-${si}`}
+              >
                 {section.title}
               </p>
-              <div className="app-card !p-0">
+              <div
+                className="bg-white rounded-[28px] overflow-hidden"
+                style={{ border: "1px solid #ece7ef", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
+              >
                 {section.rows.map((row, ri) => (
                   <div key={ri}>
-                    {ri > 0 && <div className="h-px bg-ha-divider mx-5" />}
+                    {ri > 0 && <div className="h-px mx-5" style={{ backgroundColor: "#ece7ef" }} />}
                     <button
                       onClick={() => {
                         if (row.external) {
@@ -126,14 +143,17 @@ export default function SettingsPage() {
                           navigate(row.route);
                         }
                       }}
-                      className="w-full flex items-center gap-3 py-[13px] px-5 text-left active:bg-ha-surface transition-colors"
+                      className="w-full flex items-center gap-3 py-[15px] px-5 text-left transition-colors"
+                      style={{ WebkitTapHighlightColor: "transparent" }}
+                      onMouseEnter={e => (e.currentTarget.style.backgroundColor = "#f5f1fb")}
+                      onMouseLeave={e => (e.currentTarget.style.backgroundColor = "")}
                       data-testid={`button-settings-${si}-${ri}`}
                     >
-                      <p className="text-[15px] font-semibold text-ha-text flex-1">{row.label}</p>
+                      <p className="text-[15px] font-bold text-[#111111] flex-1">{row.label}</p>
                       {row.external ? (
-                        <ExternalLink className="w-4 h-4 text-ha-text-secondary flex-shrink-0" />
+                        <ExternalLink className="w-4 h-4 flex-shrink-0" style={{ color: "#6b6677" }} />
                       ) : (
-                        <ChevronRight className="w-4 h-4 text-ha-text-secondary flex-shrink-0" />
+                        <ChevronRight className="w-4 h-4 flex-shrink-0" style={{ color: "#6b6677" }} />
                       )}
                     </button>
                   </div>
@@ -142,20 +162,24 @@ export default function SettingsPage() {
             </div>
           ))}
 
-          <div className="app-card !p-0">
+          {/* Delete account row */}
+          <div
+            className="bg-white rounded-[28px] overflow-hidden"
+            style={{ border: "1px solid #ece7ef", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
+          >
             <button
               onClick={() => navigate("/account/delete")}
-              className="w-full flex items-center gap-3 py-[13px] px-5 text-left active:bg-ha-surface transition-colors"
+              className="w-full flex items-center gap-3 py-[15px] px-5 text-left transition-colors active:bg-[#fff0f0]"
               data-testid="button-delete-account"
             >
-              <Trash2 className="w-5 h-5 text-ha-text-secondary flex-shrink-0" />
-              <p className="text-[15px] text-ha-text-muted flex-1">{t("profile.deleteAccount")}</p>
+              <Trash2 className="w-5 h-5 text-ha-danger flex-shrink-0" />
+              <p className="text-[15px] text-ha-danger flex-1">{t("profile.deleteAccount")}</p>
             </button>
           </div>
 
           <div className="flex flex-col items-center gap-1 pt-4 pb-2">
-            <p className="text-[14px] font-semibold text-ha-text">HousAlert</p>
-            <p className="text-[12px] text-ha-text-secondary">v1.0.0</p>
+            <p className="text-[14px] font-semibold text-[#111111]">HousAlert</p>
+            <p className="text-[12px]" style={{ color: "#8f8798" }}>v1.0.0</p>
           </div>
         </div>
       </div>

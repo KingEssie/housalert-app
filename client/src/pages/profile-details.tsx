@@ -17,8 +17,9 @@ interface ProfileData {
   gender?: string | null;
 }
 
-const FIELD_LABEL = "text-[15px] font-semibold text-ha-text mb-2 block";
-const INPUT_CLS = "w-full h-[52px] px-4 rounded-[8px] border border-ha-border-input bg-white text-[16px] font-normal text-ha-text placeholder:text-ha-text-placeholder outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/20";
+const FIELD_LABEL = "text-[15px] font-bold text-[#111111] mb-2 block";
+const INPUT_CLS = "w-full h-[60px] px-4 rounded-[18px] bg-white text-[16px] font-normal text-[#111111] placeholder:text-[#aaa] outline-none transition-all";
+const INPUT_STYLE = { border: "1px solid #d9d3e3" };
 
 export default function ProfileDetailsPage() {
   const { user, session } = useAuth();
@@ -116,7 +117,7 @@ export default function ProfileDetailsPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f9f7f8" }}>
       <AppHeader title={t("profileDetails.title")} onBack={() => { if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=profile"); }} />
 
       <div className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-4">
@@ -126,7 +127,10 @@ export default function ProfileDetailsPage() {
           </div>
         ) : (
           <div className="flex flex-col gap-3">
-            <div className="app-card !p-5">
+            <div
+              className="bg-white rounded-[28px] p-5"
+              style={{ border: "1px solid #ece7ef", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}
+            >
               <div className="flex flex-col gap-5">
 
                 {/* Voornaam + Achternaam — side by side */}
@@ -139,6 +143,9 @@ export default function ProfileDetailsPage() {
                       onChange={e => setFirstName(e.target.value)}
                       placeholder={t("profileDetails.firstNamePlaceholder")}
                       className={INPUT_CLS}
+                      style={INPUT_STYLE}
+                      onFocus={e => { e.currentTarget.style.borderColor = "#b9a7ff"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(185,167,255,0.2)"; }}
+                      onBlur={e => { e.currentTarget.style.borderColor = "#d9d3e3"; e.currentTarget.style.boxShadow = "none"; }}
                       data-testid="input-first-name"
                     />
                   </div>
@@ -150,6 +157,9 @@ export default function ProfileDetailsPage() {
                       onChange={e => setLastName(e.target.value)}
                       placeholder={t("profileDetails.lastNamePlaceholder")}
                       className={INPUT_CLS}
+                      style={INPUT_STYLE}
+                      onFocus={e => { e.currentTarget.style.borderColor = "#b9a7ff"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(185,167,255,0.2)"; }}
+                      onBlur={e => { e.currentTarget.style.borderColor = "#d9d3e3"; e.currentTarget.style.boxShadow = "none"; }}
                       data-testid="input-last-name"
                     />
                   </div>
@@ -164,13 +174,17 @@ export default function ProfileDetailsPage() {
                     onChange={e => setEmailValue(e.target.value)}
                     placeholder={t("profileDetails.emailPlaceholder")}
                     className={INPUT_CLS}
+                    style={INPUT_STYLE}
+                    onFocus={e => { e.currentTarget.style.borderColor = "#b9a7ff"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(185,167,255,0.2)"; }}
+                    onBlur={e => { e.currentTarget.style.borderColor = "#d9d3e3"; e.currentTarget.style.boxShadow = "none"; }}
                     data-testid="input-email"
                   />
                   {emailValue && emailValue !== user?.email && (
                     <button
                       onClick={handleEmailChange}
                       disabled={saving}
-                      className="mt-2 text-[13px] text-ha-primary font-medium underline underline-offset-2"
+                      className="mt-2 text-[13px] font-semibold underline underline-offset-2"
+                      style={{ color: "#b9a7ff" }}
                       data-testid="button-change-email"
                     >
                       {t("profileDetails.changeEmail")}
@@ -187,6 +201,9 @@ export default function ProfileDetailsPage() {
                     onChange={e => setPhone(e.target.value)}
                     placeholder={t("profileDetails.phonePlaceholder")}
                     className={INPUT_CLS}
+                    style={INPUT_STYLE}
+                    onFocus={e => { e.currentTarget.style.borderColor = "#b9a7ff"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(185,167,255,0.2)"; }}
+                    onBlur={e => { e.currentTarget.style.borderColor = "#d9d3e3"; e.currentTarget.style.boxShadow = "none"; }}
                     data-testid="input-phone"
                   />
                 </div>
@@ -201,6 +218,9 @@ export default function ProfileDetailsPage() {
                     max={new Date().toISOString().split("T")[0]}
                     min="1900-01-01"
                     className={INPUT_CLS}
+                    style={INPUT_STYLE}
+                    onFocus={e => { e.currentTarget.style.borderColor = "#b9a7ff"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(185,167,255,0.2)"; }}
+                    onBlur={e => { e.currentTarget.style.borderColor = "#d9d3e3"; e.currentTarget.style.boxShadow = "none"; }}
                     data-testid="input-birth-date"
                   />
                 </div>
@@ -212,14 +232,15 @@ export default function ProfileDetailsPage() {
                     <select
                       value={gender}
                       onChange={e => setGender(e.target.value)}
-                      className={`${INPUT_CLS} appearance-none pr-10 ${!gender ? "text-ha-text-placeholder" : "text-ha-text"}`}
+                      className={`${INPUT_CLS} appearance-none pr-10 ${!gender ? "text-[#aaa]" : "text-[#111111]"}`}
+                      style={INPUT_STYLE}
                       data-testid="select-gender"
                     >
                       {GENDER_OPTIONS.map(opt => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
                       ))}
                     </select>
-                    <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-ha-text pointer-events-none" strokeWidth={2} />
+                    <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] pointer-events-none" style={{ color: "#6b6677" }} strokeWidth={2} />
                   </div>
                 </div>
 
@@ -236,7 +257,8 @@ export default function ProfileDetailsPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full h-[52px] rounded-[10px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-[56px] rounded-full font-bold text-white text-[16px] transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              style={{ backgroundColor: "#223546" }}
               data-testid="button-save-details"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}

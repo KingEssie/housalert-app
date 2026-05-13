@@ -17,9 +17,10 @@ interface HousingData {
   pets_count: string;
 }
 
-const FIELD_LABEL = "text-[15px] font-semibold text-ha-text mb-2 block";
-const SELECT_CLS = "w-full h-[52px] px-4 pr-10 rounded-[8px] border border-ha-border-input bg-white text-[16px] font-normal appearance-none outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/20";
-const INPUT_CLS  = "w-full h-[52px] px-4 rounded-[8px] border border-ha-border-input bg-white text-[16px] font-normal text-ha-text placeholder:text-ha-text-placeholder outline-none transition-all focus:border-ha-primary focus:ring-1 focus:ring-ha-primary/20";
+const FIELD_LABEL = "text-[15px] font-bold text-[#111111] mb-2 block";
+const FIELD_STYLE = { border: "1px solid #d9d3e3" };
+const SELECT_CLS = "w-full h-[60px] px-4 pr-10 rounded-[18px] bg-white text-[16px] font-normal appearance-none outline-none transition-all";
+const INPUT_CLS  = "w-full h-[60px] px-4 rounded-[18px] bg-white text-[16px] font-normal text-[#111111] placeholder:text-[#aaa] outline-none transition-all";
 
 export default function HousingSituationPage() {
   const { session } = useAuth();
@@ -136,20 +137,23 @@ export default function HousingSituationPage() {
         <select
           value={value}
           onChange={e => onChange(e.target.value)}
-          className={`${SELECT_CLS} ${!value ? "text-ha-text-placeholder" : "text-ha-text"}`}
+          className={`${SELECT_CLS} ${!value ? "text-[#aaa]" : "text-[#111111]"}`}
+          style={FIELD_STYLE}
+          onFocus={e => { e.currentTarget.style.borderColor = "#b9a7ff"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(185,167,255,0.2)"; }}
+          onBlur={e => { e.currentTarget.style.borderColor = "#d9d3e3"; e.currentTarget.style.boxShadow = "none"; }}
           data-testid={testId}
         >
           {options.map(opt => (
             <option key={opt.value} value={opt.value}>{opt.label}</option>
           ))}
         </select>
-        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-[16px] h-[16px] text-ha-text pointer-events-none" strokeWidth={2} />
+        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-[18px] h-[18px] pointer-events-none" style={{ color: "#6b6677" }} strokeWidth={2} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f9f7f8" }}>
       <AppHeader title={t("settings.housingSituation")} onBack={() => { if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=profile"); }} />
 
       <div className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-4">
@@ -159,28 +163,27 @@ export default function HousingSituationPage() {
           </div>
         ) : (
           <div className="flex flex-col gap-3">
-            <div className="app-card !p-5">
+            <div
+              className="bg-white rounded-[28px] p-5"
+              style={{ border: "1px solid #ece7ef", boxShadow: "0 2px 12px rgba(0,0,0,0.05)" }}
+            >
               <div className="flex flex-col gap-5">
 
-                {/* Met wie ga je wonen? */}
                 <div>
                   <label className={FIELD_LABEL}>{t("settings.livingWith")}</label>
                   {renderSelect(data.living_with, LIVING_WITH_OPTIONS, v => setData(d => ({ ...d, living_with: v })), "select-living-with")}
                 </div>
 
-                {/* Werksituatie */}
                 <div>
                   <label className={FIELD_LABEL}>{t("settings.workSituation")}</label>
                   {renderSelect(data.work_status, WORK_STATUS_OPTIONS, v => setData(d => ({ ...d, work_status: v })), "select-work-situation")}
                 </div>
 
-                {/* Reden voor verhuizing */}
                 <div>
                   <label className={FIELD_LABEL}>{t("settings.moveReason")}</label>
                   {renderSelect(data.move_reason, MOVE_REASON_OPTIONS, v => setData(d => ({ ...d, move_reason: v })), "select-move-reason")}
                 </div>
 
-                {/* Bruto maandinkomen */}
                 <div>
                   <label className={FIELD_LABEL}>{t("settings.grossIncome")}</label>
                   <input
@@ -190,11 +193,13 @@ export default function HousingSituationPage() {
                     onChange={e => setData(d => ({ ...d, monthly_income: e.target.value }))}
                     placeholder={t("settings.grossIncomePlaceholder")}
                     className={INPUT_CLS}
+                    style={FIELD_STYLE}
+                    onFocus={e => { e.currentTarget.style.borderColor = "#b9a7ff"; e.currentTarget.style.boxShadow = "0 0 0 3px rgba(185,167,255,0.2)"; }}
+                    onBlur={e => { e.currentTarget.style.borderColor = "#d9d3e3"; e.currentTarget.style.boxShadow = "none"; }}
                     data-testid="input-gross-income"
                   />
                 </div>
 
-                {/* Huisdieren */}
                 <div>
                   <label className={FIELD_LABEL}>{t("settings.pets")}</label>
                   {renderSelect(data.pets_count, PETS_OPTIONS, v => setData(d => ({ ...d, pets_count: v })), "select-pets")}
@@ -213,7 +218,8 @@ export default function HousingSituationPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full h-[52px] rounded-[10px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full h-[56px] rounded-full font-bold text-white text-[16px] transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              style={{ backgroundColor: "#223546" }}
               data-testid="button-housing-save"
             >
               {saving && <Loader2 className="w-4 h-4 animate-spin" />}

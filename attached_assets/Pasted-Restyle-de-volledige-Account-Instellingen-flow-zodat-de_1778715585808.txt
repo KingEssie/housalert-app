@@ -1,0 +1,132 @@
+Restyle de volledige Account / Instellingen flow zodat deze exact dezelfde branding gebruikt als de rest van de vernieuwde HousAlert app.
+
+ALGEMENE STYLING
+- Achtergrond app overal: #f9f7f8
+- Primair paars: #b9a7ff
+- Donkerblauw CTA kleur: #223546
+- Groen alleen gebruiken voor success states / highlights
+- Alle standaard tekst zwart (#111111)
+- Geen grijze dunne teksten meer behalve placeholders
+- Alle cards:
+  - border-radius: 28px
+  - witte achtergrond
+  - subtiele border #ece7ef
+  - zachte shadow
+- Alle inputvelden:
+  - hoogte 60px+
+  - radius 18px
+  - border #d9d3e3
+  - focus state paars
+  - tekst zwart
+- Alle primaire knoppen:
+  - achtergrond #223546
+  - witte tekst
+  - volledig pill-shaped
+  - font-weight 700
+- Disabled buttons:
+  - achtergrond #dcefd8
+  - tekst rgba(0,0,0,0.35)
+
+TOPBAR
+- Zelfde topbar styling als home screen
+- Achtergrond wit
+- Meer spacing boven/onder
+- Back buttons:
+  - ronde cirkel
+  - achtergrond #f1eef5
+  - icoon zwart
+- Menu button rechts dezelfde stijl
+
+ACCOUNT OVERVIEW PAGINA
+- Avatar groen verwijderen
+- Avatar achtergrond paars (#b9a7ff)
+- Initialen zwart
+- E-mailadres donkerder maken
+- Sectie titels:
+  - kleur #8f8798
+  - uppercase
+  - letter-spacing subtiel
+- Menu rows:
+  - hogere spacing
+  - zwarte tekst
+  - bold
+  - hover/active achtergrond #f5f1fb
+- Chevron icon donkergrijs
+
+VOORKEUREN PAGINA
+- Toggle switches paars wanneer actief
+- Card achtergrond wit
+- Sectie titel dik zwart
+- Dropdown row:
+  - hoogte vergroten
+  - meer padding horizontaal
+- Labels zwart i.p.v. grijs
+
+WACHTWOORD PAGINA
+- Input focus glow paars subtiel
+- Oog icon donkerder
+- Opslaan knop:
+  - donkerblauw (#223546)
+  - witte tekst
+  - pill-shaped
+  - sticky bottom spacing verbeteren
+
+ABONNEMENT PAGINA
+- Huidige pagina voelt leeg en onaf.
+Maak hier een echte premium upgrade card van.
+
+Gebruik:
+- grote premium icon circle met paarse achtergrond
+- titel zwart bold
+- beschrijving donkergrijs
+- feature lijst met check icons:
+  - Direct reageren
+  - Snellere meldingen
+  - AI reactiebrief
+  - 4 zoekopdrachten
+- Upgrade knop:
+  - #223546
+  - witte tekst
+  - radius 999px
+  - grotere hoogte
+
+PERSOONLIJKE GEGEVENS PAGINA
+- Inputs consistenter maken
+- Labels zwart bold
+- Placeholder tekst lichtgrijs
+- Geslacht dropdown dezelfde stijl als onboarding dropdowns
+- Opslaan knop donkerblauw i.p.v. groen
+
+WOONSITUATIE PAGINA
+- Exact dezelfde dropdown styling als onboarding flow
+- Meer verticale spacing
+- Opslaan knop donkerblauw
+- Placeholder teksten minder licht
+
+ZOEKBUDDY PAGINA
+- Paarse info card gebruiken zoals eerder in onboarding
+- Icoontjes:
+  - witte ronde achtergrond
+  - zwart icoon
+- Inputveld moderner
+- Uitnodigen knop:
+  - #223546
+  - witte tekst
+  - pill-shaped
+
+REACTIEBRIEF PAGINA
+- Uitleg box paars maken (#f3edff)
+- Tekst zwart
+- COO naam zwart
+- COO subtitle donkergrijs
+- Volgende knop:
+  - #223546
+  - witte tekst
+  - pill-shaped
+
+BELANGRIJK
+- Verwijder alle oude groene toggles/buttons behalve echte success states
+- Zorg dat ALLE pagina’s exact dezelfde spacing system gebruiken
+- Geen random grijstinten meer
+- Alles moet premium, rustig en consistent ogen
+- Gebruik dezelfde design language als de vernieuwde zoekopdracht flow en home dashboard
