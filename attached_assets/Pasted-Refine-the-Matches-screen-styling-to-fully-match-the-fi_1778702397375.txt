@@ -1,0 +1,110 @@
+Refine the Matches screen styling to fully match the final HousAlert branding.
+
+IMPORTANT:
+- Only change styling.
+- Do NOT change layout structure, spacing logic, routing, data loading, functionality, or component behavior.
+- Keep everything mobile-first.
+
+========================================
+1. TOP TABS (Matches / Gereageerd)
+========================================
+
+Current issue:
+- Active tab text is purple/green.
+- I only want the underline purple.
+
+Apply:
+- Active tab text color → #111111
+- Inactive tab text color → rgba(17,17,17,0.45)
+- Active underline/bottom border → #bbadfb
+- Underline thickness: 3px
+- Remove ALL green styling from these tabs.
+
+Typography:
+- Font: Montserrat
+- Font weight active: 700
+- Font weight inactive: 500
+
+========================================
+2. LISTING DETAIL ICON CHIPS
+========================================
+
+Current issue:
+- Icons are only outlined purple.
+- I want them visually stronger.
+
+Apply to ALL metadata chips:
+- Location
+- Bedrooms
+- Size
+- Price
+- Any similar stat chips
+
+Desired style:
+- Chip background: #ffffff
+- Chip border: 1px solid rgba(0,0,0,0.06)
+- Border radius: 9999px
+- Icon fill/background accent: #bbadfb
+- Icon stroke/outline: #111111
+- Text color: #111111
+
+IMPORTANT:
+The icons themselves should visually feel:
+- filled soft purple
+- with black outline/stroke
+
+Use Lucide icon stroke color:
+- stroke="#111111"
+
+Use purple accent:
+- #bbadfb
+
+Increase icon visual weight slightly:
+- strokeWidth around 2.2
+
+========================================
+3. MATCH CARD POLISH
+========================================
+
+Apply subtle premium polish:
+- Card background remains soft light tone
+- Border radius: 24px
+- Add very soft shadow:
+  box-shadow: 0 6px 24px rgba(0,0,0,0.04)
+
+Card content:
+- Listing title:
+  color #111111
+  font-weight 800
+
+Secondary text:
+- rgba(17,17,17,0.45)
+
+========================================
+4. FAVORITE HEART BUTTON
+========================================
+
+Keep current white circular background.
+
+Adjust:
+- Heart outline color → #85fb8c
+- Hover/active fill → #85fb8c
+- Subtle shadow:
+  0 4px 12px rgba(0,0,0,0.08)
+
+========================================
+5. DO NOT TOUCH
+========================================
+
+DO NOT modify:
+- bottom navigation layout
+- card spacing
+- image aspect ratios
+- routing
+- filters
+- data fetching
+- tab behavior
+- sticky nav
+- animations
+
+Only visual branding refinements.

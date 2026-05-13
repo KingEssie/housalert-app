@@ -1431,12 +1431,14 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
               <button
                 key={key}
                 onClick={() => setTopTab(key)}
-                className={`flex-1 text-center pb-3 text-[17px] transition-all duration-200 border-b-2 ${
-                  isActive
-                    ? "text-ha-accent font-semibold border-ha-accent"
-                    : "text-ha-text-muted font-medium border-transparent"
-                }`}
-                style={{ marginBottom: "-1px" }}
+                className="flex-1 text-center pb-3 text-[16px] transition-all duration-200"
+                style={{
+                  marginBottom: "-1px",
+                  fontFamily: "Montserrat, sans-serif",
+                  fontWeight: isActive ? 700 : 500,
+                  color: isActive ? "#111111" : "rgba(17,17,17,0.45)",
+                  borderBottom: isActive ? "3px solid #bbadfb" : "3px solid transparent",
+                }}
                 data-testid={`tab-matches-${key}`}
               >
                 {label}

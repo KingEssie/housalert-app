@@ -102,29 +102,24 @@ export function ListingCardFull({
   const newLabel = locale === "de" ? "Neu" : locale === "en" ? "New" : "Nieuw";
 
   const cardBg = matchVariant
-    ? "#EBF1FF"
+    ? "#f8f7fa"
     : "rgb(var(--ha-card))";
   const cardBorder = matchVariant
     ? "none"
     : "1px solid rgb(var(--ha-card-border))";
   const imageRatio = matchVariant ? "2/1" : "16/9";
 
-  const heartFill = isFavorited ? "rgb(var(--ha-primary))" : "none";
-  const heartStroke = matchVariant
-    ? "rgb(var(--ha-primary))"
-    : isFavorited
-    ? "#FF385C"
-    : "rgb(var(--ha-card))";
-  const heartActiveFill = matchVariant
-    ? "rgb(var(--ha-primary))"
-    : "#FF385C";
+  const heartFill = isFavorited ? "#85fb8c" : "none";
+  const heartStroke = "#85fb8c";
+  const heartActiveFill = "#85fb8c";
 
   return (
     <div
-      className="cursor-pointer active:scale-[0.985] transition-transform duration-200 rounded-[12px] overflow-hidden"
+      className="cursor-pointer active:scale-[0.985] transition-transform duration-200 overflow-hidden"
       style={{
+        borderRadius: matchVariant ? "24px" : "12px",
         backgroundColor: cardBg,
-        boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
+        boxShadow: matchVariant ? "0 6px 24px rgba(0,0,0,0.04)" : "0 2px 8px rgba(0,0,0,0.07)",
         border: cardBorder,
       }}
       onClick={onCardClick}
@@ -163,12 +158,13 @@ export function ListingCardFull({
               ? "w-[36px] h-[36px] rounded-full bg-white"
               : "w-[38px] h-[38px]"
           }`}
+          style={matchVariant ? { boxShadow: "0 4px 12px rgba(0,0,0,0.08)" } : undefined}
           data-testid={`button-favorite-${match.listing_id}`}
         >
           <Heart
             className="w-[20px] h-[20px] transition-all duration-150"
             fill={isFavorited ? heartActiveFill : "none"}
-            stroke={matchVariant ? "rgb(var(--ha-primary))" : isFavorited ? "#FF385C" : "#ffffff"}
+            stroke={matchVariant ? heartStroke : isFavorited ? "#FF385C" : "#ffffff"}
             strokeWidth={2.5}
             style={matchVariant ? undefined : { filter: "drop-shadow(0 1px 4px rgba(0,0,0,0.55))" }}
           />
@@ -177,69 +173,119 @@ export function ListingCardFull({
 
       <div className="p-4 flex flex-col gap-1.5">
         <h3
-          className={`text-[16px] font-bold leading-snug line-clamp-2 ${matchVariant ? "text-black" : "text-ha-text"}`}
+          className="text-[16px] leading-snug line-clamp-2"
+          style={{ color: "#111111", fontWeight: matchVariant ? 800 : 700 }}
           data-testid={`text-match-title-${match.listing_id}`}
         >
           {match.title}
         </h3>
 
         {(timeAgo || sourceName) && (
-          <p className="text-[13px] text-ha-text-muted" data-testid={`detail-source-${match.listing_id}`}>
-            {timeAgo && sourceName ? `${timeAgo} · ${sourceName}` : timeAgo || sourceName}
+          <p
+            className="text-[13px]"
+            style={{ color: matchVariant ? "rgba(17,17,17,0.45)" : undefined }}
+            data-testid={`detail-source-${match.listing_id}`}
+          >
+            {!matchVariant && <span className="text-ha-text-muted">{timeAgo && sourceName ? `${timeAgo} · ${sourceName}` : timeAgo || sourceName}</span>}
+            {matchVariant && (timeAgo && sourceName ? `${timeAgo} · ${sourceName}` : timeAgo || sourceName)}
           </p>
         )}
 
         <div className="flex flex-nowrap gap-1.5 mt-0.5 overflow-hidden" data-testid={`detail-meta-${match.listing_id}`}>
           {address && (
             <span
-              className={`inline-flex items-center gap-[4px] text-[13px] font-medium px-2 py-[5px] rounded-[6px] min-w-0 shrink ${
-                matchVariant ? "bg-white text-black" : "bg-ha-surface text-ha-text"
-              }`}
+              className="inline-flex items-center gap-[4px] text-[13px] font-medium min-w-0 shrink"
+              style={matchVariant ? {
+                backgroundColor: "#ffffff",
+                border: "1px solid rgba(0,0,0,0.06)",
+                borderRadius: "9999px",
+                color: "#111111",
+                padding: "4px 10px 4px 7px",
+              } : {
+                backgroundColor: "rgb(var(--ha-surface))",
+                borderRadius: "6px",
+                color: "rgb(var(--ha-text))",
+                padding: "5px 8px",
+              }}
               data-testid={`detail-city-${match.listing_id}`}
             >
               <MapPin
-                className={`w-[19px] h-[19px] flex-shrink-0 ${matchVariant ? "text-ha-accent" : "text-ha-text-muted"}`}
-                strokeWidth={1.7}
+                className="w-[17px] h-[17px] flex-shrink-0"
+                stroke={matchVariant ? "#111111" : "rgb(var(--ha-text-muted))"}
+                strokeWidth={matchVariant ? 2.2 : 1.7}
               />
               <span className="truncate">{address}</span>
             </span>
           )}
           {hasBedrooms && (
             <span
-              className={`inline-flex items-center gap-[4px] text-[13px] font-medium px-2 py-[5px] rounded-[6px] shrink-0 ${
-                matchVariant ? "bg-white text-black" : "bg-ha-surface text-ha-text"
-              }`}
+              className="inline-flex items-center gap-[4px] text-[13px] font-medium shrink-0"
+              style={matchVariant ? {
+                backgroundColor: "#ffffff",
+                border: "1px solid rgba(0,0,0,0.06)",
+                borderRadius: "9999px",
+                color: "#111111",
+                padding: "4px 10px 4px 7px",
+              } : {
+                backgroundColor: "rgb(var(--ha-surface))",
+                borderRadius: "6px",
+                color: "rgb(var(--ha-text))",
+                padding: "5px 8px",
+              }}
             >
               <BedDouble
-                className={`w-[19px] h-[19px] flex-shrink-0 ${matchVariant ? "text-ha-accent" : "text-ha-text-muted"}`}
-                strokeWidth={1.7}
+                className="w-[17px] h-[17px] flex-shrink-0"
+                stroke={matchVariant ? "#111111" : "rgb(var(--ha-text-muted))"}
+                strokeWidth={matchVariant ? 2.2 : 1.7}
               />
               {match.bedrooms}
             </span>
           )}
           {hasSize && (
             <span
-              className={`inline-flex items-center gap-[4px] text-[13px] font-medium px-2 py-[5px] rounded-[6px] shrink-0 ${
-                matchVariant ? "bg-white text-black" : "bg-ha-surface text-ha-text"
-              }`}
+              className="inline-flex items-center gap-[4px] text-[13px] font-medium shrink-0"
+              style={matchVariant ? {
+                backgroundColor: "#ffffff",
+                border: "1px solid rgba(0,0,0,0.06)",
+                borderRadius: "9999px",
+                color: "#111111",
+                padding: "4px 10px 4px 7px",
+              } : {
+                backgroundColor: "rgb(var(--ha-surface))",
+                borderRadius: "6px",
+                color: "rgb(var(--ha-text))",
+                padding: "5px 8px",
+              }}
             >
               <Maximize2
-                className={`w-[19px] h-[19px] flex-shrink-0 ${matchVariant ? "text-ha-accent" : "text-ha-text-muted"}`}
-                strokeWidth={1.7}
+                className="w-[17px] h-[17px] flex-shrink-0"
+                stroke={matchVariant ? "#111111" : "rgb(var(--ha-text-muted))"}
+                strokeWidth={matchVariant ? 2.2 : 1.7}
               />
               {match.size_m2} m²
             </span>
           )}
           {match.price > 0 && (
             <span
-              className={`inline-flex items-center gap-[4px] text-[13px] font-semibold px-2 py-[5px] rounded-[6px] shrink-0 ${
-                matchVariant ? "bg-white text-black" : "bg-ha-surface text-ha-text"
-              }`}
+              className="inline-flex items-center gap-[4px] text-[13px] font-semibold shrink-0"
+              style={matchVariant ? {
+                backgroundColor: "#ffffff",
+                border: "1px solid rgba(0,0,0,0.06)",
+                borderRadius: "9999px",
+                color: "#111111",
+                padding: "4px 10px 4px 7px",
+              } : {
+                backgroundColor: "rgb(var(--ha-surface))",
+                borderRadius: "6px",
+                color: "rgb(var(--ha-text))",
+                padding: "5px 8px",
+              }}
               data-testid={`badge-price-${match.listing_id}`}
             >
               <Tag
-                className={`w-[19px] h-[19px] flex-shrink-0 ${matchVariant ? "text-ha-accent" : "text-ha-text-muted"}`}
-                strokeWidth={1.7}
+                className="w-[17px] h-[17px] flex-shrink-0"
+                stroke={matchVariant ? "#111111" : "rgb(var(--ha-text-muted))"}
+                strokeWidth={matchVariant ? 2.2 : 1.7}
               />
               {formatPrice(match.price, locale)}
             </span>
