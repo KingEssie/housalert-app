@@ -1,0 +1,73 @@
+Custom search profile names still do not display correctly.
+
+Current bug:
+I created a search profile and entered the name:
+“Goedkope appartementen”
+
+But on the Home/dashboard search profile card it still shows:
+“Woning in München”
+
+This must work both for:
+1. search profiles created inside the app
+2. search profiles created during website/onboarding embed
+
+Required behavior:
+- If user enters a custom search name, display that exact name on the Home/dashboard search profile card.
+- If no custom name exists, fallback to generated default title:
+  “Woning in {city}”
+
+Debug and fix end-to-end:
+
+1. Find the actual field used on the final step:
+“Naan zoekopdracht” / “Search name”
+Check whether this field is:
+- saved at all
+- saved under the correct DB column
+- overwritten during create/update
+- ignored by the Home dashboard
+
+2. Check all search profile creation paths:
+- in-app create search profile wizard
+- onboarding embed account creation/search profile creation
+- editing existing search profile
+
+3. Standardize the field:
+Use one canonical field for custom display name, for example:
+name
+
+If the DB already has another field, use that existing field consistently.
+
+4. Fix save logic:
+- When creating a profile, persist custom name.
+- When editing a profile, update custom name.
+- Do not overwrite custom name with generated city title.
+
+5. Fix Home/dashboard display logic:
+Use:
+customName || generatedDefaultTitle
+
+Expected:
+- customName = “Goedkope appartementen”
+  → card title shows “Goedkope appartementen”
+- customName empty/null
+  → card title shows “Woning in München”
+
+6. Add temporary logs or clear report:
+- what field stores the custom name
+- create payload includes it
+- update payload includes it
+- Home dashboard reads it
+
+Do not change styling.
+Do not change matching logic.
+Do not change subscription logic.
+
+Smoke check:
+- Create in-app search profile named “Goedkope appartementen”
+- Home card shows “Goedkope appartementen”
+- Edit name to “Berlin cheap homes”
+- Home card updates to “Berlin cheap homes”
+- Create profile from onboarding embed with custom search name
+- Home card shows custom name
+- Create profile with no custom name
+- Home card falls back to “Woning in {city}”

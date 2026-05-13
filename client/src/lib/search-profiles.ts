@@ -124,13 +124,18 @@ export async function createSearchProfile(
   if (input.price_flexible != null) fullRow.price_flexible = input.price_flexible;
   if (input.search_name) fullRow.search_name = input.search_name;
 
+  console.log("[search-profiles] createSearchProfile — city:", input.city_name, "search_name:", input.search_name ?? "(none)");
+
   const { data, error } = await supabase
     .from("search_profiles")
     .insert(fullRow)
     .select()
     .single();
 
-  if (!error) return data as SearchProfile;
+  if (!error) {
+    console.log("[search-profiles] Insert OK — saved search_name:", (data as any).search_name ?? "(null)");
+    return data as SearchProfile;
+  }
 
   const msg = error.message ?? "";
   const code = (error as any).code ?? "";
@@ -139,14 +144,16 @@ export async function createSearchProfile(
     OPTIONAL_COLUMNS.some((col) => msg.includes(col));
 
   if (isSchemaError) {
-    console.error("[search-profiles] Some columns not yet in Supabase — saving core only:", error.message);
+    console.error("[search-profiles] Schema fallback triggered — saving without optional columns. Error:", error.message);
     const coreRow: Record<string, unknown> = {
       user_id: input.user_id,
       city: input.city_name,
+      city_name: input.city_name,
       price_min: input.price_min,
       price_max: input.price_max,
       bedrooms_min: input.bedrooms_min,
       size_min: input.size_min,
+      search_name: input.search_name ?? null,
     };
     const { data: fallbackData, error: fallbackError } = await supabase
       .from("search_profiles")
@@ -158,10 +165,11 @@ export async function createSearchProfile(
       console.error("[search-profiles] Fallback insert also failed:", fallbackError);
       throw new Error("Suchauftrag konnte nicht gespeichert werden. Überprüfe deinen Standort und versuche es erneut.");
     }
+    console.log("[search-profiles] Fallback insert OK — search_name:", (fallbackData as any).search_name ?? "(null)");
     return fallbackData as SearchProfile;
   }
 
-  console.error("[search-profiles] Insert failed:", error);
+  console.error("[search-profiles] Insert failed (non-schema error):", error);
   throw new Error("Suchauftrag konnte nicht gespeichert werden. Überprüfe deinen Standort und versuche es erneut.");
 }
 
@@ -171,6 +179,8 @@ export async function updateSearchProfile(
 ): Promise<{ success: boolean }> {
   const { data: { session } } = await supabase.auth.getSession();
   if (!session?.access_token) throw new Error("Nicht eingeloggt.");
+
+  console.log("[search-profiles] updateSearchProfile — id:", id, "city:", input.city_name, "search_name:", input.search_name ?? "(none/clear)");
 
   const body: Record<string, unknown> = {
     city: input.city_name,

@@ -3308,7 +3308,7 @@ export async function registerRoutes(
         "furnished", "property_types", "extra_features", "target_categories",
         "send_unclear", "price_flexible", "search_name",
       ];
-      const coreFields = ["city", "price_min", "price_max", "bedrooms_min", "size_min"];
+      const coreFields = ["city", "price_min", "price_max", "bedrooms_min", "size_min", "search_name"];
 
       const availableCols = await getSearchProfileColumns();
       const updateRow: Record<string, unknown> = {};
@@ -3316,7 +3316,7 @@ export async function registerRoutes(
         if ((f in body) && availableCols.has(f)) updateRow[f] = body[f];
       }
 
-      log(`[search-profiles] Updating profile=${profileId} for user=${user.id}, fields=${JSON.stringify(Object.keys(updateRow))}`);
+      log(`[search-profiles] Updating profile=${profileId} for user=${user.id}, search_name=${JSON.stringify(updateRow.search_name ?? "(not in row)")} fields=${JSON.stringify(Object.keys(updateRow))}`);
 
       const { error } = await supabase
         .from("search_profiles")

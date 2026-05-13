@@ -468,7 +468,7 @@ export default function OnboardingEmbedPage() {
             extra_features: filters.amenities.length > 0 ? filters.amenities : undefined,
             send_unclear: filters.sendUnclear,
             price_flexible: filters.priceFlexible,
-            search_name: searchDetails.searchName.trim() || city.name,
+            search_name: searchDetails.searchName.trim() || undefined,
             target_categories: searchDetails.suitableFor.length > 0 ? searchDetails.suitableFor : undefined,
           });
           // Backfill: show last 7 days of matching listings immediately in the Matches tab.
