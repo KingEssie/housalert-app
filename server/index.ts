@@ -96,6 +96,11 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get("/robots.txt", (_req, res) => {
+  res.type("text/plain");
+  res.send("User-agent: *\nAllow: /\n");
+});
+
 console.log("BOOT: server init");
 
 (async () => {
