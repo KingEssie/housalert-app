@@ -177,10 +177,7 @@ export default function TipsFlowPage() {
               data-testid="progress-bar-fill"
             />
           </div>
-          <div className="flex items-center justify-between mt-1.5">
-            <span className="text-[12px]" style={{ color: "#8f8798" }}>
-              Stap {currentStep + 1} van {totalSteps}
-            </span>
+          <div className="flex items-center justify-end mt-1.5">
             <span className="text-[12px] font-semibold" style={{ color: "#b9a7ff" }}>
               {progressPercent}% voltooid
             </span>
@@ -190,11 +187,11 @@ export default function TipsFlowPage() {
 
       <main className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-[200px]">
         <div
-          className="overflow-hidden"
+          className="overflow-hidden bg-white"
           style={{
-            backgroundColor: "#bbadfb",
-            borderRadius: 24,
-            boxShadow: "0 4px 32px rgba(187,173,251,0.25)",
+            borderRadius: 28,
+            border: "1px solid #ece7ef",
+            boxShadow: "0 2px 16px rgba(0,0,0,0.07)",
           }}
           data-testid={`card-step-${serverId}`}
         >
@@ -203,16 +200,16 @@ export default function TipsFlowPage() {
               <div
                 className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
                 style={{
-                  backgroundColor: "white",
-                  boxShadow: "0 1px 6px rgba(0,0,0,0.15)",
+                  backgroundColor: "#bbadfb",
+                  boxShadow: "0 2px 8px rgba(187,173,251,0.45)",
                 }}
               >
-                <span className="text-[14px] font-bold" style={{ color: "#111111" }}>
+                <span className="text-[14px] font-extrabold" style={{ color: "#111111" }}>
                   {currentStep + 1}
                 </span>
               </div>
               <h2
-                className="text-[18px] font-bold leading-tight"
+                className="text-[20px] font-extrabold leading-snug"
                 style={{ color: "#111111" }}
                 data-testid="text-step-title"
               >
@@ -221,7 +218,7 @@ export default function TipsFlowPage() {
             </div>
 
             <div
-              className="[&_p]:text-[#111111] [&_p]:opacity-100 [&_li]:text-[#111111] [&_span]:text-[#111111] [&_a]:text-[#223546] [&_a]:font-semibold [&_a]:no-underline hover:[&_a]:underline [&_.text-ha-text]:text-[#111111] [&_.text-ha-text-secondary]:text-[#333333] [&_.text-ha-text-muted]:text-[#444444] [&_.bg-white]:bg-white/40 [&_.rounded-2xl]:bg-white/30 [&_.rounded-2xl]:border-0 [&_button]:bg-white/30 [&_button]:text-[#111111] [&_button_span.text-ha-text]:text-[#111111]"
+              className="[&_p]:text-[#222222] [&_p]:text-[15px] [&_p]:font-medium [&_p]:leading-relaxed [&_li]:text-[#222222] [&_li]:text-[15px] [&_li]:font-medium [&_li]:leading-relaxed [&_a]:text-[#7c5cbf] [&_a]:font-semibold [&_a]:no-underline hover:[&_a]:underline [&_.text-ha-text]:text-[#222222] [&_.text-ha-text-secondary]:text-[#555555] [&_.text-ha-text-muted]:text-[#777777] [&_span]:text-[#222222]"
               data-testid="text-step-body"
             >
               {contentRenderer ? contentRenderer() : null}
