@@ -22,6 +22,7 @@ import {
   type NormalizedFilters,
 } from "@/lib/match-estimate";
 import { OBW } from "@/components/onboarding-ui";
+import { HousAlertLogo } from "@/components/housalert-logo";
 import MapView from "@/components/map-view";
 import { defaultCities, cityDistricts } from "../../../config/market";
 import {
@@ -183,27 +184,36 @@ const INIT_PREFS: PrefState = {
 
 // ── Page header shared across all steps ──────────────────────────────────────
 
-function StepHeader({ step, title, onClose }: { step: number; title: string; onClose: () => void }) {
+function StepHeader({ step, total = 4, onClose }: { step: number; total?: number; onClose: () => void }) {
+  const progress = total > 0 ? (step / total) * 100 : 0;
   return (
-    <header className="sticky top-0 z-20 w-full"
-      style={{ backgroundColor: "rgb(var(--ha-card))", borderBottom: `1px solid ${OBW.headerBorder}` }}>
-      <div className="relative max-w-[480px] mx-auto px-4 h-[56px] flex items-center justify-between">
-        <span className="text-[14px] rounded-full shrink-0 flex items-center px-3.5"
-          style={{ height: "32px", backgroundColor: "#bbadfb", color: "#111111", fontWeight: 900 }}
-          data-testid="badge-step">
-          {step}/4
-        </span>
-        <span className="absolute inset-0 flex items-center justify-center text-[19px] font-bold pointer-events-none"
-          style={{ color: OBW.text }}>
-          {title}
-        </span>
-        <button onClick={onClose}
-          className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input transition-colors"
-          data-testid="button-step-close">
-          <X className="w-[18px] h-[18px] text-ha-text-secondary" />
-        </button>
+    <div className="sticky top-0 z-20 w-full bg-white" style={{ borderBottom: `1px solid ${OBW.headerBorder}` }}>
+      <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
+        <HousAlertLogo size={24} />
+        <div className="flex items-center gap-2">
+          <span
+            className="text-[11px] font-semibold px-2.5 py-1 rounded-full tabular-nums"
+            style={{ backgroundColor: "#bbadfb", color: "#171429" }}
+            data-testid="badge-step"
+          >
+            {step}/{total}
+          </span>
+          <button
+            onClick={onClose}
+            className="w-9 h-9 flex items-center justify-center rounded-full bg-ha-surface hover:bg-ha-card-border transition-colors"
+            data-testid="button-step-close"
+          >
+            <X className="w-[18px] h-[18px] text-ha-text-secondary" />
+          </button>
+        </div>
       </div>
-    </header>
+      <div className="h-[4px] bg-ha-card-border overflow-hidden">
+        <div
+          className="h-full bg-ha-primary transition-all duration-500 ease-out"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+    </div>
   );
 }
 
@@ -292,20 +302,25 @@ function StepFooter({
 }) {
   const { t } = useTranslation();
   const count = estimate?.matchesLast7Days ?? null;
-  const btnMinWidth = editMode ? "min-w-[140px]" : "";
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-30"
-      style={{ backgroundColor: "#bbadfb", paddingBottom: "max(8px, env(safe-area-inset-bottom, 8px))" }}>
-      <div className={`max-w-[480px] mx-auto px-4 ${editMode ? "py-2" : "py-3"} flex items-center gap-3`}>
+    <div
+      className="fixed bottom-0 left-0 right-0 z-30"
+      style={{
+        backgroundColor: OBW.footerBg,
+        borderTop: `1px solid ${OBW.footerBorder}`,
+        paddingBottom: "max(8px, env(safe-area-inset-bottom, 8px))",
+      }}
+    >
+      <div className={`max-w-[480px] mx-auto px-5 ${editMode ? "py-2" : "py-2.5"} flex items-center gap-3`}>
         {showCount && (
           <div className="flex-1 min-w-0">
-            <p className="text-[10.5px] leading-tight" style={{ color: "#111111", fontWeight: 700 }}>
-              {t("onboarding.location.estimatedMatches")}
+            <p className="text-[10px] font-semibold tracking-[0.06em]" style={{ color: OBW.textMuted }}>
+              {t("onboardingUI.estimatedMatches")}
             </p>
-            <p className="text-[15px] leading-snug" style={{ color: "#111111", fontWeight: 800 }}>
+            <p className="text-[16px] font-semibold flex items-center gap-1" style={{ color: OBW.text }}>
               {fetching ? (
-                <span style={{ opacity: 0.6 }}>…</span>
+                <span style={{ opacity: 0.5 }}>…</span>
               ) : count != null ? (
                 <>{Math.max(1, count)} {t("onboardingUI.perWeek")}{Math.max(1, count) > 10 ? " 🔥" : ""}</>
               ) : (
@@ -315,23 +330,36 @@ function StepFooter({
           </div>
         )}
         {!showCount && <div className="flex-1" />}
-        <div className="flex items-center gap-2 shrink-0">
-          {!editMode && (
-            <button onClick={onBack}
-              className="w-[44px] h-[44px] rounded-full flex items-center justify-center active:scale-95 transition-transform"
-              style={{ backgroundColor: "white", border: "1.5px solid rgba(0,0,0,0.12)" }}
-              data-testid="button-step-back">
-              <ChevronLeft className="w-[18px] h-[18px]" style={{ color: "#111111" }} />
-            </button>
-          )}
-          <button onClick={onNext} disabled={nextDisabled || saving}
-            className={`h-[44px] px-7 rounded-full ${btnMinWidth} text-[14.5px] font-semibold text-white flex items-center justify-center gap-1.5 active:scale-[0.97] transition-transform disabled:opacity-40`}
-            style={{ background: "#223546" }}
-            data-testid="button-step-next">
-            {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-            {nextLabel}
+        {editMode ? (
+          <button
+            onClick={onBack}
+            className="h-[44px] px-5 rounded-full text-[14px] font-semibold flex items-center justify-center gap-1 shrink-0 active:scale-95 transition-transform"
+            style={{ border: `1.5px solid ${OBW.backBtnBorder}`, color: OBW.text, backgroundColor: "transparent" }}
+            data-testid="button-step-back"
+          >
+            <ChevronLeft className="w-[16px] h-[16px]" />
+            {t("common.back")}
           </button>
-        </div>
+        ) : (
+          <button
+            onClick={onBack}
+            className="w-[44px] h-[44px] rounded-full flex items-center justify-center shrink-0 active:scale-95 transition-transform"
+            style={{ border: `1.5px solid ${OBW.backBtnBorder}`, backgroundColor: "transparent" }}
+            data-testid="button-step-back"
+          >
+            <ChevronLeft className="w-[17px] h-[17px]" style={{ color: OBW.backBtnColor }} />
+          </button>
+        )}
+        <button
+          onClick={onNext}
+          disabled={nextDisabled || saving}
+          className={`${editMode ? "min-w-[120px]" : "min-w-[120px]"} px-6 h-[44px] rounded-full text-[14px] font-semibold transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-1.5 shrink-0`}
+          style={{ background: OBW.primary, color: "#223546", boxShadow: (nextDisabled || saving) ? "none" : "0 4px 14px rgb(var(--ha-primary) / 0.2)" }}
+          data-testid="button-step-next"
+        >
+          {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+          {nextLabel}
+        </button>
       </div>
     </div>
   );
@@ -593,7 +621,7 @@ export default function AppSearchWizard() {
   if (atLimit) {
     return (
       <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-card))" }}>
-        <StepHeader step={1} title="" onClose={goClose} />
+        <StepHeader step={1} onClose={goClose} />
         <div className="flex-1 flex items-center justify-center px-5 pb-10">
           <div className="text-center max-w-sm w-full">
             <div className="w-16 h-16 rounded-2xl bg-ha-surface flex items-center justify-center mx-auto mb-5">
@@ -634,7 +662,7 @@ export default function AppSearchWizard() {
     return (
       <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-card))" }}
         data-testid="screen-wizard-city">
-        <StepHeader step={1} title={t("onboarding.city.title")} onClose={goClose} />
+        <StepHeader step={1} onClose={goClose} />
 
         <main className="flex-1 max-w-[480px] mx-auto w-full px-5 pt-6 pb-[100px] overflow-y-auto">
           {/* Search input */}
@@ -690,14 +718,18 @@ export default function AppSearchWizard() {
         </main>
 
         {/* No footer with match count on step 1 — city not yet confirmed */}
-        <div className="fixed bottom-0 left-0 right-0 z-30"
-          style={{ backgroundColor: "#bbadfb", paddingBottom: "max(8px, env(safe-area-inset-bottom, 8px))" }}>
-          <div className="max-w-[480px] mx-auto px-5 py-3 flex justify-end">
-            <button onClick={() => { if (city) setStep(2); }}
+        <div
+          className="fixed bottom-0 left-0 right-0 z-30"
+          style={{ backgroundColor: OBW.footerBg, borderTop: `1px solid ${OBW.footerBorder}`, paddingBottom: "max(8px, env(safe-area-inset-bottom, 8px))" }}
+        >
+          <div className="max-w-[480px] mx-auto px-5 py-2.5 flex justify-end">
+            <button
+              onClick={() => { if (city) setStep(2); }}
               disabled={!city}
-              className="h-[44px] px-7 rounded-full text-[15px] font-semibold text-white disabled:opacity-40"
-              style={{ background: "#223546" }}
-              data-testid="button-city-next">
+              className="min-w-[120px] px-6 h-[44px] rounded-full text-[14px] font-semibold disabled:opacity-40 flex items-center justify-center"
+              style={{ background: OBW.primary, color: "#223546", boxShadow: city ? "0 4px 14px rgb(var(--ha-primary) / 0.2)" : "none" }}
+              data-testid="button-city-next"
+            >
               {t("common.next")}
             </button>
           </div>
@@ -742,7 +774,7 @@ export default function AppSearchWizard() {
         {isEdit ? (
           <EditHeader cityName={city?.name || ""} onBack={goBack} onMenu={() => setShowDeleteSheet(true)} />
         ) : (
-          <StepHeader step={2} title={t("onboarding.filters.headerTitle")} onClose={goClose} />
+          <StepHeader step={2} onClose={goClose} />
         )}
         {isEdit && <EditTabBar activeStep={2} onStep={setStep} />}
 
@@ -1003,7 +1035,7 @@ export default function AppSearchWizard() {
         {isEdit ? (
           <EditHeader cityName={city?.name || ""} onBack={goBack} onMenu={() => setShowDeleteSheet(true)} />
         ) : (
-          <StepHeader step={3} title={t("onboarding.filters.headerTitle")} onClose={goClose} />
+          <StepHeader step={3} onClose={goClose} />
         )}
         {isEdit && <EditTabBar activeStep={3} onStep={setStep} />}
 
@@ -1227,7 +1259,7 @@ export default function AppSearchWizard() {
       {isEdit ? (
         <EditHeader cityName={city?.name || ""} onBack={goBack} onMenu={() => setShowDeleteSheet(true)} />
       ) : (
-        <StepHeader step={4} title={t("onboardingWebPreferences.headerTitle")} onClose={goClose} />
+        <StepHeader step={4} onClose={goClose} />
       )}
       {isEdit && <EditTabBar activeStep={4} onStep={setStep} />}
 
