@@ -35,3 +35,9 @@ id = "aohAMEMXgAtY2MzsOXum1"
 uri = "file://attached_assets/listing-placeholder.png"
 type = "image"
 title = "Listing Placeholder Illustration"
+
+[[outputs]]
+id = "Se2Utv4OA2T9HLhjnasxx"
+uri = "file://housalert-source.zip"
+type = "unspecified"
+title = "HousAlert — Source Code"
