@@ -1,0 +1,172 @@
+URGENT Stripe subscription revenue model fix: paid subscriptions must auto-renew by default.
+
+Current issue:
+Subscription page shows:
+“Automatisch verlengen: Uit”
+
+For paid subscriptions this is wrong.
+HousAlert’s business model is recurring subscriptions, so paid subscriptions must renew automatically unless the user explicitly cancels.
+
+IMPORTANT:
+Do not break cancellation flow.
+Do not change one-time checkout prices unless needed.
+Fix Stripe + DB + frontend display.
+
+==================================================
+1. STRIPE CHECKOUT / PRICE LOGIC
+==================================================
+
+Audit Stripe checkout creation.
+
+Paid plans must be created as recurring Stripe subscriptions:
+- mode: "subscription"
+- recurring price IDs
+- monthly / 2-month / 3-month intervals must be recurring prices
+- do NOT create one-time payments for subscription plans
+
+Expected Stripe behavior:
+- paid subscription has cancel_at_period_end = false by default
+- current_period_end is the next renewal/end date
+- subscription renews automatically unless cancelled
+
+If any paid plan uses:
+- mode: "payment"
+- one-time price
+- cancel_at_period_end=true by default
+then fix it.
+
+==================================================
+2. TWO-MONTH PLAN
+==================================================
+
+For “Premium 2 maanden”:
+It should be a recurring subscription with:
+- interval = month
+- interval_count = 2
+
+Stripe Price should be recurring:
+- every 2 months
+- amount €34,99
+
+Do not treat this as a one-time 2-month pass.
+
+==================================================
+3. DB SYNC
+==================================================
+
+Store correctly:
+- status = active
+- plan = two_month
+- cancel_at_period_end = false
+- current_period_end = Stripe current_period_end
+- auto_renew = true or derived from cancel_at_period_end === false
+
+Do not set:
+- automatic_renewal = false
+- cancel_at_period_end = true
+unless the user has cancelled.
+
+==================================================
+4. SUBSCRIPTION PAGE DISPLAY
+==================================================
+
+For active paid subscriptions:
+
+Show:
+Automatisch verlengen: Aan
+
+If user cancels:
+Show:
+Automatisch verlengen: Uit
+Status: Opgezegd / Actief tot einde periode
+
+Rules:
+- active paid + cancel_at_period_end=false → Automatisch verlengen: Aan
+- active paid + cancel_at_period_end=true → Automatisch verlengen: Uit
+- free trial / refund window wording should not force renewal off
+
+==================================================
+5. REFUND WINDOW COPY
+==================================================
+
+During the 14-day cost-free cancellation window:
+
+Keep:
+“Kosteloos annuleren tot [date]”
+
+But automatic renewal should still show:
+“Aan”
+
+Because the subscription is recurring unless cancelled.
+
+==================================================
+6. WEBHOOKS
+==================================================
+
+Verify Stripe webhook handling:
+- customer.subscription.created
+- customer.subscription.updated
+- invoice.paid
+- invoice.payment_failed
+- customer.subscription.deleted
+
+Webhook must preserve:
+- cancel_at_period_end=false for active subscriptions
+- auto-renew true while not cancelled
+
+Do not accidentally mark auto-renew false because:
+- trial_end exists
+- refund window exists
+- current_period_end exists
+
+==================================================
+7. CANCEL FLOW MUST STILL WORK
+==================================================
+
+When user cancels:
+- Stripe subscription update:
+  cancel_at_period_end = true
+- DB updates:
+  cancel_at_period_end = true
+- UI:
+  Automatisch verlengen = Uit
+  Access remains until current_period_end
+- No duplicate cancel button
+
+==================================================
+8. ADMIN / DEBUG
+==================================================
+
+Add clear logs for subscription sync:
+- stripe_subscription_id
+- status
+- plan
+- cancel_at_period_end
+- current_period_end
+- auto_renew computed value
+- selected display renewal state
+
+==================================================
+9. SMOKE TEST
+==================================================
+
+Test A — New paid 2-month subscription:
+- Stripe subscription exists
+- mode is subscription
+- Stripe price is recurring every 2 months
+- cancel_at_period_end=false
+- HousAlert shows Automatisch verlengen: Aan
+
+Test B — Refund window:
+- Still shows Kosteloos annuleren tot [date]
+- Still shows Automatisch verlengen: Aan
+
+Test C — Cancel subscription:
+- Stripe cancel_at_period_end=true
+- HousAlert shows Automatisch verlengen: Uit
+- Access remains until current_period_end
+
+Test D — Renewal:
+- simulated invoice.paid extends current_period_end
+- subscription remains active
+- auto-renew stays Aan

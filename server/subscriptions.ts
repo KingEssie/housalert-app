@@ -194,7 +194,7 @@ export async function getSubscriptionStatus(userId: string): Promise<Subscriptio
   const isExpired = !hasAccess;
   const cancelAtPeriodEnd = row.status === "canceled" || row.cancel_at_period_end === true;
 
-  log(`[getSubscriptionStatus] user=${userId} DB row: status=${row.status}, trial_ends=${row.trial_ends_at}, period_ends=${row.current_period_ends_at}, updated_at=${row.updated_at} → computed: isTrial=${isTrial}, isPastDue=${isPastDue}, inGracePeriod=${inGracePeriod}, gracePeriodEndsAt=${gracePeriodEndsAt?.toISOString() ?? null}, isActive=${hasAccess}, isExpired=${isExpired}`);
+  log(`[getSubscriptionStatus] user=${userId} DB row: status=${row.status}, plan=${row.plan}, cancel_at_period_end=${row.cancel_at_period_end ?? null}, trial_ends=${row.trial_ends_at}, period_ends=${row.current_period_ends_at}, updated_at=${row.updated_at} → computed: isTrial=${isTrial}, isPastDue=${isPastDue}, inGracePeriod=${inGracePeriod}, gracePeriodEndsAt=${gracePeriodEndsAt?.toISOString() ?? null}, isActive=${hasAccess}, isExpired=${isExpired}, cancelAtPeriodEnd=${cancelAtPeriodEnd}, autoRenew=${!cancelAtPeriodEnd && hasAccess}`);
 
   return {
     status: row.status,
@@ -227,6 +227,9 @@ export async function updateSubscriptionFromCheckout(
     plan,
     stripe_customer_id: stripeCustomerId,
     stripe_subscription_id: stripeSubscriptionId,
+    // Always reset cancel_at_period_end when activating/reactivating so a
+    // re-subscriber doesn't inherit a stale true from their previous cancellation.
+    cancel_at_period_end: false,
     updated_at: new Date().toISOString(),
   };
 
@@ -260,6 +263,11 @@ export async function updateSubscriptionStatus(
   };
   if (currentPeriodEnd) {
     updateData.current_period_ends_at = currentPeriodEnd.toISOString();
+  }
+  // When a subscription becomes active (renewal, trial-to-active, etc.)
+  // clear any stale cancel_at_period_end flag from a prior cancellation.
+  if (status === "active") {
+    updateData.cancel_at_period_end = false;
   }
 
   // When skipIfAlreadyInStatus=true the update is a no-op if the row is already

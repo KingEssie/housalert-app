@@ -199,7 +199,9 @@ export default function SubscriptionDetailPage() {
     }] : []),
     {
       label: t("subscription.autoRenew"),
-      value: !isCanceled && !subscription?.isTrial && subscription?.isActive ? t("subscription.on") : t("subscription.off"),
+      // autoRenew is ON for any active paid plan (including during the refund window where isTrial=true).
+      // It is only OFF for: explicit cancellations, or pure free trials (no paid plan).
+      value: !isCanceled && subscription?.isActive && (!subscription?.isTrial || isPaidPlan) ? t("subscription.on") : t("subscription.off"),
       testId: "text-auto-renew",
     },
     {
