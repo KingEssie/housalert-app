@@ -145,8 +145,8 @@ export default function SubscriptionDetailPage() {
 
             <button
               onClick={() => navigate("/paywall")}
-              className="w-full h-[56px] rounded-full font-bold text-white text-[16px] transition-colors active:scale-[0.98]"
-              style={{ backgroundColor: "#223546" }}
+              className="w-full h-[56px] rounded-full font-bold text-[#111111] text-[16px] transition-colors active:scale-[0.98]"
+              style={{ backgroundColor: "#85fb8c" }}
               data-testid="button-upgrade-subscription"
             >
               {t("subscription.noSubCta")}

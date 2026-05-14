@@ -2094,8 +2094,8 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
 
           {/* Profile row */}
           <div className="flex items-center gap-3 px-4 py-4" data-testid="row-account-profile">
-            <div className="w-[46px] h-[46px] rounded-full bg-ha-primary flex items-center justify-center flex-shrink-0">
-              <span className="text-[17px] font-bold text-white" data-testid="text-account-initials">{initials}</span>
+            <div className="w-[46px] h-[46px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#bbadfb" }}>
+              <span className="text-[17px] font-bold text-[#111111]" data-testid="text-account-initials">{initials}</span>
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-[16px] font-semibold text-ha-text truncate" data-testid="text-account-name">{displayName}</p>

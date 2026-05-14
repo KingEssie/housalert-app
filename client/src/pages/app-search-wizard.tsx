@@ -895,8 +895,10 @@ export default function AppSearchWizard() {
                 className="w-full flex items-center justify-between px-5 py-3.5 text-left transition-colors hover:bg-ha-surface active:bg-ha-surface"
                 data-testid="button-delete-action"
               >
-                <span className="text-[15px] font-bold text-ha-text">Verwijder deze zoekopdracht</span>
-                <Trash2 className="w-4 h-4 text-ha-text" />
+                <span className="text-[15px] font-bold text-[#111111]">Verwijder deze zoekopdracht</span>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#223546" }}>
+                  <Trash2 className="w-[15px] h-[15px] text-white" />
+                </div>
               </button>
             </div>
           </div>
@@ -1166,8 +1168,10 @@ export default function AppSearchWizard() {
                 className="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-ha-surface active:bg-ha-surface transition-colors"
                 data-testid="button-delete-action"
               >
-                <span className="text-[15px] font-bold text-ha-text">Verwijder deze zoekopdracht</span>
-                <Trash2 className="w-4 h-4 text-ha-text" />
+                <span className="text-[15px] font-bold text-[#111111]">Verwijder deze zoekopdracht</span>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#223546" }}>
+                  <Trash2 className="w-[15px] h-[15px] text-white" />
+                </div>
               </button>
             </div>
           </div>
@@ -1308,8 +1312,10 @@ export default function AppSearchWizard() {
               className="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-ha-surface active:bg-ha-surface transition-colors"
               data-testid="button-delete-action"
             >
-              <span className="text-[15px] font-semibold text-ha-danger">Verwijder deze zoekopdracht</span>
-              <Trash2 className="w-4 h-4 text-ha-danger" />
+              <span className="text-[15px] font-semibold text-[#111111]">Verwijder deze zoekopdracht</span>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#223546" }}>
+                <Trash2 className="w-[15px] h-[15px] text-white" />
+              </div>
             </button>
           </div>
         </div>

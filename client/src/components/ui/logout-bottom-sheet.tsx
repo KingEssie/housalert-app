@@ -41,7 +41,8 @@ export function LogoutBottomSheet({ open, onClose, onConfirm, loading }: LogoutB
         <button
           onClick={onClose}
           disabled={loading}
-          className="w-full h-[58px] rounded-[10px] border border-ha-primary text-ha-primary text-[16px] font-semibold hover:bg-ha-primary/5 transition-colors active:scale-[0.98] disabled:opacity-50"
+          className="w-full h-[58px] rounded-full text-[#111111] text-[16px] font-semibold transition-colors active:scale-[0.98] disabled:opacity-50"
+          style={{ backgroundColor: "#bbadfb" }}
           data-testid="button-logout-cancel"
         >
           {t("profile.logoutSheetCancel")}
