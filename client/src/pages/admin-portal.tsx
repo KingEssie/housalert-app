@@ -11,7 +11,7 @@ import {
   Radio, Layers, Settings, Bell, Send, Power,
   LayoutDashboard, Signal, Image, Trash2, Pencil,
   Save, X, RotateCw, Menu, ChevronDown, MoreVertical, Star, EyeOff, Lock, ToggleLeft, ToggleRight, Sliders,
-  Monitor, Wifi, WifiOff, Clock, AlertCircle, CheckCircle2,
+  Monitor, Wifi, WifiOff, Clock, AlertCircle, CheckCircle2, Info,
 } from "lucide-react";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { Button } from "@/components/ui/button";
@@ -2037,6 +2037,7 @@ function AlertsTab() {
 
   if (loading) return <LoadingState />;
 
+  const isDomainsLimited = diagnostics?.domainsLimited === true;
   const diagStatusColor = diagnostics?.apiStatus === "operational" ? "#16a34a" : diagnostics?.apiStatus === "misconfigured" ? "#b45309" : "#e11d48";
   const diagStatusBg = diagnostics?.apiStatus === "operational" ? "#edfbf0" : diagnostics?.apiStatus === "misconfigured" ? "#fffbeb" : "#fff1f2";
   const diagStatusBorder = diagnostics?.apiStatus === "operational" ? "#bbf7d0" : diagnostics?.apiStatus === "misconfigured" ? "#fde68a" : "#fecdd3";
@@ -2077,7 +2078,7 @@ function AlertsTab() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[13px] font-bold" style={{ color: diagStatusColor }}>
-                  {diagnostics.apiStatus === "operational" ? "Resend API operational" : diagnostics.apiStatus === "misconfigured" ? "Resend API misconfigured" : "Resend API not configured"}
+                  {diagnostics.apiStatus === "operational" ? "Email sending operational" : diagnostics.apiStatus === "misconfigured" ? "Resend API misconfigured" : "Resend API not configured"}
                 </p>
                 {diagnostics.apiError && <p className="text-[11px] mt-0.5 leading-snug" style={{ color: diagStatusColor }}>{diagnostics.apiError}</p>}
               </div>
@@ -2085,6 +2086,20 @@ function AlertsTab() {
                 {diagnostics.apiStatus}
               </span>
             </div>
+
+            {/* Domain diagnostics limited notice */}
+            {isDomainsLimited && (
+              <div className="px-5 py-3 flex items-start gap-3" style={{ backgroundColor: "#fffbeb", borderBottom: "1px solid #fde68a" }}>
+                <Info className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#b45309" }} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[12px] font-semibold" style={{ color: "#b45309" }}>Domain diagnostics unavailable</p>
+                  <p className="text-[11px] mt-0.5 leading-snug" style={{ color: "#92400e" }}>
+                    The Resend API key is restricted to sending emails only. Email delivery is unaffected.
+                    To enable domain diagnostics, use a Resend key with domain read permissions.
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* Config rows */}
             {[

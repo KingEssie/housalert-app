@@ -7761,14 +7761,25 @@ export async function registerRoutes(
 
       let apiStatus: "operational" | "misconfigured" | "missing" = "missing";
       let apiError: string | null = null;
+      let domainsLimited = false;
       if (apiKeyConfigured && fromConfigured) {
         try {
           const { Resend } = await import("resend");
           const client = new Resend(apiKey);
           const domainsRes = await client.domains.list();
-          if ((domainsRes as any).error) {
-            apiStatus = "misconfigured";
-            apiError = (domainsRes as any).error?.message || "API key invalid";
+          const domainErr = (domainsRes as any).error;
+          if (domainErr) {
+            const isRestrictedKey =
+              domainErr.name === "restricted_api_key" ||
+              domainErr.statusCode === 401 ||
+              (typeof domainErr.message === "string" && domainErr.message.toLowerCase().includes("restricted"));
+            if (isRestrictedKey) {
+              apiStatus = "operational";
+              domainsLimited = true;
+            } else {
+              apiStatus = "misconfigured";
+              apiError = domainErr.message || "API key invalid";
+            }
           } else {
             apiStatus = "operational";
           }
@@ -7834,6 +7845,7 @@ export async function registerRoutes(
         fromEmail: fromConfigured ? fromEmail : null,
         replyTo: replyTo || null,
         apiError,
+        domainsLimited,
         lastSuccessfulSend,
         totalSent7d,
         totalSentToday,
