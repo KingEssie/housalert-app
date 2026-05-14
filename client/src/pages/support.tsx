@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { supabase } from "@/lib/supabase";
 import { apiFetch } from "@/lib/api-base";
-import { logoSrc } from "@/components/housalert-logo";
+import { HousAlertLogo } from "@/components/housalert-logo";
 import {
   ChevronLeft,
   ChevronRight,
@@ -136,12 +136,7 @@ export default function SupportPage() {
           <ChevronLeft className="w-5 h-5" style={{ color: "#111111" }} />
         </button>
 
-        <img
-          src={logoSrc}
-          alt="HousAlert"
-          className="object-contain"
-          style={{ height: 18, width: "auto", filter: "brightness(0)", mixBlendMode: "multiply" }}
-        />
+        <HousAlertLogo height={18} />
 
         <span
           className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wide"
