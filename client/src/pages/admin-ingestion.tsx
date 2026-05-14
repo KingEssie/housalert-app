@@ -284,7 +284,7 @@ export default function AdminIngestionPage() {
             </button>
             <div className="flex items-center gap-2">
               <Activity className="w-4 h-4" style={{ color: "#bbadfb" }} />
-              <h1 className="text-[16px] font-bold" style={{ color: "#111111" }} data-testid="text-admin-title">Ingestion Monitor</h1>
+              <h1 className="text-[16px] font-bold" style={{ color: "#111111" }} data-testid="text-admin-title">Import Monitor</h1>
             </div>
             {summary?.running && (
               <span
@@ -314,23 +314,23 @@ export default function AdminIngestionPage() {
           <div className="bg-ha-danger/5 border border-ha-danger/20 rounded-xl p-4 flex items-start gap-3" data-testid="alert-last-error">
             <XCircle className="w-5 h-5 text-ha-danger mt-0.5 flex-shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-ha-danger">Last run error</p>
+              <p className="text-sm font-semibold text-ha-danger">Last import error</p>
               <p className="text-sm text-ha-danger mt-0.5">{summary.lastError}</p>
             </div>
           </div>
         )}
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <StatCard label="Last Run" value={timeAgo(summary?.lastRunAt || null)} icon={Clock} sub={formatTime(summary?.lastRunAt || null)} />
+          <StatCard label="Last Import" value={timeAgo(summary?.lastRunAt || null)} icon={Clock} sub={formatTime(summary?.lastRunAt || null)} />
           <StatCard label="Duration" value={latestRun ? `${latestRun.duration_sec}s` : "—"} icon={Zap} sub={`${latestRun?.cities_count || 0} cities`} />
-          <StatCard label="Today Found" value={summary?.todayFetched ?? 0} icon={Database} />
-          <StatCard label="Today Inserted" value={summary?.todayInserted ?? 0} icon={TrendingUp} />
+          <StatCard label="Listings scanned today" value={summary?.todayFetched ?? 0} icon={Database} />
+          <StatCard label="New listings today" value={summary?.todayInserted ?? 0} icon={TrendingUp} />
         </div>
 
         {latestRun && (
           <div className="bg-white rounded-[20px] p-5" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }} data-testid="section-latest-run">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-[10px] font-bold uppercase tracking-[0.07em]" style={{ color: "#aaaaaa" }}>Latest Run</h2>
+              <h2 className="text-[10px] font-bold uppercase tracking-[0.07em]" style={{ color: "#aaaaaa" }}>Latest Import Run</h2>
               <StatusBadge status={latestRun.status} />
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center">
@@ -360,7 +360,7 @@ export default function AdminIngestionPage() {
 
         <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }} data-testid="section-cities">
           <div className="px-4 py-3 border-b border-gray-100">
-            <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Per City ({cities.length})</h2>
+            <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Results by city ({cities.length})</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -396,7 +396,7 @@ export default function AdminIngestionPage() {
 
         <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }} data-testid="section-sources">
           <div className="px-4 py-3 border-b border-gray-100">
-            <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Per Source</h2>
+            <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Results by source</h2>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -438,7 +438,7 @@ export default function AdminIngestionPage() {
         {summary && summary.runs.length > 1 && (
           <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }} data-testid="section-history">
             <div className="px-4 py-3 border-b border-gray-100">
-              <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Run History ({summary.runs.length})</h2>
+              <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Import history ({summary.runs.length})</h2>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -475,11 +475,11 @@ export default function AdminIngestionPage() {
 
         <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }} data-testid="section-test-push">
           <div className="px-4 py-3 border-b border-gray-100">
-            <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Push-Benachrichtigungen testen</h2>
+            <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Test push notifications</h2>
           </div>
           <div className="p-4 flex flex-col gap-3">
             <p className="text-sm text-ha-text-secondary">
-              Sendet eine Test-Push-Benachrichtigung an alle aktiven Push-Abos deines Admin-Kontos. Stelle sicher, dass Push in den Benachrichtigungseinstellungen aktiviert ist.
+              Sends a test push notification to all active push subscriptions on your admin account. Make sure push is enabled in your notification settings.
             </p>
             <div className="flex items-center gap-3">
               <button
@@ -489,7 +489,7 @@ export default function AdminIngestionPage() {
                 data-testid="button-test-push"
               >
                 {pushTesting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Bell className="w-4 h-4" />}
-                {pushTesting ? "Wird gesendet…" : "Test Push senden"}
+                {pushTesting ? "Sending…" : "Send test push"}
               </button>
               {pushResult && (
                 <span
@@ -506,7 +506,7 @@ export default function AdminIngestionPage() {
 
         <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }} data-testid="section-match-alignment">
           <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-            <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Match Alignment Debug</h2>
+            <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Match diagnostics</h2>
             <button
               onClick={loadDebugData}
               disabled={debugLoading}
@@ -514,12 +514,12 @@ export default function AdminIngestionPage() {
               data-testid="button-refresh-debug"
             >
               {debugLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Search className="w-3.5 h-3.5" />}
-              {debugLoading ? "Laden…" : "Analyse starten"}
+              {debugLoading ? "Loading…" : "Run analysis"}
             </button>
           </div>
           <div className="p-4">
             {!debugData && !debugLoading && !debugError && (
-              <p className="text-sm text-ha-text-secondary">Klicke "Analyse starten" um die E-Mail/App-Sichtbarkeit deines Admin-Kontos zu vergleichen.</p>
+              <p className="text-sm text-ha-text-secondary">Click "Run analysis" to compare which matches were emailed versus what is visible in the app for your admin account.</p>
             )}
             {debugError && (
               <div className="flex items-center gap-2 text-sm text-ha-danger" data-testid="text-debug-error">
@@ -532,27 +532,27 @@ export default function AdminIngestionPage() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
                   <div className="bg-ha-bg rounded-lg p-3">
                     <div className="text-lg font-bold text-ha-text">{debugData.total_match_rows ?? 0}</div>
-                    <div className="text-[10px] uppercase text-ha-text-secondary font-medium">Match-Zeilen</div>
+                    <div className="text-[10px] uppercase text-ha-text-secondary font-medium">Match records</div>
                   </div>
                   <div className="bg-ha-bg rounded-lg p-3">
                     <div className="text-lg font-bold text-ha-text">{debugData.app_visible_count ?? 0}</div>
-                    <div className="text-[10px] uppercase text-ha-text-secondary font-medium">App-sichtbar</div>
+                    <div className="text-[10px] uppercase text-ha-text-secondary font-medium">Visible in app</div>
                   </div>
                   <div className="bg-ha-bg rounded-lg p-3">
                     <div className="text-lg font-bold text-ha-text">{debugData.recent_emailed_count ?? 0}</div>
-                    <div className="text-[10px] uppercase text-ha-text-secondary font-medium">Zuletzt gemailt</div>
+                    <div className="text-[10px] uppercase text-ha-text-secondary font-medium">Recently emailed</div>
                   </div>
                   <div className={`rounded-lg p-3 ${(debugData.mismatch_count ?? 0) > 0 ? "bg-ha-danger/5" : "bg-green-50"}`}>
                     <div className={`text-lg font-bold ${(debugData.mismatch_count ?? 0) > 0 ? "text-ha-danger" : "text-green-700"}`}>{debugData.mismatch_count ?? 0}</div>
-                    <div className={`text-[10px] uppercase font-medium ${(debugData.mismatch_count ?? 0) > 0 ? "text-ha-danger" : "text-green-500"}`}>Abweichungen</div>
+                    <div className={`text-[10px] uppercase font-medium ${(debugData.mismatch_count ?? 0) > 0 ? "text-ha-danger" : "text-green-500"}`}>Mismatches</div>
                   </div>
                 </div>
 
                 {debugData.subscription && (
                   <div className="text-xs text-ha-text-secondary">
-                    Abo: <span className="font-medium text-ha-text">{debugData.subscription.status || "keins"}</span>
-                    {debugData.subscription.created_at && <> &middot; seit {formatTime(debugData.subscription.created_at)}</>}
-                    {debugData.emailed_at && <> &middot; letzter E-Mail-Versand: {formatTime(debugData.emailed_at)}</>}
+                    Subscription: <span className="font-medium text-ha-text">{debugData.subscription.status || "none"}</span>
+                    {debugData.subscription.created_at && <> &middot; since {formatTime(debugData.subscription.created_at)}</>}
+                    {debugData.emailed_at && <> &middot; last emailed: {formatTime(debugData.emailed_at)}</>}
                   </div>
                 )}
 
@@ -560,23 +560,23 @@ export default function AdminIngestionPage() {
                   <div>
                     <h3 className="text-xs font-bold text-ha-danger uppercase tracking-wide mb-2 flex items-center gap-1.5">
                       <AlertTriangle className="w-3.5 h-3.5" />
-                      Gemailt, aber NICHT in App sichtbar ({debugData.emailed_but_not_visible.length})
+                      Emailed but NOT visible in app ({debugData.emailed_but_not_visible.length})
                     </h3>
                     <div className="overflow-x-auto">
                       <table className="w-full text-xs">
                         <thead>
                           <tr className="bg-ha-danger/5 text-left">
-                            <th className="px-2 py-1.5 font-semibold text-ha-danger">Titel</th>
-                            <th className="px-2 py-1.5 font-semibold text-ha-danger">Stadt</th>
-                            <th className="px-2 py-1.5 font-semibold text-ha-danger">Quelle</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-danger">Title</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-danger">City</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-danger">Source</th>
                             <th className="px-2 py-1.5 font-semibold text-ha-danger">Matched</th>
-                            <th className="px-2 py-1.5 font-semibold text-ha-danger">Grund</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-danger">Reason</th>
                           </tr>
                         </thead>
                         <tbody>
                           {debugData.emailed_but_not_visible.map((item: any, i: number) => (
                             <tr key={i} className="border-t border-ha-danger/10">
-                              <td className="px-2 py-1.5 text-ha-text max-w-[200px] truncate">{item.title || <span className="text-ha-danger italic">gelöscht</span>}</td>
+                              <td className="px-2 py-1.5 text-ha-text max-w-[200px] truncate">{item.title || <span className="text-ha-danger italic">deleted</span>}</td>
                               <td className="px-2 py-1.5 text-ha-text-secondary">{item.city || "—"}</td>
                               <td className="px-2 py-1.5 text-ha-text-secondary">{item.source || "—"}</td>
                               <td className="px-2 py-1.5 text-ha-text-secondary whitespace-nowrap">{item.matched_at ? formatTime(item.matched_at) : "—"}</td>
@@ -593,16 +593,16 @@ export default function AdminIngestionPage() {
 
                 {debugData.recent_emailed.length > 0 && (
                   <div>
-                    <h3 className="text-xs font-bold text-ha-text uppercase tracking-wide mb-2">Zuletzt per E-Mail versendet ({debugData.recent_emailed.length})</h3>
+                    <h3 className="text-xs font-bold text-ha-text uppercase tracking-wide mb-2">Recently emailed ({debugData.recent_emailed.length})</h3>
                     <div className="overflow-x-auto">
                       <table className="w-full text-xs">
                         <thead>
                           <tr className="bg-ha-bg text-left">
-                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Titel</th>
-                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Stadt</th>
-                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Quelle</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Title</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">City</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Source</th>
                             <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Matched</th>
-                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Preis</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Price</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -623,18 +623,18 @@ export default function AdminIngestionPage() {
 
                 <div>
                   <h3 className="text-xs font-bold text-ha-text uppercase tracking-wide mb-2">
-                    App-sichtbare Matches ({debugData.app_visible?.length || 0} von {debugData.app_visible_count})
+                    Matches visible in app ({debugData.app_visible?.length || 0} of {debugData.app_visible_count})
                   </h3>
                   {debugData.app_visible?.length > 0 ? (
                     <div className="overflow-x-auto">
                       <table className="w-full text-xs">
                         <thead>
                           <tr className="bg-ha-bg text-left">
-                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Titel</th>
-                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Stadt</th>
-                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Quelle</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Title</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">City</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Source</th>
                             <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Matched</th>
-                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Preis</th>
+                            <th className="px-2 py-1.5 font-semibold text-ha-text-secondary">Price</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -651,14 +651,14 @@ export default function AdminIngestionPage() {
                       </table>
                     </div>
                   ) : (
-                    <p className="text-xs text-ha-text-secondary">Keine app-sichtbaren Matches gefunden.</p>
+                    <p className="text-xs text-ha-text-secondary">No matches visible in app yet.</p>
                   )}
                 </div>
 
                 {debugData.recent_emailed.length === 0 && debugData.emailed_but_not_visible.length === 0 && (
                   <div className="flex items-center gap-2 text-sm text-ha-text-secondary bg-ha-bg rounded-lg p-3">
                     <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0" />
-                    Keine E-Mails in diesem Zyklus versendet — es gibt noch keine Vergleichsdaten. Warte bis zum nächsten Ingestion-Zyklus mit aktiven Matches.
+                    No emails sent in this cycle — no comparison data yet. Wait for the next import cycle with active matches.
                   </div>
                 )}
               </div>
@@ -667,7 +667,7 @@ export default function AdminIngestionPage() {
         </div>
 
         <div className="text-center text-xs text-ha-text-secondary pb-6">
-          Auto-refreshes every 30s &middot; Next ingestion: {formatTime(summary?.nextRunAt || null)}
+          Auto-refreshes every 30s &middot; Next import: {formatTime(summary?.nextRunAt || null)}
         </div>
       </main>
     </div>

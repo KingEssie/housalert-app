@@ -191,14 +191,14 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
   function alertMeta(a: any): { title: string; impact: string; actionLabel: string; actionTab: TabId } {
     const map: Record<string, { title: string; impact: string; actionLabel: string; actionTab: TabId }> = {
       scraper_stale: {
-        title: "Ingestion not running",
+        title: "Imports not running",
         impact: "No new listings are being imported. Users may miss matches.",
-        actionLabel: "View ingestion →",
+        actionLabel: "View imports →",
         actionTab: "alerts",
       },
       match_drop: {
         title: "Match volume dropped sharply",
-        impact: "Significantly fewer matches than yesterday — ingestion or matching may be broken.",
+        impact: "Significantly fewer matches than yesterday — listing imports or matching may be broken.",
         actionLabel: "View sources →",
         actionTab: "sources",
       },
@@ -209,9 +209,9 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
         actionTab: "alerts",
       },
       ingestion_failure: {
-        title: "Ingestion run failed",
-        impact: "One or more ingestion runs completed with errors in the last 24 hours.",
-        actionLabel: "View ingestion →",
+        title: "Import run failed",
+        impact: "One or more import runs completed with errors in the last 24 hours.",
+        actionLabel: "View imports →",
         actionTab: "alerts",
       },
     };
@@ -254,7 +254,7 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
     stripe: { name: "Stripe Payments", Icon: CreditCard },
     email: { name: "Email (Resend)", Icon: Mail },
     pushNotifications: { name: "Push Notifications", Icon: Smartphone },
-    ingestionScheduler: { name: "Ingestion Scheduler", Icon: Radio },
+    ingestionScheduler: { name: "Import Automation", Icon: Radio },
     replitDb: { name: "Replit DB", Icon: Database },
     supabaseDb: { name: "Supabase DB", Icon: Layers },
     placesApi: { name: "Places API", Icon: Globe },
@@ -404,8 +404,8 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
         <div className="grid grid-cols-3 lg:grid-cols-6 gap-2">
           {([
             { icon: Bell, label: "Alerts", tab: "alerts" as TabId },
-            { icon: Radio, label: "Ingestion", tab: "alerts" as TabId },
-            { icon: Mail, label: "Email test", tab: "system" as TabId },
+            { icon: Radio, label: "Imports", tab: "alerts" as TabId },
+            { icon: Mail, label: "Email test", tab: "alerts" as TabId },
             { icon: Users, label: "Users", tab: "users" as TabId },
             { icon: Layers, label: "Listings", tab: "listings" as TabId },
             { icon: Settings, label: "System", tab: "system" as TabId },
@@ -847,31 +847,31 @@ function ImagesTab() {
             <RefreshCw className={`w-3.5 h-3.5 mr-1 ${refreshing ? "animate-spin" : ""}`} /> Refresh
           </Button>
           <Button size="sm" onClick={triggerFullBackfill} disabled={triggeringBackfill} className="rounded-full bg-ha-primary hover:bg-ha-primary/90 text-white" data-testid="button-trigger-backfill">
-            <RotateCw className={`w-3.5 h-3.5 mr-1 ${triggeringBackfill ? "animate-spin" : ""}`} /> {triggeringBackfill ? "Running..." : "Run backfill"}
+            <RotateCw className={`w-3.5 h-3.5 mr-1 ${triggeringBackfill ? "animate-spin" : ""}`} /> {triggeringBackfill ? "Running..." : "Sync photos"}
           </Button>
         </div>
       </div>
 
       {backfillStatus && (
         <div>
-          <SectionHeader title="Backfill pipeline" />
+          <SectionHeader title="Photo sync status" />
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-            <MetricCard label="Status" value={backfillStatus.enabled ? "Enabled" : "Disabled"} icon={Activity} />
-            <MetricCard label="Running" value={backfillStatus.running ? "Yes" : "No"} icon={Loader2} />
+            <MetricCard label="Status" value={backfillStatus.enabled ? "Active" : "Paused"} icon={Activity} />
+            <MetricCard label="Currently running" value={backfillStatus.running ? "Yes" : "No"} icon={Loader2} />
             <MetricCard label="Batch size" value={backfillStatus.batchSize} icon={Layers} />
-            <MetricCard label="Total updated" value={backfillStatus.cumulativeUpdates} icon={CheckCircle} />
+            <MetricCard label="Photos synced" value={backfillStatus.cumulativeUpdates} icon={CheckCircle} />
           </div>
           {backfillStatus.lastRun && (
             <div className={`${CARD} p-4 mt-3`}>
-              <p className="text-[12px] text-ha-text-secondary font-medium mb-1">Last run</p>
+              <p className="text-[12px] text-ha-text-secondary font-medium mb-1">Last sync</p>
               <p className="text-[13px] text-ha-text font-medium">{new Date(backfillStatus.lastRun.timestamp).toLocaleString()}</p>
-              <p className="text-[11px] text-ha-text-secondary">Duration: {backfillStatus.lastRun.duration_ms}ms · Updated: {backfillStatus.lastRun.updated} · Failed: {backfillStatus.lastRun.failed}</p>
+              <p className="text-[11px] text-ha-text-secondary">Took {backfillStatus.lastRun.duration_ms}ms · Updated: {backfillStatus.lastRun.updated} · Failed: {backfillStatus.lastRun.failed}</p>
             </div>
           )}
           {backfillStatus.recentRuns && backfillStatus.recentRuns.length > 0 && (
             <div className={`${CARD} mt-3 divide-y divide-ha-hover-bg`}>
               <div className="px-4 py-2">
-                <p className="text-[12px] font-semibold text-ha-text-secondary uppercase tracking-wider">Recent runs</p>
+                <p className="text-[12px] font-semibold text-ha-text-secondary uppercase tracking-wider">Recent syncs</p>
               </div>
               {backfillStatus.recentRuns.slice(0, 8).map((run: any, i: number) => (
                 <div key={i} className="px-4 py-2.5 flex items-center justify-between text-[12px]">
@@ -920,7 +920,7 @@ function ImagesTab() {
                         data-testid={`button-backfill-${s.source}`}
                       >
                         <RotateCw className={`w-3 h-3 mr-1 ${sourceBackfilling === s.source ? "animate-spin" : ""}`} />
-                        Backfill
+                        Sync
                       </Button>
                     </div>
                   </div>
@@ -1073,7 +1073,7 @@ function SourcesTab() {
         <div className={`${CARD} p-4 flex items-center gap-3`}>
           <StatusBadge status={latestRun.status} />
           <div className="flex-1 min-w-0">
-            <p className="text-[13px] font-semibold text-ha-text">Last ingestion run</p>
+            <p className="text-[13px] font-semibold text-ha-text">Last import run</p>
             <p className="text-[11px] text-ha-text-secondary">{new Date(latestRun.started_at).toLocaleString()} · {latestRun.duration_sec}s</p>
           </div>
         </div>
@@ -1128,7 +1128,7 @@ function SourcesTab() {
                       data-testid={`button-scrape-${sourceName}`}
                     >
                       <RotateCw className={`w-3 h-3 mr-1 ${sourceBackfilling === sourceName ? "animate-spin" : ""}`} />
-                      Backfill
+                      Sync
                     </Button>
                   </div>
                 </div>
@@ -1802,7 +1802,7 @@ function SystemTab() {
   const labels: Record<string, { name: string; desc: string }> = {
     stripe: { name: "Stripe Payments", desc: "Payment processing" },
     placesApi: { name: "Google Places API", desc: "Location services" },
-    ingestionScheduler: { name: "Ingestion Scheduler", desc: "Listing scraper" },
+    ingestionScheduler: { name: "Import Automation", desc: "Automatic listing imports" },
     email: { name: "Email (Resend)", desc: "Email delivery" },
     pushNotifications: { name: "Push Notifications", desc: "Mobile alerts" },
     replitDb: { name: "Replit PostgreSQL", desc: "Primary database" },
@@ -1834,22 +1834,22 @@ function SystemTab() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
             <MetricCard label="Emails" value={matchStats.emailsToday} icon={Mail} />
             <MetricCard label="Push" value={matchStats.pushesToday} icon={Smartphone} />
-            <MetricCard label="Real failures 7d" value={matchStats.emailFailuresWeek ?? matchStats.failuresWeek} icon={AlertTriangle} />
-            <MetricCard label="Skipped (no sub) 7d" value={matchStats.emailSkippedNoSubWeek ?? 0} icon={XCircle} />
+            <MetricCard label="Delivery failures (7d)" value={matchStats.emailFailuresWeek ?? matchStats.failuresWeek} icon={AlertTriangle} />
+            <MetricCard label="Locked by paywall (7d)" value={matchStats.emailSkippedNoSubWeek ?? 0} icon={XCircle} />
           </div>
         </div>
       )}
 
       {backfillStatus && (
         <div>
-          <SectionHeader title="Image backfill pipeline" />
+          <SectionHeader title="Photo sync" />
           <div className={`${CARD} p-4 space-y-3`}>
             <div className="flex items-center justify-between text-[13px]">
               <span className="text-ha-text-secondary">Status</span>
               <StatusBadge status={backfillStatus.enabled ? "active" : "disabled"} />
             </div>
             <div className="flex items-center justify-between text-[13px]">
-              <span className="text-ha-text-secondary">Running</span>
+              <span className="text-ha-text-secondary">Currently running</span>
               <span className="font-medium text-ha-text">{backfillStatus.running ? "Yes" : "No"}</span>
             </div>
             <div className="flex items-center justify-between text-[13px]">
@@ -1857,19 +1857,19 @@ function SystemTab() {
               <span className="font-medium text-ha-text">{backfillStatus.batchSize}</span>
             </div>
             <div className="flex items-center justify-between text-[13px]">
-              <span className="text-ha-text-secondary">Total updated</span>
+              <span className="text-ha-text-secondary">Photos synced total</span>
               <span className="font-medium text-ha-text">{backfillStatus.cumulativeUpdates}</span>
             </div>
             <div className="flex items-center justify-between text-[13px]">
-              <span className="text-ha-text-secondary">Enabled sources</span>
+              <span className="text-ha-text-secondary">Active sources</span>
               <span className="font-medium text-ha-text text-right max-w-[60%] truncate">{(backfillStatus.enabledSources || []).join(", ") || "—"}</span>
             </div>
             {backfillStatus.lastRun && (
               <>
                 <div className="border-t border-ha-hover-bg pt-2 mt-2">
-                  <p className="text-[12px] text-ha-text-secondary font-medium mb-1">Last run</p>
+                  <p className="text-[12px] text-ha-text-secondary font-medium mb-1">Last sync</p>
                   <p className="text-[13px] text-ha-text">{new Date(backfillStatus.lastRun.timestamp).toLocaleString()}</p>
-                  <p className="text-[11px] text-ha-text-secondary">{backfillStatus.lastRun.duration_ms}ms · {backfillStatus.lastRun.updated} updated · {backfillStatus.lastRun.failed} failed</p>
+                  <p className="text-[11px] text-ha-text-secondary">Took {backfillStatus.lastRun.duration_ms}ms · {backfillStatus.lastRun.updated} updated · {backfillStatus.lastRun.failed} failed</p>
                 </div>
               </>
             )}
@@ -1878,7 +1878,7 @@ function SystemTab() {
           {backfillStatus.recentRuns && backfillStatus.recentRuns.length > 0 && (
             <div className={`${CARD} mt-3 divide-y divide-ha-hover-bg`}>
               <div className="px-4 py-2">
-                <p className="text-[12px] font-semibold text-ha-text-secondary uppercase tracking-wider">Recent backfill runs</p>
+                <p className="text-[12px] font-semibold text-ha-text-secondary uppercase tracking-wider">Recent sync history</p>
               </div>
               {backfillStatus.recentRuns.slice(0, 5).map((run: any, i: number) => (
                 <div key={i} className="px-4 py-2.5 flex items-center justify-between text-[12px]">
@@ -2060,8 +2060,8 @@ function AlertsTab() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <MetricCard label="Emails today" value={stats.emailsToday} icon={Mail} />
           <MetricCard label="Push today" value={stats.pushToday} icon={Smartphone} />
-          <MetricCard label="Failures 7d" value={stats.undelivered7d} icon={AlertTriangle} />
-          <MetricCard label="Skipped (no sub) 7d" value={stats.skippedNoSub7d ?? 0} icon={XCircle} />
+          <MetricCard label="Delivery failures (7d)" value={stats.undelivered7d} icon={AlertTriangle} />
+          <MetricCard label="Locked by paywall (7d)" value={stats.skippedNoSub7d ?? 0} icon={XCircle} />
         </div>
       )}
 
