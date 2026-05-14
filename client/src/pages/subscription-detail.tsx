@@ -103,7 +103,7 @@ export default function SubscriptionDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen" style={{ backgroundColor: "#f6f6f6" }}>
-        <AppHeader title={t("subscription.title")} onBack={() => navigate("/account")} />
+        <AppHeader title={t("subscription.title")} onBack={() => navigate("/settings")} />
         <div className="max-w-lg mx-auto px-4 pt-4">
           <div
             className="bg-white rounded-[28px] p-6 animate-pulse space-y-5"
@@ -121,7 +121,7 @@ export default function SubscriptionDetailPage() {
   if (!subscription?.isActive && !subscription?.isTrial) {
     return (
       <div className="min-h-screen" style={{ backgroundColor: "#f6f6f6" }} data-testid="page-subscription-detail">
-        <AppHeader title={t("subscription.title")} onBack={() => navigate("/account")} />
+        <AppHeader title={t("subscription.title")} onBack={() => navigate("/settings")} />
         <div className="max-w-lg mx-auto px-4 pt-6 pb-12">
           <div
             className="bg-white rounded-[28px] p-7 flex flex-col items-center text-center"
@@ -213,7 +213,7 @@ export default function SubscriptionDetailPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#f6f6f6" }} data-testid="page-subscription-detail">
-      <AppHeader title={t("subscription.title")} onBack={() => navigate("/account")} />
+      <AppHeader title={t("subscription.title")} onBack={() => navigate("/settings")} />
 
       <div className="max-w-lg mx-auto px-4 pt-3 pb-12 flex flex-col gap-4">
 
