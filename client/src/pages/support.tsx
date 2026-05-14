@@ -264,7 +264,7 @@ export default function SupportPage() {
         style={{ backgroundColor: "#f6f6f6" }}
       >
         <button
-          onClick={() => { if (window.history.length > 1) window.history.back(); else navigate("/settings"); }}
+          onClick={() => navigate("/account")}
           className="w-10 h-10 flex items-center justify-center rounded-full flex-shrink-0"
           style={{ backgroundColor: "#ffffff", border: "1px solid #e8e8e8" }}
           data-testid="button-back"
