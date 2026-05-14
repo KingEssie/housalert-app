@@ -139,37 +139,37 @@ export default function TipsFlowPage() {
   const contentRenderer = tipContent[serverId];
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#171429" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f6f6f6" }}>
       <header
-        className="sticky top-0 z-10"
-        style={{ backgroundColor: "#223546", paddingTop: "env(safe-area-inset-top)" }}
+        className="sticky top-0 z-10 bg-white"
+        style={{ borderBottom: "1px solid #ece7ef", boxShadow: "0 1px 4px rgba(0,0,0,0.05)", paddingTop: "env(safe-area-inset-top)" }}
       >
         <div className="max-w-[480px] mx-auto flex items-center h-14 px-4 gap-2">
           <button
             onClick={handleBack}
             className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-opacity active:opacity-70"
-            style={{ backgroundColor: "rgba(255,255,255,0.12)" }}
+            style={{ backgroundColor: "rgba(0,0,0,0.05)" }}
             data-testid="button-tips-back"
           >
-            <ArrowLeft className="w-5 h-5 text-white" />
+            <ArrowLeft className="w-5 h-5" style={{ color: "#223546" }} />
           </button>
-          <h1 className="flex-1 text-[15px] font-semibold text-white truncate">
+          <h1 className="flex-1 text-[15px] font-semibold truncate" style={{ color: "#111111" }}>
             Vergroot je kansen met deze tips!
           </h1>
           <button
             onClick={handleClose}
             className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-opacity active:opacity-70"
-            style={{ backgroundColor: "rgba(255,255,255,0.12)" }}
+            style={{ backgroundColor: "rgba(0,0,0,0.05)" }}
             data-testid="button-tips-close"
           >
-            <X className="w-5 h-5 text-white" />
+            <X className="w-5 h-5" style={{ color: "#223546" }} />
           </button>
         </div>
 
         <div className="max-w-[480px] mx-auto px-4 pb-3.5">
           <div
             className="w-full h-[5px] rounded-full overflow-hidden"
-            style={{ backgroundColor: "rgba(255,255,255,0.15)" }}
+            style={{ backgroundColor: "rgba(0,0,0,0.08)" }}
           >
             <div
               className="h-full rounded-full transition-all duration-500"
@@ -178,10 +178,10 @@ export default function TipsFlowPage() {
             />
           </div>
           <div className="flex items-center justify-between mt-1.5">
-            <span className="text-[12px]" style={{ color: "rgba(255,255,255,0.65)" }}>
+            <span className="text-[12px]" style={{ color: "#8f8798" }}>
               Stap {currentStep + 1} van {totalSteps}
             </span>
-            <span className="text-[12px] font-semibold" style={{ color: "#bbadfb" }}>
+            <span className="text-[12px] font-semibold" style={{ color: "#b9a7ff" }}>
               {progressPercent}% voltooid
             </span>
           </div>
@@ -231,10 +231,10 @@ export default function TipsFlowPage() {
       </main>
 
       <div
-        className="fixed bottom-0 left-0 right-0 z-10"
+        className="fixed bottom-0 left-0 right-0 z-10 bg-white"
         style={{
-          backgroundColor: "#223546",
-          borderTop: "1px solid rgba(255,255,255,0.1)",
+          borderTop: "1px solid #ece7ef",
+          boxShadow: "0 -1px 6px rgba(0,0,0,0.05)",
           paddingBottom: "max(calc(env(safe-area-inset-bottom, 0px) + 8px), 14px)",
         }}
       >
@@ -254,7 +254,7 @@ export default function TipsFlowPage() {
             >
               {isChecked && <Check className="w-3 h-3" style={{ color: "#111111" }} strokeWidth={3} />}
             </div>
-            <span className="text-[15px] font-medium text-white">
+            <span className="text-[15px] font-medium" style={{ color: "#111111" }}>
               Markeer als voltooid
             </span>
           </button>
