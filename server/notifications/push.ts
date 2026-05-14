@@ -68,7 +68,7 @@ export async function sendPushToUser(
       log(`[PUSH] Sent to user ${userId.substring(0, 8)}... endpoint=${sub.endpoint.substring(0, 40)}...`);
     } catch (err: any) {
       const statusCode = err.statusCode;
-      if (statusCode === 410 || statusCode === 404) {
+      if (statusCode === 410 || statusCode === 404 || statusCode === 401) {
         await supabase.from("push_subscriptions").delete().eq("id", sub.id);
         removed++;
         log(`[PUSH] Removed stale subscription (${statusCode}) for user ${userId.substring(0, 8)}...`);

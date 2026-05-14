@@ -56,7 +56,12 @@ export default function PreferencesPage() {
           setNotifUpdating(null);
           return;
         }
-        await subscribeToPush(session.access_token);
+        const subscribeOk = await subscribeToPush(session.access_token);
+        if (!subscribeOk) {
+          toast({ title: t("notifications.pushFailedTitle"), description: t("notifications.pushFailedDesc"), variant: "destructive" });
+          setNotifUpdating(null);
+          return;
+        }
       } else if (key === "push_enabled" && currentVal) {
         await unsubscribeFromPush(session.access_token);
       }

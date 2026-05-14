@@ -840,7 +840,7 @@ export async function registerRoutes(
       const { error } = await supabase
         .from("push_subscriptions")
         .upsert(
-          { user_id: user.id, endpoint, p256dh, auth, created_at: new Date().toISOString() },
+          { user_id: user.id, endpoint, p256dh, auth, updated_at: new Date().toISOString() },
           { onConflict: "endpoint" }
         );
 
@@ -1028,7 +1028,7 @@ export async function registerRoutes(
       const { error } = await supabase
         .from("push_subscriptions")
         .upsert(
-          { user_id: user.id, endpoint, p256dh, auth, created_at: new Date().toISOString() },
+          { user_id: user.id, endpoint, p256dh, auth, updated_at: new Date().toISOString() },
           { onConflict: "endpoint" }
         );
 

@@ -9,8 +9,11 @@ CREATE TABLE IF NOT EXISTS push_subscriptions (
   endpoint text NOT NULL UNIQUE,
   p256dh text NOT NULL,
   auth text NOT NULL,
-  created_at timestamptz NOT NULL DEFAULT now()
+  created_at timestamptz NOT NULL DEFAULT now(),
+  updated_at timestamptz
 );
+
+ALTER TABLE push_subscriptions ADD COLUMN IF NOT EXISTS updated_at timestamptz;
 
 CREATE INDEX IF NOT EXISTS idx_push_subscriptions_user_id ON push_subscriptions(user_id);
 
