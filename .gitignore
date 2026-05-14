@@ -1,6 +1,54 @@
-node_modules
-dist
-.DS_Store
-server/public
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+server/public/
+
+# Capacitor generated (rebuilt by `npx cap sync`)
+android/app/src/main/assets/public/
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+android/app/src/main/res/xml/config.xml
+android/capacitor-cordova-android-plugins/
+ios/App/App/public/
+ios/App/capacitor.config.json
+ios/App/capacitor.plugins.json
+
+# Gradle / Android build artefacts (handled by android/.gitignore too)
+android/build/
+android/.gradle/
+android/app/build/
+android/local.properties
+
+# Xcode build artefacts
+ios/App/build/
+ios/App/Pods/
+ios/.xcode.env.local
+
+# Environment / secrets — NEVER commit these
+.env
+.env.*
+*.local
+!.env.example
+
+# Vite
 vite.config.ts.*
+
+# macOS
+.DS_Store
+
+# Archives / large binaries — download separately
+*.zip
 *.tar.gz
+*.tar
+*.gz
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.idea/
+*.iml
+.vscode/
