@@ -2446,19 +2446,30 @@ export async function registerRoutes(
         cancel_at_period_end: true,
       });
 
-      log(`[subscription-cancel] cancel_at_period_end=true set for user=${user.id.substring(0, 8)} sub=${subRow.stripe_subscription_id} stripeStatus=${stripeSub.status}`);
-
-      // For trialing subscriptions, use trial_end; for active, use current_period_end.
-      // This ensures access is preserved until the true end of the billing period.
+      const stripeSubStatus = stripeSub.status;
       const trialEnd = (stripeSub as any).trial_end;
-      const periodEndRaw = (trialEnd && trialEnd > 0)
-        ? trialEnd
-        : ((stripeSub as any).current_period_end ?? null);
-      const periodEnd = periodEndRaw && periodEndRaw > 0 ? new Date(periodEndRaw * 1000) : null;
+      const currentPeriodEnd = (stripeSub as any).current_period_end;
+
+      log(`[subscription-cancel] cancel_at_period_end=true set for user=${user.id.substring(0, 8)} sub=${subRow.stripe_subscription_id} stripeStatus=${stripeSubStatus} trial_end=${trialEnd ?? "null"} current_period_end=${currentPeriodEnd ?? "null"}`);
+
+      // CRITICAL: select access boundary based on Stripe status — never use trial_end for a paid active sub.
+      // An active paid sub that once trialed still has trial_end populated, so checking `trial_end > 0`
+      // alone (without checking status) would wrongly pick the trial end date as the access cutoff.
+      let periodEnd: Date | null;
+      if (stripeSubStatus === "trialing" && trialEnd && trialEnd > 0) {
+        periodEnd = new Date(trialEnd * 1000);
+        log(`[subscription-cancel] status=trialing → using trial_end=${periodEnd.toISOString()} as access boundary`);
+      } else if (currentPeriodEnd && currentPeriodEnd > 0) {
+        periodEnd = new Date(currentPeriodEnd * 1000);
+        log(`[subscription-cancel] status=${stripeSubStatus} → using current_period_end=${periodEnd.toISOString()} as access boundary`);
+      } else {
+        periodEnd = null;
+        log(`[subscription-cancel] WARNING: no valid period end found — access boundary unset`);
+      }
 
       await updateSubscriptionStatus(subRow.stripe_subscription_id, "canceled", periodEnd ?? undefined);
 
-      log(`[subscription-cancel] DB updated: user=${user.id.substring(0, 8)} → canceled, periodEnd=${periodEnd?.toISOString() ?? "none"}`);
+      log(`[subscription-cancel] DB updated: user=${user.id.substring(0, 8)} → canceled, periodEnd=${periodEnd?.toISOString() ?? "none"} cancel_at_period_end=true`);
 
       const status = await getSubscriptionStatus(user.id);
       return res.json({ success: true, subscription: status });
@@ -3373,6 +3384,19 @@ export async function registerRoutes(
         log(`[search-profiles] POST insert error: ${error.message}`);
         return res.status(500).json({ error: error.message });
       }
+
+      const profileId = data.id;
+      const profileCity = (data as any).city_name || (data as any).city || "unknown";
+      log(`[search-profiles] POST created profile=${profileId} city="${profileCity}" user=${user.id.substring(0, 8)} active=true — triggering immediate backfill`);
+
+      // Fire-and-forget: seed matches immediately so new users see results without waiting for the next scheduled run.
+      backfillMatchesForSearchProfile(profileId)
+        .then((count: number) => {
+          log(`[search-profiles] Backfill done: profile=${profileId} city="${profileCity}" matches=${count}`);
+        })
+        .catch((e: any) => {
+          log(`[search-profiles] Backfill error for profile=${profileId}: ${e.message}`);
+        });
 
       return res.status(201).json(data);
     } catch (err: any) {

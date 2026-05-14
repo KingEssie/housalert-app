@@ -1,0 +1,185 @@
+URGENT pre-launch fix: paid subscription duration, match visibility after signup, and subscription page branding.
+
+Current issues:
+1. A user bought a 2-month paid subscription, but the app showed it as a 14-day trial/proefperiode.
+2. After cancellation, the subscription only remains active until 28 May 2026 instead of the real paid 2-month period end.
+3. New account/search profile shows no matches, while matches should appear after creating a profile.
+4. Subscription page still misses HousAlert brand colors.
+
+IMPORTANT:
+Do not redesign unrelated screens.
+Do not change checkout success flow unless needed for the bug.
+Do not change matching algorithm unless needed.
+Fix root causes safely.
+
+========================================
+1. FIX PAID SUBSCRIPTION PERIOD LOGIC
+========================================
+
+Audit Stripe checkout/webhook/subscription sync logic:
+- checkout.session.completed
+- customer.subscription.created
+- customer.subscription.updated
+- updateSubscriptionFromCheckout
+- any trial_end/current_period_end mapping
+
+Bug:
+Paid 2-month subscriptions are being treated as trial subscriptions or using trial_end/current date + 14 days.
+
+Correct behavior:
+- If Stripe subscription status is trialing, use trial_end as access end.
+- If Stripe subscription status is active paid, use current_period_end as access end.
+- Never use trial_end for active paid subscriptions unless status=trialing.
+- Never set 14-day trial end for a paid plan that has already started.
+- Plan label must reflect Stripe price/product:
+  - 2-month plan = “Premium 2 maanden”
+  - monthly plan = “Premium maandelijks”
+  - trial only = “Proefperiode”
+
+Cancellation behavior:
+- If active paid subscription is canceled at period end:
+  - keep premium access until Stripe current_period_end
+  - show “Loopt af op [real Stripe current_period_end]”
+  - do NOT shorten access to 14 days
+- If trialing subscription is canceled:
+  - keep access until trial_end
+  - show proefperiode text
+
+Add defensive logic:
+- If status=active and current_period_end exists, current_period_end wins.
+- If status=trialing and trial_end exists, trial_end wins.
+- If both exist, choose based on Stripe status, not whichever date is earlier.
+
+Add logs:
+- Stripe subscription id
+- status
+- trial_end
+- current_period_end
+- selected access_until
+- selected plan label
+- cancel_at_period_end
+
+Smoke test:
+- Buy 2-month plan
+- Subscription page shows Premium 2 maanden
+- End date is 2 months from purchase, not 14 days
+- Cancel it
+- Page shows active until same 2-month end date
+- No cancel button after cancellation
+- Premium access remains until that date
+
+========================================
+2. FIX NEW ACCOUNT MATCH VISIBILITY
+========================================
+
+Current issue:
+Newly created account/search profile shows no matches, while it should show existing matching listings.
+
+Investigate:
+- match generation after profile creation
+- profile active state
+- city/location saved correctly
+- filters saved correctly
+- user_id/profile_id linked correctly
+- /api/matches query
+- whether matches only appear after scheduled job
+- whether backfill/import matching is not triggered for new profile
+
+Expected behavior:
+After onboarding creates a search profile:
+- user lands in app
+- matching existing listings should appear immediately or after a short fetch
+- no empty state if there are known matching listings for that city/filter
+- if matching is async, show “matches worden geladen” and trigger match generation/backfill
+
+Fix:
+- Ensure profile creation triggers immediate matching/backfill for that profile OR fetches existing listing matches dynamically.
+- Ensure new profile is active.
+- Ensure app invalidates/refetches matches after profile creation.
+- Ensure /api/matches does not filter out new users incorrectly.
+- Do not require waiting for the next scheduled ingestion run.
+
+Add logs:
+- profile created id
+- city
+- active status
+- matching job triggered yes/no
+- match count after creation
+- /api/matches returned count
+
+Smoke test:
+- Create new account
+- Create profile for Berlin/München
+- Land on app home/matches
+- Matches appear
+- Refresh app
+- Matches still appear
+
+========================================
+3. SUBSCRIPTION PAGE BRANDING
+========================================
+
+Apply exact HousAlert brand colors on subscription page.
+
+Brand tokens:
+- Purple: #bbadfb
+- Purple icon/text: #171429
+- Green: #85fb8c
+- Green icon/text: #223546
+- Dark navy: #223546
+- Black: #111111
+- App background: #f6f6f6
+- Card background: #ffffff
+
+Fix:
+- Status badges should use correct brand colors.
+- Success/active check icons:
+  background #85fb8c
+  icon/text #223546
+- Purple icon blocks:
+  background #bbadfb
+  icon/text #171429
+- Primary buttons:
+  background #85fb8c
+  text #223546
+  border-radius 9999px
+- Do not use old pale green badges.
+- Do not use old gray/unstyled status pills.
+- Keep red only for destructive cancel action before cancellation.
+
+Cancelled paid state:
+- Status label: “Actief tot einde periode” or “Opgezegd”
+- Use branded neutral/purple styling, not pale old green.
+- Text must clearly say access remains until real paid period end.
+
+========================================
+4. FINAL SMOKE CHECK
+========================================
+
+Run these tests:
+
+A. New paid 2-month user
+- subscribe
+- subscription page shows Premium 2 maanden
+- expiry is 2 months out
+- no trial copy
+
+B. Cancel paid 2-month user
+- cancel at period end
+- status shows opgezegd/active until period end
+- expiry remains 2 months out
+- no second cancel button
+
+C. Trial user
+- trial shows Proefperiode
+- expiry is trial_end
+- cancel trial keeps access until trial_end
+
+D. New account profile
+- create profile
+- matches appear
+- no empty matches bug
+
+E. Branding
+- subscription page uses exact HousAlert colors
+- no old pale green/gray status styling

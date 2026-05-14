@@ -466,6 +466,7 @@ export default function OnboardingFilters() {
       queryClient.invalidateQueries({ queryKey: ["/api/search-profiles"] });
       queryClient.invalidateQueries({ queryKey: ["/api/activation-status"] });
       queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
       toast({ title: t("newSearch.toasts.created") });
       navigate("/home");
     } catch (err: any) {

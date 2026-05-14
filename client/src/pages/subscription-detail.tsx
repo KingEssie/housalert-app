@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, type CSSProperties } from "react";
 import { useLocation } from "wouter";
 import { Crown, CreditCard, ChevronRight, AlertCircle, XCircle, CheckCircle2, Check } from "lucide-react";
 import { AppHeader } from "@/components/ui/app-header";
@@ -69,11 +69,11 @@ export default function SubscriptionDetailPage() {
     return t("subscription.status.expired");
   }
 
-  function getStatusBadgeClass(): string {
-    if (subscription?.isExpired) return "bg-ha-danger/10 text-ha-danger";
-    if (isCanceled && subscription?.isActive) return "bg-ha-surface text-ha-text";
-    if (subscription?.isTrial) return "bg-ha-primary/10 text-ha-primary";
-    return "bg-ha-success/10 text-ha-success";
+  function getStatusBadgeStyle(): CSSProperties {
+    if (subscription?.isExpired) return { backgroundColor: "rgba(220,38,38,0.10)", color: "#DC2626" };
+    if (isCanceled && subscription?.isActive) return { backgroundColor: "#f0ecff", color: "#4b4170" };
+    if (subscription?.isTrial) return { backgroundColor: "#bbadfb", color: "#171429" };
+    return { backgroundColor: "#85fb8c", color: "#223546" };
   }
 
   const startDate = subscription?.created_at || null;
@@ -116,9 +116,9 @@ export default function SubscriptionDetailPage() {
             {/* Icon circle */}
             <div
               className="w-20 h-20 rounded-full flex items-center justify-center mb-5"
-              style={{ backgroundColor: "#b9a7ff" }}
+              style={{ backgroundColor: "#bbadfb" }}
             >
-              <Crown className="w-9 h-9 text-[#111111]" strokeWidth={1.8} />
+              <Crown className="w-9 h-9 text-[#171429]" strokeWidth={1.8} />
             </div>
 
             <p className="text-[24px] font-bold text-[#111111] mb-2" data-testid="text-no-sub-title">
@@ -134,9 +134,9 @@ export default function SubscriptionDetailPage() {
                 <div key={i} className="flex items-center gap-3">
                   <div
                     className="w-[24px] h-[24px] rounded-full flex items-center justify-center flex-shrink-0"
-                    style={{ backgroundColor: "#b9a7ff" }}
+                    style={{ backgroundColor: "#bbadfb" }}
                   >
-                    <Check className="w-[13px] h-[13px] text-[#111111]" strokeWidth={3} />
+                    <Check className="w-[13px] h-[13px] text-[#171429]" strokeWidth={3} />
                   </div>
                   <span className="text-[15px] font-medium text-[#111111]">{feature}</span>
                 </div>
@@ -216,7 +216,8 @@ export default function SubscriptionDetailPage() {
 
             <div className="mt-2 flex items-center gap-2">
               <span
-                className={`inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-wide uppercase px-2.5 py-[5px] rounded-[6px] ${getStatusBadgeClass()}`}
+                className="inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-wide uppercase px-2.5 py-[5px] rounded-[6px]"
+                style={getStatusBadgeStyle()}
                 data-testid="badge-subscription-status"
               >
                 {subscription?.isActive && !subscription?.isExpired && (
@@ -238,7 +239,7 @@ export default function SubscriptionDetailPage() {
 
             {subscription?.isActive && !subscription?.isExpired && (
               <div className="flex items-center gap-2 mt-3">
-                <CheckCircle2 className="w-[15px] h-[15px] text-ha-success flex-shrink-0" strokeWidth={2} />
+                <CheckCircle2 className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "#16a34a" }} strokeWidth={2} />
                 <p className="text-[13px] font-normal text-[#111111]">
                   {t("subscription.matchesNowActive")}
                 </p>
