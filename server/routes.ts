@@ -7858,6 +7858,74 @@ export async function registerRoutes(
     }
   });
 
+  app.post("/api/support/tickets", async (req, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      const token = authHeader?.replace("Bearer ", "");
+      let userId: string | null = null;
+      let email: string | null = null;
+      if (token) {
+        const { data: { user } } = await supabase.auth.getUser(token);
+        if (user) { userId = user.id; email = user.email || null; }
+      }
+      const { subject, message } = req.body;
+      if (!subject?.trim() || !message?.trim()) {
+        return res.status(400).json({ error: "subject and message are required" });
+      }
+      const result = await pgPool.query(
+        `INSERT INTO support_tickets (user_id, email, subject, message, status, created_at, updated_at)
+         VALUES ($1, $2, $3, $4, 'open', NOW(), NOW()) RETURNING id, created_at`,
+        [userId, email, subject.trim(), message.trim()]
+      );
+      log(`[support] Ticket created id=${result.rows[0].id} user=${userId || "anonymous"}`);
+      res.json({ id: result.rows[0].id, created_at: result.rows[0].created_at });
+    } catch (err: any) {
+      log(`[support] Error creating ticket: ${err.message}`);
+      res.status(500).json({ error: "Failed to create ticket" });
+    }
+  });
+
+  app.get("/api/admin/support/tickets", requireAdmin, async (req, res) => {
+    try {
+      const status = req.query.status as string | undefined;
+      const limit = Math.min(parseInt(req.query.limit as string || "100"), 200);
+      const offset = parseInt(req.query.offset as string || "0");
+      const where = status ? "WHERE status = $1" : "";
+      const params: any[] = status ? [status] : [];
+      const countRes = await pgPool.query(
+        `SELECT COUNT(*) FROM support_tickets ${where}`, params
+      );
+      const rows = await pgPool.query(
+        `SELECT id, user_id, email, subject, message, status, created_at, updated_at
+         FROM support_tickets ${where}
+         ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`,
+        params
+      );
+      res.json({ tickets: rows.rows, total: parseInt(countRes.rows[0].count) });
+    } catch (err: any) {
+      log(`[support] Error fetching tickets: ${err.message}`);
+      res.status(500).json({ error: "Failed to fetch tickets" });
+    }
+  });
+
+  app.patch("/api/admin/support/tickets/:id/status", requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      if (!["open", "resolved", "closed"].includes(status)) {
+        return res.status(400).json({ error: "Invalid status" });
+      }
+      await pgPool.query(
+        "UPDATE support_tickets SET status = $1, updated_at = NOW() WHERE id = $2",
+        [status, id]
+      );
+      res.json({ ok: true });
+    } catch (err: any) {
+      log(`[support] Error updating ticket: ${err.message}`);
+      res.status(500).json({ error: "Failed to update ticket" });
+    }
+  });
+
   app.get("/api/admin/portal/email-preview", requireAdmin, async (_req, res) => {
     try {
       const { generateSampleEmailHtml } = await import("./email");

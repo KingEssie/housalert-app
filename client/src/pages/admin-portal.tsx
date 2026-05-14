@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
 
-type TabId = "dashboard" | "listings" | "images" | "sources" | "users" | "subscriptions" | "alerts" | "settings" | "system";
+type TabId = "dashboard" | "listings" | "images" | "sources" | "users" | "subscriptions" | "alerts" | "settings" | "system" | "support";
 
 async function adminFetch(path: string, options?: RequestInit) {
   const { data: { session } } = await supabase.auth.getSession();
@@ -2488,6 +2488,171 @@ function SettingsTab() {
   );
 }
 
+function SupportTab() {
+  const [tickets, setTickets] = useState<any[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [expanded, setExpanded] = useState<number | null>(null);
+  const [updatingId, setUpdatingId] = useState<number | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = statusFilter !== "all" ? `?status=${statusFilter}` : "";
+      const r = await adminFetch(`/api/admin/support/tickets${params}`);
+      const d = await r.json();
+      setTickets(d.tickets || []);
+      setTotal(d.total ?? 0);
+    } catch {}
+    setLoading(false);
+  }, [statusFilter]);
+
+  useEffect(() => { load(); }, [load]);
+
+  async function updateStatus(id: number, status: string) {
+    setUpdatingId(id);
+    try {
+      await adminFetch(`/api/admin/support/tickets/${id}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      setTickets(t => t.map(ticket => ticket.id === id ? { ...ticket, status } : ticket));
+    } catch {}
+    setUpdatingId(null);
+  }
+
+  const statusColors: Record<string, { bg: string; text: string; border: string }> = {
+    open:     { bg: "#fff7ed", text: "#c2410c", border: "#fed7aa" },
+    resolved: { bg: "#edfbf0", text: "#16a34a", border: "#bbf7d0" },
+    closed:   { bg: "#f5f5f7", text: "#888888", border: "#e0e0e0" },
+  };
+
+  if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="w-7 h-7 animate-spin" style={{ color: "#bbadfb" }} /></div>;
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-[22px] font-bold" style={{ color: "#111111" }}>Support tickets</h2>
+          <p className="text-[13px] mt-0.5" style={{ color: "#888888" }}>{total} ticket{total !== 1 ? "s" : ""} in total</p>
+        </div>
+        <button onClick={load} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ backgroundColor: "#f0f0f0" }} data-testid="button-refresh-support">
+          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} style={{ color: "#888" }} />
+        </button>
+      </div>
+
+      <div className="flex gap-2 flex-wrap">
+        {["all", "open", "resolved", "closed"].map(s => (
+          <button
+            key={s}
+            onClick={() => setStatusFilter(s)}
+            className="px-3 py-1.5 rounded-full text-[12px] font-semibold border transition-all"
+            style={statusFilter === s
+              ? { backgroundColor: "#bbadfb", color: "#ffffff", borderColor: "#bbadfb" }
+              : { backgroundColor: "#ffffff", color: "#666666", borderColor: "#eeebf3" }
+            }
+            data-testid={`filter-${s}`}
+          >
+            {s.charAt(0).toUpperCase() + s.slice(1)}
+          </button>
+        ))}
+      </div>
+
+      {tickets.length === 0 ? (
+        <div className={`${CARD} p-10 flex flex-col items-center gap-2`}>
+          <MessageCircle className="w-8 h-8" style={{ color: "#cccccc" }} />
+          <p className="text-[14px] font-medium" style={{ color: "#888888" }}>No tickets yet</p>
+        </div>
+      ) : (
+        <div className={`${CARD} divide-y divide-ha-hover-bg`}>
+          {tickets.map((ticket) => {
+            const sc = statusColors[ticket.status] || statusColors.open;
+            const isExpanded = expanded === ticket.id;
+            return (
+              <div key={ticket.id} className="p-4">
+                <div className="flex items-start gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <span
+                        className="px-2 py-0.5 rounded-full text-[10px] font-bold border"
+                        style={{ backgroundColor: sc.bg, color: sc.text, borderColor: sc.border }}
+                      >
+                        {ticket.status}
+                      </span>
+                      <span className="text-[11px]" style={{ color: "#aaaaaa" }}>
+                        #{ticket.id} · {new Date(ticket.created_at).toLocaleString()}
+                      </span>
+                    </div>
+                    <p className="text-[14px] font-bold truncate" style={{ color: "#111111" }}>{ticket.subject}</p>
+                    <p className="text-[12px] mt-0.5" style={{ color: "#888888" }}>
+                      {ticket.email || "Anonymous"}
+                    </p>
+                    {isExpanded && (
+                      <div className="mt-3 space-y-3">
+                        <div className="p-3 rounded-[12px] text-[13px] leading-relaxed whitespace-pre-wrap" style={{ backgroundColor: "#f9f7f8", color: "#333333", border: "1px solid #ece7ef" }}>
+                          {ticket.message}
+                        </div>
+                        <div className="flex gap-2 flex-wrap">
+                          {ticket.status !== "resolved" && (
+                            <button
+                              onClick={() => updateStatus(ticket.id, "resolved")}
+                              disabled={updatingId === ticket.id}
+                              className="px-3 py-1.5 rounded-full text-[12px] font-semibold border transition-all disabled:opacity-50"
+                              style={{ backgroundColor: "#edfbf0", color: "#16a34a", borderColor: "#bbf7d0" }}
+                              data-testid={`button-resolve-${ticket.id}`}
+                            >
+                              {updatingId === ticket.id ? "..." : "Mark resolved"}
+                            </button>
+                          )}
+                          {ticket.status !== "closed" && (
+                            <button
+                              onClick={() => updateStatus(ticket.id, "closed")}
+                              disabled={updatingId === ticket.id}
+                              className="px-3 py-1.5 rounded-full text-[12px] font-semibold border transition-all disabled:opacity-50"
+                              style={{ backgroundColor: "#f5f5f7", color: "#666666", borderColor: "#e0e0e0" }}
+                              data-testid={`button-close-${ticket.id}`}
+                            >
+                              Close
+                            </button>
+                          )}
+                          {ticket.status !== "open" && (
+                            <button
+                              onClick={() => updateStatus(ticket.id, "open")}
+                              disabled={updatingId === ticket.id}
+                              className="px-3 py-1.5 rounded-full text-[12px] font-semibold border transition-all disabled:opacity-50"
+                              style={{ backgroundColor: "#fff7ed", color: "#c2410c", borderColor: "#fed7aa" }}
+                              data-testid={`button-reopen-${ticket.id}`}
+                            >
+                              Reopen
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => setExpanded(isExpanded ? null : ticket.id)}
+                    className="w-8 h-8 flex items-center justify-center rounded-full flex-shrink-0 transition-all"
+                    style={{ backgroundColor: "#f5f5f7" }}
+                    data-testid={`button-expand-${ticket.id}`}
+                  >
+                    <ChevronDown
+                      className="w-4 h-4 transition-transform"
+                      style={{ color: "#888888", transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)" }}
+                    />
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 const NAV_GROUPS: { label: string; items: { id: TabId; label: string; icon: any }[] }[] = [
   {
     label: "Overview",
@@ -2510,6 +2675,7 @@ const NAV_GROUPS: { label: string; items: { id: TabId; label: string; icon: any 
     items: [
       { id: "users",         label: "Users",         icon: Users },
       { id: "subscriptions", label: "Subscriptions", icon: CreditCard },
+      { id: "support",       label: "Support",       icon: MessageCircle },
     ],
   },
   {
@@ -2698,6 +2864,7 @@ export default function AdminPortalPage() {
           {activeTab === "alerts"        && <AlertsTab />}
           {activeTab === "settings"      && <SettingsTab />}
           {activeTab === "system"        && <SystemTab />}
+          {activeTab === "support"       && <SupportTab />}
         </main>
       </div>
     </div>

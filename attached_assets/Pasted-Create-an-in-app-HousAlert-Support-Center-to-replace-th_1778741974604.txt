@@ -1,0 +1,105 @@
+Create an in-app HousAlert Support Center to replace the external “Contacteer ons” link.
+
+Current:
+- Account → “Contacteer ons” opens the website.
+
+Required:
+- Account → “Contacteer ons” should open an in-app support/help screen.
+
+Design inspiration:
+Similar structure to the Eitje support screen, but fully in HousAlert branding.
+
+Route:
+- /support
+or existing app route pattern if preferred.
+
+Support screen layout:
+1. Header
+- HousAlert logo
+- close/back button
+- title: “Hoe kunnen we je helpen?”
+
+2. Main action card
+Card title:
+“Stuur ons een bericht”
+
+Subtitle:
+“We reageren zo snel mogelijk.”
+
+Button/action:
+Open message composer inside the app.
+
+3. WhatsApp card
+Title:
+“Stuur ons een WhatsApp bericht”
+
+Action:
+Open WhatsApp link externally.
+
+For now use placeholder:
+https://wa.me/
+
+Make the phone number configurable in env/settings later.
+
+4. Help / FAQ card
+Title:
+“Vind je antwoord”
+
+Links:
+- Hoe werkt HousAlert → https://www.housalert.com/faq
+- Algemene voorwaarden → https://www.housalert.com/terms-of-service
+- Privacybeleid → https://www.housalert.com/privacy
+
+Open these externally.
+
+5. Bottom tabs or simple sections
+If quick to implement:
+- Home
+- Berichten
+- Help
+
+But keep MVP simple if needed.
+
+Message composer MVP:
+- user can type subject/message
+- send creates a support request/ticket in database
+- admin can view it later OR send it to admin email
+- show success state after sending
+
+Suggested fields:
+- user_id
+- email
+- subject
+- message
+- status: open
+- created_at
+
+Admin integration:
+- Add support tickets section to admin panel OR at minimum show tickets under Admin → Alerts/Users.
+- Admin should see:
+  - user name/email
+  - message
+  - timestamp
+  - status
+
+Branding:
+- app background #f6f6f6
+- cards white
+- purple accent #bbadfb
+- primary CTA #85fb8c with black text
+- dark navy #223546 where needed
+- black text #111111
+- fully rounded buttons
+
+Important:
+- Do not use external website contact page anymore.
+- Do not break FAQ link.
+- Do not build complex AI chatbot yet.
+- This is support-center MVP, chatbot can come later.
+
+Smoke check:
+- Account → Contacteer ons opens in-app support screen
+- User can send a support message
+- Success message appears
+- Admin can find/read support message
+- WhatsApp/FAQ/legal links work

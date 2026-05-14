@@ -61,6 +61,7 @@ import HousingSituationPage from "@/pages/housing-situation";
 import ReferralLandingPage from "@/pages/referral-landing";
 import BuddyAcceptPage from "@/pages/buddy-accept";
 import ZoekbuddyPage from "@/pages/zoekbuddy";
+import SupportPage from "@/pages/support";
 
 function ProtectedRoute({ component: Component, skipOnboardingCheck }: { component: React.ComponentType; skipOnboardingCheck?: boolean }) {
   const { user, session, loading } = useAuth();
@@ -270,6 +271,7 @@ function Router() {
       <Route path="/admin/match-audit" component={() => <ProtectedRoute component={AdminMatchAuditPage} />} />
       <Route path="/admin/activation" component={() => <ProtectedRoute component={AdminActivationPage} />} />
       <Route path="/admin/image-audit" component={() => <ProtectedRoute component={AdminImageAuditPage} />} />
+      <Route path="/support" component={() => <ProtectedRoute component={SupportPage} skipOnboardingCheck />} />
       <Route path="/profile/search-buddy" component={() => <BuddyProtectedRoute component={ZoekbuddyPage} />} />
       <Route path="/buddy/accept" component={BuddyAcceptPage} />
       <Route path="/subscription" component={() => <Redirect to="/account/subscription" />} />

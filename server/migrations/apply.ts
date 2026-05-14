@@ -34,6 +34,29 @@ export async function runStartupMigration() {
   await ensureBuddyTables();
   await createAdminSettingsTable();
   await createAdminSourceOverridesTable();
+  await createSupportTicketsTable();
+}
+
+async function createSupportTicketsTable() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS support_tickets (
+        id SERIAL PRIMARY KEY,
+        user_id UUID,
+        email TEXT,
+        subject TEXT NOT NULL,
+        message TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'open',
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `);
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_support_tickets_user_id ON support_tickets(user_id)`);
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_support_tickets_status ON support_tickets(status)`);
+    log("[MIGRATION] support_tickets table OK", "migration");
+  } catch (err: any) {
+    log(`[MIGRATION] Error creating support_tickets: ${err.message}`, "migration");
+  }
 }
 
 async function createAdminSettingsTable() {

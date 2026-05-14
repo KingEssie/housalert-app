@@ -63,7 +63,7 @@ export default function SettingsPage() {
       title: t("settings.sectionHelp"),
       rows: [
         { label: t("settings.faq"), route: "https://www.housalert.com/faq", external: true },
-        { label: t("settings.contactUs"), route: "mailto:support@housalert.com", external: true },
+        { label: t("settings.contactUs"), route: "/support", external: false },
       ],
     },
     {
