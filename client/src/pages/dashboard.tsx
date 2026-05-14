@@ -2478,11 +2478,11 @@ export default function DashboardPage() {
                     </div>
                   ) : (
                     <Icon
-                      className={`w-[24px] h-[24px] transition-colors ${isActive ? "text-ha-primary" : "text-white/60"}`}
+                      className={`w-[24px] h-[24px] transition-colors ${isActive ? "text-ha-primary" : "text-white/85"}`}
                       strokeWidth={isActive ? 2.2 : 1.6}
                     />
                   )}
-                  <span className={`text-[11px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-white/60"}`}>
+                  <span className={`text-[11px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-white/85"}`}>
                     {t(labelKey)}
                   </span>
                 </button>
