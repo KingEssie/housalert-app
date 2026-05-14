@@ -126,12 +126,14 @@ export async function sendMatchPushNotifications(
   const cities = [...new Set(newListings.map((l) => l.city).filter(Boolean))];
   const cityText = cities.length > 0 ? cities.slice(0, 2).join(", ") : t(lang, "push.yourCity");
 
+  const isSingle = newListings.length === 1;
   const payload = {
     title: t(lang, "push.webTitle"),
-    body: newListings.length === 1
+    body: isSingle
       ? t(lang, "push.webBody.single", { city: cityText })
       : t(lang, "push.webBody.batch", { count: newListings.length, city: cityText }),
-    url: "/dashboard?tab=matches",
+    url: isSingle ? `/listing/${newListings[0].listing_id}` : "/matches",
+    listing_id: isSingle ? newListings[0].listing_id : undefined,
   };
 
   const result = await sendPushToUser(userId, payload, supabase);

@@ -978,6 +978,94 @@ export async function registerRoutes(
     }
   });
 
+  // ─── Push: status / register / unregister (spec-compliant aliases) ──────────
+
+  app.get("/api/push/status", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const sb = getSupabaseAdmin();
+      const [webRes, expoRes, settingsRes] = await Promise.all([
+        sb.from("push_subscriptions").select("id").eq("user_id", user.id),
+        sb.from("expo_push_tokens").select("id").eq("user_id", user.id).eq("is_active", true),
+        sb.from("user_notification_settings").select("push_enabled").eq("user_id", user.id).maybeSingle(),
+      ]);
+
+      const webCount = (webRes.data?.length ?? 0);
+      const expoCount = (expoRes.data?.length ?? 0);
+      const totalDevices = webCount + expoCount;
+
+      return res.json({
+        subscribed: totalDevices > 0,
+        devices: totalDevices,
+        web_subscriptions: webCount,
+        expo_tokens: expoCount,
+        push_enabled: settingsRes.data?.push_enabled ?? false,
+        configured: !!(process.env.VITE_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY),
+      });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/push/register", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { endpoint, p256dh, auth, platform = "web", provider = "webpush" } = req.body;
+      if (!endpoint || !p256dh || !auth) {
+        return res.status(400).json({ error: "Missing subscription fields (endpoint, p256dh, auth required)" });
+      }
+
+      const { error } = await supabase
+        .from("push_subscriptions")
+        .upsert(
+          { user_id: user.id, endpoint, p256dh, auth, created_at: new Date().toISOString() },
+          { onConflict: "endpoint" }
+        );
+
+      if (error) return res.status(500).json({ error: error.message });
+      log(`[PUSH] Device registered for user ${user.id.substring(0, 8)}... platform=${platform} provider=${provider}`);
+      return res.json({ ok: true, platform, provider });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/push/unregister", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { endpoint } = req.body;
+      if (!endpoint) return res.status(400).json({ error: "Missing endpoint" });
+
+      await supabase
+        .from("push_subscriptions")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("endpoint", endpoint);
+
+      log(`[PUSH] Device unregistered for user ${user.id.substring(0, 8)}...`);
+      return res.json({ ok: true });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  // ─────────────────────────────────────────────────────────────────────────────
+
   const PUSH_REG_VERSION = "v2-2026-03-14";
   const PUSH_REG_BUILD_TIME = new Date().toISOString();
 
@@ -7068,9 +7156,26 @@ export async function registerRoutes(
       checks.email = emailStatus;
 
       const vapidKey = process.env.VAPID_PRIVATE_KEY;
-      checks.pushNotifications = vapidKey
-        ? { status: "operational", message: "VAPID keys configured" }
-        : { status: "warning", message: "No VAPID keys" };
+      if (vapidKey) {
+        try {
+          const sb = getSupabaseAdmin();
+          const [webRes, expoRes] = await Promise.all([
+            sb.from("push_subscriptions").select("id", { count: "exact", head: true }),
+            sb.from("expo_push_tokens").select("id", { count: "exact", head: true }).eq("is_active", true),
+          ]);
+          const webCount = webRes.count ?? 0;
+          const expoCount = expoRes.count ?? 0;
+          const total = webCount + expoCount;
+          checks.pushNotifications = {
+            status: "operational",
+            message: `VAPID configured · ${total} active device${total !== 1 ? "s" : ""} (${webCount} web, ${expoCount} Expo)`,
+          };
+        } catch {
+          checks.pushNotifications = { status: "operational", message: "VAPID keys configured" };
+        }
+      } else {
+        checks.pushNotifications = { status: "warning", message: "No VAPID keys — push disabled" };
+      }
 
       try {
         await pgPool.query("SELECT 1");

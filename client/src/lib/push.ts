@@ -58,6 +58,23 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   return outputArray;
 }
 
+export async function getPushStatus(accessToken: string): Promise<{
+  subscribed: boolean;
+  devices: number;
+  push_enabled: boolean;
+  configured: boolean;
+} | null> {
+  try {
+    const res = await apiFetch("/api/push/status", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
 export async function subscribeToPush(accessToken: string): Promise<boolean> {
   if (!isPushSupported() || !VAPID_PUBLIC_KEY) return false;
 
@@ -80,7 +97,7 @@ export async function subscribeToPush(accessToken: string): Promise<boolean> {
 
     const subJson = subscription.toJSON();
 
-    const res = await apiFetch("/api/push/subscribe", {
+    const res = await apiFetch("/api/push/register", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -90,6 +107,8 @@ export async function subscribeToPush(accessToken: string): Promise<boolean> {
         endpoint: subJson.endpoint,
         p256dh: subJson.keys?.p256dh,
         auth: subJson.keys?.auth,
+        platform: "web",
+        provider: "webpush",
       }),
     });
 
@@ -111,8 +130,8 @@ export async function unsubscribeFromPush(accessToken: string): Promise<boolean>
         const endpoint = subscription.endpoint;
         await subscription.unsubscribe();
 
-        await apiFetch("/api/push/subscribe", {
-          method: "DELETE",
+        await apiFetch("/api/push/unregister", {
+          method: "POST",
           headers: {
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",

@@ -1,0 +1,248 @@
+Implement production-ready push notifications for HousAlert mobile/PWA app.
+
+Goal:
+Users must receive instant push notifications when new housing matches are found.
+
+IMPORTANT:
+Do not break existing email notifications.
+Do not break in-app notifications.
+Do not change matching logic except adding push delivery after matches are created.
+
+Brand:
+Notification title examples:
+- “Nieuwe woningmatch gevonden”
+- “Nieuwe matches in Berlijn”
+Body example:
+- “Er zijn 3 nieuwe woningen gevonden die bij je zoekopdracht passen.”
+
+==================================================
+1. DEVICE TOKEN REGISTRATION
+==================================================
+
+Add backend support for storing push subscriptions/tokens.
+
+Create table if missing:
+push_devices:
+- id
+- user_id
+- platform: ios | android | web | unknown
+- token
+- provider: expo | fcm | apns | webpush
+- device_name nullable
+- enabled boolean default true
+- last_seen_at
+- created_at
+- updated_at
+
+Add routes:
+POST /api/push/register
+- requires authenticated user
+- stores/upserts token
+- updates last_seen_at
+- supports multiple devices per user
+
+POST /api/push/unregister
+- disables/removes token for current user/device
+
+GET /api/push/status
+- returns whether current user has active push device(s)
+
+==================================================
+2. FRONTEND PERMISSION FLOW
+==================================================
+
+Add push permission flow in the app.
+
+Where:
+- Account → Voorkeuren
+- Account completion/activation checklist if applicable
+- Optional onboarding reminder after profile creation
+
+User-facing copy:
+Title:
+“Woningalerts ontvangen”
+Description:
+“Ontvang direct een melding zodra we een nieuwe woning voor je vinden.”
+Button:
+“Pushmeldingen inschakelen”
+
+States:
+- enabled
+- disabled
+- permission denied
+- unsupported browser/device
+
+Important:
+- Do not spam permission prompt on first load.
+- Ask only after user taps enable.
+- Show clear fallback if unsupported.
+
+==================================================
+3. WEB PUSH / PWA SUPPORT
+==================================================
+
+For app.housalert.com PWA/browser:
+- register service worker
+- request Notification permission
+- subscribe using VAPID public key
+- send subscription to /api/push/register
+- handle notification click
+
+Notification click behavior:
+- If notification has listing_id:
+  open /listing/:id
+- If multiple matches:
+  open /matches
+- If support ticket:
+  open /support/:id
+
+==================================================
+4. CAPACITOR / FUTURE NATIVE SUPPORT
+==================================================
+
+Prepare clean abstraction for native push later.
+
+Create client push service with provider branching:
+- if Capacitor native available → use native PushNotifications plugin
+- else → use Web Push
+
+Do not require Capacitor to be installed yet if not present.
+Guard imports safely.
+
+==================================================
+5. SEND PUSH ON NEW MATCHES
+==================================================
+
+When new user_matches are created:
+- collect affected user_id(s)
+- send push notification to each user with active devices
+- avoid duplicate push spam
+
+Rules:
+- If 1 new match:
+  title: “Nieuwe woningmatch gevonden”
+  body: “[city] · €[price] · Bekijk de woning”
+  data: { listing_id, match_id, url: "/listing/:id" }
+
+- If multiple new matches for same user/profile:
+  title: “Nieuwe matches gevonden”
+  body: “We vonden [count] nieuwe woningen voor [profile_name].”
+  data: { url: "/matches" }
+
+Batching:
+- group matches created in same run per user/profile
+- send max 1 push per user/profile per ingestion/backfill run
+- do not send push for old backfilled matches during account creation unless explicitly enabled
+- for new signup backfill, default: no push spam; just show matches in app
+
+==================================================
+6. USER PREFERENCES
+==================================================
+
+Respect notification preferences:
+- push_notifications enabled/disabled
+- email_notifications unaffected
+
+If push disabled:
+- do not send push
+- still allow email if enabled
+
+Add/update settings screen toggle:
+- Push notificaties
+- E-mail notificaties
+
+==================================================
+7. BACKEND PUSH DELIVERY
+==================================================
+
+Implement sendPushToUser(userId, payload).
+
+Must:
+- fetch enabled devices
+- send to each device
+- log success/failure
+- disable invalid tokens/subscriptions
+- never crash ingestion if push fails
+
+Use existing push/webpush libraries if already present.
+If missing, add minimal dependency needed.
+
+Environment variables:
+- VAPID_PUBLIC_KEY
+- VAPID_PRIVATE_KEY
+- VAPID_SUBJECT
+- optional FCM/APNS placeholders for future native
+
+If env vars missing:
+- push status should show “not configured”
+- app should not crash
+- admin should show clear warning
+
+==================================================
+8. ADMIN MONITORING
+==================================================
+
+Add admin visibility:
+- Push configured: yes/no
+- Active push devices count
+- Push sent today
+- Push failures today
+- Recent push delivery log if available
+
+Keep it simple and mobile friendly.
+
+==================================================
+9. NOTIFICATION CLICK HANDLER
+==================================================
+
+Service worker:
+- show notification with title/body/icon/badge/data
+- on click:
+  close notification
+  focus existing app tab if open
+  otherwise open app.housalert.com + data.url
+
+Use HousAlert icon/badge.
+
+==================================================
+10. SECURITY / PRIVACY
+==================================================
+
+- Only authenticated users can register tokens
+- User can only unregister own devices
+- Do not expose all tokens to frontend
+- Store minimal device info
+
+==================================================
+11. SMOKE TEST
+==================================================
+
+Test:
+
+A. Enable push
+- Go to Account → Voorkeuren
+- Tap Pushmeldingen inschakelen
+- Browser asks permission
+- Token/subscription saved
+- /api/push/status returns enabled
+
+B. Disable push
+- Toggle off
+- Device disabled
+- No push sent
+
+C. New match
+- Create or simulate new listing match
+- User receives push
+- Clicking push opens listing detail or matches page
+
+D. Backfill after signup
+- New account gets matches in app
+- Does NOT receive spam push for old matches
+
+E. Failure handling
+- Missing VAPID keys does not crash app
+- Invalid token gets disabled
+
+F. Email still works
+- Existing email notifications still send independently
