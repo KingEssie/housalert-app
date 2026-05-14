@@ -160,17 +160,22 @@ function getGreeting() {
 function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => void; userName: string }) {
   const [data, setData] = useState<any>(null);
   const [alerts, setAlerts] = useState<any[]>([]);
+  const [systemChecks, setSystemChecks] = useState<Record<string, any> | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [sourcesExpanded, setSourcesExpanded] = useState(false);
+  const [systemExpanded, setSystemExpanded] = useState(false);
 
   function load() {
     setLoading(true);
     Promise.all([
       adminFetch("/api/admin/portal/overview").catch(() => null),
       adminFetch("/api/admin/portal/alerts").catch(() => ({ alerts: [] })),
-    ]).then(([overview, alertsData]) => {
+      adminFetch("/api/admin/portal/system-status").catch(() => null),
+    ]).then(([overview, alertsData, sys]) => {
       setData(overview);
       setAlerts(alertsData?.alerts || []);
+      setSystemChecks(sys);
     }).finally(() => { setLoading(false); setRefreshing(false); });
   }
 
@@ -179,32 +184,156 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
   if (loading && !data) return <LoadingState />;
   if (!data) return <EmptyState title="Unable to load" message="Dashboard data could not be fetched." onRetry={load} />;
 
-  const imageCoverage = data.imageCoverage ?? "—";
+  const actionableAlerts = alerts.filter(a => a.severity === "critical" || a.severity === "warning");
+  const infoAlerts = alerts.filter(a => a.severity === "info");
+
+  function alertMeta(a: any): { title: string; impact: string; actionLabel: string; actionTab: TabId } {
+    const map: Record<string, { title: string; impact: string; actionLabel: string; actionTab: TabId }> = {
+      scraper_stale: {
+        title: "Ingestion not running",
+        impact: "No new listings are being imported. Users may miss matches.",
+        actionLabel: "View ingestion →",
+        actionTab: "alerts",
+      },
+      match_drop: {
+        title: "Match volume dropped sharply",
+        impact: "Significantly fewer matches than yesterday — ingestion or matching may be broken.",
+        actionLabel: "View sources →",
+        actionTab: "sources",
+      },
+      email_failure: {
+        title: "Email delivery failures",
+        impact: "Some subscribed users are not receiving match alert emails.",
+        actionLabel: "View alerts →",
+        actionTab: "alerts",
+      },
+      ingestion_failure: {
+        title: "Ingestion run failed",
+        impact: "One or more ingestion runs completed with errors in the last 24 hours.",
+        actionLabel: "View ingestion →",
+        actionTab: "alerts",
+      },
+    };
+    return map[a.type] || { title: a.type, impact: a.message, actionLabel: "View →", actionTab: "system" };
+  }
+
+  const sourcesByCity = (() => {
+    const map = new Map<string, { healthy: number; issues: number; total: number }>();
+    for (const s of (data.sourceHealth || [])) {
+      const city = s.city || "Unknown";
+      const entry = map.get(city) || { healthy: 0, issues: 0, total: 0 };
+      entry.total += s.found || 0;
+      if (s.status === "active" || s.found > 0) entry.healthy++; else entry.issues++;
+      map.set(city, entry);
+    }
+    return Array.from(map.entries());
+  })();
+  const citiesWithIssues = sourcesByCity.filter(([, v]) => v.issues > 0);
+  const citiesHealthy = sourcesByCity.filter(([, v]) => v.issues === 0);
+  const visibleHealthy = sourcesExpanded ? citiesHealthy : citiesHealthy.slice(0, 4);
+
+  const activityEvents: { icon: any; color: string; text: string; sub: string }[] = [];
+  if (data.listingsToday > 0) activityEvents.push({ icon: TrendingUp, color: "#16a34a", text: `${data.listingsToday} new listings imported today`, sub: `${data.listingsWeek} this week` });
+  if (data.matchesToday > 0) activityEvents.push({ icon: Target, color: "#7c5fc5", text: `${data.matchesToday} matches found today`, sub: `${data.matchesWeek} this week` });
+  if ((data.emailRealFailures ?? 0) > 0) {
+    activityEvents.push({ icon: AlertTriangle, color: "#e11d48", text: `${data.emailRealFailures} email${data.emailRealFailures !== 1 ? "s" : ""} failed to deliver`, sub: "Check provider configuration" });
+  } else if (data.emailsToday > 0) {
+    activityEvents.push({ icon: Mail, color: "#16a34a", text: `${data.emailsToday} alert email${data.emailsToday !== 1 ? "s" : ""} delivered`, sub: "Email system healthy" });
+  }
+  if (data.pushesToday > 0) activityEvents.push({ icon: Smartphone, color: "#7c5fc5", text: `${data.pushesToday} push notification${data.pushesToday !== 1 ? "s" : ""} sent`, sub: "Push system healthy" });
+  if (citiesWithIssues.length > 0) {
+    activityEvents.push({ icon: AlertTriangle, color: "#b45309", text: `${citiesWithIssues.length} source${citiesWithIssues.length !== 1 ? "s" : ""} with issues`, sub: citiesWithIssues.slice(0, 3).map(([c]) => c).join(", ") });
+  } else if ((data.sourceHealth || []).length > 0) {
+    activityEvents.push({ icon: CheckCircle, color: "#16a34a", text: "All sources healthy", sub: `${sourcesByCity.length} cities monitored` });
+  }
+  if (data.signupsToday > 0) activityEvents.push({ icon: Users, color: "#7c5fc5", text: `${data.signupsToday} new signup${data.signupsToday !== 1 ? "s" : ""} today`, sub: `${data.signupsWeek} this week` });
+  for (const a of infoAlerts) activityEvents.push({ icon: Activity, color: "#888888", text: a.message, sub: new Date(a.timestamp).toLocaleTimeString() });
+
+  const svcLabels: Record<string, { name: string; Icon: any }> = {
+    stripe: { name: "Stripe Payments", Icon: CreditCard },
+    email: { name: "Email (Resend)", Icon: Mail },
+    pushNotifications: { name: "Push Notifications", Icon: Smartphone },
+    ingestionScheduler: { name: "Ingestion Scheduler", Icon: Radio },
+    replitDb: { name: "Replit DB", Icon: Database },
+    supabaseDb: { name: "Supabase DB", Icon: Layers },
+    placesApi: { name: "Places API", Icon: Globe },
+  };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-[24px] font-bold text-ha-text" data-testid="text-greeting">{getGreeting()}, {userName}</h1>
-          <p className="text-[13px] text-ha-text-secondary mt-0.5">Here's what's happening today</p>
+          <h1 className="text-[24px] font-bold" style={{ color: "#111111" }} data-testid="text-greeting">{getGreeting()}, {userName}</h1>
+          <p className="text-[13px] mt-0.5" style={{ color: "#888888" }}>Here's what's happening right now</p>
         </div>
-        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-ha-hover-bg flex items-center justify-center hover:bg-ha-divider transition-colors" data-testid="button-refresh-dashboard">
-          <RefreshCw className={`w-4 h-4 text-ha-text-secondary ${refreshing ? "animate-spin" : ""}`} />
+        <button
+          onClick={() => { setRefreshing(true); load(); }}
+          className="w-9 h-9 rounded-full flex items-center justify-center transition-colors"
+          style={{ backgroundColor: "#f0f0f0" }}
+          data-testid="button-refresh-dashboard"
+        >
+          <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} style={{ color: "#888888" }} />
         </button>
       </div>
 
-      {alerts.length > 0 && (
+      {/* Section 1 — Platform health */}
+      <div>
+        <SectionHeader title="Platform health" />
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+          <MetricCard label="Active users" value={data.totalUsers} sub={data.signupsToday > 0 ? `+${data.signupsToday} new today` : "No signups today"} icon={Users} />
+          <MetricCard label="Listings today" value={data.listingsToday} sub={`${data.listingsWeek} this week`} icon={TrendingUp} />
+          <MetricCard label="Matches today" value={data.matchesToday} sub={`${data.matchesWeek} this week`} icon={Target} />
+          <MetricCard
+            label="Emails sent"
+            value={data.emailsToday}
+            sub={(data.emailRealFailures ?? 0) > 0 ? `⚠ ${data.emailRealFailures} failed` : "All delivered"}
+            icon={Mail}
+          />
+          <MetricCard label="Push sent" value={data.pushesToday} sub="Notifications" icon={Smartphone} />
+          <MetricCard
+            label="Revenue / paid"
+            value={`€${data.mrr}`}
+            sub={`${data.activeSubscriptions} paid · ${data.trialUsers} trial`}
+            icon={CreditCard}
+          />
+        </div>
+      </div>
+
+      {/* Section 2 — Problems requiring attention */}
+      {actionableAlerts.length > 0 && (
         <div>
           <SectionHeader title="Needs attention" />
-          <div className={`${CARD} divide-y divide-ha-hover-bg`}>
-            {alerts.map((a: any, i: number) => {
-              const sColor = a.severity === "critical" ? "bg-ha-danger" : a.severity === "warning" ? "bg-amber-400" : "bg-ha-primary";
+          <div className="space-y-3">
+            {actionableAlerts.map((a, i) => {
+              const meta = alertMeta(a);
+              const isCritical = a.severity === "critical";
+              const borderColor = isCritical ? "#e11d48" : "#f59e0b";
+              const bgColor = isCritical ? "#fff1f2" : "#fffbeb";
+              const subtleBorder = isCritical ? "#fecdd3" : "#fde68a";
               return (
-                <div key={i} className="flex items-start gap-3 px-4 py-3.5" data-testid={`alert-row-${i}`}>
-                  <span className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${sColor}`} />
+                <div
+                  key={i}
+                  className="bg-white rounded-[20px] p-4 flex gap-4"
+                  style={{ border: `1px solid ${subtleBorder}`, borderLeft: `4px solid ${borderColor}`, boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}
+                  data-testid={`alert-card-${i}`}
+                >
+                  <div className="w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5" style={{ backgroundColor: bgColor }}>
+                    <AlertTriangle className="w-4 h-4" style={{ color: borderColor }} />
+                  </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-semibold text-ha-text leading-snug">{a.message}</p>
-                    <p className="text-[11px] text-ha-text-secondary mt-0.5">{new Date(a.timestamp).toLocaleTimeString()}</p>
+                    <p className="text-[14px] font-bold" style={{ color: "#111111" }}>{meta.title}</p>
+                    <p className="text-[12px] mt-0.5 leading-snug" style={{ color: "#666666" }}>{meta.impact}</p>
+                    <p className="text-[11px] mt-1 leading-snug" style={{ color: "#aaaaaa" }}>{a.message}</p>
+                    <button
+                      onClick={() => onNavigate(meta.actionTab)}
+                      className="mt-2.5 px-3 py-1.5 rounded-full text-[12px] font-semibold transition-all active:scale-[0.97]"
+                      style={{ backgroundColor: bgColor, color: borderColor, border: `1px solid ${subtleBorder}` }}
+                      data-testid={`alert-action-${i}`}
+                    >
+                      {meta.actionLabel}
+                    </button>
                   </div>
                 </div>
               );
@@ -213,80 +342,158 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
         </div>
       )}
 
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
-        <MetricCard label="Total listings" value={data.listingsToday} sub={`${data.listingsWeek} this week`} icon={Layers} />
-        <MetricCard label="New today" value={data.listingsToday} sub="listings added" icon={TrendingUp} />
-        <MetricCard label="Image coverage" value={typeof imageCoverage === "number" ? `${imageCoverage}%` : imageCoverage} icon={Image} />
-        <MetricCard label="Active users" value={data.totalUsers} sub={`${data.signupsToday} new today`} icon={Users} />
-        <MetricCard label="Paid subs" value={data.activeSubscriptions} sub={`MRR €${data.mrr}`} icon={CreditCard} />
-        <MetricCard label="Trial users" value={data.trialUsers} icon={Zap} />
-      </div>
-
-      <div>
-        <SectionHeader title="Today at a glance" />
-        <div className={`${CARD} p-4 space-y-3`}>
-          {[
-            { label: "Matches today", value: data.matchesToday },
-            { label: "Emails sent", value: data.emailsToday, color: "text-emerald-600" },
-            { label: "Emails skipped (no sub)", value: data.emailsSkippedNoSub ?? 0, color: "text-ha-text-secondary" },
-            { label: "Real email failures", value: data.emailRealFailures ?? 0, color: (data.emailRealFailures ?? 0) > 0 ? "text-ha-danger" : "text-ha-text-secondary" },
-            { label: "Push sent", value: data.pushesToday },
-            { label: "Signups this week", value: data.signupsWeek },
-            { label: "Listings this week", value: data.listingsWeek },
-            { label: "Matches this week", value: data.matchesWeek },
-          ].map(({ label, value, color }) => (
-            <div key={label} className="flex items-center justify-between text-[13px]">
-              <span className="text-ha-text-secondary">{label}</span>
-              <span className={`font-semibold ${color || "text-ha-text"}`}>{value}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {data.sourceHealth && data.sourceHealth.length > 0 && (
+      {/* Section 3 — Source health */}
+      {sourcesByCity.length > 0 && (
         <div>
           <SectionHeader title="Source health" action={{ label: "View all", onClick: () => onNavigate("sources") }} />
-          <div className={`${CARD} divide-y divide-ha-hover-bg`}>
-            {(() => {
-              const byCity = new Map<string, { healthy: number; issues: number; total: number }>();
-              for (const s of data.sourceHealth) {
-                const city = s.city || "Unknown";
-                const entry = byCity.get(city) || { healthy: 0, issues: 0, total: 0 };
-                entry.total += s.found || 0;
-                if (s.status === "active" || s.found > 0) entry.healthy++; else entry.issues++;
-                byCity.set(city, entry);
-              }
-              return Array.from(byCity.entries()).slice(0, 6).map(([city, info]) => (
-                <div key={city} className="flex items-center gap-3 px-4 py-3">
-                  <StatusDot status={info.issues > 0 ? "warning" : "active"} />
-                  <span className="text-[13px] font-medium text-ha-text flex-1">{city}</span>
-                  <span className="text-[12px] text-ha-text-secondary">{info.total} listings</span>
-                  <StatusBadge status={info.issues > 0 ? "degraded" : "active"} />
-                </div>
-              ));
-            })()}
+          <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+            {citiesWithIssues.length > 0 && (
+              <div className="px-4 pt-3 pb-0.5">
+                <span className="text-[10px] font-bold uppercase tracking-[0.07em]" style={{ color: "#e11d48" }}>
+                  ⚠ Issues ({citiesWithIssues.length})
+                </span>
+              </div>
+            )}
+            {citiesWithIssues.map(([city, info], i) => (
+              <div key={city} className="flex items-center gap-3 px-4 py-3.5 border-b" style={{ borderColor: "#f5f5f7" }} data-testid={`source-issue-${city}`}>
+                <span className="w-2 h-2 rounded-full flex-shrink-0 bg-amber-400" />
+                <span className="text-[14px] font-semibold flex-1" style={{ color: "#111111" }}>{city}</span>
+                <span className="text-[12px]" style={{ color: "#888888" }}>{info.total} listings</span>
+                <StatusBadge status="degraded" />
+              </div>
+            ))}
+            {citiesHealthy.length > 0 && citiesWithIssues.length > 0 && (
+              <div className="px-4 pt-3 pb-0.5">
+                <span className="text-[10px] font-bold uppercase tracking-[0.07em]" style={{ color: "#16a34a" }}>
+                  Healthy ({citiesHealthy.length})
+                </span>
+              </div>
+            )}
+            {visibleHealthy.map(([city, info], i) => (
+              <div
+                key={city}
+                className="flex items-center gap-3 px-4 py-3.5"
+                style={{ borderBottom: i < visibleHealthy.length - 1 || citiesHealthy.length > 4 ? "1px solid #f5f5f7" : undefined }}
+                data-testid={`source-ok-${city}`}
+              >
+                <span className="w-2 h-2 rounded-full flex-shrink-0 bg-emerald-400" />
+                <span className="text-[14px] font-medium flex-1" style={{ color: "#111111" }}>{city}</span>
+                <span className="text-[12px]" style={{ color: "#888888" }}>{info.total} listings</span>
+                <StatusBadge status="active" />
+              </div>
+            ))}
+            {citiesHealthy.length > 4 && (
+              <button
+                onClick={() => setSourcesExpanded(!sourcesExpanded)}
+                className="w-full flex items-center justify-center gap-1.5 py-3 text-[12px] font-semibold"
+                style={{ color: "#7c5fc5", borderTop: "1px solid #f5f5f7" }}
+                data-testid="button-toggle-sources"
+              >
+                <ChevronDown className="w-3.5 h-3.5" style={{ transform: sourcesExpanded ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }} />
+                {sourcesExpanded ? "Show less" : `Show ${citiesHealthy.length - 4} more cities`}
+              </button>
+            )}
           </div>
         </div>
       )}
 
+      {/* Section 4 — Quick actions */}
       <div>
         <SectionHeader title="Quick actions" />
         <div className="grid grid-cols-3 lg:grid-cols-6 gap-2">
-          {[
-            { icon: Layers, label: "Listings", tab: "listings" as TabId },
-            { icon: Image, label: "Images", tab: "images" as TabId },
-            { icon: Users, label: "Users", tab: "users" as TabId },
+          {([
             { icon: Bell, label: "Alerts", tab: "alerts" as TabId },
-            { icon: Sliders, label: "Settings", tab: "settings" as TabId },
+            { icon: Radio, label: "Ingestion", tab: "alerts" as TabId },
+            { icon: Mail, label: "Email test", tab: "system" as TabId },
+            { icon: Users, label: "Users", tab: "users" as TabId },
+            { icon: Layers, label: "Listings", tab: "listings" as TabId },
             { icon: Settings, label: "System", tab: "system" as TabId },
-          ].map(({ icon: Icon, label, tab }) => (
-            <button key={tab} onClick={() => onNavigate(tab)} className={`${CARD} p-3 flex flex-col items-center gap-1.5 hover:bg-ha-bg transition-colors`} data-testid={`quick-${tab}`}>
-              <Icon className="w-5 h-5 text-ha-text" />
-              <span className="text-[11px] font-medium text-ha-text-secondary">{label}</span>
+          ]).map(({ icon: Icon, label, tab }) => (
+            <button
+              key={label}
+              onClick={() => onNavigate(tab)}
+              className="bg-white rounded-[16px] p-4 flex flex-col items-center gap-2 transition-all active:scale-[0.97]"
+              style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}
+              data-testid={`quick-${label.toLowerCase().replace(/\s/g, "-")}`}
+            >
+              <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ backgroundColor: "rgba(187,173,251,0.12)" }}>
+                <Icon className="w-4 h-4" style={{ color: "#7c5fc5" }} />
+              </div>
+              <span className="text-[11px] font-semibold" style={{ color: "#111111" }}>{label}</span>
             </button>
           ))}
         </div>
       </div>
+
+      {/* Section 5 — Recent activity */}
+      {activityEvents.length > 0 && (
+        <div>
+          <SectionHeader title="Recent activity" />
+          <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+            {activityEvents.map(({ icon: Icon, color, text, sub }, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-3 px-4 py-3.5"
+                style={{ borderBottom: i < activityEvents.length - 1 ? "1px solid #f5f5f7" : undefined }}
+                data-testid={`activity-${i}`}
+              >
+                <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center" style={{ backgroundColor: `${color}18` }}>
+                  <Icon className="w-3.5 h-3.5" style={{ color }} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[13px] font-semibold" style={{ color: "#111111" }}>{text}</p>
+                  <p className="text-[11px]" style={{ color: "#888888" }}>{sub}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Section 6 — System services (collapsible) */}
+      <div>
+        <button
+          onClick={() => setSystemExpanded(!systemExpanded)}
+          className="w-full flex items-center justify-between mb-4"
+          data-testid="button-toggle-system"
+        >
+          <h3 className="text-[13px] font-bold uppercase tracking-[0.06em]" style={{ color: "#aaaaaa" }}>System services</h3>
+          <ChevronDown
+            className="w-4 h-4 transition-transform duration-200"
+            style={{ color: "#aaaaaa", transform: systemExpanded ? "rotate(180deg)" : "rotate(0deg)" }}
+          />
+        </button>
+        {systemExpanded && (
+          systemChecks ? (
+            <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+              {Object.entries(svcLabels).map(([key, { name, Icon }], i, arr) => {
+                const check = systemChecks[key];
+                if (!check) return null;
+                return (
+                  <div
+                    key={key}
+                    className="flex items-center gap-3 px-4 py-3.5"
+                    style={{ borderBottom: i < arr.length - 1 ? "1px solid #f5f5f7" : undefined }}
+                    data-testid={`svc-${key}`}
+                  >
+                    <Icon className="w-4 h-4 flex-shrink-0" style={{ color: "#bbadfb" }} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[13px] font-semibold" style={{ color: "#111111" }}>{name}</p>
+                      <p className="text-[11px] truncate" style={{ color: "#888888" }}>{check.message}</p>
+                    </div>
+                    <StatusBadge status={check.status} />
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="text-[13px] text-center py-6 rounded-[20px] bg-white" style={{ border: "1px solid #eeebf3", color: "#888888" }}>
+              Loading system status…
+            </div>
+          )
+        )}
+      </div>
+
     </div>
   );
 }
