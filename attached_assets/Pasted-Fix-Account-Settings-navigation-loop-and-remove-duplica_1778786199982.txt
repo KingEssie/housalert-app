@@ -1,0 +1,135 @@
+Fix Account/Settings navigation loop and remove duplicate settings screens.
+
+Current bug:
+User gets stuck in a loop:
+- Instellingen back button goes to Support
+- Support back button goes back to Instellingen
+This happens because one or more screens use browser history instead of deterministic navigation.
+
+Also:
+There appear to be multiple settings screens/designs:
+1. correct modern settings screen with rounded cards and bottom nav
+2. older/plain settings screen without the intended layout
+Only one Account/Settings screen should exist for users.
+
+==================================================
+REQUIRED BEHAVIOR
+==================================================
+
+Account tab:
+- Bottom nav Account opens the main Account/Settings screen.
+- This screen MUST show the bottom nav.
+- This screen should be the single canonical user account/settings screen.
+
+Support:
+- Account/Settings → Support opens /support
+- Support back button ALWAYS goes to Account/Settings canonical route.
+- It must NOT use history.back()
+
+Preferences:
+- Account/Settings → Voorkeuren opens preferences screen.
+- Preferences back button ALWAYS goes to Account/Settings canonical route.
+- It must NOT use history.back()
+
+Subscription:
+- Account/Settings → Abonnement opens subscription screen.
+- Subscription back button ALWAYS goes to Account/Settings canonical route.
+- It must NOT use history.back()
+
+Other account subpages:
+- Mijn gegevens
+- Woonsituatie
+- Zoekbuddy beheren
+- Reactiebrief
+- Wachtwoord
+- Account verwijderen
+
+All their back buttons must return to canonical Account/Settings route.
+
+==================================================
+IMPLEMENTATION
+==================================================
+
+1. Find the exact route used by the bottom nav Account tab.
+Use that as the canonical account route.
+
+Example:
+const ACCOUNT_ROUTE = "/account"
+
+or if the real app uses another route, use that exact one.
+
+2. Replace every account/support/settings related:
+- window.history.back()
+- history.back()
+- navigate(-1)
+- router.back()
+
+with:
+navigate(ACCOUNT_ROUTE)
+
+except internal multi-step flows where back should go to the previous step.
+
+3. Remove or redirect duplicate settings screens.
+If there are older routes like:
+- /settings
+- /account/settings
+- /preferences
+that render different account/settings UIs,
+then redirect them to the canonical Account route OR update them to use the same component.
+
+4. Ensure canonical Account screen always includes:
+- bottom nav
+- current modern rounded-card design
+- support row
+- subscription row
+- logout/admin button behavior unchanged
+
+5. Support screen should NOT show bottom nav unless that is the intended app-wide pattern, but its back button must go to Account.
+
+==================================================
+IMPORTANT
+==================================================
+
+Do not rely on browser history for account/settings/support pages.
+Mobile users often enter through:
+- push notifications
+- emails
+- Stripe redirects
+- direct links
+- refreshed pages
+
+Back behavior must be deterministic.
+
+==================================================
+SMOKE TEST
+==================================================
+
+Test these exact flows:
+
+1. Bottom nav Account → Support → back
+Expected:
+Support back returns to Account screen, not previous random route.
+
+2. Account → Support → Account → Support → back
+Expected:
+No loop.
+
+3. Account → Voorkeuren → back
+Expected:
+Back returns to Account screen.
+
+4. Account → Abonnement → back
+Expected:
+Back returns to Account screen.
+
+5. Refresh on Support → back
+Expected:
+Back returns to Account screen.
+
+6. Direct open /settings or old settings route
+Expected:
+Redirects to canonical Account screen or shows same modern Account screen.
+
+7. Account screen always shows bottom nav.
+
+8. No old/plain settings screen is reachable by normal user navigation.

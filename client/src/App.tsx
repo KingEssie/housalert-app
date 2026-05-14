@@ -258,7 +258,7 @@ function Router() {
       <Route path="/tips/facebook" component={() => <ProtectedRoute component={FacebookGuidePage} />} />
       <Route path="/tips/nieuwbouw" component={() => <ProtectedRoute component={NieuwbouwGuidePage} />} />
       <Route path="/tips/opvolging" component={() => <ProtectedRoute component={OpvolgingGuidePage} />} />
-      <Route path="/settings" component={() => <ProtectedRoute component={SettingsPage} />} />
+      <Route path="/settings" component={() => <Redirect to="/dashboard?tab=profile" />} />
       <Route path="/settings/preferences" component={() => <ProtectedRoute component={PreferencesPage} />} />
       <Route path="/settings/housing" component={() => <BuddyProtectedRoute component={HousingSituationPage} />} />
       <Route path="/account/subscription" component={() => <BuddyProtectedRoute component={SubscriptionDetailPage} />} />
