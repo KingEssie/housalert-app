@@ -20,7 +20,7 @@ export function LogoutBottomSheet({ open, onClose, onConfirm, loading }: LogoutB
       data-testid="overlay-logout"
     >
       <div
-        className="bg-white w-full max-w-[480px] rounded-t-[16px] px-5 pt-6 pb-[max(24px,env(safe-area-inset-bottom))] shadow-[0_-4px_24px_rgba(0,0,0,0.10)] animate-in slide-in-from-bottom-4 duration-200"
+        className="bg-white w-full max-w-[480px] rounded-t-[20px] px-5 pt-6 pb-[max(24px,env(safe-area-inset-bottom))] shadow-[0_-4px_24px_rgba(0,0,0,0.10)] animate-in slide-in-from-bottom-4 duration-200"
         onClick={e => e.stopPropagation()}
         data-testid="sheet-logout"
       >
@@ -31,7 +31,8 @@ export function LogoutBottomSheet({ open, onClose, onConfirm, loading }: LogoutB
         <button
           onClick={onConfirm}
           disabled={loading}
-          className="w-full h-[58px] rounded-[10px] bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold transition-colors active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 mb-3"
+          className="w-full h-[56px] rounded-full text-[16px] font-semibold transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 mb-3"
+          style={{ backgroundColor: "#85fb8c", color: "#111111" }}
           data-testid="button-logout-confirm"
         >
           {loading && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -41,8 +42,8 @@ export function LogoutBottomSheet({ open, onClose, onConfirm, loading }: LogoutB
         <button
           onClick={onClose}
           disabled={loading}
-          className="w-full h-[58px] rounded-full text-[#111111] text-[16px] font-semibold transition-colors active:scale-[0.98] disabled:opacity-50"
-          style={{ backgroundColor: "#bbadfb" }}
+          className="w-full h-[56px] rounded-full text-[16px] font-semibold transition-all active:scale-[0.98] disabled:opacity-50"
+          style={{ backgroundColor: "white", border: "1.5px solid #bbadfb", color: "#111111" }}
           data-testid="button-logout-cancel"
         >
           {t("profile.logoutSheetCancel")}
