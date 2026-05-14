@@ -18,6 +18,18 @@ import {
   Pencil,
 } from "lucide-react";
 
+const INPUT_STYLE: React.CSSProperties = {
+  backgroundColor: "#ffffff",
+  border: "1.5px solid #111111",
+  color: "#111111",
+};
+const INPUT_FOCUS_STYLE: React.CSSProperties = {
+  backgroundColor: "#ffffff",
+  border: "1.5px solid #bbadfb",
+  color: "#111111",
+  outline: "none",
+};
+
 const SUBJECT_OPTIONS = [
   "Mijn profiel",
   "Meldingen ontvangen",
@@ -76,6 +88,7 @@ export default function SupportPage() {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const MAX_CHARS = 1000;
   const effectiveSubject = subject === "Overig" ? customSubject : subject;
@@ -127,7 +140,7 @@ export default function SupportPage() {
           src={logoSrc}
           alt="HousAlert"
           className="object-contain"
-          style={{ height: 18, width: "auto", filter: "brightness(0)" }}
+          style={{ height: 18, width: "auto", filter: "brightness(0)", mixBlendMode: "multiply" }}
         />
 
         <span
@@ -195,18 +208,17 @@ export default function SupportPage() {
 
               {/* Subject select */}
               <div className="relative">
-                <div
-                  className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"
-                >
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
                   <Tag className="w-4 h-4" style={{ color: "#aaaaaa" }} />
                 </div>
                 <select
                   value={subject}
                   onChange={e => setSubject(e.target.value)}
-                  className="w-full appearance-none pl-10 pr-10 py-3.5 rounded-[18px] text-[14px] outline-none"
+                  onFocus={() => setFocusedField("subject")}
+                  onBlur={() => setFocusedField(null)}
+                  className="w-full appearance-none pl-10 pr-10 py-3.5 rounded-[18px] text-[14px]"
                   style={{
-                    backgroundColor: "#ffffff",
-                    border: "1px solid #ececec",
+                    ...(focusedField === "subject" ? INPUT_FOCUS_STYLE : INPUT_STYLE),
                     color: subject ? "#111111" : "#aaaaaa",
                   }}
                   data-testid="select-subject"
@@ -228,8 +240,10 @@ export default function SupportPage() {
                   placeholder="Typ je onderwerp..."
                   value={customSubject}
                   onChange={e => setCustomSubject(e.target.value)}
-                  className="w-full px-4 py-3.5 rounded-[18px] text-[14px] outline-none"
-                  style={{ backgroundColor: "#ffffff", border: "1px solid #ececec", color: "#111111" }}
+                  onFocus={() => setFocusedField("custom")}
+                  onBlur={() => setFocusedField(null)}
+                  className="w-full px-4 py-3.5 rounded-[18px] text-[14px]"
+                  style={focusedField === "custom" ? INPUT_FOCUS_STYLE : INPUT_STYLE}
                   data-testid="input-subject-custom"
                 />
               )}
@@ -243,9 +257,11 @@ export default function SupportPage() {
                   placeholder="Vertel ons wat er aan de hand is..."
                   value={message}
                   onChange={e => setMessage(e.target.value.slice(0, MAX_CHARS))}
+                  onFocus={() => setFocusedField("message")}
+                  onBlur={() => setFocusedField(null)}
                   rows={5}
-                  className="w-full pl-10 pr-4 pt-4 pb-8 rounded-[18px] text-[14px] outline-none resize-none"
-                  style={{ backgroundColor: "#ffffff", border: "1px solid #ececec", color: "#111111" }}
+                  className="w-full pl-10 pr-4 pt-4 pb-8 rounded-[18px] text-[14px] resize-none"
+                  style={focusedField === "message" ? INPUT_FOCUS_STYLE : INPUT_STYLE}
                   data-testid="input-message"
                 />
                 <span

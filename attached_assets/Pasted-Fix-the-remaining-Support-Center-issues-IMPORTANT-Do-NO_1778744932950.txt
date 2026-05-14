@@ -1,0 +1,114 @@
+Fix the remaining Support Center issues.
+
+IMPORTANT:
+Do NOT redesign the page again.
+Keep the current premium layout exactly as it is.
+Only fix the issues below.
+
+========================================
+1. SUPPORT TICKETS NOT APPEARING IN ADMIN
+========================================
+
+Current issue:
+Submitting a support form shows success in the frontend, but tickets do not appear in Admin → Support tickets.
+
+Investigate and fix the entire support ticket flow.
+
+Verify:
+
+- POST /api/support/tickets actually inserts into DB
+- support_tickets table exists
+- insert query succeeds
+- admin endpoint GET /api/admin/support/tickets returns records
+- frontend admin panel fetches correctly
+- ticket list updates after submission
+
+Add proper backend logging:
+- log ticket insert success/failure
+- log admin fetch count
+
+Check:
+- auth/session issues
+- database transaction issues
+- wrong table names
+- missing await
+- frontend cache/query invalidation
+
+After fix:
+- submit a test ticket
+- verify it instantly appears in Admin → Support
+
+========================================
+2. LOGO NOT VISIBLE ON SUPPORT SCREEN
+========================================
+
+Current issue:
+The HousAlert logo area renders as a black rectangle / invisible logo.
+
+Fix:
+- ensure actual logo asset loads correctly
+- verify image path/import
+- verify transparent PNG/SVG renders correctly
+- ensure no CSS is hiding it
+- no black placeholder blocks
+
+Use:
+- black HousAlert logo
+- crisp rendering on retina/mobile
+- proper sizing and spacing
+
+========================================
+3. INPUT FIELD BORDERS
+========================================
+
+Current issue:
+Input borders are too light.
+
+Update ALL support form inputs:
+- border: 1.5px solid #111111
+- black border
+- keep white background
+- keep rounded corners
+- maintain premium minimal look
+
+Apply to:
+- dropdown field
+- custom subject field
+- textarea
+
+Focus state:
+- border-color: #bbadfb
+- subtle purple glow optional
+
+========================================
+4. KEEP CURRENT PREMIUM DESIGN
+========================================
+
+DO NOT change:
+- spacing
+- layout
+- cards
+- typography
+- icon system
+- WhatsApp section
+- hero section
+- colors
+- button styles
+
+Only fix the issues above.
+
+========================================
+SMOKE CHECK
+========================================
+
+After implementation verify:
+
+✓ Support ticket successfully inserts into DB
+✓ Ticket visible in Admin → Support
+✓ Admin filters still work
+✓ Logo renders correctly
+✓ No black placeholder block remains
+✓ Input borders are black
+✓ Purple focus state still works
+✓ Mobile layout unchanged
+✓ No regressions

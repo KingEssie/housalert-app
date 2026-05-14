@@ -2500,11 +2500,13 @@ function SupportTab() {
     setLoading(true);
     try {
       const params = statusFilter !== "all" ? `?status=${statusFilter}` : "";
-      const r = await adminFetch(`/api/admin/support/tickets${params}`);
-      const d = await r.json();
+      const d = await adminFetch(`/api/admin/support/tickets${params}`);
       setTickets(d.tickets || []);
       setTotal(d.total ?? 0);
-    } catch {}
+      log(`[support] Admin fetched ${d.tickets?.length ?? 0} tickets (total=${d.total ?? 0})`);
+    } catch (err: any) {
+      log(`[support] Admin fetch error: ${err.message}`);
+    }
     setLoading(false);
   }, [statusFilter]);
 
