@@ -1,0 +1,103 @@
+Polish the HousAlert floating bottom navigation bar.
+
+Goal:
+Make the bottom navigation feel more premium/native and match the latest visual direction.
+
+Changes required:
+
+1. Bottom nav background color
+Use this exact dark color for the nav bar:
+#171429
+
+Apply to:
+- main bottom nav container
+- any active bottom nav wrapper if it inherits old navy
+
+Do not use the old navy #223546 for the bottom nav anymore.
+
+2. Larger icons
+Increase bottom nav icons slightly.
+
+Target:
+- icons: 28–30px
+- active icon: 30–32px if needed
+- labels remain readable, around 12–13px
+- keep icon/label spacing tight
+
+Do not make the whole nav too tall again.
+The nav should stay compact, but icons should feel stronger.
+
+3. Add white bottom gradient behind nav
+Issue:
+Currently listing cards/content remain visible underneath and behind the floating bottom nav. This looks messy.
+
+Add a fixed gradient overlay behind the bottom nav:
+
+- position: fixed
+- left: 0
+- right: 0
+- bottom: 0
+- height: around 140–180px
+- pointer-events: none
+- z-index below nav, above page content
+
+Gradient:
+bottom should be solid white or app background
+top should fade to transparent
+
+Example:
+background: linear-gradient(
+  to top,
+  #ffffff 0%,
+  rgba(255,255,255,0.96) 35%,
+  rgba(255,255,255,0.65) 65%,
+  rgba(255,255,255,0) 100%
+);
+
+If the page uses app background #f6f6f6, blend carefully but bottom should feel clean white.
+
+4. Layering
+Ensure:
+- gradient sits behind the nav
+- nav sits above gradient
+- gradient does not block taps
+- nav remains tappable
+- content can still scroll behind it, but visually fades out
+
+Suggested z-index:
+- content normal
+- gradient z-index: 40
+- nav z-index: 50
+
+5. Safe area
+Keep iPhone safe-area support:
+- bottom nav must not collide with home indicator
+- gradient should extend to bottom including safe-area
+- no white gap below nav
+
+6. Screens to check
+Apply consistently on:
+- Home
+- Matches
+- Favorieten
+- Account
+- Search profile pages if bottom nav appears
+- Any screen where bottom nav is visible
+
+7. Active/inactive colors
+Keep:
+- active green: #85fb8c
+- active icon/text: #85fb8c
+- inactive icon/text: white or soft white
+- nav background: #171429
+
+8. Smoke test
+Test on mobile:
+- Matches list with cards scrolling behind nav
+- Bottom content fades to white behind nav
+- Nav color is #171429
+- Icons are visibly larger
+- Nav remains compact
+- Tabs still work
+- No content is hidden in a way that makes final listing impossible to view
+- No taps are blocked by gradient

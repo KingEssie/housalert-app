@@ -2449,14 +2449,23 @@ export default function DashboardPage() {
         )}
       </main>
 
+      {/* Fade gradient behind nav — blocks visual noise from scrolling content */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-20"
+        className="fixed bottom-0 left-0 right-0 pointer-events-none z-40"
+        style={{
+          height: "160px",
+          background: "linear-gradient(to top, #ffffff 0%, rgba(255,255,255,0.96) 35%, rgba(255,255,255,0.65) 65%, rgba(255,255,255,0) 100%)",
+        }}
+      />
+
+      <div
+        className="fixed bottom-0 left-0 right-0 z-50"
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
         <div className="max-w-xl mx-auto px-5 pb-[10px]">
           <nav
-            className="flex rounded-[28px] h-[60px] overflow-hidden"
-            style={{ backgroundColor: "#223546" }}
+            className="flex rounded-[28px] h-[62px] overflow-hidden"
+            style={{ backgroundColor: "#171429" }}
             data-testid="bottom-nav"
           >
             {TAB_CONFIG.map(({ key, labelKey, Icon }) => {
@@ -2470,16 +2479,16 @@ export default function DashboardPage() {
                   data-testid={`tab-${key}`}
                 >
                   {isProfileWithPhoto ? (
-                    <div className={`w-[24px] h-[24px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-ha-primary ring-offset-1 ring-offset-[#223546]" : ""}`}>
+                    <div className={`w-[28px] h-[28px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-ha-primary ring-offset-1 ring-offset-[#171429]" : ""}`}>
                       <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
                     </div>
                   ) : (
                     <Icon
-                      className={`w-[22px] h-[22px] transition-colors ${isActive ? "text-ha-primary" : "text-white/85"}`}
+                      className={`w-[28px] h-[28px] transition-colors ${isActive ? "text-ha-primary" : "text-white/85"}`}
                       strokeWidth={isActive ? 2.2 : 1.6}
                     />
                   )}
-                  <span className={`text-[11px] leading-none transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-white/75"}`}>
+                  <span className={`text-[12px] leading-none transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-white/75"}`}>
                     {t(labelKey)}
                   </span>
                 </button>
