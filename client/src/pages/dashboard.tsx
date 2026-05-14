@@ -591,7 +591,7 @@ function LetterModal({ accessToken, open, onClose }: { accessToken: string | und
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center" onClick={onClose}>
+    <div className="fixed inset-0 z-[60] bg-black/40 flex items-end sm:items-center justify-center" onClick={onClose}>
       <div
         className="bg-white w-full max-w-[480px] max-h-[85vh] rounded-t-[12px] sm:rounded-[12px] flex flex-col animate-in slide-in-from-bottom-4 duration-200"
         onClick={(e) => e.stopPropagation()}
@@ -840,7 +840,7 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
       )}
 
       {confirmDeleteId && (
-        <div className="fixed inset-0 z-50 bg-ha-bg flex flex-col">
+        <div className="fixed inset-0 z-[60] bg-ha-bg flex flex-col">
           <header className="sticky top-0 z-10">
             <div className="max-w-lg mx-auto flex items-center h-[48px] px-4">
               <button
@@ -943,7 +943,7 @@ function HomeTab({
     <div className="flex flex-col pb-8">
       {/* Former buddy transition modal */}
       {showBuddyUnlinked && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]" data-testid="modal-buddy-unlinked">
+        <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/50 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]" data-testid="modal-buddy-unlinked">
           <div className="bg-white rounded-[20px] w-full max-w-[420px] p-6 flex flex-col gap-4 shadow-xl">
             <div className="w-12 h-12 rounded-full bg-ha-surface flex items-center justify-center mx-auto">
               <Link2Off className="w-6 h-6 text-ha-text-muted" strokeWidth={1.8} />
@@ -1578,7 +1578,7 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
       </div>
 
       {sortSheetOpen && (
-        <div className="fixed inset-0 z-50" data-testid="sort-sheet-overlay">
+        <div className="fixed inset-0 z-[60]" data-testid="sort-sheet-overlay">
           <div
             className="absolute inset-0 bg-black/40"
             onClick={() => setSortSheetOpen(false)}
@@ -1632,7 +1632,7 @@ function DeleteConfirmScreen({ onConfirm, onCancel }: { onConfirm: () => void; o
   const { t } = useTranslation();
 
   return (
-    <div className="fixed inset-0 z-50 bg-ha-bg flex flex-col">
+    <div className="fixed inset-0 z-[60] bg-ha-bg flex flex-col">
       <header className="sticky top-0 z-10">
         <div className="max-w-lg mx-auto flex items-center h-[48px] px-4">
           <button
@@ -1682,7 +1682,7 @@ function ProfilePhotoSheet({ photoUrl, onClose, onUpload, onRemove }: { photoUrl
   const { t } = useTranslation();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center" onClick={onClose}>
+    <div className="fixed inset-0 z-[60] flex items-end justify-center" onClick={onClose}>
       <div className="absolute inset-0 bg-black/40" />
       <div
         className="relative w-full max-w-[480px] bg-white rounded-t-[--ha-card-radius] pb-10 pt-3 animate-in slide-in-from-bottom duration-300"
