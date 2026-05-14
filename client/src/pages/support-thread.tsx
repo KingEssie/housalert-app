@@ -19,6 +19,11 @@ interface TicketMessage {
   sender_type: "user" | "admin" | "system";
   sender_user_id?: string;
   message: string;
+  display_body?: string;
+  original_body?: string;
+  translated?: boolean;
+  translation_status?: string;
+  original_language?: string;
   faq_title?: string;
   faq_url?: string;
   created_at: string;
@@ -80,6 +85,8 @@ function FaqCard({ title, url }: { title: string; url: string }) {
 }
 
 function MessageBubble({ msg }: { msg: TicketMessage }) {
+  const [showOriginal, setShowOriginal] = useState(false);
+
   if (msg.sender_type === "system") {
     return (
       <div className="flex justify-center">
@@ -91,6 +98,10 @@ function MessageBubble({ msg }: { msg: TicketMessage }) {
   }
 
   const isUser = msg.sender_type === "user";
+  const bodyToShow = showOriginal
+    ? (msg.original_body || msg.message)
+    : (msg.display_body || msg.message);
+  const canToggle = msg.translated && msg.original_body && msg.original_body !== bodyToShow;
 
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
@@ -107,10 +118,31 @@ function MessageBubble({ msg }: { msg: TicketMessage }) {
             : { backgroundColor: "#ffffff", color: "#111111", border: "1px solid #eeeeee", borderBottomLeftRadius: "6px" }
           }
         >
-          {msg.message}
+          {bodyToShow}
         </div>
         {msg.faq_title && msg.faq_url && (
           <FaqCard title={msg.faq_title} url={msg.faq_url} />
+        )}
+        {msg.translated && (
+          <div className={`flex items-center gap-2 mt-1 ${isUser ? "justify-end" : "justify-start"}`}>
+            <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ backgroundColor: "#f0ecff", color: "#8b68e0" }}>
+              Automatisch vertaald
+            </span>
+            {canToggle && (
+              <button
+                onClick={() => setShowOriginal(v => !v)}
+                className="text-[10px] font-medium underline-offset-2"
+                style={{ color: "#bbbbbb" }}
+              >
+                {showOriginal ? "Vertaling bekijken" : "Origineel bekijken"}
+              </button>
+            )}
+          </div>
+        )}
+        {msg.translation_status === "failed" && (
+          <p className={`text-[10px] mt-1 ${isUser ? "text-right" : "text-left"}`} style={{ color: "#f59e0b" }}>
+            Vertaling niet beschikbaar
+          </p>
         )}
         <p className={`text-[10px] mt-1 ${isUser ? "text-right" : "text-left"}`} style={{ color: "#bbbbbb" }}>
           {formatTime(msg.created_at)}

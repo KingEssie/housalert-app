@@ -46,6 +46,7 @@ import { getBlockedSources, addBlockedSource, removeBlockedSource, normalizeSour
 import { getReferralSummary, applyReferralCode, validateReferralCode, ensureUserHasReferralCode } from "./referrals";
 import { initWebPush, sendPushToUser } from "./notifications/push";
 import { sendExpoTestPush } from "./notifications/expo-push";
+import { translateAndUpdateMessage, getUserPreferredLanguage, applyDisplayBodies } from "./notifications/translate";
 import { getSupabaseAdmin, lookupSupabaseUserByEmail } from "./supabase-admin";
 import { markViewed, markApplied, markSaved, getUserMatchStats, getRecentUserMatches, getMatchCountForUser, getCanonicalMatchStates, getRecentFetchRuns, backfillFromSupabaseMatches, upsertUserMatch } from "./user-matches";
 
@@ -8246,11 +8247,15 @@ export async function registerRoutes(
         [id, user.id]
       );
       if (!tickets[0]) return res.status(404).json({ error: "Ticket not found" });
-      const { rows: messages } = await pgPool.query(
-        `SELECT id, ticket_id, sender_type, message, faq_title, faq_url, created_at FROM support_ticket_messages WHERE ticket_id = $1 ORDER BY created_at ASC`,
+      const { rows: rawMessages } = await pgPool.query(
+        `SELECT id, ticket_id, sender_type, message, faq_title, faq_url, created_at,
+          original_body, original_language, translated_body_nl, translated_body_de, translated_body_en, translation_status
+         FROM support_ticket_messages WHERE ticket_id = $1 ORDER BY created_at ASC`,
         [id]
       );
       await pgPool.query(`UPDATE support_tickets SET has_unread_admin_reply = FALSE WHERE id = $1`, [id]);
+      const userLang = await getUserPreferredLanguage(user.id);
+      const messages = applyDisplayBodies(rawMessages, userLang);
       res.json({ ...tickets[0], messages });
     } catch (err: any) {
       log(`[support] Error fetching thread: ${err.message}`);
@@ -8286,6 +8291,7 @@ export async function registerRoutes(
       if (ticket.status === "resolved") {
         log(`[support] Ticket #${id} reopened by user reply`);
       }
+      translateAndUpdateMessage(msgRows[0].id, message.trim(), ["nl"]).catch(() => {});
       res.json({ ok: true, message: msgRows[0], new_status: newStatus });
     } catch (err: any) {
       log(`[support] Error posting user reply: ${err.message}`);
@@ -8344,11 +8350,12 @@ export async function registerRoutes(
         [userId, email, subject.trim(), message.trim()]
       );
       const ticketId = result.rows[0].id;
-      await pgPool.query(
-        `INSERT INTO support_ticket_messages (ticket_id, sender_type, sender_user_id, message) VALUES ($1, 'user', $2, $3)`,
+      const { rows: firstMsgRows } = await pgPool.query(
+        `INSERT INTO support_ticket_messages (ticket_id, sender_type, sender_user_id, message) VALUES ($1, 'user', $2, $3) RETURNING id`,
         [ticketId, userId, message.trim()]
       );
       await pgPool.query(`UPDATE support_tickets SET last_message_at = NOW() WHERE id = $1`, [ticketId]);
+      translateAndUpdateMessage(firstMsgRows[0].id, message.trim(), ["nl"]).catch(() => {});
       log(`[support] Ticket created id=${ticketId} user=${userId || "anonymous"}`);
       res.json({ id: ticketId, created_at: result.rows[0].created_at });
     } catch (err: any) {
@@ -8512,11 +8519,13 @@ export async function registerRoutes(
     try {
       const { id } = req.params;
       const { rows } = await pgPool.query(
-        `SELECT id, ticket_id, sender_type, sender_user_id, message, faq_title, faq_url, created_at
+        `SELECT id, ticket_id, sender_type, sender_user_id, message, faq_title, faq_url, created_at,
+          original_body, original_language, translated_body_nl, translated_body_de, translated_body_en, translation_status
          FROM support_ticket_messages WHERE ticket_id = $1 ORDER BY created_at ASC`,
         [id]
       );
-      res.json({ messages: rows });
+      const messages = applyDisplayBodies(rows, "nl");
+      res.json({ messages });
     } catch (err: any) {
       log(`[support] Error fetching messages: ${err.message}`);
       res.status(500).json({ error: "Failed" });
@@ -8544,6 +8553,19 @@ export async function registerRoutes(
         `UPDATE support_tickets SET status = $1, has_unread_admin_reply = TRUE, last_message_at = NOW(), updated_at = NOW() WHERE id = $2`,
         [newStatus, id]
       );
+      if (ticket.user_id && message?.trim()) {
+        getUserPreferredLanguage(ticket.user_id).then(userLang => {
+          const targetLangs = userLang === "nl" ? [] : [userLang as "de" | "en"];
+          if (targetLangs.length > 0) {
+            translateAndUpdateMessage(msgRows[0].id, message.trim(), targetLangs).catch(() => {});
+          } else {
+            pgPool.query(
+              `UPDATE support_ticket_messages SET original_body=$1, original_language='nl', translation_status='not_needed' WHERE id=$2`,
+              [message.trim(), msgRows[0].id]
+            ).catch(() => {});
+          }
+        }).catch(() => {});
+      }
       if (ticket.user_id) {
         pgPool.query(
           `INSERT INTO support_notifications (user_id, ticket_id, title, body) VALUES ($1, $2, $3, $4)`,

@@ -39,6 +39,37 @@ export async function runStartupMigration() {
   await createSupportNotificationsTable();
   await createSupportTicketMessagesTable();
   await ensureSupportTicketExtraColumns();
+  await ensureSupportMessageTranslationColumns();
+}
+
+async function ensureSupportMessageTranslationColumns() {
+  const cols = [
+    { name: "original_body",       sql: "TEXT" },
+    { name: "original_language",   sql: "TEXT" },
+    { name: "translated_body_nl",  sql: "TEXT" },
+    { name: "translated_body_de",  sql: "TEXT" },
+    { name: "translated_body_en",  sql: "TEXT" },
+    { name: "translation_status",  sql: "TEXT NOT NULL DEFAULT 'not_needed'" },
+    { name: "translated_at",       sql: "TIMESTAMPTZ" },
+  ];
+  for (const col of cols) {
+    try {
+      await pool.query(`ALTER TABLE support_ticket_messages ADD COLUMN IF NOT EXISTS ${col.name} ${col.sql}`);
+      log(`[MIGRATION] support_ticket_messages.${col.name} OK`, "migration");
+    } catch (err: any) {
+      log(`[MIGRATION] Error adding support_ticket_messages.${col.name}: ${err.message}`, "migration");
+    }
+  }
+  try {
+    await pool.query(`
+      UPDATE support_ticket_messages
+      SET original_body = message
+      WHERE original_body IS NULL
+    `);
+    log("[MIGRATION] support_ticket_messages original_body backfill OK", "migration");
+  } catch (err: any) {
+    log(`[MIGRATION] original_body backfill error: ${err.message}`, "migration");
+  }
 }
 
 async function createSupportTicketMessagesTable() {

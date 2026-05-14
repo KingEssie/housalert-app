@@ -1,0 +1,208 @@
+Implement automatic support message translation for HousAlert.
+
+Goal:
+Support should work across languages automatically.
+
+Context:
+The admin speaks Dutch.
+Many users will speak German.
+When a user sends a support message in German, admin should see it in Dutch.
+When admin replies in Dutch, the user should see it in the language selected in their app, usually German.
+
+==================================================
+REQUIRED BEHAVIOR
+==================================================
+
+1. Store original message always
+Never overwrite original text.
+
+For each support message store:
+- original_body
+- original_language
+- translated_body_nl nullable
+- translated_body_de nullable
+- translated_body_en nullable
+- translation_status: pending | translated | failed | not_needed
+- translated_at nullable
+
+2. Language source
+User language:
+- use the language setting from the user/app profile
+- fallback to browser/app locale
+- fallback to "nl" if unknown
+
+Admin language:
+- use admin app language setting if available
+- fallback to "nl"
+
+3. User → admin
+If user writes German:
+- save German original
+- translate to Dutch for admin
+- admin thread shows Dutch translated text by default
+- optionally show subtle “Origineel bekijken” toggle
+
+4. Admin → user
+If admin writes Dutch:
+- save Dutch original
+- translate to the user's selected language
+- user thread shows translated text by default
+- optionally show subtle “Origineel bekijken” toggle
+
+5. Same-language messages
+If original language equals viewer language:
+- show original
+- no translation needed
+
+6. Translation service
+Use OpenAI if OPENAI_API_KEY is configured.
+Use a small/cheap model.
+If no key configured:
+- do not block support
+- save original
+- show original with a small note: “Vertaling niet beschikbaar”
+
+Translation prompt requirements:
+- preserve meaning
+- keep tone friendly and professional
+- do not add information
+- do not remove details
+- keep URLs, email addresses, prices, dates, city names unchanged
+- keep HousAlert brand name unchanged
+- translate only the message body, not metadata
+
+7. Admin composer
+Admin can type in Dutch.
+Before sending, optional preview:
+“Gebruiker ziet dit in Duits: [translated preview]”
+But do not make preview mandatory for first version.
+
+Preferred first version:
+- send immediately
+- translate on backend
+- display translated result in thread
+
+8. FAQ cards
+If admin attaches FAQ item:
+- title should show in user language if available
+- URL should point to the correct localized FAQ page if available
+- if localized URL unavailable, use the existing FAQ URL
+
+9. Notifications
+Push/email notification copy should use recipient language:
+- user receives German notification if app language is German
+- admin receives Dutch/in-admin text if admin language is Dutch
+
+10. Failure behavior
+If translation fails:
+- still send the message
+- show original
+- mark translation_status = failed
+- admin sees clear small warning, not a blocking error
+
+==================================================
+DATABASE
+==================================================
+
+Add safe migrations to support_ticket_messages:
+
+- original_body text
+- original_language text
+- translated_body_nl text
+- translated_body_de text
+- translated_body_en text
+- translation_status text default 'not_needed'
+- translated_at timestamptz
+
+For backwards compatibility:
+- existing body/message column should remain
+- backfill original_body = existing body/message where null
+
+Do not break existing support tickets.
+
+==================================================
+BACKEND
+==================================================
+
+Update:
+- POST /api/support/tickets/:id/reply
+- POST /api/admin/support/tickets/:id/reply
+- GET /api/support/tickets/:id/thread
+- GET /api/admin/support/tickets/:id/messages
+- ticket creation route
+
+Add helper:
+getViewerLanguage(viewer)
+getUserPreferredLanguage(userId)
+translateSupportMessage(originalText, sourceLang, targetLang)
+
+When returning messages:
+- include display_body based on viewer language
+- include original_body
+- include original_language
+- include translated flag
+- include translation_status
+
+Admin viewer:
+- display_body should default to admin language, normally nl
+
+User viewer:
+- display_body should default to their selected app language
+
+==================================================
+FRONTEND
+==================================================
+
+Thread UI:
+- show display_body as main message
+- if translated, show tiny label:
+  “Automatisch vertaald”
+- add small toggle:
+  “Origineel bekijken”
+  and “Vertaling bekijken”
+
+Do not clutter the chat.
+
+Admin UI:
+- same behavior
+- admin should see German user messages translated into Dutch by default
+
+==================================================
+SECURITY / PRIVACY
+==================================================
+
+- Do not translate passwords, API keys, or payment card details if detected.
+- If message appears to contain sensitive secrets, skip translation and flag it.
+- Never send more data to OpenAI than the message body and source/target language.
+
+==================================================
+SMOKE TEST
+==================================================
+
+Test A:
+User language = de.
+User sends:
+"Ich bekomme keine Benachrichtigungen."
+Admin sees:
+"Ik ontvang geen meldingen."
+Message has “Automatisch vertaald”.
+
+Test B:
+Admin replies in Dutch:
+"Controleer of pushmeldingen aan staan bij Voorkeuren."
+User sees German:
+"Prüfe, ob Push-Benachrichtigungen in den Einstellungen aktiviert sind."
+
+Test C:
+User language = nl.
+Admin writes Dutch.
+No translation label needed.
+
+Test D:
+Translation service unavailable.
+Message still sends.
+Original is shown.
+translation_status = failed.
+
+Test E:
+Existing old support messages still load correctly.

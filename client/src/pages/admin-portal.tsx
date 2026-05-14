@@ -2495,9 +2495,74 @@ interface SupportMessage {
   ticket_id: number;
   sender_type: "user" | "admin" | "system";
   message: string;
+  display_body?: string;
+  original_body?: string;
+  translated?: boolean;
+  translation_status?: string;
+  original_language?: string;
   faq_title?: string;
   faq_url?: string;
   created_at: string;
+}
+
+function AdminMessageBubble({ msg, isUser }: { msg: SupportMessage; isUser: boolean }) {
+  const [showOriginal, setShowOriginal] = useState(false);
+  const bodyToShow = showOriginal
+    ? (msg.original_body || msg.message)
+    : (msg.display_body || msg.message);
+  const canToggle = msg.translated && msg.original_body && msg.original_body !== bodyToShow;
+
+  return (
+    <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
+      {!isUser && (
+        <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mr-1.5 self-end mb-4" style={{ backgroundColor: "#ede7ff" }}>
+          <span className="text-[8px] font-bold" style={{ color: "#7c5cbf" }}>HA</span>
+        </div>
+      )}
+      <div className="max-w-[80%]">
+        <div
+          className="px-3 py-2 rounded-[14px] text-[12px] leading-relaxed"
+          style={isUser
+            ? { backgroundColor: "#f0fdf4", color: "#111", borderBottomRightRadius: "4px" }
+            : { backgroundColor: "#ffffff", color: "#111", border: "1px solid #eeeeee", borderBottomLeftRadius: "4px" }
+          }
+        >
+          {bodyToShow}
+        </div>
+        {msg.faq_title && msg.faq_url && (
+          <a href={msg.faq_url} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 mt-1 px-3 py-1.5 rounded-[10px] text-[11px]" style={{ backgroundColor: "#f9f8ff", border: "1px solid #ede7ff", color: "#7c5cbf", fontWeight: 600 }}>
+            <BookOpen className="w-3 h-3 flex-shrink-0" />
+            {msg.faq_title}
+            <ExternalLink className="w-3 h-3 ml-auto flex-shrink-0" />
+          </a>
+        )}
+        {msg.translated && (
+          <div className={`flex items-center gap-2 mt-0.5 ${isUser ? "justify-end" : "justify-start"}`}>
+            <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "#f0ecff", color: "#8b68e0" }}>
+              Automatisch vertaald
+            </span>
+            {canToggle && (
+              <button
+                onClick={() => setShowOriginal(v => !v)}
+                className="text-[10px] font-medium"
+                style={{ color: "#bbb" }}
+              >
+                {showOriginal ? "Vertaling bekijken" : "Origineel bekijken"}
+              </button>
+            )}
+          </div>
+        )}
+        {msg.translation_status === "failed" && (
+          <p className={`text-[10px] mt-0.5 ${isUser ? "text-right" : "text-left"}`} style={{ color: "#f59e0b" }}>
+            Vertaling niet beschikbaar
+          </p>
+        )}
+        <p className={`text-[10px] mt-0.5 ${isUser ? "text-right" : "text-left"}`} style={{ color: "#ccc" }}>
+          {new Date(msg.created_at).toLocaleTimeString("nl-NL", { hour: "2-digit", minute: "2-digit" })}
+        </p>
+      </div>
+    </div>
+  );
 }
 
 const ADMIN_FAQ_ITEMS = [
@@ -2721,34 +2786,7 @@ function SupportTab() {
                                 }
                                 const isUser = msg.sender_type === "user";
                                 return (
-                                  <div key={msg.id} className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
-                                    {!isUser && (
-                                      <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mr-1.5 self-end mb-4" style={{ backgroundColor: "#ede7ff" }}>
-                                        <span className="text-[8px] font-bold" style={{ color: "#7c5cbf" }}>HA</span>
-                                      </div>
-                                    )}
-                                    <div className="max-w-[80%]">
-                                      <div
-                                        className="px-3 py-2 rounded-[14px] text-[12px] leading-relaxed"
-                                        style={isUser
-                                          ? { backgroundColor: "#f0fdf4", color: "#111", borderBottomRightRadius: "4px" }
-                                          : { backgroundColor: "#ffffff", color: "#111", border: "1px solid #eeeeee", borderBottomLeftRadius: "4px" }
-                                        }
-                                      >
-                                        {msg.message}
-                                      </div>
-                                      {msg.faq_title && msg.faq_url && (
-                                        <a href={msg.faq_url} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 mt-1 px-3 py-1.5 rounded-[10px] text-[11px]" style={{ backgroundColor: "#f9f8ff", border: "1px solid #ede7ff", color: "#7c5cbf", fontWeight: 600 }}>
-                                          <BookOpen className="w-3 h-3 flex-shrink-0" />
-                                          {msg.faq_title}
-                                          <ExternalLink className="w-3 h-3 ml-auto flex-shrink-0" />
-                                        </a>
-                                      )}
-                                      <p className={`text-[10px] mt-0.5 ${isUser ? "text-right" : "text-left"}`} style={{ color: "#ccc" }}>
-                                        {new Date(msg.created_at).toLocaleTimeString("nl-NL", { hour: "2-digit", minute: "2-digit" })}
-                                      </p>
-                                    </div>
-                                  </div>
+                                  <AdminMessageBubble key={msg.id} msg={msg} isUser={isUser} />
                                 );
                               })}
                             </div>
