@@ -1118,6 +1118,7 @@ export const en: Record<string, any> = {
     price: "Price",
     startDate: "Start date",
     trialEnds: "Trial ends",
+    refundWindowEnds: "Free cancellation until",
     nextRenewal: "Next renewal",
     endsAt: "Ends on",
     billingFrequency: "Billing frequency",

@@ -1187,6 +1187,7 @@ export const nl: Record<string, any> = {
     price: "Prijs",
     startDate: "Startdatum",
     trialEnds: "Proefperiode eindigt",
+    refundWindowEnds: "Kosteloos annuleren tot",
     nextRenewal: "Volgende verlenging",
     endsAt: "Loopt af op",
     billingFrequency: "Factureringsfrequentie",

@@ -1,0 +1,109 @@
+Update the subscription page wording for paid subscriptions with a refund/cancellation window.
+
+IMPORTANT:
+Do NOT change backend billing logic.
+Do NOT change Stripe logic.
+This is a terminology/UX correction for paid plans.
+
+Current situation:
+Users pay immediately for a paid subscription (example: Premium 2 maanden), but currently the UI still says:
+- “Proefperiode”
+- “Proefperiode eindigt”
+
+This is misleading because the user already paid.
+The actual logic is:
+- subscription is ACTIVE immediately
+- user has a 14-day refund/cost-free cancellation window
+
+==================================================
+REQUIRED UX CHANGE
+==================================================
+
+For paid subscriptions:
+- NEVER show:
+  - “Proefperiode”
+  - “Trial”
+  - “trialing”
+  - “Proefperiode eindigt”
+
+Instead show:
+
+“Kosteloos annuleren tot [date]”
+
+==================================================
+RULES
+==================================================
+
+If:
+- user has a paid subscription/plan
+- AND subscription is active
+- AND refund window still exists
+
+Then:
+
+Badge:
+- “Actief”
+
+Subtitle:
+- “Kosteloos annuleren tot 28 mei 2026”
+
+Detail row label:
+Replace:
+- “Proefperiode eindigt”
+
+With:
+- “Kosteloos annuleren tot”
+
+==================================================
+IMPORTANT
+==================================================
+
+Only use “Proefperiode” for TRUE free trials where:
+- user has not paid yet
+- AND no paid plan exists
+
+Paid subscriptions with a refund period are NOT trials.
+
+==================================================
+COPY EXAMPLES
+==================================================
+
+GOOD:
+Premium 2 maanden
+Actief
+Kosteloos annuleren tot 28 mei 2026
+
+BAD:
+Premium 2 maanden
+Proefperiode eindigt 28 mei 2026
+
+==================================================
+TECHNICAL
+==================================================
+
+Add helper logic:
+
+isRefundWindow =
+  subscription.isPaidPlan &&
+  subscription.status === 'active' &&
+  now < refundDeadline
+
+If true:
+- show refund wording
+- do not show trial wording
+
+==================================================
+SMOKE TEST
+==================================================
+
+1. New paid 2-month subscription:
+- shows “Premium 2 maanden”
+- badge = “Actief”
+- subtitle = “Kosteloos annuleren tot [14 day date]”
+
+2. After refund window passes:
+- remove refund messaging
+- subscription still active
+
+3. True free trial:
+- still allowed to show “Proefperiode”

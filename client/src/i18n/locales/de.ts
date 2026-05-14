@@ -1188,6 +1188,7 @@ export const de: Record<string, any> = {
     price: "Preis",
     startDate: "Startdatum",
     trialEnds: "Testphase endet",
+    refundWindowEnds: "Kostenlos kündigen bis",
     nextRenewal: "Nächste Verlängerung",
     endsAt: "Endet am",
     billingFrequency: "Abrechnungshäufigkeit",

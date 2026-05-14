@@ -49,6 +49,11 @@ export default function SubscriptionDetailPage() {
   // in a trial phase, we show the paid plan name, not "Proefperiode".
   const isPaidPlan = PAID_PLAN_IDS.includes(subscription?.plan ?? "");
 
+  // For paid plans, `isTrial` in our DB means the 14-day cost-free cancellation
+  // window is still open (Stripe subscription started in "trialing" state).
+  // This is NOT a free trial — the user already paid. Show refund-window copy.
+  const isRefundWindow = isPaidPlan && !!subscription?.isTrial;
+
   function getPlanLabel(plan: string | null | undefined): string {
     switch (plan) {
       case "monthly": return t("subscription.planLabel.monthly");
@@ -182,11 +187,13 @@ export default function SubscriptionDetailPage() {
       testId: "text-start-date",
     },
     ...(renewalDate && !subscription?.isExpired ? [{
-      label: subscription?.isTrial
-        ? t("subscription.trialEnds")
-        : isCanceled
-          ? t("subscription.endsAt")
-          : t("subscription.nextRenewal"),
+      label: isRefundWindow
+        ? t("subscription.refundWindowEnds")
+        : subscription?.isTrial
+          ? t("subscription.trialEnds")
+          : isCanceled
+            ? t("subscription.endsAt")
+            : t("subscription.nextRenewal"),
       value: formatDate(renewalDate, locale),
       testId: "text-renewal-date",
     }] : []),
@@ -240,9 +247,11 @@ export default function SubscriptionDetailPage() {
               <p className="text-[18px] font-semibold text-[#111111] mt-4" data-testid="text-renewal-hero">
                 {isCanceled
                   ? `${t("subscription.endsAt")} ${formatDate(renewalDate, locale)}`
-                  : subscription?.isTrial
-                    ? `${t("subscription.trialEnds")} ${formatDate(renewalDate, locale)}`
-                    : `${t("subscription.nextRenewal")} ${formatDate(renewalDate, locale)}`}
+                  : isRefundWindow
+                    ? `${t("subscription.refundWindowEnds")} ${formatDate(renewalDate, locale)}`
+                    : subscription?.isTrial
+                      ? `${t("subscription.trialEnds")} ${formatDate(renewalDate, locale)}`
+                      : `${t("subscription.nextRenewal")} ${formatDate(renewalDate, locale)}`}
               </p>
             )}
 
