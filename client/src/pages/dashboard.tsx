@@ -2159,7 +2159,7 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
 
           {/* HELP */}
           <SectionInline title={t("settings.sectionHelp")}>
-            <MenuItem label={t("settings.faq")} onClick={() => window.open("https://www.housalert.com/veelgestelde-vragen", "_blank")} external />
+            <MenuItem label={t("settings.faq")} onClick={() => window.open("https://www.housalert.com/faq", "_blank")} external />
             <MenuItem label={t("settings.contactUs")} onClick={() => { window.location.href = "mailto:hello@housalert.com"; }} external last />
           </SectionInline>
 

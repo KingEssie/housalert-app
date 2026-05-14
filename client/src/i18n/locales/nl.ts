@@ -453,7 +453,7 @@ export const nl: Record<string, any> = {
     housingSituation: "Woonsituatie",
     zoekbuddy: "Zoekbuddy beheren",
     reactionLetter: "Reactiebrief",
-    faq: "Veelgestelde vragen",
+    faq: "Hoe werkt HousAlert",
     contactUs: "Contacteer ons",
     termsConditions: "Algemene voorwaarden",
     privacyPolicy: "Privacybeleid",
