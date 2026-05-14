@@ -4,7 +4,7 @@ import { supabase } from "@/lib/supabase";
 import { apiFetch } from "@/lib/api-base";
 import {
   Users, CreditCard, Search,
-  Loader2, ChevronRight, ExternalLink, RefreshCw,
+  Loader2, ChevronRight, ExternalLink, RefreshCw, BookOpen,
   Mail, Smartphone, AlertTriangle, CheckCircle, XCircle,
   TrendingUp, Activity, Database, Globe, Zap, ArrowLeft,
   Target, Percent, Eye, MessageCircle,
@@ -2490,6 +2490,27 @@ function SettingsTab() {
 
 interface NotifStatus { push: boolean; email: boolean; inApp: boolean; emailError?: string | null; alreadyNotified?: boolean; }
 
+interface SupportMessage {
+  id: number;
+  ticket_id: number;
+  sender_type: "user" | "admin" | "system";
+  message: string;
+  faq_title?: string;
+  faq_url?: string;
+  created_at: string;
+}
+
+const ADMIN_FAQ_ITEMS = [
+  { id: "how-it-works",        title: "Hoe werkt HousAlert?",                url: "https://www.housalert.com/faq#hoe-werkt-housalert" },
+  { id: "no-notifications",    title: "Ik ontvang geen meldingen",           url: "https://www.housalert.com/faq#meldingen" },
+  { id: "edit-profile",        title: "Hoe pas ik mijn zoekprofiel aan?",    url: "https://www.housalert.com/faq#zoekprofiel" },
+  { id: "subscription-cancel", title: "Hoe zeg ik mijn abonnement op?",      url: "https://www.housalert.com/faq#abonnement-opzeggen" },
+  { id: "subscription-cost",   title: "Wat kost HousAlert?",                 url: "https://www.housalert.com/faq#prijzen" },
+  { id: "payment-failed",      title: "Mijn betaling is mislukt",            url: "https://www.housalert.com/faq#betaling" },
+  { id: "tech-app-crash",      title: "De app werkt niet of crasht",         url: "https://www.housalert.com/faq#technisch" },
+  { id: "matches-not-showing", title: "Ik zie geen matches",                 url: "https://www.housalert.com/faq#geen-matches" },
+];
+
 function SupportTab() {
   const [tickets, setTickets] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
@@ -2499,6 +2520,11 @@ function SupportTab() {
   const [updatingId, setUpdatingId] = useState<number | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [notifResults, setNotifResults] = useState<Record<number, NotifStatus>>({});
+  const [threads, setThreads] = useState<Record<number, SupportMessage[]>>({});
+  const [loadingThread, setLoadingThread] = useState<Record<number, boolean>>({});
+  const [replyText, setReplyText] = useState<Record<number, string>>({});
+  const [selectedFaqId, setSelectedFaqId] = useState<Record<number, string>>({});
+  const [sendingReply, setSendingReply] = useState<Record<number, boolean>>({});
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -2518,6 +2544,45 @@ function SupportTab() {
   }, [statusFilter]);
 
   useEffect(() => { load(); }, [load]);
+
+  useEffect(() => {
+    if (expanded !== null && !threads[expanded] && !loadingThread[expanded]) {
+      loadThread(expanded);
+    }
+  }, [expanded]);
+
+  async function loadThread(id: number) {
+    setLoadingThread(prev => ({ ...prev, [id]: true }));
+    try {
+      const data = await adminFetch(`/api/admin/support/tickets/${id}/messages`);
+      setThreads(prev => ({ ...prev, [id]: data.messages || [] }));
+    } catch {}
+    setLoadingThread(prev => ({ ...prev, [id]: false }));
+  }
+
+  async function sendAdminReply(ticketId: number) {
+    const text = (replyText[ticketId] || "").trim();
+    const faqId = selectedFaqId[ticketId] || "";
+    const faq = ADMIN_FAQ_ITEMS.find(f => f.id === faqId);
+    if (!text && !faq) return;
+    setSendingReply(prev => ({ ...prev, [ticketId]: true }));
+    try {
+      const data = await adminFetch(`/api/admin/support/tickets/${ticketId}/reply`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text, faq_title: faq?.title, faq_url: faq?.url }),
+      });
+      if (data.message) {
+        setThreads(prev => ({ ...prev, [ticketId]: [...(prev[ticketId] || []), data.message] }));
+      }
+      if (data.new_status) {
+        setTickets(prev => prev.map(t => t.id === ticketId ? { ...t, status: data.new_status } : t));
+      }
+      setReplyText(prev => ({ ...prev, [ticketId]: "" }));
+      setSelectedFaqId(prev => ({ ...prev, [ticketId]: "" }));
+    } catch {}
+    setSendingReply(prev => ({ ...prev, [ticketId]: false }));
+  }
 
   async function updateStatus(id: number, status: string) {
     setUpdatingId(id);
@@ -2540,9 +2605,10 @@ function SupportTab() {
   }
 
   const statusColors: Record<string, { bg: string; text: string; border: string }> = {
-    open:     { bg: "#fff7ed", text: "#c2410c", border: "#fed7aa" },
-    resolved: { bg: "#edfbf0", text: "#16a34a", border: "#bbf7d0" },
-    closed:   { bg: "#f5f5f7", text: "#888888", border: "#e0e0e0" },
+    open:        { bg: "#fff7ed", text: "#c2410c", border: "#fed7aa" },
+    in_progress: { bg: "#f3f0ff", text: "#7c5cbf", border: "#ddd6fe" },
+    resolved:    { bg: "#edfbf0", text: "#16a34a", border: "#bbf7d0" },
+    closed:      { bg: "#f5f5f7", text: "#888888", border: "#e0e0e0" },
   };
 
   if (loading) return <div className="flex items-center justify-center py-20"><Loader2 className="w-7 h-7 animate-spin" style={{ color: "#bbadfb" }} /></div>;
@@ -2569,18 +2635,24 @@ function SupportTab() {
       </div>
 
       <div className="flex gap-2 flex-wrap">
-        {["all", "open", "resolved", "closed"].map(s => (
+        {[
+          { value: "all",         label: "All" },
+          { value: "open",        label: "Open" },
+          { value: "in_progress", label: "In behandeling" },
+          { value: "resolved",    label: "Resolved" },
+          { value: "closed",      label: "Closed" },
+        ].map(({ value, label }) => (
           <button
-            key={s}
-            onClick={() => setStatusFilter(s)}
+            key={value}
+            onClick={() => setStatusFilter(value)}
             className="px-3 py-1.5 rounded-full text-[12px] font-semibold border transition-all"
-            style={statusFilter === s
+            style={statusFilter === value
               ? { backgroundColor: "#bbadfb", color: "#ffffff", borderColor: "#bbadfb" }
               : { backgroundColor: "#ffffff", color: "#666666", borderColor: "#eeebf3" }
             }
-            data-testid={`filter-${s}`}
+            data-testid={`filter-${value}`}
           >
-            {s.charAt(0).toUpperCase() + s.slice(1)}
+            {label}
           </button>
         ))}
       </div>
@@ -2606,6 +2678,11 @@ function SupportTab() {
                       >
                         {ticket.status}
                       </span>
+                      {ticket.has_unread_admin_reply && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold border" style={{ backgroundColor: "#f3f0ff", color: "#7c5cbf", borderColor: "#ddd6fe" }}>
+                          Unread reply
+                        </span>
+                      )}
                       {ticket.resolved_notified_at && (
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-bold border" style={{ backgroundColor: "#f0fdf4", color: "#16a34a", borderColor: "#bbf7d0" }}>
                           ✓ Notified
@@ -2621,9 +2698,105 @@ function SupportTab() {
                     </p>
                     {isExpanded && (
                       <div className="mt-3 space-y-3">
-                        <div className="p-3 rounded-[12px] text-[13px] leading-relaxed whitespace-pre-wrap" style={{ backgroundColor: "#f9f7f8", color: "#333333", border: "1px solid #ece7ef" }}>
-                          {ticket.message}
+
+                        {/* ── Thread messages ── */}
+                        <div className="rounded-[14px] overflow-hidden" style={{ border: "1px solid #ece7ef" }}>
+                          {loadingThread[ticket.id] ? (
+                            <div className="flex items-center justify-center py-6">
+                              <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#bbadfb" }} />
+                            </div>
+                          ) : (threads[ticket.id] || []).length === 0 ? (
+                            <p className="text-[12px] text-center py-4" style={{ color: "#aaa" }}>Geen berichten geladen.</p>
+                          ) : (
+                            <div className="flex flex-col gap-0 max-h-72 overflow-y-auto p-3 space-y-2" style={{ backgroundColor: "#faf9fc" }}>
+                              {(threads[ticket.id] || []).map(msg => {
+                                if (msg.sender_type === "system") {
+                                  return (
+                                    <div key={msg.id} className="flex justify-center">
+                                      <span className="text-[10px] italic px-2 py-0.5 rounded-full" style={{ color: "#aaa", backgroundColor: "#f0f0f0" }}>{msg.message}</span>
+                                    </div>
+                                  );
+                                }
+                                const isUser = msg.sender_type === "user";
+                                return (
+                                  <div key={msg.id} className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
+                                    {!isUser && (
+                                      <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mr-1.5 self-end mb-4" style={{ backgroundColor: "#ede7ff" }}>
+                                        <span className="text-[8px] font-bold" style={{ color: "#7c5cbf" }}>HA</span>
+                                      </div>
+                                    )}
+                                    <div className="max-w-[80%]">
+                                      <div
+                                        className="px-3 py-2 rounded-[14px] text-[12px] leading-relaxed"
+                                        style={isUser
+                                          ? { backgroundColor: "#f0fdf4", color: "#111", borderBottomRightRadius: "4px" }
+                                          : { backgroundColor: "#ffffff", color: "#111", border: "1px solid #eeeeee", borderBottomLeftRadius: "4px" }
+                                        }
+                                      >
+                                        {msg.message}
+                                      </div>
+                                      {msg.faq_title && msg.faq_url && (
+                                        <a href={msg.faq_url} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 mt-1 px-3 py-1.5 rounded-[10px] text-[11px]" style={{ backgroundColor: "#f9f8ff", border: "1px solid #ede7ff", color: "#7c5cbf", fontWeight: 600 }}>
+                                          <BookOpen className="w-3 h-3 flex-shrink-0" />
+                                          {msg.faq_title}
+                                          <ExternalLink className="w-3 h-3 ml-auto flex-shrink-0" />
+                                        </a>
+                                      )}
+                                      <p className={`text-[10px] mt-0.5 ${isUser ? "text-right" : "text-left"}`} style={{ color: "#ccc" }}>
+                                        {new Date(msg.created_at).toLocaleTimeString("nl-NL", { hour: "2-digit", minute: "2-digit" })}
+                                      </p>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
                         </div>
+
+                        {/* ── Reply composer ── */}
+                        {ticket.status !== "closed" && (
+                          <div className="rounded-[14px] p-3 space-y-2" style={{ backgroundColor: "#f9f8ff", border: "1px solid #ede7ff" }}>
+                            <p className="text-[11px] font-bold uppercase tracking-wide" style={{ color: "#7c5cbf" }}>Stuur antwoord</p>
+                            <textarea
+                              placeholder="Schrijf een antwoord..."
+                              value={replyText[ticket.id] || ""}
+                              onChange={e => setReplyText(prev => ({ ...prev, [ticket.id]: e.target.value.slice(0, 2000) }))}
+                              rows={3}
+                              className="w-full px-3 py-2 rounded-[10px] text-[12px] resize-none"
+                              style={{ backgroundColor: "#ffffff", border: "1px solid #ddd6fe", color: "#111111", outline: "none" }}
+                              data-testid={`input-admin-reply-${ticket.id}`}
+                            />
+                            <div className="flex items-center gap-2">
+                              <select
+                                value={selectedFaqId[ticket.id] || ""}
+                                onChange={e => setSelectedFaqId(prev => ({ ...prev, [ticket.id]: e.target.value }))}
+                                className="flex-1 px-2 py-1.5 rounded-[8px] text-[11px]"
+                                style={{ backgroundColor: "#ffffff", border: "1px solid #ddd6fe", color: "#7c5cbf" }}
+                                data-testid={`select-faq-${ticket.id}`}
+                              >
+                                <option value="">+ Voeg FAQ-link toe (optioneel)</option>
+                                {ADMIN_FAQ_ITEMS.map(f => (
+                                  <option key={f.id} value={f.id}>{f.title}</option>
+                                ))}
+                              </select>
+                              <button
+                                onClick={() => sendAdminReply(ticket.id)}
+                                disabled={(!replyText[ticket.id]?.trim() && !selectedFaqId[ticket.id]) || sendingReply[ticket.id]}
+                                className="px-3 py-1.5 rounded-full text-[12px] font-bold transition-all disabled:opacity-40 flex items-center gap-1.5"
+                                style={{ backgroundColor: "#bbadfb", color: "#ffffff" }}
+                                data-testid={`button-admin-reply-${ticket.id}`}
+                              >
+                                {sendingReply[ticket.id]
+                                  ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                  : <ChevronRight className="w-3.5 h-3.5" />
+                                }
+                                Verstuur
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* ── Status actions ── */}
                         <div className="flex gap-2 flex-wrap">
                           {ticket.status !== "resolved" && (
                             <button
@@ -2658,11 +2831,19 @@ function SupportTab() {
                               Reopen
                             </button>
                           )}
+                          <button
+                            onClick={() => loadThread(ticket.id)}
+                            className="px-3 py-1.5 rounded-full text-[12px] font-semibold border transition-all"
+                            style={{ backgroundColor: "#f5f5f7", color: "#666", borderColor: "#e0e0e0" }}
+                            data-testid={`button-reload-thread-${ticket.id}`}
+                          >
+                            ↻ Vernieuwen
+                          </button>
                         </div>
 
                         {/* ── Notification delivery status ── */}
                         {notifResults[ticket.id] && (
-                          <div className="mt-3 p-3 rounded-[12px] text-[12px]" style={{ backgroundColor: "#f9f8ff", border: "1px solid #ede7ff" }}>
+                          <div className="p-3 rounded-[12px] text-[12px]" style={{ backgroundColor: "#f9f8ff", border: "1px solid #ede7ff" }}>
                             <p className="font-bold mb-1.5" style={{ color: "#7c5cbf" }}>Notification delivery</p>
                             <div className="flex flex-col gap-1">
                               <span style={{ color: notifResults[ticket.id].inApp ? "#16a34a" : "#888" }}>
@@ -2684,7 +2865,7 @@ function SupportTab() {
                           </div>
                         )}
                         {ticket.resolved_notified_at && !notifResults[ticket.id] && (
-                          <p className="mt-2 text-[11px]" style={{ color: "#888" }}>
+                          <p className="text-[11px]" style={{ color: "#888" }}>
                             Notified at {new Date(ticket.resolved_notified_at).toLocaleString()}
                           </p>
                         )}

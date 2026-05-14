@@ -7902,6 +7902,90 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/support/my-tickets", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.json({ tickets: [] });
+      const { data: { user } } = await supabase.auth.getUser(token);
+      if (!user) return res.json({ tickets: [] });
+      const { rows } = await pgPool.query(
+        `SELECT st.id, st.subject, st.status, st.created_at, st.updated_at, st.has_unread_admin_reply, st.last_message_at,
+                lm.message as last_message, lm.sender_type as last_sender_type
+         FROM support_tickets st
+         LEFT JOIN LATERAL (
+           SELECT message, sender_type FROM support_ticket_messages WHERE ticket_id = st.id ORDER BY created_at DESC LIMIT 1
+         ) lm ON true
+         WHERE st.user_id = $1
+         ORDER BY COALESCE(st.last_message_at, st.created_at) DESC
+         LIMIT 20`,
+        [user.id]
+      );
+      res.json({ tickets: rows });
+    } catch (err: any) {
+      log(`[support] Error fetching my-tickets: ${err.message}`);
+      res.json({ tickets: [] });
+    }
+  });
+
+  app.get("/api/support/tickets/:id/thread", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user } } = await supabase.auth.getUser(token);
+      if (!user) return res.status(401).json({ error: "Unauthorized" });
+      const { id } = req.params;
+      const { rows: tickets } = await pgPool.query(
+        `SELECT id, subject, status, created_at, updated_at FROM support_tickets WHERE id = $1 AND user_id = $2`,
+        [id, user.id]
+      );
+      if (!tickets[0]) return res.status(404).json({ error: "Ticket not found" });
+      const { rows: messages } = await pgPool.query(
+        `SELECT id, ticket_id, sender_type, message, faq_title, faq_url, created_at FROM support_ticket_messages WHERE ticket_id = $1 ORDER BY created_at ASC`,
+        [id]
+      );
+      await pgPool.query(`UPDATE support_tickets SET has_unread_admin_reply = FALSE WHERE id = $1`, [id]);
+      res.json({ ...tickets[0], messages });
+    } catch (err: any) {
+      log(`[support] Error fetching thread: ${err.message}`);
+      res.status(500).json({ error: "Failed" });
+    }
+  });
+
+  app.post("/api/support/tickets/:id/reply", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user } } = await supabase.auth.getUser(token);
+      if (!user) return res.status(401).json({ error: "Unauthorized" });
+      const { id } = req.params;
+      const { message } = req.body;
+      if (!message?.trim()) return res.status(400).json({ error: "message required" });
+      const { rows: tickets } = await pgPool.query(
+        `SELECT id, status FROM support_tickets WHERE id = $1 AND user_id = $2`,
+        [id, user.id]
+      );
+      const ticket = tickets[0];
+      if (!ticket) return res.status(404).json({ error: "Ticket not found" });
+      if (ticket.status === "closed") return res.status(400).json({ error: "Ticket is closed" });
+      const { rows: msgRows } = await pgPool.query(
+        `INSERT INTO support_ticket_messages (ticket_id, sender_type, sender_user_id, message) VALUES ($1, 'user', $2, $3) RETURNING *`,
+        [id, user.id, message.trim()]
+      );
+      const newStatus = ticket.status === "resolved" ? "open" : ticket.status;
+      await pgPool.query(
+        `UPDATE support_tickets SET status = $1, last_message_at = NOW(), updated_at = NOW() WHERE id = $2`,
+        [newStatus, id]
+      );
+      if (ticket.status === "resolved") {
+        log(`[support] Ticket #${id} reopened by user reply`);
+      }
+      res.json({ ok: true, message: msgRows[0], new_status: newStatus });
+    } catch (err: any) {
+      log(`[support] Error posting user reply: ${err.message}`);
+      res.status(500).json({ error: "Failed" });
+    }
+  });
+
   app.post("/api/support/faq-suggestions", async (req, res) => {
     try {
       const { subject, message, customSubject } = req.body;
@@ -7952,8 +8036,14 @@ export async function registerRoutes(
          VALUES ($1, $2, $3, $4, 'open', NOW(), NOW()) RETURNING id, created_at`,
         [userId, email, subject.trim(), message.trim()]
       );
-      log(`[support] Ticket created id=${result.rows[0].id} user=${userId || "anonymous"}`);
-      res.json({ id: result.rows[0].id, created_at: result.rows[0].created_at });
+      const ticketId = result.rows[0].id;
+      await pgPool.query(
+        `INSERT INTO support_ticket_messages (ticket_id, sender_type, sender_user_id, message) VALUES ($1, 'user', $2, $3)`,
+        [ticketId, userId, message.trim()]
+      );
+      await pgPool.query(`UPDATE support_tickets SET last_message_at = NOW() WHERE id = $1`, [ticketId]);
+      log(`[support] Ticket created id=${ticketId} user=${userId || "anonymous"}`);
+      res.json({ id: ticketId, created_at: result.rows[0].created_at });
     } catch (err: any) {
       log(`[support] Error creating ticket: ${err.message}`);
       res.status(500).json({ error: "Failed to create ticket" });
@@ -7971,9 +8061,9 @@ export async function registerRoutes(
         `SELECT COUNT(*) FROM support_tickets ${where}`, params
       );
       const rows = await pgPool.query(
-        `SELECT id, user_id, email, subject, message, status, created_at, updated_at, resolved_notified_at
+        `SELECT id, user_id, email, subject, message, status, created_at, updated_at, resolved_notified_at, has_unread_admin_reply, last_message_at
          FROM support_tickets ${where}
-         ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`,
+         ORDER BY COALESCE(last_message_at, created_at) DESC LIMIT ${limit} OFFSET ${offset}`,
         params
       );
       res.json({ tickets: rows.rows, total: parseInt(countRes.rows[0].count) });
@@ -7987,7 +8077,7 @@ export async function registerRoutes(
     try {
       const { id } = req.params;
       const { status } = req.body;
-      if (!["open", "resolved", "closed"].includes(status)) {
+      if (!["open", "in_progress", "resolved", "closed"].includes(status)) {
         return res.status(400).json({ error: "Invalid status" });
       }
 
@@ -8108,6 +8198,84 @@ export async function registerRoutes(
     } catch (err: any) {
       log(`[support] Error updating ticket: ${err.message}`);
       res.status(500).json({ error: "Failed to update ticket" });
+    }
+  });
+
+  app.get("/api/admin/support/tickets/:id/messages", requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { rows } = await pgPool.query(
+        `SELECT id, ticket_id, sender_type, sender_user_id, message, faq_title, faq_url, created_at
+         FROM support_ticket_messages WHERE ticket_id = $1 ORDER BY created_at ASC`,
+        [id]
+      );
+      res.json({ messages: rows });
+    } catch (err: any) {
+      log(`[support] Error fetching messages: ${err.message}`);
+      res.status(500).json({ error: "Failed" });
+    }
+  });
+
+  app.post("/api/admin/support/tickets/:id/reply", requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { message, faq_title, faq_url } = req.body;
+      if (!message?.trim() && !faq_title) return res.status(400).json({ error: "message or faq required" });
+      const { rows: before } = await pgPool.query(
+        "SELECT id, user_id, email, subject, status FROM support_tickets WHERE id = $1",
+        [id]
+      );
+      const ticket = before[0];
+      if (!ticket) return res.status(404).json({ error: "Ticket not found" });
+      if (ticket.status === "closed") return res.status(400).json({ error: "Cannot reply to closed ticket" });
+      const { rows: msgRows } = await pgPool.query(
+        `INSERT INTO support_ticket_messages (ticket_id, sender_type, message, faq_title, faq_url) VALUES ($1, 'admin', $2, $3, $4) RETURNING *`,
+        [id, message?.trim() || "", faq_title || null, faq_url || null]
+      );
+      const newStatus = ticket.status === "open" ? "in_progress" : ticket.status;
+      await pgPool.query(
+        `UPDATE support_tickets SET status = $1, has_unread_admin_reply = TRUE, last_message_at = NOW(), updated_at = NOW() WHERE id = $2`,
+        [newStatus, id]
+      );
+      if (ticket.user_id) {
+        pgPool.query(
+          `INSERT INTO support_notifications (user_id, ticket_id, title, body) VALUES ($1, $2, $3, $4)`,
+          [ticket.user_id, id, "Nieuwe reactie van HousAlert", "We hebben gereageerd op je supportvraag."]
+        ).catch((e: any) => log(`[support] In-app notif failed: ${e.message}`));
+        sendPushToUser(ticket.user_id, {
+          title: "Nieuwe reactie van HousAlert",
+          body: "We hebben gereageerd op je supportvraag.",
+          url: `/support/${id}`,
+        }, supabase).then((r: any) => {
+          log(`[support] Admin reply push: sent=${r.sent} user=${ticket.user_id?.substring(0, 8)}`);
+        }).catch((e: any) => log(`[support] Admin reply push error: ${e.message}`));
+        const apiKey = process.env.RESEND_API_KEY;
+        if (apiKey && ticket.email) {
+          (async () => {
+            try {
+              const { Resend } = await import("resend");
+              const resend = new Resend(apiKey);
+              await resend.emails.send({
+                from: `HousAlert <${process.env.RESEND_FROM_EMAIL || "alerts@housalert.com"}>`,
+                to: ticket.email,
+                subject: "Nieuwe reactie van HousAlert",
+                html: `<div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:32px 24px"><h2 style="font-size:20px;font-weight:700;color:#111111;margin-bottom:8px">Nieuwe reactie van HousAlert</h2><p style="font-size:15px;color:#555555;line-height:1.6">We hebben gereageerd op je vraag "<strong>${ticket.subject}</strong>". Open de app om het antwoord te lezen.</p><p style="font-size:13px;color:#999999;margin-top:32px">HousAlert Team</p></div>`,
+                text: `Nieuwe reactie op je supportvraag "${ticket.subject}". Open de app om het te lezen.\n\nHousAlert Team`,
+              });
+              log(`[support] Admin reply email sent to ${ticket.email}`);
+            } catch (e: any) {
+              log(`[support] Admin reply email FAILED to ${ticket.email}: ${e.message}`);
+            }
+          })();
+        } else if (!apiKey) {
+          log(`[support] Admin reply email skipped — RESEND_API_KEY not set`);
+        }
+      }
+      log(`[support] Admin reply #${id}: status=${newStatus} faq=${!!faq_title}`);
+      res.json({ ok: true, message: msgRows[0], new_status: newStatus });
+    } catch (err: any) {
+      log(`[support] Error posting admin reply: ${err.message}`);
+      res.status(500).json({ error: "Failed" });
     }
   });
 

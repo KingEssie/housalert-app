@@ -43,6 +43,20 @@ const SUBJECT_OPTIONS = [
   "Overig",
 ];
 
+const STATUS_LABELS: Record<string, string> = {
+  open:        "Open",
+  in_progress: "In behandeling",
+  resolved:    "Opgelost",
+  closed:      "Gesloten",
+};
+
+const STATUS_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  open:        { bg: "#fff7ed", text: "#c2410c", border: "#fed7aa" },
+  in_progress: { bg: "#f3f0ff", text: "#7c5cbf", border: "#ddd6fe" },
+  resolved:    { bg: "#edfbf0", text: "#16a34a", border: "#bbf7d0" },
+  closed:      { bg: "#f5f5f7", text: "#888888", border: "#e0e0e0" },
+};
+
 type Phase = "form" | "checking_faq" | "faq_suggestions" | "submitting" | "sent" | "deflected";
 
 interface FaqSuggestion {
@@ -51,6 +65,27 @@ interface FaqSuggestion {
   summary: string;
   url: string;
   score: number;
+}
+
+interface SupportNotification {
+  id: number;
+  ticket_id: number;
+  title: string;
+  body: string;
+  read_at: string | null;
+  created_at: string;
+}
+
+interface TicketSummary {
+  id: number;
+  subject: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  has_unread_admin_reply: boolean;
+  last_message: string | null;
+  last_sender_type: string | null;
+  last_message_at: string | null;
 }
 
 function IconBox({ children }: { children: React.ReactNode }) {
@@ -89,15 +124,6 @@ function HeroIllustration() {
   );
 }
 
-interface SupportNotification {
-  id: number;
-  ticket_id: number;
-  title: string;
-  body: string;
-  read_at: string | null;
-  created_at: string;
-}
-
 export default function SupportPage() {
   const [, navigate] = useLocation();
   const [subject, setSubject] = useState("");
@@ -108,22 +134,35 @@ export default function SupportPage() {
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [faqSuggestions, setFaqSuggestions] = useState<FaqSuggestion[]>([]);
   const [notifications, setNotifications] = useState<SupportNotification[]>([]);
+  const [myTickets, setMyTickets] = useState<TicketSummary[]>([]);
+  const [loadingTickets, setLoadingTickets] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
-    async function fetchNotifications() {
+    async function init() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token || cancelled) return;
+      const headers = { Authorization: `Bearer ${session.access_token}` };
+      // Load notifications
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session?.access_token) return;
-        const res = await apiFetch("/api/support/notifications", {
-          headers: { Authorization: `Bearer ${session.access_token}` },
-        });
-        if (!res.ok || cancelled) return;
-        const data = await res.json();
-        if (!cancelled) setNotifications((data.notifications || []).filter((n: SupportNotification) => !n.read_at));
+        const res = await apiFetch("/api/support/notifications", { headers });
+        if (res.ok && !cancelled) {
+          const data = await res.json();
+          setNotifications((data.notifications || []).filter((n: SupportNotification) => !n.read_at));
+        }
       } catch {}
+      // Load my tickets
+      setLoadingTickets(true);
+      try {
+        const res = await apiFetch("/api/support/my-tickets", { headers });
+        if (res.ok && !cancelled) {
+          const data = await res.json();
+          setMyTickets(data.tickets || []);
+        }
+      } catch {}
+      if (!cancelled) setLoadingTickets(false);
     }
-    fetchNotifications();
+    init();
     return () => { cancelled = true; };
   }, []);
 
@@ -142,9 +181,10 @@ export default function SupportPage() {
   const MAX_CHARS = 1000;
   const effectiveSubject = subject === "Overig" ? customSubject : subject;
 
-  async function getAuthHeaders() {
+  async function getAuthHeaders(): Promise<Record<string, string>> {
     const { data: { session } } = await supabase.auth.getSession();
-    return session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {};
+    if (session?.access_token) return { Authorization: `Bearer ${session.access_token}` };
+    return {};
   }
 
   async function handleSendClick() {
@@ -183,7 +223,8 @@ export default function SupportPage() {
         const d = await res.json().catch(() => ({}));
         throw new Error(d.error || "Failed");
       }
-      setPhase("sent");
+      const data = await res.json();
+      navigate(`/support/${data.id}`);
     } catch {
       setError("Er is iets misgegaan. Probeer het opnieuw.");
       setPhase("form");
@@ -259,9 +300,10 @@ export default function SupportPage() {
         {notifications.length > 0 && (
           <div className="space-y-3">
             {notifications.map(n => (
-              <div
+              <button
                 key={n.id}
-                className="rounded-[20px] px-5 py-4 flex items-start gap-3"
+                onClick={() => { if (n.ticket_id) { dismissNotification(n.id); navigate(`/support/${n.ticket_id}`); } }}
+                className="w-full text-left rounded-[20px] px-5 py-4 flex items-start gap-3 active:opacity-80 transition-opacity"
                 style={{ backgroundColor: "#edfbf0", border: "1.5px solid #bbf7d0" }}
                 data-testid={`support-notification-${n.id}`}
               >
@@ -276,7 +318,7 @@ export default function SupportPage() {
                   </p>
                 </div>
                 <button
-                  onClick={() => dismissNotification(n.id)}
+                  onClick={e => { e.stopPropagation(); dismissNotification(n.id); }}
                   className="w-7 h-7 flex items-center justify-center rounded-full flex-shrink-0 transition-opacity hover:opacity-60"
                   style={{ backgroundColor: "#d1fae5" }}
                   data-testid={`button-dismiss-notif-${n.id}`}
@@ -284,209 +326,250 @@ export default function SupportPage() {
                 >
                   <X className="w-3.5 h-3.5" style={{ color: "#16a34a" }} />
                 </button>
-              </div>
+              </button>
             ))}
           </div>
         )}
 
-        {/* ── Support ticket card ── */}
-        <div className="bg-white rounded-[28px] p-6" style={{ border: "1px solid #eeeeee" }}>
-
-          {/* Card header — always visible */}
-          {phase !== "faq_suggestions" && (
-            <div className="flex items-center gap-3.5 mb-5">
-              <IconBox>
-                {phase === "deflected"
-                  ? <SmilePlus className="w-5 h-5" style={{ color: "#111111" }} />
-                  : <MessageSquare className="w-5 h-5" style={{ color: "#111111" }} />
-                }
-              </IconBox>
-              <div>
-                <p className="text-[17px] font-bold" style={{ color: "#111111" }}>Stuur ons een bericht</p>
-                <p className="text-[13px] mt-0.5" style={{ color: "#7d7d7d" }}>Ons team helpt je zo snel mogelijk verder.</p>
-              </div>
+        {/* ── My tickets ── */}
+        {(myTickets.length > 0 || loadingTickets) && (
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-widest mb-2.5 px-1" style={{ color: "#aaaaaa" }}>
+              Mijn supportvragen
+            </p>
+            <div className="bg-white rounded-[28px] overflow-hidden" style={{ border: "1px solid #eeeeee" }}>
+              {loadingTickets && myTickets.length === 0 ? (
+                <div className="flex items-center justify-center py-6">
+                  <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#bbadfb" }} />
+                </div>
+              ) : (
+                myTickets.map((ticket, i) => {
+                  const sc = STATUS_COLORS[ticket.status] || STATUS_COLORS.open;
+                  return (
+                    <div key={ticket.id}>
+                      {i > 0 && <div className="h-px mx-5" style={{ backgroundColor: "#f2f2f2" }} />}
+                      <button
+                        onClick={() => navigate(`/support/${ticket.id}`)}
+                        className="w-full flex items-start gap-3.5 px-5 py-4 text-left active:opacity-70 transition-opacity"
+                        data-testid={`button-ticket-${ticket.id}`}
+                      >
+                        <div className="w-10 h-10 rounded-[12px] flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "#ede7ff" }}>
+                          {ticket.has_unread_admin_reply
+                            ? <BellRing className="w-4.5 h-4.5" style={{ color: "#7c5cbf" }} />
+                            : <MessageSquare className="w-4.5 h-4.5" style={{ color: "#111111" }} />
+                          }
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                            <span
+                              className="px-2 py-0.5 rounded-full text-[10px] font-bold border"
+                              style={{ backgroundColor: sc.bg, color: sc.text, borderColor: sc.border }}
+                            >
+                              {STATUS_LABELS[ticket.status] || ticket.status}
+                            </span>
+                            {ticket.has_unread_admin_reply && (
+                              <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: "#7c5cbf" }} />
+                            )}
+                          </div>
+                          <p className="text-[14px] font-bold truncate" style={{ color: "#111111" }}>{ticket.subject}</p>
+                          {ticket.last_message && (
+                            <p className="text-[12px] truncate mt-0.5" style={{ color: "#888888" }}>
+                              {ticket.last_sender_type === "admin" ? "HousAlert: " : "Jij: "}{ticket.last_message}
+                            </p>
+                          )}
+                          <p className="text-[11px] mt-0.5" style={{ color: "#bbbbbb" }}>
+                            {new Date(ticket.last_message_at || ticket.created_at).toLocaleDateString("nl-NL", { day: "numeric", month: "short" })}
+                          </p>
+                        </div>
+                        <ChevronRight className="w-4 h-4 flex-shrink-0 mt-2" style={{ color: "#cccccc" }} />
+                      </button>
+                    </div>
+                  );
+                })
+              )}
             </div>
+          </div>
+        )}
+
+        {/* ── New message card ── */}
+        <div>
+          {myTickets.length > 0 && (
+            <p className="text-[11px] font-bold uppercase tracking-widest mb-2.5 px-1" style={{ color: "#aaaaaa" }}>
+              Nieuw bericht
+            </p>
           )}
 
-          {/* ── PHASE: sent ── */}
-          {phase === "sent" && (
-            <div className="flex flex-col items-center py-8 gap-3">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: "#edfbf0" }}>
-                <CheckCircle className="w-8 h-8" style={{ color: "#16a34a" }} />
-              </div>
-              <p className="text-[18px] font-bold text-center" style={{ color: "#111111" }}>Bericht verzonden!</p>
-              <p className="text-[14px] text-center leading-relaxed" style={{ color: "#7d7d7d" }}>
-                Ons team helpt je zo snel mogelijk verder.
-              </p>
-              <button onClick={resetForm} className="text-[14px] font-semibold mt-2" style={{ color: "#bbadfb" }} data-testid="button-send-another">
-                Nog een bericht sturen
-              </button>
-            </div>
-          )}
+          <div className="bg-white rounded-[28px] p-6" style={{ border: "1px solid #eeeeee" }}>
 
-          {/* ── PHASE: deflected ── */}
-          {phase === "deflected" && (
-            <div className="flex flex-col items-center py-8 gap-3">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: "#edfbf0" }}>
-                <SmilePlus className="w-8 h-8" style={{ color: "#16a34a" }} />
-              </div>
-              <p className="text-[18px] font-bold text-center" style={{ color: "#111111" }}>Fijn dat je geholpen bent.</p>
-              <p className="text-[14px] text-center leading-relaxed" style={{ color: "#7d7d7d" }}>
-                Heb je toch nog een vraag? Je kunt altijd een nieuw bericht sturen.
-              </p>
-              <button onClick={resetForm} className="text-[14px] font-semibold mt-2" style={{ color: "#bbadfb" }} data-testid="button-new-message">
-                Nieuw bericht sturen
-              </button>
-            </div>
-          )}
-
-          {/* ── PHASE: faq_suggestions ── */}
-          {phase === "faq_suggestions" && (
-            <div>
-              <div className="flex items-center gap-3.5 mb-4">
+            {/* Card header */}
+            {phase !== "faq_suggestions" && (
+              <div className="flex items-center gap-3.5 mb-5">
                 <IconBox>
-                  <Lightbulb className="w-5 h-5" style={{ color: "#111111" }} />
+                  {phase === "deflected"
+                    ? <SmilePlus className="w-5 h-5" style={{ color: "#111111" }} />
+                    : <MessageSquare className="w-5 h-5" style={{ color: "#111111" }} />
+                  }
                 </IconBox>
                 <div>
-                  <p className="text-[17px] font-bold" style={{ color: "#111111" }}>Misschien helpt dit al</p>
-                  <p className="text-[13px] mt-0.5" style={{ color: "#7d7d7d" }}>We hebben antwoorden gevonden die passen bij je vraag.</p>
+                  <p className="text-[17px] font-bold" style={{ color: "#111111" }}>Stuur ons een bericht</p>
+                  <p className="text-[13px] mt-0.5" style={{ color: "#7d7d7d" }}>Ons team helpt je zo snel mogelijk verder.</p>
                 </div>
               </div>
+            )}
 
-              <div className="space-y-3 mb-5">
-                {faqSuggestions.map((faq) => (
-                  <button
-                    key={faq.id}
-                    onClick={() => window.open(faq.url, "_blank")}
-                    className="w-full text-left rounded-[18px] p-4 flex items-start gap-3 active:opacity-70 transition-opacity"
-                    style={{ backgroundColor: "#f9f8ff", border: "1px solid #ede7ff" }}
-                    data-testid={`button-faq-suggestion-${faq.id}`}
-                  >
-                    <div className="w-8 h-8 rounded-[10px] flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "#ede7ff" }}>
-                      <BookOpen className="w-4 h-4" style={{ color: "#7c5cbf" }} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[14px] font-bold leading-snug" style={{ color: "#111111" }}>{faq.title}</p>
-                      <p className="text-[12px] mt-1 leading-relaxed" style={{ color: "#7d7d7d" }}>{faq.summary}</p>
-                      <p className="text-[12px] font-semibold mt-2" style={{ color: "#7c5cbf" }}>
-                        Bekijk antwoord →
-                      </p>
-                    </div>
-                  </button>
-                ))}
-              </div>
-
-              <div className="flex flex-col gap-2.5">
-                <button
-                  onClick={() => handleDeflect(faqSuggestions[0]?.id || "unknown")}
-                  className="w-full py-4 rounded-full text-[15px] font-bold transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-                  style={{ backgroundColor: "#85fb8c", color: "#111111" }}
-                  data-testid="button-deflect"
-                >
-                  <CheckCircle className="w-4 h-4" />
-                  Dit beantwoordt mijn vraag
-                </button>
-                <button
-                  onClick={submitTicket}
-                  className="w-full py-3.5 rounded-full text-[14px] font-semibold transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-                  style={{ backgroundColor: "#f0edfb", color: "#7c5cbf", border: "1px solid #ede7ff" }}
-                  data-testid="button-send-anyway"
-                >
-                  <Send className="w-4 h-4" />
-                  Toch bericht versturen
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* ── PHASE: form / checking_faq / submitting ── */}
-          {(phase === "form" || isChecking || isSubmitting) && (
-            <div className="flex flex-col gap-3.5">
-              {/* Subject select */}
-              <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                  <Tag className="w-4 h-4" style={{ color: "#aaaaaa" }} />
+            {/* ── PHASE: deflected ── */}
+            {phase === "deflected" && (
+              <div className="flex flex-col items-center py-8 gap-3">
+                <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: "#edfbf0" }}>
+                  <SmilePlus className="w-8 h-8" style={{ color: "#16a34a" }} />
                 </div>
-                <select
-                  value={subject}
-                  onChange={e => setSubject(e.target.value)}
-                  onFocus={() => setFocusedField("subject")}
-                  onBlur={() => setFocusedField(null)}
-                  disabled={busy}
-                  className="w-full appearance-none pl-10 pr-10 py-3.5 rounded-[18px] text-[14px]"
-                  style={{
-                    ...(focusedField === "subject" ? INPUT_FOCUS_STYLE : INPUT_STYLE),
-                    color: subject ? "#111111" : "#aaaaaa",
-                    opacity: busy ? 0.6 : 1,
-                  }}
-                  data-testid="select-subject"
-                >
-                  <option value="" disabled>Onderwerp</option>
-                  {SUBJECT_OPTIONS.map(o => (
-                    <option key={o} value={o} style={{ color: "#111111" }}>{o}</option>
+                <p className="text-[18px] font-bold text-center" style={{ color: "#111111" }}>Fijn dat je geholpen bent.</p>
+                <p className="text-[14px] text-center leading-relaxed" style={{ color: "#7d7d7d" }}>
+                  Heb je toch nog een vraag? Je kunt altijd een nieuw bericht sturen.
+                </p>
+                <button onClick={resetForm} className="text-[14px] font-semibold mt-2" style={{ color: "#bbadfb" }} data-testid="button-new-message">
+                  Nieuw bericht sturen
+                </button>
+              </div>
+            )}
+
+            {/* ── PHASE: faq_suggestions ── */}
+            {phase === "faq_suggestions" && (
+              <div>
+                <div className="flex items-center gap-3.5 mb-4">
+                  <IconBox>
+                    <Lightbulb className="w-5 h-5" style={{ color: "#111111" }} />
+                  </IconBox>
+                  <div>
+                    <p className="text-[17px] font-bold" style={{ color: "#111111" }}>Misschien helpt dit al</p>
+                    <p className="text-[13px] mt-0.5" style={{ color: "#7d7d7d" }}>We hebben antwoorden gevonden die passen bij je vraag.</p>
+                  </div>
+                </div>
+                <div className="space-y-3 mb-5">
+                  {faqSuggestions.map((faq) => (
+                    <button
+                      key={faq.id}
+                      onClick={() => window.open(faq.url, "_blank")}
+                      className="w-full text-left rounded-[18px] p-4 flex items-start gap-3 active:opacity-70 transition-opacity"
+                      style={{ backgroundColor: "#f9f8ff", border: "1px solid #ede7ff" }}
+                      data-testid={`button-faq-suggestion-${faq.id}`}
+                    >
+                      <div className="w-8 h-8 rounded-[10px] flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "#ede7ff" }}>
+                        <BookOpen className="w-4 h-4" style={{ color: "#7c5cbf" }} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[14px] font-bold leading-snug" style={{ color: "#111111" }}>{faq.title}</p>
+                        <p className="text-[12px] mt-1 leading-relaxed" style={{ color: "#7d7d7d" }}>{faq.summary}</p>
+                        <p className="text-[12px] font-semibold mt-2" style={{ color: "#7c5cbf" }}>Bekijk antwoord →</p>
+                      </div>
+                    </button>
                   ))}
-                </select>
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                  <ChevronDown className="w-4 h-4" style={{ color: "#aaaaaa" }} />
+                </div>
+                <div className="flex flex-col gap-2.5">
+                  <button
+                    onClick={() => handleDeflect(faqSuggestions[0]?.id || "unknown")}
+                    className="w-full py-4 rounded-full text-[15px] font-bold transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                    style={{ backgroundColor: "#85fb8c", color: "#111111" }}
+                    data-testid="button-deflect"
+                  >
+                    <CheckCircle className="w-4 h-4" />
+                    Dit beantwoordt mijn vraag
+                  </button>
+                  <button
+                    onClick={submitTicket}
+                    className="w-full py-3.5 rounded-full text-[14px] font-semibold transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                    style={{ backgroundColor: "#f0edfb", color: "#7c5cbf", border: "1px solid #ede7ff" }}
+                    data-testid="button-send-anyway"
+                  >
+                    <Send className="w-4 h-4" />
+                    Toch bericht versturen
+                  </button>
                 </div>
               </div>
+            )}
 
-              {/* Custom subject when "Overig" */}
-              {subject === "Overig" && (
-                <input
-                  type="text"
-                  placeholder="Typ je onderwerp..."
-                  value={customSubject}
-                  onChange={e => setCustomSubject(e.target.value)}
-                  onFocus={() => setFocusedField("custom")}
-                  onBlur={() => setFocusedField(null)}
-                  disabled={busy}
-                  className="w-full px-4 py-3.5 rounded-[18px] text-[14px]"
-                  style={{ ...(focusedField === "custom" ? INPUT_FOCUS_STYLE : INPUT_STYLE), opacity: busy ? 0.6 : 1 }}
-                  data-testid="input-subject-custom"
-                />
-              )}
-
-              {/* Textarea */}
-              <div className="relative">
-                <div className="absolute left-4 top-4 pointer-events-none">
-                  <Pencil className="w-4 h-4" style={{ color: "#aaaaaa" }} />
+            {/* ── PHASE: form / checking / submitting ── */}
+            {(phase === "form" || isChecking || isSubmitting) && (
+              <div className="flex flex-col gap-3.5">
+                <div className="relative">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <Tag className="w-4 h-4" style={{ color: "#aaaaaa" }} />
+                  </div>
+                  <select
+                    value={subject}
+                    onChange={e => setSubject(e.target.value)}
+                    onFocus={() => setFocusedField("subject")}
+                    onBlur={() => setFocusedField(null)}
+                    disabled={busy}
+                    className="w-full appearance-none pl-10 pr-10 py-3.5 rounded-[18px] text-[14px]"
+                    style={{
+                      ...(focusedField === "subject" ? INPUT_FOCUS_STYLE : INPUT_STYLE),
+                      color: subject ? "#111111" : "#aaaaaa",
+                      opacity: busy ? 0.6 : 1,
+                    }}
+                    data-testid="select-subject"
+                  >
+                    <option value="" disabled>Onderwerp</option>
+                    {SUBJECT_OPTIONS.map(o => (
+                      <option key={o} value={o} style={{ color: "#111111" }}>{o}</option>
+                    ))}
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                    <ChevronDown className="w-4 h-4" style={{ color: "#aaaaaa" }} />
+                  </div>
                 </div>
-                <textarea
-                  placeholder="Vertel ons wat er aan de hand is..."
-                  value={message}
-                  onChange={e => setMessage(e.target.value.slice(0, MAX_CHARS))}
-                  onFocus={() => setFocusedField("message")}
-                  onBlur={() => setFocusedField(null)}
-                  disabled={busy}
-                  rows={5}
-                  className="w-full pl-10 pr-4 pt-4 pb-8 rounded-[18px] text-[14px] resize-none"
-                  style={{ ...(focusedField === "message" ? INPUT_FOCUS_STYLE : INPUT_STYLE), opacity: busy ? 0.6 : 1 }}
-                  data-testid="input-message"
-                />
-                <span className="absolute bottom-3 right-4 text-[11px]" style={{ color: "#cccccc" }}>
-                  {message.length} / {MAX_CHARS}
-                </span>
+                {subject === "Overig" && (
+                  <input
+                    type="text"
+                    placeholder="Typ je onderwerp..."
+                    value={customSubject}
+                    onChange={e => setCustomSubject(e.target.value)}
+                    onFocus={() => setFocusedField("custom")}
+                    onBlur={() => setFocusedField(null)}
+                    disabled={busy}
+                    className="w-full px-4 py-3.5 rounded-[18px] text-[14px]"
+                    style={{ ...(focusedField === "custom" ? INPUT_FOCUS_STYLE : INPUT_STYLE), opacity: busy ? 0.6 : 1 }}
+                    data-testid="input-subject-custom"
+                  />
+                )}
+                <div className="relative">
+                  <div className="absolute left-4 top-4 pointer-events-none">
+                    <Pencil className="w-4 h-4" style={{ color: "#aaaaaa" }} />
+                  </div>
+                  <textarea
+                    placeholder="Vertel ons wat er aan de hand is..."
+                    value={message}
+                    onChange={e => setMessage(e.target.value.slice(0, MAX_CHARS))}
+                    onFocus={() => setFocusedField("message")}
+                    onBlur={() => setFocusedField(null)}
+                    disabled={busy}
+                    rows={5}
+                    className="w-full pl-10 pr-4 pt-4 pb-8 rounded-[18px] text-[14px] resize-none"
+                    style={{ ...(focusedField === "message" ? INPUT_FOCUS_STYLE : INPUT_STYLE), opacity: busy ? 0.6 : 1 }}
+                    data-testid="input-message"
+                  />
+                  <span className="absolute bottom-3 right-4 text-[11px]" style={{ color: "#cccccc" }}>
+                    {message.length} / {MAX_CHARS}
+                  </span>
+                </div>
+                {error && (
+                  <p className="text-[12px]" style={{ color: "#e11d48" }} data-testid="text-error">{error}</p>
+                )}
+                <button
+                  onClick={handleSendClick}
+                  disabled={busy || !effectiveSubject.trim() || !message.trim()}
+                  className="w-full py-4 rounded-full text-[15px] font-bold transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2 mt-1"
+                  style={{ backgroundColor: "#85fb8c", color: "#111111" }}
+                  data-testid="button-send"
+                >
+                  {busy
+                    ? <><Loader2 className="w-4 h-4 animate-spin" /> Controleren...</>
+                    : <><Send className="w-4 h-4" /> Verstuur bericht</>
+                  }
+                </button>
               </div>
-
-              {error && (
-                <p className="text-[12px]" style={{ color: "#e11d48" }} data-testid="text-error">{error}</p>
-              )}
-
-              <button
-                onClick={handleSendClick}
-                disabled={busy || !effectiveSubject.trim() || !message.trim()}
-                className="w-full py-4 rounded-full text-[15px] font-bold transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2 mt-1"
-                style={{ backgroundColor: "#85fb8c", color: "#111111" }}
-                data-testid="button-send"
-              >
-                {busy
-                  ? <><Loader2 className="w-4 h-4 animate-spin" /> Controleren...</>
-                  : <><Send className="w-4 h-4" /> Verstuur bericht</>
-                }
-              </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         {/* ── FAQ card ── */}
@@ -496,9 +579,7 @@ export default function SupportPage() {
           style={{ border: "1px solid #eeeeee" }}
           data-testid="button-faq"
         >
-          <IconBox>
-            <BookOpen className="w-5 h-5" style={{ color: "#111111" }} />
-          </IconBox>
+          <IconBox><BookOpen className="w-5 h-5" style={{ color: "#111111" }} /></IconBox>
           <div className="flex-1 min-w-0">
             <p className="text-[15px] font-bold" style={{ color: "#111111" }}>Hoe werkt HousAlert</p>
             <p className="text-[13px] mt-0.5" style={{ color: "#7d7d7d" }}>Bekijk veelgestelde vragen en uitleg</p>
@@ -506,11 +587,9 @@ export default function SupportPage() {
           <ChevronRight className="w-5 h-5 flex-shrink-0" style={{ color: "#cccccc" }} />
         </button>
 
-        {/* ── WhatsApp — secondary ── */}
+        {/* ── WhatsApp ── */}
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-widest mb-2.5 px-1" style={{ color: "#aaaaaa" }}>
-            Liever WhatsApp?
-          </p>
+          <p className="text-[11px] font-bold uppercase tracking-widest mb-2.5 px-1" style={{ color: "#aaaaaa" }}>Liever WhatsApp?</p>
           <button
             onClick={() => window.open("https://wa.me/", "_blank")}
             className="w-full bg-white rounded-[28px] px-5 py-5 flex items-center gap-4 text-left active:opacity-80 transition-opacity"
@@ -545,9 +624,7 @@ export default function SupportPage() {
                 style={{ paddingTop: "18px", paddingBottom: "18px" }}
                 data-testid={`button-legal-${i}`}
               >
-                <IconBox>
-                  <Icon className="w-5 h-5" style={{ color: "#111111" }} />
-                </IconBox>
+                <IconBox><Icon className="w-5 h-5" style={{ color: "#111111" }} /></IconBox>
                 <div className="flex-1 min-w-0">
                   <p className="text-[15px] font-bold" style={{ color: "#111111" }}>{label}</p>
                   <p className="text-[13px] mt-0.5" style={{ color: "#7d7d7d" }}>{sub}</p>

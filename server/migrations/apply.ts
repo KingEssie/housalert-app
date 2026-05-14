@@ -37,6 +37,44 @@ export async function runStartupMigration() {
   await createSupportTicketsTable();
   await ensureSupportTicketsColumns();
   await createSupportNotificationsTable();
+  await createSupportTicketMessagesTable();
+  await ensureSupportTicketExtraColumns();
+}
+
+async function createSupportTicketMessagesTable() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS support_ticket_messages (
+        id SERIAL PRIMARY KEY,
+        ticket_id INT NOT NULL REFERENCES support_tickets(id) ON DELETE CASCADE,
+        sender_type TEXT NOT NULL,
+        sender_user_id UUID,
+        message TEXT NOT NULL,
+        faq_title TEXT,
+        faq_url TEXT,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `);
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_stm_ticket_id ON support_ticket_messages(ticket_id)`);
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_stm_ticket_created ON support_ticket_messages(ticket_id, created_at)`);
+    log("[MIGRATION] support_ticket_messages table OK", "migration");
+  } catch (err: any) {
+    log(`[MIGRATION] Error creating support_ticket_messages: ${err.message}`, "migration");
+  }
+}
+
+async function ensureSupportTicketExtraColumns() {
+  for (const col of [
+    { name: "has_unread_admin_reply", sql: "BOOLEAN DEFAULT FALSE" },
+    { name: "last_message_at", sql: "TIMESTAMPTZ" },
+  ]) {
+    try {
+      await pool.query(`ALTER TABLE support_tickets ADD COLUMN IF NOT EXISTS ${col.name} ${col.sql}`);
+      log(`[MIGRATION] support_tickets.${col.name} OK`, "migration");
+    } catch (err: any) {
+      log(`[MIGRATION] Error adding support_tickets.${col.name}: ${err.message}`, "migration");
+    }
+  }
 }
 
 async function createSupportNotificationsTable() {

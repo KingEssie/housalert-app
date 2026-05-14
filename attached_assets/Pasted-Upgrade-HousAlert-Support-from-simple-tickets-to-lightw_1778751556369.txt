@@ -1,0 +1,229 @@
+Upgrade HousAlert Support from simple tickets to lightweight support threads.
+
+IMPORTANT:
+Do NOT build live chat.
+No realtime sockets.
+No typing indicators.
+No online status.
+
+This should be an async support inbox/thread system.
+
+GOAL:
+Users can:
+- see their submitted support tickets
+- see the current status
+- read admin replies
+- reopen/reply if needed
+
+Admins can:
+- reply to a ticket manually
+- optionally attach/recommend a FAQ link
+- change status
+- resolve/close tickets
+
+========================================
+1. DATABASE
+========================================
+
+Keep existing support_tickets table.
+
+Add new table:
+support_ticket_messages
+
+Fields:
+- id
+- ticket_id
+- sender_type: user | admin | system
+- sender_user_id nullable
+- message text
+- faq_title nullable
+- faq_url nullable
+- created_at
+
+When a user creates a ticket:
+- create support_tickets row
+- also create first support_ticket_messages row with sender_type=user
+
+========================================
+2. USER SUPPORT SCREEN
+========================================
+
+On /support, add a section:
+
+“Mijn supportvragen”
+
+Show user’s recent tickets:
+- subject
+- status badge:
+  Open
+  In behandeling
+  Opgelost
+  Gesloten
+- last message preview
+- date
+- unread indicator if admin replied
+
+Clicking a ticket opens ticket detail/thread.
+
+Ticket detail should show:
+- subject
+- status
+- original message
+- admin replies
+- FAQ recommendations if added
+- reply box if ticket is not closed
+
+Status text examples:
+Open:
+“We hebben je bericht ontvangen.”
+
+In behandeling:
+“We kijken met je mee.”
+
+Opgelost:
+“Deze supportvraag is gemarkeerd als opgelost.”
+
+Gesloten:
+“Deze supportvraag is gesloten.”
+
+========================================
+3. ADMIN SUPPORT INBOX
+========================================
+
+In Admin → Support:
+
+When opening a ticket, show:
+- ticket metadata
+- full conversation thread
+- user message
+- admin replies
+- system events
+
+Add admin reply composer:
+- textarea: “Schrijf een antwoord…”
+- button: “Antwoord versturen”
+
+Add FAQ recommendation tool:
+- dropdown/search FAQ item
+- button: “FAQ-link meesturen”
+- admin can send message with faq_title + faq_url
+
+Example admin reply:
+“Volgens mij helpt deze uitleg je verder: [Hoe werkt HousAlert]”
+
+========================================
+4. NOTIFICATIONS
+========================================
+
+When admin sends a reply:
+- create in-app notification for user
+- send push if available
+- send email fallback if available
+- log delivery status
+
+Notification:
+Title:
+“Nieuwe reactie van HousAlert”
+
+Body:
+“We hebben gereageerd op je supportvraag.”
+
+When admin resolves:
+- keep existing resolved notification logic
+
+Do not send duplicate notifications.
+
+========================================
+5. STATUS WORKFLOW
+========================================
+
+Statuses:
+- open
+- in_progress
+- resolved
+- closed
+
+When admin replies:
+- automatically set status to in_progress unless already closed
+
+User can:
+- reply to open/in_progress/resolved ticket
+- replying to resolved ticket reopens it to open
+
+Admin can:
+- resolve
+- close
+- reopen
+
+========================================
+6. FAQ LINKING
+========================================
+
+Admin can choose to reply with:
+- normal text only
+- FAQ link only
+- text + FAQ link
+
+FAQ links should use:
+- title
+- short explanation
+- URL to housalert.com/faq or specific FAQ anchor if available
+
+Display FAQ recommendation in user thread as a nice card:
+- white card
+- purple icon background
+- black icon
+- title
+- “Bekijk uitleg”
+- opens externally
+
+========================================
+7. UX / BRANDING
+========================================
+
+Use current HousAlert support design:
+- background #f6f6f6
+- white cards
+- black text #111111
+- purple accents #bbadfb
+- green CTA #85fb8c
+- icon backgrounds #ede7ff
+- icons black
+- rounded cards 28px
+- buttons fully rounded
+
+Do not make it look like WhatsApp.
+This is a premium async support inbox.
+
+========================================
+8. MVP LIMITS
+========================================
+
+Do NOT build:
+- live chat
+- typing indicators
+- read receipts per message
+- attachments
+- file upload
+- agent avatars
+- AI chatbot
+
+Keep it simple and stable.
+
+========================================
+9. SMOKE CHECK
+========================================
+
+Test:
+- user creates ticket
+- ticket appears under “Mijn supportvragen”
+- admin sees ticket
+- admin replies
+- user sees reply in ticket thread
+- user gets in-app notification
+- admin sends FAQ recommendation
+- user sees FAQ card
+- admin resolves ticket
+- user sees resolved status
+- user replies to resolved ticket
+- ticket reopens
