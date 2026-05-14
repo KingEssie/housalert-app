@@ -52,8 +52,8 @@ const STATUS_LABELS: Record<string, string> = {
 
 const STATUS_COLORS: Record<string, { bg: string; text: string; border: string }> = {
   open:        { bg: "#fff7ed", text: "#c2410c", border: "#fed7aa" },
-  in_progress: { bg: "#f3f0ff", text: "#7c5cbf", border: "#ddd6fe" },
-  resolved:    { bg: "#edfbf0", text: "#16a34a", border: "#bbf7d0" },
+  in_progress: { bg: "#bbadfb", text: "#171429", border: "#bbadfb" },
+  resolved:    { bg: "#85fb8c", text: "#223546", border: "#85fb8c" },
   closed:      { bg: "#f5f5f7", text: "#888888", border: "#e0e0e0" },
 };
 
@@ -92,7 +92,7 @@ function IconBox({ children }: { children: React.ReactNode }) {
   return (
     <div
       className="w-11 h-11 rounded-[14px] flex items-center justify-center flex-shrink-0"
-      style={{ backgroundColor: "#ede7ff" }}
+      style={{ backgroundColor: "#bbadfb" }}
     >
       {children}
     </div>
@@ -274,7 +274,7 @@ export default function SupportPage() {
         <HousAlertLogo height={18} />
         <span
           className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wide"
-          style={{ backgroundColor: "#ede7ff", color: "#7c5cbf" }}
+          style={{ backgroundColor: "#bbadfb", color: "#171429" }}
         >
           SUPPORT
         </span>
@@ -307,8 +307,8 @@ export default function SupportPage() {
                 style={{ backgroundColor: "#edfbf0", border: "1.5px solid #bbf7d0" }}
                 data-testid={`support-notification-${n.id}`}
               >
-                <div className="w-9 h-9 rounded-[12px] flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "#d1fae5" }}>
-                  <BellRing className="w-4 h-4" style={{ color: "#16a34a" }} />
+                <div className="w-9 h-9 rounded-[12px] flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "#85fb8c" }}>
+                  <BellRing className="w-4 h-4" style={{ color: "#223546" }} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-[14px] font-bold" style={{ color: "#111111" }}>{n.title}</p>
@@ -320,11 +320,11 @@ export default function SupportPage() {
                 <button
                   onClick={e => { e.stopPropagation(); dismissNotification(n.id); }}
                   className="w-7 h-7 flex items-center justify-center rounded-full flex-shrink-0 transition-opacity hover:opacity-60"
-                  style={{ backgroundColor: "#d1fae5" }}
+                  style={{ backgroundColor: "#85fb8c" }}
                   data-testid={`button-dismiss-notif-${n.id}`}
                   aria-label="Sluiten"
                 >
-                  <X className="w-3.5 h-3.5" style={{ color: "#16a34a" }} />
+                  <X className="w-3.5 h-3.5" style={{ color: "#223546" }} />
                 </button>
               </button>
             ))}
@@ -353,10 +353,10 @@ export default function SupportPage() {
                         className="w-full flex items-start gap-3.5 px-5 py-4 text-left active:opacity-70 transition-opacity"
                         data-testid={`button-ticket-${ticket.id}`}
                       >
-                        <div className="w-10 h-10 rounded-[12px] flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "#ede7ff" }}>
+                        <div className="w-10 h-10 rounded-[12px] flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "#bbadfb" }}>
                           {ticket.has_unread_admin_reply
-                            ? <BellRing className="w-4.5 h-4.5" style={{ color: "#7c5cbf" }} />
-                            : <MessageSquare className="w-4.5 h-4.5" style={{ color: "#111111" }} />
+                            ? <BellRing className="w-4.5 h-4.5" style={{ color: "#171429" }} />
+                            : <MessageSquare className="w-4.5 h-4.5" style={{ color: "#171429" }} />
                           }
                         </div>
                         <div className="flex-1 min-w-0">
@@ -368,7 +368,7 @@ export default function SupportPage() {
                               {STATUS_LABELS[ticket.status] || ticket.status}
                             </span>
                             {ticket.has_unread_admin_reply && (
-                              <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: "#7c5cbf" }} />
+                              <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: "#bbadfb" }} />
                             )}
                           </div>
                           <p className="text-[14px] font-bold truncate" style={{ color: "#111111" }}>{ticket.subject}</p>
@@ -406,8 +406,8 @@ export default function SupportPage() {
               <div className="flex items-center gap-3.5 mb-5">
                 <IconBox>
                   {phase === "deflected"
-                    ? <SmilePlus className="w-5 h-5" style={{ color: "#111111" }} />
-                    : <MessageSquare className="w-5 h-5" style={{ color: "#111111" }} />
+                    ? <SmilePlus className="w-5 h-5" style={{ color: "#171429" }} />
+                    : <MessageSquare className="w-5 h-5" style={{ color: "#171429" }} />
                   }
                 </IconBox>
                 <div>
@@ -420,8 +420,8 @@ export default function SupportPage() {
             {/* ── PHASE: deflected ── */}
             {phase === "deflected" && (
               <div className="flex flex-col items-center py-8 gap-3">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: "#edfbf0" }}>
-                  <SmilePlus className="w-8 h-8" style={{ color: "#16a34a" }} />
+                <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: "#85fb8c" }}>
+                  <SmilePlus className="w-8 h-8" style={{ color: "#223546" }} />
                 </div>
                 <p className="text-[18px] font-bold text-center" style={{ color: "#111111" }}>Fijn dat je geholpen bent.</p>
                 <p className="text-[14px] text-center leading-relaxed" style={{ color: "#7d7d7d" }}>
@@ -438,7 +438,7 @@ export default function SupportPage() {
               <div>
                 <div className="flex items-center gap-3.5 mb-4">
                   <IconBox>
-                    <Lightbulb className="w-5 h-5" style={{ color: "#111111" }} />
+                    <Lightbulb className="w-5 h-5" style={{ color: "#171429" }} />
                   </IconBox>
                   <div>
                     <p className="text-[17px] font-bold" style={{ color: "#111111" }}>Misschien helpt dit al</p>
@@ -454,13 +454,13 @@ export default function SupportPage() {
                       style={{ backgroundColor: "#f9f8ff", border: "1px solid #ede7ff" }}
                       data-testid={`button-faq-suggestion-${faq.id}`}
                     >
-                      <div className="w-8 h-8 rounded-[10px] flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "#ede7ff" }}>
-                        <BookOpen className="w-4 h-4" style={{ color: "#7c5cbf" }} />
+                      <div className="w-8 h-8 rounded-[10px] flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "#bbadfb" }}>
+                        <BookOpen className="w-4 h-4" style={{ color: "#171429" }} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-[14px] font-bold leading-snug" style={{ color: "#111111" }}>{faq.title}</p>
                         <p className="text-[12px] mt-1 leading-relaxed" style={{ color: "#7d7d7d" }}>{faq.summary}</p>
-                        <p className="text-[12px] font-semibold mt-2" style={{ color: "#7c5cbf" }}>Bekijk antwoord →</p>
+                        <p className="text-[12px] font-semibold mt-2" style={{ color: "#bbadfb" }}>Bekijk antwoord →</p>
                       </div>
                     </button>
                   ))}
@@ -469,7 +469,7 @@ export default function SupportPage() {
                   <button
                     onClick={() => handleDeflect(faqSuggestions[0]?.id || "unknown")}
                     className="w-full py-4 rounded-full text-[15px] font-bold transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-                    style={{ backgroundColor: "#85fb8c", color: "#111111" }}
+                    style={{ backgroundColor: "#85fb8c", color: "#223546" }}
                     data-testid="button-deflect"
                   >
                     <CheckCircle className="w-4 h-4" />
@@ -478,7 +478,7 @@ export default function SupportPage() {
                   <button
                     onClick={submitTicket}
                     className="w-full py-3.5 rounded-full text-[14px] font-semibold transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-                    style={{ backgroundColor: "#f0edfb", color: "#7c5cbf", border: "1px solid #ede7ff" }}
+                    style={{ backgroundColor: "#bbadfb", color: "#171429" }}
                     data-testid="button-send-anyway"
                   >
                     <Send className="w-4 h-4" />
@@ -559,7 +559,7 @@ export default function SupportPage() {
                   onClick={handleSendClick}
                   disabled={busy || !effectiveSubject.trim() || !message.trim()}
                   className="w-full py-4 rounded-full text-[15px] font-bold transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2 mt-1"
-                  style={{ backgroundColor: "#85fb8c", color: "#111111" }}
+                  style={{ backgroundColor: "#85fb8c", color: "#223546" }}
                   data-testid="button-send"
                 >
                   {busy
@@ -579,7 +579,7 @@ export default function SupportPage() {
           style={{ border: "1px solid #eeeeee" }}
           data-testid="button-faq"
         >
-          <IconBox><BookOpen className="w-5 h-5" style={{ color: "#111111" }} /></IconBox>
+          <IconBox><BookOpen className="w-5 h-5" style={{ color: "#171429" }} /></IconBox>
           <div className="flex-1 min-w-0">
             <p className="text-[15px] font-bold" style={{ color: "#111111" }}>Hoe werkt HousAlert</p>
             <p className="text-[13px] mt-0.5" style={{ color: "#7d7d7d" }}>Bekijk veelgestelde vragen en uitleg</p>
@@ -597,7 +597,7 @@ export default function SupportPage() {
             data-testid="button-whatsapp"
           >
             <IconBox>
-              <svg viewBox="0 0 24 24" className="w-5 h-5" fill="#111111">
+              <svg viewBox="0 0 24 24" className="w-5 h-5" fill="#171429">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
                 <path d="M11.984 2C6.465 2 2 6.465 2 11.984a9.96 9.96 0 001.376 5.022L2 22l5.12-1.345A9.964 9.964 0 0011.984 22C17.503 22 22 17.535 22 12.016 22 6.497 17.503 2 11.984 2zm0 18.125a8.14 8.14 0 01-4.134-1.126l-.296-.175-3.04.798.812-2.96-.193-.305A8.14 8.14 0 013.875 12c0-4.472 3.637-8.109 8.109-8.109 4.471 0 8.109 3.637 8.109 8.109 0 4.471-3.638 8.125-8.109 8.125z" />
               </svg>
@@ -624,7 +624,7 @@ export default function SupportPage() {
                 style={{ paddingTop: "18px", paddingBottom: "18px" }}
                 data-testid={`button-legal-${i}`}
               >
-                <IconBox><Icon className="w-5 h-5" style={{ color: "#111111" }} /></IconBox>
+                <IconBox><Icon className="w-5 h-5" style={{ color: "#171429" }} /></IconBox>
                 <div className="flex-1 min-w-0">
                   <p className="text-[15px] font-bold" style={{ color: "#111111" }}>{label}</p>
                   <p className="text-[13px] mt-0.5" style={{ color: "#7d7d7d" }}>{sub}</p>

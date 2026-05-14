@@ -1,0 +1,82 @@
+Update the Support system branding colors to use the exact HousAlert brand tokens.
+
+IMPORTANT:
+Do not redesign layout.
+Do not change functionality.
+Only update colors/icons in the support screens, support thread, FAQ suggestion interstitial, FAQ cards, and admin support where relevant.
+
+Brand colors:
+- Purple: #bbadfb
+- Purple icon color / dark icon color: #171429
+- Green: #85fb8c
+- Green icon color / dark green icon color: #223546
+- Text black: #111111
+- App background: #f6f6f6
+- Card background: #ffffff
+
+Rules:
+
+1. Purple icon blocks
+Anywhere an icon has a purple background:
+- background: #bbadfb
+- icon color: #171429
+
+Apply to:
+- support ticket icons
+- FAQ suggestion icons
+- support card icons
+- legal/help icons
+- status/illustration icon blocks where purple is used
+
+2. Green action buttons
+Anywhere green is used as a positive action:
+- background: #85fb8c
+- icon color: #223546
+- text color: #111111 or #223546
+- no pale/light green variants unless disabled
+
+Apply to:
+- Verstuur bericht button
+- chat send button
+- “Dit beantwoordt mijn vraag”
+- success/action buttons
+- any green CTA in support flow
+
+3. Remove overly pale variants
+Replace light pastel purple/green where it weakens contrast:
+- pale purple backgrounds should become #bbadfb where they are icon/action surfaces
+- pale green action surfaces should become #85fb8c
+- keep white cards and #f6f6f6 page background
+
+4. Icons
+All icons inside purple backgrounds:
+- #171429
+
+All icons inside green backgrounds:
+- #223546
+
+5. Status badges
+Keep readable and premium:
+- Open can stay warm/orange
+- In behandeling should use purple #bbadfb with dark text #171429
+- Opgelost can use green #85fb8c with dark text #223546
+- Gesloten can stay neutral gray
+
+6. Chat bubbles
+User message bubble:
+- use a soft version only if needed, but keep brand green present
+- text must remain black
+
+Admin/FAQ cards:
+- white cards
+- purple accents exactly #bbadfb
+- icons #171429
+
+7. Smoke check
+Verify:
+- no random Tailwind purple/green shades remain in support pages
+- no light green CTA buttons
+- no purple icons on purple backgrounds
+- icons are dark on colored backgrounds
+- mobile support page still looks clean
+- no functionality changes

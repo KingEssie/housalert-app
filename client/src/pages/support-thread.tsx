@@ -42,8 +42,8 @@ const STATUS_LABELS: Record<string, string> = {
 
 const STATUS_COLORS: Record<string, { bg: string; text: string; border: string }> = {
   open:        { bg: "#fff7ed", text: "#c2410c", border: "#fed7aa" },
-  in_progress: { bg: "#f3f0ff", text: "#7c5cbf", border: "#ddd6fe" },
-  resolved:    { bg: "#edfbf0", text: "#16a34a", border: "#bbf7d0" },
+  in_progress: { bg: "#bbadfb", text: "#171429", border: "#bbadfb" },
+  resolved:    { bg: "#85fb8c", text: "#223546", border: "#85fb8c" },
   closed:      { bg: "#f5f5f7", text: "#888888", border: "#e0e0e0" },
 };
 
@@ -66,12 +66,12 @@ function FaqCard({ title, url }: { title: string; url: string }) {
       className="w-full text-left rounded-[18px] px-4 py-3.5 flex items-start gap-3 active:opacity-70 transition-opacity mt-2"
       style={{ backgroundColor: "#f9f8ff", border: "1px solid #ede7ff" }}
     >
-      <div className="w-8 h-8 rounded-[10px] flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "#ede7ff" }}>
-        <BookOpen className="w-4 h-4" style={{ color: "#7c5cbf" }} />
+      <div className="w-8 h-8 rounded-[10px] flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "#bbadfb" }}>
+        <BookOpen className="w-4 h-4" style={{ color: "#171429" }} />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-[13px] font-bold leading-snug" style={{ color: "#111111" }}>{title}</p>
-        <p className="text-[12px] font-semibold mt-1 flex items-center gap-1" style={{ color: "#7c5cbf" }}>
+        <p className="text-[12px] font-semibold mt-1 flex items-center gap-1" style={{ color: "#bbadfb" }}>
           Bekijk uitleg <ExternalLink className="w-3 h-3" />
         </p>
       </div>
@@ -95,8 +95,8 @@ function MessageBubble({ msg }: { msg: TicketMessage }) {
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
       {!isUser && (
-        <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-2 mt-auto mb-5" style={{ backgroundColor: "#ede7ff" }}>
-          <span className="text-[10px] font-bold" style={{ color: "#7c5cbf" }}>HA</span>
+        <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-2 mt-auto mb-5" style={{ backgroundColor: "#bbadfb" }}>
+          <span className="text-[10px] font-bold" style={{ color: "#171429" }}>HA</span>
         </div>
       )}
       <div className="max-w-[82%]">
@@ -285,7 +285,7 @@ export default function SupportThreadPage() {
         >
           <div className="max-w-[520px] mx-auto">
             {willReopen && (
-              <p className="text-[11px] mb-1.5 text-center font-medium" style={{ color: "#7c5cbf" }}>
+              <p className="text-[11px] mb-1.5 text-center font-medium" style={{ color: "#bbadfb" }}>
                 Je antwoord heropent dit ticket
               </p>
             )}
@@ -316,7 +316,7 @@ export default function SupportThreadPage() {
                 style={{ backgroundColor: "#85fb8c" }}
                 data-testid="button-send-reply"
               >
-                {sending ? <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#111111" }} /> : <Send className="w-4 h-4" style={{ color: "#111111" }} />}
+                {sending ? <Loader2 className="w-4 h-4 animate-spin" style={{ color: "#223546" }} /> : <Send className="w-4 h-4" style={{ color: "#223546" }} />}
               </button>
             </div>
           </div>
