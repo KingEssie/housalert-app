@@ -1,0 +1,119 @@
+Run a full pre-App-Store readiness audit for HousAlert.
+
+IMPORTANT:
+Do not add new features.
+Do not redesign anything.
+Only inspect, test, fix bugs, and report findings.
+
+Audit areas:
+
+1. Core user flows
+- signup
+- login
+- logout
+- onboarding
+- create search profile
+- edit search profile
+- delete search profile
+- matches list
+- listing detail
+- favorites
+- account settings
+- subscription/paywall flow
+- support center
+- support ticket thread
+- FAQ suggestions
+- admin mode access
+
+2. Navigation
+Check all back buttons:
+- no 404 pages
+- no browser-history loops
+- no dead routes
+- no broken external links
+- no trapped screens
+
+3. Subscription logic
+Verify:
+- free users can create up to 4 search profiles
+- paywall only blocks responding/unlocking premium actions
+- active/trial users see correct access
+- expired/no-sub users see correct upgrade states
+- no duplicate upgrade CTAs
+
+4. Notifications
+Verify:
+- support resolved notification
+- support reply notification
+- push fallback handling
+- email fallback handling
+- unread indicators
+- no duplicate notifications
+
+5. Email/Resend
+Verify:
+- email sending status is clearly reported
+- domain verification errors are surfaced
+- test email flow works or fails with clear reason
+- no silent failures
+
+6. Mobile UX
+Test iPhone-sized viewport:
+- no overlapping bottom nav
+- no hidden buttons
+- no clipped content
+- no horizontal scrolling
+- sticky footers behave correctly
+- forms are usable with keyboard open
+
+7. Branding consistency
+Check:
+- correct logo everywhere
+- #bbadfb purple
+- #85fb8c green
+- #223546 dark navy
+- #171429 dark icon color
+- #f6f6f6 app background
+- buttons fully rounded
+- no old blue/orange/old green remains except warning/error states
+
+8. Data integrity
+Verify:
+- search profile names save and display correctly
+- listing timestamps are correct
+- support ticket status updates persist
+- admin actions persist after refresh
+
+9. Admin panel
+Verify:
+- dashboard loads
+- listings tab loads
+- users tab loads
+- subscriptions tab loads
+- alerts/email tab loads
+- support tab loads
+- system tab loads
+- no infinite loaders
+- no hidden console errors
+
+10. Error handling
+Check:
+- loading states
+- empty states
+- failed API states
+- retry buttons where needed
+- user-friendly error messages
+
+Output required:
+Provide a report with:
+- ✅ Passed items
+- ⚠️ Warnings
+- ❌ Bugs found
+- Suggested fixes ranked by priority:
+  P0 = must fix before App Store
+  P1 = should fix before launch
+  P2 = can wait
+
+After the audit:
+Only fix P0 bugs automatically.
+Do not fix P1/P2 without confirmation.
