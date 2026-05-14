@@ -45,57 +45,84 @@ function StatusDot({ status }: { status: string }) {
 }
 
 function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, { cls: string; label: string }> = {
-    active: { cls: "bg-emerald-50 text-emerald-700 border-emerald-200", label: "Active" },
-    operational: { cls: "bg-emerald-50 text-emerald-700 border-emerald-200", label: "Operational" },
-    trial: { cls: "bg-orange-50 text-ha-primary border-orange-200", label: "Trial" },
-    past_due: { cls: "bg-amber-50 text-amber-700 border-amber-200", label: "Past Due" },
-    canceled: { cls: "bg-ha-danger/5 text-ha-danger border-ha-danger/20", label: "Canceled" },
-    expired: { cls: "bg-ha-hover-bg text-ha-text-secondary border-ha-card-border", label: "Expired" },
-    error: { cls: "bg-ha-danger/5 text-ha-danger border-ha-danger/20", label: "Error" },
-    warning: { cls: "bg-amber-50 text-amber-700 border-amber-200", label: "Warning" },
-    disabled: { cls: "bg-ha-hover-bg text-ha-text-secondary border-ha-card-border", label: "Disabled" },
-    success: { cls: "bg-emerald-50 text-emerald-700 border-emerald-200", label: "Success" },
-    partial: { cls: "bg-amber-50 text-amber-700 border-amber-200", label: "Partial" },
-    failed: { cls: "bg-ha-danger/5 text-ha-danger border-ha-danger/20", label: "Failed" },
-    broken: { cls: "bg-ha-danger/5 text-ha-danger border-ha-danger/20", label: "Broken" },
-    degraded: { cls: "bg-amber-50 text-amber-700 border-amber-200", label: "Degraded" },
+  const map: Record<string, { bg: string; color: string; border: string; label: string }> = {
+    active:      { bg: "#edfbf0", color: "#16a34a", border: "#bbf7d0", label: "Active" },
+    operational: { bg: "#edfbf0", color: "#16a34a", border: "#bbf7d0", label: "Operational" },
+    success:     { bg: "#edfbf0", color: "#16a34a", border: "#bbf7d0", label: "Success" },
+    trial:       { bg: "rgba(187,173,251,0.12)", color: "#7c5fc5", border: "rgba(187,173,251,0.4)", label: "Trial" },
+    past_due:    { bg: "#fffbeb", color: "#b45309", border: "#fde68a", label: "Past Due" },
+    warning:     { bg: "#fffbeb", color: "#b45309", border: "#fde68a", label: "Warning" },
+    partial:     { bg: "#fffbeb", color: "#b45309", border: "#fde68a", label: "Partial" },
+    degraded:    { bg: "#fffbeb", color: "#b45309", border: "#fde68a", label: "Degraded" },
+    canceled:    { bg: "#fff1f2", color: "#e11d48", border: "#fecdd3", label: "Canceled" },
+    error:       { bg: "#fff1f2", color: "#e11d48", border: "#fecdd3", label: "Error" },
+    failed:      { bg: "#fff1f2", color: "#e11d48", border: "#fecdd3", label: "Failed" },
+    broken:      { bg: "#fff1f2", color: "#e11d48", border: "#fecdd3", label: "Broken" },
+    expired:     { bg: "#f5f5f5", color: "#888888", border: "#e0e0e0", label: "Expired" },
+    disabled:    { bg: "#f5f5f5", color: "#888888", border: "#e0e0e0", label: "Disabled" },
   };
-  const m = map[status] || { cls: "bg-ha-hover-bg text-ha-text-secondary border-ha-card-border", label: status };
-  return <span className={`px-2 py-0.5 rounded-full text-[11px] font-semibold border ${m.cls}`}>{m.label}</span>;
+  const m = map[status] || { bg: "#f5f5f5", color: "#888888", border: "#e0e0e0", label: status };
+  return (
+    <span
+      className="px-2 py-0.5 rounded-full text-[11px] font-semibold border inline-block"
+      style={{ backgroundColor: m.bg, color: m.color, borderColor: m.border }}
+    >
+      {m.label}
+    </span>
+  );
 }
 
-const CARD = "bg-white rounded-2xl border border-ha-divider shadow-sm";
+const CARD = "bg-white rounded-[20px] border border-[#eeebf3] shadow-[0_1px_4px_rgba(0,0,0,0.04)]";
 
 function SectionHeader({ title, action }: { title: string; action?: { label: string; onClick: () => void } }) {
   return (
-    <div className="flex items-center justify-between mb-3">
-      <h3 className="text-[15px] font-semibold text-ha-text">{title}</h3>
-      {action && <button onClick={action.onClick} className="text-[13px] font-medium text-ha-primary" data-testid={`action-${title.toLowerCase().replace(/\s/g, "-")}`}>{action.label}</button>}
+    <div className="flex items-center justify-between mb-4">
+      <h3 className="text-[13px] font-bold text-[#aaaaaa] uppercase tracking-[0.06em]">{title}</h3>
+      {action && (
+        <button
+          onClick={action.onClick}
+          className="text-[12px] font-semibold px-3 py-1 rounded-full transition-colors"
+          style={{ color: "#7c5fc5", backgroundColor: "rgba(187,173,251,0.10)" }}
+          data-testid={`action-${title.toLowerCase().replace(/\s/g, "-")}`}
+        >
+          {action.label}
+        </button>
+      )}
     </div>
   );
 }
 
 function MetricCard({ label, value, sub, icon: Icon }: { label: string; value: string | number; sub?: string; icon: any }) {
   return (
-    <div className={`${CARD} p-4`} data-testid={`metric-${label.toLowerCase().replace(/\s/g, "-")}`}>
-      <div className="flex items-center gap-2 mb-2">
-        <Icon className="w-4 h-4 text-ha-text-secondary" />
-        <span className="text-[11px] text-ha-text-secondary font-medium uppercase tracking-wide">{label}</span>
+    <div className={`${CARD} p-5`} data-testid={`metric-${label.toLowerCase().replace(/\s/g, "-")}`}>
+      <div className="flex items-center gap-1.5 mb-3">
+        <Icon className="w-3.5 h-3.5" style={{ color: "#bbadfb" }} />
+        <span className="text-[10px] font-bold uppercase tracking-[0.07em]" style={{ color: "#aaaaaa" }}>{label}</span>
       </div>
-      <p className="text-[22px] font-bold text-ha-text">{value}</p>
-      {sub && <p className="text-[11px] text-ha-text-secondary mt-0.5">{sub}</p>}
+      <p className="text-[28px] font-extrabold tracking-[-0.02em]" style={{ color: "#111111", lineHeight: 1 }}>{value}</p>
+      {sub && <p className="text-[11px] mt-1.5" style={{ color: "#aaaaaa" }}>{sub}</p>}
     </div>
   );
 }
 
 function EmptyState({ title, message, onRetry }: { title: string; message: string; onRetry?: () => void }) {
   return (
-    <div className={`${CARD} p-8 text-center`}>
-      <Database className="w-6 h-6 text-ha-text-secondary mx-auto mb-3" />
-      <h4 className="text-[15px] font-semibold text-ha-text mb-1">{title}</h4>
-      <p className="text-[13px] text-ha-text-secondary mb-4">{message}</p>
-      {onRetry && <Button variant="outline" size="sm" onClick={onRetry} className="rounded-full" data-testid="button-retry">Try again</Button>}
+    <div className={`${CARD} p-10 flex flex-col items-center text-center`}>
+      <div className="w-12 h-12 rounded-full flex items-center justify-center mb-4" style={{ backgroundColor: "rgba(187,173,251,0.12)" }}>
+        <Database className="w-5 h-5" style={{ color: "#bbadfb" }} />
+      </div>
+      <h4 className="text-[16px] font-bold mb-1.5" style={{ color: "#111111" }}>{title}</h4>
+      <p className="text-[13px] mb-5 max-w-[260px]" style={{ color: "#888888" }}>{message}</p>
+      {onRetry && (
+        <button
+          onClick={onRetry}
+          className="px-5 py-2 rounded-full text-[13px] font-semibold transition-all active:scale-[0.97]"
+          style={{ backgroundColor: "#f5f5f5", color: "#111111", border: "1px solid #e0e0e0" }}
+          data-testid="button-retry"
+        >
+          Try again
+        </button>
+      )}
     </div>
   );
 }
@@ -1935,17 +1962,58 @@ function SettingsTab() {
   );
 }
 
-const TAB_CONFIG: { id: TabId; label: string; icon: any }[] = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { id: "listings", label: "Listings", icon: Layers },
-  { id: "images", label: "Images", icon: Image },
-  { id: "sources", label: "Sources", icon: Radio },
-  { id: "users", label: "Users", icon: Users },
-  { id: "subscriptions", label: "Subscriptions", icon: CreditCard },
-  { id: "alerts", label: "Alerts", icon: Bell },
-  { id: "settings", label: "Settings", icon: Sliders },
-  { id: "system", label: "System", icon: Signal },
+const NAV_GROUPS: { label: string; items: { id: TabId; label: string; icon: any }[] }[] = [
+  {
+    label: "Overview",
+    items: [
+      { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+      { id: "alerts",    label: "Alerts",    icon: Bell },
+      { id: "system",    label: "System",    icon: Signal },
+    ],
+  },
+  {
+    label: "Content",
+    items: [
+      { id: "listings", label: "Listings", icon: Layers },
+      { id: "images",   label: "Images",   icon: Image },
+      { id: "sources",  label: "Sources",  icon: Radio },
+    ],
+  },
+  {
+    label: "Users",
+    items: [
+      { id: "users",         label: "Users",         icon: Users },
+      { id: "subscriptions", label: "Subscriptions", icon: CreditCard },
+    ],
+  },
+  {
+    label: "Config",
+    items: [
+      { id: "settings", label: "Settings", icon: Sliders },
+    ],
+  },
 ];
+
+function NavItem({ id, label, icon: Icon, active, onClick }: { id: TabId; label: string; icon: any; active: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-[12px] text-[13px] font-medium mb-0.5 transition-all active:scale-[0.98]"
+      style={active
+        ? { backgroundColor: "rgba(187,173,251,0.13)", color: "#7c5fc5" }
+        : { color: "#666666", backgroundColor: "transparent" }
+      }
+      data-testid={`nav-${id}`}
+    >
+      <Icon
+        className="w-[17px] h-[17px] flex-shrink-0"
+        style={{ color: active ? "#bbadfb" : "#aaaaaa" }}
+      />
+      {label}
+      {active && <span className="ml-auto w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: "#bbadfb" }} />}
+    </button>
+  );
+}
 
 export default function AdminPortalPage() {
   const [, navigate] = useLocation();
@@ -1965,15 +2033,33 @@ export default function AdminPortalPage() {
       });
   }, [user]);
 
-  if (checking) return <div className="min-h-screen bg-ha-bg flex items-center justify-center"><Loader2 className="w-7 h-7 text-ha-primary animate-spin" /></div>;
+  function navigate2(tab: TabId) {
+    setActiveTab(tab);
+    setSidebarOpen(false);
+  }
+
+  if (checking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#f5f5f7" }}>
+        <Loader2 className="w-7 h-7 animate-spin" style={{ color: "#bbadfb" }} />
+      </div>
+    );
+  }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-ha-bg flex items-center justify-center px-5">
+      <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "#f5f5f7" }}>
         <div className="text-center max-w-sm">
-          <h1 className="text-[20px] font-bold text-ha-text mb-2">Not authenticated</h1>
-          <p className="text-[13px] text-ha-text-secondary mb-4">Please log in to access the admin portal.</p>
-          <Button onClick={() => navigate("/")} className="rounded-full" data-testid="button-login">Go to login</Button>
+          <h1 className="text-[20px] font-bold mb-2" style={{ color: "#111111" }}>Not authenticated</h1>
+          <p className="text-[13px] mb-5" style={{ color: "#888888" }}>Please log in to access the admin portal.</p>
+          <button
+            onClick={() => navigate("/")}
+            className="px-6 py-2.5 rounded-full text-[14px] font-semibold transition-all active:scale-[0.97]"
+            style={{ backgroundColor: "#85fb8c", color: "#111111" }}
+            data-testid="button-login"
+          >
+            Go to login
+          </button>
         </div>
       </div>
     );
@@ -1985,76 +2071,107 @@ export default function AdminPortalPage() {
   }
 
   return (
-    <div className="min-h-screen bg-ha-bg flex">
+    <div className="min-h-screen flex" style={{ backgroundColor: "#f5f5f7" }}>
+      {/* Mobile overlay */}
       {sidebarOpen && (
-        <div className="fixed inset-0 bg-black/30 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
+        <div
+          className="fixed inset-0 z-40 lg:hidden transition-opacity"
+          style={{ backgroundColor: "rgba(0,0,0,0.35)", backdropFilter: "blur(2px)" }}
+          onClick={() => setSidebarOpen(false)}
+        />
       )}
 
-      <aside className={`fixed lg:sticky top-0 left-0 z-50 h-screen w-[240px] bg-white border-r border-ha-divider flex flex-col transition-transform lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
-        <div className="px-5 h-[60px] flex items-center gap-3 border-b border-ha-divider">
+      {/* Sidebar */}
+      <aside
+        className={`fixed lg:sticky top-0 left-0 z-50 h-screen w-[240px] flex flex-col transition-transform duration-300 ease-out lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
+        style={{ backgroundColor: "#ffffff", borderRight: "1px solid #eeebf3" }}
+      >
+        {/* Sidebar header */}
+        <div className="px-5 h-[64px] flex items-center gap-3" style={{ borderBottom: "1px solid #eeebf3" }}>
           <HousAlertLogo size={26} />
-          <span className="text-[15px] font-bold text-ha-text">Admin</span>
-          <button onClick={() => setSidebarOpen(false)} className="ml-auto lg:hidden w-8 h-8 flex items-center justify-center rounded-lg hover:bg-ha-hover-bg">
-            <X className="w-4 h-4 text-ha-text-secondary" />
+          <span className="text-[11px] font-bold uppercase tracking-[0.08em]" style={{ color: "#bbadfb" }}>Admin</span>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="ml-auto lg:hidden w-8 h-8 flex items-center justify-center rounded-[10px] transition-colors"
+            style={{ backgroundColor: "#f5f5f5" }}
+          >
+            <X className="w-4 h-4" style={{ color: "#666666" }} />
           </button>
         </div>
 
-        <nav className="flex-1 py-3 px-3 overflow-y-auto">
-          {TAB_CONFIG.map(({ id, label, icon: Icon }) => {
-            const active = activeTab === id;
-            return (
-              <button
-                key={id}
-                onClick={() => { setActiveTab(id); setSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium mb-0.5 transition-colors ${active ? "bg-ha-hover-bg text-ha-text" : "text-ha-text-secondary hover:bg-ha-bg hover:text-ha-text"}`}
-                data-testid={`nav-${id}`}
-              >
-                <Icon className={`w-[18px] h-[18px] ${active ? "text-ha-primary" : ""}`} />
-                {label}
-              </button>
-            );
-          })}
+        {/* Grouped nav */}
+        <nav className="flex-1 py-4 px-3 overflow-y-auto space-y-5">
+          {NAV_GROUPS.map(group => (
+            <div key={group.label}>
+              <p className="px-3 mb-1.5 text-[10px] font-bold uppercase tracking-[0.08em]" style={{ color: "#cccccc" }}>
+                {group.label}
+              </p>
+              {group.items.map(({ id, label, icon }) => (
+                <NavItem
+                  key={id}
+                  id={id}
+                  label={label}
+                  icon={icon}
+                  active={activeTab === id}
+                  onClick={() => navigate2(id)}
+                />
+              ))}
+            </div>
+          ))}
         </nav>
 
-        <div className="px-3 py-3 border-t border-ha-divider">
+        {/* Back to app */}
+        <div className="px-3 py-4" style={{ borderTop: "1px solid #eeebf3" }}>
           <button
             onClick={() => navigate("/")}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-ha-text-secondary hover:bg-ha-bg hover:text-ha-text transition-colors"
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-[12px] text-[13px] font-semibold transition-all active:scale-[0.98]"
+            style={{ color: "#111111", backgroundColor: "#f5f5f5", border: "1px solid #eeebf3" }}
             data-testid="link-back-app"
           >
-            <ArrowLeft className="w-[18px] h-[18px]" />
+            <ArrowLeft className="w-[16px] h-[16px]" style={{ color: "#666666" }} />
             Terug naar app
           </button>
         </div>
       </aside>
 
+      {/* Main area */}
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-[60px] bg-white border-b border-ha-divider flex items-center px-5 sticky top-0 z-30 lg:hidden">
-          <button onClick={() => setSidebarOpen(true)} className="w-9 h-9 rounded-lg bg-ha-hover-bg flex items-center justify-center mr-3" data-testid="button-menu">
-            <Menu className="w-5 h-5 text-ha-text" />
+        {/* Mobile topbar */}
+        <header
+          className="h-[60px] flex items-center px-4 sticky top-0 z-30 lg:hidden"
+          style={{ backgroundColor: "#ffffff", borderBottom: "1px solid #eeebf3", boxShadow: "0 1px 0 rgba(0,0,0,0.04)" }}
+        >
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="w-9 h-9 rounded-[10px] flex items-center justify-center mr-3 transition-colors"
+            style={{ backgroundColor: "#f5f5f5" }}
+            data-testid="button-menu"
+          >
+            <Menu className="w-[18px] h-[18px]" style={{ color: "#444444" }} />
           </button>
-          <HousAlertLogo size={24} />
-          <span className="text-[14px] font-bold text-ha-text ml-2">Admin</span>
+          <HousAlertLogo size={22} />
+          <span className="text-[11px] font-bold uppercase tracking-[0.08em] ml-2" style={{ color: "#bbadfb" }}>Admin</span>
           <button
             onClick={() => navigate("/")}
-            className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold text-ha-text-secondary bg-ha-hover-bg hover:bg-ha-divider active:scale-[0.97] transition-all"
+            className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold transition-all active:scale-[0.97]"
+            style={{ color: "#444444", backgroundColor: "#f5f5f5", border: "1px solid #eeebf3" }}
             data-testid="link-back-app-mobile"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            Terug naar app
+            Terug
           </button>
         </header>
 
         <main className="flex-1 p-5 lg:p-8 max-w-5xl w-full mx-auto overflow-x-hidden">
-          {activeTab === "dashboard" && <DashboardTab onNavigate={setActiveTab} userName={user.user_metadata?.first_name || user.email?.split("@")[0] || "Admin"} />}
-          {activeTab === "listings" && <ListingsTab />}
-          {activeTab === "images" && <ImagesTab />}
-          {activeTab === "sources" && <SourcesTab />}
-          {activeTab === "users" && <UsersTab />}
+          {activeTab === "dashboard"     && <DashboardTab onNavigate={setActiveTab} userName={user.user_metadata?.first_name || user.email?.split("@")[0] || "Admin"} />}
+          {activeTab === "listings"      && <ListingsTab />}
+          {activeTab === "images"        && <ImagesTab />}
+          {activeTab === "sources"       && <SourcesTab />}
+          {activeTab === "users"         && <UsersTab />}
           {activeTab === "subscriptions" && <SubscriptionsTab />}
-          {activeTab === "alerts" && <AlertsTab />}
-          {activeTab === "settings" && <SettingsTab />}
-          {activeTab === "system" && <SystemTab />}
+          {activeTab === "alerts"        && <AlertsTab />}
+          {activeTab === "settings"      && <SettingsTab />}
+          {activeTab === "system"        && <SystemTab />}
         </main>
       </div>
     </div>

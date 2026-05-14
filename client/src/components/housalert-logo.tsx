@@ -19,7 +19,8 @@ export function HousAlertLogo({ size = 28, height, className = "", invert = fals
       style={{
         height: h,
         width: "auto",
-        filter: invert ? "brightness(0) invert(1)" : "brightness(0)",
+        filter: invert ? "invert(1)" : "none",
+        mixBlendMode: invert ? "screen" : "multiply",
       }}
       data-testid="img-housalert-logo"
     />

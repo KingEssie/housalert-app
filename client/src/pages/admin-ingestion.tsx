@@ -73,19 +73,21 @@ async function fetchAdmin<T>(path: string): Promise<T> {
 }
 
 function StatusBadge({ status }: { status: string }) {
-  const config: Record<string, { icon: typeof CheckCircle2; color: string; bg: string }> = {
-    success: { icon: CheckCircle2, color: "text-green-700", bg: "bg-green-50" },
-    partial: { icon: AlertTriangle, color: "text-amber-700", bg: "bg-amber-50" },
-    failed: { icon: XCircle, color: "text-ha-danger", bg: "bg-ha-danger/5" },
-    active: { icon: CheckCircle2, color: "text-green-700", bg: "bg-green-50" },
-    broken: { icon: AlertTriangle, color: "text-amber-700", bg: "bg-amber-50" },
-    gone: { icon: XCircle, color: "text-ha-danger", bg: "bg-ha-danger/5" },
+  const map: Record<string, { bg: string; color: string; border: string }> = {
+    success: { bg: "#edfbf0", color: "#16a34a", border: "#bbf7d0" },
+    active:  { bg: "#edfbf0", color: "#16a34a", border: "#bbf7d0" },
+    partial: { bg: "#fffbeb", color: "#b45309", border: "#fde68a" },
+    broken:  { bg: "#fffbeb", color: "#b45309", border: "#fde68a" },
+    failed:  { bg: "#fff1f2", color: "#e11d48", border: "#fecdd3" },
+    gone:    { bg: "#fff1f2", color: "#e11d48", border: "#fecdd3" },
   };
-  const c = config[status] || config.failed;
-  const Icon = c.icon;
+  const m = map[status] || { bg: "#f5f5f5", color: "#888888", border: "#e0e0e0" };
   return (
-    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${c.color} ${c.bg}`} data-testid={`badge-status-${status}`}>
-      <Icon className="w-3 h-3" />
+    <span
+      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold border"
+      style={{ backgroundColor: m.bg, color: m.color, borderColor: m.border }}
+      data-testid={`badge-status-${status}`}
+    >
       {status}
     </span>
   );
@@ -93,13 +95,17 @@ function StatusBadge({ status }: { status: string }) {
 
 function StatCard({ label, value, icon: Icon, sub }: { label: string; value: string | number; icon: typeof Activity; sub?: string }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm" data-testid={`stat-${label.toLowerCase().replace(/\s/g, "-")}`}>
-      <div className="flex items-center gap-2 mb-1">
-        <Icon className="w-4 h-4 text-ha-text-secondary" />
-        <span className="text-xs font-medium text-ha-text-secondary uppercase tracking-wide">{label}</span>
+    <div
+      className="bg-white rounded-[20px] p-5"
+      style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}
+      data-testid={`stat-${label.toLowerCase().replace(/\s/g, "-")}`}
+    >
+      <div className="flex items-center gap-1.5 mb-3">
+        <Icon className="w-3.5 h-3.5" style={{ color: "#bbadfb" }} />
+        <span className="text-[10px] font-bold uppercase tracking-[0.07em]" style={{ color: "#aaaaaa" }}>{label}</span>
       </div>
-      <p className="text-2xl font-bold text-ha-text">{value}</p>
-      {sub && <p className="text-xs text-ha-text-secondary mt-0.5">{sub}</p>}
+      <p className="text-[28px] font-extrabold tracking-[-0.02em]" style={{ color: "#111111", lineHeight: 1 }}>{value}</p>
+      {sub && <p className="text-[11px] mt-1.5" style={{ color: "#aaaaaa" }}>{sub}</p>}
     </div>
   );
 }
@@ -261,19 +267,31 @@ export default function AdminIngestionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-ha-bg">
-      <header className="bg-white border-b border-ha-card-border sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+    <div className="min-h-screen" style={{ backgroundColor: "#f5f5f7" }}>
+      <header
+        className="bg-white sticky top-0 z-10"
+        style={{ borderBottom: "1px solid #eeebf3", boxShadow: "0 1px 0 rgba(0,0,0,0.04)" }}
+      >
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-[60px] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate("/dashboard")} className="p-1.5 rounded-lg hover:bg-ha-bg" data-testid="button-back">
-              <ChevronLeft className="w-5 h-5 text-ha-text-secondary" />
+            <button
+              onClick={() => navigate("/admin-portal")}
+              className="w-8 h-8 rounded-[10px] flex items-center justify-center transition-colors"
+              style={{ backgroundColor: "#f5f5f5" }}
+              data-testid="button-back"
+            >
+              <ChevronLeft className="w-4 h-4" style={{ color: "#666666" }} />
             </button>
             <div className="flex items-center gap-2">
-              <Activity className="w-5 h-5 text-ha-text" />
-              <h1 className="text-lg font-bold text-ha-text" data-testid="text-admin-title">Ingestion Monitor</h1>
+              <Activity className="w-4 h-4" style={{ color: "#bbadfb" }} />
+              <h1 className="text-[16px] font-bold" style={{ color: "#111111" }} data-testid="text-admin-title">Ingestion Monitor</h1>
             </div>
             {summary?.running && (
-              <span className="ml-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-ha-primary/5 text-ha-primary text-xs font-semibold animate-pulse" data-testid="badge-running">
+              <span
+                className="ml-1 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold animate-pulse"
+                style={{ backgroundColor: "rgba(187,173,251,0.12)", color: "#7c5fc5" }}
+                data-testid="badge-running"
+              >
                 <Loader2 className="w-3 h-3 animate-spin" />
                 Running
               </span>
@@ -282,10 +300,11 @@ export default function AdminIngestionPage() {
           <button
             onClick={() => loadData(true)}
             disabled={refreshing}
-            className="p-2 rounded-lg hover:bg-ha-bg disabled:opacity-50"
+            className="w-8 h-8 rounded-[10px] flex items-center justify-center transition-colors disabled:opacity-40"
+            style={{ backgroundColor: "#f5f5f5" }}
             data-testid="button-refresh"
           >
-            <RefreshCw className={`w-4 h-4 text-ha-text-secondary ${refreshing ? "animate-spin" : ""}`} />
+            <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} style={{ color: "#666666" }} />
           </button>
         </div>
       </header>
@@ -309,37 +328,37 @@ export default function AdminIngestionPage() {
         </div>
 
         {latestRun && (
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4" data-testid="section-latest-run">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Latest Run</h2>
+          <div className="bg-white rounded-[20px] p-5" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }} data-testid="section-latest-run">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-[10px] font-bold uppercase tracking-[0.07em]" style={{ color: "#aaaaaa" }}>Latest Run</h2>
               <StatusBadge status={latestRun.status} />
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center">
               <div>
-                <p className="text-xl font-bold text-ha-text">{latestRun.total_found}</p>
-                <p className="text-xs text-ha-text-secondary">Found</p>
+                <p className="text-[22px] font-extrabold tracking-tight" style={{ color: "#111111" }}>{latestRun.total_found}</p>
+                <p className="text-[11px]" style={{ color: "#aaaaaa" }}>Found</p>
               </div>
               <div>
-                <p className="text-xl font-bold text-green-600">{latestRun.total_inserted}</p>
-                <p className="text-xs text-ha-text-secondary">Inserted</p>
+                <p className="text-[22px] font-extrabold tracking-tight" style={{ color: "#16a34a" }}>{latestRun.total_inserted}</p>
+                <p className="text-[11px]" style={{ color: "#aaaaaa" }}>Inserted</p>
               </div>
               <div>
-                <p className="text-xl font-bold text-ha-text-secondary">{latestRun.total_duplicates}</p>
-                <p className="text-xs text-ha-text-secondary">Duplicates</p>
+                <p className="text-[22px] font-extrabold tracking-tight" style={{ color: "#888888" }}>{latestRun.total_duplicates}</p>
+                <p className="text-[11px]" style={{ color: "#aaaaaa" }}>Dupes</p>
               </div>
               <div>
-                <p className="text-xl font-bold text-ha-primary">{latestRun.total_matches}</p>
-                <p className="text-xs text-ha-text-secondary">Matches</p>
+                <p className="text-[22px] font-extrabold tracking-tight" style={{ color: "#7c5fc5" }}>{latestRun.total_matches}</p>
+                <p className="text-[11px]" style={{ color: "#aaaaaa" }}>Matches</p>
               </div>
               <div>
-                <p className={`text-xl font-bold ${latestRun.total_errors > 0 ? "text-ha-danger" : "text-ha-text-secondary"}`}>{latestRun.total_errors}</p>
-                <p className="text-xs text-ha-text-secondary">Errors</p>
+                <p className="text-[22px] font-extrabold tracking-tight" style={{ color: latestRun.total_errors > 0 ? "#e11d48" : "#888888" }}>{latestRun.total_errors}</p>
+                <p className="text-[11px]" style={{ color: "#aaaaaa" }}>Errors</p>
               </div>
             </div>
           </div>
         )}
 
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden" data-testid="section-cities">
+        <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }} data-testid="section-cities">
           <div className="px-4 py-3 border-b border-gray-100">
             <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Per City ({cities.length})</h2>
           </div>
@@ -375,7 +394,7 @@ export default function AdminIngestionPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden" data-testid="section-sources">
+        <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }} data-testid="section-sources">
           <div className="px-4 py-3 border-b border-gray-100">
             <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Per Source</h2>
           </div>
@@ -417,7 +436,7 @@ export default function AdminIngestionPage() {
         </div>
 
         {summary && summary.runs.length > 1 && (
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden" data-testid="section-history">
+          <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }} data-testid="section-history">
             <div className="px-4 py-3 border-b border-gray-100">
               <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Run History ({summary.runs.length})</h2>
             </div>
@@ -454,7 +473,7 @@ export default function AdminIngestionPage() {
           </div>
         )}
 
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden" data-testid="section-test-push">
+        <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }} data-testid="section-test-push">
           <div className="px-4 py-3 border-b border-gray-100">
             <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Push-Benachrichtigungen testen</h2>
           </div>
@@ -485,7 +504,7 @@ export default function AdminIngestionPage() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden" data-testid="section-match-alignment">
+        <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }} data-testid="section-match-alignment">
           <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
             <h2 className="text-sm font-bold text-ha-text uppercase tracking-wide">Match Alignment Debug</h2>
             <button

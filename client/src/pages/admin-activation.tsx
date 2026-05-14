@@ -89,7 +89,7 @@ export default function AdminActivationPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="min-h-screen bg-ha-bg flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#f5f5f7" }}>
         <Loader2 className="w-6 h-6 animate-spin text-ha-text-secondary" />
       </div>
     );
@@ -97,7 +97,7 @@ export default function AdminActivationPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-ha-bg p-6">
+      <div className="min-h-screen p-6" style={{ backgroundColor: "#f5f5f7" }}>
         <div className="max-w-2xl mx-auto">
           <div className="bg-ha-danger/5 text-ha-danger rounded-xl p-4">{error}</div>
         </div>
@@ -108,7 +108,7 @@ export default function AdminActivationPage() {
   const maxCount = data ? Math.max(data.totalTrackedUsers, 1) : 1;
 
   return (
-    <div className="min-h-screen bg-ha-bg">
+    <div className="min-h-screen" style={{ backgroundColor: "#f5f5f7" }}>
       <div className="max-w-2xl mx-auto p-6">
         <div className="flex items-center gap-3 mb-6">
           <button

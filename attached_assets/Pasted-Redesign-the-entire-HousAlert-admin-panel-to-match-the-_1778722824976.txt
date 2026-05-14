@@ -1,0 +1,191 @@
+Redesign the entire HousAlert admin panel to match the new premium HousAlert branding and improve usability dramatically.
+
+CURRENT PROBLEMS:
+- feels like a raw developer dashboard
+- poor hierarchy
+- not mobile friendly enough
+- sections feel disconnected
+- too much technical noise
+- inconsistent spacing/buttons
+- logo not rendering correctly
+- difficult to scan quickly
+- weak visual grouping
+- admin actions are unclear
+- cards look generic
+- too many tiny controls
+- no clear information architecture
+
+GOAL:
+Transform the admin into a premium mobile-first operations dashboard.
+
+DESIGN DIRECTION:
+- clean
+- premium
+- minimal
+- calm
+- Apple/startup inspired
+- modern SaaS
+- operational clarity
+- less developer-tool feeling
+
+BRANDING:
+Use the SAME branding as the app:
+- background #f6f6f6
+- white cards
+- purple accents #bbadfb
+- green CTA #85fb8c
+- black typography #111111
+- soft borders #ececec
+- subtle shadows only
+
+GLOBAL UI RULES:
+- rounded corners 24px
+- large touch targets
+- more whitespace
+- consistent paddings
+- sticky top navigation
+- mobile-first layouts
+- no cramped tables
+- convert tables into stacked cards on mobile
+- stronger typography hierarchy
+- reduce visual clutter everywhere
+
+HEADER:
+Redesign admin header:
+- real HOUS ALERT logo
+- logo properly visible
+- transparent background asset
+- compact but premium topbar
+- sticky on scroll
+- cleaner “Terug naar app” button
+- hamburger menu better aligned
+- remove generic admin feel
+
+SIDEBAR / NAVIGATION:
+Current navigation is unclear.
+
+Redesign:
+- clearer icons
+- active state with purple tint
+- grouped navigation sections
+
+Structure:
+OVERVIEW
+- Dashboard
+- Alerts
+- System Health
+
+CONTENT
+- Listings
+- Images
+- Sources
+
+USERS
+- Users
+- Subscriptions
+
+CONFIG
+- Settings
+
+Each section should:
+- feel grouped
+- easier to scan
+- have clearer labels
+
+MOBILE NAV:
+- smooth slide-in drawer
+- blurred overlay
+- close on outside tap
+- better spacing
+- prevent cramped sidebar
+
+CARDS:
+All admin cards should:
+- have stronger hierarchy
+- cleaner typography
+- better spacing
+- more readable values
+- larger metrics
+- smaller labels
+- less gray text overload
+
+BUTTONS:
+Standardize all buttons:
+Primary:
+- green filled
+- black text
+- fully rounded
+- height consistent
+
+Secondary:
+- white background
+- purple border
+- black text
+
+Danger:
+- soft red tint
+- never harsh
+
+STATUS PILLS:
+Improve all status badges:
+- active
+- degraded
+- expired
+- trial
+- operational
+etc.
+
+Use:
+- softer backgrounds
+- cleaner typography
+- better spacing
+- consistent colors
+
+FORMS:
+Improve all forms:
+- larger inputs
+- more spacing
+- better labels
+- mobile keyboard friendly
+- sticky save buttons where useful
+
+TYPOGRAPHY:
+Improve readability:
+- bigger headings
+- clearer section titles
+- reduce tiny metadata text
+- improve line-height
+- stronger contrast
+
+ANIMATIONS:
+Add subtle premium animations:
+- hover states
+- card transitions
+- drawer animation
+- button press feedback
+- skeleton loading states
+
+EMPTY STATES:
+Improve empty states:
+- friendlier
+- visually designed
+- helpful actions
+
+NOTIFICATIONS:
+Add proper toast system:
+- success
+- warning
+- error
+- loading
+
+Should feel polished and production ready.
+
+SMOKE CHECK:
+- admin feels premium
+- consistent branding
+- logo visible
+- mobile usability improved
+- spacing consistent
+- easier to scan
+- clearer navigation
+- less developer-tool feeling
