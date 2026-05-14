@@ -350,7 +350,7 @@ function OpenPageButton({ step, label }: { step: TaskFlowStep; label: string }) 
   );
 }
 
-function TipBody({ children }: { children: React.ReactNode }) {
+export function TipBody({ children }: { children: React.ReactNode }) {
   return (
     <div className="text-left text-[15px] text-ha-text leading-relaxed flex flex-col gap-5" data-testid="tip-body">
       {children}
@@ -358,7 +358,7 @@ function TipBody({ children }: { children: React.ReactNode }) {
   );
 }
 
-function TipSection({ title, items }: { title?: string; items: string[] }) {
+export function TipSection({ title, items }: { title?: string; items: string[] }) {
   return (
     <div>
       {title && (
@@ -376,7 +376,7 @@ function TipSection({ title, items }: { title?: string; items: string[] }) {
   );
 }
 
-function TipHighlight({ text }: { text: string }) {
+export function TipHighlight({ text }: { text: string }) {
   return (
     <div className="flex items-center gap-3 rounded-xl bg-ha-accent-yellow-light border border-ha-accent-yellow/25 px-4 py-3.5">
       <span className="text-[16px] flex-shrink-0">💡</span>
@@ -386,10 +386,10 @@ function TipHighlight({ text }: { text: string }) {
 }
 
 
-type RegionItem = { label: string; url?: string };
-type RegionData = { name: string; platforms: (string | RegionItem)[] };
+export type RegionItem = { label: string; url?: string };
+export type RegionData = { name: string; platforms: (string | RegionItem)[] };
 
-function RegionAccordion({ regions }: { regions: RegionData[] }) {
+export function RegionAccordion({ regions }: { regions: RegionData[] }) {
   const [openIdx, setOpenIdx] = useState<number | null>(null);
   return (
     <div className="flex flex-col gap-0 rounded-2xl border border-ha-card-border overflow-hidden bg-white">
@@ -427,9 +427,9 @@ function RegionAccordion({ regions }: { regions: RegionData[] }) {
   );
 }
 
-type TFn = (key: string, params?: Record<string, string | number>) => string;
+export type TFn = (key: string, params?: Record<string, string | number>) => string;
 
-function getTipContent(t: TFn): Record<string, () => React.ReactNode> {
+export function getTipContent(t: TFn): Record<string, () => React.ReactNode> {
   const tArr = (key: string): string[] => (t as any)(key) as string[];
   type Region = { name: string; platforms: { label: string; url: string }[] };
   const tRegions = (key: string): Region[] => (t as any)(key) as Region[];

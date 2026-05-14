@@ -40,14 +40,14 @@ export const SEARCH_PREP_FLOW: TaskFlow = {
   subtitleKey: "taskFlow.searchSubtitle",
   flowPrefix: "/flow/search",
   steps: [
-    { id: "tip_documents", labelKey: "taskFlow.tipDocuments", descriptionKey: "taskFlow.desc.tipDocuments", icon: "FileText", route: "/tips/documenten", completionType: "manual" },
-    { id: "tip_finances", labelKey: "taskFlow.tipFinances", descriptionKey: "taskFlow.desc.tipFinances", icon: "Wallet", route: "/tips/financien", completionType: "manual" },
-    { id: "tip_landlord_accounts", labelKey: "taskFlow.tipLandlordAccounts", descriptionKey: "taskFlow.desc.tipLandlordAccounts", icon: "Building", route: "/tips/verhuurders", completionType: "manual" },
-    { id: "tip_facebook_groups", labelKey: "taskFlow.tipFacebookGroups", descriptionKey: "taskFlow.desc.tipFacebookGroups", icon: "Users", route: "/tips/facebook", completionType: "manual" },
-    { id: "tip_new_build", labelKey: "taskFlow.tipNewBuild", descriptionKey: "taskFlow.desc.tipNewBuild", icon: "Building", route: "/tips/nieuwbouw", completionType: "manual" },
-    { id: "tip_network", labelKey: "taskFlow.tipNetwork", descriptionKey: "taskFlow.desc.tipNetwork", icon: "Share2", route: "/tips/netwerk", completionType: "manual" },
-    { id: "tip_viewings", labelKey: "taskFlow.tipViewings", descriptionKey: "taskFlow.desc.tipViewings", icon: "Eye", route: "/tips/bezichtiging", completionType: "manual" },
-    { id: "tip_followup", labelKey: "taskFlow.tipFollowup", descriptionKey: "taskFlow.desc.tipFollowup", icon: "Mail", route: "/tips/opvolging", completionType: "manual" },
+    { id: "tip_documents", labelKey: "taskFlow.tipDocuments", descriptionKey: "taskFlow.desc.tipDocuments", icon: "FileText", route: "/tips/flow?step=0", completionType: "manual" },
+    { id: "tip_finances", labelKey: "taskFlow.tipFinances", descriptionKey: "taskFlow.desc.tipFinances", icon: "Wallet", route: "/tips/flow?step=1", completionType: "manual" },
+    { id: "tip_landlord_accounts", labelKey: "taskFlow.tipLandlordAccounts", descriptionKey: "taskFlow.desc.tipLandlordAccounts", icon: "Building", route: "/tips/flow?step=2", completionType: "manual" },
+    { id: "tip_facebook_groups", labelKey: "taskFlow.tipFacebookGroups", descriptionKey: "taskFlow.desc.tipFacebookGroups", icon: "Users", route: "/tips/flow?step=3", completionType: "manual" },
+    { id: "tip_new_build", labelKey: "taskFlow.tipNewBuild", descriptionKey: "taskFlow.desc.tipNewBuild", icon: "Building", route: "/tips/flow?step=4", completionType: "manual" },
+    { id: "tip_network", labelKey: "taskFlow.tipNetwork", descriptionKey: "taskFlow.desc.tipNetwork", icon: "Share2", route: "/tips/flow?step=5", completionType: "manual" },
+    { id: "tip_viewings", labelKey: "taskFlow.tipViewings", descriptionKey: "taskFlow.desc.tipViewings", icon: "Eye", route: "/tips/flow?step=6", completionType: "manual" },
+    { id: "tip_followup", labelKey: "taskFlow.tipFollowup", descriptionKey: "taskFlow.desc.tipFollowup", icon: "Mail", route: "/tips/flow?step=7", completionType: "manual" },
   ],
 };
 

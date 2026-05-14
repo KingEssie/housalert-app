@@ -1,0 +1,74 @@
+Convert “Vergroot je kansen met deze tips” from separate loose pages into one guided 8-step flow.
+
+Goal:
+When the user taps any tip from the Home checklist, they enter a full-screen guided flow similar to Rentbird, but using HousAlert branding.
+
+Required behavior:
+- There are 8 tips total.
+- User can move from tip 1 → tip 2 → tip 3 → … → tip 8.
+- Each screen shows one tip.
+- User can mark the current tip as completed.
+- Progress updates across the flow.
+- Completed state persists and updates the Home dashboard progress.
+- “Volgende” moves to the next tip.
+- On tip 8, button becomes “Afronden” and returns to Home.
+- Back button moves to previous tip or exits when on tip 1.
+- Close X exits back to Home.
+
+Flow structure:
+1. Verzamel vereiste documenten
+2. Check je financiële situatie
+3. Maak accounts aan bij grote verhuurders
+4. Meld je aan voor Facebook-groepen
+5. Houd nieuwbouwprojecten in de gaten
+6. Zet je netwerk in
+7. Kom goed voor de dag bij bezichtigingen
+8. Stuur na de bezichtiging een sterke huurpitch
+
+Each tip screen should include:
+- dark header or clean topbar
+- title: “Vergroot je kansen met deze tips!”
+- progress bar
+- percentage completed
+- card with:
+  - step number badge
+  - tip title
+  - explanation text
+  - actionable bullets
+- sticky footer with:
+  - “Markeer als voltooid” checkbox
+  - primary button “Volgende” or “Afronden”
+
+Branding:
+- Background: #f9f7f8 or dark #171429 if using Rentbird-style immersive mode
+- Cards: #223546 or white depending on chosen implementation, but be consistent
+- Purple accent: #bbadfb
+- Primary CTA: #85fb8c only if it is the main action button
+- Dark CTA option: #171429 with white text is also allowed
+- Text must be readable with strong contrast
+- Buttons fully pill-shaped
+- Checkbox active color: #bbadfb
+- Progress bar active color: #bbadfb
+
+Important:
+- Do not create dead-end pages.
+- Do not show “Pagina niet gevonden”.
+- Do not require separate routes for each tip unless they all route into the same flow component with a step index.
+- If user opens tip 4 from Home, start flow at step 4 but still allow previous/next navigation.
+- Completion status must persist per tip.
+- Home checklist should reflect completed tips.
+
+Content:
+Use the existing content from the current individual tip pages where available.
+For missing content, create concise helpful rental-search advice in Dutch.
+
+Do not change unrelated onboarding, subscription, or matching logic.
+
+Smoke check:
+- Tap tip 1 → opens flow step 1
+- Tap tip 4 → opens flow step 4
+- Next moves through all tips
+- Mark completed persists
+- Progress percentage updates
+- Tip 8 “Afronden” returns to Home
+- Home dashboard completion state updates
