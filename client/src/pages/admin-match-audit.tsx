@@ -213,7 +213,7 @@ export default function AdminMatchAudit() {
             <div className="space-y-2">
               {fetch_runs.map((run: any, i: number) => (
                 <div key={run.id || i} className="flex items-center gap-3 py-2 border-b border-ha-hover-bg last:border-0 text-[12px]">
-                  <div className={`w-2 h-2 rounded-full ${run.status === "completed" ? "bg-green-500" : run.status === "failed" ? "bg-ha-danger" : "bg-yellow-500"}`} />
+                  <div className={`w-2 h-2 rounded-full`} style={{ backgroundColor: run.status === "completed" ? "#85fb8c" : run.status === "failed" ? "rgb(var(--ha-danger))" : "#f59e0b" }} />
                   <div className="flex-1">
                     <span className="text-ha-text font-medium">{formatDate(run.started_at)}</span>
                     <span className="text-ha-text-secondary ml-2">
@@ -246,7 +246,7 @@ export default function AdminMatchAudit() {
                     <span>{m.listing_source || "—"}</span>
                   </div>
                   <div className="flex items-center gap-3 mt-1.5 text-[11px]">
-                    <span className={m.visible_in_app ? "text-green-600 font-medium" : "text-ha-text-secondary"}>
+                    <span className={m.visible_in_app ? "font-medium" : "text-ha-text-secondary"} style={m.visible_in_app ? { color: "#223546" } : {}}>
                       {m.visible_in_app ? "✓ visible" : "✗ hidden"}
                     </span>
                     <span className={m.email_sent ? "text-ha-primary font-medium" : "text-ha-text-secondary"}>
@@ -255,7 +255,7 @@ export default function AdminMatchAudit() {
                     <span className={m.push_sent ? "text-ha-primary font-medium" : "text-ha-text-secondary"}>
                       {m.push_sent ? "✓ pushed" : "✗ no push"}
                     </span>
-                    <span className={m.viewed ? "text-green-600" : "text-ha-text-secondary"}>
+                    <span className={m.viewed ? "font-medium" : "text-ha-text-secondary"} style={m.viewed ? { color: "#223546" } : {}}>
                       {m.viewed ? "viewed" : "unviewed"}
                     </span>
                   </div>

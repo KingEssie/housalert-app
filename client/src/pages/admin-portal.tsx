@@ -47,9 +47,9 @@ function StatusDot({ status }: { status: string }) {
 
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { bg: string; color: string; border: string; label: string }> = {
-    active:      { bg: "#edfbf0", color: "#16a34a", border: "#bbf7d0", label: "Active" },
-    operational: { bg: "#edfbf0", color: "#16a34a", border: "#bbf7d0", label: "Operational" },
-    success:     { bg: "#edfbf0", color: "#16a34a", border: "#bbf7d0", label: "Success" },
+    active:      { bg: "#85fb8c", color: "#223546", border: "#223546", label: "Active" },
+    operational: { bg: "#85fb8c", color: "#223546", border: "#223546", label: "Operational" },
+    success:     { bg: "#85fb8c", color: "#223546", border: "#223546", label: "Success" },
     trial:       { bg: "rgba(187,173,251,0.12)", color: "#7c5fc5", border: "rgba(187,173,251,0.4)", label: "Trial" },
     past_due:    { bg: "#fffbeb", color: "#b45309", border: "#fde68a", label: "Past Due" },
     warning:     { bg: "#fffbeb", color: "#b45309", border: "#fde68a", label: "Warning" },
@@ -234,18 +234,18 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
   const visibleHealthy = sourcesExpanded ? citiesHealthy : citiesHealthy.slice(0, 4);
 
   const activityEvents: { icon: any; color: string; text: string; sub: string }[] = [];
-  if (data.listingsToday > 0) activityEvents.push({ icon: TrendingUp, color: "#16a34a", text: `${data.listingsToday} new listings imported today`, sub: `${data.listingsWeek} this week` });
+  if (data.listingsToday > 0) activityEvents.push({ icon: TrendingUp, color: "#223546", text: `${data.listingsToday} new listings imported today`, sub: `${data.listingsWeek} this week` });
   if (data.matchesToday > 0) activityEvents.push({ icon: Target, color: "#7c5fc5", text: `${data.matchesToday} matches found today`, sub: `${data.matchesWeek} this week` });
   if ((data.emailRealFailures ?? 0) > 0) {
     activityEvents.push({ icon: AlertTriangle, color: "#e11d48", text: `${data.emailRealFailures} email${data.emailRealFailures !== 1 ? "s" : ""} failed to deliver`, sub: "Check provider configuration" });
   } else if (data.emailsToday > 0) {
-    activityEvents.push({ icon: Mail, color: "#16a34a", text: `${data.emailsToday} alert email${data.emailsToday !== 1 ? "s" : ""} delivered`, sub: "Email system healthy" });
+    activityEvents.push({ icon: Mail, color: "#223546", text: `${data.emailsToday} alert email${data.emailsToday !== 1 ? "s" : ""} delivered`, sub: "Email system healthy" });
   }
   if (data.pushesToday > 0) activityEvents.push({ icon: Smartphone, color: "#7c5fc5", text: `${data.pushesToday} push notification${data.pushesToday !== 1 ? "s" : ""} sent`, sub: "Push system healthy" });
   if (citiesWithIssues.length > 0) {
     activityEvents.push({ icon: AlertTriangle, color: "#b45309", text: `${citiesWithIssues.length} source${citiesWithIssues.length !== 1 ? "s" : ""} with issues`, sub: citiesWithIssues.slice(0, 3).map(([c]) => c).join(", ") });
   } else if ((data.sourceHealth || []).length > 0) {
-    activityEvents.push({ icon: CheckCircle, color: "#16a34a", text: "All sources healthy", sub: `${sourcesByCity.length} cities monitored` });
+    activityEvents.push({ icon: CheckCircle, color: "#223546", text: "All sources healthy", sub: `${sourcesByCity.length} cities monitored` });
   }
   if (data.signupsToday > 0) activityEvents.push({ icon: Users, color: "#7c5fc5", text: `${data.signupsToday} new signup${data.signupsToday !== 1 ? "s" : ""} today`, sub: `${data.signupsWeek} this week` });
   for (const a of infoAlerts) activityEvents.push({ icon: Activity, color: "#888888", text: a.message, sub: new Date(a.timestamp).toLocaleTimeString() });
@@ -365,7 +365,7 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
             ))}
             {citiesHealthy.length > 0 && citiesWithIssues.length > 0 && (
               <div className="px-4 pt-3 pb-0.5">
-                <span className="text-[10px] font-bold uppercase tracking-[0.07em]" style={{ color: "#16a34a" }}>
+                <span className="text-[10px] font-bold uppercase tracking-[0.07em]" style={{ color: "#223546" }}>
                   Healthy ({citiesHealthy.length})
                 </span>
               </div>
@@ -1275,7 +1275,7 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
           <div className="space-y-2.5 text-[13px]">
             <div className="flex justify-between items-center">
               <span className="text-ha-text-secondary">Role</span>
-              <Badge variant="secondary" className={`text-[10px] ${diagnostics.accountRole === "owner" ? "bg-ha-primary/10 text-ha-primary" : diagnostics.accountRole === "buddy" ? "bg-blue-50 text-blue-700" : diagnostics.accountRole === "both" ? "bg-purple-50 text-purple-700" : "bg-gray-100 text-gray-500"}`}>
+              <Badge variant="secondary" className={`text-[10px] ${diagnostics.accountRole === "owner" ? "bg-ha-primary/10 text-ha-primary" : diagnostics.accountRole === "buddy" ? "text-[#223546]" : diagnostics.accountRole === "both" ? "text-[#171429]" : "bg-gray-100 text-gray-500"}`} style={diagnostics.accountRole === "buddy" ? { backgroundColor: "rgba(133,251,140,0.25)" } : diagnostics.accountRole === "both" ? { backgroundColor: "rgba(187,173,251,0.2)" } : {}}>
                 {diagnostics.accountRole === "owner" ? "Owner" : diagnostics.accountRole === "buddy" ? "Buddy" : diagnostics.accountRole === "both" ? "Owner + Buddy" : "No role"}
               </Badge>
             </div>
@@ -1383,8 +1383,8 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
               return (
                 <div className="p-6">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-9 h-9 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                      <CheckCircle className="w-5 h-5 text-green-600" />
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "rgba(133,251,140,0.25)" }}>
+                      <CheckCircle className="w-5 h-5" style={{ color: "#223546" }} />
                     </div>
                     <div>
                       <h2 className="text-[15px] font-bold text-ha-text">User deleted</h2>
@@ -1395,7 +1395,7 @@ function UserDetailView({ detail, onBack, onRefresh }: { detail: any; onBack: ()
                     {summary.map(({ label, status }) => (
                       <div key={label} className="flex items-center justify-between text-[12px]">
                         <span className="text-ha-text-secondary">{label}</span>
-                        <span className={`font-medium flex items-center gap-1 ${status === "deleted" ? "text-green-600" : status === "already_clean" ? "text-ha-text-secondary" : status === "error" ? "text-red-500" : "text-ha-text-secondary"}`}
+                        <span className={`font-medium flex items-center gap-1 ${status === "deleted" ? "" : status === "already_clean" ? "text-ha-text-secondary" : status === "error" ? "text-red-500" : "text-ha-text-secondary"}`} style={status === "deleted" ? { color: "#223546" } : {}}
                           data-testid={`delete-summary-${label.toLowerCase().replace(/\s+/g, "-")}`}>
                           {status === "deleted" && <CheckCircle className="w-3 h-3" />}
                           {status === "already_clean" && <span className="w-3 h-3 inline-flex items-center justify-center text-[10px]">–</span>}
@@ -1587,8 +1587,8 @@ function UsersTab() {
             {bulkDeleteResult ? (
               <>
                 <div className="flex items-center gap-2 mb-3">
-                  <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${bulkDeleteResult.error ? "bg-red-100" : "bg-green-100"}`}>
-                    {bulkDeleteResult.error ? <AlertTriangle className="w-5 h-5 text-red-600" /> : <CheckCircle className="w-5 h-5 text-green-600" />}
+                  <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${bulkDeleteResult.error ? "bg-red-100" : ""}`} style={!bulkDeleteResult.error ? { backgroundColor: "rgba(133,251,140,0.25)" } : {}}>
+                    {bulkDeleteResult.error ? <AlertTriangle className="w-5 h-5 text-red-600" /> : <CheckCircle className="w-5 h-5" style={{ color: "#223546" }} />}
                   </div>
                   <h2 className="text-[16px] font-bold text-ha-text">{bulkDeleteResult.error ? "Delete failed" : "Bulk delete complete"}</h2>
                 </div>
@@ -1598,7 +1598,7 @@ function UsersTab() {
                   <div className="text-[13px] text-ha-text-secondary space-y-1 mb-4">
                     <p><span className="font-semibold text-ha-text">{bulkDeleteResult.deleted}</span> users deleted</p>
                     {bulkDeleteResult.skipped > 0 && <p><span className="font-semibold text-ha-text">{bulkDeleteResult.skipped}</span> failed (see logs)</p>}
-                    {bulkDeleteResult.protectedPreserved && <p className="text-green-700 font-medium">Protected account preserved: {bulkDeleteResult.protectedEmail}</p>}
+                    {bulkDeleteResult.protectedPreserved && <p className="font-medium" style={{ color: "#223546" }}>Protected account preserved: {bulkDeleteResult.protectedEmail}</p>}
                   </div>
                 )}
                 <button onClick={() => setShowBulkDeleteModal(false)}
@@ -1682,7 +1682,7 @@ function UsersTab() {
               <div className="flex flex-col items-end gap-1 flex-shrink-0">
                 <div className="flex gap-1 items-center">
                   {u.role && u.role !== "user" && (
-                    <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${u.role === "owner" ? "bg-ha-primary/10 text-ha-primary" : u.role === "buddy" ? "bg-blue-50 text-blue-700" : "bg-purple-50 text-purple-700"}`}>
+                    <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-full ${u.role === "owner" ? "bg-ha-primary/10 text-ha-primary" : u.role === "buddy" ? "text-[#223546]" : "text-[#171429]"}`} style={u.role === "buddy" ? { backgroundColor: "rgba(133,251,140,0.25)" } : u.role !== "owner" ? { backgroundColor: "rgba(187,173,251,0.2)" } : {}}>
                       {u.role === "both" ? "O+B" : u.role.charAt(0).toUpperCase() + u.role.slice(1)}
                     </span>
                   )}
@@ -2038,7 +2038,7 @@ function AlertsTab() {
   if (loading) return <LoadingState />;
 
   const isDomainsLimited = diagnostics?.domainsLimited === true;
-  const diagStatusColor = diagnostics?.apiStatus === "operational" ? "#16a34a" : diagnostics?.apiStatus === "misconfigured" ? "#b45309" : "#e11d48";
+  const diagStatusColor = diagnostics?.apiStatus === "operational" ? "#223546" : diagnostics?.apiStatus === "misconfigured" ? "#b45309" : "#e11d48";
   const diagStatusBg = diagnostics?.apiStatus === "operational" ? "#edfbf0" : diagnostics?.apiStatus === "misconfigured" ? "#fffbeb" : "#fff1f2";
   const diagStatusBorder = diagnostics?.apiStatus === "operational" ? "#bbf7d0" : diagnostics?.apiStatus === "misconfigured" ? "#fde68a" : "#fecdd3";
 
@@ -2112,7 +2112,7 @@ function AlertsTab() {
                 value: diagnostics.deliveryRate7d !== null && diagnostics.deliveryRate7d !== undefined
                   ? `${diagnostics.deliveryRate7d}%`
                   : "—",
-                valueColor: diagnostics.deliveryRate7d !== null && diagnostics.deliveryRate7d < 80 ? "#e11d48" : "#16a34a",
+                valueColor: diagnostics.deliveryRate7d !== null && diagnostics.deliveryRate7d < 80 ? "#e11d48" : "#223546",
               },
               { label: "Queue depth", value: String(diagnostics.queueDepth ?? 0), valueColor: (diagnostics.queueDepth ?? 0) > 0 ? "#b45309" : undefined, note: diagnostics.queueDepth > 0 ? "undelivered to active subscribers" : undefined },
               { label: "Last successful send", value: diagnostics.lastSuccessfulSend ? new Date(diagnostics.lastSuccessfulSend).toLocaleString() : "No data" },
@@ -2198,8 +2198,8 @@ function AlertsTab() {
           {testSuccess && (
             <div className="mt-4 rounded-[16px] p-4" style={{ backgroundColor: "#edfbf0", border: "1px solid #bbf7d0" }} data-testid="panel-test-success">
               <div className="flex items-center gap-2 mb-3">
-                <CheckCircle2 className="w-5 h-5 flex-shrink-0" style={{ color: "#16a34a" }} />
-                <p className="text-[14px] font-bold" style={{ color: "#16a34a" }}>Delivery accepted</p>
+                <CheckCircle2 className="w-5 h-5 flex-shrink-0" style={{ color: "#223546" }} />
+                <p className="text-[14px] font-bold" style={{ color: "#223546" }}>Delivery accepted</p>
               </div>
               <div className="space-y-1.5">
                 {[
@@ -2209,7 +2209,7 @@ function AlertsTab() {
                   { label: "Resend ID", value: testSuccess.resendId || "—", mono: true },
                 ].map(({ label, value, mono }) => (
                   <div key={label} className="flex gap-2 text-[12px]">
-                    <span className="w-24 flex-shrink-0 font-semibold" style={{ color: "#16a34a" }}>{label}</span>
+                    <span className="w-24 flex-shrink-0 font-semibold" style={{ color: "#223546" }}>{label}</span>
                     <span className={mono ? "font-mono text-[11px]" : ""} style={{ color: "#111111" }}>{value}</span>
                   </div>
                 ))}
@@ -2217,7 +2217,7 @@ function AlertsTab() {
               <button
                 onClick={() => { setTestSuccess(null); setTestError(null); }}
                 className="mt-3 text-[12px] font-semibold"
-                style={{ color: "#16a34a" }}
+                style={{ color: "#223546" }}
                 data-testid="button-test-dismiss"
               >
                 Dismiss
@@ -2350,9 +2350,9 @@ function AlertsTab() {
           {resendResult && (
             <div className="mt-3 flex items-center gap-2 text-[13px]" data-testid="text-resend-result">
               {resendResult.success
-                ? <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: "#16a34a" }} />
+                ? <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: "#223546" }} />
                 : <AlertCircle className="w-4 h-4 flex-shrink-0" style={{ color: "#e11d48" }} />}
-              <span style={{ color: resendResult.success ? "#16a34a" : "#e11d48" }}>{resendResult.message}</span>
+              <span style={{ color: resendResult.success ? "#223546" : "#e11d48" }}>{resendResult.message}</span>
             </div>
           )}
         </div>
@@ -2369,7 +2369,7 @@ function AlertsTab() {
               <div className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center" style={{ backgroundColor: a.channel === "email" ? "rgba(187,173,251,0.12)" : "rgba(133,251,140,0.15)" }}>
                 {a.channel === "email"
                   ? <Mail className="w-3.5 h-3.5" style={{ color: "#7c5fc5" }} />
-                  : <Smartphone className="w-3.5 h-3.5" style={{ color: "#16a34a" }} />}
+                  : <Smartphone className="w-3.5 h-3.5" style={{ color: "#223546" }} />}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-[13px] font-semibold truncate" style={{ color: "#111111" }}>{a.title}</p>
@@ -2609,7 +2609,7 @@ function SupportTab() {
   const statusColors: Record<string, { bg: string; text: string; border: string }> = {
     open:        { bg: "#fff7ed", text: "#c2410c", border: "#fed7aa" },
     in_progress: { bg: "#f3f0ff", text: "#7c5cbf", border: "#ddd6fe" },
-    resolved:    { bg: "#edfbf0", text: "#16a34a", border: "#bbf7d0" },
+    resolved:    { bg: "#85fb8c", text: "#223546", border: "#223546" },
     closed:      { bg: "#f5f5f7", text: "#888888", border: "#e0e0e0" },
   };
 
@@ -2686,7 +2686,7 @@ function SupportTab() {
                         </span>
                       )}
                       {ticket.resolved_notified_at && (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold border" style={{ backgroundColor: "#f0fdf4", color: "#16a34a", borderColor: "#bbf7d0" }}>
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold border" style={{ backgroundColor: "#85fb8c", color: "#223546", borderColor: "#223546" }}>
                           ✓ Notified
                         </span>
                       )}
@@ -2805,7 +2805,7 @@ function SupportTab() {
                               onClick={() => updateStatus(ticket.id, "resolved")}
                               disabled={updatingId === ticket.id}
                               className="px-3 py-1.5 rounded-full text-[12px] font-semibold border transition-all disabled:opacity-50"
-                              style={{ backgroundColor: "#edfbf0", color: "#16a34a", borderColor: "#bbf7d0" }}
+                              style={{ backgroundColor: "#85fb8c", color: "#223546", borderColor: "#223546" }}
                               data-testid={`button-resolve-${ticket.id}`}
                             >
                               {updatingId === ticket.id ? "..." : "Mark resolved"}
@@ -2848,13 +2848,13 @@ function SupportTab() {
                           <div className="p-3 rounded-[12px] text-[12px]" style={{ backgroundColor: "#f9f8ff", border: "1px solid #ede7ff" }}>
                             <p className="font-bold mb-1.5" style={{ color: "#7c5cbf" }}>Notification delivery</p>
                             <div className="flex flex-col gap-1">
-                              <span style={{ color: notifResults[ticket.id].inApp ? "#16a34a" : "#888" }}>
+                              <span style={{ color: notifResults[ticket.id].inApp ? "#223546" : "#888" }}>
                                 {notifResults[ticket.id].inApp ? "✓" : "✗"} In-app notification
                               </span>
-                              <span style={{ color: notifResults[ticket.id].push ? "#16a34a" : "#888" }}>
+                              <span style={{ color: notifResults[ticket.id].push ? "#223546" : "#888" }}>
                                 {notifResults[ticket.id].push ? "✓" : "✗"} Push notification
                               </span>
-                              <span style={{ color: notifResults[ticket.id].email ? "#16a34a" : "#888" }}>
+                              <span style={{ color: notifResults[ticket.id].email ? "#223546" : "#888" }}>
                                 {notifResults[ticket.id].email ? "✓" : "✗"} Email
                                 {notifResults[ticket.id].emailError && (
                                   <span style={{ color: "#e11d48" }}> — {notifResults[ticket.id].emailError}</span>

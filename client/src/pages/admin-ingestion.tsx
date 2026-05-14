@@ -74,8 +74,8 @@ async function fetchAdmin<T>(path: string): Promise<T> {
 
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { bg: string; color: string; border: string }> = {
-    success: { bg: "#edfbf0", color: "#16a34a", border: "#bbf7d0" },
-    active:  { bg: "#edfbf0", color: "#16a34a", border: "#bbf7d0" },
+    success: { bg: "#85fb8c", color: "#223546", border: "#223546" },
+    active:  { bg: "#85fb8c", color: "#223546", border: "#223546" },
     partial: { bg: "#fffbeb", color: "#b45309", border: "#fde68a" },
     broken:  { bg: "#fffbeb", color: "#b45309", border: "#fde68a" },
     failed:  { bg: "#fff1f2", color: "#e11d48", border: "#fecdd3" },
@@ -339,7 +339,7 @@ export default function AdminIngestionPage() {
                 <p className="text-[11px]" style={{ color: "#aaaaaa" }}>Found</p>
               </div>
               <div>
-                <p className="text-[22px] font-extrabold tracking-tight" style={{ color: "#16a34a" }}>{latestRun.total_inserted}</p>
+                <p className="text-[22px] font-extrabold tracking-tight" style={{ color: "#223546" }}>{latestRun.total_inserted}</p>
                 <p className="text-[11px]" style={{ color: "#aaaaaa" }}>Inserted</p>
               </div>
               <div>
@@ -382,7 +382,7 @@ export default function AdminIngestionPage() {
                   <tr key={row.city} className="border-t border-gray-50 hover:bg-ha-bg" data-testid={`row-city-${row.city}`}>
                     <td className="px-4 py-2 font-medium text-ha-text">{row.city}</td>
                     <td className="px-3 py-2 text-right text-ha-text">{row.found}</td>
-                    <td className="px-3 py-2 text-right text-green-700 font-medium">{row.inserted}</td>
+                    <td className="px-3 py-2 text-right font-medium" style={{ color: "#223546" }}>{row.inserted}</td>
                     <td className="px-3 py-2 text-right text-ha-text-secondary">{row.duplicates}</td>
                     <td className="px-3 py-2 text-right text-ha-primary">{row.matches}</td>
                     <td className={`px-3 py-2 text-right font-medium ${row.errors > 0 ? "text-ha-danger" : "text-ha-text-secondary"}`}>{row.errors}</td>
@@ -420,7 +420,7 @@ export default function AdminIngestionPage() {
                     <tr key={src.name} className="border-t border-gray-50 hover:bg-ha-bg" data-testid={`row-source-${src.name}`}>
                       <td className="px-4 py-2 font-medium text-ha-text">{src.name}</td>
                       <td className="px-3 py-2 text-right text-ha-text">{src.found}</td>
-                      <td className="px-3 py-2 text-right text-green-700 font-medium">{src.inserted}</td>
+                      <td className="px-3 py-2 text-right font-medium" style={{ color: "#223546" }}>{src.inserted}</td>
                       <td className="px-3 py-2 text-right text-ha-text-secondary">{src.duplicates}</td>
                       <td className={`px-3 py-2 text-right font-medium ${src.errors > 0 ? "text-ha-danger" : "text-ha-text-secondary"}`}>{src.errors}</td>
                       <td className="px-3 py-2 text-center">
@@ -461,7 +461,7 @@ export default function AdminIngestionPage() {
                       <td className="px-3 py-2 text-right text-ha-text">{run.duration_sec}s</td>
                       <td className="px-3 py-2 text-right text-ha-text">{run.cities_count}</td>
                       <td className="px-3 py-2 text-right text-ha-text">{run.total_found}</td>
-                      <td className="px-3 py-2 text-right text-green-700 font-medium">{run.total_inserted}</td>
+                      <td className="px-3 py-2 text-right font-medium" style={{ color: "#223546" }}>{run.total_inserted}</td>
                       <td className="px-3 py-2 text-right text-ha-primary">{run.total_matches}</td>
                       <td className={`px-3 py-2 text-right font-medium ${run.total_errors > 0 ? "text-ha-danger" : "text-ha-text-secondary"}`}>{run.total_errors}</td>
                       <td className="px-3 py-2 text-center"><StatusBadge status={run.status} /></td>
@@ -493,7 +493,7 @@ export default function AdminIngestionPage() {
               </button>
               {pushResult && (
                 <span
-                  className={`inline-flex items-center gap-1 text-sm font-medium ${pushResult.success ? "text-green-700" : "text-ha-danger"}`}
+                  className={`inline-flex items-center gap-1 text-sm font-medium ${pushResult.success ? "" : "text-ha-danger"}`} style={pushResult.success ? { color: "#223546" } : {}}
                   data-testid="text-push-result"
                 >
                   {pushResult.success ? <CheckCircle2 className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
@@ -542,9 +542,9 @@ export default function AdminIngestionPage() {
                     <div className="text-lg font-bold text-ha-text">{debugData.recent_emailed_count ?? 0}</div>
                     <div className="text-[10px] uppercase text-ha-text-secondary font-medium">Recently emailed</div>
                   </div>
-                  <div className={`rounded-lg p-3 ${(debugData.mismatch_count ?? 0) > 0 ? "bg-ha-danger/5" : "bg-green-50"}`}>
-                    <div className={`text-lg font-bold ${(debugData.mismatch_count ?? 0) > 0 ? "text-ha-danger" : "text-green-700"}`}>{debugData.mismatch_count ?? 0}</div>
-                    <div className={`text-[10px] uppercase font-medium ${(debugData.mismatch_count ?? 0) > 0 ? "text-ha-danger" : "text-green-500"}`}>Mismatches</div>
+                  <div className={`rounded-lg p-3 ${(debugData.mismatch_count ?? 0) > 0 ? "bg-ha-danger/5" : ""}`} style={(debugData.mismatch_count ?? 0) === 0 ? { backgroundColor: "rgba(133,251,140,0.18)" } : {}}>
+                    <div className={`text-lg font-bold ${(debugData.mismatch_count ?? 0) > 0 ? "text-ha-danger" : ""}`} style={(debugData.mismatch_count ?? 0) === 0 ? { color: "#223546" } : {}}>{debugData.mismatch_count ?? 0}</div>
+                    <div className={`text-[10px] uppercase font-medium ${(debugData.mismatch_count ?? 0) > 0 ? "text-ha-danger" : ""}`} style={(debugData.mismatch_count ?? 0) === 0 ? { color: "#223546" } : {}}>Mismatches</div>
                   </div>
                 </div>
 
@@ -657,7 +657,7 @@ export default function AdminIngestionPage() {
 
                 {debugData.recent_emailed.length === 0 && debugData.emailed_but_not_visible.length === 0 && (
                   <div className="flex items-center gap-2 text-sm text-ha-text-secondary bg-ha-bg rounded-lg p-3">
-                    <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: "#223546" }} />
                     No emails sent in this cycle — no comparison data yet. Wait for the next import cycle with active matches.
                   </div>
                 )}

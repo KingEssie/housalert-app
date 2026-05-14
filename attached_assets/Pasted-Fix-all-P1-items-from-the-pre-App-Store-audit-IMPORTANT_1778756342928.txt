@@ -1,0 +1,103 @@
+Fix all P1 items from the pre-App-Store audit.
+
+IMPORTANT:
+Do not add new features.
+Do not redesign unrelated screens.
+Only fix the listed P1 launch-readiness issues.
+
+P1-NAV-01
+File: admin-activation.tsx
+Issue:
+Back button has no fallback and can trap admin users if page is opened directly/bookmarked.
+
+Fix:
+- Replace history-only back behavior with safe explicit fallback.
+- If history exists, allow normal back.
+- Otherwise navigate to /admin or the admin dashboard route.
+- Never show 404.
+
+Smoke check:
+- Open admin activation page directly.
+- Press back.
+- User lands safely in admin dashboard.
+
+P1-SUB-01
+File: server/routes.ts
+Issue:
+4 search-profile limit is frontend-only. API can be bypassed to create unlimited profiles.
+
+Fix:
+- Enforce max 4 active search profiles server-side.
+- Apply to all API routes that create a search profile.
+- Count only active/non-deleted profiles if soft delete exists.
+- Return 403 or 409 with clear JSON error:
+  {
+    "error": "profile_limit_reached",
+    "message": "Je kunt maximaal 4 zoekopdrachten aanmaken."
+  }
+- Frontend should display this message if API returns it.
+- Do not block editing existing profiles.
+- Do not block deleting profiles.
+- Do not block restoring only if it would exceed 4 active profiles.
+
+Smoke check:
+- User with 3 profiles can create 4th.
+- User with 4 profiles cannot create 5th through UI.
+- User with 4 profiles cannot create 5th through direct API call.
+- Editing existing profile still works.
+- Deleting one profile allows creating another.
+
+P1-BRAND-01
+File: admin-portal.tsx
+Issue:
+Role badges use old blue/purple Tailwind shades and old green #16a34a.
+
+Fix:
+Replace old brand colors in admin portal:
+- Purple: #bbadfb
+- Dark icon/text on purple: #171429
+- Green: #85fb8c
+- Dark icon/text on green: #223546
+- Dark navy: #223546
+- Black text: #111111
+- Background: #f6f6f6
+
+Remove:
+- bg-blue-50
+- text-blue-*
+- bg-purple-50 if it does not resolve to #bbadfb
+- #16a34a
+- text-green-700
+- bg-green-50
+
+P1-BRAND-02
+Files:
+- admin-ingestion.tsx
+- admin-match-audit.tsx
+
+Issue:
+Old green colors remain:
+- #16a34a
+- text-green-700
+- bg-green-50
+
+Fix:
+Replace with HousAlert brand green:
+- background #85fb8c
+- text/icon #223546
+
+For success badges:
+- background #85fb8c
+- text #223546
+- border optional #223546 or transparent
+
+For warning/error states:
+- keep appropriate warning/error colors only where semantically needed.
+
+Final smoke check:
+- Run app.
+- No P1 audit issues remain.
+- No 404 from admin activation back.
+- Backend blocks 5th profile creation.
+- Admin colors match HousAlert brand.
+- No unintended layout changes.

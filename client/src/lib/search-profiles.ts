@@ -85,92 +85,41 @@ const MAX_SEARCH_PROFILES = 4;
 export async function createSearchProfile(
   input: InsertSearchProfileInput
 ): Promise<SearchProfile> {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session?.access_token) throw new Error("Nicht eingeloggt.");
+
   const { count, error: countErr } = await supabase
     .from("search_profiles")
     .select("id", { count: "exact", head: true })
     .eq("user_id", input.user_id);
 
   if (!countErr && count != null && count >= MAX_SEARCH_PROFILES) {
-    throw new Error(`Du kannst maximal ${MAX_SEARCH_PROFILES} Suchprofile erstellen.`);
+    throw new Error("Je kunt maximaal 4 zoekopdrachten aanmaken.");
   }
-
-  const fullRow: Record<string, unknown> = {
-    user_id: input.user_id,
-    city: input.city_name,
-    city_name: input.city_name,
-    country_code: input.country_code ?? "DE",
-    latitude: input.latitude,
-    longitude: input.longitude,
-    place_id: input.place_id,
-    price_min: input.price_min,
-    price_max: input.price_max,
-    bedrooms_min: input.bedrooms_min,
-    size_min: input.size_min,
-  };
-
-  if (input.location_mode) fullRow.location_mode = input.location_mode;
-  if (input.districts && input.districts.length > 0) fullRow.districts = input.districts;
-  if (input.radius_km != null) fullRow.radius_km = input.radius_km;
-  if (input.commute_destination) fullRow.commute_destination = input.commute_destination;
-  if (input.commute_lat != null) fullRow.commute_lat = input.commute_lat;
-  if (input.commute_lng != null) fullRow.commute_lng = input.commute_lng;
-  if (input.commute_mode) fullRow.commute_mode = input.commute_mode;
-  if (input.commute_minutes != null) fullRow.commute_minutes = input.commute_minutes;
-  if (input.furnished) fullRow.furnished = input.furnished;
-  if (input.property_types && input.property_types.length > 0) fullRow.property_types = input.property_types;
-  if (input.extra_features && input.extra_features.length > 0) fullRow.extra_features = input.extra_features;
-  if (input.target_categories && input.target_categories.length > 0) fullRow.target_categories = input.target_categories;
-  if (input.send_unclear != null) fullRow.send_unclear = input.send_unclear;
-  if (input.price_flexible != null) fullRow.price_flexible = input.price_flexible;
-  if (input.search_name) fullRow.search_name = input.search_name;
 
   console.log("[search-profiles] createSearchProfile — city:", input.city_name, "search_name:", input.search_name ?? "(none)");
 
-  const { data, error } = await supabase
-    .from("search_profiles")
-    .insert(fullRow)
-    .select()
-    .single();
+  const res = await apiFetch("/api/search-profiles", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${session.access_token}`,
+    },
+    body: JSON.stringify(input),
+  });
 
-  if (!error) {
-    console.log("[search-profiles] Insert OK — saved search_name:", (data as any).search_name ?? "(null)");
-    return data as SearchProfile;
-  }
-
-  const msg = error.message ?? "";
-  const code = (error as any).code ?? "";
-  const isSchemaError =
-    (code === "PGRST204" || msg.includes("schema cache") || msg.includes("column")) &&
-    OPTIONAL_COLUMNS.some((col) => msg.includes(col));
-
-  if (isSchemaError) {
-    console.error("[search-profiles] Schema fallback triggered — saving without optional columns. Error:", error.message);
-    const coreRow: Record<string, unknown> = {
-      user_id: input.user_id,
-      city: input.city_name,
-      city_name: input.city_name,
-      price_min: input.price_min,
-      price_max: input.price_max,
-      bedrooms_min: input.bedrooms_min,
-      size_min: input.size_min,
-      search_name: input.search_name ?? null,
-    };
-    const { data: fallbackData, error: fallbackError } = await supabase
-      .from("search_profiles")
-      .insert(coreRow)
-      .select()
-      .single();
-
-    if (fallbackError) {
-      console.error("[search-profiles] Fallback insert also failed:", fallbackError);
-      throw new Error("Suchauftrag konnte nicht gespeichert werden. Überprüfe deinen Standort und versuche es erneut.");
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: "Unknown error" }));
+    if (err.error === "profile_limit_reached") {
+      throw new Error(err.message || "Je kunt maximaal 4 zoekopdrachten aanmaken.");
     }
-    console.log("[search-profiles] Fallback insert OK — search_name:", (fallbackData as any).search_name ?? "(null)");
-    return fallbackData as SearchProfile;
+    console.error("[search-profiles] API create failed:", res.status, err);
+    throw new Error("Suchauftrag konnte nicht gespeichert werden. Überprüfe deinen Standort und versuche es erneut.");
   }
 
-  console.error("[search-profiles] Insert failed (non-schema error):", error);
-  throw new Error("Suchauftrag konnte nicht gespeichert werden. Überprüfe deinen Standort und versuche es erneut.");
+  const data = await res.json();
+  console.log("[search-profiles] Insert OK — saved search_name:", data.search_name ?? "(null)");
+  return data as SearchProfile;
 }
 
 export async function updateSearchProfile(

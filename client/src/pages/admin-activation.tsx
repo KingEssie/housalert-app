@@ -1,5 +1,6 @@
 import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import {
@@ -46,6 +47,7 @@ const FUNNEL_STEPS = [
 
 export default function AdminActivationPage() {
   const { user, loading: authLoading } = useAuth();
+  const [, navigate] = useLocation();
   const [data, setData] = useState<FunnelData | null>(null);
   const [cancelStats, setCancelStats] = useState<CancellationStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -112,7 +114,7 @@ export default function AdminActivationPage() {
       <div className="max-w-2xl mx-auto p-6">
         <div className="flex items-center gap-3 mb-6">
           <button
-            onClick={() => window.history.back()}
+            onClick={() => { if (window.history.length > 1) window.history.back(); else navigate("/admin/portal"); }}
             className="w-9 h-9 rounded-full bg-white border border-ha-card-border flex items-center justify-center"
             data-testid="button-back"
           >

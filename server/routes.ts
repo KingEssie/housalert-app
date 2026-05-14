@@ -3237,6 +3237,80 @@ export async function registerRoutes(
     }
   });
 
+  const MAX_SEARCH_PROFILES_PER_USER = 4;
+
+  app.post("/api/search-profiles", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const { count, error: countErr } = await supabase
+        .from("search_profiles")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id);
+
+      if (!countErr && count != null && count >= MAX_SEARCH_PROFILES_PER_USER) {
+        return res.status(409).json({
+          error: "profile_limit_reached",
+          message: "Je kunt maximaal 4 zoekopdrachten aanmaken.",
+        });
+      }
+
+      const input = req.body;
+      if (!input || typeof input !== "object") {
+        return res.status(400).json({ error: "Invalid request body" });
+      }
+
+      const row: Record<string, unknown> = {
+        user_id: user.id,
+        city: input.city_name,
+        city_name: input.city_name,
+        country_code: input.country_code ?? "DE",
+        latitude: input.latitude,
+        longitude: input.longitude,
+        place_id: input.place_id,
+        price_min: input.price_min,
+        price_max: input.price_max,
+        bedrooms_min: input.bedrooms_min,
+        size_min: input.size_min,
+      };
+
+      if (input.location_mode) row.location_mode = input.location_mode;
+      if (input.districts && input.districts.length > 0) row.districts = input.districts;
+      if (input.radius_km != null) row.radius_km = input.radius_km;
+      if (input.commute_destination) row.commute_destination = input.commute_destination;
+      if (input.commute_lat != null) row.commute_lat = input.commute_lat;
+      if (input.commute_lng != null) row.commute_lng = input.commute_lng;
+      if (input.commute_mode) row.commute_mode = input.commute_mode;
+      if (input.commute_minutes != null) row.commute_minutes = input.commute_minutes;
+      if (input.furnished) row.furnished = input.furnished;
+      if (input.property_types && input.property_types.length > 0) row.property_types = input.property_types;
+      if (input.extra_features && input.extra_features.length > 0) row.extra_features = input.extra_features;
+      if (input.target_categories && input.target_categories.length > 0) row.target_categories = input.target_categories;
+      if (input.send_unclear != null) row.send_unclear = input.send_unclear;
+      if (input.price_flexible != null) row.price_flexible = input.price_flexible;
+      if (input.search_name) row.search_name = input.search_name;
+
+      const { data, error } = await supabase
+        .from("search_profiles")
+        .insert(row)
+        .select()
+        .single();
+
+      if (error) {
+        log(`[search-profiles] POST insert error: ${error.message}`);
+        return res.status(500).json({ error: error.message });
+      }
+
+      return res.status(201).json(data);
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.delete("/api/search-profiles/:id", async (req, res) => {
     try {
       const token = req.headers.authorization?.replace("Bearer ", "");
