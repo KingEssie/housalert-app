@@ -1372,8 +1372,8 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
       case "size_asc": return (a.size_m2 || 0) - (b.size_m2 || 0);
       case "size_desc": return (b.size_m2 || 0) - (a.size_m2 || 0);
       default: {
-        const dateA = a.first_seen_at || a.matched_at || "";
-        const dateB = b.first_seen_at || b.matched_at || "";
+        const dateA = a.matched_at || a.first_seen_at || "";
+        const dateB = b.matched_at || b.first_seen_at || "";
         return new Date(dateB).getTime() - new Date(dateA).getTime();
       }
     }
@@ -1606,16 +1606,16 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
                 >
                   <span
                     className={`text-[16px] ${isSelected ? "font-semibold" : "font-medium text-ha-text"}`}
-                    style={isSelected ? { color: "rgb(var(--ha-primary))" } : undefined}
+                    style={isSelected ? { color: "#bbadfb" } : undefined}
                   >
                     {opt.label}
                   </span>
                   {isSelected && (
                     <div
                       className="w-[22px] h-[22px] rounded-full flex items-center justify-center"
-                      style={{ backgroundColor: "rgb(var(--ha-primary))" }}
+                      style={{ backgroundColor: "#bbadfb" }}
                     >
-                      <Check className="w-[13px] h-[13px] text-white" strokeWidth={3} />
+                      <Check className="w-[13px] h-[13px]" style={{ color: "#171429" }} strokeWidth={3} />
                     </div>
                   )}
                 </button>

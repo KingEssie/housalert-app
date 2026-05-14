@@ -1,0 +1,158 @@
+Fix email listing deep links, match ordering, and sort sheet brand colors before Android/native testing.
+
+Issues from testing:
+
+1. Email “Bekijk woning” opens an old/wrong listing detail screen.
+2. The listing from the email does not appear at the top of Matches, even though sort is “Datum toegevoegd”.
+3. Sort bottom sheet selected option uses green text/check, which is hard to read and off-brand. It should use HousAlert purple.
+
+==================================================
+1. EMAIL “BEKIJK WONING” MUST OPEN CURRENT APP DETAIL SCREEN
+==================================================
+
+Current issue:
+Clicking “Bekijk woning” from a match email opens a different/old detail screen.
+
+Required:
+Email CTA must link to the same canonical listing detail page used when tapping a listing card inside the app.
+
+Investigate all listing detail routes/components:
+- old detail route
+- new detail route
+- app listing card route
+- email template route
+- push notification route
+
+Pick ONE canonical route and use it everywhere.
+
+Expected:
+- Listing card tap in Matches
+- Email CTA “Bekijk woning”
+- Push notification single match
+- Favorite listing tap
+
+must all open the exact same current detail component.
+
+Do NOT link directly to source website from email CTA.
+Source website should only be opened from inside the app detail page via “Reageer direct” / source button.
+
+Implementation:
+- Find where match emails are generated.
+- Replace old listing URL with canonical app URL.
+- Use listing id or match id consistently.
+- Example:
+  https://app.housalert.com/listing/:listingId
+  OR if current route is different, use the actual route used by listing cards.
+
+Also ensure unauthenticated users:
+- if not logged in, redirect/login first
+- after login, return to the intended listing detail if possible
+
+Smoke test:
+- Open email
+- Tap “Bekijk woning”
+- App opens current detail screen
+- Same design as tapping listing card from Matches
+- “Reageer direct” still opens source website
+- No old detail component is reachable from email/push/favorites
+
+==================================================
+2. EMAIL MATCH MUST APPEAR IN MATCHES AND SORT CORRECTLY
+==================================================
+
+Current issue:
+The email shows a newly delivered match, but that match is not visible at the top of Matches.
+
+Required:
+If a match email is sent to a user, the same listing/match must exist in the user’s Matches list.
+
+Investigate:
+- email sending source: which match/listing rows are used?
+- user_matches row exists?
+- match belongs to same user_id?
+- match hidden/read/applied/favorited status?
+- date used for sorting: listing.created_at vs user_match.created_at vs matched_at vs sent_at
+- filters in Matches query excluding the email listing
+- pagination/cache excluding it
+- duplicate listing canonicalization causing mismatch
+
+Correct rule:
+Matches tab sorted by “Datum toegevoegd” should sort by the date the match was added to the user, not the original listing source date.
+
+Use:
+- user_match.created_at or user_match.matched_at
+
+Not:
+- listing.created_at from source site if that causes old/new mismatch
+
+Required:
+- Newest user match appears first
+- The listing sent in the latest email appears at/near top
+- Refresh keeps same order
+- Sort “Datum toegevoegd” means newest match first
+
+If the email is sent before creating user_matches:
+- fix flow so user_match row exists first
+- then email references that row/listing
+
+Add logs:
+- email match sent: user_id, listing_id, match_id, user_match_created_at
+- matches API sort key and returned first 5 ids
+
+Smoke test:
+- Trigger/send test match email
+- Tap email → opens current detail screen
+- Open Matches → same listing appears at top when sorted by Datum toegevoegd
+- No duplicate weird old listing appears
+
+==================================================
+3. SORT BOTTOM SHEET BRAND COLORS
+==================================================
+
+Current issue:
+Selected sort option uses green text/check.
+This is hard to read and not the intended brand color.
+
+Required:
+Use HousAlert purple for selected sort state.
+
+Exact colors:
+- purple background/accent: #bbadfb
+- purple dark text/icon: #171429
+
+For selected sort option:
+- text: #bbadfb or #171429 depending readability
+Preferred:
+  text #171429 if on purple background
+  text #bbadfb if on white background
+- check circle/background: #bbadfb
+- check icon: #171429
+
+Do NOT use green for sort selection.
+Green #85fb8c should be reserved for positive CTAs/success states, not filter/sort selection.
+
+Apply to:
+- sort bottom sheet
+- checkmark
+- selected text
+- any active sort underline/accent if relevant
+
+Smoke test:
+- Open Matches
+- Open sort/filter bottom sheet
+- Selected option is clearly readable
+- Selected color uses #bbadfb / #171429
+- No green selected sort text/check remains
+
+==================================================
+4. FINAL CHECK
+==================================================
+
+Pass only when:
+
+A. Email CTA opens current app listing detail screen.
+B. Same listing exists in Matches.
+C. Datum toegevoegd sorts by user match date newest first.
+D. Email match appears top/near top.
+E. Sort selected state uses purple, not green.
+F. Source website only opens from app detail CTA, not directly from email.

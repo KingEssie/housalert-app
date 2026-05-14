@@ -244,7 +244,7 @@ function ctaButton(href: string, label: string, primary: boolean): string {
 function listingCard(listing: ListingInfo, showButton = false, cardNumber?: number, lang: ServerLocale = "nl"): string {
   const safeUrl = sanitizeUrl(listing.url);
   const baseUrl = getAppBaseUrl();
-  const listingDetailUrl = listing.listing_id ? `${baseUrl}/listing/${listing.listing_id}` : null;
+  const listingDetailUrl = listing.listing_id ? `${baseUrl}/apply/${listing.listing_id}` : null;
   const rawImageUrl = sanitizeUrl(listing.image_url);
   const safeImageUrl = rawImageUrl ? upgradeImageUrl(rawImageUrl) : null;
   const linkTarget = listingDetailUrl || safeUrl || "#";
