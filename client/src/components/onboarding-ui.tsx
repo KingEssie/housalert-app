@@ -146,27 +146,45 @@ export function OBProgressDots({ current, total }: { current: number; total: num
 import { ChevronLeft, Loader2, X, Info } from "lucide-react";
 import { HousAlertLogo } from "@/components/housalert-logo";
 
-export function OBWebHeader({ step, totalSteps = 3 }: { step?: number; totalSteps?: number; onClose?: () => void }) {
+export function OBWebHeader({ step, totalSteps = 3, onClose }: { step?: number; totalSteps?: number; onClose?: () => void }) {
+  const progress = step && totalSteps ? (step / totalSteps) * 100 : 0;
   return (
-    <header
+    <div
       className="w-full sticky top-0 z-20"
       style={{ backgroundColor: OBW.headerBg, borderBottom: `1px solid ${OBW.headerBorder}` }}
     >
       <div className="max-w-[480px] mx-auto px-5 h-[52px] flex items-center justify-between">
         <HousAlertLogo size={26} />
-        {step ? (
-          <span
-            className="text-[11px] font-semibold px-2.5 py-1 rounded-full"
-            style={{ backgroundColor: "#bbadfb", color: "#171429" }}
-            data-testid="badge-step"
-          >
-            {step}/{totalSteps}
-          </span>
-        ) : (
-          <div className="w-[30px]" />
-        )}
+        <div className="flex items-center gap-2">
+          {step ? (
+            <span
+              className="text-[11px] font-semibold px-2.5 py-1 rounded-full tabular-nums"
+              style={{ backgroundColor: "#bbadfb", color: "#171429" }}
+              data-testid="badge-step"
+            >
+              {step}/{totalSteps}
+            </span>
+          ) : null}
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="w-9 h-9 flex items-center justify-center rounded-full bg-ha-surface hover:bg-ha-card-border transition-colors"
+              data-testid="button-close"
+            >
+              <X className="w-[18px] h-[18px] text-ha-text-secondary" />
+            </button>
+          )}
+        </div>
       </div>
-    </header>
+      {onClose && step ? (
+        <div className="h-[4px] overflow-hidden" style={{ backgroundColor: "rgb(var(--ha-card-border))" }}>
+          <div
+            className="h-full transition-all duration-500 ease-out"
+            style={{ width: `${progress}%`, backgroundColor: "rgb(var(--ha-primary))" }}
+          />
+        </div>
+      ) : null}
+    </div>
   );
 }
 

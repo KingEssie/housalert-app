@@ -1,0 +1,91 @@
+The previous onboarding branding change did not affect the actual in-app flow.
+
+Current evidence:
+When using app.housalert.com and tapping “Ik ben nieuw bij HousAlert” or creating a search profile inside the app, the UI still shows the old app onboarding:
+- green 1/4 pill
+- centered “Zoekopdracht maken”
+- city list screen
+- old app footer
+- old 4-step flow
+
+This means the wrong component/route was changed.
+
+IMPORTANT:
+Find and replace the ACTUAL rendered in-app onboarding/search wizard.
+Do not claim done unless the screenshots match.
+Do not only edit website onboarding.
+Do not only edit unused components.
+
+Target old UI markers to search for:
+- "Zoekopdracht maken"
+- "Locatie"
+- "Zoek stad..."
+- "Berlin"
+- "Hamburg"
+- "München"
+- "1/4"
+- "2/4"
+- "Naam zoekopdracht"
+- "Geschatte matches"
+- app-search-wizard
+- search wizard
+- create search profile
+- add search profile
+- onboarding search
+
+Likely files to inspect:
+- client/src/pages/app-search-wizard.tsx
+- client/src/components/search/*
+- client/src/pages/onboarding/*
+- client/src/App.tsx route mappings
+- any route connected to /search-wizard, /create-search, /add-profile, /onboarding/search
+
+Goal:
+The actual in-app search profile creation flow must use the website onboarding UI as the source of truth.
+
+Required visible result:
+On app.housalert.com, after clicking “Ik ben nieuw bij HousAlert” or “Zoekopdracht toevoegen”, the flow must look like the website onboarding:
+- top logo/header style from website
+- progress bar across the top
+- purple step badge like 2/3 or 3/3
+- white rounded card
+- website-style tabs/buttons/map/input/footer
+- no green 1/4 pill
+- no centered old “Zoekopdracht maken” header
+- no old app-style city list screen
+- no old 4-step flow if website uses 3 steps
+
+Implementation options:
+Preferred:
+- Reuse the existing website onboarding components directly inside the app route.
+
+Alternative:
+- Replace the old app wizard UI with a wrapper around the website onboarding component.
+
+Do not duplicate logic if shared components already exist.
+
+Preserve:
+- auth
+- profile creation
+- edit profile if applicable
+- max 4 backend profile limit
+- matches estimate
+- map behavior
+- city selection
+- rent/filter settings
+- profile name saving
+- onboarding completion
+
+After implementing:
+Add a clear dev-only console log when the actual app wizard renders:
+"[HousAlert] Rendering unified website-style onboarding wizard"
+
+Smoke check:
+1. Open app.housalert.com login
+2. Tap “Ik ben nieuw bij HousAlert”
+3. Confirm the first onboarding/search screen no longer shows old green 1/4 app UI
+4. Create/search profile flow visually matches website screenshots
+5. From app home, tap “Zoekopdracht toevoegen”
+6. Confirm same unified website-style flow appears
+7. Complete flow and verify profile appears on home
+8. Confirm no duplicate/unused old app wizard is still routed

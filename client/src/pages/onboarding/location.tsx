@@ -4,7 +4,7 @@ import { useHashSearch } from "@/lib/hash-search";
 import { ChevronDown, ChevronLeft, Check, Search, X, MapPin, Loader2 } from "lucide-react";
 import { cityDistricts, defaultCities } from "../../../../config/market";
 import { useGeocoderSearch } from "@/hooks/use-geocoder-search";
-import { OB, OBW, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
+import { OB, OBW, OBWebHeader, useWebsiteMode, appendWebsiteParams } from "@/components/onboarding-ui";
 import { OnboardingFlowLayout } from "@/components/onboarding-flow-layout";
 import MapView from "@/components/map-view";
 import { useTranslation } from "@/i18n";
@@ -26,6 +26,9 @@ export default function OnboardingLocation() {
   const [, navigate] = useLocation();
   const searchString = useHashSearch();
   const w = useWebsiteMode();
+  useEffect(() => {
+    console.log("[HousAlert] Rendering unified website-style onboarding wizard");
+  }, []);
   const T = w ? OBW : OB;
   const params = new URLSearchParams(searchString);
 
@@ -108,33 +111,7 @@ export default function OnboardingLocation() {
         style={{ background: "rgb(var(--ha-card))" }}
         data-testid="screen-onboarding-location-citypicker"
       >
-        <header
-          className="sticky top-0 z-20 w-full"
-          style={{ backgroundColor: "rgb(var(--ha-card))", borderBottom: `1px solid ${OBW.headerBorder}` }}
-        >
-          <div className="relative max-w-[480px] mx-auto px-4 h-[56px] flex items-center justify-between">
-            <span
-              className="text-[14px] font-bold rounded-[10px] shrink-0 flex items-center px-3.5"
-              style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "white" }}
-              data-testid="badge-step"
-            >
-              1/4
-            </span>
-            <span
-              className="absolute inset-0 flex items-center justify-center text-[19px] font-bold pointer-events-none"
-              style={{ color: OBW.text }}
-            >
-              {t("onboarding.filters.headerTitle")}
-            </span>
-            <button
-              onClick={() => navigate("/")}
-              className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input transition-colors"
-              data-testid="button-close"
-            >
-              <X className="w-[18px] h-[18px] text-ha-text-secondary" />
-            </button>
-          </div>
-        </header>
+        <OBWebHeader step={1} totalSteps={3} onClose={() => navigate("/")} />
 
         <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-10 overflow-y-auto">
           <label className="text-[18px] font-semibold mb-2 block" style={{ color: OBW.textSecondary }}>
@@ -264,34 +241,7 @@ export default function OnboardingLocation() {
         style={{ background: "rgb(var(--ha-card))" }}
         data-testid="screen-onboarding-location"
       >
-        {/* Header — matches city.tsx: badge | centered title | close circle */}
-        <header
-          className="sticky top-0 z-20 w-full"
-          style={{ backgroundColor: "rgb(var(--ha-card))", borderBottom: `1px solid ${OBW.headerBorder}` }}
-        >
-          <div className="relative max-w-[480px] mx-auto px-4 h-[56px] flex items-center justify-between">
-            <span
-              className="text-[14px] font-bold rounded-[10px] shrink-0 flex items-center px-3.5"
-              style={{ height: "32px", backgroundColor: "rgb(var(--ha-primary))", color: "white" }}
-              data-testid="badge-step"
-            >
-              1/4
-            </span>
-            <span
-              className="absolute inset-0 flex items-center justify-center text-[19px] font-bold pointer-events-none"
-              style={{ color: OBW.text }}
-            >
-              {t("onboarding.filters.headerTitle")}
-            </span>
-            <button
-              onClick={handleClose}
-              className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full bg-ha-card-border hover:bg-ha-border-input active:bg-ha-border-input transition-colors"
-              data-testid="button-location-close"
-            >
-              <X className="w-[18px] h-[18px] text-ha-text-secondary" />
-            </button>
-          </div>
-        </header>
+        <OBWebHeader step={1} totalSteps={3} onClose={handleClose} />
 
         <main className="flex-1 flex flex-col max-w-[480px] mx-auto w-full px-5 pt-5 pb-[140px] overflow-y-auto">
           {/* City field */}
