@@ -62,7 +62,7 @@ function formatTime(iso: string) {
 function FaqCard({ title, url }: { title: string; url: string }) {
   return (
     <button
-      onClick={() => window.open(url, "_blank")}
+      onClick={() => window.open(url || "https://www.housalert.com/faq", "_blank")}
       className="w-full text-left rounded-[18px] px-4 py-3.5 flex items-start gap-3 active:opacity-70 transition-opacity mt-2"
       style={{ backgroundColor: "#f9f8ff", border: "1px solid #ede7ff" }}
     >

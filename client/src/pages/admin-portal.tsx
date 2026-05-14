@@ -2502,13 +2502,15 @@ interface SupportMessage {
 
 const ADMIN_FAQ_ITEMS = [
   { id: "how-it-works",        title: "Hoe werkt HousAlert?",                url: "https://www.housalert.com/faq#hoe-werkt-housalert" },
-  { id: "no-notifications",    title: "Ik ontvang geen meldingen",           url: "https://www.housalert.com/faq#meldingen" },
-  { id: "edit-profile",        title: "Hoe pas ik mijn zoekprofiel aan?",    url: "https://www.housalert.com/faq#zoekprofiel" },
+  { id: "no-notifications",    title: "Ik ontvang geen meldingen",           url: "https://www.housalert.com/faq#meldingen-ontvangen" },
+  { id: "edit-profile",        title: "Hoe pas ik mijn zoekprofiel aan?",    url: "https://www.housalert.com/faq#zoekprofiel-aanpassen" },
   { id: "subscription-cancel", title: "Hoe zeg ik mijn abonnement op?",      url: "https://www.housalert.com/faq#abonnement-opzeggen" },
-  { id: "subscription-cost",   title: "Wat kost HousAlert?",                 url: "https://www.housalert.com/faq#prijzen" },
-  { id: "payment-failed",      title: "Mijn betaling is mislukt",            url: "https://www.housalert.com/faq#betaling" },
-  { id: "tech-app-crash",      title: "De app werkt niet of crasht",         url: "https://www.housalert.com/faq#technisch" },
+  { id: "subscription-cost",   title: "Wat kost HousAlert?",                 url: "https://www.housalert.com/faq#abonnement-kosten" },
+  { id: "payment-failed",      title: "Mijn betaling is mislukt",            url: "https://www.housalert.com/faq#betaling-mislukt" },
+  { id: "tech-app-crash",      title: "De app werkt niet of crasht",         url: "https://www.housalert.com/faq#app-werkt-niet" },
   { id: "matches-not-showing", title: "Ik zie geen matches",                 url: "https://www.housalert.com/faq#geen-matches" },
+  { id: "email-push-settings", title: "E-mail en push-meldingen instellen",  url: "https://www.housalert.com/faq#meldingen-instellen" },
+  { id: "account-delete",      title: "Hoe verwijder ik mijn account?",      url: "https://www.housalert.com/faq#account-verwijderen" },
 ];
 
 function SupportTab() {

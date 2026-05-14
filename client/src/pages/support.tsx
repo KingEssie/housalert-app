@@ -449,7 +449,7 @@ export default function SupportPage() {
                   {faqSuggestions.map((faq) => (
                     <button
                       key={faq.id}
-                      onClick={() => window.open(faq.url, "_blank")}
+                      onClick={() => window.open(faq.url || "https://www.housalert.com/faq", "_blank")}
                       className="w-full text-left rounded-[18px] p-4 flex items-start gap-3 active:opacity-70 transition-opacity"
                       style={{ backgroundColor: "#f9f8ff", border: "1px solid #ede7ff" }}
                       data-testid={`button-faq-suggestion-${faq.id}`}

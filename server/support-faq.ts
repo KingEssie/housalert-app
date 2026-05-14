@@ -1,5 +1,7 @@
 import { log } from "./log";
 
+export const FAQ_FALLBACK_URL = "https://www.housalert.com/faq";
+
 export interface FaqItem {
   id: string;
   title: string;
@@ -30,7 +32,7 @@ export const FAQ_INDEX: FaqItem[] = [
     id: "no-notifications",
     title: "Ik ontvang geen meldingen",
     summary: "Controleer je meldingsinstellingen: zorg dat e-mail of push-meldingen zijn ingeschakeld en dat je zoekprofiel actief is.",
-    url: "https://www.housalert.com/faq#meldingen",
+    url: "https://www.housalert.com/faq#meldingen-ontvangen",
     keywords: ["geen melding", "geen notificatie", "ontvang niet", "melding werkt niet", "alert", "bericht", "e-mail niet", "push niet", "notificatie"],
     subjects: ["Meldingen ontvangen"],
   },
@@ -38,7 +40,7 @@ export const FAQ_INDEX: FaqItem[] = [
     id: "edit-profile",
     title: "Hoe pas ik mijn zoekprofiel aan?",
     summary: "Ga naar Instellingen → Zoekprofiel en pas je stad, prijsrange, slaapkamers of andere criteria aan.",
-    url: "https://www.housalert.com/faq#zoekprofiel",
+    url: "https://www.housalert.com/faq#zoekprofiel-aanpassen",
     keywords: ["profiel aanpassen", "zoekprofiel", "criteria wijzigen", "stad wijzigen", "prijs aanpassen", "slaapkamers", "radius", "zoekgebied", "instellingen"],
     subjects: ["Mijn profiel"],
   },
@@ -54,7 +56,7 @@ export const FAQ_INDEX: FaqItem[] = [
     id: "subscription-cost",
     title: "Wat kost HousAlert?",
     summary: "HousAlert biedt een gratis proefperiode. Daarna kies je een maandelijks of meerdere-maanden abonnement. Bekijk de actuele prijzen in de app.",
-    url: "https://www.housalert.com/faq#prijzen",
+    url: "https://www.housalert.com/faq#abonnement-kosten",
     keywords: ["kosten", "prijs", "wat kost", "gratis", "proefperiode", "trial", "betalen", "abonnement prijs", "maandelijks"],
     subjects: ["Abonnement & betaling"],
   },
@@ -62,7 +64,7 @@ export const FAQ_INDEX: FaqItem[] = [
     id: "payment-failed",
     title: "Mijn betaling is mislukt",
     summary: "Controleer je betaalgegevens in Instellingen → Abonnement. Zorg dat je kaart geldig is en voldoende saldo heeft.",
-    url: "https://www.housalert.com/faq#betaling",
+    url: "https://www.housalert.com/faq#betaling-mislukt",
     keywords: ["betaling mislukt", "niet betaald", "factuur", "betalingsprobleem", "creditcard", "iDEAL", "incasso", "betalen mislukt"],
     subjects: ["Abonnement & betaling"],
   },
@@ -70,7 +72,7 @@ export const FAQ_INDEX: FaqItem[] = [
     id: "tech-app-crash",
     title: "De app werkt niet of crasht",
     summary: "Probeer de app te herladen. Als het probleem aanhoudt, log dan uit en opnieuw in, of verwijder en herinstalleer de app.",
-    url: "https://www.housalert.com/faq#technisch",
+    url: "https://www.housalert.com/faq#app-werkt-niet",
     keywords: ["app werkt niet", "crasht", "fout", "error", "laadt niet", "scherm leeg", "technisch", "haperen", "bug", "stuk", "kapot"],
     subjects: ["Technisch probleem"],
   },
@@ -173,12 +175,18 @@ Return ONLY a JSON array of FAQ item IDs ordered by most relevant first (max 3).
 
       const result = reordered.length >= top3.length ? reordered : top3;
       log(`[support-faq] AI ranking applied — top=${result[0]?.id}`);
-      return result.slice(0, 3).map(({ id, title, summary, url, score }) => ({ id, title, summary, url, score }));
+      return result.slice(0, 3).map(({ id, title, summary, url, score }) => {
+        if (!url) log(`[support-faq] WARNING: FAQ item "${id}" has no URL — using fallback`);
+        return { id, title, summary, url: url || FAQ_FALLBACK_URL, score };
+      });
     } catch (err: any) {
       log(`[support-faq] AI ranking failed — falling back to keyword: ${err.message}`);
     }
   }
 
   log(`[support-faq] Keyword match — top=${top3[0]?.id} score=${top3[0]?.score}`);
-  return top3.map(({ id, title, summary, url, score }) => ({ id, title, summary, url, score }));
+  return top3.map(({ id, title, summary, url, score }) => {
+    if (!url) log(`[support-faq] WARNING: FAQ item "${id}" has no URL — using fallback`);
+    return { id, title, summary, url: url || FAQ_FALLBACK_URL, score };
+  });
 }
