@@ -1,0 +1,243 @@
+Fix subscription cancellation logic and redesign cancellation screens to match HousAlert branding.
+
+IMPORTANT:
+This is a pre-launch billing fix.
+Do not change unrelated subscription/payment logic.
+Do not change successful checkout flow.
+
+ISSUES:
+1. Cancellation flow UI does not match HousAlert branding.
+2. After cancellation, subscription page still looks like the subscription is normally active.
+3. User can still see “Abonnement opzeggen” even after cancellation.
+4. Subscription status should clearly show access remains valid until the end date.
+5. Trial cancellation and paid subscription cancellation must behave correctly.
+
+BRAND TOKENS:
+- Purple: #bbadfb
+- Purple icon/text dark: #171429
+- Green: #85fb8c
+- Green icon/text dark: #223546
+- Dark navy: #223546
+- Black: #111111
+- App background: #f6f6f6
+- Card background: #ffffff
+
+========================================
+1. BACKEND / STRIPE CANCELLATION LOGIC
+========================================
+
+When user cancels subscription:
+
+Use Stripe cancellation at period end:
+- set cancel_at_period_end = true
+- do NOT immediately revoke access
+
+Persist locally:
+- subscription_status should become something like:
+  active_cancelled / trial_cancelled / cancelling
+  OR keep active/trialing but store cancel_at_period_end=true
+- store:
+  cancel_at_period_end: true
+  current_period_end
+  canceled_at
+
+Access logic:
+- User keeps premium access until current_period_end
+- If trialing and cancelled:
+  access remains until trial_end/current_period_end
+- After current_period_end:
+  webhook should mark expired/canceled and revoke premium access
+
+Do not allow duplicate cancel:
+- If cancel_at_period_end is already true, cancellation endpoint should return success with current state, not create another cancellation action.
+
+========================================
+2. SUBSCRIPTION PAGE DISPLAY AFTER CANCEL
+========================================
+
+If subscription is active/trialing AND cancel_at_period_end=true:
+
+Show status:
+“Opgezegd”
+
+Show clear text:
+“Je toegang blijft actief tot [date]. Daarna stopt je abonnement automatisch.”
+
+For trial:
+“Je proefperiode blijft actief tot [date]. Daarna stopt je abonnement automatisch.”
+
+Rows should show:
+- Abonnement: Opgezegd
+- Toegang actief tot: [current_period_end / trial_end]
+- Automatisch verlengen: Uit
+- Betaalmethode: Via Stripe
+
+DO NOT show:
+- “Abonnement opzeggen” again
+
+Instead show:
+- Optional secondary action: “Abonnement hervatten” if Stripe resume is implemented
+OR
+- No cancellation button at all
+
+If resume is not implemented, hide resume.
+
+========================================
+3. CANCELLATION CONFIRMATION FLOW
+========================================
+
+Redesign cancellation screens with HousAlert branding.
+
+Screen 1: Confirm cancellation
+
+Title:
+“Weet je zeker dat je wilt opzeggen?”
+
+Card:
+- white background
+- border #eeeeee
+- radius 28px
+- no heavy shadow
+
+Icon:
+- background #bbadfb
+- icon #171429
+
+Text:
+If trial:
+“Je proefperiode blijft actief tot [date]. Tot die tijd kun je alle functies blijven gebruiken. Daarna stopt de automatische verlenging.”
+
+If paid:
+“Je abonnement blijft actief tot [date]. Tot die tijd kun je alle functies blijven gebruiken. Daarna stopt de automatische verlenging.”
+
+Buttons:
+Primary:
+“Abonnement behouden”
+- background #85fb8c
+- text/icon #223546
+- border-radius 9999px
+
+Secondary/destructive:
+“Toch opzeggen”
+- white background
+- black/dark text #111111
+- border #111111 or subtle red border if desired
+- border-radius 9999px
+
+No pale disabled-looking green buttons.
+
+========================================
+4. FEEDBACK SCREEN
+========================================
+
+Feedback screen should match branding.
+
+Icon:
+- background #bbadfb
+- icon #171429
+
+Options:
+- white cards
+- black text
+- border #111111 or #eeeeee
+- selected state uses #bbadfb background and #171429 text
+
+Cancel button:
+Only enabled after reason selected.
+- enabled background #223546
+- text white
+- fully rounded
+- or use destructive red only if already established
+
+Keep button:
+- background #85fb8c
+- text #223546
+- fully rounded
+
+========================================
+5. CANCELLED SUCCESS SCREEN
+========================================
+
+Title:
+“Je abonnement is opgezegd”
+
+Text:
+For trial:
+“Je proefperiode blijft actief tot [date]. Daarna wordt deze beëindigd.”
+
+For paid:
+“Je abonnement blijft actief tot [date]. Daarna wordt het beëindigd.”
+
+Button:
+“Terug naar account”
+- background #85fb8c
+- text #223546
+- fully rounded
+
+After clicking:
+- navigate to /account or subscription page
+- subscription page must show Opgezegd state
+
+========================================
+6. WEBHOOK SYNC
+========================================
+
+Ensure Stripe webhooks correctly handle:
+- customer.subscription.updated with cancel_at_period_end=true
+- customer.subscription.deleted after period ends
+- trialing cancelled at period end
+- paid active cancelled at period end
+
+Do not revoke premium until period end.
+
+========================================
+7. FRONTEND ACCESS CHECKS
+========================================
+
+Premium access should remain true while:
+- status active/trialing
+- current_period_end is in future
+- even if cancel_at_period_end=true
+
+Premium access should become false only after:
+- current_period_end passed
+- Stripe/webhook marks canceled/expired
+
+========================================
+8. SMOKE CHECK
+========================================
+
+Test:
+
+A. Trial cancellation
+- user is trialing
+- cancel subscription
+- success screen appears
+- subscription page shows Opgezegd
+- access remains active until trial end
+- no “Abonnement opzeggen” button visible
+
+B. Paid subscription cancellation
+- user has active paid subscription
+- cancel subscription
+- success screen appears
+- subscription page shows Opgezegd
+- access remains active until period end
+- no duplicate cancel button visible
+
+C. After period end simulation/webhook
+- status becomes canceled/expired
+- premium access removed
+- upgrade CTA returns
+
+D. Duplicate cancel
+- call cancel endpoint again after already cancelled
+- no error
+- no duplicate state
+- returns already cancelled state
+
+E. UI
+- all cancellation screens match HousAlert branding
+- buttons fully rounded
+- icons use #bbadfb background and #171429 icon
+- no old pale green/purple styling

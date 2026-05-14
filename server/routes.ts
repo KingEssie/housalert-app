@@ -2412,6 +2412,62 @@ export async function registerRoutes(
     }
   });
 
+  app.post("/api/subscription/cancel", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      if (!stripeAvailable) return res.status(503).json({ error: "Stripe not configured" });
+
+      const { data: subRow } = await supabase
+        .from("subscriptions")
+        .select("stripe_subscription_id, status, current_period_ends_at, trial_ends_at")
+        .eq("user_id", user.id)
+        .single();
+
+      if (!subRow?.stripe_subscription_id) {
+        return res.status(404).json({ error: "No active subscription found" });
+      }
+
+      // Idempotent: already canceled — return current state without calling Stripe again
+      if (subRow.status === "canceled") {
+        log(`[subscription-cancel] Already canceled for user=${user.id.substring(0, 8)} — returning current state`);
+        const status = await getSubscriptionStatus(user.id);
+        return res.json({ success: true, subscription: status, alreadyCanceled: true });
+      }
+
+      const { getUncachableStripeClient } = await import("./stripe/stripeClient");
+      const stripe = await getUncachableStripeClient();
+
+      const stripeSub = await stripe.subscriptions.update(subRow.stripe_subscription_id, {
+        cancel_at_period_end: true,
+      });
+
+      log(`[subscription-cancel] cancel_at_period_end=true set for user=${user.id.substring(0, 8)} sub=${subRow.stripe_subscription_id} stripeStatus=${stripeSub.status}`);
+
+      // For trialing subscriptions, use trial_end; for active, use current_period_end.
+      // This ensures access is preserved until the true end of the billing period.
+      const trialEnd = (stripeSub as any).trial_end;
+      const periodEndRaw = (trialEnd && trialEnd > 0)
+        ? trialEnd
+        : ((stripeSub as any).current_period_end ?? null);
+      const periodEnd = periodEndRaw && periodEndRaw > 0 ? new Date(periodEndRaw * 1000) : null;
+
+      await updateSubscriptionStatus(subRow.stripe_subscription_id, "canceled", periodEnd ?? undefined);
+
+      log(`[subscription-cancel] DB updated: user=${user.id.substring(0, 8)} → canceled, periodEnd=${periodEnd?.toISOString() ?? "none"}`);
+
+      const status = await getSubscriptionStatus(user.id);
+      return res.json({ success: true, subscription: status });
+    } catch (err: any) {
+      log(`[subscription-cancel] Error for user: ${err.message}`);
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.get("/api/subscription/status", async (req, res) => {
     try {
       const token = req.headers.authorization?.replace("Bearer ", "");
@@ -3083,12 +3139,20 @@ export async function registerRoutes(
             const plan = (priceId && PRICE_TO_PLAN[priceId]) || sub.metadata?.plan || "monthly";
 
             if (subStatus === "trialing") {
-              const trialEnd = sub.trial_end;
-              const trialEndsAt = trialEnd && trialEnd > 0
-                ? new Date(trialEnd * 1000)
-                : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
-              log(`[stripe-webhook] DB UPDATE: user=${userId} → trial, plan=${plan}`);
-              await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubId, plan, null, trialEndsAt);
+              if (sub.cancel_at_period_end) {
+                // Trial cancelled at period end — keep status=canceled with trial_end as the access boundary
+                const trialEnd = sub.trial_end ?? sub.current_period_end ?? null;
+                const periodEnd = trialEnd && trialEnd > 0 ? new Date(trialEnd * 1000) : null;
+                log(`[stripe-webhook] DB UPDATE: user=${userId} → canceled (trialing+cancel_at_period_end), periodEnd=${periodEnd?.toISOString()}`);
+                await updateSubscriptionStatus(stripeSubId, "canceled", periodEnd ?? undefined);
+              } else {
+                const trialEnd = sub.trial_end;
+                const trialEndsAt = trialEnd && trialEnd > 0
+                  ? new Date(trialEnd * 1000)
+                  : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+                log(`[stripe-webhook] DB UPDATE: user=${userId} → trial, plan=${plan}`);
+                await updateSubscriptionFromCheckout(userId, stripeCustomerId, stripeSubId, plan, null, trialEndsAt);
+              }
             } else if (subStatus === "active") {
               if (sub.cancel_at_period_end) {
                 const rawEnd = (sub as any).current_period_end
