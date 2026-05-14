@@ -169,6 +169,8 @@ export const en: Record<string, any> = {
     deleteDesc: "Are you sure you want to delete your search profile? You can always create a new one!",
     deleteNo: "No",
     deleteYes: "Yes",
+    emptyTitle: "No search profiles yet",
+    emptySubtitle: "Create your first search profile and receive property matches instantly.",
   },
 
   matches: {

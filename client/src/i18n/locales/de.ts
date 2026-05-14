@@ -182,6 +182,8 @@ export const de: Record<string, any> = {
     deleteDesc: "Bist du sicher, dass du dein Suchprofil löschen möchtest? Du kannst jederzeit ein neues erstellen!",
     deleteNo: "Nein",
     deleteYes: "Ja",
+    emptyTitle: "Noch keine Suchprofile",
+    emptySubtitle: "Erstelle dein erstes Suchprofil und erhalte sofort passende Wohnungsangebote.",
   },
 
   matches: {

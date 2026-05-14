@@ -3387,18 +3387,26 @@ export async function registerRoutes(
 
       const profileId = data.id;
       const profileCity = (data as any).city_name || (data as any).city || "unknown";
-      log(`[search-profiles] POST created profile=${profileId} city="${profileCity}" user=${user.id.substring(0, 8)} active=true — triggering immediate backfill`);
+      log(`[search-profiles] POST created profile=${profileId} city="${profileCity}" user=${user.id.substring(0, 8)} — awaiting backfill (max 12s)`);
 
-      // Fire-and-forget: seed matches immediately so new users see results without waiting for the next scheduled run.
-      backfillMatchesForSearchProfile(profileId)
-        .then((count: number) => {
-          log(`[search-profiles] Backfill done: profile=${profileId} city="${profileCity}" matches=${count}`);
-        })
-        .catch((e: any) => {
-          log(`[search-profiles] Backfill error for profile=${profileId}: ${e.message}`);
+      // Await backfill synchronously so the client receives match data on first refetch.
+      // A 12-second timeout prevents the request from hanging on slow DB operations.
+      let initialMatchCount = 0;
+      let backfillTimedOut = false;
+      try {
+        const timeoutPromise = new Promise<number>((resolve) => {
+          setTimeout(() => { backfillTimedOut = true; resolve(0); }, 12000);
         });
+        initialMatchCount = await Promise.race([
+          backfillMatchesForSearchProfile(profileId),
+          timeoutPromise,
+        ]);
+        log(`[search-profiles] Backfill ${backfillTimedOut ? "timed out" : "done"}: profile=${profileId} city="${profileCity}" matches=${initialMatchCount}`);
+      } catch (e: any) {
+        log(`[search-profiles] Backfill error for profile=${profileId}: ${e.message}`);
+      }
 
-      return res.status(201).json(data);
+      return res.status(201).json({ ...data, initial_match_count: initialMatchCount, backfill_timed_out: backfillTimedOut });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }

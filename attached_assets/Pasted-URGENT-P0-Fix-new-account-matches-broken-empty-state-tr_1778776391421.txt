@@ -1,0 +1,224 @@
+URGENT P0: Fix new-account matches, broken empty-state translations, paid subscription still showing trial, and subscription page typography.
+
+Current issues from testing:
+1. New account/search profile still shows no matches.
+2. Home empty state shows raw translation keys:
+   - home.emptyTitle
+   - home.emptySubtitle
+3. Matches page shows no matches after profile creation.
+4. Subscription page still shows “Proefperiode” even though user bought a paid 2-month subscription.
+5. Subscription page typography feels too small/light; make it more robust.
+
+IMPORTANT:
+Do not redesign unrelated screens.
+Do not change checkout UI.
+Fix root causes, not cosmetic workarounds.
+
+==================================================
+1. FIX NEW ACCOUNT MATCHES NOT APPEARING
+==================================================
+
+The previous backfill fix did not solve the actual issue.
+
+Investigate end-to-end:
+
+A. After onboarding/search profile creation:
+- Is the profile saved with correct user_id?
+- Is profile active/enabled?
+- Is city/location saved correctly?
+- Are filters too restrictive by default?
+- Does profile creation call the correct backend endpoint?
+- Is backfillMatchesForSearchProfile actually executing?
+- Does it commit rows to the user_matches table?
+- Are errors swallowed?
+
+B. /api/matches:
+- Does it query the correct user_id?
+- Does it require subscription state incorrectly?
+- Does it require matches to be created in user_matches instead of dynamically matching listings?
+- Is cutoff date filtering excluding fresh matches?
+- Is active profile filtering excluding the new profile?
+- Are new users excluded because of missing completed_onboarding/profile fields?
+
+Required behavior:
+After creating a new account and search profile:
+- user lands on app home/matches
+- relevant existing listings are matched immediately
+- matches appear without waiting for scheduled ingestion
+- refresh does not remove them
+
+If background backfill is async:
+- show loading state while seeding
+- poll/refetch until matches arrive
+- show “We zoeken je eerste matches...” instead of empty state during first backfill
+
+Add server logs:
+- profile created: id, user_id, city, active
+- backfill started/completed/failed
+- count of candidate listings
+- count of inserted user_matches
+- /api/matches returned count
+
+Add client logs in dev:
+- profile creation success id
+- query invalidation fired
+- matches refetch count
+
+Smoke test:
+- create fresh account
+- create Berlin/München profile
+- confirm matches appear
+- refresh app
+- confirm matches remain
+
+==================================================
+2. FIX EMPTY-STATE TRANSLATION KEYS
+==================================================
+
+Home currently displays:
+- home.emptyTitle
+- home.emptySubtitle
+
+This means missing i18n keys or wrong namespace.
+
+Fix translations for NL/EN/DE.
+
+Dutch:
+home.emptyTitle = "Nog geen zoekopdrachten"
+home.emptySubtitle = "Maak je eerste zoekprofiel aan en ontvang direct woningmatches."
+
+Button:
+"Zoekprofiel aanmaken"
+
+Also check all empty states:
+- home
+- matches
+- favorites
+- search profiles
+No raw translation keys should be visible anywhere.
+
+Smoke test:
+- no profile state
+- empty home state shows real Dutch copy
+- no raw keys visible
+
+==================================================
+3. FIX PAID SUBSCRIPTION STILL SHOWING TRIAL
+==================================================
+
+Subscription page still shows:
+- “Proefperiode”
+- “Proefperiode eindigt 28 mei 2026”
+
+But the user purchased a paid 2-month plan.
+
+Investigate:
+- frontend subscription data source
+- backend /api/subscription response
+- local DB subscription fields
+- Stripe subscription fields
+- whether stale trial data remains in DB
+- whether frontend chooses trial_ends_at before status/plan
+- whether status is still trialing incorrectly
+- whether plan name is overwritten by trial logic
+
+Correct rules:
+- If Stripe status = active and a paid price exists:
+  show paid plan, never trial
+- Paid 2-month plan:
+  title: “Premium 2 maanden”
+  status badge: “Actief”
+  if cancel_at_period_end=true:
+    status badge: “Opgezegd”
+    subtitle: “Loopt af op [current_period_end]”
+  expiry date: Stripe current_period_end
+- Trial only:
+  title: “Proefperiode”
+  status badge: “Proefperiode”
+  expiry: trial_end
+
+Frontend rule:
+Do NOT infer trial from trial_ends_at alone.
+Only show trial if subscription.status === "trialing" AND no active paid subscription overrides it.
+
+Backend rule:
+If Stripe says active paid:
+- clear or ignore trial display fields
+- store status active
+- store plan interval/plan label
+- store current_period_end as access_until
+
+Add diagnostics:
+- show/log raw subscription status, plan, trial_end, current_period_end, cancel_at_period_end in admin/debug logs
+
+Smoke test:
+- paid 2-month subscription shows Premium 2 maanden
+- no “Proefperiode” text
+- expiry is 2 months from purchase
+- cancellation keeps same expiry date
+
+==================================================
+4. SUBSCRIPTION PAGE TYPOGRAPHY / BRANDING
+==================================================
+
+Make subscription page more robust and premium.
+
+Typography:
+- Main title: larger, bolder
+- Status badge: bigger, stronger
+- Intro/access text: larger
+- Row labels and values: larger
+- Values bold
+- More spacing between rows
+
+Suggested mobile sizes:
+- page title: 30–34px / 800
+- card title: 34–40px / 800
+- status badge: 16–18px / 800
+- body text: 20–22px
+- table row labels: 20–22px
+- table values: 20–22px / 700
+
+Brand colors:
+- Purple: #bbadfb
+- Purple icon/text: #171429
+- Green: #85fb8c
+- Green icon/text: #223546
+- Black: #111111
+- App background: #f6f6f6
+
+Icons:
+- purple icon backgrounds use #bbadfb
+- icon itself #171429
+- green success icons use #85fb8c
+- icon/text #223546
+
+No pale green status badges for trial/active unless exact #85fb8c is intended.
+
+==================================================
+5. FINAL ACCEPTANCE CHECK
+==================================================
+
+Pass only when:
+
+A. Fresh account
+- creates profile
+- matches appear
+- no empty matches bug
+
+B. Empty home
+- no raw i18n keys
+- Dutch text visible
+
+C. Paid subscription
+- shows Premium 2 maanden
+- no Proefperiode text
+- correct 2-month end date
+
+D. Cancelled paid subscription
+- shows Opgezegd / active until real period end
+- no cancel button
+
+E. Visual
+- subscription page text is noticeably larger and more premium
+- exact HousAlert colors used

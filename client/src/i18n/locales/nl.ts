@@ -182,6 +182,8 @@ export const nl: Record<string, any> = {
     deleteDesc: "Weet je zeker dat je je zoekopdracht wil verwijderen? Je kunt altijd een nieuwe toevoegen!",
     deleteNo: "Nee",
     deleteYes: "Ja",
+    emptyTitle: "Nog geen zoekopdrachten",
+    emptySubtitle: "Maak je eerste zoekprofiel aan en ontvang direct woningmatches.",
   },
 
   matches: {
