@@ -454,7 +454,7 @@ export const nl: Record<string, any> = {
     zoekbuddy: "Zoekbuddy beheren",
     reactionLetter: "Reactiebrief",
     faq: "Hoe werkt HousAlert",
-    contactUs: "Contacteer ons",
+    contactUs: "Support",
     termsConditions: "Algemene voorwaarden",
     privacyPolicy: "Privacybeleid",
     pushNotSupported: "Push-meldingen worden niet ondersteund door deze browser",
