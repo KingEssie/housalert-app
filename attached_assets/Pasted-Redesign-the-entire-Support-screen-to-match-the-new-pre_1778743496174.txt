@@ -1,0 +1,277 @@
+Redesign the entire Support screen to match the new premium HousAlert branding and visual system already used in the app.
+
+IMPORTANT:
+Do NOT redesign functionality.
+Only redesign the UI/UX and spacing.
+Keep all existing routing, API calls, support ticket logic, WhatsApp logic and links working exactly as they are.
+
+GOAL:
+The screen should feel:
+- premium
+- calm
+- minimal
+- modern startup/Apple inspired
+- airy with lots of whitespace
+- fully consistent with the rest of the HousAlert app
+
+ABSOLUTELY NO:
+- dark backgrounds
+- neon SaaS styling
+- heavy shadows
+- crowded layouts
+- overly colorful UI
+
+========================================
+GLOBAL STYLING
+========================================
+
+Background:
+- Use the same light app background used throughout HousAlert:
+  #f6f6f6
+
+Cards:
+- Pure white background
+- NO visible shadow
+- Very subtle border only:
+  border: 1px solid #eeeeee
+- Border radius: 28px
+
+Spacing:
+- Add significantly more vertical whitespace
+- Larger padding between sections
+- Calm breathable layout
+
+Typography:
+- Main text: #111111
+- Secondary text: #7d7d7d
+- Headings bold and clean
+- Avoid tiny text
+
+========================================
+HEADER
+========================================
+
+Header layout:
+- Back button on left
+- HousAlert logo next to it
+- Small purple “SUPPORT” badge
+
+Header background:
+- Transparent/light
+- No dark/navy sections
+
+Logo:
+- Use black HousAlert logo
+- Purple accent allowed
+
+Back button:
+- White circular button
+- Black icon
+- Soft border only
+
+========================================
+HERO SECTION
+========================================
+
+Large heading:
+“Hoe kunnen we je helpen?”
+
+Styling:
+- Large bold typography
+- Split heading accent:
+  “je helpen?” in purple (#bbadfb)
+
+Subtitle:
+“We staan voor je klaar.”
+
+Add lots of whitespace around hero section.
+
+OPTIONAL:
+Keep/support illustration on right side if available.
+If illustration exists:
+- soft purple tones
+- subtle/minimal
+- not cartoonish
+
+========================================
+SUPPORT MESSAGE CARD
+========================================
+
+White rounded card.
+
+Top row:
+- Purple rounded square/circle icon background (#ede7ff)
+- Black icon inside
+- NO purple icons
+- Icons must be black with purple background
+
+Card title:
+“Stuur ons een bericht”
+
+Description:
+“Ons team helpt je zo snel mogelijk verder.”
+
+Form fields:
+- White inputs
+- Light border #ececec
+- Rounded 18px
+- Black text
+- Placeholder gray
+- Purple focus state (#bbadfb)
+
+Textarea:
+- Taller
+- Comfortable spacing
+- Calm UI
+
+Send button:
+- Full width
+- Background #85fb8c
+- Black text
+- Fully rounded pill:
+  border-radius: 9999px
+- No clipping
+- Premium spacing
+
+========================================
+FAQ CARD
+========================================
+
+Single clean white card.
+
+Icon:
+- Black icon
+- Purple rounded background (#ede7ff)
+
+Text:
+“Hoe werkt HousAlert”
+Subtitle:
+“Bekijk veelgestelde vragen en uitleg”
+
+Chevron on right.
+
+Entire card clickable.
+
+NO external-link icon.
+
+========================================
+WHATSAPP SECTION
+========================================
+
+This should be visually secondary.
+
+Label:
+“Liever WhatsApp?”
+
+Smaller and subtle gray uppercase label.
+
+Card:
+- White
+- Minimal
+- No heavy emphasis
+
+Icon:
+- Black WhatsApp icon
+- Purple background
+
+Text:
+“Stuur ons snel een bericht via WhatsApp”
+
+External icon allowed but subtle.
+
+========================================
+LEGAL LINKS
+========================================
+
+Two clean list items:
+- Algemene voorwaarden
+- Privacybeleid
+
+Use:
+- White background
+- Thin separators
+- Chevron right icon
+- Same premium spacing
+
+Icons:
+- Black icons
+- Purple background blocks
+
+========================================
+BOTTOM TAB BAR
+========================================
+
+Keep existing navigation logic.
+
+Style:
+- Floating rounded dark navy tabbar
+- Same as current app styling
+- Active icon green
+- Inactive icons white
+
+Do not redesign navigation structure.
+
+========================================
+MOBILE UX
+========================================
+
+Very important:
+- Add generous side padding
+- No cramped sections
+- Large tap targets
+- Proper spacing between cards
+- Comfortable scrolling
+- Avoid visual noise
+
+========================================
+REMOVE
+========================================
+
+Remove:
+- heavy shadows
+- gray gradients
+- crowded text
+- sharp corners
+- old support styling
+- inconsistent icon colors
+
+========================================
+ICON SYSTEM
+========================================
+
+ALL icons throughout support screen:
+- black icons
+- soft purple icon background (#ede7ff)
+
+No green icons.
+No gray icon circles.
+
+========================================
+FINAL RESULT
+========================================
+
+The screen should now feel:
+- calm
+- premium
+- modern
+- trustworthy
+- clean
+- emotionally soft
+- highly polished
+
+Think:
+Linear + Apple + Airbnb + modern fintech UI
+
+NOT:
+generic SaaS admin template.
+
+After implementation:
+Run a mobile smoke check and verify:
+- spacing consistency
+- proper alignment
+- buttons fully rounded
+- no shadows remain
+- background matches app
+- cards are white
+- icon system consistent
+- responsive on iPhone viewport
