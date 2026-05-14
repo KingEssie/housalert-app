@@ -16,6 +16,9 @@ import {
   FileText,
   Shield,
   Pencil,
+  Loader2,
+  Lightbulb,
+  SmilePlus,
 } from "lucide-react";
 
 const INPUT_STYLE: React.CSSProperties = {
@@ -38,6 +41,16 @@ const SUBJECT_OPTIONS = [
   "Overig",
 ];
 
+type Phase = "form" | "checking_faq" | "faq_suggestions" | "submitting" | "sent" | "deflected";
+
+interface FaqSuggestion {
+  id: string;
+  title: string;
+  summary: string;
+  url: string;
+  score: number;
+}
+
 function IconBox({ children }: { children: React.ReactNode }) {
   return (
     <div
@@ -52,21 +65,15 @@ function IconBox({ children }: { children: React.ReactNode }) {
 function HeroIllustration() {
   return (
     <svg width="120" height="110" viewBox="0 0 120 110" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      {/* sparkle top-left */}
       <path d="M14 18 L16 14 L18 18 L22 20 L18 22 L16 26 L14 22 L10 20 Z" fill="#bbadfb" opacity="0.5" />
-      {/* sparkle top-right */}
       <path d="M96 8 L97.5 5 L99 8 L102 9.5 L99 11 L97.5 14 L96 11 L93 9.5 Z" fill="#bbadfb" opacity="0.4" />
-      {/* main bubble */}
       <ellipse cx="68" cy="48" rx="46" ry="42" fill="#d3c4ff" opacity="0.25" />
       <rect x="24" y="10" width="88" height="72" rx="28" fill="#c4b2f7" opacity="0.55" />
       <rect x="24" y="10" width="88" height="72" rx="28" fill="url(#bubbleGrad)" />
-      {/* three dots */}
       <circle cx="52" cy="48" r="5" fill="white" opacity="0.9" />
       <circle cx="68" cy="48" r="5" fill="white" opacity="0.9" />
       <circle cx="84" cy="48" r="5" fill="white" opacity="0.9" />
-      {/* bubble tail */}
       <path d="M44 78 L36 96 L60 82 Z" fill="#c4b2f7" opacity="0.7" />
-      {/* mini house */}
       <rect x="50" y="88" width="20" height="16" rx="3" fill="#e8e0ff" opacity="0.9" />
       <polygon points="50,88 60,78 70,88" fill="#d0c0ff" opacity="0.9" />
       <rect x="56" y="96" width="8" height="8" rx="1.5" fill="#bbadfb" opacity="0.7" />
@@ -85,39 +92,85 @@ export default function SupportPage() {
   const [subject, setSubject] = useState("");
   const [customSubject, setCustomSubject] = useState("");
   const [message, setMessage] = useState("");
-  const [sending, setSending] = useState(false);
-  const [sent, setSent] = useState(false);
+  const [phase, setPhase] = useState<Phase>("form");
   const [error, setError] = useState<string | null>(null);
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [faqSuggestions, setFaqSuggestions] = useState<FaqSuggestion[]>([]);
 
   const MAX_CHARS = 1000;
   const effectiveSubject = subject === "Overig" ? customSubject : subject;
 
-  async function handleSend() {
+  async function getAuthHeaders() {
+    const { data: { session } } = await supabase.auth.getSession();
+    return session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {};
+  }
+
+  async function handleSendClick() {
     if (!effectiveSubject.trim() || !message.trim()) return;
-    setSending(true);
+    setPhase("checking_faq");
     setError(null);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const res = await apiFetch("/api/support/faq-suggestions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(await getAuthHeaders()) },
+        body: JSON.stringify({ subject, message, customSubject }),
+      });
+      const data = await res.json().catch(() => ({ suggestions: [] }));
+      const suggestions: FaqSuggestion[] = data.suggestions || [];
+      if (suggestions.length > 0) {
+        setFaqSuggestions(suggestions);
+        setPhase("faq_suggestions");
+      } else {
+        await submitTicket();
+      }
+    } catch {
+      await submitTicket();
+    }
+  }
+
+  async function submitTicket() {
+    setPhase("submitting");
+    setError(null);
+    try {
       const res = await apiFetch("/api/support/tickets", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
-        },
+        headers: { "Content-Type": "application/json", ...(await getAuthHeaders()) },
         body: JSON.stringify({ subject: effectiveSubject.trim(), message: message.trim() }),
       });
       if (!res.ok) {
         const d = await res.json().catch(() => ({}));
         throw new Error(d.error || "Failed");
       }
-      setSent(true);
+      setPhase("sent");
     } catch {
       setError("Er is iets misgegaan. Probeer het opnieuw.");
-    } finally {
-      setSending(false);
+      setPhase("form");
     }
   }
+
+  async function handleDeflect(faqId: string) {
+    try {
+      await apiFetch("/api/support/faq-deflected", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...(await getAuthHeaders()) },
+        body: JSON.stringify({ faqId, subject }),
+      });
+    } catch {}
+    setPhase("deflected");
+  }
+
+  function resetForm() {
+    setPhase("form");
+    setSubject("");
+    setCustomSubject("");
+    setMessage("");
+    setFaqSuggestions([]);
+    setError(null);
+  }
+
+  const isChecking = phase === "checking_faq";
+  const isSubmitting = phase === "submitting";
+  const busy = isChecking || isSubmitting;
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#f6f6f6" }}>
@@ -135,9 +188,7 @@ export default function SupportPage() {
         >
           <ChevronLeft className="w-5 h-5" style={{ color: "#111111" }} />
         </button>
-
         <HousAlertLogo height={18} />
-
         <span
           className="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wide"
           style={{ backgroundColor: "#ede7ff", color: "#7c5cbf" }}
@@ -163,44 +214,118 @@ export default function SupportPage() {
         </div>
 
         {/* ── Support ticket card ── */}
-        <div
-          className="bg-white rounded-[28px] p-6"
-          style={{ border: "1px solid #eeeeee" }}
-        >
-          <div className="flex items-center gap-3.5 mb-5">
-            <IconBox>
-              <MessageSquare className="w-5 h-5" style={{ color: "#111111" }} />
-            </IconBox>
-            <div>
-              <p className="text-[17px] font-bold" style={{ color: "#111111" }}>Stuur ons een bericht</p>
-              <p className="text-[13px] mt-0.5" style={{ color: "#7d7d7d" }}>Ons team helpt je zo snel mogelijk verder.</p>
-            </div>
-          </div>
+        <div className="bg-white rounded-[28px] p-6" style={{ border: "1px solid #eeeeee" }}>
 
-          {sent ? (
+          {/* Card header — always visible */}
+          {phase !== "faq_suggestions" && (
+            <div className="flex items-center gap-3.5 mb-5">
+              <IconBox>
+                {phase === "deflected"
+                  ? <SmilePlus className="w-5 h-5" style={{ color: "#111111" }} />
+                  : <MessageSquare className="w-5 h-5" style={{ color: "#111111" }} />
+                }
+              </IconBox>
+              <div>
+                <p className="text-[17px] font-bold" style={{ color: "#111111" }}>Stuur ons een bericht</p>
+                <p className="text-[13px] mt-0.5" style={{ color: "#7d7d7d" }}>Ons team helpt je zo snel mogelijk verder.</p>
+              </div>
+            </div>
+          )}
+
+          {/* ── PHASE: sent ── */}
+          {phase === "sent" && (
             <div className="flex flex-col items-center py-8 gap-3">
-              <div
-                className="w-16 h-16 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: "#edfbf0" }}
-              >
+              <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: "#edfbf0" }}>
                 <CheckCircle className="w-8 h-8" style={{ color: "#16a34a" }} />
               </div>
               <p className="text-[18px] font-bold text-center" style={{ color: "#111111" }}>Bericht verzonden!</p>
               <p className="text-[14px] text-center leading-relaxed" style={{ color: "#7d7d7d" }}>
                 Ons team helpt je zo snel mogelijk verder.
               </p>
-              <button
-                onClick={() => { setSent(false); setSubject(""); setCustomSubject(""); setMessage(""); }}
-                className="text-[14px] font-semibold mt-2"
-                style={{ color: "#bbadfb" }}
-                data-testid="button-send-another"
-              >
+              <button onClick={resetForm} className="text-[14px] font-semibold mt-2" style={{ color: "#bbadfb" }} data-testid="button-send-another">
                 Nog een bericht sturen
               </button>
             </div>
-          ) : (
-            <div className="flex flex-col gap-3.5">
+          )}
 
+          {/* ── PHASE: deflected ── */}
+          {phase === "deflected" && (
+            <div className="flex flex-col items-center py-8 gap-3">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: "#edfbf0" }}>
+                <SmilePlus className="w-8 h-8" style={{ color: "#16a34a" }} />
+              </div>
+              <p className="text-[18px] font-bold text-center" style={{ color: "#111111" }}>Fijn dat je geholpen bent.</p>
+              <p className="text-[14px] text-center leading-relaxed" style={{ color: "#7d7d7d" }}>
+                Heb je toch nog een vraag? Je kunt altijd een nieuw bericht sturen.
+              </p>
+              <button onClick={resetForm} className="text-[14px] font-semibold mt-2" style={{ color: "#bbadfb" }} data-testid="button-new-message">
+                Nieuw bericht sturen
+              </button>
+            </div>
+          )}
+
+          {/* ── PHASE: faq_suggestions ── */}
+          {phase === "faq_suggestions" && (
+            <div>
+              <div className="flex items-center gap-3.5 mb-4">
+                <IconBox>
+                  <Lightbulb className="w-5 h-5" style={{ color: "#111111" }} />
+                </IconBox>
+                <div>
+                  <p className="text-[17px] font-bold" style={{ color: "#111111" }}>Misschien helpt dit al</p>
+                  <p className="text-[13px] mt-0.5" style={{ color: "#7d7d7d" }}>We hebben antwoorden gevonden die passen bij je vraag.</p>
+                </div>
+              </div>
+
+              <div className="space-y-3 mb-5">
+                {faqSuggestions.map((faq) => (
+                  <button
+                    key={faq.id}
+                    onClick={() => window.open(faq.url, "_blank")}
+                    className="w-full text-left rounded-[18px] p-4 flex items-start gap-3 active:opacity-70 transition-opacity"
+                    style={{ backgroundColor: "#f9f8ff", border: "1px solid #ede7ff" }}
+                    data-testid={`button-faq-suggestion-${faq.id}`}
+                  >
+                    <div className="w-8 h-8 rounded-[10px] flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "#ede7ff" }}>
+                      <BookOpen className="w-4 h-4" style={{ color: "#7c5cbf" }} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[14px] font-bold leading-snug" style={{ color: "#111111" }}>{faq.title}</p>
+                      <p className="text-[12px] mt-1 leading-relaxed" style={{ color: "#7d7d7d" }}>{faq.summary}</p>
+                      <p className="text-[12px] font-semibold mt-2" style={{ color: "#7c5cbf" }}>
+                        Bekijk antwoord →
+                      </p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex flex-col gap-2.5">
+                <button
+                  onClick={() => handleDeflect(faqSuggestions[0]?.id || "unknown")}
+                  className="w-full py-4 rounded-full text-[15px] font-bold transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                  style={{ backgroundColor: "#85fb8c", color: "#111111" }}
+                  data-testid="button-deflect"
+                >
+                  <CheckCircle className="w-4 h-4" />
+                  Dit beantwoordt mijn vraag
+                </button>
+                <button
+                  onClick={submitTicket}
+                  className="w-full py-3.5 rounded-full text-[14px] font-semibold transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+                  style={{ backgroundColor: "#f0edfb", color: "#7c5cbf", border: "1px solid #ede7ff" }}
+                  data-testid="button-send-anyway"
+                >
+                  <Send className="w-4 h-4" />
+                  Toch bericht versturen
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ── PHASE: form / checking_faq / submitting ── */}
+          {(phase === "form" || isChecking || isSubmitting) && (
+            <div className="flex flex-col gap-3.5">
               {/* Subject select */}
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -211,10 +336,12 @@ export default function SupportPage() {
                   onChange={e => setSubject(e.target.value)}
                   onFocus={() => setFocusedField("subject")}
                   onBlur={() => setFocusedField(null)}
+                  disabled={busy}
                   className="w-full appearance-none pl-10 pr-10 py-3.5 rounded-[18px] text-[14px]"
                   style={{
                     ...(focusedField === "subject" ? INPUT_FOCUS_STYLE : INPUT_STYLE),
                     color: subject ? "#111111" : "#aaaaaa",
+                    opacity: busy ? 0.6 : 1,
                   }}
                   data-testid="select-subject"
                 >
@@ -237,13 +364,14 @@ export default function SupportPage() {
                   onChange={e => setCustomSubject(e.target.value)}
                   onFocus={() => setFocusedField("custom")}
                   onBlur={() => setFocusedField(null)}
+                  disabled={busy}
                   className="w-full px-4 py-3.5 rounded-[18px] text-[14px]"
-                  style={focusedField === "custom" ? INPUT_FOCUS_STYLE : INPUT_STYLE}
+                  style={{ ...(focusedField === "custom" ? INPUT_FOCUS_STYLE : INPUT_STYLE), opacity: busy ? 0.6 : 1 }}
                   data-testid="input-subject-custom"
                 />
               )}
 
-              {/* Textarea with icon + char count */}
+              {/* Textarea */}
               <div className="relative">
                 <div className="absolute left-4 top-4 pointer-events-none">
                   <Pencil className="w-4 h-4" style={{ color: "#aaaaaa" }} />
@@ -254,34 +382,32 @@ export default function SupportPage() {
                   onChange={e => setMessage(e.target.value.slice(0, MAX_CHARS))}
                   onFocus={() => setFocusedField("message")}
                   onBlur={() => setFocusedField(null)}
+                  disabled={busy}
                   rows={5}
                   className="w-full pl-10 pr-4 pt-4 pb-8 rounded-[18px] text-[14px] resize-none"
-                  style={focusedField === "message" ? INPUT_FOCUS_STYLE : INPUT_STYLE}
+                  style={{ ...(focusedField === "message" ? INPUT_FOCUS_STYLE : INPUT_STYLE), opacity: busy ? 0.6 : 1 }}
                   data-testid="input-message"
                 />
-                <span
-                  className="absolute bottom-3 right-4 text-[11px]"
-                  style={{ color: "#cccccc" }}
-                >
+                <span className="absolute bottom-3 right-4 text-[11px]" style={{ color: "#cccccc" }}>
                   {message.length} / {MAX_CHARS}
                 </span>
               </div>
 
               {error && (
-                <p className="text-[12px]" style={{ color: "#e11d48" }} data-testid="text-error">
-                  {error}
-                </p>
+                <p className="text-[12px]" style={{ color: "#e11d48" }} data-testid="text-error">{error}</p>
               )}
 
               <button
-                onClick={handleSend}
-                disabled={sending || !effectiveSubject.trim() || !message.trim()}
+                onClick={handleSendClick}
+                disabled={busy || !effectiveSubject.trim() || !message.trim()}
                 className="w-full py-4 rounded-full text-[15px] font-bold transition-all active:scale-[0.98] disabled:opacity-40 flex items-center justify-center gap-2 mt-1"
                 style={{ backgroundColor: "#85fb8c", color: "#111111" }}
                 data-testid="button-send"
               >
-                <Send className="w-4 h-4" />
-                {sending ? "Verzenden..." : "Verstuur bericht"}
+                {busy
+                  ? <><Loader2 className="w-4 h-4 animate-spin" /> Controleren...</>
+                  : <><Send className="w-4 h-4" /> Verstuur bericht</>
+                }
               </button>
             </div>
           )}
@@ -306,10 +432,7 @@ export default function SupportPage() {
 
         {/* ── WhatsApp — secondary ── */}
         <div>
-          <p
-            className="text-[11px] font-bold uppercase tracking-widest mb-2.5 px-1"
-            style={{ color: "#aaaaaa" }}
-          >
+          <p className="text-[11px] font-bold uppercase tracking-widest mb-2.5 px-1" style={{ color: "#aaaaaa" }}>
             Liever WhatsApp?
           </p>
           <button
@@ -333,10 +456,7 @@ export default function SupportPage() {
         </div>
 
         {/* ── Legal links ── */}
-        <div
-          className="bg-white rounded-[28px] overflow-hidden"
-          style={{ border: "1px solid #eeeeee" }}
-        >
+        <div className="bg-white rounded-[28px] overflow-hidden" style={{ border: "1px solid #eeeeee" }}>
           {[
             { label: "Algemene voorwaarden", sub: "Lees onze voorwaarden", url: "https://www.housalert.com/terms-of-service", Icon: FileText },
             { label: "Privacybeleid", sub: "Lees hoe wij met je gegevens omgaan", url: "https://www.housalert.com/privacy", Icon: Shield },
@@ -345,7 +465,7 @@ export default function SupportPage() {
               {i > 0 && <div className="h-px mx-5" style={{ backgroundColor: "#f2f2f2" }} />}
               <button
                 onClick={() => window.open(url, "_blank")}
-                className="w-full flex items-center gap-4 px-5 py-4.5 text-left transition-opacity active:opacity-70"
+                className="w-full flex items-center gap-4 px-5 text-left transition-opacity active:opacity-70"
                 style={{ paddingTop: "18px", paddingBottom: "18px" }}
                 data-testid={`button-legal-${i}`}
               >

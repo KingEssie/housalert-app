@@ -37,6 +37,8 @@ import { detectLanguage, isValidLocale } from "./i18n";
 import { computeMatchScore, getMatchReasons, computeHybridFilters } from "../shared/match-score";
 import { normalizeCity } from "../shared/city-normalize";
 import { pool as pgPool } from "./pg-pool";
+import { getFaqSuggestions } from "./support-faq";
+import { sendPushToUser } from "./notifications/push";
 import { isAdminEmail, getRecentRuns, getRunDetail, getLatestRunCities, getSourceAggregates, getDynamicCitiesReport } from "./admin";
 import { trackEvent as trackActivationEvent, getUserActivationStatus, getActivationFunnel, hasEvent as hasActivationEvent } from "./activation-events";
 import { saveCancellationFeedback, getCancellationStats } from "./cancellation-feedback";
@@ -7858,6 +7860,37 @@ export async function registerRoutes(
     }
   });
 
+  app.post("/api/support/faq-suggestions", async (req, res) => {
+    try {
+      const { subject, message, customSubject } = req.body;
+      if (!subject || !message) return res.json({ suggestions: [] });
+      const suggestions = await getFaqSuggestions(subject, message, customSubject);
+      log(`[support-faq] suggestions for subject="${subject}" → ${suggestions.length} results`);
+      res.json({ suggestions });
+    } catch (err: any) {
+      log(`[support-faq] Error: ${err.message}`);
+      res.json({ suggestions: [] });
+    }
+  });
+
+  app.post("/api/support/faq-deflected", async (req, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      const token = authHeader?.replace("Bearer ", "");
+      let userId: string | null = null;
+      if (token) {
+        const { data: { user } } = await supabase.auth.getUser(token);
+        if (user) userId = user.id;
+      }
+      const { faqId, subject } = req.body;
+      log(`[support-faq] deflected — faqId=${faqId} subject="${subject}" user=${userId?.substring(0, 8) || "anon"}`);
+      res.json({ ok: true });
+    } catch (err: any) {
+      log(`[support-faq] deflect log error: ${err.message}`);
+      res.json({ ok: true });
+    }
+  });
+
   app.post("/api/support/tickets", async (req, res) => {
     try {
       const authHeader = req.headers.authorization;
@@ -7915,10 +7948,70 @@ export async function registerRoutes(
       if (!["open", "resolved", "closed"].includes(status)) {
         return res.status(400).json({ error: "Invalid status" });
       }
+
+      const { rows: before } = await pgPool.query(
+        "SELECT status, user_id, email, subject, resolved_notified_at FROM support_tickets WHERE id = $1",
+        [id]
+      );
+      const ticket = before[0];
+      if (!ticket) return res.status(404).json({ error: "Ticket not found" });
+
       await pgPool.query(
         "UPDATE support_tickets SET status = $1, updated_at = NOW() WHERE id = $2",
         [status, id]
       );
+
+      const wasNotResolved = ticket.status !== "resolved";
+      const nowResolved = status === "resolved";
+      const notYetNotified = !ticket.resolved_notified_at;
+
+      if (wasNotResolved && nowResolved && notYetNotified && ticket.user_id) {
+        log(`[support] Sending resolved notification to user ${ticket.user_id.substring(0, 8)}...`);
+        const pushResult = await sendPushToUser(
+          ticket.user_id,
+          {
+            title: "Je supportvraag is opgelost",
+            body: "We hebben je vraag gemarkeerd als opgelost. Bedankt voor je bericht.",
+            url: "/support",
+          },
+          supabase
+        ).catch((e: any) => { log(`[support] Push failed: ${e.message}`); return { sent: 0 }; });
+
+        let emailSent = false;
+        const notifEmail = ticket.email;
+        if (notifEmail) {
+          try {
+            const { Resend } = await import("resend");
+            const apiKey = process.env.RESEND_API_KEY;
+            const fromEmail = process.env.RESEND_FROM_EMAIL || "alerts@housalert.com";
+            if (apiKey) {
+              const resend = new Resend(apiKey);
+              await resend.emails.send({
+                from: `HousAlert <${fromEmail}>`,
+                to: notifEmail,
+                subject: "Je supportvraag is opgelost",
+                html: `<div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:32px 24px">
+                  <h2 style="font-size:20px;font-weight:700;color:#111111;margin-bottom:8px">Je supportvraag is opgelost</h2>
+                  <p style="font-size:15px;color:#555555;line-height:1.6">We hebben je vraag "<strong>${ticket.subject}</strong>" gemarkeerd als opgelost. Bedankt voor je bericht.</p>
+                  <p style="font-size:15px;color:#555555;line-height:1.6">Heb je nog vragen? Je kunt altijd een nieuw bericht sturen via de app.</p>
+                  <p style="font-size:13px;color:#999999;margin-top:32px">HousAlert Team</p>
+                </div>`,
+                text: `Je supportvraag is opgelost.\n\nWe hebben je vraag "${ticket.subject}" gemarkeerd als opgelost. Bedankt voor je bericht.\n\nHousAlert Team`,
+              });
+              emailSent = true;
+            }
+          } catch (emailErr: any) {
+            log(`[support] Resolved email failed: ${emailErr.message}`);
+          }
+        }
+
+        await pgPool.query(
+          "UPDATE support_tickets SET resolved_notified_at = NOW() WHERE id = $1",
+          [id]
+        );
+        log(`[support] Resolved notification: push_sent=${(pushResult as any).sent} email_sent=${emailSent} ticket_id=${id}`);
+      }
+
       res.json({ ok: true });
     } catch (err: any) {
       log(`[support] Error updating ticket: ${err.message}`);

@@ -35,6 +35,19 @@ export async function runStartupMigration() {
   await createAdminSettingsTable();
   await createAdminSourceOverridesTable();
   await createSupportTicketsTable();
+  await ensureSupportTicketsColumns();
+}
+
+async function ensureSupportTicketsColumns() {
+  try {
+    await pool.query(`
+      ALTER TABLE support_tickets
+      ADD COLUMN IF NOT EXISTS resolved_notified_at TIMESTAMPTZ
+    `);
+    log("[MIGRATION] support_tickets.resolved_notified_at OK", "migration");
+  } catch (err: any) {
+    log(`[MIGRATION] Error adding resolved_notified_at: ${err.message}`, "migration");
+  }
 }
 
 async function createSupportTicketsTable() {

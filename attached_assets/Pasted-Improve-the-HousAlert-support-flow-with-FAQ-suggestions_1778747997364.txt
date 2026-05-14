@@ -1,0 +1,129 @@
+Improve the HousAlert support flow with FAQ suggestions before creating a ticket, and notify users when tickets are resolved.
+
+IMPORTANT:
+Do not build a full live chat.
+This should remain an async support ticket system.
+
+PART 1 — Resolved notifications
+
+Current:
+Admin can mark a support ticket as resolved, but the user is not notified.
+
+Required:
+When admin changes ticket status to resolved:
+- create an in-app notification for the user
+- if push notifications are enabled, send push notification
+- if email notifications are enabled and email system is operational, send email fallback
+
+Notification text NL:
+Title: “Je supportvraag is opgelost”
+Body: “We hebben je vraag gemarkeerd als opgelost. Bedankt voor je bericht.”
+
+Also add:
+- notification only once per transition to resolved
+- do not spam if admin clicks resolved multiple times
+- log notification result in admin/debug logs
+
+PART 2 — FAQ suggestions before ticket submission
+
+Goal:
+Before a ticket is actually created, suggest relevant FAQ items from https://www.housalert.com/faq based on the user’s subject/message.
+
+Flow:
+1. User fills support form.
+2. User taps “Verstuur bericht”.
+3. Instead of immediately creating a ticket, call a new endpoint:
+   POST /api/support/faq-suggestions
+4. Backend analyzes:
+   - selected subject
+   - optional custom subject
+   - message body
+   - user language
+5. Return 0–3 relevant FAQ suggestions.
+
+If suggestions exist:
+Show an intermediate card/modal:
+Title:
+“Misschien helpt dit al”
+
+Subtitle:
+“We hebben een paar antwoorden gevonden die bij je vraag passen.”
+
+Show each suggestion:
+- title
+- short summary
+- link to FAQ item/page
+- button/link “Bekijk antwoord”
+
+Below suggestions show two actions:
+Primary:
+“Dit beantwoordt mijn vraag”
+→ closes flow, does NOT create ticket, shows small success message:
+“Fijn dat je geholpen bent.”
+
+Secondary:
+“Toch bericht versturen”
+→ creates ticket as normal.
+
+If no suggestions exist:
+- create ticket immediately as current behavior.
+
+PART 3 — FAQ data source
+
+Preferred MVP:
+Create a local FAQ index in the app/backend based on the current FAQ page content.
+
+Structure:
+- id
+- title
+- summary
+- url
+- keywords
+- language
+
+Use simple semantic/keyword matching first:
+- subject category match
+- keyword overlap
+- fuzzy matching
+- optionally OpenAI only if already configured
+
+Do NOT scrape the website on every request.
+Cache/index FAQ data server-side.
+
+AI optional:
+If OpenAI API is configured, use it to rank FAQ items.
+If not configured, fallback to keyword matching.
+
+PART 4 — Admin visibility
+
+When a ticket is prevented by FAQ suggestion:
+Optionally log an analytics event:
+- support_faq_suggestion_shown
+- support_ticket_deflected
+- support_ticket_created_after_suggestion
+
+Admin support dashboard should show:
+- number of tickets created
+- number of FAQ deflections if easy
+
+PART 5 — UX/branding
+
+FAQ suggestion modal/card should match current Support screen branding:
+- app background #f6f6f6
+- white cards
+- black text
+- purple accents #bbadfb
+- green primary CTA #85fb8c
+- fully rounded buttons
+- icons black on soft purple background
+
+PART 6 — Smoke checks
+
+Check:
+- If message matches FAQ, suggestions appear before ticket creation.
+- Clicking “Dit beantwoordt mijn vraag” does not create ticket.
+- Clicking “Toch bericht versturen” creates ticket.
+- If no FAQ matches, ticket creates immediately.
+- Admin sees created tickets.
+- User gets notification when ticket is marked resolved.
+- Resolved notification only sends once.
