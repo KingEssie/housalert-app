@@ -1,0 +1,112 @@
+Redesign the HousAlert login screen to a modern full-screen layout inspired by Rentbird’s structure, BUT keep the HousAlert light aesthetic.
+
+Current problem:
+The login screen uses a large white card on top of a light background. It feels outdated and boxed in.
+We want a cleaner premium layout where the form is directly integrated into the page instead of inside a floating card.
+
+IMPORTANT:
+Do not change any authentication logic.
+Do not change routing.
+Do not change translations.
+Do not change forgot-password functionality.
+UI redesign only.
+
+STYLE DIRECTION:
+Keep the current HousAlert soft luxury aesthetic:
+- light gray / sand background
+- soft minimal look
+- airy spacing
+- premium mobile-first design
+
+Background:
+- Full page background color:
+  #f5f3ef or very similar soft sand/light gray tone
+- No separate white card container
+- No drop shadow card
+- No centered boxed panel
+
+Layout:
+- Content directly on the page
+- Max width centered for mobile
+- Plenty of spacing
+- Similar structure to Rentbird:
+  logo → heading → fields → CTA → divider → signup CTA → trustpilot
+
+Header:
+- HousAlert logo top-left
+- Language selector top-right
+- Keep minimal styling
+- No big wrapper around header
+
+Typography:
+- Heading:
+  “Welkom bij HousAlert!”
+- Large bold modern typography
+- Text color #111111
+- Subtitle muted gray
+
+Inputs:
+- White inputs directly on background
+- Border #e5e5e5
+- Rounded 14px
+- No shadows
+- Input text #111111
+- Placeholder #9ca3af
+- Large mobile-friendly height
+
+Forgot password:
+- Color #bbadfb
+- Subtle but visible
+- Right aligned
+
+Primary login button:
+- Background #85fb8c
+- Text/icon #223546
+- Fully rounded
+- Large height
+- Strong premium appearance
+- Subtle hover/press animation
+
+Divider:
+- Horizontal lines with “OF”
+- Soft gray lines
+- Minimal styling
+
+Secondary button:
+- “Ik ben nieuw bij HousAlert”
+- White or transparent background
+- Border #bbadfb
+- Text #171429
+- Arrow icon #171429
+- Same height as primary button
+- Fully rounded
+
+Trustpilot:
+- Keep visible at bottom
+- Minimal styling
+- Integrate naturally into background
+- No separate card/container
+
+Spacing:
+- Much more breathing room between sections
+- Similar vertical rhythm to Rentbird
+- Premium onboarding feel
+
+Remove completely:
+- large white floating login card
+- card shadow
+- boxed container look
+- old-fashioned centered panel styling
+
+Goal:
+The page should feel like a modern premium onboarding experience, not a form inside a modal/card.
+
+Smoke test:
+1. Open login on mobile
+2. Confirm no floating white card exists
+3. Confirm soft sand/light-gray background fills entire screen
+4. Confirm layout feels integrated into page
+5. Confirm login still works
+6. Confirm signup CTA still opens onboarding
+7. Confirm forgot password still works
+8. Confirm responsive behavior on iPhone Safari

@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const GREEN   = "#85fb8c";
 const PURPLE  = "#bbadfb";
+const BG      = "#f5f3ef";
 
 const LANGUAGES: { code: Locale; label: string; flag: string }[] = [
   { code: "de", label: "DE", flag: "\u{1F1E9}\u{1F1EA}" },
@@ -142,10 +143,10 @@ export default function WelcomePage() {
   }
 
   const inputBase: React.CSSProperties = {
-    height: "52px",
-    borderRadius: "12px",
+    height: "56px",
+    borderRadius: "14px",
     background: "#ffffff",
-    border: "1.5px solid #e7e7e7",
+    border: "1px solid #e5e5e5",
     padding: "0 16px",
     fontSize: "15px",
     color: "#111111",
@@ -160,200 +161,195 @@ export default function WelcomePage() {
     e.currentTarget.style.boxShadow = "0 0 0 3.5px rgba(187,173,251,0.18)";
   }
   function onBlur(e: React.FocusEvent<HTMLInputElement>) {
-    e.currentTarget.style.borderColor = "#e7e7e7";
+    e.currentTarget.style.borderColor = "#e5e5e5";
     e.currentTarget.style.boxShadow = "none";
   }
 
   return (
     <div
-      className="h-[100dvh] flex flex-col overflow-auto"
-      style={{ backgroundColor: "#f5f5f7" }}
+      className="min-h-[100dvh] flex flex-col"
+      style={{ backgroundColor: BG }}
       data-testid="welcome-page"
     >
-      {/* ── Header ── */}
+      {/* ── Header — blends into background, no card ── */}
       <header
-        className="bg-white flex items-center justify-between px-6"
+        className="flex items-center justify-between px-6"
         style={{
-          paddingTop: "max(env(safe-area-inset-top), 16px)",
-          paddingBottom: "14px",
-          borderBottom: "1px solid #f0eef4",
-          boxShadow: "0 1px 0 rgba(0,0,0,0.04)",
+          paddingTop: "max(env(safe-area-inset-top), 20px)",
+          paddingBottom: "12px",
         }}
       >
-        {/* Logo — mix-blend-mode:multiply makes white areas transparent */}
         <img
           src={logoSrc}
           alt="HousAlert"
           className="object-contain block"
-          style={{
-            height: 30,
-            width: "auto",
-            mixBlendMode: "multiply",
-          }}
+          style={{ height: 28, width: "auto", mixBlendMode: "multiply" }}
           data-testid="img-housalert-logo"
         />
         <LanguageDropdown />
       </header>
 
-      {/* ── Main ── */}
+      {/* ── Main — content directly on page, no floating card ── */}
       <main
-        className="flex-1 flex flex-col items-center justify-center px-5"
-        style={{ paddingBottom: "max(env(safe-area-inset-bottom), 32px)", paddingTop: "24px" }}
+        className="flex-1 flex flex-col w-full max-w-[440px] mx-auto px-6"
+        style={{
+          paddingTop: "32px",
+          paddingBottom: "max(env(safe-area-inset-bottom), 40px)",
+        }}
       >
-        {/* Login card */}
-        <div
-          className="w-full max-w-[420px] bg-white flex flex-col"
+        {/* Heading */}
+        <h1
           style={{
-            borderRadius: "24px",
-            border: "1px solid #eeebf3",
-            boxShadow: "0 2px 16px rgba(0,0,0,0.05), 0 8px 32px rgba(0,0,0,0.04)",
-            padding: "36px 32px 32px",
+            fontSize: "clamp(28px, 7vw, 34px)",
+            fontWeight: 800,
+            color: "#111111",
+            lineHeight: "1.08",
+            letterSpacing: "-0.03em",
+            marginBottom: "10px",
           }}
+          data-testid="text-auth-title"
         >
-          {/* Heading */}
-          <h1
-            className="font-extrabold tracking-[-0.03em]"
-            style={{ fontSize: "26px", lineHeight: "1.1", color: "#111111", marginBottom: "6px" }}
-            data-testid="text-auth-title"
-          >
-            {t("v2.welcome.title")}
-          </h1>
-          <p style={{ fontSize: "14px", color: "#888888", lineHeight: "1.5", marginBottom: "28px" }}>
-            {t("v2.welcome.subtitle") || "Inloggen op je account"}
-          </p>
+          {t("v2.welcome.title")}
+        </h1>
+        <p style={{ fontSize: "15px", color: "#888888", lineHeight: "1.55", marginBottom: "40px" }}>
+          {t("v2.welcome.subtitle") || "Inloggen op je account"}
+        </p>
 
-          {/* Form */}
-          <form onSubmit={handleLogin} className="flex flex-col" style={{ gap: "16px" }}>
+        {/* ── Form ── */}
+        <form onSubmit={handleLogin} className="flex flex-col" style={{ gap: "18px" }}>
 
-            {/* Email */}
-            <div className="flex flex-col" style={{ gap: "5px" }}>
-              <label
-                htmlFor="welcome-email"
-                style={{ fontSize: "12px", fontWeight: 500, color: "#444444", letterSpacing: "0.01em" }}
-              >
-                {t("v2.welcome.emailLabel")}
-              </label>
-              <input
-                id="welcome-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={t("v2.welcome.emailPlaceholder")}
-                required
-                style={{ ...inputBase, color: "#111111" }}
-                onFocus={onFocus}
-                onBlur={onBlur}
-                data-testid="input-email"
-              />
-            </div>
-
-            {/* Password */}
-            <div className="flex flex-col" style={{ gap: "5px" }}>
-              <label
-                htmlFor="welcome-password"
-                style={{ fontSize: "12px", fontWeight: 500, color: "#444444", letterSpacing: "0.01em" }}
-              >
-                {t("v2.welcome.passwordLabel")}
-              </label>
-              <div className="relative">
-                <input
-                  id="welcome-password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder={t("v2.welcome.passwordPlaceholder")}
-                  required
-                  style={{ ...inputBase, paddingRight: "48px" }}
-                  onFocus={onFocus}
-                  onBlur={onBlur}
-                  data-testid="input-password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-[14px] top-1/2 -translate-y-1/2 bg-transparent border-0 cursor-pointer p-0"
-                  style={{ color: "#aaaaaa" }}
-                  tabIndex={-1}
-                  data-testid="button-toggle-password"
-                >
-                  {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
-                </button>
-              </div>
-              <div className="flex justify-end" style={{ marginTop: "1px" }}>
-                <button
-                  type="button"
-                  onClick={(e) => { e.preventDefault(); navigate("/forgot-password"); }}
-                  className="bg-transparent border-0 cursor-pointer"
-                  style={{ fontSize: "12px", fontWeight: 600, color: PURPLE }}
-                  data-testid="button-forgot-password"
-                >
-                  {t("v2.welcome.forgotPassword")}
-                </button>
-              </div>
-            </div>
-
-            {/* Primary login button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full border-0 cursor-pointer flex items-center justify-center gap-[7px] transition-all active:scale-[0.97] disabled:opacity-60"
-              style={{
-                height: "52px",
-                borderRadius: "9999px",
-                background: GREEN,
-                color: "#111111",
-                fontSize: "16px",
-                fontWeight: 700,
-                letterSpacing: "-0.01em",
-                marginTop: "4px",
-                boxShadow: "0 2px 12px rgba(133,251,140,0.38)",
-              }}
-              data-testid="button-login"
+          {/* Email */}
+          <div className="flex flex-col" style={{ gap: "7px" }}>
+            <label
+              htmlFor="welcome-email"
+              style={{ fontSize: "13px", fontWeight: 600, color: "#333333", letterSpacing: "0.005em" }}
             >
-              {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  {t("v2.welcome.login")}
-                  <ArrowRight className="w-[16px] h-[16px]" strokeWidth={2.5} />
-                </>
-              )}
-            </button>
-          </form>
-
-          {/* OR divider */}
-          <div className="flex items-center gap-3" style={{ margin: "22px 0" }}>
-            <div className="flex-1" style={{ height: "1px", backgroundColor: "#eeebf3" }} />
-            <span style={{ fontSize: "11px", fontWeight: 700, color: "#bbbbbb", letterSpacing: "0.07em" }}>
-              {t("v2.welcome.or").toUpperCase()}
-            </span>
-            <div className="flex-1" style={{ height: "1px", backgroundColor: "#eeebf3" }} />
+              {t("v2.welcome.emailLabel")}
+            </label>
+            <input
+              id="welcome-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={t("v2.welcome.emailPlaceholder")}
+              required
+              style={inputBase}
+              onFocus={onFocus}
+              onBlur={onBlur}
+              data-testid="input-email"
+            />
           </div>
 
-          {/* Sign up button */}
+          {/* Password */}
+          <div className="flex flex-col" style={{ gap: "7px" }}>
+            <label
+              htmlFor="welcome-password"
+              style={{ fontSize: "13px", fontWeight: 600, color: "#333333", letterSpacing: "0.005em" }}
+            >
+              {t("v2.welcome.passwordLabel")}
+            </label>
+            <div className="relative">
+              <input
+                id="welcome-password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder={t("v2.welcome.passwordPlaceholder")}
+                required
+                style={{ ...inputBase, paddingRight: "52px" }}
+                onFocus={onFocus}
+                onBlur={onBlur}
+                data-testid="input-password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-[16px] top-1/2 -translate-y-1/2 bg-transparent border-0 cursor-pointer p-0"
+                style={{ color: "#aaaaaa" }}
+                tabIndex={-1}
+                data-testid="button-toggle-password"
+              >
+                {showPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
+              </button>
+            </div>
+            {/* Forgot password — right-aligned, purple */}
+            <div className="flex justify-end" style={{ marginTop: "2px" }}>
+              <button
+                type="button"
+                onClick={(e) => { e.preventDefault(); navigate("/forgot-password"); }}
+                className="bg-transparent border-0 cursor-pointer"
+                style={{ fontSize: "13px", fontWeight: 600, color: PURPLE, padding: 0 }}
+                data-testid="button-forgot-password"
+              >
+                {t("v2.welcome.forgotPassword")}
+              </button>
+            </div>
+          </div>
+
+          {/* Primary login button */}
           <button
-            type="button"
-            onClick={() => navigate("/onboarding/location")}
-            className="w-full cursor-pointer flex items-center justify-center gap-[7px] transition-all active:scale-[0.97]"
+            type="submit"
+            disabled={loading}
+            className="w-full border-0 cursor-pointer flex items-center justify-center gap-2 transition-all active:scale-[0.97] disabled:opacity-60"
             style={{
-              height: "52px",
-              border: `1px solid ${PURPLE}`,
+              height: "56px",
               borderRadius: "9999px",
-              color: "#111111",
-              backgroundColor: "rgba(187,173,251,0.04)",
+              background: GREEN,
+              color: "#223546",
               fontSize: "16px",
               fontWeight: 700,
               letterSpacing: "-0.01em",
+              marginTop: "6px",
+              boxShadow: "0 4px 20px rgba(133,251,140,0.40)",
             }}
-            data-testid="button-signup"
+            data-testid="button-login"
           >
-            {t("v2.welcome.signupCta")}
-            <ArrowRight className="w-[16px] h-[16px]" strokeWidth={2.5} />
+            {loading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <>
+                {t("v2.welcome.login")}
+                <ArrowRight className="w-[16px] h-[16px]" strokeWidth={2.5} />
+              </>
+            )}
           </button>
+        </form>
+
+        {/* ── OR divider ── */}
+        <div className="flex items-center gap-3" style={{ margin: "32px 0" }}>
+          <div className="flex-1" style={{ height: "1px", backgroundColor: "#e5e2db" }} />
+          <span style={{ fontSize: "11px", fontWeight: 700, color: "#bbbbbb", letterSpacing: "0.09em" }}>
+            {t("v2.welcome.or").toUpperCase()}
+          </span>
+          <div className="flex-1" style={{ height: "1px", backgroundColor: "#e5e2db" }} />
         </div>
 
-        {/* Trustpilot — just below card, anchored */}
-        <div className="flex items-center justify-center gap-[9px]" style={{ marginTop: "20px" }}>
+        {/* ── Sign-up CTA ── */}
+        <button
+          type="button"
+          onClick={() => navigate("/onboarding/location")}
+          className="w-full cursor-pointer flex items-center justify-center gap-2 transition-all active:scale-[0.97]"
+          style={{
+            height: "56px",
+            border: `1.5px solid ${PURPLE}`,
+            borderRadius: "9999px",
+            color: "#171429",
+            backgroundColor: "transparent",
+            fontSize: "16px",
+            fontWeight: 700,
+            letterSpacing: "-0.01em",
+          }}
+          data-testid="button-signup"
+        >
+          {t("v2.welcome.signupCta")}
+          <ArrowRight className="w-[16px] h-[16px]" strokeWidth={2.5} style={{ color: "#171429" }} />
+        </button>
+
+        {/* ── Trustpilot — integrated, no card ── */}
+        <div
+          className="flex items-center justify-center gap-[10px]"
+          style={{ marginTop: "40px" }}
+        >
           <span style={{ fontSize: "12px", fontWeight: 600, color: "#999999" }}>Trustpilot</span>
           <div className="flex items-center gap-[2px]">
             {[1, 2, 3, 4, 5].map((i) => (
