@@ -29,6 +29,18 @@ export async function setupVite(server: Server, app: Express) {
     appType: "custom",
   });
 
+  // Vite dev server automatically sets X-Robots-Tag: noindex on every
+  // response, which causes Lighthouse to report the page as blocked from
+  // indexing. Strip it right before headers are flushed.
+  app.use((_req, res, next) => {
+    const origWriteHead = res.writeHead.bind(res);
+    (res as any).writeHead = function (...args: any[]) {
+      res.removeHeader("X-Robots-Tag");
+      return origWriteHead(...args);
+    };
+    next();
+  });
+
   app.use(vite.middlewares);
 
   app.use("/{*path}", async (req, res, next) => {
