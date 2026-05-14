@@ -1,0 +1,162 @@
+Fix HousAlert email branding and listing deep-link behavior.
+
+Current issues:
+1. The HousAlert logo is missing/broken in emails
+2. Listing CTA/button links directly to the external housing website
+3. Listing links should open the HousAlert listing detail page inside the app/PWA instead
+
+IMPORTANT:
+Do not change matching logic.
+Do not change email sending provider logic.
+Do not change notification scheduling.
+Only fix branding and destination URLs.
+
+==================================================
+1. EMAIL BRANDING — LOGO FIX
+==================================================
+
+Root issue:
+The current email template either:
+- references a local asset path,
+- uses a broken absolute URL,
+- or uses a PNG with background issues.
+
+Requirements:
+- Use the official HousAlert SVG wordmark (same inline SVG branding used in the app)
+- No black square backgrounds
+- No broken image placeholders
+- Logo must render correctly in Gmail, Apple Mail, Outlook, and mobile email apps
+
+Implementation:
+- Use an absolute public HTTPS URL OR inline SVG
+- Prefer inline SVG fallback-safe implementation if supported
+- Add alt text: "HousAlert"
+
+Header styling:
+- White background
+- Subtle bottom border
+- Proper spacing/padding
+- Consistent with app branding
+
+Brand colors:
+- Purple: #bbadfb
+- Purple dark text/icon: #171429
+- Green CTA: #85fb8c
+- Green dark text/icon: #223546
+- Main text: #111111
+
+==================================================
+2. LISTING LINKS MUST OPEN INSIDE HOUSALERT
+==================================================
+
+Current bad behavior:
+Email CTA links directly to:
+- funda
+- immobilienscout
+- pararius
+- housinganywhere
+etc.
+
+Correct behavior:
+Every listing CTA in emails must link to the HousAlert listing detail route first.
+
+Required behavior:
+Email CTA →
+https://app.housalert.com/listing/:id
+
+Then inside the app:
+- user sees branded detail page
+- THEN can click through to external source
+
+Do NOT send users directly away from HousAlert from the email.
+
+==================================================
+3. EMAIL CTA DESIGN
+==================================================
+
+Primary CTA button:
+- Background: #85fb8c
+- Text: #223546
+- Fully rounded
+- Bold text
+- Mobile friendly
+- Full width on small screens
+
+Button text:
+- "Bekijk woning"
+or localized equivalent
+
+==================================================
+4. LISTING CARD DESIGN
+==================================================
+
+Ensure email cards match app branding:
+
+- White card
+- Rounded corners
+- Light border
+- Listing image with rounded top corners
+- Clear typography
+- Price bold black
+- Meta text muted gray
+- Match score badge uses:
+  background #bbadfb
+  text #171429
+
+Do not use:
+- old neon green
+- old Tailwind green shades
+- blue/purple badge leftovers
+
+==================================================
+5. DEEP LINK SUPPORT
+==================================================
+
+The email links must support:
+
+A. Installed app/PWA
+- opens listing detail correctly
+
+B. Mobile browser
+- opens app.housalert.com/listing/:id
+
+C. Logged out users
+- redirect to login/signup
+- after login continue to listing detail
+
+D. Expired/deleted listing
+- graceful "listing no longer available" state
+- never blank page
+
+==================================================
+6. VERIFY ALL EMAIL TYPES
+==================================================
+
+Audit and fix links/branding in:
+- new match emails
+- support emails
+- resolved ticket emails
+- welcome emails
+- premium/payment emails
+- trial emails
+
+Ensure:
+- all use consistent branding
+- all use correct logo
+- all internal links use app.housalert.com routes first
+
+==================================================
+7. SMOKE TEST
+==================================================
+
+Test:
+1. Trigger new match email
+2. Confirm logo renders correctly
+3. Click listing CTA
+4. Opens HousAlert listing detail page
+5. External source only opens from inside listing detail
+6. Test on mobile Gmail
+7. Test on Apple Mail
+8. Test logged-out deep link flow
+9. Test expired listing fallback
+10. Verify no broken image URLs in email HTML

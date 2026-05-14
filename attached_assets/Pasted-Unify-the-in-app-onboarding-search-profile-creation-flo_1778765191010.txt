@@ -1,0 +1,129 @@
+Unify the in-app onboarding/search-profile creation flow with the website onboarding design.
+
+Current issue:
+There are two different onboarding experiences:
+1. In-app onboarding / search profile creation at app.housalert.com
+2. Website onboarding / lead/signup flow at housalert.com
+
+The website onboarding design is the correct one.
+The in-app onboarding must be updated to match the website onboarding visually and structurally.
+
+IMPORTANT:
+Do not change business logic.
+Do not change auth logic.
+Do not change search profile creation logic.
+Do not change backend API logic.
+Only unify UI/components/styling and route consistency.
+
+Use the website onboarding as the source of truth.
+
+MATCH WEBSITE DESIGN:
+
+1. Header
+In-app onboarding should use:
+- HousAlert logo top left
+- close X top right
+- clean white/light header
+- same spacing as website flow
+- no old app-style centered title header
+- no separate green 1/4 pill on the left
+
+2. Progress
+Use website-style progress:
+- horizontal progress bar near the top
+- step dots / progress indicator as used on website
+- purple active progress
+- no app-style green step counter
+- no different 1/4, 2/4, 3/4 blocks
+
+3. Main container
+Use website layout:
+- light app background
+- large white rounded container/card
+- same border radius
+- same spacing/padding
+- same max width behavior
+- same mobile behavior
+
+4. Step structure
+The in-app flow should mirror website steps:
+- Location step
+- Location detail step
+- Preferences/search filters step
+- Account/name step if needed
+
+Use the same titles, subtitles, cards, fields, and footer layout style from website onboarding.
+
+5. Colors
+Use exact website onboarding colors where currently used:
+- Purple active tab/progress: #bbadfb
+- Green CTA/progress where website uses green: #85fb8c
+- Dark text: #111111
+- Dark navy where needed: #223546
+- Background: same light background as website onboarding
+
+6. Controls
+Match website onboarding controls:
+- tabs/pills same style
+- sliders same style
+- toggles same style
+- inputs same style
+- dropdowns same style
+- map card same style
+- info cards same style
+- footer buttons same style
+
+7. Footer
+Use website onboarding footer:
+- estimated matches left
+- back button circular/outlined
+- Next button green pill
+- sticky bottom behavior exactly like website
+- no app-specific footer variant
+
+8. Language/content consistency
+Keep current app language if user is Dutch, but visual structure must match website.
+Do not accidentally force English unless the active locale is English.
+
+9. Remove/disable legacy in-app onboarding UI
+Find all duplicate in-app onboarding/search wizard components and either:
+- replace them with shared website onboarding components, or
+- restyle them to match exactly
+
+Do not leave two visually different flows.
+
+10. Route consistency
+When user starts onboarding from:
+- app login “Ik ben nieuw bij HousAlert”
+- app home “Zoekopdracht toevoegen”
+- website signup flow
+all should use the same onboarding UI/design system.
+
+11. Preserve existing functionality
+Must still work:
+- city selection
+- map selection
+- neighborhoods/radius/entire city
+- rent slider
+- property type
+- bedrooms
+- surface area
+- furnished
+- suitable for students/roommates/pets
+- search name
+- toggles
+- profile creation
+- backend 4-profile cap
+- profile appears on home
+- onboarding-created profile works with matches
+
+12. Smoke check
+Test:
+A. Start from app login → new account → onboarding matches website design
+B. Start from app home → add search profile → onboarding matches website design
+C. Start from website → onboarding unchanged and still works
+D. Complete full flow → search profile saved
+E. Back/next/close all work
+F. Mobile layout matches website screenshots
+G. No old green 1/4 app header remains
+H. No old app-specific onboarding cards remain

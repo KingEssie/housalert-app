@@ -145,8 +145,8 @@ function getAppBaseUrl(): string {
   return "https://app.housalert.com";
 }
 
-function wordmarkImg(baseUrl: string): string {
-  return `<img src="${baseUrl}/email-logo-v2.png" alt="HousAlert" height="28" style="display:block;height:28px;width:auto;max-width:160px;" />`;
+function wordmarkImg(_baseUrl?: string): string {
+  return `<!--[if mso]><span style="font-family:Arial,sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;color:#111111;">HOUSALERT</span><![endif]--><!--[if !mso]><!--><svg height="26" viewBox="0 0 148 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;height:26px;width:auto;max-width:160px;" role="img" aria-label="HousAlert"><line x1="8" y1="24" x2="16" y2="4" stroke="#bbadfb" stroke-width="2.8" stroke-linecap="round"/><text x="22" y="20" fill="#111111" font-size="15" font-weight="800" letter-spacing="0.9" font-family="-apple-system,BlinkMacSystemFont,Arial,sans-serif">HOUSALERT</text></svg><!--<![endif]-->`;
 }
 
 function emailWrapper(content: string, preheader?: string, lang: ServerLocale = "nl", footerOverride?: string, buddyUnsubscribeUrl?: string): string {
@@ -169,7 +169,7 @@ ${preheaderHtml}
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;">
 
 <!-- HEADER -->
-<tr><td style="padding:28px 24px 0;">
+<tr><td style="padding:20px 28px 18px;background-color:#ffffff;border-bottom:1px solid ${C.border};">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr>
     <td style="vertical-align:middle;">
@@ -185,21 +185,21 @@ ${preheaderHtml}
 </td></tr>
 
 <!-- TAGLINE -->
-<tr><td style="padding:6px 24px 20px;">
+<tr><td style="padding:8px 28px 18px;">
   <p style="margin:0;font-size:12px;color:${C.textSecondary};letter-spacing:0.01em;font-family:${FONT_STACK};">${escapeHtml(t(lang, "email.tagline"))}</p>
 </td></tr>
 
 <!-- DIVIDER -->
-<tr><td style="padding:0 24px;"><div style="border-top:1px solid ${C.border};"></div></td></tr>
+<tr><td style="padding:0 28px;"><div style="border-top:1px solid ${C.border};"></div></td></tr>
 
 <!-- CONTENT -->
-<tr><td style="padding:28px 24px;">
+<tr><td style="padding:28px 28px;">
   ${content}
 </td></tr>
 
 <!-- FOOTER -->
-<tr><td style="padding:0 24px;"><div style="border-top:1px solid ${C.border};"></div></td></tr>
-<tr><td style="padding:20px 24px 36px;">
+<tr><td style="padding:0 28px;"><div style="border-top:1px solid ${C.border};"></div></td></tr>
+<tr><td style="padding:20px 28px 36px;">
   <p style="margin:0 0 6px;font-size:12px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
     ${escapeHtml(footerOverride || t(lang, "email.footer"))}
   </p>
@@ -231,7 +231,7 @@ function upgradeImageUrl(url: string): string {
 
 function ctaButton(href: string, label: string, primary: boolean): string {
   const bg = primary ? C.green : C.white;
-  const fg = primary ? C.text : C.primary;
+  const fg = primary ? C.primary : C.primary;
   const borderColor = primary ? C.green : C.primary;
   return `<tr><td align="center" style="padding:0 0 ${primary ? "10px" : "0"};">
           <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${escapeHtml(href)}" style="height:54px;v-text-anchor:middle;width:100%;" arcsize="33%" strokecolor="${borderColor}" fillcolor="${bg}"><w:anchorlock/><center style="color:${fg};font-family:Arial,sans-serif;font-size:16px;font-weight:700;">${escapeHtml(label)}</center></v:roundrect><![endif]-->
@@ -244,10 +244,10 @@ function ctaButton(href: string, label: string, primary: boolean): string {
 function listingCard(listing: ListingInfo, showButton = false, cardNumber?: number, lang: ServerLocale = "nl"): string {
   const safeUrl = sanitizeUrl(listing.url);
   const baseUrl = getAppBaseUrl();
-  const applyUrl = listing.listing_id ? `${baseUrl}/apply/${listing.listing_id}` : null;
+  const listingDetailUrl = listing.listing_id ? `${baseUrl}/listing/${listing.listing_id}` : null;
   const rawImageUrl = sanitizeUrl(listing.image_url);
   const safeImageUrl = rawImageUrl ? upgradeImageUrl(rawImageUrl) : null;
-  const linkTarget = safeUrl || applyUrl || "#";
+  const linkTarget = listingDetailUrl || safeUrl || "#";
 
   const fallbackImageHtml = `<tr><td style="padding:0;line-height:0;font-size:0;">
         <a href="${escapeHtml(linkTarget)}" target="_blank" style="text-decoration:none;">
@@ -283,10 +283,10 @@ function listingCard(listing: ListingInfo, showButton = false, cardNumber?: numb
 
   const ctaRows: string[] = [];
   if (showButton) {
-    if (safeUrl) {
+    if (listingDetailUrl) {
+      ctaRows.push(ctaButton(listingDetailUrl, t(lang, "email.viewProperty"), true));
+    } else if (safeUrl) {
       ctaRows.push(ctaButton(safeUrl, t(lang, "email.viewProperty"), true));
-    } else if (applyUrl) {
-      ctaRows.push(ctaButton(applyUrl, t(lang, "email.viewProperty"), true));
     }
   }
 

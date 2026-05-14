@@ -239,7 +239,7 @@ function Router() {
       <Route path="/dashboard" component={() => <ProtectedRoute component={DashboardPage} />} />
       <Route path="/dashboard/searches/new" component={() => <BuddyProtectedRoute component={AppSearchWizard} skipOnboardingCheck />} />
       <Route path="/dashboard/searches/edit/:id" component={() => <BuddyProtectedRoute component={AppSearchWizard} skipOnboardingCheck />} />
-      <Route path="/listing/:id" component={() => <ProtectedRoute component={ListingDetailPage} />} />
+      <Route path="/listing/:id" component={ListingDetailPage} />
       <Route path="/apply/:id" component={() => <ProtectedRoute component={ApplyPage} />} />
       <Route path="/flow/:flowId/:stepId" component={() => <ProtectedRoute component={FlowPage} />} />
       <Route path="/documents" component={() => <ProtectedRoute component={DocumentsPage} />} />

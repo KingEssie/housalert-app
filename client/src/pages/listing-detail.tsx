@@ -328,7 +328,7 @@ export default function ListingDetailPage() {
         )}
       </div>
 
-      <main className={`flex-1 max-w-xl mx-auto w-full px-5 pt-4 ${hasActiveSub ? "pb-28" : "pb-8"}`}>
+      <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-4 pb-32">
         <h1 className="text-[20px] font-semibold text-ha-text leading-[1.3]" data-testid="text-listing-title">
           {listing.title}
         </h1>
@@ -396,9 +396,9 @@ export default function ListingDetailPage() {
         })()}
       </main>
 
-      {hasActiveSub && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-ha-divider px-5 pt-3 z-10" style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))" }}>
-          <div className="max-w-xl mx-auto">
+      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-ha-divider px-5 pt-3 z-10" style={{ paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))" }}>
+        <div className="max-w-xl mx-auto flex flex-col gap-2">
+          {hasActiveSub && (
             <Button
               onClick={() => navigate(`/apply/${listing.id}`)}
               className="w-full h-[48px] rounded-full bg-ha-primary hover:bg-ha-primary-hover text-white text-[16px] font-semibold flex items-center justify-center gap-2"
@@ -408,9 +408,21 @@ export default function ListingDetailPage() {
               <Zap className="w-4 h-4" />
               {t("listing.applyDirect")}
             </Button>
-          </div>
+          )}
+          {listing.url && (
+            <a
+              href={listing.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full h-[44px] rounded-full border border-ha-card-border bg-white text-[15px] font-semibold text-ha-text flex items-center justify-center gap-2 active:bg-ha-surface transition-colors"
+              data-testid="link-view-source"
+            >
+              <Globe className="w-4 h-4 text-ha-text-secondary" />
+              {formatSourceDisplay(listing.source)}
+            </a>
+          )}
         </div>
-      )}
+      </div>
 
       {showBlockModal && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={() => setShowBlockModal(false)}>
