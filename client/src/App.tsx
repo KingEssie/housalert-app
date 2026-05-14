@@ -39,7 +39,7 @@ import OnboardingPasswordNew from "@/pages/onboarding/password";
 import OnboardingPreferencesNew from "@/pages/onboarding/preferences";
 import ContinueDraftPage from "@/pages/continue-draft";
 import AuthCallbackPage from "@/pages/auth-callback";
-import { DocumentenGuidePage, SchufaGuidePage, ZoekstrategieGuidePage, NetwerkGuidePage } from "@/pages/guide";
+import { DocumentenGuidePage, SchufaGuidePage, ZoekstrategieGuidePage, NetwerkGuidePage, FinancienGuidePage, VerhuurdersGuidePage, FacebookGuidePage, NieuwbouwGuidePage, OpvolgingGuidePage } from "@/pages/guide";
 import DeleteAccountPage from "@/pages/delete-account";
 import SubscriptionSuccessPage from "@/pages/subscription-success";
 import CheckoutSuccessPage from "@/pages/checkout-success";
@@ -251,6 +251,11 @@ function Router() {
       <Route path="/tips/schufa" component={() => <ProtectedRoute component={SchufaGuidePage} />} />
       <Route path="/tips/zoekstrategie" component={() => <ProtectedRoute component={ZoekstrategieGuidePage} />} />
       <Route path="/tips/netwerk" component={() => <ProtectedRoute component={NetwerkGuidePage} />} />
+      <Route path="/tips/financien" component={() => <ProtectedRoute component={FinancienGuidePage} />} />
+      <Route path="/tips/verhuurders" component={() => <ProtectedRoute component={VerhuurdersGuidePage} />} />
+      <Route path="/tips/facebook" component={() => <ProtectedRoute component={FacebookGuidePage} />} />
+      <Route path="/tips/nieuwbouw" component={() => <ProtectedRoute component={NieuwbouwGuidePage} />} />
+      <Route path="/tips/opvolging" component={() => <ProtectedRoute component={OpvolgingGuidePage} />} />
       <Route path="/settings" component={() => <ProtectedRoute component={SettingsPage} />} />
       <Route path="/settings/preferences" component={() => <ProtectedRoute component={PreferencesPage} />} />
       <Route path="/settings/housing" component={() => <BuddyProtectedRoute component={HousingSituationPage} />} />
