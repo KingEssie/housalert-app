@@ -224,25 +224,11 @@ export default function OnboardingSlideshow() {
         >
           <img
             src={logoSrc}
-            alt="HousAlert logo"
-            className="object-contain"
-            style={{ width: 44, height: 44, filter: "brightness(0) invert(1)" }}
+            alt="HousAlert"
+            className="object-contain block"
+            style={{ height: 52, width: "auto", filter: "brightness(0) invert(1)" }}
             data-testid="img-brand-logo"
           />
-          <span
-            style={{
-              color: "white",
-              fontSize: "17px",
-              fontWeight: 600,
-              fontFamily: "'Poppins', sans-serif",
-              letterSpacing: "0.02em",
-              marginTop: "5px",
-              textTransform: "lowercase" as const,
-            }}
-            data-testid="text-brand-name"
-          >
-            housalert
-          </span>
         </div>
       </div>
 

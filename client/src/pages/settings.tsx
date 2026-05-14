@@ -1,6 +1,7 @@
 import { useAuth } from "@/lib/auth";
 import { useLocation } from "wouter";
 import { useState } from "react";
+import { logoSrc } from "@/components/housalert-logo";
 import { supabase } from "@/lib/supabase";
 import { useTranslation } from "@/i18n";
 import {
@@ -177,8 +178,13 @@ export default function SettingsPage() {
             </button>
           </div>
 
-          <div className="flex flex-col items-center gap-1 pt-4 pb-2">
-            <p className="text-[14px] font-semibold text-[#111111]">HousAlert</p>
+          <div className="flex flex-col items-center gap-2 pt-4 pb-2">
+            <img
+              src={logoSrc}
+              alt="HousAlert"
+              className="object-contain block"
+              style={{ height: 22, width: "auto", filter: "brightness(0)" }}
+            />
             <p className="text-[12px]" style={{ color: "#8f8798" }}>v1.0.0</p>
           </div>
         </div>

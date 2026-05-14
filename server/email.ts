@@ -87,13 +87,16 @@ interface ListingInfo {
 
 const C = {
   white: "#FFFFFF",
-  bg: "#FFFFFF",
-  text: "#111827",
-  textSecondary: "#6B7280",
-  border: "#E5E7EB",
-  primary: "#11358B",
-  primaryHover: "#0e2b72",
-  lightBg: "#F9FAFB",
+  bg: "#f6f6f6",
+  text: "#111111",
+  textSecondary: "#666666",
+  border: "#ece7ef",
+  primary: "#223546",
+  primaryHover: "#1a2b38",
+  lightBg: "#faf9ff",
+  purple: "#bbadfb",
+  green: "#85fb8c",
+  cardBg: "#faf9ff",
 };
 
 const FONT_STACK = "Poppins, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
@@ -142,25 +145,25 @@ function getAppBaseUrl(): string {
   return "https://app.housalert.com";
 }
 
-function pinIconSvg(): string {
-  return `<img src="https://app.housalert.com/email-logo-v2.png" alt="HousAlert" width="32" height="32" style="display:block;width:32px;height:32px;border-radius:8px;" />`;
+function wordmarkImg(baseUrl: string): string {
+  return `<img src="${baseUrl}/email-logo-v2.png" alt="HousAlert" height="28" style="display:block;height:28px;width:auto;max-width:160px;" />`;
 }
 
 function emailWrapper(content: string, preheader?: string, lang: ServerLocale = "nl", footerOverride?: string, buddyUnsubscribeUrl?: string): string {
   const baseUrl = getAppBaseUrl();
   const preheaderHtml = preheader
-    ? `<div style="display:none;font-size:1px;color:${C.white};line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">${escapeHtml(preheader)}</div>`
+    ? `<div style="display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">${escapeHtml(preheader)}</div>`
     : "";
   return `<!DOCTYPE html>
 <html lang="${lang}">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>HousAlert</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <!--[if mso]><style>table,td{font-family:Arial,sans-serif!important;}</style><![endif]-->
 </head>
-<body style="margin:0;padding:0;background-color:${C.white};font-family:${FONT_STACK};-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+<body style="margin:0;padding:0;background-color:${C.bg};font-family:${FONT_STACK};-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
 ${preheaderHtml}
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${C.white};">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${C.bg};">
 <tr><td align="center" style="padding:0;">
 
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;">
@@ -169,11 +172,10 @@ ${preheaderHtml}
 <tr><td style="padding:28px 24px 0;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr>
-    <td style="vertical-align:middle;width:36px;">
-      ${pinIconSvg()}
-    </td>
-    <td style="vertical-align:middle;padding-left:10px;">
-      <a href="${baseUrl}" target="_blank" style="text-decoration:none;font-size:18px;font-weight:600;color:${C.text};font-family:${FONT_STACK};letter-spacing:-0.01em;">housalert</a>
+    <td style="vertical-align:middle;">
+      <a href="${baseUrl}" target="_blank" style="text-decoration:none;display:inline-block;">
+        ${wordmarkImg(baseUrl)}
+      </a>
     </td>
     <td align="right" style="vertical-align:middle;">
       <a href="${baseUrl}/instellingen" target="_blank" style="font-size:13px;color:${C.textSecondary};text-decoration:none;font-family:${FONT_STACK};">${escapeHtml(t(lang, "email.settings"))}</a>
@@ -183,7 +185,7 @@ ${preheaderHtml}
 </td></tr>
 
 <!-- TAGLINE -->
-<tr><td style="padding:4px 24px 20px 70px;">
+<tr><td style="padding:6px 24px 20px;">
   <p style="margin:0;font-size:12px;color:${C.textSecondary};letter-spacing:0.01em;font-family:${FONT_STACK};">${escapeHtml(t(lang, "email.tagline"))}</p>
 </td></tr>
 
@@ -197,11 +199,11 @@ ${preheaderHtml}
 
 <!-- FOOTER -->
 <tr><td style="padding:0 24px;"><div style="border-top:1px solid ${C.border};"></div></td></tr>
-<tr><td style="padding:20px 24px 32px;">
-  <p style="margin:0 0 4px;font-size:12px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
+<tr><td style="padding:20px 24px 36px;">
+  <p style="margin:0 0 6px;font-size:12px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">
     ${escapeHtml(footerOverride || t(lang, "email.footer"))}
   </p>
-  ${footerOverride ? "" : `<a href="${baseUrl}/instellingen" target="_blank" style="font-size:12px;color:${C.primary};text-decoration:none;font-family:${FONT_STACK};">${escapeHtml(t(lang, "email.manageNotifs"))}</a>`}
+  ${footerOverride ? "" : `<a href="${baseUrl}/instellingen" target="_blank" style="font-size:12px;color:${C.purple};text-decoration:none;font-family:${FONT_STACK};">${escapeHtml(t(lang, "email.manageNotifs"))}</a>`}
   ${buddyUnsubscribeUrl ? `<br><a href="${buddyUnsubscribeUrl}" target="_blank" style="font-size:11px;color:${C.textSecondary};text-decoration:underline;font-family:${FONT_STACK};">${lang === "de" ? "Suchbuddy-Benachrichtigungen abmelden" : lang === "nl" ? "Afmelden voor zoekbuddy-meldingen" : "Unsubscribe from Search Buddy alerts"}</a>` : ""}
   <p style="margin:16px 0 0;font-size:11px;color:${C.border};font-family:${FONT_STACK};">
     \u00A9 ${new Date().getFullYear()} HousAlert
@@ -228,13 +230,13 @@ function upgradeImageUrl(url: string): string {
 }
 
 function ctaButton(href: string, label: string, primary: boolean): string {
-  const bg = primary ? C.primary : C.white;
-  const fg = primary ? C.white : C.primary;
-  const borderColor = C.primary;
+  const bg = primary ? C.green : C.white;
+  const fg = primary ? C.text : C.primary;
+  const borderColor = primary ? C.green : C.primary;
   return `<tr><td align="center" style="padding:0 0 ${primary ? "10px" : "0"};">
-          <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${escapeHtml(href)}" style="height:54px;v-text-anchor:middle;width:100%;" arcsize="33%" strokecolor="${borderColor}" fillcolor="${bg}"><w:anchorlock/><center style="color:${fg};font-family:Arial,sans-serif;font-size:16px;font-weight:600;">${escapeHtml(label)}</center></v:roundrect><![endif]-->
+          <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${escapeHtml(href)}" style="height:54px;v-text-anchor:middle;width:100%;" arcsize="33%" strokecolor="${borderColor}" fillcolor="${bg}"><w:anchorlock/><center style="color:${fg};font-family:Arial,sans-serif;font-size:16px;font-weight:700;">${escapeHtml(label)}</center></v:roundrect><![endif]-->
           <!--[if !mso]><!-->
-          <a href="${escapeHtml(href)}" target="_blank" style="display:block;background-color:${bg};color:${fg} !important;-webkit-text-fill-color:${fg};mso-line-height-rule:exactly;font-size:16px;font-weight:600;text-decoration:none;padding:17px 24px;border-radius:18px;text-align:center;mso-hide:all;-webkit-text-size-adjust:none;font-family:${FONT_STACK};${primary ? "" : `border:2px solid ${borderColor};`}"><span style="color:${fg} !important;-webkit-text-fill-color:${fg};">${escapeHtml(label)}</span></a>
+          <a href="${escapeHtml(href)}" target="_blank" style="display:block;background-color:${bg};color:${fg} !important;-webkit-text-fill-color:${fg};mso-line-height-rule:exactly;font-size:16px;font-weight:700;text-decoration:none;padding:17px 24px;border-radius:100px;text-align:center;mso-hide:all;-webkit-text-size-adjust:none;font-family:${FONT_STACK};${primary ? "" : `border:2px solid ${borderColor};`}"><span style="color:${fg} !important;-webkit-text-fill-color:${fg};">${escapeHtml(label)}</span></a>
           <!--<![endif]-->
         </td></tr>`;
 }
@@ -274,8 +276,9 @@ function listingCard(listing: ListingInfo, showButton = false, cardNumber?: numb
   if (listing.bedrooms > 0) metaParts.push(`${listing.bedrooms} ${t(lang, listing.bedrooms > 1 ? "email.rooms_plural" : "email.room")}`);
   if (listing.size_m2 > 0) metaParts.push(`${listing.size_m2} m\u00B2`);
 
+  const chipStyle = `display:inline-block;background-color:#ffffff;border:1px solid #111111;border-radius:100px;padding:4px 10px;font-size:12px;font-weight:500;color:#111111;font-family:${FONT_STACK};margin:0 4px 4px 0;`;
   const metaHtml = metaParts.length > 0
-    ? `<p style="margin:0 0 4px;font-size:13px;color:${C.textSecondary};line-height:1.5;font-family:${FONT_STACK};">${metaParts.join(`<span style="color:${C.border};"> &middot; </span>`)}</p>`
+    ? `<p style="margin:0 0 8px;line-height:1;">${metaParts.map(p => `<span style="${chipStyle}">${p}</span>`).join("")}</p>`
     : "";
 
   const ctaRows: string[] = [];
@@ -293,11 +296,11 @@ function listingCard(listing: ListingInfo, showButton = false, cardNumber?: numb
       </table>`
     : "";
 
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${C.white};border-radius:16px;overflow:hidden;margin:0 0 24px;border:1px solid ${C.border};">
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${C.cardBg};border-radius:20px;overflow:hidden;margin:0 0 20px;border:1px solid ${C.border};box-shadow:0 2px 12px rgba(0,0,0,0.06);">
 ${imageHtml}
-<tr><td style="padding:20px 20px 24px;">
-  ${cardNumber ? `<p style="margin:0 0 8px;font-size:11px;font-weight:600;color:${C.textSecondary};text-transform:uppercase;letter-spacing:0.05em;font-family:${FONT_STACK};">${escapeHtml(t(lang, "email.listingLabel"))} ${cardNumber}</p>` : ""}
-  <h3 style="margin:0 0 8px;font-size:18px;font-weight:700;color:${C.text};line-height:1.3;font-family:${FONT_STACK};">${escapeHtml(listing.title)}</h3>
+<tr><td style="padding:18px 20px 22px;">
+  ${cardNumber ? `<p style="margin:0 0 6px;font-size:11px;font-weight:600;color:${C.purple};text-transform:uppercase;letter-spacing:0.06em;font-family:${FONT_STACK};">${escapeHtml(t(lang, "email.listingLabel"))} ${cardNumber}</p>` : ""}
+  <h3 style="margin:0 0 6px;font-size:18px;font-weight:800;color:${C.text};line-height:1.25;font-family:${FONT_STACK};">${escapeHtml(listing.title)}</h3>
   ${priceLine}
   ${metaHtml}
   ${buttonHtml}

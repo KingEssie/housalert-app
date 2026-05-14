@@ -1,33 +1,28 @@
-import logoSrc from "@assets/Ontwerp_zonder_titel_1775478822000.png";
+import logoSrc from "@assets/4AFC371A-6456-4EEB-9CC2-7A2666B4AAEC_1778720699340.png";
 
 interface HousAlertLogoProps {
   size?: number;
+  height?: number;
   className?: string;
   showText?: boolean;
   textClassName?: string;
+  invert?: boolean;
 }
 
-export function HousAlertLogo({ size = 28, className = "", showText = true, textClassName }: HousAlertLogoProps) {
+export function HousAlertLogo({ size = 28, height, className = "", invert = false }: HousAlertLogoProps) {
+  const h = height ?? size;
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
-      <img
-        src={logoSrc}
-        alt="HousAlert"
-        width={size}
-        height={size}
-        className="object-contain"
-        style={{ width: size, height: size }}
-        data-testid="img-housalert-logo"
-      />
-      {showText && (
-        <span
-          className={textClassName || "font-medium text-ha-text text-[15px]"}
-          data-testid="text-logo"
-        >
-          HousAlert
-        </span>
-      )}
-    </div>
+    <img
+      src={logoSrc}
+      alt="HousAlert"
+      className={`object-contain block ${className}`}
+      style={{
+        height: h,
+        width: "auto",
+        filter: invert ? "brightness(0) invert(1)" : "brightness(0)",
+      }}
+      data-testid="img-housalert-logo"
+    />
   );
 }
 

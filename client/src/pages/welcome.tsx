@@ -159,19 +159,14 @@ export default function WelcomePage() {
         className="flex items-center justify-between px-5 pb-0"
         style={{ paddingTop: "max(env(safe-area-inset-top), 22px)" }}
       >
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center">
           <img
             src={logoSrc}
             alt="HousAlert"
-            width={34}
-            height={34}
-            className="object-contain"
-            style={{ width: 34, height: 34 }}
+            className="object-contain block"
+            style={{ height: 38, width: "auto", filter: "brightness(0) invert(1)" }}
             data-testid="img-housalert-logo"
           />
-          <span className="font-bold text-[19px] tracking-[-0.01em] text-white" data-testid="text-logo">
-            HousAlert
-          </span>
         </div>
         <LanguageDropdown />
       </header>

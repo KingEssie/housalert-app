@@ -46,9 +46,13 @@ function CardShell({ children, testId }: { children: React.ReactNode; testId?: s
 
 function CardLogo() {
   return (
-    <div className="flex items-center gap-2 mb-8">
-      <img src={logoSrc} alt="HousAlert" width={30} height={30} className="object-contain" style={{ width: 30, height: 30 }} />
-      <span className="font-bold text-white" style={{ fontSize: "17px", letterSpacing: "-0.01em" }}>HousAlert</span>
+    <div className="mb-8">
+      <img
+        src={logoSrc}
+        alt="HousAlert"
+        className="object-contain block"
+        style={{ height: 32, width: "auto", filter: "brightness(0) invert(1)" }}
+      />
     </div>
   );
 }

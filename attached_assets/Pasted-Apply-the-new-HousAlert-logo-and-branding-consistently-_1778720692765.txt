@@ -1,0 +1,123 @@
+Apply the new HousAlert logo and branding consistently across the entire product ecosystem.
+
+NEW LOGO:
+Use the uploaded “HOUS ALERT” black typography logo everywhere the old logo/wordmark is currently used.
+
+GLOBAL BRAND UPDATE
+Replace old branding in:
+- App UI
+- Splash/loading screens
+- Authentication screens
+- Onboarding
+- Account/settings
+- Premium/paywall
+- Empty states
+- Match cards
+- Favorite cards
+- E-mails
+- Push notification branding
+- AI reaction letter flows
+- Shared pages/modals
+- Referral screens
+- Footer/header branding
+- Browser tab/favicon equivalents if present
+
+1. App Branding Rules
+Visual direction:
+- minimal
+- premium
+- modern housing platform
+- bold typography
+- soft rounded UI
+- clean white/light backgrounds
+
+Primary colors:
+- light app background: #f6f6f6
+- white cards: #ffffff
+- purple accent: #bbadfb
+- green CTA: #85fb8c
+- dark navy: #223546
+- black text: #111111
+
+2. Logo usage rules
+Main logo:
+- black logo on light backgrounds
+- centered or left aligned depending on layout
+- maintain generous whitespace
+- never stretch/distort
+
+Dark surfaces:
+- use white version of logo if needed
+- otherwise keep branding containers light
+
+3. E-mail redesign
+Completely redesign outgoing e-mails to match the HousAlert app branding.
+
+E-mails should feel like an extension of the app.
+
+Use:
+- same colors
+- same typography feeling
+- same rounded cards
+- same listing structure
+- same spacing system
+
+4. Listing cards inside e-mails
+Listing cards in emails should visually mirror the in-app listing cards.
+
+Structure:
+- large rounded image
+- title
+- price
+- location
+- metadata chips
+- source badge
+- CTA button
+- favorite/save style if supported
+
+Card styling:
+- white/#faf9ff background
+- rounded corners
+- subtle borders/shadows
+- black text
+- purple accents
+- green CTA buttons
+
+5. E-mail layout
+Top:
+- HousAlert logo
+- clean header
+- subtle divider
+
+Middle:
+- personalized intro
+- listing cards
+- CTA sections
+
+Bottom:
+- account/preferences links
+- unsubscribe/settings
+- social/help links if present
+
+6. Premium feel
+Everything should now feel:
+- more editorial
+- more startup/premium
+- less generic SaaS
+- highly polished mobile-first product
+
+7. Reuse components where possible
+Avoid duplicate implementations.
+Reuse:
+- listing card styles
+- chip styles
+- button styles
+- typography tokens
+- spacing system
+- brand colors
+
+Smoke check:
+- New logo appears everywhere old branding existed.
+- Emails visually match the app.
+- Listing cards in emails resemble app listing cards closely.
+- No outdated logo remains.
