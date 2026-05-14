@@ -2184,7 +2184,7 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
       {isAdmin && (
         <button
           onClick={() => navigate("/admin/portal")}
-          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+88px)] left-1/2 -translate-x-1/2 z-40 text-black text-[14px] font-semibold px-6 py-3 rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.15)] active:scale-95 transition-transform"
+          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+78px)] left-1/2 -translate-x-1/2 z-40 text-black text-[14px] font-semibold px-6 py-3 rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.15)] active:scale-95 transition-transform"
           style={{ backgroundColor: "rgb(var(--ha-highlight))" }}
           data-testid="button-admin-portal"
         >
@@ -2451,14 +2451,11 @@ export default function DashboardPage() {
 
       <div
         className="fixed bottom-0 left-0 right-0 z-20"
-        style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 0px)" }}
+        style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
-        <div
-          className="max-w-xl mx-auto px-6"
-          style={{ paddingBottom: "max(calc(env(safe-area-inset-bottom, 0px) + 8px), 14px)" }}
-        >
+        <div className="max-w-xl mx-auto px-5 pb-[10px]">
           <nav
-            className="flex rounded-[100px] h-[66px] overflow-hidden"
+            className="flex rounded-[28px] h-[60px] overflow-hidden"
             style={{ backgroundColor: "#223546" }}
             data-testid="bottom-nav"
           >
@@ -2469,20 +2466,20 @@ export default function DashboardPage() {
                 <button
                   key={key}
                   onClick={() => setActiveTab(key)}
-                  className="flex-1 flex flex-col items-center justify-center gap-1 active:opacity-70 transition-opacity"
+                  className="flex-1 flex flex-col items-center justify-center gap-[3px] active:opacity-70 transition-opacity"
                   data-testid={`tab-${key}`}
                 >
                   {isProfileWithPhoto ? (
-                    <div className={`w-[26px] h-[26px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-ha-primary ring-offset-1 ring-offset-[#223546]" : ""}`}>
+                    <div className={`w-[24px] h-[24px] rounded-full overflow-hidden ${isActive ? "ring-[2px] ring-ha-primary ring-offset-1 ring-offset-[#223546]" : ""}`}>
                       <img src={tabPhotoUrl} alt="" className="w-full h-full object-cover" />
                     </div>
                   ) : (
                     <Icon
-                      className={`w-[24px] h-[24px] transition-colors ${isActive ? "text-ha-primary" : "text-white/85"}`}
+                      className={`w-[22px] h-[22px] transition-colors ${isActive ? "text-ha-primary" : "text-white/85"}`}
                       strokeWidth={isActive ? 2.2 : 1.6}
                     />
                   )}
-                  <span className={`text-[11px] leading-tight transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-white/85"}`}>
+                  <span className={`text-[11px] leading-none transition-colors ${isActive ? "font-semibold text-ha-primary" : "font-medium text-white/75"}`}>
                     {t(labelKey)}
                   </span>
                 </button>
