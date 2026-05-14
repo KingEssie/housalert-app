@@ -44,13 +44,11 @@ export async function runStartupMigration() {
 
 async function ensureSupportMessageTranslationColumns() {
   const cols = [
-    { name: "original_body",       sql: "TEXT" },
-    { name: "original_language",   sql: "TEXT" },
-    { name: "translated_body_nl",  sql: "TEXT" },
-    { name: "translated_body_de",  sql: "TEXT" },
-    { name: "translated_body_en",  sql: "TEXT" },
-    { name: "translation_status",  sql: "TEXT NOT NULL DEFAULT 'not_needed'" },
-    { name: "translated_at",       sql: "TIMESTAMPTZ" },
+    { name: "original_body",      sql: "TEXT" },
+    { name: "original_language",  sql: "TEXT" },
+    { name: "translations",       sql: "JSONB NOT NULL DEFAULT '{}'" },
+    { name: "translation_status", sql: "TEXT NOT NULL DEFAULT 'not_needed'" },
+    { name: "translated_at",      sql: "TIMESTAMPTZ" },
   ];
   for (const col of cols) {
     try {

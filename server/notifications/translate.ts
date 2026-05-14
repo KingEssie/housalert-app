@@ -1,13 +1,18 @@
 import { log } from "../log";
 import { pool as pgPool } from "../pg-pool";
 
-type SupportedLang = "nl" | "de" | "en";
-const SUPPORTED_LANGS: SupportedLang[] = ["nl", "de", "en"];
+export type SupportedLang = string;
+const KNOWN_LANGS = ["nl", "de", "en", "fr", "es", "tr", "ar", "pl"];
 
 const LANG_NAMES: Record<string, string> = {
   nl: "Dutch",
   de: "German",
   en: "English",
+  fr: "French",
+  es: "Spanish",
+  tr: "Turkish",
+  ar: "Arabic",
+  pl: "Polish",
 };
 
 const SENSITIVE_PATTERNS = [
@@ -37,18 +42,33 @@ async function callOpenAI(prompt: string): Promise<string | null> {
   }
 }
 
-export async function detectMsgLanguage(text: string): Promise<SupportedLang> {
+export async function detectMsgLanguage(text: string): Promise<string> {
   const snippet = text.slice(0, 400);
+  const options = KNOWN_LANGS.join(", ");
   const result = await callOpenAI(
-    `Detect the language of the following text. Reply with ONLY one of: nl, de, en\n\nText: "${snippet}"`
+    `Detect the language of the following text. Reply with ONLY a BCP-47 language code such as ${options} or another two-letter code.\n\nText: "${snippet}"`
   );
-  if (result && SUPPORTED_LANGS.includes(result.toLowerCase() as SupportedLang)) {
-    return result.toLowerCase() as SupportedLang;
+  if (result) {
+    const clean = result.toLowerCase().trim().slice(0, 5);
+    return clean || "unknown";
+  }
+  return "unknown";
+}
+
+export async function getUserPreferredLanguage(userId: string): Promise<string> {
+  try {
+    const { rows } = await pgPool.query(
+      "SELECT language FROM user_profile_data WHERE user_id = $1",
+      [userId]
+    );
+    const lang = rows[0]?.language as string | undefined;
+    if (lang && lang.length >= 2) return lang.toLowerCase();
+  } catch {
   }
   return "nl";
 }
 
-export async function translateText(
+async function translateText(
   text: string,
   sourceLang: string,
   targetLang: string
@@ -63,136 +83,102 @@ Rules:
 - Do not add or remove information
 - Keep URLs, email addresses, prices, dates, and city names unchanged
 - Keep "HousAlert" unchanged
-- Return ONLY the translated text, no explanation
+- Return ONLY the translated text, no explanation or prefix
 
 Message:
 ${text}`;
   return callOpenAI(prompt);
 }
 
-export async function getUserPreferredLanguage(userId: string): Promise<SupportedLang> {
+export async function detectAndStoreLanguage(messageId: number, text: string): Promise<void> {
   try {
-    const { rows } = await pgPool.query(
-      "SELECT language FROM user_profile_data WHERE user_id = $1",
-      [userId]
+    const lang = await detectMsgLanguage(text);
+    await pgPool.query(
+      `UPDATE support_ticket_messages SET original_language = $1 WHERE id = $2`,
+      [lang, messageId]
     );
-    const lang = rows[0]?.language as string | undefined;
-    if (lang && SUPPORTED_LANGS.includes(lang as SupportedLang)) {
-      return lang as SupportedLang;
-    }
-  } catch {
+    log(`[translate] msg ${messageId}: detected lang=${lang}`);
+  } catch (err: any) {
+    log(`[translate] detectAndStoreLanguage failed for msg ${messageId}: ${err.message}`);
   }
-  return "nl";
 }
 
-export type TranslationResult = {
-  original_body: string;
-  original_language: string;
-  translated_body_nl: string | null;
-  translated_body_de: string | null;
-  translated_body_en: string | null;
-  translation_status: "translated" | "failed" | "not_needed";
-  translated_at: string | null;
-};
-
-export async function translateAndUpdateMessage(
+export async function ensureTranslation(
   messageId: number,
   text: string,
-  targetLangs: SupportedLang[]
-): Promise<TranslationResult> {
-  const result: TranslationResult = {
-    original_body: text,
-    original_language: "nl",
-    translated_body_nl: null,
-    translated_body_de: null,
-    translated_body_en: null,
-    translation_status: "not_needed",
-    translated_at: null,
-  };
-
+  sourceLang: string,
+  targetLang: string
+): Promise<string | null> {
+  if (sourceLang === targetLang) return text;
   if (hasSensitiveData(text)) {
-    log(`[translate] msg ${messageId}: sensitive data detected — skipping`);
-    await pgPool.query(
-      `UPDATE support_ticket_messages SET original_body=$1, original_language='unknown', translation_status='not_needed' WHERE id=$2`,
-      [text, messageId]
-    ).catch(() => {});
-    return result;
+    log(`[translate] msg ${messageId}: sensitive data — skipping translation to ${targetLang}`);
+    return null;
   }
 
-  try {
-    result.original_language = await detectMsgLanguage(text);
-  } catch {
-  }
-
-  const toLangs = targetLangs.filter(l => l !== result.original_language);
-
-  if (toLangs.length === 0) {
-    result.translation_status = "not_needed";
-    await pgPool.query(
-      `UPDATE support_ticket_messages SET original_body=$1, original_language=$2, translation_status='not_needed' WHERE id=$3`,
-      [text, result.original_language, messageId]
-    ).catch(() => {});
-    return result;
-  }
-
-  let anySuccess = false;
-  await Promise.all(
-    toLangs.map(async (lang) => {
-      try {
-        const translated = await translateText(text, result.original_language, lang);
-        if (translated) {
-          (result as any)[`translated_body_${lang}`] = translated;
-          anySuccess = true;
-        }
-      } catch (err: any) {
-        log(`[translate] msg ${messageId} to ${lang} failed: ${err.message}`);
-      }
-    })
-  );
-
-  result.translation_status = anySuccess ? "translated" : "failed";
-  if (anySuccess) result.translated_at = new Date().toISOString();
+  const translated = await translateText(text, sourceLang, targetLang);
+  if (!translated) return null;
 
   try {
     await pgPool.query(
-      `UPDATE support_ticket_messages SET
-        original_body=$1, original_language=$2,
-        translated_body_nl=$3, translated_body_de=$4, translated_body_en=$5,
-        translation_status=$6, translated_at=$7
-      WHERE id=$8`,
-      [
-        result.original_body,
-        result.original_language,
-        result.translated_body_nl,
-        result.translated_body_de,
-        result.translated_body_en,
-        result.translation_status,
-        result.translated_at,
-        messageId,
-      ]
+      `UPDATE support_ticket_messages
+       SET translations = COALESCE(translations, '{}') || jsonb_build_object($1::text, $2::text),
+           translation_status = 'translated',
+           translated_at = NOW()
+       WHERE id = $3`,
+      [targetLang, translated, messageId]
     );
-    log(`[translate] msg ${messageId}: lang=${result.original_language} status=${result.translation_status}`);
   } catch (err: any) {
-    log(`[translate] Failed to persist translation for msg ${messageId}: ${err.message}`);
+    log(`[translate] Failed to persist translation for msg ${messageId} to ${targetLang}: ${err.message}`);
   }
 
-  return result;
+  return translated;
 }
 
-export function applyDisplayBodies(messages: any[], viewerLang: string): any[] {
-  return messages.map(msg => {
-    const originalBody = msg.original_body || msg.message;
-    const translatedCol = `translated_body_${viewerLang}`;
-    const isTranslated =
-      msg.translation_status === "translated" &&
-      msg.original_language &&
-      msg.original_language !== viewerLang &&
-      msg[translatedCol];
-    return {
-      ...msg,
-      display_body: isTranslated ? msg[translatedCol] : originalBody,
-      original_body: originalBody,
-      translated: !!isTranslated,
-    };
-  });
+export async function applyDisplayBodies(
+  messages: any[],
+  viewerLang: string
+): Promise<any[]> {
+  const results = await Promise.all(
+    messages.map(async (msg) => {
+      const originalBody = msg.original_body || msg.message;
+      const sourceLang = msg.original_language;
+
+      if (!sourceLang || sourceLang === "unknown") {
+        return { ...msg, display_body: originalBody, original_body: originalBody, translated: false };
+      }
+
+      if (sourceLang === viewerLang) {
+        return { ...msg, display_body: originalBody, original_body: originalBody, translated: false };
+      }
+
+      const existingTranslations: Record<string, string> = msg.translations || {};
+      if (existingTranslations[viewerLang]) {
+        return {
+          ...msg,
+          display_body: existingTranslations[viewerLang],
+          original_body: originalBody,
+          translated: true,
+        };
+      }
+
+      const translatedText = await ensureTranslation(msg.id, originalBody, sourceLang, viewerLang);
+      if (translatedText) {
+        return {
+          ...msg,
+          display_body: translatedText,
+          original_body: originalBody,
+          translated: true,
+        };
+      }
+
+      return {
+        ...msg,
+        display_body: originalBody,
+        original_body: originalBody,
+        translated: false,
+        translation_status: msg.translation_status === "translated" ? "translated" : "failed",
+      };
+    })
+  );
+  return results;
 }
