@@ -1166,11 +1166,15 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
 
   return (
     <div className="flex flex-col pb-8">
-      <div className="sticky top-0 z-10 bg-white px-5 pb-4 border-b border-ha-card-border" style={{ paddingTop: "max(env(safe-area-inset-top), 24px)" }}>
+      <div className="sticky top-0 z-10 bg-white px-5 pb-3 border-b border-ha-card-border" style={{ paddingTop: "max(env(safe-area-inset-top), 24px)" }}>
         <div className="flex items-center gap-2.5">
-          <h1 className="text-[22px] font-bold text-ha-text">{t("nav.favorites")}</h1>
+          <h1 className="text-[22px] font-bold" style={{ color: "#111111" }}>{t("nav.favorites")}</h1>
           {favoriteListings.length > 0 && (
-            <span className="text-[12px] font-bold text-ha-text bg-ha-highlight px-[9px] py-[3px] rounded-full" data-testid="badge-favorites-count">
+            <span
+              className="text-[12px] font-bold px-[9px] py-[3px] rounded-full"
+              style={{ backgroundColor: "#bbadfb", color: "#111111" }}
+              data-testid="badge-favorites-count"
+            >
               {favoriteListings.length}
             </span>
           )}
@@ -1179,32 +1183,28 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
 
       <div className="px-2 pt-3">
         {favLoading ? (
-          <div className="bg-white rounded-[12px] p-3 flex flex-col gap-3" style={cardStyle}>
+          <div className="flex flex-col gap-3">
             {[1, 2].map((i) => (
-              <div key={i} className="animate-pulse rounded-[12px] overflow-hidden" style={{ backgroundColor: "#EBF1FF" }}>
-                <div style={{ aspectRatio: "2/1", backgroundColor: "rgba(97,146,252,0.15)" }} />
+              <div key={i} className="animate-pulse rounded-[10px] overflow-hidden bg-ha-surface border border-ha-card-border">
+                <div className="bg-ha-card-border/40" style={{ aspectRatio: "2/1" }} />
                 <div className="p-4 flex flex-col gap-2">
-                  <div className="h-4 bg-white/60 rounded-full w-3/4" />
-                  <div className="h-3 bg-white/60 rounded-full w-1/2" />
-                  <div className="flex gap-1.5 mt-1">
-                    {[1, 2, 3].map((j) => <div key={j} className="h-[29px] bg-white/60 rounded-[6px] w-14" />)}
-                  </div>
+                  <div className="h-4 bg-ha-card-border/60 rounded-full w-3/4" />
+                  <div className="h-3 bg-ha-card-border/40 rounded-full w-1/2" />
+                  <div className="h-3 bg-ha-card-border/40 rounded-full w-2/5" />
                 </div>
               </div>
             ))}
           </div>
         ) : favoriteListings.length === 0 ? (
-          <div className="bg-white rounded-[12px]" style={cardStyle}>
-            <EmptyState
-              illustration={EMPTY_STATE_IMAGES.noFavorites}
-              title={t("matches.emptyFavorites.title")}
-              description={t("matches.emptyFavorites.desc")}
-              testId="empty-favorites-tab"
-              compact
-            />
-          </div>
+          <EmptyState
+            illustration={EMPTY_STATE_IMAGES.noFavorites}
+            title={t("matches.emptyFavorites.title")}
+            description={t("matches.emptyFavorites.desc")}
+            testId="empty-favorites-tab"
+            compact
+          />
         ) : (
-          <div className="bg-white rounded-[12px] p-3 flex flex-col gap-3" style={cardStyle}>
+          <div className="flex flex-col gap-3">
             {favoriteListings.map((m) => (
               <ListingCardFull
                 key={m.listing_id}
