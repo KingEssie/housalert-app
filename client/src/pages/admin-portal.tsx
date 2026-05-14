@@ -11,6 +11,7 @@ import {
   Radio, Layers, Settings, Bell, Send, Power,
   LayoutDashboard, Signal, Image, Trash2, Pencil,
   Save, X, RotateCw, Menu, ChevronDown, MoreVertical, Star, EyeOff, Lock, ToggleLeft, ToggleRight, Sliders,
+  Monitor, Wifi, WifiOff, Clock, AlertCircle, CheckCircle2,
 } from "lucide-react";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { Button } from "@/components/ui/button";
@@ -1937,44 +1938,86 @@ function SystemTab() {
 function AlertsTab() {
   const [activity, setActivity] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
+  const [diagnostics, setDiagnostics] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [testType, setTestType] = useState<"email" | "push">("email");
+
   const [testEmail, setTestEmail] = useState("");
   const [testUserId, setTestUserId] = useState("");
+  const [testType, setTestType] = useState<"email" | "push">("email");
   const [sending, setSending] = useState(false);
-  const [testResult, setTestResult] = useState<string | null>(null);
+  const [testSuccess, setTestSuccess] = useState<any>(null);
+  const [testError, setTestError] = useState<any>(null);
+  const [errorExpanded, setErrorExpanded] = useState(false);
+
   const [resendUserId, setResendUserId] = useState("");
   const [resending, setResending] = useState(false);
-  const [resendResult, setResendResult] = useState<string | null>(null);
+  const [resendResult, setResendResult] = useState<{ success: boolean; message: string } | null>(null);
+
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewMode, setPreviewMode] = useState<"desktop" | "mobile">("desktop");
+  const [previewUrl, setPreviewUrl] = useState("");
 
   function load() {
     setLoading(true);
-    adminFetch("/api/admin/portal/alert-activity")
-      .then(d => {
-        setActivity(d.recentActivity || []);
-        setStats(d.stats || null);
-      })
-      .catch(() => {})
-      .finally(() => { setLoading(false); setRefreshing(false); });
+    Promise.all([
+      adminFetch("/api/admin/portal/alert-activity").catch(() => null),
+      adminFetch("/api/admin/portal/email-diagnostics").catch(() => null),
+    ]).then(([activityData, diag]) => {
+      setActivity(activityData?.recentActivity || []);
+      setStats(activityData?.stats || null);
+      setDiagnostics(diag);
+    }).finally(() => { setLoading(false); setRefreshing(false); });
   }
 
   useEffect(() => { load(); }, []);
 
-  async function sendTestAlert() {
+  useEffect(() => {
+    if (previewOpen && !previewUrl) {
+      supabase.auth.getSession().then(async ({ data: { session } }) => {
+        if (!session?.access_token) return;
+        try {
+          const { apiFetch } = await import("@/lib/api-base");
+          const res = await apiFetch("/api/admin/portal/email-preview", {
+            headers: { Authorization: `Bearer ${session.access_token}` },
+          });
+          if (res.ok) {
+            const html = await res.text();
+            const blob = new Blob([html], { type: "text/html" });
+            setPreviewUrl(URL.createObjectURL(blob));
+          }
+        } catch {}
+      });
+    }
+  }, [previewOpen]);
+
+  async function sendTest() {
     setSending(true);
-    setTestResult(null);
+    setTestSuccess(null);
+    setTestError(null);
+    setErrorExpanded(false);
     try {
       const body: any = { type: testType };
       if (testType === "email" && testEmail) body.email = testEmail;
       if (testType === "push" && testUserId) body.userId = testUserId;
-      const res = await adminFetch("/api/admin/portal/test-alert", {
-        method: "POST",
-        body: JSON.stringify(body),
-      });
-      setTestResult(res.success ? `Sent successfully${res.sentTo ? ` to ${res.sentTo}` : ""}` : "Failed to send");
+      const res = await adminFetch("/api/admin/portal/test-alert", { method: "POST", body: JSON.stringify(body) });
+      if (res.success) {
+        setTestSuccess(res);
+      } else {
+        setTestError({ readable: res.error || "Send failed — provider rejected the request.", technical: JSON.stringify(res, null, 2) });
+      }
     } catch (err: any) {
-      setTestResult(`Error: ${err.message}`);
+      const msg = err.message || "Unknown error";
+      const isDomain = msg.toLowerCase().includes("domain");
+      const isKey = msg.toLowerCase().includes("key") || msg.toLowerCase().includes("api");
+      setTestError({
+        readable: isDomain
+          ? "Domain not verified in Resend. Add and verify your sending domain in the Resend dashboard."
+          : isKey
+          ? "API key rejected. Check that RESEND_API_KEY is valid and has send permissions."
+          : msg,
+        technical: msg,
+      });
     }
     setSending(false);
   }
@@ -1985,89 +2028,350 @@ function AlertsTab() {
     setResendResult(null);
     try {
       const res = await adminFetch(`/api/admin/portal/resend-matches/${resendUserId}`, { method: "POST" });
-      setResendResult(res.success ? `Resent ${res.resent} matches` : res.message || "Failed");
+      setResendResult({ success: res.success, message: res.success ? `Resent ${res.resent} matches to user` : res.message || "Failed" });
     } catch (err: any) {
-      setResendResult(`Error: ${err.message}`);
+      setResendResult({ success: false, message: err.message });
     }
     setResending(false);
   }
 
   if (loading) return <LoadingState />;
 
+  const diagStatusColor = diagnostics?.apiStatus === "operational" ? "#16a34a" : diagnostics?.apiStatus === "misconfigured" ? "#b45309" : "#e11d48";
+  const diagStatusBg = diagnostics?.apiStatus === "operational" ? "#edfbf0" : diagnostics?.apiStatus === "misconfigured" ? "#fffbeb" : "#fff1f2";
+  const diagStatusBorder = diagnostics?.apiStatus === "operational" ? "#bbf7d0" : diagnostics?.apiStatus === "misconfigured" ? "#fde68a" : "#fecdd3";
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-[24px] font-bold text-ha-text">Alert Control</h1>
-        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-ha-hover-bg flex items-center justify-center hover:bg-ha-divider" data-testid="button-refresh-alerts">
-          <RefreshCw className={`w-4 h-4 text-ha-text-secondary ${refreshing ? "animate-spin" : ""}`} />
+        <div>
+          <h1 className="text-[24px] font-bold" style={{ color: "#111111" }}>Email Operations</h1>
+          <p className="text-[13px] mt-0.5" style={{ color: "#888888" }}>Monitor, test and diagnose email delivery</p>
+        </div>
+        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full flex items-center justify-center" style={{ backgroundColor: "#f0f0f0" }} data-testid="button-refresh-alerts">
+          <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} style={{ color: "#888" }} />
         </button>
       </div>
 
+      {/* Stats */}
       {stats && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <MetricCard label="Emails today" value={stats.emailsToday} icon={Mail} />
           <MetricCard label="Push today" value={stats.pushToday} icon={Smartphone} />
-          <MetricCard label="Real failures 7d" value={stats.undelivered7d} icon={AlertTriangle} />
+          <MetricCard label="Failures 7d" value={stats.undelivered7d} icon={AlertTriangle} />
           <MetricCard label="Skipped (no sub) 7d" value={stats.skippedNoSub7d ?? 0} icon={XCircle} />
         </div>
       )}
 
-      <div className={`${CARD} p-5`}>
-        <h3 className="text-[15px] font-semibold text-ha-text mb-3">Send test alert</h3>
-        <div className="space-y-3">
-          <div className="flex gap-2">
+      {/* Email health diagnostics */}
+      {diagnostics && (
+        <div>
+          <SectionHeader title="Email health" />
+          <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+            {/* API status banner */}
+            <div className="px-5 py-4 flex items-center gap-3" style={{ backgroundColor: diagStatusBg, borderBottom: `1px solid ${diagStatusBorder}` }}>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${diagStatusColor}20` }}>
+                {diagnostics.apiStatus === "operational" ? <Wifi className="w-4 h-4" style={{ color: diagStatusColor }} /> : <WifiOff className="w-4 h-4" style={{ color: diagStatusColor }} />}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[13px] font-bold" style={{ color: diagStatusColor }}>
+                  {diagnostics.apiStatus === "operational" ? "Resend API operational" : diagnostics.apiStatus === "misconfigured" ? "Resend API misconfigured" : "Resend API not configured"}
+                </p>
+                {diagnostics.apiError && <p className="text-[11px] mt-0.5 leading-snug" style={{ color: diagStatusColor }}>{diagnostics.apiError}</p>}
+              </div>
+              <span className="px-2.5 py-1 rounded-full text-[11px] font-bold border" style={{ backgroundColor: diagStatusBg, color: diagStatusColor, borderColor: diagStatusBorder }}>
+                {diagnostics.apiStatus}
+              </span>
+            </div>
+
+            {/* Config rows */}
+            {[
+              { label: "From address", value: diagnostics.fromEmail || "Not configured", mono: true },
+              { label: "Reply-to", value: diagnostics.replyTo || "Not set" },
+              { label: "Emails sent today", value: String(diagnostics.totalSentToday ?? "—") },
+              { label: "Emails sent (7d)", value: String(diagnostics.totalSent7d ?? "—") },
+              {
+                label: "Delivery rate (7d)",
+                value: diagnostics.deliveryRate7d !== null && diagnostics.deliveryRate7d !== undefined
+                  ? `${diagnostics.deliveryRate7d}%`
+                  : "—",
+                valueColor: diagnostics.deliveryRate7d !== null && diagnostics.deliveryRate7d < 80 ? "#e11d48" : "#16a34a",
+              },
+              { label: "Queue depth", value: String(diagnostics.queueDepth ?? 0), valueColor: (diagnostics.queueDepth ?? 0) > 0 ? "#b45309" : undefined, note: diagnostics.queueDepth > 0 ? "undelivered to active subscribers" : undefined },
+              { label: "Last successful send", value: diagnostics.lastSuccessfulSend ? new Date(diagnostics.lastSuccessfulSend).toLocaleString() : "No data" },
+            ].map(({ label, value, mono, valueColor, note }, i, arr) => (
+              <div key={label} className="flex items-start gap-3 px-5 py-3.5" style={{ borderBottom: i < arr.length - 1 ? "1px solid #f5f5f7" : undefined }} data-testid={`diag-${label.toLowerCase().replace(/\s/g, "-")}`}>
+                <span className="text-[13px] flex-1" style={{ color: "#888888" }}>{label}</span>
+                <div className="text-right">
+                  <span className={`text-[13px] font-semibold${mono ? " font-mono" : ""}`} style={{ color: valueColor || "#111111" }}>{value}</span>
+                  {note && <p className="text-[11px]" style={{ color: "#aaaaaa" }}>{note}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Test email / push */}
+      <div>
+        <SectionHeader title="Send test" />
+        <div className="bg-white rounded-[20px] p-5" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+          {/* Type selector */}
+          <div className="flex gap-2 mb-4">
             {(["email", "push"] as const).map(t => (
-              <button key={t} onClick={() => setTestType(t)} className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-colors ${testType === t ? "bg-ha-text text-white" : "bg-white text-ha-text-secondary border border-ha-divider"}`} data-testid={`test-type-${t}`}>
-                {t === "email" ? "Email" : "Push"}
+              <button
+                key={t}
+                onClick={() => { setTestType(t); setTestSuccess(null); setTestError(null); }}
+                className="px-4 py-1.5 rounded-full text-[12px] font-semibold transition-all"
+                style={testType === t
+                  ? { backgroundColor: "#111111", color: "#ffffff" }
+                  : { backgroundColor: "#f5f5f5", color: "#888888", border: "1px solid #e8e8e8" }
+                }
+                data-testid={`test-type-${t}`}
+              >
+                {t === "email" ? "✉ Email" : "🔔 Push"}
               </button>
             ))}
           </div>
-          {testType === "email" ? (
-            <input placeholder="Target email (blank = admin)" value={testEmail} onChange={e => setTestEmail(e.target.value)} className="w-full h-10 px-4 rounded-xl bg-ha-hover-bg text-[13px] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-test-email" />
-          ) : (
-            <input placeholder="Target user ID (blank = admin)" value={testUserId} onChange={e => setTestUserId(e.target.value)} className="w-full h-10 px-4 rounded-xl bg-ha-hover-bg text-[13px] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-test-userid" />
-          )}
-          <div className="flex items-center gap-3">
-            <Button size="sm" onClick={sendTestAlert} disabled={sending} className="rounded-full bg-ha-primary hover:bg-ha-primary/90 text-white" data-testid="button-send-test">
-              <Send className="w-3.5 h-3.5 mr-1" /> {sending ? "Sending..." : "Send test"}
-            </Button>
-            {testResult && <span className={`text-[12px] ${testResult.startsWith("Error") || testResult === "Failed to send" ? "text-ha-danger" : "text-emerald-600"}`} data-testid="text-test-result">{testResult}</span>}
+
+          {/* Target input */}
+          <div className="mb-4">
+            <label className="text-[11px] font-semibold uppercase tracking-[0.06em] mb-1.5 block" style={{ color: "#aaaaaa" }}>
+              {testType === "email" ? "Recipient email" : "Target user ID"}
+            </label>
+            {testType === "email" ? (
+              <input
+                placeholder="Leave blank to send to your admin email"
+                value={testEmail}
+                onChange={e => setTestEmail(e.target.value)}
+                className="w-full h-11 px-4 rounded-[12px] text-[13px] focus:outline-none focus:ring-2"
+                style={{ backgroundColor: "#f7f7f7", color: "#111111", border: "1px solid #eeebf3", focusRingColor: "#bbadfb" }}
+                data-testid="input-test-email"
+                disabled={sending}
+              />
+            ) : (
+              <input
+                placeholder="Leave blank to test your own account"
+                value={testUserId}
+                onChange={e => setTestUserId(e.target.value)}
+                className="w-full h-11 px-4 rounded-[12px] text-[13px] focus:outline-none focus:ring-2"
+                style={{ backgroundColor: "#f7f7f7", color: "#111111", border: "1px solid #eeebf3" }}
+                data-testid="input-test-userid"
+                disabled={sending}
+              />
+            )}
           </div>
+
+          {/* Send button */}
+          <button
+            onClick={sendTest}
+            disabled={sending}
+            className="w-full h-11 rounded-full font-bold text-[14px] flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-60"
+            style={{ backgroundColor: sending ? "#888888" : "#85fb8c", color: "#111111" }}
+            data-testid="button-send-test"
+          >
+            {sending ? (
+              <><Loader2 className="w-4 h-4 animate-spin" /> Sending…</>
+            ) : (
+              <><Send className="w-4 h-4" /> Send test {testType === "email" ? "email" : "push"}</>
+            )}
+          </button>
+
+          {/* Success state */}
+          {testSuccess && (
+            <div className="mt-4 rounded-[16px] p-4" style={{ backgroundColor: "#edfbf0", border: "1px solid #bbf7d0" }} data-testid="panel-test-success">
+              <div className="flex items-center gap-2 mb-3">
+                <CheckCircle2 className="w-5 h-5 flex-shrink-0" style={{ color: "#16a34a" }} />
+                <p className="text-[14px] font-bold" style={{ color: "#16a34a" }}>Delivery accepted</p>
+              </div>
+              <div className="space-y-1.5">
+                {[
+                  { label: "Sent to", value: testSuccess.sentTo },
+                  { label: "From", value: testSuccess.from },
+                  { label: "Timestamp", value: testSuccess.timestamp ? new Date(testSuccess.timestamp).toLocaleString() : "—" },
+                  { label: "Resend ID", value: testSuccess.resendId || "—", mono: true },
+                ].map(({ label, value, mono }) => (
+                  <div key={label} className="flex gap-2 text-[12px]">
+                    <span className="w-24 flex-shrink-0 font-semibold" style={{ color: "#16a34a" }}>{label}</span>
+                    <span className={mono ? "font-mono text-[11px]" : ""} style={{ color: "#111111" }}>{value}</span>
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={() => { setTestSuccess(null); setTestError(null); }}
+                className="mt-3 text-[12px] font-semibold"
+                style={{ color: "#16a34a" }}
+                data-testid="button-test-dismiss"
+              >
+                Dismiss
+              </button>
+            </div>
+          )}
+
+          {/* Error state */}
+          {testError && (
+            <div className="mt-4 rounded-[16px] p-4" style={{ backgroundColor: "#fff1f2", border: "1px solid #fecdd3" }} data-testid="panel-test-error">
+              <div className="flex items-start gap-2 mb-2">
+                <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#e11d48" }} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[14px] font-bold" style={{ color: "#e11d48" }}>Send failed</p>
+                  <p className="text-[13px] mt-0.5 leading-snug" style={{ color: "#be123c" }}>{testError.readable}</p>
+                </div>
+              </div>
+              <div className="flex gap-2 mt-3">
+                <button
+                  onClick={sendTest}
+                  disabled={sending}
+                  className="px-4 py-1.5 rounded-full text-[12px] font-bold transition-all disabled:opacity-50"
+                  style={{ backgroundColor: "#e11d48", color: "#ffffff" }}
+                  data-testid="button-test-retry"
+                >
+                  {sending ? "Retrying…" : "Retry"}
+                </button>
+                <button
+                  onClick={() => setErrorExpanded(x => !x)}
+                  className="px-4 py-1.5 rounded-full text-[12px] font-semibold"
+                  style={{ backgroundColor: "#ffe4e6", color: "#e11d48", border: "1px solid #fecdd3" }}
+                  data-testid="button-test-expand-error"
+                >
+                  {errorExpanded ? "Hide details" : "Technical details"}
+                </button>
+                <button onClick={() => { setTestSuccess(null); setTestError(null); }} className="ml-auto" style={{ color: "#e11d48" }} data-testid="button-test-clear">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              {errorExpanded && (
+                <pre className="mt-3 text-[11px] p-3 rounded-[10px] overflow-x-auto leading-relaxed" style={{ backgroundColor: "#ffe4e6", color: "#9f1239" }}>
+                  {testError.technical}
+                </pre>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
-      <div className={`${CARD} p-5`}>
-        <h3 className="text-[15px] font-semibold text-ha-text mb-3">Resend matches to user</h3>
-        <p className="text-[12px] text-ha-text-secondary mb-3">Re-deliver undelivered matches for a specific user via email.</p>
-        <div className="flex gap-2">
-          <input placeholder="User ID" value={resendUserId} onChange={e => setResendUserId(e.target.value)} className="flex-1 h-10 px-4 rounded-xl bg-ha-hover-bg text-[13px] text-ha-text placeholder:text-ha-text-secondary focus:outline-none focus:ring-2 focus:ring-ha-primary/20" data-testid="input-resend-userid" />
-          <Button size="sm" onClick={resendMatches} disabled={resending || !resendUserId} className="rounded-full bg-ha-primary hover:bg-ha-primary/90 text-white" data-testid="button-resend">
-            <RotateCw className={`w-3.5 h-3.5 mr-1 ${resending ? "animate-spin" : ""}`} /> {resending ? "Sending..." : "Resend"}
-          </Button>
-        </div>
-        {resendResult && <p className={`text-[12px] mt-2 ${resendResult.startsWith("Error") ? "text-ha-danger" : "text-emerald-600"}`} data-testid="text-resend-result">{resendResult}</p>}
-      </div>
-
+      {/* Email preview */}
       <div>
-        <SectionHeader title="Recent alert activity" />
-        <div className={`${CARD} divide-y divide-ha-hover-bg`}>
+        <SectionHeader
+          title="Email preview"
+          action={{ label: previewOpen ? "Close preview" : "Open preview", onClick: () => setPreviewOpen(x => !x) }}
+        />
+        {previewOpen && (
+          <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+            <div className="flex items-center gap-2 px-4 py-3" style={{ borderBottom: "1px solid #f5f5f7" }}>
+              {(["desktop", "mobile"] as const).map(m => (
+                <button
+                  key={m}
+                  onClick={() => setPreviewMode(m)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold transition-all"
+                  style={previewMode === m
+                    ? { backgroundColor: "#111111", color: "#ffffff" }
+                    : { backgroundColor: "#f5f5f5", color: "#888888" }
+                  }
+                  data-testid={`preview-${m}`}
+                >
+                  {m === "desktop" ? <Monitor className="w-3.5 h-3.5" /> : <Smartphone className="w-3.5 h-3.5" />}
+                  {m.charAt(0).toUpperCase() + m.slice(1)}
+                </button>
+              ))}
+              <span className="ml-auto text-[11px]" style={{ color: "#aaaaaa" }}>Live render of the actual email template</span>
+            </div>
+            <div className="flex items-center justify-center p-4" style={{ backgroundColor: "#f5f5f7" }}>
+              {previewUrl ? (
+                <iframe
+                  src={previewUrl}
+                  title="Email preview"
+                  style={{
+                    width: previewMode === "mobile" ? "375px" : "100%",
+                    maxWidth: previewMode === "desktop" ? "600px" : "375px",
+                    height: "600px",
+                    border: "none",
+                    borderRadius: "12px",
+                    boxShadow: "0 4px 24px rgba(0,0,0,0.10)",
+                    backgroundColor: "#ffffff",
+                    transition: "width 0.3s",
+                  }}
+                  data-testid="iframe-email-preview"
+                />
+              ) : (
+                <div className="flex items-center gap-2 py-12" style={{ color: "#888888" }}>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="text-[13px]">Loading preview…</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Resend to user */}
+      <div>
+        <SectionHeader title="Resend matches to user" />
+        <div className="bg-white rounded-[20px] p-5" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+          <p className="text-[13px] mb-4" style={{ color: "#888888" }}>Re-deliver undelivered match alerts for a specific user ID (requires active subscription).</p>
+          <div className="flex gap-2">
+            <input
+              placeholder="User UUID"
+              value={resendUserId}
+              onChange={e => setResendUserId(e.target.value)}
+              className="flex-1 h-11 px-4 rounded-[12px] text-[13px] focus:outline-none"
+              style={{ backgroundColor: "#f7f7f7", color: "#111111", border: "1px solid #eeebf3" }}
+              data-testid="input-resend-userid"
+              disabled={resending}
+            />
+            <button
+              onClick={resendMatches}
+              disabled={resending || !resendUserId}
+              className="h-11 px-5 rounded-full font-bold text-[13px] flex items-center gap-1.5 transition-all disabled:opacity-50"
+              style={{ backgroundColor: "#111111", color: "#ffffff" }}
+              data-testid="button-resend"
+            >
+              <RotateCw className={`w-3.5 h-3.5 ${resending ? "animate-spin" : ""}`} />
+              {resending ? "Sending…" : "Resend"}
+            </button>
+          </div>
+          {resendResult && (
+            <div className="mt-3 flex items-center gap-2 text-[13px]" data-testid="text-resend-result">
+              {resendResult.success
+                ? <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: "#16a34a" }} />
+                : <AlertCircle className="w-4 h-4 flex-shrink-0" style={{ color: "#e11d48" }} />}
+              <span style={{ color: resendResult.success ? "#16a34a" : "#e11d48" }}>{resendResult.message}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Recent activity */}
+      <div>
+        <SectionHeader title="Recent delivery activity" />
+        <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
           {activity.length === 0 ? (
-            <div className="px-4 py-8 text-center text-[13px] text-ha-text-secondary">No recent activity</div>
-          ) : activity.map((a, i) => (
-            <div key={i} className="px-4 py-3 flex items-center gap-3" data-testid={`activity-row-${i}`}>
-              {a.channel === "email" ? <Mail className="w-4 h-4 text-ha-text-secondary flex-shrink-0" /> : <Smartphone className="w-4 h-4 text-ha-text-secondary flex-shrink-0" />}
+            <div className="px-4 py-10 text-center text-[13px]" style={{ color: "#888888" }}>No delivery activity recorded yet</div>
+          ) : activity.slice(0, 30).map((a, i) => (
+            <div key={i} className="flex items-center gap-3 px-4 py-3.5" style={{ borderBottom: i < Math.min(activity.length, 30) - 1 ? "1px solid #f5f5f7" : undefined }} data-testid={`activity-row-${i}`}>
+              <div className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center" style={{ backgroundColor: a.channel === "email" ? "rgba(187,173,251,0.12)" : "rgba(133,251,140,0.15)" }}>
+                {a.channel === "email"
+                  ? <Mail className="w-3.5 h-3.5" style={{ color: "#7c5fc5" }} />
+                  : <Smartphone className="w-3.5 h-3.5" style={{ color: "#16a34a" }} />}
+              </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-medium text-ha-text truncate">{a.title}</p>
-                <p className="text-[11px] text-ha-text-secondary truncate">{a.email || a.userId?.substring(0, 8)}</p>
+                <p className="text-[13px] font-semibold truncate" style={{ color: "#111111" }}>{a.title}</p>
+                <p className="text-[11px] truncate" style={{ color: "#888888" }}>{a.email || (a.userId ? a.userId.substring(0, 12) + "…" : "—")}</p>
               </div>
               <div className="text-right flex-shrink-0">
-                <Badge variant="secondary" className="text-[9px]">{a.channel}</Badge>
-                <p className="text-[10px] text-ha-text-secondary mt-0.5">{a.emailSentAt ? new Date(a.emailSentAt).toLocaleString() : a.pushSentAt ? new Date(a.pushSentAt).toLocaleString() : ""}</p>
+                <p className="text-[11px]" style={{ color: "#aaaaaa" }}>
+                  {a.emailSentAt ? new Date(a.emailSentAt).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })
+                    : a.pushSentAt ? new Date(a.pushSentAt).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })
+                    : "—"}
+                </p>
               </div>
             </div>
           ))}
         </div>
       </div>
+
     </div>
   );
 }

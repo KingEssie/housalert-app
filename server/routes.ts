@@ -7602,21 +7602,20 @@ export async function registerRoutes(
 
       if (type === "email") {
         const targetEmail = email || adminUser.email;
-        const testListing = {
-          title: "Modern apartment in Berlin",
-          city: "Berlin",
-          price: 1200,
-          bedrooms: 2,
-          size_m2: 65,
-          url: "https://example.com",
-          image_url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=400&fit=crop",
-        };
-        const { sendMatchAlert } = await import("./email");
-        const { getUserLanguage } = await import("./notifications/buffer");
-        const lang = await getUserLanguage(adminUser.id);
-        const success = await sendMatchAlert(targetEmail, testListing, lang);
-        log(`[admin] Test email to ${targetEmail}: ${success ? "OK" : "FAILED"}`);
-        return res.json({ success, type: "email", sentTo: targetEmail });
+        const timestamp = new Date().toISOString();
+        const { sendControlledTestEmail } = await import("./email");
+        const result = await sendControlledTestEmail(targetEmail);
+        log(`[admin] Test email to ${targetEmail}: ${result.success ? "OK resend_id=" + result.resendId : "FAILED error=" + result.error}`);
+        return res.json({
+          success: result.success,
+          type: "email",
+          sentTo: result.to,
+          from: result.from,
+          replyTo: result.replyTo,
+          resendId: result.resendId || null,
+          timestamp,
+          error: result.error || null,
+        });
       }
 
       if (type === "push") {
@@ -7748,6 +7747,115 @@ export async function registerRoutes(
     } catch (err: any) {
       log(`[admin] Alert activity error: ${err.message}`);
       res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/email-diagnostics", requireAdmin, async (_req, res) => {
+    try {
+      const apiKey = process.env.RESEND_API_KEY || "";
+      const fromEmail = process.env.RESEND_FROM_EMAIL || "";
+      const replyTo = process.env.RESEND_REPLY_TO || "";
+
+      const apiKeyConfigured = !!apiKey;
+      const fromConfigured = !!fromEmail;
+
+      let apiStatus: "operational" | "misconfigured" | "missing" = "missing";
+      let apiError: string | null = null;
+      if (apiKeyConfigured && fromConfigured) {
+        try {
+          const { Resend } = await import("resend");
+          const client = new Resend(apiKey);
+          const domainsRes = await client.domains.list();
+          if ((domainsRes as any).error) {
+            apiStatus = "misconfigured";
+            apiError = (domainsRes as any).error?.message || "API key invalid";
+          } else {
+            apiStatus = "operational";
+          }
+        } catch (e: any) {
+          apiStatus = "misconfigured";
+          apiError = e.message;
+        }
+      } else {
+        apiError = !apiKey ? "RESEND_API_KEY not set" : "RESEND_FROM_EMAIL not set";
+      }
+
+      const now = new Date();
+      const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      const todayStart = new Date(now); todayStart.setHours(0, 0, 0, 0);
+
+      let lastSuccessfulSend: string | null = null;
+      let totalSent7d = 0;
+      let totalSentToday = 0;
+      try {
+        const lastSent = await pgPool.query(
+          "SELECT email_sent_at FROM user_matches WHERE email_sent = true ORDER BY email_sent_at DESC LIMIT 1"
+        );
+        lastSuccessfulSend = lastSent.rows[0]?.email_sent_at || null;
+        const sent7d = await pgPool.query(
+          "SELECT COUNT(*) FROM user_matches WHERE email_sent = true AND email_sent_at >= $1", [weekAgo]
+        );
+        totalSent7d = parseInt(sent7d.rows[0]?.count || "0");
+        const sentToday = await pgPool.query(
+          "SELECT COUNT(*) FROM user_matches WHERE email_sent = true AND email_sent_at >= $1", [todayStart.toISOString()]
+        );
+        totalSentToday = parseInt(sentToday.rows[0]?.count || "0");
+      } catch {}
+
+      let queueDepth = 0;
+      let deliveryRate7d: number | null = null;
+      try {
+        const subRes = await supabase.from("subscriptions").select("user_id, status, trial_ends_at, current_period_ends_at");
+        const activeIds = new Set<string>();
+        for (const s of (subRes.data || [])) {
+          const isTrial = s.status === "trial" && s.trial_ends_at && new Date(s.trial_ends_at) > now;
+          const isActive = s.status === "active" && (!s.current_period_ends_at || new Date(s.current_period_ends_at) > now);
+          const isPastDue = s.status === "past_due";
+          const canceledActive = s.status === "canceled" && s.current_period_ends_at && new Date(s.current_period_ends_at) > now;
+          if (isTrial || isActive || isPastDue || canceledActive) activeIds.add(s.user_id);
+        }
+
+        const unsentRes = await pgPool.query(
+          `SELECT user_id FROM user_matches WHERE email_sent = false AND matched_at >= $1 AND visible_in_app = true`, [weekAgo]
+        );
+        let realFailures7d = 0;
+        for (const row of unsentRes.rows) {
+          if (activeIds.has(row.user_id)) { realFailures7d++; queueDepth++; }
+        }
+        if (totalSent7d + realFailures7d > 0) {
+          deliveryRate7d = Math.round((totalSent7d / (totalSent7d + realFailures7d)) * 100);
+        }
+      } catch {}
+
+      res.json({
+        apiStatus,
+        apiKeyConfigured,
+        fromConfigured,
+        fromEmail: fromConfigured ? fromEmail : null,
+        replyTo: replyTo || null,
+        apiError,
+        lastSuccessfulSend,
+        totalSent7d,
+        totalSentToday,
+        queueDepth,
+        deliveryRate7d,
+      });
+    } catch (err: any) {
+      log(`[admin] Email diagnostics error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/email-preview", requireAdmin, async (_req, res) => {
+    try {
+      const { generateSampleEmailHtml } = await import("./email");
+      const html = generateSampleEmailHtml("en");
+      res.setHeader("Content-Type", "text/html; charset=utf-8");
+      res.setHeader("X-Frame-Options", "SAMEORIGIN");
+      res.send(html);
+    } catch (err: any) {
+      log(`[admin] Email preview error: ${err.message}`);
+      res.status(500).send(`<html><body style="font-family:sans-serif;padding:24px;color:#e11d48;"><h3>Preview failed</h3><p>${err.message}</p></body></html>`);
     }
   });
 

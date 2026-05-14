@@ -942,3 +942,35 @@ export async function sendBuddyRevokedOwnerEmail(
     return false;
   }
 }
+
+export function generateSampleEmailHtml(lang: ServerLocale = "en"): string {
+  const sampleListing: ListingInfo = {
+    listing_id: "preview-demo",
+    title: "Bright 2-room apartment, city centre",
+    city: "Berlin",
+    price: 1200,
+    bedrooms: 2,
+    size_m2: 65,
+    url: getAppBaseUrl(),
+    image_url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=400&fit=crop",
+  };
+
+  const sampleListing2: ListingInfo = {
+    listing_id: "preview-demo-2",
+    title: "Modern studio near university",
+    city: "Berlin",
+    price: 890,
+    bedrooms: 1,
+    size_m2: 38,
+    url: getAppBaseUrl(),
+    image_url: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=400&fit=crop",
+  };
+
+  const htmlContent = `
+<p style="margin:0 0 6px;font-size:11px;font-weight:600;color:${C.primary};text-transform:uppercase;letter-spacing:0.06em;font-family:${FONT_STACK};">2 new matches found</p>
+<p style="margin:0 0 20px;font-size:14px;color:${C.textSecondary};line-height:1.6;font-family:${FONT_STACK};">We found 2 listings that match your search criteria.</p>
+${listingCard(sampleListing, true, 1, lang)}
+${listingCard(sampleListing2, true, 2, lang)}`;
+
+  return emailWrapper(htmlContent, "2 new listings found — HousAlert email preview", lang);
+}
