@@ -7908,8 +7908,35 @@ export async function registerRoutes(
           url: "/dashboard",
         }, supabase);
         const expoResult = await sendExpoTestPush(targetUserId);
-        log(`[admin] Test push to ${targetUserId.substring(0, 8)}: web=${webResult.sent} expo=${expoResult.sent}`);
-        return res.json({ success: webResult.sent + expoResult.sent > 0, type: "push", web: webResult, expo: expoResult });
+        log(`[admin] Test push to ${targetUserId.substring(0, 8)}: web_sent=${webResult.sent} web_failed=${webResult.failed} web_removed=${webResult.removed} expo=${expoResult.sent}`);
+        if (webResult.errors?.length) {
+          log(`[admin] Test push errors: ${JSON.stringify(webResult.errors)}`);
+        }
+
+        const success = webResult.sent + expoResult.sent > 0;
+        const diagnosis = !success && webResult.errors?.length
+          ? webResult.errors[0]
+          : null;
+        const repairNeeded = diagnosis && (diagnosis.statusCode === 401 || diagnosis.statusCode === 410 || diagnosis.statusCode === 404);
+
+        return res.json({
+          success,
+          type: "push",
+          web: webResult,
+          expo: expoResult,
+          ...(diagnosis && {
+            diagnosis: {
+              statusCode: diagnosis.statusCode,
+              message: diagnosis.message,
+              endpoint: diagnosis.endpoint,
+              body: diagnosis.body,
+              repairNeeded: !!repairNeeded,
+              repairInstructions: repairNeeded
+                ? "Push subscription is outdated. Ask the user to disable and re-enable push notifications in their account preferences to create a fresh subscription."
+                : undefined,
+            },
+          }),
+        });
       }
 
       return res.status(400).json({ error: "type must be 'email' or 'push'" });

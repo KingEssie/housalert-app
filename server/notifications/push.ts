@@ -30,14 +30,37 @@ interface PushSubscription {
   auth: string;
 }
 
+export interface PushSendError {
+  statusCode?: number;
+  message: string;
+  endpoint?: string;
+  body?: string;
+}
+
+export interface PushSendResult {
+  sent: number;
+  failed: number;
+  removed: number;
+  errors: PushSendError[];
+}
+
 export async function sendPushToUser(
   userId: string,
-  payload: { title: string; body: string; url?: string },
+  payload: { title: string; body: string; url?: string; listing_id?: string },
   supabase: any
-): Promise<{ sent: number; failed: number; removed: number }> {
+): Promise<PushSendResult> {
   if (!initialized) {
     log(`[PUSH] Skipped — not initialized`);
-    return { sent: 0, failed: 0, removed: 0 };
+    const vapidPublic = process.env.VITE_VAPID_PUBLIC_KEY;
+    const vapidPrivate = process.env.VAPID_PRIVATE_KEY;
+    return {
+      sent: 0,
+      failed: 0,
+      removed: 0,
+      errors: [{
+        message: `Web Push not initialized. VAPID_PUBLIC=${vapidPublic ? "set" : "MISSING"}, VAPID_PRIVATE=${vapidPrivate ? "set" : "MISSING"}`,
+      }],
+    };
   }
 
   const { data: subs, error } = await supabase
@@ -47,15 +70,28 @@ export async function sendPushToUser(
 
   if (error || !subs || subs.length === 0) {
     log(`[PUSH] No subscriptions for user ${userId.substring(0, 8)}...`);
-    return { sent: 0, failed: 0, removed: 0 };
+    return { sent: 0, failed: 0, removed: 0, errors: [] };
   }
 
   const jsonPayload = JSON.stringify(payload);
   let sent = 0;
   let failed = 0;
   let removed = 0;
+  const errors: PushSendError[] = [];
 
   for (const sub of subs as PushSubscription[]) {
+    const endpointDomain = (() => {
+      try { return new URL(sub.endpoint).hostname; } catch { return sub.endpoint?.substring(0, 40) || "unknown"; }
+    })();
+
+    if (!sub.endpoint || !sub.p256dh || !sub.auth) {
+      const msg = `Malformed subscription id=${sub.id}: missing ${[!sub.endpoint && "endpoint", !sub.p256dh && "p256dh", !sub.auth && "auth"].filter(Boolean).join(", ")}`;
+      log(`[PUSH] ${msg}`);
+      errors.push({ message: msg, endpoint: endpointDomain });
+      failed++;
+      continue;
+    }
+
     try {
       await webpush.sendNotification(
         {
@@ -65,21 +101,56 @@ export async function sendPushToUser(
         jsonPayload
       );
       sent++;
-      log(`[PUSH] Sent to user ${userId.substring(0, 8)}... endpoint=${sub.endpoint.substring(0, 40)}...`);
+      log(`[PUSH] Sent to user ${userId.substring(0, 8)}... endpoint=${endpointDomain}`);
     } catch (err: any) {
-      const statusCode = err.statusCode;
-      if (statusCode === 410 || statusCode === 404 || statusCode === 401) {
+      const statusCode: number | undefined = err.statusCode;
+      const body: string = typeof err.body === "string" ? err.body.substring(0, 300) : JSON.stringify(err.body ?? "").substring(0, 300);
+      const errMsg = err.message || String(err);
+
+      log(`[PUSH] Error for user ${userId.substring(0, 8)}... endpoint=${endpointDomain} statusCode=${statusCode ?? "none"} body=${body} message=${errMsg}`);
+
+      if (statusCode === 410 || statusCode === 404) {
         await supabase.from("push_subscriptions").delete().eq("id", sub.id);
         removed++;
-        log(`[PUSH] Removed stale subscription (${statusCode}) for user ${userId.substring(0, 8)}...`);
+        log(`[PUSH] Removed stale subscription (${statusCode}) id=${sub.id} endpoint=${endpointDomain}`);
+        errors.push({
+          statusCode,
+          message: `Subscription expired/unregistered (${statusCode}). Removed automatically.`,
+          endpoint: endpointDomain,
+          body,
+        });
+      } else if (statusCode === 401) {
+        await supabase.from("push_subscriptions").delete().eq("id", sub.id);
+        removed++;
+        log(`[PUSH] Removed subscription with VAPID mismatch (401) id=${sub.id} endpoint=${endpointDomain}`);
+        errors.push({
+          statusCode: 401,
+          message: "Push subscription rejected (401 Unauthorized). This usually means the VAPID keys changed since this subscription was created. The subscription has been removed — the user must re-enable push notifications to create a fresh subscription.",
+          endpoint: endpointDomain,
+          body,
+        });
+      } else if (statusCode === 400) {
+        failed++;
+        errors.push({
+          statusCode: 400,
+          message: `Bad request (400). Subscription shape may be invalid. body=${body}`,
+          endpoint: endpointDomain,
+          body,
+        });
+        log(`[PUSH] Bad request (400) for subscription id=${sub.id} — not removing, may be transient`);
       } else {
         failed++;
-        log(`[PUSH] Failed for user ${userId.substring(0, 8)}...: ${err.message || err}`);
+        errors.push({
+          statusCode,
+          message: `Push failed: ${errMsg}`,
+          endpoint: endpointDomain,
+          body,
+        });
       }
     }
   }
 
-  return { sent, failed, removed };
+  return { sent, failed, removed, errors };
 }
 
 export interface PushMatchListing {
@@ -132,7 +203,7 @@ export async function sendMatchPushNotifications(
     body: isSingle
       ? t(lang, "push.webBody.single", { city: cityText })
       : t(lang, "push.webBody.batch", { count: newListings.length, city: cityText }),
-    url: isSingle ? `/listing/${newListings[0].listing_id}` : "/matches",
+    url: isSingle ? `/apply/${newListings[0].listing_id}` : "/dashboard?tab=matches",
     listing_id: isSingle ? newListings[0].listing_id : undefined,
   };
 
@@ -153,6 +224,6 @@ export async function sendMatchPushNotifications(
     }
   }
 
-  log(`[PUSH] User ${userId.substring(0, 8)}...: ${result.sent} sent, ${alreadySentIds.size} deduped, ${result.failed} failed`);
+  log(`[PUSH] User ${userId.substring(0, 8)}...: ${result.sent} sent, ${alreadySentIds.size} deduped, ${result.failed} failed, ${result.removed} removed`);
   return { sent: result.sent, skipped: alreadySentIds.size, failed: result.failed };
 }
