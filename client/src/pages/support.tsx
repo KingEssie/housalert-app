@@ -136,6 +136,7 @@ export default function SupportPage() {
   const [notifications, setNotifications] = useState<SupportNotification[]>([]);
   const [myTickets, setMyTickets] = useState<TicketSummary[]>([]);
   const [loadingTickets, setLoadingTickets] = useState(false);
+  const [showClosed, setShowClosed] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -332,64 +333,104 @@ export default function SupportPage() {
         )}
 
         {/* ── My tickets ── */}
-        {(myTickets.length > 0 || loadingTickets) && (
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-widest mb-2.5 px-1" style={{ color: "#aaaaaa" }}>
-              Mijn supportvragen
-            </p>
-            <div className="bg-white rounded-[28px] overflow-hidden" style={{ border: "1px solid #eeeeee" }}>
-              {loadingTickets && myTickets.length === 0 ? (
-                <div className="flex items-center justify-center py-6">
-                  <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#bbadfb" }} />
-                </div>
-              ) : (
-                myTickets.map((ticket, i) => {
-                  const sc = STATUS_COLORS[ticket.status] || STATUS_COLORS.open;
-                  return (
-                    <div key={ticket.id}>
-                      {i > 0 && <div className="h-px mx-5" style={{ backgroundColor: "#f2f2f2" }} />}
-                      <button
-                        onClick={() => navigate(`/support/${ticket.id}`)}
-                        className="w-full flex items-start gap-3.5 px-5 py-4 text-left active:opacity-70 transition-opacity"
-                        data-testid={`button-ticket-${ticket.id}`}
+        {(() => {
+          const activeTickets = myTickets.filter(t => t.status !== "closed");
+          const closedTickets = myTickets.filter(t => t.status === "closed");
+          const showSection = activeTickets.length > 0 || loadingTickets || closedTickets.length > 0;
+          if (!showSection) return null;
+
+          const renderTicket = (ticket: TicketSummary, i: number, isFirst: boolean) => {
+            const sc = STATUS_COLORS[ticket.status] || STATUS_COLORS.open;
+            return (
+              <div key={ticket.id}>
+                {!isFirst && <div className="h-px mx-5" style={{ backgroundColor: "#f2f2f2" }} />}
+                <button
+                  onClick={() => navigate(`/support/${ticket.id}`)}
+                  className="w-full flex items-start gap-3.5 px-5 py-4 text-left active:opacity-70 transition-opacity"
+                  data-testid={`button-ticket-${ticket.id}`}
+                >
+                  <div className="w-10 h-10 rounded-[12px] flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: ticket.status === "closed" ? "#f0f0f0" : "#bbadfb" }}>
+                    {ticket.has_unread_admin_reply
+                      ? <BellRing className="w-4.5 h-4.5" style={{ color: ticket.status === "closed" ? "#aaaaaa" : "#171429" }} />
+                      : <MessageSquare className="w-4.5 h-4.5" style={{ color: ticket.status === "closed" ? "#aaaaaa" : "#171429" }} />
+                    }
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                      <span
+                        className="px-2 py-0.5 rounded-full text-[10px] font-bold border"
+                        style={{ backgroundColor: sc.bg, color: sc.text, borderColor: sc.border }}
                       >
-                        <div className="w-10 h-10 rounded-[12px] flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "#bbadfb" }}>
-                          {ticket.has_unread_admin_reply
-                            ? <BellRing className="w-4.5 h-4.5" style={{ color: "#171429" }} />
-                            : <MessageSquare className="w-4.5 h-4.5" style={{ color: "#171429" }} />
-                          }
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                            <span
-                              className="px-2 py-0.5 rounded-full text-[10px] font-bold border"
-                              style={{ backgroundColor: sc.bg, color: sc.text, borderColor: sc.border }}
-                            >
-                              {STATUS_LABELS[ticket.status] || ticket.status}
-                            </span>
-                            {ticket.has_unread_admin_reply && (
-                              <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: "#bbadfb" }} />
-                            )}
-                          </div>
-                          <p className="text-[14px] font-bold truncate" style={{ color: "#111111" }}>{ticket.subject}</p>
-                          {ticket.last_message && (
-                            <p className="text-[12px] truncate mt-0.5" style={{ color: "#888888" }}>
-                              {ticket.last_sender_type === "admin" ? "HousAlert: " : "Jij: "}{ticket.last_message}
-                            </p>
-                          )}
-                          <p className="text-[11px] mt-0.5" style={{ color: "#bbbbbb" }}>
-                            {new Date(ticket.last_message_at || ticket.created_at).toLocaleDateString("nl-NL", { day: "numeric", month: "short" })}
-                          </p>
-                        </div>
-                        <ChevronRight className="w-4 h-4 flex-shrink-0 mt-2" style={{ color: "#cccccc" }} />
-                      </button>
+                        {STATUS_LABELS[ticket.status] || ticket.status}
+                      </span>
+                      {ticket.has_unread_admin_reply && (
+                        <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: "#bbadfb" }} />
+                      )}
                     </div>
-                  );
-                })
+                    <p className="text-[14px] font-bold truncate" style={{ color: ticket.status === "closed" ? "#999999" : "#111111" }}>{ticket.subject}</p>
+                    {ticket.last_message && (
+                      <p className="text-[12px] truncate mt-0.5" style={{ color: "#888888" }}>
+                        {ticket.last_sender_type === "admin" ? "HousAlert: " : "Jij: "}{ticket.last_message}
+                      </p>
+                    )}
+                    <p className="text-[11px] mt-0.5" style={{ color: "#bbbbbb" }}>
+                      {new Date(ticket.last_message_at || ticket.created_at).toLocaleDateString("nl-NL", { day: "numeric", month: "short" })}
+                    </p>
+                  </div>
+                  <ChevronRight className="w-4 h-4 flex-shrink-0 mt-2" style={{ color: "#cccccc" }} />
+                </button>
+              </div>
+            );
+          };
+
+          return (
+            <div>
+              {(activeTickets.length > 0 || loadingTickets) && (
+                <>
+                  <p className="text-[11px] font-bold uppercase tracking-widest mb-2.5 px-1" style={{ color: "#aaaaaa" }}>
+                    Mijn supportvragen
+                  </p>
+                  <div className="bg-white rounded-[28px] overflow-hidden" style={{ border: "1px solid #eeeeee" }}>
+                    {loadingTickets && activeTickets.length === 0 ? (
+                      <div className="flex items-center justify-center py-6">
+                        <Loader2 className="w-5 h-5 animate-spin" style={{ color: "#bbadfb" }} />
+                      </div>
+                    ) : (
+                      activeTickets.map((ticket, i) => renderTicket(ticket, i, i === 0))
+                    )}
+                  </div>
+                </>
+              )}
+
+              {closedTickets.length > 0 && (
+                <div className="mt-3">
+                  {activeTickets.length === 0 && !loadingTickets && (
+                    <p className="text-[11px] font-bold uppercase tracking-widest mb-2.5 px-1" style={{ color: "#aaaaaa" }}>
+                      Mijn supportvragen
+                    </p>
+                  )}
+                  <button
+                    onClick={() => setShowClosed(v => !v)}
+                    className="w-full flex items-center justify-center gap-1.5 py-2 text-[13px] transition-opacity active:opacity-60"
+                    style={{ color: "#aaaaaa" }}
+                    data-testid="button-toggle-closed-tickets"
+                  >
+                    <ChevronDown
+                      className="w-3.5 h-3.5 transition-transform duration-200"
+                      style={{ transform: showClosed ? "rotate(180deg)" : "rotate(0deg)" }}
+                    />
+                    {showClosed ? "Gesloten tickets verbergen" : `Gesloten tickets bekijken (${closedTickets.length})`}
+                  </button>
+                  {showClosed && (
+                    <div className="bg-white rounded-[28px] overflow-hidden mt-1" style={{ border: "1px solid #eeeeee" }}>
+                      {closedTickets.map((ticket, i) => renderTicket(ticket, i, i === 0))}
+                    </div>
+                  )}
+                </div>
               )}
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* ── New message card ── */}
         <div>
