@@ -114,12 +114,6 @@ export default function TipsFlowPage() {
   }
 
   function handleNext() {
-    if (!isChecked) {
-      const next = new Set(checkedSteps);
-      next.add(serverId);
-      setCheckedSteps(next);
-      markCompleteMutation.mutate(serverId);
-    }
     if (isLastStep) {
       navigate("/dashboard?tab=home");
     } else {
@@ -196,11 +190,11 @@ export default function TipsFlowPage() {
 
       <main className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-[200px]">
         <div
-          className="bg-white overflow-hidden"
+          className="overflow-hidden"
           style={{
+            backgroundColor: "#223546",
             borderRadius: 28,
-            border: "1px solid #ece7ef",
-            boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
+            boxShadow: "0 4px 24px rgba(0,0,0,0.18)",
           }}
           data-testid={`card-step-${serverId}`}
         >
@@ -215,15 +209,17 @@ export default function TipsFlowPage() {
                 </span>
               </div>
               <h2
-                className="text-[18px] font-bold leading-tight"
-                style={{ color: "#111111" }}
+                className="text-[18px] font-bold leading-tight text-white"
                 data-testid="text-step-title"
               >
                 {stepTitle}
               </h2>
             </div>
 
-            <div data-testid="text-step-body">
+            <div
+              className="[&_p]:text-white [&_p]:opacity-90 [&_li]:text-white [&_li]:opacity-90 [&_span]:text-white [&_a]:text-[#bbadfb] [&_a]:font-semibold [&_a]:no-underline hover:[&_a]:underline [&_.text-ha-text]:text-white [&_.text-ha-text-secondary]:text-white/60 [&_.text-ha-text-muted]:text-white/50 [&_p.font-semibold]:opacity-100 [&_p.font-semibold]:text-white [&_.rounded-2xl]:border-white/10"
+              data-testid="text-step-body"
+            >
               {contentRenderer ? contentRenderer() : null}
             </div>
           </div>

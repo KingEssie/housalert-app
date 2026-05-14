@@ -1,0 +1,71 @@
+Refine the “Vergroot je kansen met deze tips” 8-step flow.
+
+Current issues:
+1. Green link text is hard to read and off-brand.
+2. A tip is marked as completed automatically after visiting it.
+3. Layout should more closely follow the Rentbird flow structure.
+
+Required behavior:
+- A tip should ONLY become completed when the user explicitly checks “Markeer als voltooid”.
+- Visiting/opening a tip must NOT mark it completed.
+- Pressing “Volgende” without checking completed should move to the next step but leave current tip incomplete.
+- Progress percentage must only count manually completed tips.
+
+Link styling:
+- Replace all green link text with purple:
+  #bbadfb
+- Links should be readable and semi-bold.
+- No green links in this flow.
+
+Layout:
+Make every tip page follow this exact structure:
+
+1. Top header:
+- dark navy background #171429 or #223546
+- back button left
+- title: “Vergroot je kansen met deze tips!”
+- close X right
+
+2. Progress area:
+- progress bar directly below header
+- active progress color #bbadfb
+- percentage text #bbadfb
+- show progress based on completed tips only
+
+3. Content card:
+- step number badge #bbadfb with #111111 text
+- title next to number
+- tip explanation text below
+- actionable bullets/links below
+- card background #171429 or #223546
+- text white
+- keep strong contrast
+
+Important: use the Rentbird visual structure:
+- number + title at top of card
+- then body text
+- then bullet/list content
+
+4. Sticky footer:
+- checkbox row:
+  “Markeer als voltooid”
+- checkbox inactive outline white/gray
+- checkbox active fill #bbadfb with black check
+- primary button:
+  - “Volgende” on steps 1–7
+  - “Afronden” on step 8
+  - background #85fb8c
+  - text #111111
+  - fully pill-shaped
+
+Do not auto-complete tips.
+Do not reset existing completed tips.
+Only completion checkbox should toggle completion state.
+
+Smoke check:
+- Open tip 1: progress does not change automatically.
+- Tap Next without checking: tip 1 remains incomplete.
+- Go back to Home: tip 1 is not checked.
+- Open tip 1, check “Markeer als voltooid”: progress updates.
+- Links are purple, not green.
+- Flow layout visually matches Rentbird structure but with HousAlert colors.
