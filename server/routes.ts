@@ -1634,15 +1634,20 @@ export async function registerRoutes(
 
       const { data: subRow } = await supabase
         .from("subscriptions")
-        .select("created_at")
+        .select("created_at, status")
         .eq("user_id", user.id)
         .single();
       const premiumStartedAt = subRow?.created_at || null;
 
       const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+      // Use the EARLIER of (subscription start, 90-days-ago) so pre-upgrade matches
+      // remain visible after a user pays. The previous `>` comparison was backwards:
+      // it set cutoff=now for new subscribers, hiding all existing matches.
       const cutoff = premiumStartedAt
-        ? (new Date(premiumStartedAt).getTime() > new Date(ninetyDaysAgo).getTime() ? premiumStartedAt : ninetyDaysAgo)
+        ? (new Date(premiumStartedAt).getTime() < new Date(ninetyDaysAgo).getTime() ? premiumStartedAt : ninetyDaysAgo)
         : ninetyDaysAgo;
+
+      log(`[MATCHES] userId=${user.id.substring(0, 8)} subStatus=${subRow?.status ?? "none"} premiumStartedAt=${premiumStartedAt ?? "none"} cutoff=${cutoff}`);
 
       let matchQuery = supabase
         .from("matches")

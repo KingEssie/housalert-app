@@ -1,0 +1,92 @@
+URGENT: Fix match loss after premium activation.
+
+Current issue:
+A user already had existing matches before upgrading to premium.
+After successful Stripe activation, all matches disappeared.
+
+This is a critical trust/conversion issue and must be fixed before App Store submission.
+
+IMPORTANT:
+Do not redesign anything.
+Do not change paywall UX.
+Only investigate and fix the root cause safely.
+
+Investigate these possible causes:
+
+1. Subscription activation flow
+Check whether:
+- premium activation triggers a profile reset
+- onboarding completion reruns
+- profile IDs are regenerated
+- search profiles are recreated instead of updated
+
+2. Match persistence
+Verify:
+- existing user_matches rows still exist in DB
+- matches are being hidden by frontend filtering
+- subscription state affects visibility incorrectly
+- premium status changes query conditions
+
+3. Search profile integrity
+Check whether:
+- search profile IDs changed after upgrade
+- search profiles became inactive
+- ownership/user_id changed
+- profile migration logic exists
+
+4. Frontend query/cache
+Verify:
+- React Query cache invalidation is not wiping matches
+- post-payment refresh does not temporarily clear state forever
+- matches refetch correctly after subscription sync
+
+5. Stripe webhook flow
+Inspect:
+- checkout.session.completed
+- subscription.updated
+- subscription.created
+- any post-payment handlers
+
+Ensure:
+- they NEVER delete or recreate matches
+- they NEVER deactivate profiles
+- they NEVER clear user_matches
+
+6. Data safety
+CRITICAL:
+Never delete existing matches during subscription activation.
+
+Existing matches should:
+- remain visible
+- remain unlocked/accessible after premium activation
+- preserve timestamps and favorite state
+
+7. Fix behavior
+Expected:
+- user upgrades
+- user returns from Stripe
+- all existing matches remain visible
+- premium unlocks interaction only
+- no data disappears
+
+8. Recovery
+If existing matches were hidden instead of deleted:
+- restore visibility automatically
+- no manual intervention required
+
+9. Logging
+Add temporary logs around:
+- subscription sync
+- profile updates
+- match queries
+- match counts before/after upgrade
+
+10. Smoke check
+Test:
+- create user with matches
+- verify matches visible
+- upgrade to premium
+- return from Stripe
+- matches still visible
+- no duplicate matches
+- no match loss after refresh/reopen
