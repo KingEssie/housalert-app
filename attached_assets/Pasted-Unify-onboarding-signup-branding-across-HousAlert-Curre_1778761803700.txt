@@ -1,0 +1,185 @@
+Unify onboarding/signup branding across HousAlert.
+
+Current issue:
+When a user creates a new account from the app login screen, they enter an onboarding/signup flow that does NOT match the current HousAlert app branding.
+The flow looks different from the branded flow used elsewhere.
+
+IMPORTANT:
+Do not change authentication logic.
+Do not change signup logic.
+Do not change search profile creation logic.
+Only unify UI/branding and route consistency.
+
+Goal:
+Every onboarding/signup route must use the same HousAlert app branding and components.
+
+Brand tokens:
+- Purple: #bbadfb
+- Purple icon/text: #171429
+- Green: #85fb8c
+- Green icon/text: #223546
+- Dark navy: #223546
+- Black: #111111
+- App background: #f6f6f6
+- Card background: #ffffff
+
+========================================
+1. FIND DUPLICATE ONBOARDING FLOWS
+========================================
+
+Audit all signup/onboarding routes/components, especially:
+- app login → “Ik ben nieuw bij HousAlert”
+- website embedded/signup flow
+- onboarding profile setup
+- create search profile during onboarding
+- /onboarding/*
+- /signup/*
+- /register/*
+- any lead-capture/signup wizard routes
+
+Identify duplicate or legacy UI components.
+
+The app login signup flow must use the same branded onboarding components as the current app flow.
+
+========================================
+2. BRANDING REQUIREMENTS
+========================================
+
+Apply current HousAlert app styling:
+
+Page:
+- background #f6f6f6
+- no old website/landing-page styling
+- no random pale green/purple variants
+
+Header:
+- HousAlert inline SVG logo
+- white/light header
+- clear close/back button
+- no black placeholder logo blocks
+
+Step counter:
+- background #bbadfb
+- text #171429
+- fully rounded
+
+Primary buttons:
+- background #85fb8c
+- text/icon #223546
+- fully rounded 9999px
+
+Secondary buttons:
+- white background
+- black text #111111
+- border #111111 or #e8e8e8
+- fully rounded
+
+Icon blocks:
+- purple background #bbadfb
+- icon #171429
+
+Inputs:
+- white background
+- black text
+- border #111111 where current app uses black input borders
+- focus border #bbadfb
+- rounded corners consistent with app
+
+Toggles/sliders/tabs:
+- active = #bbadfb where configured for onboarding/search flow
+- if green is used for CTA only, do not use green for tabs/sliders unless already intentional
+- no old neon/light green except CTA #85fb8c
+
+Cards:
+- white background
+- rounded 28px
+- subtle border
+- no heavy shadows
+
+Typography:
+- headings bold black
+- body text readable black/dark
+- avoid very light gray text for important content
+
+========================================
+3. ROUTE CONSISTENCY
+========================================
+
+After signup from login screen:
+- user should enter the same onboarding flow/design as all other signup paths
+- no legacy website onboarding screen
+- no iframe/embedded website-style flow unless it is restyled to match the app
+
+Make sure:
+- signup from website
+- signup from app login
+- signup from mobile PWA
+all land in the same branded experience or use the same shared components.
+
+========================================
+4. SEARCH PROFILE ONBOARDING
+========================================
+
+The onboarding search profile steps must match the existing branded search flow:
+- same header
+- same step counter
+- same footer
+- same rounded buttons
+- same brand colors
+- same input styles
+- same toggles/tabs/sliders
+
+Also verify:
+- created search profile name saves correctly
+- max 4 profile backend limit still works
+- onboarding-created profile appears on home screen
+
+========================================
+5. DO NOT BREAK
+========================================
+
+Preserve:
+- existing account creation
+- login
+- language selection
+- terms/privacy links
+- password visibility
+- form validation
+- Google/Stripe/Supabase logic
+- backend 4-profile limit
+- onboarding completion state
+
+========================================
+6. SMOKE CHECK
+========================================
+
+Test:
+
+A. App login signup
+- open login screen
+- tap “Ik ben nieuw bij HousAlert”
+- signup/onboarding uses correct HousAlert branding
+- no old website-style screen appears
+
+B. Website signup
+- start signup from website/lead flow
+- branding matches app onboarding
+
+C. Complete onboarding
+- create account
+- create search profile
+- land in app home
+- search profile visible
+
+D. Visual check
+- no old green variants
+- no old purple variants
+- no square buttons
+- no black placeholder logos
+- all buttons fully rounded
+- all active brand colors match exact tokens
+
+E. Regression check
+- existing login still works
+- existing premium user still works
+- no route 404s

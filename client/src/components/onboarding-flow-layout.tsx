@@ -55,8 +55,12 @@ export function OnboardingFlowLayout({
             <p className="text-[17px] font-semibold text-ha-text truncate" data-testid="text-ob-flow-title">{flowTitle}</p>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-[16px] font-bold text-ha-text tabular-nums whitespace-nowrap" data-testid="text-ob-flow-progress">
-              {currentStep}<span className="text-ha-text-placeholder font-semibold">/{totalSteps}</span>
+            <span
+              className="text-[12px] font-bold px-2.5 py-1 rounded-full tabular-nums whitespace-nowrap"
+              style={{ backgroundColor: "#bbadfb", color: "#171429" }}
+              data-testid="text-ob-flow-progress"
+            >
+              {currentStep}/{totalSteps}
             </span>
             <button
               onClick={onClose}
@@ -135,7 +139,8 @@ export function OnboardingFlowLayout({
           <button
             onClick={onNext}
             disabled={nextDisabled || saving}
-            className="h-[48px] px-8 rounded-full bg-ha-primary text-white text-[15px] font-semibold disabled:opacity-20 disabled:cursor-not-allowed hover:brightness-95 active:scale-[0.97] transition-all flex items-center gap-1.5 shadow-[0_2px_8px_rgba(133,251,140,0.30)]"
+            className="h-[48px] px-8 rounded-full bg-ha-primary text-[15px] font-semibold disabled:opacity-20 disabled:cursor-not-allowed hover:brightness-95 active:scale-[0.97] transition-all flex items-center gap-1.5 shadow-[0_2px_8px_rgba(133,251,140,0.30)]"
+            style={{ color: "#223546" }}
             data-testid={nextTestId || "button-ob-flow-next"}
           >
             {saving && <Loader2 className="w-4 h-4 animate-spin" />}

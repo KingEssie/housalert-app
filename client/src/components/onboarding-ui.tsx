@@ -156,8 +156,8 @@ export function OBWebHeader({ step, totalSteps = 3 }: { step?: number; totalStep
         <HousAlertLogo size={26} />
         {step ? (
           <span
-            className="text-[11px] font-semibold px-2.5 py-1 rounded-[4px]"
-            style={{ backgroundColor: "rgb(var(--ha-primary))", color: "rgb(var(--ha-card))" }}
+            className="text-[11px] font-semibold px-2.5 py-1 rounded-full"
+            style={{ backgroundColor: "#bbadfb", color: "#171429" }}
             data-testid="badge-step"
           >
             {step}/{totalSteps}
@@ -207,7 +207,7 @@ export function OBWebFooter({
         {onBack && (
           <button
             onClick={onBack}
-            className="w-[44px] h-[44px] rounded-[4px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
+            className="w-[44px] h-[44px] rounded-full flex items-center justify-center shrink-0 active:scale-95 transition-transform"
             style={{ border: `1.5px solid ${OBW.backBtnBorder}`, backgroundColor: "transparent" }}
             data-testid={backTestId || "button-back"}
           >
@@ -217,8 +217,8 @@ export function OBWebFooter({
         <button
           onClick={onNext}
           disabled={nextDisabled || saving}
-          className="min-w-[120px] px-6 h-[44px] rounded-[4px] text-[14px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-1.5 shrink-0"
-          style={{ background: OBW.primary, boxShadow: nextDisabled ? "none" : "0 4px 14px rgb(var(--ha-primary) / 0.2)" }}
+          className="min-w-[120px] px-6 h-[44px] rounded-full text-[14px] font-semibold transition-all active:scale-[0.97] disabled:opacity-40 flex items-center justify-center gap-1.5 shrink-0"
+          style={{ background: OBW.primary, color: "#223546", boxShadow: nextDisabled ? "none" : "0 4px 14px rgb(var(--ha-primary) / 0.2)" }}
           data-testid={nextTestId || "button-next"}
         >
           {saving && <Loader2 className="w-4 h-4 animate-spin" />}
@@ -295,7 +295,7 @@ export function OBFooter({
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
-            className="w-[56px] h-[56px] rounded-[6px] flex items-center justify-center shrink-0 active:scale-95 transition-transform"
+            className="w-[56px] h-[56px] rounded-full flex items-center justify-center shrink-0 active:scale-95 transition-transform"
             style={{
               border: `1.5px solid ${OBW.backBtnBorder}`,
               backgroundColor: OBW.backBtnBg,
@@ -307,8 +307,8 @@ export function OBFooter({
           <button
             onClick={onNext}
             disabled={nextDisabled || saving}
-            className="flex-1 ha-btn text-white font-semibold disabled:opacity-40"
-            style={{ background: OB.primary, boxShadow: "0 8px 20px rgb(var(--ha-primary) / 0.2)" }}
+            className="flex-1 ha-btn font-semibold disabled:opacity-40"
+            style={{ background: OB.primary, color: "#223546", boxShadow: "0 8px 20px rgb(var(--ha-primary) / 0.2)" }}
             data-testid={nextTestId || "button-next"}
           >
             {saving && <Loader2 className="w-4 h-4 animate-spin mr-1" />}

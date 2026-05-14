@@ -110,8 +110,8 @@ export default function OnboardingEmail() {
           <button
             onClick={handleNext}
             disabled={!isValidEmail(email)}
-            className="w-full h-[48px] rounded-[12px] text-[16px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50"
-            style={{ background: T.primary, boxShadow: isValidEmail(email) ? T.primaryShadow : "none" }}
+            className="w-full h-[48px] rounded-full text-[16px] font-semibold transition-all active:scale-[0.97] disabled:opacity-50"
+            style={{ background: T.primary, color: "#223546", boxShadow: isValidEmail(email) ? T.primaryShadow : "none" }}
             data-testid="button-email-next"
           >
             {t("common.next")}

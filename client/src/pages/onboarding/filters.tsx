@@ -1039,7 +1039,7 @@ export default function OnboardingFilters() {
             <div className="flex items-center gap-2.5 shrink-0">
               <button
                 onClick={handleBack}
-                className="w-[44px] h-[44px] rounded-[6px] flex items-center justify-center active:scale-95 transition-transform"
+                className="w-[44px] h-[44px] rounded-full flex items-center justify-center active:scale-95 transition-transform"
                 style={{ border: `1.5px solid ${OBW.backBtnBorder}`, backgroundColor: OBW.backBtnBg }}
                 data-testid="button-filters-back"
               >
@@ -1048,8 +1048,8 @@ export default function OnboardingFilters() {
               <button
                 onClick={handleNext}
                 disabled={saving}
-                className="h-[44px] px-6 rounded-[8px] text-[15px] font-semibold text-white flex items-center justify-center gap-1.5 active:scale-[0.97] transition-transform disabled:opacity-40"
-                style={{ background: OBW.primary, boxShadow: "0 4px 14px rgb(var(--ha-primary) / 0.2)" }}
+                className="h-[44px] px-6 rounded-full text-[15px] font-semibold flex items-center justify-center gap-1.5 active:scale-[0.97] transition-transform disabled:opacity-40"
+                style={{ background: OBW.primary, color: "#223546", boxShadow: "0 4px 14px rgb(var(--ha-primary) / 0.2)" }}
                 data-testid="button-filters-next"
               >
                 {saving && <Loader2 className="w-4 h-4 animate-spin" />}

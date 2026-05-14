@@ -124,8 +124,8 @@ export default function OnboardingName() {
           <button
             onClick={handleNext}
             disabled={!firstName.trim()}
-            className="w-full h-[48px] rounded-[12px] text-[16px] font-semibold text-white transition-all active:scale-[0.97] disabled:opacity-50"
-            style={{ background: T.primary, boxShadow: firstName.trim() ? T.primaryShadow : "none" }}
+            className="w-full h-[48px] rounded-full text-[16px] font-semibold transition-all active:scale-[0.97] disabled:opacity-50"
+            style={{ background: T.primary, color: "#223546", boxShadow: firstName.trim() ? T.primaryShadow : "none" }}
             data-testid="button-name-next"
           >
             {t("common.next")}
