@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { supabase } from "@/lib/supabase";
 import { apiFetch } from "@/lib/api-base";
@@ -19,6 +19,8 @@ import {
   Loader2,
   Lightbulb,
   SmilePlus,
+  BellRing,
+  X,
 } from "lucide-react";
 
 const INPUT_STYLE: React.CSSProperties = {
@@ -87,6 +89,15 @@ function HeroIllustration() {
   );
 }
 
+interface SupportNotification {
+  id: number;
+  ticket_id: number;
+  title: string;
+  body: string;
+  read_at: string | null;
+  created_at: string;
+}
+
 export default function SupportPage() {
   const [, navigate] = useLocation();
   const [subject, setSubject] = useState("");
@@ -96,6 +107,37 @@ export default function SupportPage() {
   const [error, setError] = useState<string | null>(null);
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [faqSuggestions, setFaqSuggestions] = useState<FaqSuggestion[]>([]);
+  const [notifications, setNotifications] = useState<SupportNotification[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchNotifications() {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.access_token) return;
+        const res = await apiFetch("/api/support/notifications", {
+          headers: { Authorization: `Bearer ${session.access_token}` },
+        });
+        if (!res.ok || cancelled) return;
+        const data = await res.json();
+        if (!cancelled) setNotifications((data.notifications || []).filter((n: SupportNotification) => !n.read_at));
+      } catch {}
+    }
+    fetchNotifications();
+    return () => { cancelled = true; };
+  }, []);
+
+  async function dismissNotification(id: number) {
+    setNotifications(prev => prev.filter(n => n.id !== id));
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
+      await apiFetch(`/api/support/notifications/${id}/read`, {
+        method: "PATCH",
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+    } catch {}
+  }
 
   const MAX_CHARS = 1000;
   const effectiveSubject = subject === "Overig" ? customSubject : subject;
@@ -212,6 +254,40 @@ export default function SupportPage() {
             <HeroIllustration />
           </div>
         </div>
+
+        {/* ── In-app notifications ── */}
+        {notifications.length > 0 && (
+          <div className="space-y-3">
+            {notifications.map(n => (
+              <div
+                key={n.id}
+                className="rounded-[20px] px-5 py-4 flex items-start gap-3"
+                style={{ backgroundColor: "#edfbf0", border: "1.5px solid #bbf7d0" }}
+                data-testid={`support-notification-${n.id}`}
+              >
+                <div className="w-9 h-9 rounded-[12px] flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: "#d1fae5" }}>
+                  <BellRing className="w-4 h-4" style={{ color: "#16a34a" }} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[14px] font-bold" style={{ color: "#111111" }}>{n.title}</p>
+                  <p className="text-[13px] mt-0.5 leading-relaxed" style={{ color: "#374151" }}>{n.body}</p>
+                  <p className="text-[11px] mt-1.5" style={{ color: "#6b7280" }}>
+                    {new Date(n.created_at).toLocaleDateString("nl-NL", { day: "numeric", month: "long" })}
+                  </p>
+                </div>
+                <button
+                  onClick={() => dismissNotification(n.id)}
+                  className="w-7 h-7 flex items-center justify-center rounded-full flex-shrink-0 transition-opacity hover:opacity-60"
+                  style={{ backgroundColor: "#d1fae5" }}
+                  data-testid={`button-dismiss-notif-${n.id}`}
+                  aria-label="Sluiten"
+                >
+                  <X className="w-3.5 h-3.5" style={{ color: "#16a34a" }} />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* ── Support ticket card ── */}
         <div className="bg-white rounded-[28px] p-6" style={{ border: "1px solid #eeeeee" }}>

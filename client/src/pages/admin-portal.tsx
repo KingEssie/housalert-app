@@ -2488,6 +2488,8 @@ function SettingsTab() {
   );
 }
 
+interface NotifStatus { push: boolean; email: boolean; inApp: boolean; emailError?: string | null; alreadyNotified?: boolean; }
+
 function SupportTab() {
   const [tickets, setTickets] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
@@ -2496,6 +2498,7 @@ function SupportTab() {
   const [expanded, setExpanded] = useState<number | null>(null);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [notifResults, setNotifResults] = useState<Record<number, NotifStatus>>({});
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -2519,12 +2522,19 @@ function SupportTab() {
   async function updateStatus(id: number, status: string) {
     setUpdatingId(id);
     try {
-      await adminFetch(`/api/admin/support/tickets/${id}/status`, {
+      const result = await adminFetch(`/api/admin/support/tickets/${id}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
       });
-      setTickets(t => t.map(ticket => ticket.id === id ? { ...ticket, status } : ticket));
+      setTickets(t => t.map(ticket =>
+        ticket.id === id
+          ? { ...ticket, status, resolved_notified_at: (result?.notif?.inApp || result?.notif?.push || result?.notif?.email) ? new Date().toISOString() : ticket.resolved_notified_at }
+          : ticket
+      ));
+      if (result?.notif && status === "resolved") {
+        setNotifResults(prev => ({ ...prev, [id]: result.notif }));
+      }
     } catch {}
     setUpdatingId(null);
   }
@@ -2596,6 +2606,11 @@ function SupportTab() {
                       >
                         {ticket.status}
                       </span>
+                      {ticket.resolved_notified_at && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold border" style={{ backgroundColor: "#f0fdf4", color: "#16a34a", borderColor: "#bbf7d0" }}>
+                          ✓ Notified
+                        </span>
+                      )}
                       <span className="text-[11px]" style={{ color: "#aaaaaa" }}>
                         #{ticket.id} · {new Date(ticket.created_at).toLocaleString()}
                       </span>
@@ -2644,6 +2659,35 @@ function SupportTab() {
                             </button>
                           )}
                         </div>
+
+                        {/* ── Notification delivery status ── */}
+                        {notifResults[ticket.id] && (
+                          <div className="mt-3 p-3 rounded-[12px] text-[12px]" style={{ backgroundColor: "#f9f8ff", border: "1px solid #ede7ff" }}>
+                            <p className="font-bold mb-1.5" style={{ color: "#7c5cbf" }}>Notification delivery</p>
+                            <div className="flex flex-col gap-1">
+                              <span style={{ color: notifResults[ticket.id].inApp ? "#16a34a" : "#888" }}>
+                                {notifResults[ticket.id].inApp ? "✓" : "✗"} In-app notification
+                              </span>
+                              <span style={{ color: notifResults[ticket.id].push ? "#16a34a" : "#888" }}>
+                                {notifResults[ticket.id].push ? "✓" : "✗"} Push notification
+                              </span>
+                              <span style={{ color: notifResults[ticket.id].email ? "#16a34a" : "#888" }}>
+                                {notifResults[ticket.id].email ? "✓" : "✗"} Email
+                                {notifResults[ticket.id].emailError && (
+                                  <span style={{ color: "#e11d48" }}> — {notifResults[ticket.id].emailError}</span>
+                                )}
+                              </span>
+                              {notifResults[ticket.id].alreadyNotified && (
+                                <span style={{ color: "#888" }}>ℹ Already notified previously</span>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                        {ticket.resolved_notified_at && !notifResults[ticket.id] && (
+                          <p className="mt-2 text-[11px]" style={{ color: "#888" }}>
+                            Notified at {new Date(ticket.resolved_notified_at).toLocaleString()}
+                          </p>
+                        )}
                       </div>
                     )}
                   </div>

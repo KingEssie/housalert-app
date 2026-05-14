@@ -36,6 +36,28 @@ export async function runStartupMigration() {
   await createAdminSourceOverridesTable();
   await createSupportTicketsTable();
   await ensureSupportTicketsColumns();
+  await createSupportNotificationsTable();
+}
+
+async function createSupportNotificationsTable() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS support_notifications (
+        id SERIAL PRIMARY KEY,
+        user_id UUID NOT NULL,
+        ticket_id INT REFERENCES support_tickets(id) ON DELETE CASCADE,
+        title TEXT NOT NULL,
+        body TEXT NOT NULL,
+        read_at TIMESTAMPTZ,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `);
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_support_notifs_user_id ON support_notifications(user_id)`);
+    await pool.query(`CREATE INDEX IF NOT EXISTS idx_support_notifs_unread ON support_notifications(user_id) WHERE read_at IS NULL`);
+    log("[MIGRATION] support_notifications table OK", "migration");
+  } catch (err: any) {
+    log(`[MIGRATION] Error creating support_notifications: ${err.message}`, "migration");
+  }
 }
 
 async function ensureSupportTicketsColumns() {
