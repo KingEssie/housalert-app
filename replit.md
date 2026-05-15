@@ -66,6 +66,52 @@ A mobile-first rental alert application for the German market, allowing users to
 - **Subscription & Paywall:** A subscription model with a free trial provides premium features, managed through Stripe for payments.
 - **Admin Portal:** An interactive portal for administrators to monitor system health, manage users, listings, subscriptions, and analyze ingestion/activation metrics.
 
+## Local Android Build (Windows / Android Studio)
+
+Clone the repo and follow these steps exactly. Every step is required — skipping any one of them causes a blank screen or "supabaseUrl is required" crash.
+
+### 1. Prerequisites
+- Node.js 20+, Git, Android Studio (with Android SDK 34+)
+- Java 17+ (for Gradle)
+
+### 2. Clone & install
+```bash
+git clone https://github.com/KingEssie/housalert-app.git
+cd housalert-app
+npm install
+```
+
+### 3. Create `.env` in the project root
+```
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key-here
+```
+> Copy `.env.example` as a starting point. The file **must** be named `.env` and placed in the project root (same folder as `package.json`). Do **not** commit it.
+
+### 4. Build & sync to Android
+```bash
+npm run mobile:android:sync
+```
+This runs `npm run build` (Vite → `dist/public`) then `npx cap sync android` (copies web assets into `android/app/src/main/assets/public`). The build will print `✓ set` for each env var — if you see `✗ MISSING`, stop and fix `.env` before continuing.
+
+### 5. Open in Android Studio
+```bash
+npm run cap:android
+# or manually: open the `android/` folder in Android Studio
+```
+
+### 6. Run on device or emulator
+Press **Run** in Android Studio. The app must be rebuilt and re-synced (`npm run mobile:android:sync`) after any code change.
+
+### Verified paths
+| What | Where |
+|------|-------|
+| Vite build output | `dist/public/` |
+| Capacitor `webDir` | `dist/public` (matches `capacitor.config.ts`) |
+| Android web assets | `android/app/src/main/assets/public/` |
+| Required env file | `.env` (project root, gitignored) |
+| Template | `.env.example` |
+
 ## User preferences
 
 - _Populate as you build_

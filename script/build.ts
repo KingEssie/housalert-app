@@ -33,6 +33,20 @@ const allowlist = [
 ];
 
 async function buildAll() {
+  // Build-time env check — logs presence only, never values
+  const supabaseUrl = process.env.VITE_SUPABASE_URL;
+  const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
+  console.log("[build] VITE_SUPABASE_URL   :", supabaseUrl   ? "✓ set" : "✗ MISSING — app will fail to connect to Supabase");
+  console.log("[build] VITE_SUPABASE_ANON_KEY:", supabaseAnonKey ? "✓ set" : "✗ MISSING — app will fail to connect to Supabase");
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.warn(
+      "\n[build] WARNING: One or more VITE_ env vars are missing.\n" +
+      "  → For local Android builds: ensure .env exists in the project root\n" +
+      "    with VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY before running this build.\n" +
+      "  → See .env.example for the required variable names.\n"
+    );
+  }
+
   await rm("dist", { recursive: true, force: true });
 
   console.log("building client...");

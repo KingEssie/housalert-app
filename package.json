@@ -11,7 +11,8 @@
     "db:push": "drizzle-kit push",
     "cap:sync": "npx cap sync",
     "cap:ios": "npx cap open ios",
-    "cap:android": "npx cap open android"
+    "cap:android": "npx cap open android",
+    "mobile:android:sync": "npm run build && npx cap sync android"
   },
   "dependencies": {
     "@capacitor/android": "^7.6.0",
