@@ -38,13 +38,12 @@ import { computeMatchScore, getMatchReasons, computeHybridFilters } from "../sha
 import { normalizeCity } from "../shared/city-normalize";
 import { pool as pgPool } from "./pg-pool";
 import { getFaqSuggestions } from "./support-faq";
-import { sendPushToUser } from "./notifications/push";
 import { isAdminEmail, getRecentRuns, getRunDetail, getLatestRunCities, getSourceAggregates, getDynamicCitiesReport } from "./admin";
 import { trackEvent as trackActivationEvent, getUserActivationStatus, getActivationFunnel, hasEvent as hasActivationEvent } from "./activation-events";
 import { saveCancellationFeedback, getCancellationStats } from "./cancellation-feedback";
 import { getBlockedSources, addBlockedSource, removeBlockedSource, normalizeSourceName } from "./blocked-sources";
 import { getReferralSummary, applyReferralCode, validateReferralCode, ensureUserHasReferralCode } from "./referrals";
-import { initWebPush, sendPushToUser } from "./notifications/push";
+import { initWebPush, sendPushToUser, isPushInitialized } from "./notifications/push";
 import { sendExpoTestPush } from "./notifications/expo-push";
 import { detectAndStoreLanguage, getUserPreferredLanguage, applyDisplayBodies } from "./notifications/translate";
 import { getSupabaseAdmin, lookupSupabaseUserByEmail } from "./supabase-admin";
@@ -7902,41 +7901,123 @@ export async function registerRoutes(
       }
 
       if (type === "push") {
-        const targetUserId = userId || adminUser.id;
+        // 1. Resolve target user ID
+        const rawInput = (typeof userId === "string" ? userId : "").trim();
+        log(`[PUSH TEST] Admin ${adminUser.email} — raw target: "${rawInput || "(blank → self)"}"`);
+
+        let targetUserId: string;
+        let resolvedVia: string;
+
+        if (!rawInput) {
+          targetUserId = adminUser.id;
+          resolvedVia = "blank → admin self";
+        } else if (rawInput.includes("@")) {
+          const found = await lookupSupabaseUserByEmail(rawInput);
+          if (!found) {
+            return res.status(404).json({
+              success: false,
+              error: "user_not_found",
+              message: `No Supabase user found with email: ${rawInput}`,
+            });
+          }
+          targetUserId = found.id;
+          resolvedVia = `email → ${found.email}`;
+        } else if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(rawInput)) {
+          targetUserId = rawInput;
+          resolvedVia = "uuid → direct";
+        } else {
+          return res.status(400).json({
+            success: false,
+            error: "invalid_target",
+            message: `Target must be blank (uses your own account), a valid UUID, or an email address. Got: "${rawInput}"`,
+          });
+        }
+
+        log(`[PUSH TEST] Resolved userId=${targetUserId.substring(0, 8)}... via ${resolvedVia}`);
+
+        // 2. VAPID check
+        if (!isPushInitialized()) {
+          const vapidPub = process.env.VITE_VAPID_PUBLIC_KEY;
+          const vapidPriv = process.env.VAPID_PRIVATE_KEY;
+          log(`[PUSH TEST] Aborting — VAPID not initialized (public=${vapidPub ? "set" : "MISSING"} private=${vapidPriv ? "set" : "MISSING"})`);
+          return res.json({
+            success: false,
+            targetUserId,
+            error: "vapid_not_configured",
+            message: `Web Push VAPID keys not configured. VITE_VAPID_PUBLIC_KEY=${vapidPub ? "set" : "MISSING"}, VAPID_PRIVATE_KEY=${vapidPriv ? "set" : "MISSING"}.`,
+          });
+        }
+
+        // 3. Pre-flight subscription count
+        const adminSb = getSupabaseAdmin();
+        const { data: webSubs } = await adminSb.from("push_subscriptions").select("id").eq("user_id", targetUserId);
+        const { data: expoTokensRows } = await adminSb.from("expo_push_tokens").select("id").eq("user_id", targetUserId).eq("is_active", true);
+        const webSubCount = webSubs?.length ?? 0;
+        const expoTokenCount = expoTokensRows?.length ?? 0;
+        log(`[PUSH TEST] userId=${targetUserId.substring(0, 8)}...: web_subs=${webSubCount} active_expo_tokens=${expoTokenCount}`);
+
+        if (webSubCount === 0 && expoTokenCount === 0) {
+          return res.json({
+            success: false,
+            targetUserId,
+            error: "no_subscriptions",
+            message: "No active push subscriptions or Expo tokens found for this user. Ask them to enable push notifications in their account preferences.",
+            webSubs: webSubCount,
+            expoTokens: expoTokenCount,
+          });
+        }
+
+        // 4. Send
         const webResult = await sendPushToUser(targetUserId, {
           title: "HousAlert Test",
           body: "Push notifications work! 🏠",
           url: "/dashboard",
         }, supabase);
         const expoResult = await sendExpoTestPush(targetUserId);
-        log(`[admin] Test push to ${targetUserId.substring(0, 8)}: web_sent=${webResult.sent} web_failed=${webResult.failed} web_removed=${webResult.removed} expo=${expoResult.sent}`);
+        log(`[PUSH TEST] userId=${targetUserId.substring(0, 8)}...: web_sent=${webResult.sent} web_failed=${webResult.failed} web_removed=${webResult.removed} expo_sent=${expoResult.sent}`);
         if (webResult.errors?.length) {
-          log(`[admin] Test push errors: ${JSON.stringify(webResult.errors)}`);
+          log(`[PUSH TEST] Provider errors: ${JSON.stringify(webResult.errors)}`);
         }
 
-        const success = webResult.sent + expoResult.sent > 0;
-        const diagnosis = !success && webResult.errors?.length
-          ? webResult.errors[0]
-          : null;
-        const repairNeeded = diagnosis && (diagnosis.statusCode === 401 || diagnosis.statusCode === 410 || diagnosis.statusCode === 404);
+        const totalSent = webResult.sent + expoResult.sent;
+        const success = totalSent > 0;
+
+        if (!success) {
+          const firstErr = webResult.errors?.length ? webResult.errors[0] : null;
+          const repairNeeded = firstErr && (firstErr.statusCode === 401 || firstErr.statusCode === 410 || firstErr.statusCode === 404);
+          return res.json({
+            success: false,
+            targetUserId,
+            error: "provider_rejected",
+            message: firstErr?.message || "Provider rejected all push attempts. No notifications delivered.",
+            webSubs: webSubCount,
+            expoTokens: expoTokenCount,
+            web: webResult,
+            expo: expoResult,
+            ...(firstErr && {
+              diagnosis: {
+                statusCode: firstErr.statusCode,
+                message: firstErr.message,
+                endpoint: firstErr.endpoint,
+                body: firstErr.body,
+                repairNeeded: !!repairNeeded,
+                repairInstructions: repairNeeded
+                  ? "Push subscription is outdated. Ask the user to disable and re-enable push notifications in their preferences to create a fresh subscription."
+                  : undefined,
+              },
+            }),
+          });
+        }
 
         return res.json({
-          success,
+          success: true,
           type: "push",
+          targetUserId,
+          totalSent,
+          webSubs: webSubCount,
+          expoTokens: expoTokenCount,
           web: webResult,
           expo: expoResult,
-          ...(diagnosis && {
-            diagnosis: {
-              statusCode: diagnosis.statusCode,
-              message: diagnosis.message,
-              endpoint: diagnosis.endpoint,
-              body: diagnosis.body,
-              repairNeeded: !!repairNeeded,
-              repairInstructions: repairNeeded
-                ? "Push subscription is outdated. Ask the user to disable and re-enable push notifications in their account preferences to create a fresh subscription."
-                : undefined,
-            },
-          }),
         });
       }
 

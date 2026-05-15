@@ -1999,25 +1999,33 @@ function AlertsTab() {
     try {
       const body: any = { type: testType };
       if (testType === "email" && testEmail) body.email = testEmail;
-      if (testType === "push" && testUserId) body.userId = testUserId;
-      const res = await adminFetch("/api/admin/portal/test-alert", { method: "POST", body: JSON.stringify(body) });
+      if (testType === "push") body.userId = testUserId || "";
+      let res: any;
+      try {
+        res = await adminFetch("/api/admin/portal/test-alert", { method: "POST", body: JSON.stringify(body) });
+      } catch (fetchErr: any) {
+        const msg = fetchErr.message || "Unknown error";
+        const isDomain = msg.toLowerCase().includes("domain");
+        const isKey = msg.toLowerCase().includes("key") || msg.toLowerCase().includes("api");
+        setTestError({
+          readable: isDomain
+            ? "Domain not verified in Resend. Add and verify your sending domain in the Resend dashboard."
+            : isKey
+            ? "API key rejected. Check that RESEND_API_KEY is valid and has send permissions."
+            : msg,
+          technical: msg,
+        });
+        setSending(false);
+        return;
+      }
       if (res.success) {
         setTestSuccess(res);
       } else {
-        setTestError({ readable: res.error || "Send failed — provider rejected the request.", technical: JSON.stringify(res, null, 2) });
+        const readable = res.message || res.error || "Send failed — provider rejected the request.";
+        setTestError({ readable, technical: JSON.stringify(res, null, 2) });
       }
     } catch (err: any) {
-      const msg = err.message || "Unknown error";
-      const isDomain = msg.toLowerCase().includes("domain");
-      const isKey = msg.toLowerCase().includes("key") || msg.toLowerCase().includes("api");
-      setTestError({
-        readable: isDomain
-          ? "Domain not verified in Resend. Add and verify your sending domain in the Resend dashboard."
-          : isKey
-          ? "API key rejected. Check that RESEND_API_KEY is valid and has send permissions."
-          : msg,
-        technical: msg,
-      });
+      setTestError({ readable: err.message || "Unexpected error", technical: err.message || "Unknown error" });
     }
     setSending(false);
   }
@@ -2154,7 +2162,7 @@ function AlertsTab() {
           {/* Target input */}
           <div className="mb-4">
             <label className="text-[11px] font-semibold uppercase tracking-[0.06em] mb-1.5 block" style={{ color: "#aaaaaa" }}>
-              {testType === "email" ? "Recipient email" : "Target user ID"}
+              {testType === "email" ? "Recipient email" : "Target user (UUID or email)"}
             </label>
             {testType === "email" ? (
               <input
@@ -2168,7 +2176,7 @@ function AlertsTab() {
               />
             ) : (
               <input
-                placeholder="Leave blank to test your own account"
+                placeholder="Leave blank for your own account · or paste a UUID / email"
                 value={testUserId}
                 onChange={e => setTestUserId(e.target.value)}
                 className="w-full h-11 px-4 rounded-[12px] text-[13px] focus:outline-none focus:ring-2"
@@ -2199,20 +2207,41 @@ function AlertsTab() {
             <div className="mt-4 rounded-[16px] p-4" style={{ backgroundColor: "#edfbf0", border: "1px solid #bbf7d0" }} data-testid="panel-test-success">
               <div className="flex items-center gap-2 mb-3">
                 <CheckCircle2 className="w-5 h-5 flex-shrink-0" style={{ color: "#223546" }} />
-                <p className="text-[14px] font-bold" style={{ color: "#223546" }}>Delivery accepted</p>
+                <p className="text-[14px] font-bold" style={{ color: "#223546" }}>
+                  {testSuccess.type === "push" ? `Push delivered (${testSuccess.totalSent ?? (testSuccess.web?.sent ?? 0) + (testSuccess.expo?.sent ?? 0)} sent)` : "Delivery accepted"}
+                </p>
               </div>
               <div className="space-y-1.5">
-                {[
-                  { label: "Sent to", value: testSuccess.sentTo },
-                  { label: "From", value: testSuccess.from },
-                  { label: "Timestamp", value: testSuccess.timestamp ? new Date(testSuccess.timestamp).toLocaleString() : "—" },
-                  { label: "Resend ID", value: testSuccess.resendId || "—", mono: true },
-                ].map(({ label, value, mono }) => (
-                  <div key={label} className="flex gap-2 text-[12px]">
-                    <span className="w-24 flex-shrink-0 font-semibold" style={{ color: "#223546" }}>{label}</span>
-                    <span className={mono ? "font-mono text-[11px]" : ""} style={{ color: "#111111" }}>{value}</span>
-                  </div>
-                ))}
+                {testSuccess.type === "push" ? (
+                  <>
+                    {[
+                      { label: "Target user", value: testSuccess.targetUserId ? testSuccess.targetUserId.substring(0, 8) + "..." : "—", mono: true },
+                      { label: "Web push", value: `${testSuccess.web?.sent ?? 0} sent, ${testSuccess.web?.failed ?? 0} failed, ${testSuccess.web?.removed ?? 0} removed` },
+                      { label: "Expo push", value: `${testSuccess.expo?.sent ?? 0} sent, ${testSuccess.expo?.failed ?? 0} failed` },
+                      { label: "Web subs", value: String(testSuccess.webSubs ?? "—") },
+                      { label: "Expo tokens", value: String(testSuccess.expoTokens ?? "—") },
+                    ].map(({ label, value, mono }) => (
+                      <div key={label} className="flex gap-2 text-[12px]">
+                        <span className="w-24 flex-shrink-0 font-semibold" style={{ color: "#223546" }}>{label}</span>
+                        <span className={mono ? "font-mono text-[11px]" : ""} style={{ color: "#111111" }}>{value}</span>
+                      </div>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    {[
+                      { label: "Sent to", value: testSuccess.sentTo },
+                      { label: "From", value: testSuccess.from },
+                      { label: "Timestamp", value: testSuccess.timestamp ? new Date(testSuccess.timestamp).toLocaleString() : "—" },
+                      { label: "Resend ID", value: testSuccess.resendId || "—", mono: true },
+                    ].map(({ label, value, mono }: { label: string; value?: string; mono?: boolean }) => (
+                      <div key={label} className="flex gap-2 text-[12px]">
+                        <span className="w-24 flex-shrink-0 font-semibold" style={{ color: "#223546" }}>{label}</span>
+                        <span className={mono ? "font-mono text-[11px]" : ""} style={{ color: "#111111" }}>{value}</span>
+                      </div>
+                    ))}
+                  </>
+                )}
               </div>
               <button
                 onClick={() => { setTestSuccess(null); setTestError(null); }}
