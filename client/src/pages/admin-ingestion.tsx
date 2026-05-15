@@ -20,6 +20,7 @@ interface RunSummary {
   total_matches: number;
   total_errors: number;
   status: string;
+  error_message?: string | null;
 }
 
 interface SummaryData {
@@ -50,6 +51,7 @@ interface SourceRow {
   duplicates: number;
   errors: number;
   last_success: string | null;
+  errorMessage?: string | null;
 }
 
 interface SourceStatus {
@@ -331,7 +333,10 @@ export default function AdminIngestionPage() {
           <div className="bg-white rounded-[20px] p-5" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }} data-testid="section-latest-run">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-[10px] font-bold uppercase tracking-[0.07em]" style={{ color: "#aaaaaa" }}>Latest Import Run</h2>
-              <StatusBadge status={latestRun.status} />
+              <div className="flex items-center gap-2">
+                <span className="text-[11px]" style={{ color: "#aaaaaa" }}>{latestRun.duration_sec}s · {latestRun.cities_count} cities</span>
+                <StatusBadge status={latestRun.status} />
+              </div>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center">
               <div>
@@ -355,6 +360,37 @@ export default function AdminIngestionPage() {
                 <p className="text-[11px]" style={{ color: "#aaaaaa" }}>Errors</p>
               </div>
             </div>
+            {latestRun.error_message && (
+              <div className="mt-4 rounded-xl p-3 flex items-start gap-2.5" style={{ backgroundColor: "#fff1f2", border: "1px solid #fecdd3" }} data-testid="alert-run-error">
+                <XCircle className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#e11d48" }} />
+                <div className="min-w-0">
+                  <p className="text-[11px] font-bold uppercase tracking-wide mb-1" style={{ color: "#e11d48" }}>Run error</p>
+                  <p className="text-[12px] font-mono break-all" style={{ color: "#9f1239" }}>{latestRun.error_message}</p>
+                </div>
+              </div>
+            )}
+            {!latestRun.error_message && latestRun.total_errors > 0 && (() => {
+              const failedSrcs = sources.filter(s => s.errors > 0);
+              if (failedSrcs.length === 0) return null;
+              return (
+                <div className="mt-4 space-y-2" data-testid="list-failed-sources">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.07em]" style={{ color: "#e11d48" }}>
+                    {failedSrcs.length} source{failedSrcs.length > 1 ? "s" : ""} with errors this run
+                  </p>
+                  {failedSrcs.map(s => (
+                    <div key={s.name} className="rounded-xl p-3 flex items-start gap-2.5" style={{ backgroundColor: "#fff1f2", border: "1px solid #fecdd3" }} data-testid={`alert-source-error-${s.name}`}>
+                      <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: "#e11d48" }} />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[12px] font-semibold" style={{ color: "#9f1239" }}>{s.name}</p>
+                        {s.errorMessage && (
+                          <p className="text-[11px] font-mono mt-0.5 break-all" style={{ color: "#be123c" }}>{s.errorMessage}</p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
           </div>
         )}
 
@@ -409,11 +445,12 @@ export default function AdminIngestionPage() {
                   <th className="px-3 py-2 font-semibold text-ha-text-secondary text-right">Errors</th>
                   <th className="px-3 py-2 font-semibold text-ha-text-secondary text-center">Platform</th>
                   <th className="px-3 py-2 font-semibold text-ha-text-secondary">Last Success</th>
+                  <th className="px-3 py-2 font-semibold text-ha-text-secondary">Error detail</th>
                 </tr>
               </thead>
               <tbody>
                 {sources.length === 0 ? (
-                  <tr><td colSpan={7} className="px-4 py-6 text-center text-ha-text-secondary">No data yet</td></tr>
+                  <tr><td colSpan={8} className="px-4 py-6 text-center text-ha-text-secondary">No data yet</td></tr>
                 ) : sources.map((src) => {
                   const platformStatus = statuses.find(s => s.name === src.name);
                   return (
@@ -427,6 +464,12 @@ export default function AdminIngestionPage() {
                         {platformStatus && <StatusBadge status={platformStatus.status} />}
                       </td>
                       <td className="px-3 py-2 text-ha-text-secondary text-xs">{formatTime(src.last_success)}</td>
+                      <td className="px-3 py-2 text-xs max-w-[220px]">
+                        {src.errors > 0 && src.errorMessage
+                          ? <span className="font-mono break-all" style={{ color: "#be123c" }} title={src.errorMessage}>{src.errorMessage.length > 60 ? src.errorMessage.slice(0, 60) + "…" : src.errorMessage}</span>
+                          : <span className="text-ha-text-secondary">—</span>
+                        }
+                      </td>
                     </tr>
                   );
                 })}
@@ -452,6 +495,7 @@ export default function AdminIngestionPage() {
                     <th className="px-3 py-2 font-semibold text-ha-text-secondary text-right">Matches</th>
                     <th className="px-3 py-2 font-semibold text-ha-text-secondary text-right">Errors</th>
                     <th className="px-3 py-2 font-semibold text-ha-text-secondary text-center">Status</th>
+                    <th className="px-3 py-2 font-semibold text-ha-text-secondary">Error detail</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -465,6 +509,12 @@ export default function AdminIngestionPage() {
                       <td className="px-3 py-2 text-right text-ha-primary">{run.total_matches}</td>
                       <td className={`px-3 py-2 text-right font-medium ${run.total_errors > 0 ? "text-ha-danger" : "text-ha-text-secondary"}`}>{run.total_errors}</td>
                       <td className="px-3 py-2 text-center"><StatusBadge status={run.status} /></td>
+                      <td className="px-3 py-2 text-xs max-w-[200px]">
+                        {run.error_message
+                          ? <span className="font-mono break-all" style={{ color: "#be123c" }} title={run.error_message}>{run.error_message.length > 50 ? run.error_message.slice(0, 50) + "…" : run.error_message}</span>
+                          : <span className="text-ha-text-secondary">—</span>
+                        }
+                      </td>
                     </tr>
                   ))}
                 </tbody>

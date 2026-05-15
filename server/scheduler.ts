@@ -1,6 +1,6 @@
 import { log } from "./log";
 import { runAllIngesters, OverlapError } from "./ingesters";
-import { persistIngestionRun } from "./admin";
+import { persistIngestionRun, ensureIngestionRunsColumns } from "./admin";
 import { cleanupStaleFetchRuns } from "./user-matches";
 import { recoverUndeliveredMatches } from "./notifications/buffer";
 import { checkExpoReceipts } from "./notifications/expo-push";
@@ -36,6 +36,18 @@ async function tick() {
       log("[INGEST] Skipping — previous run still in progress", "scheduler");
     } else {
       log(`[INGEST ERROR] ${err.message}`, "scheduler");
+      const durationSec = (Date.now() - startedAt.getTime()) / 1000;
+      await persistIngestionRun(
+        {
+          sources: [],
+          cityReports: [],
+          total: { found: 0, inserted: 0, duplicates: 0, matches: 0, errors: 1 },
+          cities: [],
+          durationSec,
+        },
+        startedAt,
+        err.message
+      );
     }
   }
   await runStalenessCheck();
@@ -70,6 +82,8 @@ export function getNextRun() {
 }
 
 export async function startScheduler() {
+  await ensureIngestionRunsColumns();
+
   const cleaned = await cleanupStaleFetchRuns();
   if (cleaned > 0) {
     log(`[scheduler] Cleaned up ${cleaned} stale fetch runs from previous server`, "scheduler");

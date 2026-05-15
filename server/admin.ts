@@ -15,18 +15,43 @@ export function isAdminEmail(email: string): boolean {
   return ADMIN_EMAILS.includes(email.toLowerCase().trim());
 }
 
-export async function persistIngestionRun(report: IngestionReport, startedAt: Date): Promise<void> {
+export async function ensureIngestionRunsColumns(): Promise<void> {
   try {
-    const status = report.total.errors === 0
-      ? "success"
-      : report.total.inserted > 0
-        ? "partial"
-        : "failed";
+    await pool.query(`ALTER TABLE ingestion_runs ADD COLUMN IF NOT EXISTS error_message text`);
+  } catch (err: any) {
+    log(`[admin] ensureIngestionRunsColumns: ${err.message}`, "express");
+  }
+}
+
+export async function persistIngestionRun(
+  report: IngestionReport,
+  startedAt: Date,
+  runErrorMessage?: string
+): Promise<void> {
+  try {
+    const status =
+      runErrorMessage
+        ? "failed"
+        : report.total.errors === 0
+          ? "success"
+          : report.total.found > 0
+            ? "partial"
+            : "failed";
+
+    const errorMessage =
+      runErrorMessage ??
+      (report.total.errors > 0
+        ? report.sources
+            .filter((s) => s.errors > 0 && s.errorMessage)
+            .map((s) => `${s.name}: ${s.errorMessage}`)
+            .slice(0, 3)
+            .join("; ") || null
+        : null);
 
     await pool.query(
       `INSERT INTO ingestion_runs
-        (started_at, finished_at, duration_sec, cities_count, total_found, total_inserted, total_duplicates, total_matches, total_errors, city_reports, source_reports, status)
-       VALUES ($1, NOW(), $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        (started_at, finished_at, duration_sec, cities_count, total_found, total_inserted, total_duplicates, total_matches, total_errors, city_reports, source_reports, status, error_message)
+       VALUES ($1, NOW(), $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
       [
         startedAt.toISOString(),
         report.durationSec,
@@ -39,9 +64,10 @@ export async function persistIngestionRun(report: IngestionReport, startedAt: Da
         JSON.stringify(report.cityReports),
         JSON.stringify(report.sources),
         status,
+        errorMessage,
       ]
     );
-    log(`[admin] Ingestion run persisted (status=${status})`, "express");
+    log(`[admin] Ingestion run persisted (status=${status}${errorMessage ? `, error=${errorMessage.slice(0, 80)}` : ""})`, "express");
   } catch (err: any) {
     log(`[admin] Failed to persist ingestion run: ${err.message}`, "express");
   }
@@ -59,12 +85,13 @@ export interface IngestionRunSummary {
   total_matches: number;
   total_errors: number;
   status: string;
+  error_message?: string | null;
 }
 
 export async function getRecentRuns(limit = 20): Promise<IngestionRunSummary[]> {
   const { rows } = await pool.query(
     `SELECT id, started_at, finished_at, duration_sec, cities_count,
-            total_found, total_inserted, total_duplicates, total_matches, total_errors, status
+            total_found, total_inserted, total_duplicates, total_matches, total_errors, status, error_message
      FROM ingestion_runs
      ORDER BY finished_at DESC
      LIMIT $1`,
@@ -97,16 +124,29 @@ export async function getLatestRunSources() {
   return rows[0].source_reports || [];
 }
 
-export async function getSourceAggregates() {
+export interface SourceAggregateRow {
+  name: string;
+  found: number;
+  inserted: number;
+  duplicates: number;
+  errors: number;
+  last_success: string | null;
+  errorMessage?: string | null;
+}
+
+export async function getSourceAggregates(): Promise<SourceAggregateRow[]> {
   const { rows } = await pool.query(
     `SELECT source_reports, finished_at FROM ingestion_runs ORDER BY finished_at DESC LIMIT 1`
   );
   if (rows.length === 0) return [];
 
-  const sourceReports: Array<{ name: string; found: number; inserted: number; duplicates: number; matches: number; errors: number }> = rows[0].source_reports || [];
+  const sourceReports: Array<{
+    name: string; found: number; inserted: number; duplicates: number;
+    matches: number; errors: number; errorMessage?: string;
+  }> = rows[0].source_reports || [];
   const finishedAt = rows[0].finished_at;
 
-  const agg = new Map<string, { name: string; found: number; inserted: number; duplicates: number; errors: number; last_success: string | null }>();
+  const agg = new Map<string, SourceAggregateRow>();
 
   for (const sr of sourceReports) {
     const baseName = sr.name.replace(/\s*\(.*\)$/, "");
@@ -119,6 +159,9 @@ export async function getSourceAggregates() {
       if (sr.errors === 0 && sr.found > 0) {
         existing.last_success = finishedAt;
       }
+      if (sr.errors > 0 && sr.errorMessage && !existing.errorMessage) {
+        existing.errorMessage = sr.errorMessage;
+      }
     } else {
       agg.set(baseName, {
         name: baseName,
@@ -127,6 +170,7 @@ export async function getSourceAggregates() {
         duplicates: sr.duplicates,
         errors: sr.errors,
         last_success: (sr.errors === 0 && sr.found > 0) ? finishedAt : null,
+        errorMessage: sr.errors > 0 ? (sr.errorMessage ?? null) : null,
       });
     }
   }

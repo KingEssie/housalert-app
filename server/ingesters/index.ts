@@ -31,6 +31,7 @@ export interface SourceReport {
   duplicates: number;
   matches: number;
   errors: number;
+  errorMessage?: string;
   durationMs?: number;
 }
 
@@ -235,6 +236,7 @@ function buildIngestersForCity(city: string): Ingester[] {
 }
 
 const MAX_PARALLEL_SOURCES = 3;
+const SOURCE_TIMEOUT_MS = 90_000;
 
 async function runSourcesForCity(
   city: string,
@@ -247,7 +249,18 @@ async function runSourcesForCity(
     const srcStart = Date.now();
     try {
       log(`  Running ${ingester.name}...`, "ingest");
-      const result = await ingester.run();
+
+      let timeoutHandle: ReturnType<typeof setTimeout>;
+      const result = await Promise.race([
+        ingester.run(),
+        new Promise<never>((_, reject) => {
+          timeoutHandle = setTimeout(
+            () => reject(new Error(`Source timed out after ${SOURCE_TIMEOUT_MS / 1000}s`)),
+            SOURCE_TIMEOUT_MS
+          );
+        }),
+      ]).finally(() => clearTimeout(timeoutHandle!));
+
       const srcDuration = Date.now() - srcStart;
 
       const report: SourceReport = {
@@ -268,7 +281,8 @@ async function runSourcesForCity(
       return report;
     } catch (err: any) {
       const srcDuration = Date.now() - srcStart;
-      log(`  ${ingester.name} FAILED: ${err.message} [${srcDuration}ms]`, "ingest");
+      const isTimeout = err.message?.startsWith("Source timed out");
+      log(`  ${ingester.name} ${isTimeout ? "TIMED OUT" : "FAILED"}: ${err.message} [${srcDuration}ms]`, "ingest");
       return {
         name: `${ingester.name} (${city})`,
         found: 0,
@@ -276,6 +290,7 @@ async function runSourcesForCity(
         duplicates: 0,
         matches: 0,
         errors: 1,
+        errorMessage: err.message,
         durationMs: srcDuration,
       };
     }
