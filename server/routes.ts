@@ -7984,7 +7984,12 @@ export async function registerRoutes(
 
         if (!success) {
           const firstErr = webResult.errors?.length ? webResult.errors[0] : null;
-          const repairNeeded = firstErr && (firstErr.statusCode === 401 || firstErr.statusCode === 410 || firstErr.statusCode === 404);
+          const isVapidMismatch = firstErr?.statusCode === 401 ||
+            (firstErr?.statusCode === 403 && (
+              firstErr?.body?.includes("BadJwtToken") ||
+              firstErr?.message?.includes("BadJwtToken")
+            ));
+          const repairNeeded = firstErr && (isVapidMismatch || firstErr.statusCode === 410 || firstErr.statusCode === 404);
           return res.json({
             success: false,
             targetUserId,
@@ -8002,7 +8007,9 @@ export async function registerRoutes(
                 body: firstErr.body,
                 repairNeeded: !!repairNeeded,
                 repairInstructions: repairNeeded
-                  ? "Push subscription is outdated. Ask the user to disable and re-enable push notifications in their preferences to create a fresh subscription."
+                  ? isVapidMismatch
+                    ? "VAPID key mismatch detected. The stale subscription has been removed automatically. The user must re-enable push notifications to create a fresh subscription with the current key."
+                    : "Push subscription expired or unregistered. The stale subscription has been removed. The user must re-enable push notifications."
                   : undefined,
               },
             }),
@@ -8024,7 +8031,82 @@ export async function registerRoutes(
       return res.status(400).json({ error: "type must be 'email' or 'push'" });
     } catch (err: any) {
       log(`[admin] Test alert error: ${err.message}`);
-      res.status(500).json({ error: err.message });
+      res.status(500).json({ error: err.message || "Internal error" });
+    }
+  });
+
+  app.get("/api/admin/portal/vapid-debug", requireAdmin, (_req, res) => {
+    const publicKey = process.env.VITE_VAPID_PUBLIC_KEY || "";
+    const privateKey = process.env.VAPID_PRIVATE_KEY || "";
+    const subject = process.env.VAPID_SUBJECT || "mailto:admin@housalert.com";
+    return res.json({
+      initialized: isPushInitialized(),
+      subject,
+      backendPublicKeyConfigured: !!publicKey,
+      backendPrivateKeyConfigured: !!privateKey,
+      backendPublicKeyPrefix: publicKey ? publicKey.substring(0, 12) + "..." : null,
+      backendPublicKeyLength: publicKey.length || null,
+    });
+  });
+
+  app.post("/api/admin/portal/clear-push-subs", requireAdmin, async (req, res) => {
+    try {
+      const adminUser = (req as any).adminUser;
+      const { userId } = req.body || {};
+      const rawInput = (typeof userId === "string" ? userId : "").trim();
+
+      let targetUserId: string;
+      let resolvedVia: string;
+
+      if (!rawInput) {
+        targetUserId = adminUser.id;
+        resolvedVia = "blank → admin self";
+      } else if (rawInput.includes("@")) {
+        const found = await lookupSupabaseUserByEmail(rawInput);
+        if (!found) {
+          return res.status(404).json({
+            success: false,
+            error: "user_not_found",
+            message: `No user found with email: ${rawInput}`,
+          });
+        }
+        targetUserId = found.id;
+        resolvedVia = `email → ${found.email}`;
+      } else if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(rawInput)) {
+        targetUserId = rawInput;
+        resolvedVia = "uuid → direct";
+      } else {
+        return res.status(400).json({
+          success: false,
+          error: "invalid_target",
+          message: `Target must be blank, a valid UUID, or an email address. Got: "${rawInput}"`,
+        });
+      }
+
+      const adminSb = getSupabaseAdmin();
+      const { data: existing } = await adminSb
+        .from("push_subscriptions")
+        .select("id, endpoint")
+        .eq("user_id", targetUserId);
+      const count = existing?.length ?? 0;
+
+      if (count > 0) {
+        await adminSb.from("push_subscriptions").delete().eq("user_id", targetUserId);
+      }
+
+      log(`[PUSH] Admin ${adminUser.email} cleared ${count} push subscription(s) for userId=${targetUserId.substring(0, 8)}... via ${resolvedVia}`);
+
+      return res.json({
+        success: true,
+        targetUserId,
+        deleted: count,
+        message: count > 0
+          ? `Removed ${count} push subscription(s). The user must re-enable push notifications to create a fresh subscription with the current VAPID key.`
+          : "No push subscriptions found for this user.",
+      });
+    } catch (err: any) {
+      log(`[admin] clear-push-subs error: ${err.message}`);
+      res.status(500).json({ error: err.message || "Internal error" });
     }
   });
 

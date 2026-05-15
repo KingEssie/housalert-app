@@ -125,7 +125,17 @@ export async function sendPushToUser(
         log(`[PUSH] Removed subscription with VAPID mismatch (401) id=${sub.id} endpoint=${endpointDomain}`);
         errors.push({
           statusCode: 401,
-          message: "Push subscription rejected (401 Unauthorized). This usually means the VAPID keys changed since this subscription was created. The subscription has been removed — the user must re-enable push notifications to create a fresh subscription.",
+          message: "Push subscription rejected (401 Unauthorized). VAPID keys changed since this subscription was created. The stale subscription has been removed — the user must re-enable push notifications to create a fresh subscription.",
+          endpoint: endpointDomain,
+          body,
+        });
+      } else if (statusCode === 403 && body.includes("BadJwtToken")) {
+        await supabase.from("push_subscriptions").delete().eq("id", sub.id);
+        removed++;
+        log(`[PUSH] Removed Apple Web Push subscription with BadJwtToken (403) id=${sub.id} endpoint=${endpointDomain}`);
+        errors.push({
+          statusCode: 403,
+          message: "Apple Web Push subscription rejected: BadJwtToken (403). The subscription was created with a different VAPID key than the one currently configured. The stale subscription has been removed automatically — the user must re-enable push notifications to create a fresh subscription with the current key.",
           endpoint: endpointDomain,
           body,
         });

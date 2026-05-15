@@ -1949,6 +1949,9 @@ function AlertsTab() {
   const [testSuccess, setTestSuccess] = useState<any>(null);
   const [testError, setTestError] = useState<any>(null);
   const [errorExpanded, setErrorExpanded] = useState(false);
+  const [vapidDebug, setVapidDebug] = useState<any>(null);
+  const [clearingPushSubs, setClearingPushSubs] = useState(false);
+  const [clearResult, setClearResult] = useState<any>(null);
 
   const [resendUserId, setResendUserId] = useState("");
   const [resending, setResending] = useState(false);
@@ -1973,6 +1976,12 @@ function AlertsTab() {
   useEffect(() => { load(); }, []);
 
   useEffect(() => {
+    if (testType === "push") {
+      adminFetch("/api/admin/portal/vapid-debug").then(setVapidDebug).catch(() => {});
+    }
+  }, [testType]);
+
+  useEffect(() => {
     if (previewOpen && !previewUrl) {
       supabase.auth.getSession().then(async ({ data: { session } }) => {
         if (!session?.access_token) return;
@@ -1990,6 +1999,23 @@ function AlertsTab() {
       });
     }
   }, [previewOpen]);
+
+  async function clearPushSubs() {
+    setClearingPushSubs(true);
+    setClearResult(null);
+    try {
+      const res = await adminFetch("/api/admin/portal/clear-push-subs", {
+        method: "POST",
+        body: JSON.stringify({ userId: testUserId || "" }),
+      });
+      setClearResult({ success: true, message: res.message, deleted: res.deleted });
+      setTestError(null);
+      setTestSuccess(null);
+    } catch (err: any) {
+      setClearResult({ success: false, message: err.message || "Failed to clear subscriptions" });
+    }
+    setClearingPushSubs(false);
+  }
 
   async function sendTest() {
     setSending(true);
@@ -2159,6 +2185,30 @@ function AlertsTab() {
             ))}
           </div>
 
+          {/* VAPID fingerprint (push only) */}
+          {testType === "push" && vapidDebug && (
+            <div className="mb-4 px-4 py-3 rounded-[12px]" style={{ backgroundColor: "#f7f7f7", border: "1px solid #eeebf3" }}>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.06em]" style={{ color: "#aaaaaa" }}>VAPID Key Status</span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold" style={vapidDebug.initialized ? { backgroundColor: "#dcfce7", color: "#15803d" } : { backgroundColor: "#fee2e2", color: "#dc2626" }}>
+                  {vapidDebug.initialized ? "Initialized" : "NOT INITIALIZED"}
+                </span>
+              </div>
+              <div className="space-y-1">
+                {[
+                  { label: "Backend key prefix", value: vapidDebug.backendPublicKeyPrefix || "NOT SET" },
+                  { label: "Backend private key", value: vapidDebug.backendPrivateKeyConfigured ? "set" : "MISSING" },
+                  { label: "VAPID subject", value: vapidDebug.subject || "—" },
+                ].map(({ label, value }) => (
+                  <div key={label} className="flex gap-2 text-[12px]">
+                    <span className="w-36 flex-shrink-0" style={{ color: "#888888" }}>{label}</span>
+                    <span className="font-mono text-[11px]" style={{ color: "#111111" }}>{value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Target input */}
           <div className="mb-4">
             <label className="text-[11px] font-semibold uppercase tracking-[0.06em] mb-1.5 block" style={{ color: "#aaaaaa" }}>
@@ -2186,6 +2236,28 @@ function AlertsTab() {
               />
             )}
           </div>
+
+          {/* Push sub management (push only) */}
+          {testType === "push" && (
+            <div className="mb-4 flex items-center gap-3">
+              <button
+                onClick={clearPushSubs}
+                disabled={clearingPushSubs}
+                className="px-4 py-2 rounded-full text-[12px] font-semibold transition-all disabled:opacity-50 flex items-center gap-1.5"
+                style={{ backgroundColor: "#fff1f2", color: "#e11d48", border: "1px solid #fecdd3" }}
+                data-testid="button-clear-push-subs"
+              >
+                {clearingPushSubs ? <><Loader2 className="w-3 h-3 animate-spin" /> Clearing…</> : "Clear push subscriptions"}
+              </button>
+              {clearResult && (
+                <span className="text-[12px] leading-snug flex-1" style={{ color: clearResult.success ? "#15803d" : "#e11d48" }}>
+                  {clearResult.success
+                    ? `✓ ${clearResult.deleted > 0 ? `Removed ${clearResult.deleted} sub(s). Re-enable push to re-subscribe.` : "No subs found."}`
+                    : `✗ ${clearResult.message}`}
+                </span>
+              )}
+            </div>
+          )}
 
           {/* Send button */}
           <button
@@ -2255,44 +2327,75 @@ function AlertsTab() {
           )}
 
           {/* Error state */}
-          {testError && (
-            <div className="mt-4 rounded-[16px] p-4" style={{ backgroundColor: "#fff1f2", border: "1px solid #fecdd3" }} data-testid="panel-test-error">
-              <div className="flex items-start gap-2 mb-2">
-                <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#e11d48" }} />
-                <div className="flex-1 min-w-0">
-                  <p className="text-[14px] font-bold" style={{ color: "#e11d48" }}>Send failed</p>
-                  <p className="text-[13px] mt-0.5 leading-snug" style={{ color: "#be123c" }}>{testError.readable}</p>
+          {testError && (() => {
+            let parsed: any = null;
+            try { parsed = JSON.parse(testError.technical); } catch {}
+            const diagnosis = parsed?.diagnosis;
+            const repairNeeded = diagnosis?.repairNeeded;
+            const repairInstructions = diagnosis?.repairInstructions;
+            return (
+              <div className="mt-4 rounded-[16px] p-4" style={{ backgroundColor: "#fff1f2", border: "1px solid #fecdd3" }} data-testid="panel-test-error">
+                <div className="flex items-start gap-2 mb-2">
+                  <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: "#e11d48" }} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-bold" style={{ color: "#e11d48" }}>Send failed</p>
+                    <p className="text-[13px] mt-0.5 leading-snug" style={{ color: "#be123c" }}>{testError.readable}</p>
+                  </div>
                 </div>
+                {repairNeeded && repairInstructions && (
+                  <div className="mt-3 px-3 py-2.5 rounded-[10px]" style={{ backgroundColor: "#fef3c7", border: "1px solid #fde68a" }}>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.05em] mb-1" style={{ color: "#92400e" }}>Action required</p>
+                    <p className="text-[12px] leading-snug" style={{ color: "#78350f" }}>{repairInstructions}</p>
+                    {testType === "push" && (
+                      <button
+                        onClick={clearPushSubs}
+                        disabled={clearingPushSubs}
+                        className="mt-2 px-3 py-1 rounded-full text-[11px] font-bold transition-all disabled:opacity-50"
+                        style={{ backgroundColor: "#92400e", color: "#ffffff" }}
+                        data-testid="button-repair-clear-subs"
+                      >
+                        {clearingPushSubs ? "Clearing…" : "Clear stale subscription now"}
+                      </button>
+                    )}
+                  </div>
+                )}
+                {diagnosis && !repairNeeded && (
+                  <div className="mt-2 text-[12px]" style={{ color: "#9f1239" }}>
+                    {diagnosis.statusCode && <span className="font-mono mr-2">{diagnosis.statusCode}</span>}
+                    {diagnosis.endpoint && <span>{diagnosis.endpoint}</span>}
+                    {diagnosis.body && <span className="ml-2 font-mono text-[11px]">{diagnosis.body}</span>}
+                  </div>
+                )}
+                <div className="flex gap-2 mt-3">
+                  <button
+                    onClick={sendTest}
+                    disabled={sending}
+                    className="px-4 py-1.5 rounded-full text-[12px] font-bold transition-all disabled:opacity-50"
+                    style={{ backgroundColor: "#e11d48", color: "#ffffff" }}
+                    data-testid="button-test-retry"
+                  >
+                    {sending ? "Retrying…" : "Retry"}
+                  </button>
+                  <button
+                    onClick={() => setErrorExpanded(x => !x)}
+                    className="px-4 py-1.5 rounded-full text-[12px] font-semibold"
+                    style={{ backgroundColor: "#ffe4e6", color: "#e11d48", border: "1px solid #fecdd3" }}
+                    data-testid="button-test-expand-error"
+                  >
+                    {errorExpanded ? "Hide details" : "Technical details"}
+                  </button>
+                  <button onClick={() => { setTestSuccess(null); setTestError(null); setClearResult(null); }} className="ml-auto" style={{ color: "#e11d48" }} data-testid="button-test-clear">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                {errorExpanded && (
+                  <pre className="mt-3 text-[11px] p-3 rounded-[10px] overflow-x-auto leading-relaxed" style={{ backgroundColor: "#ffe4e6", color: "#9f1239" }}>
+                    {testError.technical}
+                  </pre>
+                )}
               </div>
-              <div className="flex gap-2 mt-3">
-                <button
-                  onClick={sendTest}
-                  disabled={sending}
-                  className="px-4 py-1.5 rounded-full text-[12px] font-bold transition-all disabled:opacity-50"
-                  style={{ backgroundColor: "#e11d48", color: "#ffffff" }}
-                  data-testid="button-test-retry"
-                >
-                  {sending ? "Retrying…" : "Retry"}
-                </button>
-                <button
-                  onClick={() => setErrorExpanded(x => !x)}
-                  className="px-4 py-1.5 rounded-full text-[12px] font-semibold"
-                  style={{ backgroundColor: "#ffe4e6", color: "#e11d48", border: "1px solid #fecdd3" }}
-                  data-testid="button-test-expand-error"
-                >
-                  {errorExpanded ? "Hide details" : "Technical details"}
-                </button>
-                <button onClick={() => { setTestSuccess(null); setTestError(null); }} className="ml-auto" style={{ color: "#e11d48" }} data-testid="button-test-clear">
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-              {errorExpanded && (
-                <pre className="mt-3 text-[11px] p-3 rounded-[10px] overflow-x-auto leading-relaxed" style={{ backgroundColor: "#ffe4e6", color: "#9f1239" }}>
-                  {testError.technical}
-                </pre>
-              )}
-            </div>
-          )}
+            );
+          })()}
         </div>
       </div>
 
