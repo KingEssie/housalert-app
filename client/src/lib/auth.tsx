@@ -95,11 +95,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     console.log("[WEBAUTH] AuthProvider mounted");
 
+    const tGetSession = performance.now();
     console.log("[WEBAUTH] getSession() starting");
     supabase.auth.getSession().then(({ data: { session } }) => {
       const uid = session?.user?.id ?? null;
       const email = session?.user?.email ?? "unknown";
-      console.log(`[WEBAUTH] getSession() result: session ${session ? "yes" : "no"}, user=${uid?.substring(0, 8) ?? "null"}, email=${email}`);
+      console.log(`[WEBAUTH] getSession() done in ${Math.round(performance.now() - tGetSession)}ms — session=${session ? "yes" : "no"} user=${uid?.substring(0, 8) ?? "null"}`);
       console.log(`[IDENTITY] App load — user.id=${uid ?? "null"}, email=${email}, name=${session?.user?.user_metadata?.full_name ?? "null"}`);
       handleUserChange(uid, `initial:${email}`);
       setSession(session);

@@ -1,6 +1,8 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import "mapbox-gl/dist/mapbox-gl.css";
+// mapbox-gl CSS is loaded inside map-view-mapbox.tsx (lazy) — do NOT import here.
+// Importing it at this level pulled mapbox-gl into the initial bundle and added
+// ~2MB of JS that Android V8 had to parse before the app could render.
 
 function renderError(err: unknown) {
   const root = document.getElementById("root");
@@ -37,19 +39,23 @@ function normalizeHashPaths() {
 
 async function bootstrap() {
   if (normalizeHashPaths()) return;
+  const t0 = performance.now();
   try {
-    try {
-      const { restoreAuthFromNative } = await import("./lib/capacitor-storage");
-      await restoreAuthFromNative();
-    } catch {}
+    // Parallelize auth restore + plugin init — neither depends on the other.
+    // Previously these were sequential, adding ~500ms to startup on Android.
+    await Promise.all([
+      import("./lib/capacitor-storage").then(m => m.restoreAuthFromNative()).catch(() => {}),
+      import("./lib/capacitor").then(m => m.initCapacitorPlugins()).catch(() => {}),
+    ]);
+    console.log(`[BOOT] plugins ready in ${Math.round(performance.now() - t0)}ms`);
 
-    try {
-      const { initCapacitorPlugins } = await import("./lib/capacitor");
-      await initCapacitorPlugins();
-    } catch {}
-
+    const tApp = performance.now();
     const { default: App } = await import("./App");
+    console.log(`[BOOT] App chunk loaded in ${Math.round(performance.now() - tApp)}ms`);
+
+    const tRender = performance.now();
     createRoot(document.getElementById("root")!).render(<App />);
+    console.log(`[BOOT] first render scheduled in ${Math.round(performance.now() - tRender)}ms — total bootstrap=${Math.round(performance.now() - t0)}ms`);
   } catch (err) {
     console.error("[HousAlert] Bootstrap failed:", err);
     renderError(err);

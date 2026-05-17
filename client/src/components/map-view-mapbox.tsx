@@ -1,4 +1,5 @@
 import { useRef, useEffect, useCallback } from "react";
+import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl from "mapbox-gl";
 import { MAPBOX_TOKEN } from "@/lib/feature-flags";
 import type { MapViewProps } from "@/lib/location-types";

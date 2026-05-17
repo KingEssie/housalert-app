@@ -176,11 +176,18 @@ export interface ApiMatchesResponse {
 }
 
 export async function fetchApiMatches(token: string): Promise<ApiMatchesResponse> {
+  const t0 = performance.now();
   const resp = await apiFetch("/api/matches", {
     headers: { Authorization: `Bearer ${token}` },
   });
+  const tNetwork = Math.round(performance.now() - t0);
   if (!resp.ok) throw new Error("Matches konnten nicht geladen werden");
-  const data = await resp.json();
+  const text = await resp.text();
+  const tParse0 = performance.now();
+  const data = JSON.parse(text);
+  const tParse = Math.round(performance.now() - tParse0);
+  const payloadKB = Math.round(text.length / 1024);
+  console.log(`[PERF] /api/matches network=${tNetwork}ms parse=${tParse}ms payload=${payloadKB}KB matches=${data.matches?.length ?? (Array.isArray(data) ? data.length : "?")} total=${Math.round(performance.now() - t0)}ms`);
   if (Array.isArray(data)) {
     return { matches: data, totalCount: data.length };
   }

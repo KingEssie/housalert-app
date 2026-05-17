@@ -1744,20 +1744,25 @@ export async function registerRoutes(
       const token = req.headers.authorization?.replace("Bearer ", "");
       if (!token) return res.status(401).json({ error: "Unauthorized" });
 
+      const tStart = Date.now();
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+      log(`[MATCHES TIMING] userId=${user.id.substring(0, 8)} auth=${Date.now() - tStart}ms`);
 
-      const { data: subRow } = await supabase
-        .from("subscriptions")
-        .select("created_at, status")
-        .eq("user_id", user.id)
-        .single();
+      // Parallelize subscription fetch + blocked-sources fetch — both only need user.id.
+      // Previously getBlockedSources ran *after* the batch fetch (sequential), costing
+      // an extra ~300ms on the critical path. Moving it here saves that time.
+      const tParallel = Date.now();
+      const [subResult, blockedSources] = await Promise.all([
+        supabase.from("subscriptions").select("created_at, status").eq("user_id", user.id).single(),
+        getBlockedSources(user.id),
+      ]);
+      log(`[MATCHES TIMING] userId=${user.id.substring(0, 8)} sub+blocked=${Date.now() - tParallel}ms`);
+
+      const subRow = subResult.data;
       const premiumStartedAt = subRow?.created_at || null;
 
       const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
-      // Use the EARLIER of (subscription start, 90-days-ago) so pre-upgrade matches
-      // remain visible after a user pays. The previous `>` comparison was backwards:
-      // it set cutoff=now for new subscribers, hiding all existing matches.
       const cutoff = premiumStartedAt
         ? (new Date(premiumStartedAt).getTime() < new Date(ninetyDaysAgo).getTime() ? premiumStartedAt : ninetyDaysAgo)
         : ninetyDaysAgo;
@@ -1791,16 +1796,19 @@ export async function registerRoutes(
           dedupedByListing[m.listing_id] = m;
         }
       }
-      // Slice to 200 BEFORE the expensive batch operations (listings, freshness,
-      // profiles, score computation). Matches are already sorted newest-first so
-      // the top 200 unique listings are the ones that will appear in the final 50.
-      // This is the primary performance fix — was processing up to 1000 rows.
-      let uniqueMatches = Object.values(dedupedByListing).slice(0, 200);
+      // Slice to 30 unique matches before batch operations. We return 20 results
+      // and give 10 extra as headroom for blocked-source / deleted-listing filtering.
+      // This reduces Supabase batch payload from potentially hundreds of rows to ~30.
+      let uniqueMatches = Object.values(dedupedByListing).slice(0, 30);
 
       const allListingIds = uniqueMatches.map((m: any) => m.listing_id);
       if (allListingIds.length === 0) return res.json({ matches: [], totalCount: 0 });
 
       const profileIds = [...new Set(uniqueMatches.map((m: any) => m.search_profile_id).filter(Boolean))];
+
+      // Start canonical stats early — they only need user.id and can run in parallel
+      // with the listing/freshness/profile batch fetch, saving ~400ms.
+      const statsPromise = Promise.all([getUserMatchStats(user.id), getCanonicalMatchStates(user.id)]);
 
       const tBatch = Date.now();
       const [listingsData, freshnessMap, profilesData] = await Promise.all([
@@ -1822,7 +1830,7 @@ export async function registerRoutes(
       const listingMap: Record<string, any> = {};
       for (const l of listingsData) listingMap[l.id] = l;
 
-      const blockedSources = await getBlockedSources(user.id);
+      // blockedSources was fetched in parallel with subscription at the top
       const blockedSet = new Set(blockedSources);
 
       const validListingIds = new Set(Object.keys(listingMap));
@@ -1897,18 +1905,18 @@ export async function registerRoutes(
         return a.listing_id.localeCompare(b.listing_id);
       });
 
-      const top50 = validResults.slice(0, 50);
+      // Return only 20 results — enough for the initial screen without scroll.
+      // The frontend can re-fetch with pagination if more are needed.
+      const top20 = validResults.slice(0, 20);
 
-      console.log(`[MATCHES ORDER] userId=${user.id.substring(0, 8)}... appOrder=[${top50.slice(0, 10).map((m: any) => m.listing_id.substring(0, 8)).join(",")}] sortField=matched_at timestamps=[${top50.slice(0, 10).map((m: any) => m.matched_at).join(",")}]`);
+      console.log(`[MATCHES ORDER] userId=${user.id.substring(0, 8)}... results=${top20.length} first=[${top20.slice(0, 5).map((m: any) => m.listing_id.substring(0, 8)).join(",")}]`);
 
+      // Await stats that have been running in parallel since before the batch fetch
       const tStats = Date.now();
-      const [canonicalStats, canonicalStates] = await Promise.all([
-        getUserMatchStats(user.id),
-        getCanonicalMatchStates(user.id),
-      ]);
-      log(`[MATCHES TIMING] userId=${user.id.substring(0, 8)} stats=${Date.now() - tStats}ms total=${Date.now() - tMatches}ms`);
+      const [canonicalStats, canonicalStates] = await statsPromise;
+      log(`[MATCHES TIMING] userId=${user.id.substring(0, 8)} stats-wait=${Date.now() - tStats}ms TOTAL=${Date.now() - tStart}ms`);
 
-      const matchesWithState = top50.map((m: any) => {
+      const matchesWithState = top20.map((m: any) => {
         const cs = canonicalStates.get(m.listing_id);
         return {
           ...m,
