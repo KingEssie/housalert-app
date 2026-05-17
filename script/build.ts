@@ -33,6 +33,20 @@ const allowlist = [
   "zod-validation-error",
 ];
 
+// All VITE_ env vars used by the frontend — collected from client/src.
+// These are injected explicitly via Vite's `define` so the values are
+// hard-coded into the bundle at build time, regardless of how the vars
+// ended up in process.env (Replit secrets, dotenv .env file, shell exports).
+const VITE_ENV_VARS = [
+  "VITE_SUPABASE_URL",
+  "VITE_SUPABASE_ANON_KEY",
+  "VITE_MAPBOX_TOKEN",
+  "VITE_USE_MAPBOX_MAPS",
+  "VITE_USE_MAPBOX_GEOCODER",
+  "VITE_APP_URL",
+  "VITE_VAPID_PUBLIC_KEY",
+] as const;
+
 async function buildAll() {
   // Build-time env check — logs presence only, never values
   const supabaseUrl = process.env.VITE_SUPABASE_URL;
@@ -48,10 +62,23 @@ async function buildAll() {
     );
   }
 
+  // Build an explicit `define` map that hard-codes every VITE_ var into the
+  // Vite bundle. This is belt-and-suspenders alongside vite.config.ts envDir —
+  // it guarantees injection even if Vite's .env file resolution misses them.
+  const defineEnv: Record<string, string> = {};
+  for (const key of VITE_ENV_VARS) {
+    const value = process.env[key];
+    if (value !== undefined) {
+      // Vite exposes these under import.meta.env, so we define both paths.
+      defineEnv[`import.meta.env.${key}`] = JSON.stringify(value);
+    }
+  }
+  console.log("[build] Injecting into bundle:", Object.keys(defineEnv).join(", ") || "(none)");
+
   await rm("dist", { recursive: true, force: true });
 
   console.log("building client...");
-  await viteBuild();
+  await viteBuild({ define: defineEnv });
 
   console.log("building server...");
   const pkg = JSON.parse(await readFile("package.json", "utf-8"));

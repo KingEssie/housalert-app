@@ -27,6 +27,10 @@ export default defineConfig({
     },
   },
   root: path.resolve(import.meta.dirname, "client"),
+  // envDir must point to the project root (where .env lives), NOT to the
+  // Vite root ("client/"). Without this, Vite looks for .env in client/ and
+  // never finds it, so import.meta.env.VITE_* stays undefined in the bundle.
+  envDir: path.resolve(import.meta.dirname),
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
