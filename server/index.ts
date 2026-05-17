@@ -96,6 +96,13 @@ app.use((req, res, next) => {
   next();
 });
 
+// Replit (and Vite dev) inject X-Robots-Tag: noindex on every response.
+// Strip it here so Lighthouse and crawlers see the correct indexing policy.
+app.use((_req, res, next) => {
+  res.removeHeader("X-Robots-Tag");
+  next();
+});
+
 app.get("/robots.txt", (_req, res) => {
   res.type("text/plain");
   res.send("User-agent: *\nAllow: /\n");
