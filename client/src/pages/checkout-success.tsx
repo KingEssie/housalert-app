@@ -108,6 +108,10 @@ export default function CheckoutSuccessPage() {
   // show_handoff=1 → PWA / web browser checkout.
   //   Shows web-specific buttons (login with payment=success context).
   // Either flag causes the static handoff screen to display.
+  // from_native=1 is now ALWAYS included in every Stripe success URL
+  // (both checkout endpoints set it unconditionally).  We no longer rely on
+  // the client-supplied is_native flag because Capacitor.isNativePlatform()
+  // can return false in some Android WebView configurations.
   const fromNative = getUrlParam("from_native") === "1";
   const showHandoff = fromNative || getUrlParam("show_handoff") === "1";
   const [status, setStatus] = useState<Status>("loading");
@@ -117,12 +121,14 @@ export default function CheckoutSuccessPage() {
   const confirmedRef = useRef(false);
   const native = isNativePlatform();
 
-  // Compute the primary button URL once — shown in both the button and debug.
-  //   fromNative=true  → intent:// URI that Chrome dispatches to com.housalert.app
-  //   fromNative=false → login page with payment=success context (PWA / web)
-  // Always built even when urlSessionId is null so the button is never a dead
-  // login link when we're in a native checkout flow.
-  const primaryHref = fromNative
+  // Detect Android via user agent — reliable even in Chrome Custom Tab where
+  // Capacitor is not injected and isNativePlatform() returns false.
+  const isAndroid = /android/i.test(navigator.userAgent);
+
+  // Compute the primary button URL once — used in button + debug panel.
+  //   fromNative=true  AND isAndroid → intent:// URI for com.housalert.app
+  //   otherwise                       → login page with payment=success context
+  const primaryHref = (fromNative && isAndroid)
     ? buildIntentUrl(urlSessionId)
     : "/login?next=/onboarding/setup&payment=success";
 
@@ -140,7 +146,7 @@ export default function CheckoutSuccessPage() {
   //  otherwise       → Real web browser checkout — run confirmSession.
   // ---------------------------------------------------------------------------
   useEffect(() => {
-    console.log(`[checkout-success] mount: fromNative=${fromNative} showHandoff=${showHandoff} session_id=${urlSessionId ?? "none"}`);
+    console.log(`[checkout-success] mount: fromNative=${fromNative} showHandoff=${showHandoff} isAndroid=${isAndroid} isNative=${native} session_id=${urlSessionId ?? "none"}`);
     console.log(`[checkout-success] primaryHref=${primaryHref}`);
     // showHandoff covers both fromNative (Capacitor/Chrome Custom Tab) and
     // show_handoff (PWA/web browser).  In both cases we show the static
@@ -414,18 +420,18 @@ export default function CheckoutSuccessPage() {
           <div className="mt-6 flex flex-col gap-3">
 
             {/* ── Primary button ──
-                fromNative=true  → primaryHref is intent://…  (dispatched to com.housalert.app)
-                fromNative=false → primaryHref is /login?…    (PWA / web)
-                onClick uses window.location.href for reliability in CCT environments;
-                href kept so right-click / long-press also works. */}
+                Android + from_native → intent:// URI (com.housalert.app)
+                all others           → /login?… (PWA / desktop / iOS)
+                onClick uses window.location.href for reliability in CCT;
+                href kept as standard anchor fallback. */}
             <a
               href={primaryHref}
               onClick={(e) => { e.preventDefault(); window.location.href = primaryHref; }}
               className="h-[52px] rounded-[12px] text-white text-[16px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
               style={{ background: "rgb(var(--ha-primary))" }}
-              data-testid={fromNative ? "button-open-app-deep-link" : "button-open-app-web"}
+              data-testid={(fromNative && isAndroid) ? "button-open-app-deep-link" : "button-open-app-web"}
             >
-              {fromNative ? <Smartphone className="w-5 h-5" /> : <LogIn className="w-5 h-5" />}
+              {(fromNative && isAndroid) ? <Smartphone className="w-5 h-5" /> : <LogIn className="w-5 h-5" />}
               Open HousAlert app
             </a>
 
@@ -447,6 +453,8 @@ export default function CheckoutSuccessPage() {
               <div><b>buttonHref=</b>{primaryHref}</div>
               <div><b>session_id=</b>{urlSessionId ?? "none"}</div>
               <div><b>from_native=</b>{fromNative.toString()}</div>
+              <div><b>isAndroid=</b>{isAndroid.toString()}</div>
+              <div><b>isNative(Cap)=</b>{native.toString()}</div>
               <div><b>show_handoff=</b>{(getUrlParam("show_handoff") === "1").toString()}</div>
               <div>
                 <b>pendingCheckout=</b>
