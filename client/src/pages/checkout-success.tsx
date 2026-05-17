@@ -76,18 +76,24 @@ async function waitForSession(maxAttempts = 5, delayMs = 1200): Promise<string |
  *  housalert:// URL, closes the Custom Tab, and opens the native app.
  *
  *  Format:
- *    intent://checkout/success?session_id=...
+ *    intent://checkout/success?session_id=SESSION_ID
  *      #Intent;scheme=housalert;package=com.housalert.app;
  *      S.browser_fallback_url=<encoded-https-fallback>;end
+ *
+ *  sessionId may be null if the URL param is missing — in that case the
+ *  intent is dispatched without a session_id and the native app recovers
+ *  via the pending-checkout session stored in Capacitor Preferences.
  */
-function buildIntentUrl(sessionId: string): string {
+function buildIntentUrl(sessionId: string | null): string {
+  const sessionPart = sessionId
+    ? `?session_id=${encodeURIComponent(sessionId)}`
+    : "";
   // If the app is not installed, Chrome falls back to this URL.
-  // Go straight to login with onboarding context — no dead-end.
   const fallback = encodeURIComponent(
     `https://app.housalert.com/login?next=/onboarding/setup&payment=success`
   );
   return (
-    `intent://checkout/success?session_id=${encodeURIComponent(sessionId)}` +
+    `intent://checkout/success${sessionPart}` +
     `#Intent;scheme=housalert;package=com.housalert.app;` +
     `S.browser_fallback_url=${fallback};end`
   );
@@ -111,6 +117,15 @@ export default function CheckoutSuccessPage() {
   const confirmedRef = useRef(false);
   const native = isNativePlatform();
 
+  // Compute the primary button URL once — shown in both the button and debug.
+  //   fromNative=true  → intent:// URI that Chrome dispatches to com.housalert.app
+  //   fromNative=false → login page with payment=success context (PWA / web)
+  // Always built even when urlSessionId is null so the button is never a dead
+  // login link when we're in a native checkout flow.
+  const primaryHref = fromNative
+    ? buildIntentUrl(urlSessionId)
+    : "/login?next=/onboarding/setup&payment=success";
+
   // ---------------------------------------------------------------------------
   // Routing decision on mount
   //
@@ -125,6 +140,8 @@ export default function CheckoutSuccessPage() {
   //  otherwise       → Real web browser checkout — run confirmSession.
   // ---------------------------------------------------------------------------
   useEffect(() => {
+    console.log(`[checkout-success] mount: fromNative=${fromNative} showHandoff=${showHandoff} session_id=${urlSessionId ?? "none"}`);
+    console.log(`[checkout-success] primaryHref=${primaryHref}`);
     // showHandoff covers both fromNative (Capacitor/Chrome Custom Tab) and
     // show_handoff (PWA/web browser).  In both cases we show the static
     // handoff screen immediately — no confirmSession, no auto-redirects.
@@ -351,9 +368,7 @@ export default function CheckoutSuccessPage() {
   // Render
   // ---------------------------------------------------------------------------
 
-  // intent:// format is required for Chrome Custom Tab — Chrome blocks housalert://
-  // navigations but explicitly dispatches intent:// URIs to the registered package.
-  const intentUrl = urlSessionId ? buildIntentUrl(urlSessionId) : null;
+  // intentUrl is replaced by primaryHref (declared near top of component).
 
   const iconBg =
     status === "error" ? "var(--ha-danger-light)"
@@ -398,48 +413,21 @@ export default function CheckoutSuccessPage() {
         {status === "deep_link_waiting" && (
           <div className="mt-6 flex flex-col gap-3">
 
-            {/* ── Primary button ── */}
-            {fromNative ? (
-              /* Native Capacitor app: intent:// URI.
-                 Chrome Custom Tab dispatches a VIEW intent to com.housalert.app,
-                 closes the tab, and brings the native app to the foreground.
-                 If the app is not installed Chrome opens the fallback URL
-                 (login page with payment=success context). */
-              intentUrl ? (
-                <a
-                  href={intentUrl}
-                  className="h-[52px] rounded-[12px] text-white text-[16px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
-                  style={{ background: "rgb(var(--ha-primary))" }}
-                  data-testid="button-open-app-deep-link"
-                >
-                  <Smartphone className="w-5 h-5" />
-                  Open HousAlert app
-                </a>
-              ) : (
-                <a
-                  href="/login?next=/onboarding/setup&payment=success"
-                  className="h-[52px] rounded-[12px] text-white text-[16px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
-                  style={{ background: "rgb(var(--ha-primary))" }}
-                  data-testid="button-open-app-no-session"
-                >
-                  <Smartphone className="w-5 h-5" />
-                  Open HousAlert app
-                </a>
-              )
-            ) : (
-              /* PWA / web browser: navigate to login with payment context.
-                 GuestRoute redirects logged-in users to /onboarding/setup;
-                 logged-out users see the login form which also navigates there. */
-              <a
-                href="/login?next=/onboarding/setup&payment=success"
-                className="h-[52px] rounded-[12px] text-white text-[16px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
-                style={{ background: "rgb(var(--ha-primary))" }}
-                data-testid="button-open-app-web"
-              >
-                <LogIn className="w-5 h-5" />
-                Open HousAlert app
-              </a>
-            )}
+            {/* ── Primary button ──
+                fromNative=true  → primaryHref is intent://…  (dispatched to com.housalert.app)
+                fromNative=false → primaryHref is /login?…    (PWA / web)
+                onClick uses window.location.href for reliability in CCT environments;
+                href kept so right-click / long-press also works. */}
+            <a
+              href={primaryHref}
+              onClick={(e) => { e.preventDefault(); window.location.href = primaryHref; }}
+              className="h-[52px] rounded-[12px] text-white text-[16px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
+              style={{ background: "rgb(var(--ha-primary))" }}
+              data-testid={fromNative ? "button-open-app-deep-link" : "button-open-app-web"}
+            >
+              {fromNative ? <Smartphone className="w-5 h-5" /> : <LogIn className="w-5 h-5" />}
+              Open HousAlert app
+            </a>
 
             {/* ── Secondary — always goes to login with context ── */}
             <button
@@ -450,24 +438,23 @@ export default function CheckoutSuccessPage() {
               Doorgaan in browser
             </button>
 
-            {/* ── Debug info (temporary) ── */}
+            {/* ── Debug info ── */}
             <div
-              className="mt-3 rounded-[10px] p-3 text-left text-[11px] font-mono"
+              className="mt-3 rounded-[10px] p-3 text-left text-[11px] font-mono break-all"
               style={{ background: "rgba(0,0,0,0.04)", color: "#666" }}
               data-testid="debug-handoff-info"
             >
-              <div>next=/onboarding/setup</div>
-              <div>payment=success</div>
+              <div><b>buttonHref=</b>{primaryHref}</div>
+              <div><b>session_id=</b>{urlSessionId ?? "none"}</div>
+              <div><b>from_native=</b>{fromNative.toString()}</div>
+              <div><b>show_handoff=</b>{(getUrlParam("show_handoff") === "1").toString()}</div>
               <div>
-                pendingCheckout=
+                <b>pendingCheckout=</b>
                 {(
                   localStorage.getItem("ha_pending_checkout_success") === "true" ||
                   sessionStorage.getItem("ha_pending_checkout_success") === "true"
                 ).toString()}
               </div>
-              <div>session_id={(urlSessionId ?? "none").substring(0, 16)}…</div>
-              <div>from_native={fromNative.toString()}</div>
-              <div>show_handoff={(getUrlParam("show_handoff") === "1").toString()}</div>
             </div>
           </div>
         )}
@@ -495,10 +482,11 @@ export default function CheckoutSuccessPage() {
 
         {status === "session_missing" && (
           <div className="mt-6 flex flex-col gap-3">
-            {/* Primary: intent:// link back into the native app */}
-            {intentUrl && (
+            {/* Primary: intent:// link back into the native app (only for native checkout) */}
+            {fromNative && (
               <a
-                href={intentUrl}
+                href={primaryHref}
+                onClick={(e) => { e.preventDefault(); window.location.href = primaryHref; }}
                 className="h-[48px] rounded-[10px] text-white text-[15px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
                 style={{ background: "rgb(var(--ha-primary))" }}
                 data-testid="button-return-to-app"
