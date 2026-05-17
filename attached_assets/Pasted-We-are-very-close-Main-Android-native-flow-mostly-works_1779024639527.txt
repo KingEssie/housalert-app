@@ -1,0 +1,81 @@
+We are very close. Main Android native flow mostly works now, but there are still 2 critical issues around listing apply + Stripe browser return.
+
+Observed behavior:
+1. On listing detail page, tapping "Kopiëren en reageer" throws an error.
+2. Then Chrome opens a blank white page.
+3. After successful Stripe payment, the flow continues inside the browser instead of returning into the native app/PWA.
+4. Login→matches improved significantly. Detail screen still noticeably slower than other screens.
+
+P0 — Fix "Kopiëren en reageer" Android flow
+
+Tasks:
+1. Trace the exact navigation path when tapping:
+   "Kopiëren en reageer"
+2. Identify:
+   - which route/url is opened
+   - whether it uses window.location.href
+   - whether it uses target="_blank"
+   - whether it leaves the Capacitor app context
+3. Fix:
+   - use Capacitor Browser / Chrome Custom Tabs consistently
+   - do not navigate the main WebView away from the app
+4. The blank white Chrome page means:
+   - invalid redirect
+   - unsupported deep link
+   - missing route
+   - or incorrect success/cancel URL
+   Investigate and fix the exact failing URL.
+
+P0 — Stripe/native return still not correct
+
+Current issue:
+After Stripe payment, user stays in browser flow instead of cleanly returning into the native app.
+
+Expected:
+- Browser/Chrome Custom Tab closes
+- Native app regains focus
+- App processes checkout success
+- User continues onboarding/app flow
+- Browser is no longer the primary context
+
+Tasks:
+1. Verify ALL checkout entry points use the same native checkout helper:
+   - onboarding paywall
+   - detail page paywall
+   - account upgrade
+   - copy-and-react flow
+2. Ensure Stripe success_url is ALWAYS:
+   housalert://checkout/success?session_id=...
+   for native Android.
+3. Ensure Chrome Custom Tab closes automatically after success if possible.
+4. Improve Browser.addListener('browserFinished'):
+   - when browser closes, app should immediately check:
+     - pending session id
+     - pending checkout
+     - pending onboarding route
+5. Ensure checkout-success page in browser:
+   - immediately attempts deep link back to app
+   - has visible fallback button
+   - does not continue onboarding inside browser
+6. Add detailed logs:
+   - checkout URL opened
+   - success URL used
+   - deep link received
+   - browserFinished fired
+   - appUrlOpen fired
+   - final route selected
+
+Performance:
+Detail page still slower than expected.
+Investigate whether detail navigation still causes:
+- hard reload
+- duplicate fetch
+- synchronous render blocking
+- image waterfall
+- route-level reload
+
+Report:
+- exact root cause of white Chrome page
+- exact route that still escapes app context
+- whether any window.location.href remains in detail/apply/paywall flows
+- exact remaining bottleneck on detail page
