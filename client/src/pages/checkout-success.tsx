@@ -121,16 +121,9 @@ export default function CheckoutSuccessPage() {
   const confirmedRef = useRef(false);
   const native = isNativePlatform();
 
-  // Detect Android via user agent — reliable even in Chrome Custom Tab where
-  // Capacitor is not injected and isNativePlatform() returns false.
-  const isAndroid = /android/i.test(navigator.userAgent);
-
-  // Compute the primary button URL once — used in button + debug panel.
-  //   fromNative=true  AND isAndroid → intent:// URI for com.housalert.app
-  //   otherwise                       → login page with payment=success context
-  const primaryHref = (fromNative && isAndroid)
-    ? buildIntentUrl(urlSessionId)
-    : "/login?next=/onboarding/setup&payment=success";
+  // TODO (Android App Links): when App Links are ready, re-introduce Android
+  // UA detection and buildIntentUrl() to send Android users to the native app.
+  // Until then all paths use the browser login redirect — see handoff screen.
 
   // ---------------------------------------------------------------------------
   // Routing decision on mount
@@ -146,8 +139,7 @@ export default function CheckoutSuccessPage() {
   //  otherwise       → Real web browser checkout — run confirmSession.
   // ---------------------------------------------------------------------------
   useEffect(() => {
-    console.log(`[checkout-success] mount: fromNative=${fromNative} showHandoff=${showHandoff} isAndroid=${isAndroid} isNative=${native} session_id=${urlSessionId ?? "none"}`);
-    console.log(`[checkout-success] primaryHref=${primaryHref}`);
+    console.log(`[checkout-success] mount: fromNative=${fromNative} showHandoff=${showHandoff} isNative=${native} session_id=${urlSessionId ?? "none"}`);
     // showHandoff covers both fromNative (Capacitor/Chrome Custom Tab) and
     // show_handoff (PWA/web browser).  In both cases we show the static
     // handoff screen immediately — no confirmSession, no auto-redirects.
@@ -374,7 +366,7 @@ export default function CheckoutSuccessPage() {
   // Render
   // ---------------------------------------------------------------------------
 
-  // intentUrl is replaced by primaryHref (declared near top of component).
+  // TODO: re-introduce buildIntentUrl() here when Android App Links are ready.
 
   const iconBg =
     status === "error" ? "var(--ha-danger-light)"
@@ -412,58 +404,29 @@ export default function CheckoutSuccessPage() {
           {status === "session_missing" && "Betaling gelukt — log in om verder te gaan"}
         </p>
 
-        {/* ── Static handoff screen ── shown whenever fromNative=1 ────────────
-            NO auto-fires. User taps a button. Two choices:
-            1. Primary — open the native app via intent:// URI
-            2. Secondary — continue in browser via /login?next=/onboarding/setup */}
+        {/* ── Static handoff screen ── shown whenever from_native=1 ─────────
+            TODO (Android App Links): replace this login redirect with a
+            proper intent:// deep link once Android App Links are set up:
+              1. Generate release keystore SHA-256 fingerprint
+              2. Publish /.well-known/assetlinks.json on the domain
+              3. Verify association in Android Studio App Links Assistant
+              4. Re-enable intent:// button (isAndroid && fromNative guard)
+            Until then the user continues through the browser login flow,
+            which is safe and reliable for all platforms. */}
         {status === "deep_link_waiting" && (
           <div className="mt-6 flex flex-col gap-3">
 
-            {/* ── Primary button ──
-                Android + from_native → intent:// URI (com.housalert.app)
-                all others           → /login?… (PWA / desktop / iOS)
-                onClick uses window.location.href for reliability in CCT;
-                href kept as standard anchor fallback. */}
-            <a
-              href={primaryHref}
-              onClick={(e) => { e.preventDefault(); window.location.href = primaryHref; }}
-              className="h-[52px] rounded-[12px] text-white text-[16px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
-              style={{ background: "rgb(var(--ha-primary))" }}
-              data-testid={(fromNative && isAndroid) ? "button-open-app-deep-link" : "button-open-app-web"}
-            >
-              {(fromNative && isAndroid) ? <Smartphone className="w-5 h-5" /> : <LogIn className="w-5 h-5" />}
-              Open HousAlert app
-            </a>
-
-            {/* ── Secondary — always goes to login with context ── */}
+            {/* ── Primary — browser-safe onboarding continuation ── */}
             <button
-              onClick={() => navigate("/login?next=/onboarding/setup&payment=success")}
-              className="w-full h-[44px] rounded-[10px] text-[14px] font-medium text-ha-text-secondary hover:bg-ha-surface transition-colors border border-ha-border"
-              data-testid="button-continue-browser"
+              onClick={() => { window.location.href = "/login?next=/onboarding/setup&payment=success"; }}
+              className="h-[52px] rounded-[12px] text-white text-[16px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform"
+              style={{ background: "rgb(var(--ha-primary))" }}
+              data-testid="button-continue-onboarding"
             >
-              Doorgaan in browser
+              <LogIn className="w-5 h-5" />
+              Doorgaan met onboarding
             </button>
 
-            {/* ── Debug info ── */}
-            <div
-              className="mt-3 rounded-[10px] p-3 text-left text-[11px] font-mono break-all"
-              style={{ background: "rgba(0,0,0,0.04)", color: "#666" }}
-              data-testid="debug-handoff-info"
-            >
-              <div><b>buttonHref=</b>{primaryHref}</div>
-              <div><b>session_id=</b>{urlSessionId ?? "none"}</div>
-              <div><b>from_native=</b>{fromNative.toString()}</div>
-              <div><b>isAndroid=</b>{isAndroid.toString()}</div>
-              <div><b>isNative(Cap)=</b>{native.toString()}</div>
-              <div><b>show_handoff=</b>{(getUrlParam("show_handoff") === "1").toString()}</div>
-              <div>
-                <b>pendingCheckout=</b>
-                {(
-                  localStorage.getItem("ha_pending_checkout_success") === "true" ||
-                  sessionStorage.getItem("ha_pending_checkout_success") === "true"
-                ).toString()}
-              </div>
-            </div>
           </div>
         )}
 
@@ -490,26 +453,14 @@ export default function CheckoutSuccessPage() {
 
         {status === "session_missing" && (
           <div className="mt-6 flex flex-col gap-3">
-            {/* Primary: intent:// link back into the native app (only for native checkout) */}
-            {fromNative && (
-              <a
-                href={primaryHref}
-                onClick={(e) => { e.preventDefault(); window.location.href = primaryHref; }}
-                className="h-[48px] rounded-[10px] text-white text-[15px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
-                style={{ background: "rgb(var(--ha-primary))" }}
-                data-testid="button-return-to-app"
-              >
-                <Smartphone className="w-4 h-4" />
-                {t("checkoutSuccess.returnToApp", "Terug naar HousAlert")}
-              </a>
-            )}
             <button
-              onClick={() => navigate("/login?next=/onboarding/setup")}
-              className="h-[44px] rounded-[10px] text-[15px] font-medium text-ha-text-secondary hover:bg-ha-surface transition-colors"
-              data-testid="button-login-continue"
+              onClick={() => { window.location.href = "/login?next=/onboarding/setup&payment=success"; }}
+              className="h-[52px] rounded-[12px] text-white text-[16px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform"
+              style={{ background: "rgb(var(--ha-primary))" }}
+              data-testid="button-continue-onboarding"
             >
-              <LogIn className="w-4 h-4 inline mr-2" />
-              {t("checkoutSuccess.loginToContinue")}
+              <LogIn className="w-5 h-5" />
+              Doorgaan met onboarding
             </button>
           </div>
         )}
