@@ -1,5 +1,6 @@
 import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect } from "react";
+import { isNativePlatform, openCheckoutBrowser } from "@/lib/capacitor";
 import { useAuth } from "@/lib/auth";
 import { useQuery } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
@@ -145,18 +146,22 @@ function UpgradeSheet({
     if (!accessToken || checkoutLoading) return;
     setCheckoutLoading(true);
     try {
+      const native = isNativePlatform();
       const res = await apiFetch("/api/checkout/session", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ plan: selectedPlan }),
+        body: JSON.stringify({ plan: selectedPlan, is_native: native }),
       });
       const data = await res.json();
       if (data.url) {
+        console.log("[apply] Opening checkout — native:", native, "session_id:", data.session_id?.substring(0, 20));
         if ((window as any).ReactNativeWebView) {
           (window as any).ReactNativeWebView.postMessage(JSON.stringify({ type: "OPEN_EXTERNAL_URL", url: data.url }));
+        } else if (native) {
+          await openCheckoutBrowser(data.url, data.session_id || "");
         } else {
           window.location.href = data.url;
         }

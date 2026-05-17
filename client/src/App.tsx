@@ -208,9 +208,54 @@ function WebFunnelRoute({ component: Component }: { component: React.ComponentTy
 }
 
 
+function DeepLinkHandler() {
+  const [, navigate] = useLocation();
+
+  useEffect(() => {
+    let cleanupDeepLink: (() => void) | null = null;
+    let cleanupBrowserFinished: (() => void) | null = null;
+
+    function handleDeepLinkUrl(url: string) {
+      try {
+        const parsed = new URL(url);
+        const path = parsed.pathname + parsed.search;
+        console.log("[deep-link] App Link received — navigating to:", path);
+        navigate(path);
+      } catch (err) {
+        console.warn("[deep-link] Could not parse App Link URL:", url, err);
+      }
+    }
+
+    function handleBrowserFinished(sessionId: string | null) {
+      if (!sessionId) {
+        console.log("[checkout-browser] Browser closed with no pending session (user cancelled)");
+        return;
+      }
+      const destination = `/checkout/success?session_id=${encodeURIComponent(sessionId)}&native=1`;
+      console.log("[checkout-browser] Browser finished — navigating to:", destination);
+      navigate(destination);
+    }
+
+    (async () => {
+      const { setupDeepLinkListener, setupBrowserFinishedListener } = await import("./lib/capacitor");
+      cleanupDeepLink = await setupDeepLinkListener(handleDeepLinkUrl);
+      cleanupBrowserFinished = await setupBrowserFinishedListener(handleBrowserFinished);
+    })();
+
+    return () => {
+      cleanupDeepLink?.();
+      cleanupBrowserFinished?.();
+    };
+  }, []);
+
+  return null;
+}
+
 function Router() {
   return (
-    <Switch>
+    <>
+      {IS_NATIVE && <DeepLinkHandler />}
+      <Switch>
       <Route path="/" component={RootRoute} />
       <Route path="/login" component={() => <GuestRoute component={WelcomePage} />} />
       <Route path="/welcome" component={() => <GuestRoute component={WelcomePage} />} />
@@ -284,6 +329,7 @@ function Router() {
 
       <Route component={NotFound} />
     </Switch>
+    </>
   );
 }
 

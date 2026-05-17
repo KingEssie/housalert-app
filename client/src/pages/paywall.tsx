@@ -2,6 +2,7 @@ import { apiFetch } from "@/lib/api-base";
 import { useHashSearch } from "@/lib/hash-search";
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
+import { isNativePlatform, openCheckoutBrowser } from "@/lib/capacitor";
 import { ArrowLeft, Check, Loader2, X, ShieldAlert, MapPin, CircleArrowRight } from "lucide-react";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { useToast } from "@/hooks/use-toast";
@@ -357,13 +358,14 @@ export default function PaywallPage() {
 
       trackEvent("checkout_started", { plan: selectedPlan });
 
+      const native = isNativePlatform();
       const res = await apiFetch("/api/checkout/session", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ plan: selectedPlan }),
+        body: JSON.stringify({ plan: selectedPlan, is_native: native }),
       });
 
       const data = await res.json();
@@ -378,8 +380,11 @@ export default function PaywallPage() {
       }
 
       if (data.url) {
+        console.log("[paywall] Opening checkout — native:", native, "session_id:", data.session_id?.substring(0, 20));
         if ((window as any).ReactNativeWebView) {
           (window as any).ReactNativeWebView.postMessage(JSON.stringify({ type: "OPEN_EXTERNAL_URL", url: data.url }));
+        } else if (native) {
+          await openCheckoutBrowser(data.url, data.session_id || "");
         } else {
           window.location.href = data.url;
         }

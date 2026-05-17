@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
+import { isNativePlatform, openCheckoutBrowser } from "@/lib/capacitor";
 import { queryClient } from "@/lib/queryClient";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
@@ -1226,10 +1227,11 @@ export default function OnboardingSetup() {
         return;
       }
 
+      const native = isNativePlatform();
       const res = await apiFetch("/api/checkout/session", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ plan }),
+        body: JSON.stringify({ plan, is_native: native }),
       });
 
       if (!res.ok) {
@@ -1239,8 +1241,11 @@ export default function OnboardingSetup() {
       const result = await res.json();
 
       if (result.url) {
+        console.log("[setup] Opening checkout — native:", native, "session_id:", result.session_id?.substring(0, 20));
         if (typeof (window as any).ReactNativeWebView?.postMessage === "function") {
           (window as any).ReactNativeWebView.postMessage(JSON.stringify({ type: "openExternal", url: result.url }));
+        } else if (native) {
+          await openCheckoutBrowser(result.url, result.session_id || "");
         } else {
           window.location.href = result.url;
         }

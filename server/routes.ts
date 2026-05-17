@@ -70,6 +70,32 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  // Serve Android App Links verification file so the OS verifies the domain and
+  // fires appUrlOpen instead of opening the URL in Chrome.
+  // Set ANDROID_APP_SHA256_CERT in env to the SHA-256 fingerprint of the release
+  // keystore (run: keytool -list -v -keystore release.jks | grep SHA256).
+  app.get("/.well-known/assetlinks.json", (_req, res) => {
+    const sha256 = process.env.ANDROID_APP_SHA256_CERT;
+    if (!sha256) {
+      res.status(404).json({ error: "ANDROID_APP_SHA256_CERT not configured" });
+      return;
+    }
+    res.set({
+      "Content-Type": "application/json",
+      "Cache-Control": "public, max-age=3600",
+    });
+    res.json([
+      {
+        relation: ["delegate_permission/common.handle_all_urls"],
+        target: {
+          namespace: "android_app",
+          package_name: "com.housalert.app",
+          sha256_cert_fingerprints: [sha256],
+        },
+      },
+    ]);
+  });
+
   const logoFiles = ["housalert-logo.png", "email-logo-v2.png"];
   for (const logoFile of logoFiles) {
     app.get(`/${logoFile}`, async (_req, res) => {
@@ -2695,8 +2721,8 @@ export async function registerRoutes(
       const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
       if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
 
-      const { plan } = req.body;
-      log(`[checkout] Started: user=${user.id}, email=${user.email}, plan=${plan}`);
+      const { plan, is_native } = req.body;
+      log(`[checkout] Started: user=${user.id}, email=${user.email}, plan=${plan}, is_native=${!!is_native}`);
 
       if (!plan || !PLAN_PRICE_MAP[plan]) {
         log(`[checkout] Invalid plan "${plan}" — available: ${Object.keys(PLAN_PRICE_MAP).join(", ")}`);
@@ -2743,7 +2769,14 @@ export async function registerRoutes(
         ? (process.env.APP_PUBLIC_BASE_URL || PROD_DOMAIN)
         : `${protocol}://${host}`;
 
-      log(`[checkout] Creating Stripe session: plan=${plan}, priceId=${stripePriceId}, customer=${customerId}, successUrl=${baseUrl}/checkout/success`);
+      const successUrl = is_native
+        ? `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}&native=1`
+        : `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
+      const cancelUrl = is_native
+        ? `${baseUrl}/onboarding/setup?checkout_cancelled=1`
+        : `${baseUrl}/onboarding/setup`;
+
+      log(`[checkout] Creating Stripe session: plan=${plan}, priceId=${stripePriceId}, customer=${customerId}, native=${!!is_native}, successUrl=${successUrl.substring(0, 80)}`);
 
       let referralCouponId: string | undefined;
       try {
@@ -2780,8 +2813,8 @@ export async function registerRoutes(
           trial_period_days: 14,
           metadata: { supabase_user_id: user.id, plan },
         },
-        success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${baseUrl}/onboarding/setup`,
+        success_url: successUrl,
+        cancel_url: cancelUrl,
         metadata: { supabase_user_id: user.id, plan },
       };
 
@@ -2793,7 +2826,7 @@ export async function registerRoutes(
       const session = await stripe.checkout.sessions.create(sessionParams);
 
       log(`[checkout] Session created: id=${session.id}, url=${session.url?.substring(0, 60)}...`);
-      return res.json({ url: session.url });
+      return res.json({ url: session.url, session_id: session.id });
     } catch (err: any) {
       log(`[checkout] Error: ${err.message}`);
       console.error("Checkout error:", err);
@@ -3006,7 +3039,7 @@ export async function registerRoutes(
         metadata: { supabase_user_id: user.id, plan },
       });
 
-      return res.json({ url: session.url });
+      return res.json({ url: session.url, session_id: session.id });
     } catch (err: any) {
       console.error("Checkout error:", err);
       return res.status(500).json({ error: err.message });

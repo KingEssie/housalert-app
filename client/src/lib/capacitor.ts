@@ -57,3 +57,126 @@ export async function registerNativePush(): Promise<string | null> {
     return null;
   }
 }
+
+// ---------------------------------------------------------------------------
+// Checkout browser — opens Stripe in an in-app browser (Capacitor Browser
+// plugin / Chrome Custom Tabs) on native, and via window.location on web.
+// ---------------------------------------------------------------------------
+
+const PENDING_SESSION_KEY = "ha_pending_checkout_session_id";
+const PENDING_SESSION_TS_KEY = "ha_pending_checkout_ts";
+const SESSION_MAX_AGE_MS = 30 * 60 * 1000; // 30 minutes
+
+export function savePendingCheckoutSession(sessionId: string): void {
+  try {
+    localStorage.setItem(PENDING_SESSION_KEY, sessionId);
+    localStorage.setItem(PENDING_SESSION_TS_KEY, Date.now().toString());
+    console.log("[checkout-browser] Saved pending session:", sessionId.substring(0, 20) + "...");
+  } catch {}
+}
+
+/**
+ * Reads and clears the pending checkout session from localStorage.
+ * Returns null if absent or older than SESSION_MAX_AGE_MS.
+ */
+export function consumePendingCheckoutSession(): string | null {
+  try {
+    const sessionId = localStorage.getItem(PENDING_SESSION_KEY);
+    const ts = parseInt(localStorage.getItem(PENDING_SESSION_TS_KEY) || "0", 10);
+    localStorage.removeItem(PENDING_SESSION_KEY);
+    localStorage.removeItem(PENDING_SESSION_TS_KEY);
+    if (!sessionId) return null;
+    if (Date.now() - ts > SESSION_MAX_AGE_MS) {
+      console.log("[checkout-browser] Pending session expired — discarding");
+      return null;
+    }
+    console.log("[checkout-browser] Consumed pending session:", sessionId.substring(0, 20) + "...");
+    return sessionId;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Opens a Stripe checkout URL.
+ * - Native: uses @capacitor/browser (Chrome Custom Tabs) so the WebView/session
+ *   stays intact while the user pays. Saves sessionId for the browserFinished fallback.
+ * - Web: standard window.location redirect.
+ */
+export async function openCheckoutBrowser(url: string, sessionId: string): Promise<void> {
+  savePendingCheckoutSession(sessionId);
+  if (isNativePlatform()) {
+    try {
+      const { Browser } = await import('@capacitor/browser');
+      console.log("[checkout-browser] Opening Stripe in in-app browser (native)");
+      await Browser.open({ url, presentationStyle: 'fullscreen', toolbarColor: '#1A1A1A' });
+    } catch (err) {
+      console.warn("[checkout-browser] Browser plugin failed — falling back to window.location:", err);
+      window.location.href = url;
+    }
+  } else {
+    window.location.href = url;
+  }
+}
+
+/**
+ * Programmatically closes the in-app browser (e.g. when the checkout-success
+ * page is reached via an App Link and the Custom Tab is still open).
+ */
+export async function closeInAppBrowser(): Promise<void> {
+  if (!isNativePlatform()) return;
+  try {
+    const { Browser } = await import('@capacitor/browser');
+    await Browser.close();
+    console.log("[checkout-browser] In-app browser closed");
+  } catch {}
+}
+
+/**
+ * Registers a listener for when the in-app browser closes (either because
+ * the user navigated to a deep-link that re-opened the app, pressed back, or
+ * Stripe's success page triggered an App Link).
+ *
+ * Returns a cleanup function that removes the listener.
+ */
+export async function setupBrowserFinishedListener(
+  onFinished: (sessionId: string | null) => void
+): Promise<() => void> {
+  if (!isNativePlatform()) return () => {};
+  try {
+    const { Browser } = await import('@capacitor/browser');
+    const handle = await Browser.addListener('browserFinished', () => {
+      const sessionId = consumePendingCheckoutSession();
+      console.log("[checkout-browser] browserFinished — pending session:", sessionId ?? "none");
+      onFinished(sessionId);
+    });
+    return () => { handle.remove(); };
+  } catch (err) {
+    console.warn("[checkout-browser] Could not register browserFinished listener:", err);
+    return () => {};
+  }
+}
+
+/**
+ * Registers a listener for App Link / deep link URL opens.
+ * Fires when another app (e.g. Chrome Custom Tabs redirected by Stripe) opens
+ * the native app via an intent filter match.
+ *
+ * Returns a cleanup function that removes the listener.
+ */
+export async function setupDeepLinkListener(
+  onUrl: (url: string) => void
+): Promise<() => void> {
+  if (!isNativePlatform()) return () => {};
+  try {
+    const { App } = await import('@capacitor/app');
+    const handle = await App.addListener('appUrlOpen', (data: { url: string }) => {
+      console.log("[deep-link] appUrlOpen received:", data.url);
+      onUrl(data.url);
+    });
+    return () => { handle.remove(); };
+  } catch (err) {
+    console.warn("[deep-link] Could not register appUrlOpen listener:", err);
+    return () => {};
+  }
+}

@@ -1,0 +1,84 @@
+Fix Stripe checkout return flow for the native Android Capacitor app and PWA.
+
+Current problems:
+
+1. After successful Stripe payment, the user is sent to the login screen instead of continuing onboarding.
+2. Stripe checkout opens in the external browser and does NOT return back into the native app automatically.
+3. Onboarding context/session is lost after the Stripe redirect.
+
+Expected behavior:
+Native app flow:
+
+* User signs up inside the Android app
+* Opens Stripe checkout
+* Completes payment
+* Automatically returns INTO the app (not staying in Chrome/browser)
+* User remains logged in
+* Subscription becomes active
+* User continues onboarding/setup directly
+
+PWA flow:
+
+* Same onboarding continuation behavior after payment
+* Session should persist correctly
+
+Required fixes:
+
+1. Deep linking / app return
+
+* Configure Capacitor deep links / appUrlOpen handling
+* Add Android intent filter for the app domain
+* Stripe success_url should use an app deep link or universal link
+* Example:
+  housalert://checkout-success
+  OR
+  https://app.housalert.com/checkout-success with proper app link handling
+* Returning from Stripe should reopen the native app automatically
+
+2. Session persistence
+
+* Preserve Supabase auth session through Stripe redirect
+* checkout-success must wait for auth restore before redirecting
+* Attempt getSession()/refreshSession before showing login
+* Never immediately redirect to /login while session restore is still pending
+
+3. Onboarding continuation
+
+* Preserve onboarding step/context through checkout
+* Continue to onboarding/setup after successful payment
+* Cancel flow should return to paywall/onboarding, not login
+
+4. Android Capacitor integration
+
+* Verify Browser plugin / external checkout flow
+* Add appUrlOpen listener
+* Ensure deep links work when app is:
+
+  * already open
+  * backgrounded
+  * fully closed
+
+5. Add logging
+   Log:
+
+* incoming deep links
+* session restore timing
+* checkout-success redirect decisions
+* onboarding state restore
+
+Smoke tests:
+
+1. New user signs up in Android app
+2. Starts Stripe checkout
+3. Completes payment
+4. App reopens automatically
+5. User stays logged in
+6. Lands in onboarding/setup
+7. Subscription active
+8. No login screen shown
+
+Also test:
+
+* payment cancel
+* expired session
+* returning from browser while app already open
