@@ -5,9 +5,9 @@ import { supabase } from "@/lib/supabase";
 import { queryClient } from "@/lib/queryClient";
 import { useTranslation } from "@/i18n";
 import { isNativePlatform, closeInAppBrowser } from "@/lib/capacitor";
-import { CheckCircle, Loader2, AlertCircle, RotateCw } from "lucide-react";
+import { CheckCircle, Loader2, AlertCircle, RotateCw, LogIn } from "lucide-react";
 
-type Status = "loading" | "success" | "error";
+type Status = "loading" | "success" | "error" | "session_missing";
 const MAX_RETRIES = 8;
 
 /** Reads a URL param from both the standard search string and hash-based routing.
@@ -185,6 +185,15 @@ export default function CheckoutSuccessPage() {
         }
       }
 
+      // No auth session available — payment likely succeeded but the user was
+      // logged out while in the background. Show a friendly "log back in" screen
+      // rather than a generic error.
+      if (!token) {
+        console.warn("[checkout-success] No auth token and all confirm paths failed — showing session_missing state");
+        setStatus("session_missing");
+        return;
+      }
+
       console.warn("[checkout-success] All confirmation paths failed:", data.error);
       setStatus("error");
       setErrorMsg(data.error || t("checkoutSuccess.genericError"));
@@ -212,22 +221,34 @@ export default function CheckoutSuccessPage() {
   return (
     <div className="min-h-screen bg-ha-bg flex items-center justify-center px-5" data-testid="page-checkout-success">
       <div className="text-center max-w-sm">
-        <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5" style={{ background: status === "error" ? "var(--ha-danger-light)" : "var(--ha-primary-light)" }}>
+        <div
+          className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5"
+          style={{
+            background: status === "error"
+              ? "var(--ha-danger-light)"
+              : status === "session_missing"
+              ? "var(--ha-warning-light, #fffbeb)"
+              : "var(--ha-primary-light)",
+          }}
+        >
           {status === "loading" && <Loader2 className="w-8 h-8 animate-spin text-ha-primary" />}
           {status === "success" && <CheckCircle className="w-8 h-8 text-ha-success" />}
           {status === "error" && <AlertCircle className="w-8 h-8 text-ha-danger" />}
+          {status === "session_missing" && <CheckCircle className="w-8 h-8" style={{ color: "#f59e0b" }} />}
         </div>
 
         <h1 className="text-[30px] font-semibold text-ha-text mb-2" data-testid="text-checkout-title">
           {status === "loading" && t("checkoutSuccess.loading")}
           {status === "success" && t("checkoutSuccess.success")}
           {status === "error" && t("checkoutSuccess.error")}
+          {status === "session_missing" && t("checkoutSuccess.paymentOk")}
         </h1>
 
         <p className="text-[15px] text-ha-text-secondary" data-testid="text-checkout-subtitle">
           {status === "loading" && t("checkoutSuccess.loadingSubtitle")}
           {status === "success" && t("checkoutSuccess.successSubtitle")}
           {status === "error" && errorMsg}
+          {status === "session_missing" && t("checkoutSuccess.sessionMissingSubtitle")}
         </p>
 
         {status === "error" && (
@@ -247,6 +268,20 @@ export default function CheckoutSuccessPage() {
               data-testid="button-go-home"
             >
               {t("checkoutSuccess.goToApp")}
+            </button>
+          </div>
+        )}
+
+        {status === "session_missing" && (
+          <div className="mt-6 flex flex-col gap-3">
+            <button
+              onClick={() => navigate("/login?next=/onboarding/setup")}
+              className="h-[48px] rounded-[10px] text-white text-[15px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform"
+              style={{ background: "rgb(var(--ha-primary))" }}
+              data-testid="button-login-continue"
+            >
+              <LogIn className="w-4 h-4" />
+              {t("checkoutSuccess.loginToContinue")}
             </button>
           </div>
         )}

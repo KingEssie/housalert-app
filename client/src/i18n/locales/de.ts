@@ -37,6 +37,7 @@ export const de: Record<string, any> = {
     generate: "Erstellen",
     add: "Hinzufügen",
     open: "Öffnen",
+    loadMore: "Mehr laden",
   },
 
   nav: {
@@ -2772,6 +2773,9 @@ export const de: Record<string, any> = {
     genericError: "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
     retry: "Erneut versuchen",
     goToApp: "Zur App",
+    paymentOk: "Zahlung eingegangen!",
+    sessionMissingSubtitle: "Deine Zahlung war erfolgreich. Melde dich erneut an, um fortzufahren.",
+    loginToContinue: "Einloggen und fortfahren",
   },
 
   zoekbuddyPage: {

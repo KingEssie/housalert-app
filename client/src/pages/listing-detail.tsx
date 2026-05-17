@@ -7,6 +7,7 @@ import { useTranslation } from "@/i18n";
 import { useToast } from "@/hooks/use-toast";
 import { trackEvent } from "@/lib/track-event";
 import { queryClient } from "@/lib/queryClient";
+import type { ApiMatchesResponse } from "@/lib/listings";
 import { MapPin, BedDouble, Ruler, Clock, Globe, Zap, ArrowLeft, Info, Heart, ShieldBan, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ListingFallback, isValidImageUrl } from "@/components/listing-fallback";
@@ -127,15 +128,28 @@ export default function ListingDetailPage() {
   const { data: listing, isLoading, isError } = useQuery<Listing>({
     queryKey: ["/api/listings", id],
     queryFn: async () => {
+      const t0 = Date.now();
       const headers: Record<string, string> = {};
       if (session?.access_token) {
         headers["Authorization"] = `Bearer ${session.access_token}`;
       }
       const res = await apiFetch(`/api/listings/${id}`, { headers });
+      console.log(`[perf] listing-detail fetch=${Date.now() - t0}ms id=${id?.substring(0, 8)}`);
       if (!res.ok) throw new Error("Listing not found");
       return res.json();
     },
     enabled: !!id,
+    // Use the cached match card data as instant initialData so the detail
+    // screen renders immediately while the full listing loads in the background.
+    initialData: () => {
+      const cache = queryClient.getQueryData<ApiMatchesResponse>(["/api/matches"]);
+      const match = cache?.matches?.find((m) => m.listing_id === id);
+      if (!match) return undefined;
+      console.log(`[perf] listing-detail cache-hit id=${id?.substring(0, 8)}`);
+      return match as unknown as Listing;
+    },
+    initialDataUpdatedAt: 0, // always treat initialData as stale so background fetch runs
+    staleTime: 60_000,
   });
 
   useEffect(() => {

@@ -1,0 +1,78 @@
+Fix two P0 issues in the Android Capacitor app.
+
+P0 Issue 1 — Severe performance problems:
+Observed on Samsung Android native app:
+- After login: Matches screen takes 20+ seconds to load
+- Match detail takes ~12 seconds
+- Favorites takes ~15 seconds
+- Account screen is reasonably fast
+
+Tasks:
+1. Add timing logs for:
+   - auth/session restore
+   - profile fetch
+   - subscription fetch
+   - matches fetch
+   - favorites fetch
+   - listing detail fetch
+   - image loading
+   - any admin/debug calls on normal user startup
+2. Matches:
+   - first load max 20 listings
+   - paginate/lazy load more
+   - do not fetch full detail for every card
+   - do not load map libraries on initial matches screen
+   - do not load high-res images for all cards
+   - use thumbnails/lazy images
+   - remove/refactor refetch loops
+3. Detail screen:
+   - avoid duplicate listing fetches
+   - cache listing data from match card
+   - show skeleton immediately
+   - lazy-load heavy sections/images
+4. Favorites:
+   - first load max 20
+   - paginate
+   - lazy-load images
+   - avoid full detail fetch per favorite
+5. Verify no admin portal, ingestion monitor, mapbox/leaflet, or debug code loads for normal users after login.
+6. Run npm run build and report:
+   - slowest bottlenecks found
+   - before/after expected timings
+   - exact files changed
+
+P0 Issue 2 — Stripe return flow broken:
+Observed:
+- From account creation/paywall inside Android app, Stripe opens in browser.
+- After payment/cancel/return, it lands on login page in the browser.
+- It does not return to the native app/PWA flow.
+- User loses onboarding context.
+
+Expected:
+- Native Android checkout opens Chrome Custom Tab, not WebView navigation.
+- After Stripe success/cancel, app returns to native app.
+- User remains logged in.
+- User continues onboarding/setup or the previous intended route.
+- Never return to browser login unless session truly expired.
+
+Tasks:
+1. Verify paywall from account creation screen uses openCheckoutBrowser/native checkout path.
+2. Store checkout session_id, onboarding context, and intended next route before opening Stripe.
+3. Add Browser.addListener('browserFinished') fallback:
+   - if Stripe tab closes, navigate native app to /checkout/success or /checkout/cancel using stored session_id/context
+4. Add App.addListener('appUrlOpen') for app links/deep links.
+5. Configure AndroidManifest app links for:
+   - app.housalert.com/checkout/success
+   - app.housalert.com/checkout/cancel
+6. checkout-success must wait for Supabase session restore before redirecting.
+7. If session missing but payment succeeded, show:
+   “Betaling gelukt — log opnieuw in om verder te gaan”
+   and after login continue onboarding automatically.
+8. Smoke test:
+   - new user signs up in Android app
+   - opens paywall
+   - pays with Stripe
+   - returns to app, not browser login
+   - lands on onboarding/setup
+   - subscription active
+   - cancel returns to paywall/onboarding, not login

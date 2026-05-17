@@ -1096,14 +1096,18 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
   const favSub = useSubscription();
   const favHasActiveSub = favSub.isActive || favSub.isTrial;
 
+  const [visibleFavCount, setVisibleFavCount] = useState(20);
+
   const fetchFavoriteListings = useCallback(() => {
     if (!accessToken) return;
     setFavLoading(true);
+    const t0 = Date.now();
     apiFetch("/api/favorites/listings", {
       headers: { Authorization: `Bearer ${accessToken}` },
     })
       .then((r) => r.json())
       .then((data) => {
+        console.log(`[perf] favorites fetch=${Date.now() - t0}ms count=${data.listings?.length ?? 0}`);
         if (data.listings) setFavoriteListings(data.listings);
       })
       .catch(() => {})
@@ -1205,7 +1209,7 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
           />
         ) : (
           <div className="flex flex-col gap-3">
-            {favoriteListings.map((m) => (
+            {favoriteListings.slice(0, visibleFavCount).map((m) => (
               <ListingCardFull
                 key={m.listing_id}
                 match={m}
@@ -1219,6 +1223,15 @@ function FavorietenTab({ accessToken, navigate }: { accessToken: string | undefi
                 matchVariant
               />
             ))}
+            {visibleFavCount < favoriteListings.length && (
+              <button
+                onClick={() => setVisibleFavCount((c) => c + 20)}
+                className="mt-1 h-[44px] rounded-[10px] text-[14px] font-medium text-ha-text-secondary border border-ha-card-border bg-white active:bg-ha-surface transition-colors"
+                data-testid="button-load-more-favorites"
+              >
+                {t("common.loadMore")} ({favoriteListings.length - visibleFavCount})
+              </button>
+            )}
           </div>
         )}
       </div>

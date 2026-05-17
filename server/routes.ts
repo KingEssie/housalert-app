@@ -1762,21 +1762,23 @@ export async function registerRoutes(
         ? (new Date(premiumStartedAt).getTime() < new Date(ninetyDaysAgo).getTime() ? premiumStartedAt : ninetyDaysAgo)
         : ninetyDaysAgo;
 
+      const tMatches = Date.now();
       log(`[MATCHES] userId=${user.id.substring(0, 8)} subStatus=${subRow?.status ?? "none"} premiumStartedAt=${premiumStartedAt ?? "none"} cutoff=${cutoff}`);
 
+      // Fetch at most 300 rows — after dedup we take top 200 before the expensive
+      // batch operations, so 300 gives enough headroom even with duplicate match rows.
       let matchQuery = supabase
         .from("matches")
         .select("id, listing_id, search_profile_id, created_at")
         .eq("user_id", user.id)
         .gte("created_at", cutoff)
         .order("created_at", { ascending: false })
-        .limit(1000);
+        .limit(300);
       const { data: matchRows, error: mErr } = await matchQuery;
+      log(`[MATCHES TIMING] userId=${user.id.substring(0, 8)} matchQuery=${Date.now() - tMatches}ms rows=${matchRows?.length ?? 0}`);
 
       if (mErr) return res.status(500).json({ error: mErr.message });
       if (!matchRows || matchRows.length === 0) return res.json({ matches: [], totalCount: 0 });
-
-      console.log(`[MATCHES] userId=${user.id.substring(0, 8)}... returned=${matchRows.length} newest=${matchRows[0]?.created_at} oldest=${matchRows[matchRows.length - 1]?.created_at}`);
 
       const enriched = matchRows.map((m: any) => ({
         ...m,
@@ -1789,14 +1791,18 @@ export async function registerRoutes(
           dedupedByListing[m.listing_id] = m;
         }
       }
-      let uniqueMatches = Object.values(dedupedByListing);
-
+      // Slice to 200 BEFORE the expensive batch operations (listings, freshness,
+      // profiles, score computation). Matches are already sorted newest-first so
+      // the top 200 unique listings are the ones that will appear in the final 50.
+      // This is the primary performance fix — was processing up to 1000 rows.
+      let uniqueMatches = Object.values(dedupedByListing).slice(0, 200);
 
       const allListingIds = uniqueMatches.map((m: any) => m.listing_id);
       if (allListingIds.length === 0) return res.json({ matches: [], totalCount: 0 });
 
       const profileIds = [...new Set(uniqueMatches.map((m: any) => m.search_profile_id).filter(Boolean))];
 
+      const tBatch = Date.now();
       const [listingsData, freshnessMap, profilesData] = await Promise.all([
         batchedIn<any>(
           "listings", "id", allListingIds,
@@ -1811,6 +1817,7 @@ export async function registerRoutes(
             )
           : Promise.resolve([]),
       ]);
+      log(`[MATCHES TIMING] userId=${user.id.substring(0, 8)} batchFetch=${Date.now() - tBatch}ms listings=${listingsData.length}`);
 
       const listingMap: Record<string, any> = {};
       for (const l of listingsData) listingMap[l.id] = l;
@@ -1894,10 +1901,12 @@ export async function registerRoutes(
 
       console.log(`[MATCHES ORDER] userId=${user.id.substring(0, 8)}... appOrder=[${top50.slice(0, 10).map((m: any) => m.listing_id.substring(0, 8)).join(",")}] sortField=matched_at timestamps=[${top50.slice(0, 10).map((m: any) => m.matched_at).join(",")}]`);
 
+      const tStats = Date.now();
       const [canonicalStats, canonicalStates] = await Promise.all([
         getUserMatchStats(user.id),
         getCanonicalMatchStates(user.id),
       ]);
+      log(`[MATCHES TIMING] userId=${user.id.substring(0, 8)} stats=${Date.now() - tStats}ms total=${Date.now() - tMatches}ms`);
 
       const matchesWithState = top50.map((m: any) => {
         const cs = canonicalStates.get(m.listing_id);

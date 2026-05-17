@@ -37,6 +37,7 @@ export const en: Record<string, any> = {
     generate: "Generate",
     add: "Add",
     open: "Open",
+    loadMore: "Load more",
   },
 
   nav: {
@@ -2201,6 +2202,9 @@ export const en: Record<string, any> = {
     genericError: "Something went wrong. Please try again.",
     retry: "Try again",
     goToApp: "Go to the app",
+    paymentOk: "Payment received!",
+    sessionMissingSubtitle: "Your payment went through. Log back in to continue.",
+    loginToContinue: "Log in and continue",
   },
 
   zoekbuddyPage: {

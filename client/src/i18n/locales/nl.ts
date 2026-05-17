@@ -37,6 +37,7 @@ export const nl: Record<string, any> = {
     generate: "Genereren",
     add: "Toevoegen",
     open: "Openen",
+    loadMore: "Meer laden",
   },
 
   nav: {
@@ -2808,6 +2809,9 @@ export const nl: Record<string, any> = {
     genericError: "Er ging iets mis. Probeer het opnieuw.",
     retry: "Opnieuw proberen",
     goToApp: "Ga naar de app",
+    paymentOk: "Betaling gelukt!",
+    sessionMissingSubtitle: "Je betaling is ontvangen. Log opnieuw in om verder te gaan.",
+    loginToContinue: "Inloggen en doorgaan",
   },
 
   zoekbuddyPage: {
