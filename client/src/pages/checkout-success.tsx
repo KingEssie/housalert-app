@@ -398,34 +398,56 @@ export default function CheckoutSuccessPage() {
 
         <p className="text-[15px] text-ha-text-secondary" data-testid="text-checkout-subtitle">
           {status === "loading" && t("checkoutSuccess.loadingSubtitle")}
-          {status === "deep_link_waiting" && "Open HousAlert om verder te gaan met je zoekprofiel."}
+          {status === "deep_link_waiting" && "Je abonnement is actief. Sluit dit venster om terug te gaan naar de app."}
           {status === "success" && t("checkoutSuccess.successSubtitle")}
           {status === "error" && errorMsg}
-          {status === "session_missing" && "Betaling gelukt — log in om verder te gaan"}
+          {status === "session_missing" && "Betaling gelukt — log opnieuw in om verder te gaan"}
         </p>
 
-        {/* ── Static handoff screen ── shown whenever from_native=1 ─────────
-            TODO (Android App Links): replace this login redirect with a
-            proper intent:// deep link once Android App Links are set up:
+        {/* ── CCT handoff screen ── shown in Chrome Custom Tab after payment ──
+            PRIMARY flow: user presses Android Back button to close the CCT.
+            browserFinished fires in the native app → handleBrowserFinished
+            navigates to /checkout/success?session_id=xxx&native=1 inside
+            the authenticated WebView → confirmSession() → /onboarding/setup.
+            No login required because the WebView session is still active.
+
+            TODO (Android App Links): once assetlinks.json + release keystore
+            SHA-256 are set up, re-enable the intent:// button so the CCT
+            closes automatically without requiring a Back press. Steps:
               1. Generate release keystore SHA-256 fingerprint
               2. Publish /.well-known/assetlinks.json on the domain
-              3. Verify association in Android Studio App Links Assistant
-              4. Re-enable intent:// button (isAndroid && fromNative guard)
-            Until then the user continues through the browser login flow,
-            which is safe and reliable for all platforms. */}
+              3. Verify in Android Studio App Links Assistant
+              4. Re-enable isAndroid && fromNative intent:// button */}
         {status === "deep_link_waiting" && (
-          <div className="mt-6 flex flex-col gap-3">
+          <div className="mt-8 flex flex-col items-center gap-5">
 
-            {/* ── Primary — browser-safe onboarding continuation ── */}
-            <button
-              onClick={() => { window.location.href = "/login?next=/onboarding/setup&payment=success"; }}
-              className="h-[52px] rounded-[12px] text-white text-[16px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform"
-              style={{ background: "rgb(var(--ha-primary))" }}
-              data-testid="button-continue-onboarding"
+            {/* ── Back button instruction ── */}
+            <div
+              className="w-full rounded-[14px] px-5 py-4 flex items-start gap-3 text-left"
+              style={{ background: "#f0fdf4", border: "1px solid #bbf7d0" }}
             >
-              <LogIn className="w-5 h-5" />
-              Doorgaan met onboarding
-            </button>
+              <span className="text-[22px] leading-none mt-0.5">◀</span>
+              <div>
+                <p className="text-[15px] font-semibold text-[#166534]">
+                  Druk op de terugknop
+                </p>
+                <p className="text-[13px] text-[#15803d] mt-0.5">
+                  Gebruik de terugknop van je telefoon om terug te gaan naar de HousAlert app. Je onboarding gaat dan automatisch door.
+                </p>
+              </div>
+            </div>
+
+            {/* ── Last-resort browser fallback — very demoted ── */}
+            <p className="text-[12px] text-ha-text-secondary text-center">
+              Terugknop werkt niet?{" "}
+              <a
+                href="/login?next=/onboarding/setup&payment=success"
+                className="underline"
+                data-testid="link-continue-browser-fallback"
+              >
+                Doorgaan in browser
+              </a>
+            </p>
 
           </div>
         )}
@@ -451,16 +473,21 @@ export default function CheckoutSuccessPage() {
           </div>
         )}
 
+        {/* ── Session missing — shown in native WebView when auth is lost ──
+            The WebView's Supabase session expired during checkout. The user
+            must log in again inside the native app (SPA navigation — no
+            browser redirect). The login page reads ha_pending_checkout_next
+            and sends the user directly to /onboarding/setup after login. */}
         {status === "session_missing" && (
           <div className="mt-6 flex flex-col gap-3">
             <button
-              onClick={() => { window.location.href = "/login?next=/onboarding/setup&payment=success"; }}
+              onClick={() => navigate("/login?next=/onboarding/setup&payment=success")}
               className="h-[52px] rounded-[12px] text-white text-[16px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform"
               style={{ background: "rgb(var(--ha-primary))" }}
-              data-testid="button-continue-onboarding"
+              data-testid="button-login-again"
             >
               <LogIn className="w-5 h-5" />
-              Doorgaan met onboarding
+              Opnieuw inloggen
             </button>
           </div>
         )}
