@@ -47,6 +47,10 @@ const VITE_ENV_VARS = [
   "VITE_VAPID_PUBLIC_KEY",
 ] as const;
 
+// Build stamp: a short timestamp + git-like identifier baked into the bundle
+// so you can verify which build is running on Android (visible in console logs).
+const buildStamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19) + "Z";
+
 async function buildAll() {
   // Build-time env check — logs presence only, never values
   const supabaseUrl = process.env.VITE_SUPABASE_URL;
@@ -73,6 +77,9 @@ async function buildAll() {
       defineEnv[`import.meta.env.${key}`] = JSON.stringify(value);
     }
   }
+  // Always inject the build stamp so Android console logs show the build time.
+  defineEnv[`import.meta.env.VITE_BUILD_STAMP`] = JSON.stringify(buildStamp);
+  console.log("[build] Build stamp:", buildStamp);
   console.log("[build] Injecting into bundle:", Object.keys(defineEnv).join(", ") || "(none)");
 
   await rm("dist", { recursive: true, force: true });
