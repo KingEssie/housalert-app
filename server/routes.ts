@@ -1033,7 +1033,8 @@ export async function registerRoutes(
         );
 
       if (error) return res.status(500).json({ error: error.message });
-      log(`[PUSH] Device registered for user ${user.id.substring(0, 8)}... platform=${platform} provider=${provider}`);
+      const endpointDomain = (() => { try { return new URL(endpoint).hostname; } catch { return "unknown"; } })();
+      log(`[PUSH] Device registered for user ${user.id.substring(0, 8)}... platform=${platform} provider=${provider} endpoint_host=${endpointDomain} p256dh_prefix=${String(p256dh).substring(0, 8)}... auth_prefix=${String(auth).substring(0, 8)}...`);
       return res.json({ ok: true, platform, provider });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });

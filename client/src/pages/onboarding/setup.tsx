@@ -1343,12 +1343,23 @@ export default function OnboardingSetup() {
         const vapidRes = await apiFetch("/api/push/vapid-key");
         if (!vapidRes.ok) throw new Error("No VAPID key");
         const { publicKey } = await vapidRes.json();
+        console.log("[push/onboarding] Using VAPID key prefix:", String(publicKey).substring(0, 12) + "...");
 
         const reg = await navigator.serviceWorker.ready;
+
+        // Always unsubscribe first so the new subscription is freshly bound
+        // to the current server VAPID key (avoids 403 BadJwtToken on re-subscribe).
+        const existingSub = await reg.pushManager.getSubscription();
+        if (existingSub) {
+          console.log("[push/onboarding] Unsubscribing stale sub:", existingSub.endpoint.substring(0, 40) + "...");
+          await existingSub.unsubscribe();
+        }
+
         const sub = await reg.pushManager.subscribe({
           userVisibleOnly: true,
           applicationServerKey: publicKey,
         });
+        console.log("[push/onboarding] New sub endpoint:", sub.endpoint.substring(0, 50) + "...");
 
         const subJson = sub.toJSON();
         const token = session?.access_token;

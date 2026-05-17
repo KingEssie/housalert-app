@@ -17,6 +17,7 @@ import { HousAlertLogo } from "@/components/housalert-logo";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
+import { resetPushBrowserSide } from "@/lib/push";
 
 type TabId = "dashboard" | "listings" | "images" | "sources" | "users" | "subscriptions" | "alerts" | "settings" | "system" | "support";
 
@@ -1956,6 +1957,8 @@ function AlertsTab() {
   const [vapidDebug, setVapidDebug] = useState<any>(null);
   const [clearingPushSubs, setClearingPushSubs] = useState(false);
   const [clearResult, setClearResult] = useState<any>(null);
+  const [resettingPush, setResettingPush] = useState(false);
+  const [resetPushResult, setResetPushResult] = useState<any>(null);
 
   const [resendUserId, setResendUserId] = useState("");
   const [resending, setResending] = useState(false);
@@ -2019,6 +2022,45 @@ function AlertsTab() {
       setClearResult({ success: false, message: err.message || "Failed to clear subscriptions" });
     }
     setClearingPushSubs(false);
+  }
+
+  async function resetPushSetup() {
+    setResettingPush(true);
+    setResetPushResult(null);
+    setTestError(null);
+    setTestSuccess(null);
+    const steps: string[] = [];
+    let browserOk = false;
+    let serverOk = false;
+    try {
+      // 1. Browser side: unregister SW + unsubscribe push
+      const browserResult = await resetPushBrowserSide();
+      steps.push(`SW unregistered: ${browserResult.swsUnregistered}`);
+      steps.push(`Push unsubscribed: ${browserResult.subUnsubscribed}`);
+      if (browserResult.errors.length) steps.push(`Browser errors: ${browserResult.errors.join(", ")}`);
+      browserOk = true;
+    } catch (e: any) {
+      steps.push(`Browser reset failed: ${e?.message}`);
+    }
+    try {
+      // 2. Server side: clear DB push subscriptions for target user
+      const res = await adminFetch("/api/admin/portal/clear-push-subs", {
+        method: "POST",
+        body: JSON.stringify({ userId: testUserId || "" }),
+      });
+      steps.push(`DB cleared: ${res.deleted} sub(s)`);
+      serverOk = true;
+    } catch (e: any) {
+      steps.push(`Server clear failed: ${e?.message}`);
+    }
+    setResetPushResult({
+      success: browserOk && serverOk,
+      steps,
+      message: browserOk && serverOk
+        ? "Push fully reset. Re-enable push notifications in your account preferences to create a fresh subscription with the current VAPID key."
+        : "Partial reset — check steps for errors.",
+    });
+    setResettingPush(false);
   }
 
   async function sendTest() {
@@ -2244,22 +2286,44 @@ function AlertsTab() {
 
           {/* Push sub management (push only) */}
           {testType === "push" && (
-            <div className="mb-4 flex items-center gap-3">
-              <button
-                onClick={clearPushSubs}
-                disabled={clearingPushSubs}
-                className="px-4 py-2 rounded-full text-[12px] font-semibold transition-all disabled:opacity-50 flex items-center gap-1.5"
-                style={{ backgroundColor: "#fff1f2", color: "#e11d48", border: "1px solid #fecdd3" }}
-                data-testid="button-clear-push-subs"
-              >
-                {clearingPushSubs ? <><Loader2 className="w-3 h-3 animate-spin" /> Clearing…</> : "Clear push subscriptions"}
-              </button>
-              {clearResult && (
-                <span className="text-[12px] leading-snug flex-1" style={{ color: clearResult.success ? "#15803d" : "#e11d48" }}>
+            <div className="mb-4 space-y-2">
+              <div className="flex items-center gap-3 flex-wrap">
+                <button
+                  onClick={clearPushSubs}
+                  disabled={clearingPushSubs || resettingPush}
+                  className="px-4 py-2 rounded-full text-[12px] font-semibold transition-all disabled:opacity-50 flex items-center gap-1.5"
+                  style={{ backgroundColor: "#fff1f2", color: "#e11d48", border: "1px solid #fecdd3" }}
+                  data-testid="button-clear-push-subs"
+                >
+                  {clearingPushSubs ? <><Loader2 className="w-3 h-3 animate-spin" /> Clearing…</> : "Clear DB subscriptions"}
+                </button>
+                <button
+                  onClick={resetPushSetup}
+                  disabled={resettingPush || clearingPushSubs}
+                  className="px-4 py-2 rounded-full text-[12px] font-semibold transition-all disabled:opacity-50 flex items-center gap-1.5"
+                  style={{ backgroundColor: "#fef3c7", color: "#92400e", border: "1px solid #fde68a" }}
+                  data-testid="button-reset-push-setup"
+                >
+                  {resettingPush ? <><Loader2 className="w-3 h-3 animate-spin" /> Resetting…</> : "↺ Full push reset (this browser)"}
+                </button>
+              </div>
+              {clearResult && !resetPushResult && (
+                <p className="text-[12px]" style={{ color: clearResult.success ? "#15803d" : "#e11d48" }}>
                   {clearResult.success
-                    ? `✓ ${clearResult.deleted > 0 ? `Removed ${clearResult.deleted} sub(s). Re-enable push to re-subscribe.` : "No subs found."}`
+                    ? `✓ ${clearResult.deleted > 0 ? `Removed ${clearResult.deleted} sub(s) from DB. Re-enable push to re-subscribe.` : "No DB subs found."}`
                     : `✗ ${clearResult.message}`}
-                </span>
+                </p>
+              )}
+              {resetPushResult && (
+                <div className="rounded-[12px] p-3 text-[12px] space-y-1" style={{ backgroundColor: resetPushResult.success ? "#f0fdf4" : "#fff7ed", border: `1px solid ${resetPushResult.success ? "#bbf7d0" : "#fed7aa"}` }}>
+                  <p className="font-semibold" style={{ color: resetPushResult.success ? "#15803d" : "#c2410c" }}>
+                    {resetPushResult.success ? "✓ Push fully reset" : "⚠ Partial reset"}
+                  </p>
+                  <p style={{ color: "#555" }}>{resetPushResult.message}</p>
+                  <ul className="mt-1 space-y-0.5" style={{ color: "#777" }}>
+                    {resetPushResult.steps.map((s: string, i: number) => <li key={i}>· {s}</li>)}
+                  </ul>
+                </div>
               )}
             </div>
           )}
