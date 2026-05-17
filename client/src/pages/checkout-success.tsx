@@ -81,8 +81,10 @@ async function waitForSession(maxAttempts = 5, delayMs = 1200): Promise<string |
  *      S.browser_fallback_url=<encoded-https-fallback>;end
  */
 function buildIntentUrl(sessionId: string): string {
+  // If the app is not installed, Chrome falls back to this URL.
+  // Go straight to login with onboarding context — no dead-end.
   const fallback = encodeURIComponent(
-    `https://app.housalert.com/checkout/success?session_id=${encodeURIComponent(sessionId)}&from_native=1`
+    `https://app.housalert.com/login?next=/onboarding/setup&payment=success`
   );
   return (
     `intent://checkout/success?session_id=${encodeURIComponent(sessionId)}` +
@@ -109,48 +111,41 @@ export default function CheckoutSuccessPage() {
   // ---------------------------------------------------------------------------
   // Routing decision on mount
   //
-  //  native=true          → running inside Capacitor WebView (via appUrlOpen or
-  //                         browserFinished path) — run confirmSession now.
+  //  fromNative=true → Chrome Custom Tab from a native-app checkout.
+  //                    Show the static handoff screen immediately.
+  //                    NO auto-fires, NO hidden redirects.
+  //                    User must tap a button.
   //
-  //  fromNative=true      → running in Chrome Custom Tab after a native checkout.
-  //                         Must use intent:// to hand off back to the native app.
-  //                         NEVER auto-navigate to browser fallback.
+  //  native=true     → Capacitor WebView (came via appUrlOpen / browserFinished).
+  //                    Run confirmSession directly.
   //
-  //  otherwise            → real web checkout — run confirmSession now.
+  //  otherwise       → Real web browser checkout — run confirmSession.
   // ---------------------------------------------------------------------------
   useEffect(() => {
+    if (fromNative) {
+      // Persist payment-pending flags so that if the user ends up on the login
+      // page (secondary button or fallback), it navigates to /onboarding/setup.
+      try {
+        localStorage.setItem("ha_pending_checkout_success", "true");
+        sessionStorage.setItem("ha_pending_checkout_success", "true");
+        localStorage.setItem("ha_pending_checkout_next", "/onboarding/setup");
+        sessionStorage.setItem("ha_pending_checkout_next", "/onboarding/setup");
+        console.log("[checkout-context] saved pending next=/onboarding/setup");
+      } catch {}
+      console.log("[checkout-success] fromNative=true — showing static handoff screen");
+      setStatus("deep_link_waiting");
+      return;
+    }
+
     if (native) {
       console.log("[checkout-success] Native context — running confirmSession directly");
       confirmSession();
       return;
     }
 
-    if (!fromNative || !urlSessionId) {
-      // Web checkout or missing session_id — process in browser directly.
-      console.log(`[checkout-success] Web context (fromNative=${fromNative}, sessionId=${!!urlSessionId}) — running confirmSession`);
-      confirmSession();
-      return;
-    }
-
-    // Chrome Custom Tab from native checkout → show handoff, fire intent:// retries.
-    setStatus("deep_link_waiting");
-    const intentUrl = buildIntentUrl(urlSessionId);
-
-    function attempt(n: number) {
-      console.log(`[deep-link] retry ${n}: ${intentUrl.substring(0, 100)}`);
-      setDeepLinkAttempt(n);
-      window.location.href = intentUrl;
-    }
-
-    attempt(1);
-
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    DEEP_LINK_RETRIES.slice(1).forEach((delay, idx) => {
-      timers.push(setTimeout(() => attempt(idx + 2), delay));
-    });
-
-    // No automatic fallback — user must explicitly choose "Doorgaan in browser".
-    return () => timers.forEach(clearTimeout);
+    // Web checkout
+    console.log("[checkout-success] Web context — running confirmSession");
+    confirmSession();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -384,17 +379,24 @@ export default function CheckoutSuccessPage() {
 
         <p className="text-[15px] text-ha-text-secondary" data-testid="text-checkout-subtitle">
           {status === "loading" && t("checkoutSuccess.loadingSubtitle")}
-          {status === "deep_link_waiting" && "Opening HousAlert app…"}
+          {status === "deep_link_waiting" && "Open HousAlert om verder te gaan met je zoekprofiel."}
           {status === "success" && t("checkoutSuccess.successSubtitle")}
           {status === "error" && errorMsg}
           {status === "session_missing" && "Betaling gelukt — log in om verder te gaan"}
         </p>
 
-        {/* Deep-link handoff: permanent button + retry status + explicit browser fallback */}
+        {/* ── Static handoff screen ── shown whenever fromNative=1 ────────────
+            NO auto-fires. User taps a button. Two choices:
+            1. Primary — open the native app via intent:// URI
+            2. Secondary — continue in browser via /login?next=/onboarding/setup */}
         {status === "deep_link_waiting" && (
           <div className="mt-6 flex flex-col gap-3">
-            {/* Primary — intent:// URI, works in Chrome Custom Tab (unlike housalert://) */}
-            {intentUrl && (
+
+            {/* Primary — intent:// URI.  Chrome Custom Tab explicitly handles
+                this: it dispatches a VIEW intent for housalert://checkout/success
+                to com.housalert.app, closes the Custom Tab, and brings the app
+                to the foreground.  Fallback (app not installed) → login page. */}
+            {intentUrl ? (
               <a
                 href={intentUrl}
                 className="h-[52px] rounded-[12px] text-white text-[16px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
@@ -402,30 +404,47 @@ export default function CheckoutSuccessPage() {
                 data-testid="button-open-app-deep-link"
               >
                 <Smartphone className="w-5 h-5" />
-                Ga terug naar app
+                Open HousAlert app
+              </a>
+            ) : (
+              /* No session_id in URL — direct the user straight to login */
+              <a
+                href="/login?next=/onboarding/setup&payment=success"
+                className="h-[52px] rounded-[12px] text-white text-[16px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
+                style={{ background: "rgb(var(--ha-primary))" }}
+                data-testid="button-open-app-no-session"
+              >
+                <LogIn className="w-5 h-5" />
+                Open HousAlert app
               </a>
             )}
 
-            {/* Retry status indicator */}
-            <p className="text-[13px] text-ha-text-secondary" data-testid="text-deep-link-attempt">
-              {deepLinkAttempt === 0 && "Verbinden met app…"}
-              {deepLinkAttempt === 1 && "App openen… (poging 1/3)"}
-              {deepLinkAttempt === 2 && "Opnieuw proberen… (poging 2/3)"}
-              {deepLinkAttempt >= 3 && "Nog een keer proberen… (poging 3/3)"}
-            </p>
+            {/* Secondary — explicit browser fallback */}
+            <button
+              onClick={() => navigate("/login?next=/onboarding/setup&payment=success")}
+              className="w-full h-[44px] rounded-[10px] text-[14px] font-medium text-ha-text-secondary hover:bg-ha-surface transition-colors border border-ha-border"
+              data-testid="button-continue-browser"
+            >
+              Doorgaan in browser
+            </button>
 
-            {/* Secondary — explicit browser fallback, below the fold visually */}
-            <div className="mt-2 pt-4 border-t border-ha-border">
-              <p className="text-[12px] text-ha-text-secondary mb-2">
-                App niet geïnstalleerd?
-              </p>
-              <button
-                onClick={() => { confirmedRef.current = false; confirmSession(); }}
-                className="w-full h-[44px] rounded-[10px] text-[14px] font-medium text-ha-text-secondary hover:bg-ha-surface transition-colors border border-ha-border"
-                data-testid="button-continue-browser"
-              >
-                Doorgaan in browser
-              </button>
+            {/* ── Debug info (temporary) ── */}
+            <div
+              className="mt-3 rounded-[10px] p-3 text-left text-[11px] font-mono"
+              style={{ background: "rgba(0,0,0,0.04)", color: "#666" }}
+              data-testid="debug-handoff-info"
+            >
+              <div>next=/onboarding/setup</div>
+              <div>payment=success</div>
+              <div>
+                pendingCheckout=
+                {(
+                  localStorage.getItem("ha_pending_checkout_success") === "true" ||
+                  sessionStorage.getItem("ha_pending_checkout_success") === "true"
+                ).toString()}
+              </div>
+              <div>session_id={(urlSessionId ?? "none").substring(0, 16)}…</div>
+              <div>from_native={fromNative.toString()}</div>
             </div>
           </div>
         )}

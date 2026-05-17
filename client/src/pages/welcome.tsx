@@ -140,24 +140,41 @@ export default function WelcomePage() {
     }
     console.log(`[WELCOME] Login success — user.id=${signInData?.user?.id?.substring(0, 8) ?? "null"}`);
 
-    // -------------------------------------------------------------------------
-    // 1. Pending Stripe checkout — payment succeeded but auth session was lost.
-    //    Check ha_pending_checkout_success (new) first, then legacy ha_pending_checkout.
-    // -------------------------------------------------------------------------
+    // ── Helper: reads a URL param from both window.location.search and the hash
+    // fragment (native hash-router has params inside the hash, not in search).
+    function getParam(key: string): string | null {
+      const fromSearch = new URLSearchParams(window.location.search).get(key);
+      if (fromSearch) return fromSearch;
+      const hash = window.location.hash;  // e.g. "#/login?payment=success&next=/onboarding/setup"
+      const qIdx = hash.indexOf("?");
+      if (qIdx !== -1) return new URLSearchParams(hash.slice(qIdx)).get(key);
+      return null;
+    }
+
+    // ── 1. Payment-success path ──────────────────────────────────────────────
+    // Triggered by:
+    //   a) ha_pending_checkout_success=true in localStorage or sessionStorage
+    //   b) ?payment=success in the URL (set by the "Doorgaan in browser" button)
+    // In either case navigate to /onboarding/setup — NEVER dashboard.
     try {
-      const paymentPending =
+      const storageFlag =
         localStorage.getItem("ha_pending_checkout_success") === "true" ||
         sessionStorage.getItem("ha_pending_checkout_success") === "true";
-      const pendingNext =
-        localStorage.getItem("ha_pending_checkout_next") ??
-        sessionStorage.getItem("ha_pending_checkout_next");
+      const urlPayment = getParam("payment") === "success";
 
-      if (paymentPending && pendingNext) {
+      if (storageFlag || urlPayment) {
+        const pendingNext =
+          localStorage.getItem("ha_pending_checkout_next") ??
+          sessionStorage.getItem("ha_pending_checkout_next") ??
+          getParam("next") ??
+          "/onboarding/setup";
+
         // Clear all pending-payment flags
         ["ha_pending_checkout_success", "ha_pending_checkout_next"].forEach(k => {
           try { localStorage.removeItem(k); } catch {}
           try { sessionStorage.removeItem(k); } catch {}
         });
+
         console.log("[login] payment success next detected");
         console.log("[login] navigating to", pendingNext);
         navigate(pendingNext);
@@ -165,9 +182,7 @@ export default function WelcomePage() {
       }
     } catch {}
 
-    // -------------------------------------------------------------------------
-    // 2. Legacy: session_id was stored — resume checkout confirmation.
-    // -------------------------------------------------------------------------
+    // ── 2. Legacy: stored session_id — resume checkout confirmation ──────────
     try {
       const raw = localStorage.getItem("ha_pending_checkout");
       if (raw) {
@@ -182,29 +197,15 @@ export default function WelcomePage() {
       }
     } catch {}
 
-    // -------------------------------------------------------------------------
-    // 3. ?next= redirect param — works for both web and native hash routing.
-    //    In native the URL might be: localhost/#/login?next=/onboarding/setup
-    //    so we check BOTH window.location.search and the query string in the hash.
-    // -------------------------------------------------------------------------
-    function getNextParam(): string | null {
-      const fromSearch = new URLSearchParams(window.location.search).get("next");
-      if (fromSearch) return fromSearch;
-      const hash = window.location.hash;          // e.g. "#/login?next=/onboarding/setup"
-      const qIdx = hash.indexOf("?");
-      if (qIdx !== -1) return new URLSearchParams(hash.slice(qIdx)).get("next");
-      return null;
-    }
-    const next = getNextParam();
+    // ── 3. ?next= redirect param (hash-router aware) ─────────────────────────
+    const next = getParam("next");
     if (next && next.startsWith("/")) {
       console.log("[login] navigating to ?next param:", next);
       navigate(next);
       return;
     }
 
-    // -------------------------------------------------------------------------
-    // 4. Default: go to matches tab.
-    // -------------------------------------------------------------------------
+    // ── 4. Default ───────────────────────────────────────────────────────────
     navigate("/dashboard?tab=matches");
   }
 
