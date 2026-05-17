@@ -97,10 +97,13 @@ export default function CheckoutSuccessPage() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
   const urlSessionId = getUrlParam("session_id");
-  // from_native=1 is appended by the server when creating a Stripe session for
-  // a native-app checkout.  It marks that this page was loaded in a Chrome
-  // Custom Tab (not in the Capacitor WebView) so we must hand off via intent://.
+  // from_native=1 → Capacitor native app checkout (Chrome Custom Tab).
+  //   Shows intent:// button to open the native app.
+  // show_handoff=1 → PWA / web browser checkout.
+  //   Shows web-specific buttons (login with payment=success context).
+  // Either flag causes the static handoff screen to display.
   const fromNative = getUrlParam("from_native") === "1";
+  const showHandoff = fromNative || getUrlParam("show_handoff") === "1";
   const [status, setStatus] = useState<Status>("loading");
   const [errorMsg, setErrorMsg] = useState("");
   const [deepLinkAttempt, setDeepLinkAttempt] = useState(0);
@@ -122,9 +125,12 @@ export default function CheckoutSuccessPage() {
   //  otherwise       → Real web browser checkout — run confirmSession.
   // ---------------------------------------------------------------------------
   useEffect(() => {
-    if (fromNative) {
-      // Persist payment-pending flags so that if the user ends up on the login
-      // page (secondary button or fallback), it navigates to /onboarding/setup.
+    // showHandoff covers both fromNative (Capacitor/Chrome Custom Tab) and
+    // show_handoff (PWA/web browser).  In both cases we show the static
+    // handoff screen immediately — no confirmSession, no auto-redirects.
+    if (showHandoff) {
+      // Write payment-pending flags so the login page navigates to
+      // /onboarding/setup (not dashboard) after successful sign-in.
       try {
         localStorage.setItem("ha_pending_checkout_success", "true");
         sessionStorage.setItem("ha_pending_checkout_success", "true");
@@ -132,7 +138,7 @@ export default function CheckoutSuccessPage() {
         sessionStorage.setItem("ha_pending_checkout_next", "/onboarding/setup");
         console.log("[checkout-context] saved pending next=/onboarding/setup");
       } catch {}
-      console.log("[checkout-success] fromNative=true — showing static handoff screen");
+      console.log(`[checkout-success] showHandoff=true (fromNative=${fromNative}) — showing static handoff screen`);
       setStatus("deep_link_waiting");
       return;
     }
@@ -143,7 +149,7 @@ export default function CheckoutSuccessPage() {
       return;
     }
 
-    // Web checkout
+    // Bare web checkout (no handoff flag at all — legacy/direct URL)
     console.log("[checkout-success] Web context — running confirmSession");
     confirmSession();
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -392,34 +398,50 @@ export default function CheckoutSuccessPage() {
         {status === "deep_link_waiting" && (
           <div className="mt-6 flex flex-col gap-3">
 
-            {/* Primary — intent:// URI.  Chrome Custom Tab explicitly handles
-                this: it dispatches a VIEW intent for housalert://checkout/success
-                to com.housalert.app, closes the Custom Tab, and brings the app
-                to the foreground.  Fallback (app not installed) → login page. */}
-            {intentUrl ? (
-              <a
-                href={intentUrl}
-                className="h-[52px] rounded-[12px] text-white text-[16px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
-                style={{ background: "rgb(var(--ha-primary))" }}
-                data-testid="button-open-app-deep-link"
-              >
-                <Smartphone className="w-5 h-5" />
-                Open HousAlert app
-              </a>
+            {/* ── Primary button ── */}
+            {fromNative ? (
+              /* Native Capacitor app: intent:// URI.
+                 Chrome Custom Tab dispatches a VIEW intent to com.housalert.app,
+                 closes the tab, and brings the native app to the foreground.
+                 If the app is not installed Chrome opens the fallback URL
+                 (login page with payment=success context). */
+              intentUrl ? (
+                <a
+                  href={intentUrl}
+                  className="h-[52px] rounded-[12px] text-white text-[16px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
+                  style={{ background: "rgb(var(--ha-primary))" }}
+                  data-testid="button-open-app-deep-link"
+                >
+                  <Smartphone className="w-5 h-5" />
+                  Open HousAlert app
+                </a>
+              ) : (
+                <a
+                  href="/login?next=/onboarding/setup&payment=success"
+                  className="h-[52px] rounded-[12px] text-white text-[16px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
+                  style={{ background: "rgb(var(--ha-primary))" }}
+                  data-testid="button-open-app-no-session"
+                >
+                  <Smartphone className="w-5 h-5" />
+                  Open HousAlert app
+                </a>
+              )
             ) : (
-              /* No session_id in URL — direct the user straight to login */
+              /* PWA / web browser: navigate to login with payment context.
+                 GuestRoute redirects logged-in users to /onboarding/setup;
+                 logged-out users see the login form which also navigates there. */
               <a
                 href="/login?next=/onboarding/setup&payment=success"
                 className="h-[52px] rounded-[12px] text-white text-[16px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
                 style={{ background: "rgb(var(--ha-primary))" }}
-                data-testid="button-open-app-no-session"
+                data-testid="button-open-app-web"
               >
                 <LogIn className="w-5 h-5" />
                 Open HousAlert app
               </a>
             )}
 
-            {/* Secondary — explicit browser fallback */}
+            {/* ── Secondary — always goes to login with context ── */}
             <button
               onClick={() => navigate("/login?next=/onboarding/setup&payment=success")}
               className="w-full h-[44px] rounded-[10px] text-[14px] font-medium text-ha-text-secondary hover:bg-ha-surface transition-colors border border-ha-border"
@@ -445,6 +467,7 @@ export default function CheckoutSuccessPage() {
               </div>
               <div>session_id={(urlSessionId ?? "none").substring(0, 16)}…</div>
               <div>from_native={fromNative.toString()}</div>
+              <div>show_handoff={(getUrlParam("show_handoff") === "1").toString()}</div>
             </div>
           </div>
         )}

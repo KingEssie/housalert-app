@@ -2796,14 +2796,19 @@ export async function registerRoutes(
       // dispatches a VIEW intent directly to com.housalert.app, closing the
       // Custom Tab and opening the native app.  The DeepLinkHandler in App.tsx
       // then maps the resulting housalert://checkout/success URL → /checkout/success.
+      // Always include a handoff flag so checkout-success.tsx shows the
+      // handoff screen regardless of platform.
+      //   from_native=1  → Capacitor native app — shows intent:// button
+      //   show_handoff=1 → PWA / web browser — shows web-specific button
       const successUrl = is_native
         ? `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}&from_native=1`
-        : `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
+        : `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}&show_handoff=1`;
       const cancelUrl = is_native
         ? `${baseUrl}/onboarding/setup?cancelled=1`
         : `${baseUrl}/onboarding/setup`;
 
-      log(`[checkout] Creating Stripe session: plan=${plan}, priceId=${stripePriceId}, customer=${customerId}, native=${!!is_native}, successUrl=${successUrl.substring(0, 80)}`);
+      log(`[checkout] success_url=${successUrl}`);
+      log(`[checkout] Creating Stripe session: plan=${plan}, priceId=${stripePriceId}, customer=${customerId}, native=${!!is_native}`);
 
       let referralCouponId: string | undefined;
       try {
@@ -3061,11 +3066,12 @@ export async function registerRoutes(
           trial_period_days: 14,
           metadata: { supabase_user_id: user.id, plan },
         },
-        success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+        success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}&show_handoff=1`,
         cancel_url: `${baseUrl}/onboarding/setup`,
         metadata: { supabase_user_id: user.id, plan },
       });
 
+      log(`[checkout-paywall] success_url=${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}&show_handoff=1`);
       return res.json({ url: session.url, session_id: session.id });
     } catch (err: any) {
       console.error("Checkout error:", err);
