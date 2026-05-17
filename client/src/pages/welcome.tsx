@@ -140,17 +140,41 @@ export default function WelcomePage() {
     }
     console.log(`[WELCOME] Login success — user.id=${signInData?.user?.id?.substring(0, 8) ?? "null"}`);
 
-    // Resume a pending Stripe checkout if the user was sent back to login
-    // because their session expired / wasn't restored during payment.
+    // -------------------------------------------------------------------------
+    // 1. Pending Stripe checkout — payment succeeded but auth session was lost.
+    //    Check ha_pending_checkout_success (new) first, then legacy ha_pending_checkout.
+    // -------------------------------------------------------------------------
+    try {
+      const paymentPending =
+        localStorage.getItem("ha_pending_checkout_success") === "true" ||
+        sessionStorage.getItem("ha_pending_checkout_success") === "true";
+      const pendingNext =
+        localStorage.getItem("ha_pending_checkout_next") ??
+        sessionStorage.getItem("ha_pending_checkout_next");
+
+      if (paymentPending && pendingNext) {
+        // Clear all pending-payment flags
+        ["ha_pending_checkout_success", "ha_pending_checkout_next"].forEach(k => {
+          try { localStorage.removeItem(k); } catch {}
+          try { sessionStorage.removeItem(k); } catch {}
+        });
+        console.log("[login] payment success next detected");
+        console.log("[login] navigating to", pendingNext);
+        navigate(pendingNext);
+        return;
+      }
+    } catch {}
+
+    // -------------------------------------------------------------------------
+    // 2. Legacy: session_id was stored — resume checkout confirmation.
+    // -------------------------------------------------------------------------
     try {
       const raw = localStorage.getItem("ha_pending_checkout");
       if (raw) {
         const { session_id, ts } = JSON.parse(raw);
-        // Ignore stale entries older than 30 minutes
         if (session_id && Date.now() - (ts ?? 0) < 30 * 60 * 1000) {
           localStorage.removeItem("ha_pending_checkout");
-          console.log("[WELCOME] Resuming pending checkout session after login");
-          // Use wouter navigate — avoids a full page reload (saves 8-12s on Android)
+          console.log("[login] resuming pending checkout session after login");
           navigate(`/checkout/success?session_id=${encodeURIComponent(session_id)}`);
           return;
         }
@@ -158,18 +182,29 @@ export default function WelcomePage() {
       }
     } catch {}
 
-    // Handle ?next= redirect param (e.g. /login?next=/onboarding/setup)
-    const searchParams = new URLSearchParams(window.location.search);
-    const next = searchParams.get("next");
+    // -------------------------------------------------------------------------
+    // 3. ?next= redirect param — works for both web and native hash routing.
+    //    In native the URL might be: localhost/#/login?next=/onboarding/setup
+    //    so we check BOTH window.location.search and the query string in the hash.
+    // -------------------------------------------------------------------------
+    function getNextParam(): string | null {
+      const fromSearch = new URLSearchParams(window.location.search).get("next");
+      if (fromSearch) return fromSearch;
+      const hash = window.location.hash;          // e.g. "#/login?next=/onboarding/setup"
+      const qIdx = hash.indexOf("?");
+      if (qIdx !== -1) return new URLSearchParams(hash.slice(qIdx)).get("next");
+      return null;
+    }
+    const next = getNextParam();
     if (next && next.startsWith("/")) {
-      // SPA navigation — no page reload, no second cold-start on Android
+      console.log("[login] navigating to ?next param:", next);
       navigate(next);
       return;
     }
 
-    // Default: navigate to matches tab without triggering a full page reload.
-    // window.location.href would cause Android to re-parse the entire 809KB
-    // bundle a second time (~8-12s on mid-range Samsung devices).
+    // -------------------------------------------------------------------------
+    // 4. Default: go to matches tab.
+    // -------------------------------------------------------------------------
     navigate("/dashboard?tab=matches");
   }
 

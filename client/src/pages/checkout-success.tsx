@@ -4,7 +4,7 @@ import { apiFetch } from "@/lib/api-base";
 import { supabase } from "@/lib/supabase";
 import { queryClient } from "@/lib/queryClient";
 import { useTranslation } from "@/i18n";
-import { isNativePlatform, closeInAppBrowser, consumeCheckoutContext } from "@/lib/capacitor";
+import { isNativePlatform, closeInAppBrowser, consumeCheckoutContext, markPaymentPendingForLogin } from "@/lib/capacitor";
 import { CheckCircle, Loader2, AlertCircle, RotateCw, LogIn, Smartphone } from "lucide-react";
 
 type Status = "loading" | "deep_link_waiting" | "success" | "error" | "session_missing";
@@ -275,13 +275,33 @@ export default function CheckoutSuccessPage() {
 
       if (!token) {
         console.warn("[checkout-success] No auth token and all confirm paths failed — showing session_missing state");
+
+        // Persist session_id so the login page can resume confirmation after re-login.
         if (sessionId) {
           try {
             localStorage.setItem("ha_pending_checkout", JSON.stringify({ session_id: sessionId, ts: Date.now() }));
             console.log("[checkout-success] Stored ha_pending_checkout for post-login resume");
           } catch {}
         }
+
+        // Read the intended post-payment destination from either the checkout
+        // context key (written by saveCheckoutContext) or the standalone next key.
+        const pendingNext =
+          localStorage.getItem("ha_pending_checkout_next") ??
+          sessionStorage.getItem("ha_pending_checkout_next") ??
+          "/onboarding/setup";
+
+        // Mark payment as pending for the login page so it knows to navigate
+        // to onboarding/setup (not dashboard) after successful login.
+        markPaymentPendingForLogin(pendingNext);
+        console.log("[checkout-success] session missing, redirecting to login with next:", pendingNext);
+
         setStatus("session_missing");
+
+        // Auto-redirect to login after a short delay so the user can read the message.
+        setTimeout(() => {
+          navigate(`/login?next=${encodeURIComponent(pendingNext)}&payment=success`);
+        }, 3000);
         return;
       }
 
@@ -306,8 +326,24 @@ export default function CheckoutSuccessPage() {
     // Falls back to /onboarding/setup when context is missing (safe for all flows).
     const ctx = consumeCheckoutContext();
     const destination = ctx?.next ?? "/onboarding/setup";
+
+    // Safety net: if auth was lost during payment and the ProtectedRoute on
+    // destination bounces the user to /, the login page will read this key and
+    // navigate to onboarding/setup instead of the default dashboard.
+    markPaymentPendingForLogin(destination);
+
     console.log(`[checkout-success] Payment confirmed — source=${ctx?.source ?? "unknown"} navigating to: ${destination}`);
-    setTimeout(() => navigate(destination), 2500);
+    setTimeout(() => {
+      // Clear the pending flag right before navigating — auth is intact at this
+      // point so there is no need for the login page to recover the destination.
+      try {
+        localStorage.removeItem("ha_pending_checkout_next");
+        sessionStorage.removeItem("ha_pending_checkout_next");
+        localStorage.removeItem("ha_pending_checkout_success");
+        sessionStorage.removeItem("ha_pending_checkout_success");
+      } catch {}
+      navigate(destination);
+    }, 2500);
   }
 
   // ---------------------------------------------------------------------------
@@ -351,7 +387,7 @@ export default function CheckoutSuccessPage() {
           {status === "deep_link_waiting" && "Opening HousAlert app…"}
           {status === "success" && t("checkoutSuccess.successSubtitle")}
           {status === "error" && errorMsg}
-          {status === "session_missing" && t("checkoutSuccess.sessionMissingSubtitle")}
+          {status === "session_missing" && "Betaling gelukt — log in om verder te gaan"}
         </p>
 
         {/* Deep-link handoff: permanent button + retry status + explicit browser fallback */}

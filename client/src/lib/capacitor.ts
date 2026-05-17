@@ -149,11 +149,58 @@ export interface CheckoutContext {
   ts: number;
 }
 
+// Pending-next keys — written before checkout opens so that the login page
+// can recover the destination even if auth is lost during payment.
+const PENDING_CHECKOUT_NEXT_KEY    = "ha_pending_checkout_next";
+const PENDING_CHECKOUT_SUCCESS_KEY = "ha_pending_checkout_success";
+
+/** Writes the post-payment destination to both localStorage and sessionStorage. */
+export function savePendingCheckoutNext(next: string): void {
+  try {
+    localStorage.setItem(PENDING_CHECKOUT_NEXT_KEY, next);
+    sessionStorage.setItem(PENDING_CHECKOUT_NEXT_KEY, next);
+    console.log(`[checkout-context] saved pending next=${next}`);
+  } catch {}
+}
+
+/** Reads and clears the pending next destination from any storage. */
+export function consumePendingCheckoutNext(): string | null {
+  try {
+    const next =
+      localStorage.getItem(PENDING_CHECKOUT_NEXT_KEY) ??
+      sessionStorage.getItem(PENDING_CHECKOUT_NEXT_KEY);
+    localStorage.removeItem(PENDING_CHECKOUT_NEXT_KEY);
+    sessionStorage.removeItem(PENDING_CHECKOUT_NEXT_KEY);
+    localStorage.removeItem(PENDING_CHECKOUT_SUCCESS_KEY);
+    sessionStorage.removeItem(PENDING_CHECKOUT_SUCCESS_KEY);
+    return next;
+  } catch {
+    return null;
+  }
+}
+
+/** Marks that a payment succeeded so the login page can act on it. */
+export function markPaymentPendingForLogin(next: string): void {
+  try {
+    localStorage.setItem(PENDING_CHECKOUT_SUCCESS_KEY, "true");
+    sessionStorage.setItem(PENDING_CHECKOUT_SUCCESS_KEY, "true");
+    localStorage.setItem(PENDING_CHECKOUT_NEXT_KEY, next);
+    sessionStorage.setItem(PENDING_CHECKOUT_NEXT_KEY, next);
+  } catch {}
+}
+
 export function saveCheckoutContext(ctx: Omit<CheckoutContext, "ts">): void {
   try {
     const full: CheckoutContext = { ...ctx, ts: Date.now() };
-    localStorage.setItem(CHECKOUT_CONTEXT_KEY, JSON.stringify(full));
-    console.log(`[checkout-context] Saved: source=${ctx.source} next=${ctx.next}`);
+    const serialized = JSON.stringify(full);
+    // Dual-write: localStorage survives app restarts; sessionStorage survives
+    // within-session navigation where localStorage may be cleared by the OS.
+    localStorage.setItem(CHECKOUT_CONTEXT_KEY, serialized);
+    sessionStorage.setItem(CHECKOUT_CONTEXT_KEY, serialized);
+    // Also persist the destination independently so the login page can recover
+    // the correct route even if the checkout context is lost.
+    savePendingCheckoutNext(ctx.next);
+    console.log(`[checkout-context] saved source=${ctx.source} next=${ctx.next}`);
   } catch {}
 }
 
@@ -163,8 +210,11 @@ export function saveCheckoutContext(ctx: Omit<CheckoutContext, "ts">): void {
  */
 export function consumeCheckoutContext(): CheckoutContext | null {
   try {
-    const raw = localStorage.getItem(CHECKOUT_CONTEXT_KEY);
+    const raw =
+      localStorage.getItem(CHECKOUT_CONTEXT_KEY) ??
+      sessionStorage.getItem(CHECKOUT_CONTEXT_KEY);
     localStorage.removeItem(CHECKOUT_CONTEXT_KEY);
+    sessionStorage.removeItem(CHECKOUT_CONTEXT_KEY);
     if (!raw) return null;
     const ctx: CheckoutContext = JSON.parse(raw);
     if (Date.now() - ctx.ts > CHECKOUT_CONTEXT_MAX_AGE_MS) {
