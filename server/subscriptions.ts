@@ -15,6 +15,7 @@ export interface SubscriptionRow {
   current_period_ends_at: string | null;
   stripe_customer_id: string | null;
   stripe_subscription_id: string | null;
+  cancel_at_period_end: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -124,7 +125,7 @@ export async function getSubscriptionStatus(userId: string): Promise<Subscriptio
     };
   }
 
-  let row = data as SubscriptionRow & { cancel_at_period_end?: boolean };
+  let row = data as SubscriptionRow;
   const now = new Date();
 
   const periodExpired = row.current_period_ends_at !== null && new Date(row.current_period_ends_at) <= now;
@@ -212,6 +213,13 @@ export async function getSubscriptionStatus(userId: string): Promise<Subscriptio
   };
 }
 
+/** Returns true when a Supabase/PostgREST error is the "column not in schema cache" error for cancel_at_period_end. */
+function isMissingCancelAtPeriodEndError(err: { message?: string; code?: string } | null | undefined): boolean {
+  if (!err) return false;
+  const msg = err.message ?? "";
+  return msg.includes("cancel_at_period_end") && (msg.includes("column") || msg.includes("schema cache"));
+}
+
 export async function updateSubscriptionFromCheckout(
   userId: string,
   stripeCustomerId: string,
@@ -244,8 +252,24 @@ export async function updateSubscriptionFromCheckout(
     .upsert(upsertData, { onConflict: "user_id" });
 
   if (error) {
-    log(`[subscriptions] Error updating from checkout user=${userId}: ${error.message} code=${error.code} details=${error.details}`);
-    throw new Error(`Failed to activate subscription: ${error.message}`);
+    if (isMissingCancelAtPeriodEndError(error)) {
+      // The cancel_at_period_end column hasn't been added to Supabase yet.
+      // Retry without it so activation succeeds — run Migration 030 in Supabase
+      // (server/migrations/PENDING_RUN_IN_SUPABASE.sql) to permanently fix this.
+      log(`[subscriptions] WARNING: cancel_at_period_end column missing in schema cache — retrying without it. Run Migration 030 in Supabase SQL Editor to fix permanently.`);
+      const { cancel_at_period_end: _omit, ...safeData } = upsertData;
+      const { error: retryError } = await supabase
+        .from("subscriptions")
+        .upsert(safeData, { onConflict: "user_id" });
+      if (retryError) {
+        log(`[subscriptions] Error (retry) updating from checkout user=${userId}: ${retryError.message}`);
+        throw new Error(`Failed to activate subscription: ${retryError.message}`);
+      }
+      log(`[subscriptions] ${isTrialing ? "Trial started" : "Activated subscription"} (without cancel_at_period_end) for user=${userId} plan=${plan}`);
+    } else {
+      log(`[subscriptions] Error updating from checkout user=${userId}: ${error.message} code=${error.code} details=${error.details}`);
+      throw new Error(`Failed to activate subscription: ${error.message}`);
+    }
   } else {
     log(`[subscriptions] ${isTrialing ? "Trial started" : "Activated subscription"} for user=${userId} plan=${plan}`);
   }
@@ -274,18 +298,33 @@ export async function updateSubscriptionStatus(
   // in the target status. This is critical for past_due: Stripe Smart Retries fire
   // multiple invoice.payment_failed events, and each one would otherwise reset
   // updated_at, extending the 48-hour grace window indefinitely.
-  let query = supabase
-    .from("subscriptions")
-    .update(updateData)
-    .eq("stripe_subscription_id", stripeSubscriptionId);
+  const buildQuery = (data: Record<string, any>) => {
+    let q = supabase
+      .from("subscriptions")
+      .update(data)
+      .eq("stripe_subscription_id", stripeSubscriptionId);
+    if (skipIfAlreadyInStatus) {
+      q = (q as any).neq("status", status);
+    }
+    return q;
+  };
 
-  if (skipIfAlreadyInStatus) {
-    query = (query as any).neq("status", status);
-  }
-
-  const { error } = await query;
+  const { error } = await buildQuery(updateData);
   if (error) {
-    log(`[subscriptions] DB ERROR updating stripe_sub=${stripeSubscriptionId} → ${status}: ${error.message}`);
+    if (isMissingCancelAtPeriodEndError(error) && updateData.cancel_at_period_end !== undefined) {
+      // Column not yet migrated — retry without cancel_at_period_end.
+      // Run Migration 030 in Supabase (server/migrations/PENDING_RUN_IN_SUPABASE.sql) to fix.
+      log(`[subscriptions] WARNING: cancel_at_period_end column missing — retrying update without it. Run Migration 030 in Supabase.`);
+      const { cancel_at_period_end: _omit, ...safeData } = updateData;
+      const { error: retryError } = await buildQuery(safeData);
+      if (retryError) {
+        log(`[subscriptions] DB ERROR (retry) updating stripe_sub=${stripeSubscriptionId} → ${status}: ${retryError.message}`);
+      } else {
+        log(`[subscriptions] stripe_sub=${stripeSubscriptionId} → ${status} (without cancel_at_period_end)${skipIfAlreadyInStatus ? " (no-op if already in status)" : ""}`);
+      }
+    } else {
+      log(`[subscriptions] DB ERROR updating stripe_sub=${stripeSubscriptionId} → ${status}: ${error.message}`);
+    }
   } else {
     log(`[subscriptions] stripe_sub=${stripeSubscriptionId} → ${status}${skipIfAlreadyInStatus ? " (no-op if already in status)" : ""}`);
   }

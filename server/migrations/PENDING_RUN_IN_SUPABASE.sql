@@ -318,3 +318,16 @@ END $$;
 -- Migration 029: search_name column on search_profiles
 -- -----------------------------------------------
 ALTER TABLE search_profiles ADD COLUMN IF NOT EXISTS search_name TEXT;
+
+-- -----------------------------------------------
+-- Migration 030: cancel_at_period_end column on subscriptions
+-- Required for subscription cancel/reactivation flow.
+-- Without this column, checkout activation throws:
+--   "Could not find the 'cancel_at_period_end' column of 'subscriptions' in the schema cache"
+-- -----------------------------------------------
+ALTER TABLE subscriptions
+  ADD COLUMN IF NOT EXISTS cancel_at_period_end BOOLEAN NOT NULL DEFAULT false;
+
+-- Force PostgREST schema cache reload so the column is immediately visible
+-- (Supabase auto-reloads within ~60 s; this statement makes it instant)
+NOTIFY pgrst, 'reload schema';
