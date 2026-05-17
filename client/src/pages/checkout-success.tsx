@@ -4,7 +4,7 @@ import { apiFetch } from "@/lib/api-base";
 import { supabase } from "@/lib/supabase";
 import { queryClient } from "@/lib/queryClient";
 import { useTranslation } from "@/i18n";
-import { isNativePlatform, closeInAppBrowser } from "@/lib/capacitor";
+import { isNativePlatform, closeInAppBrowser, consumeCheckoutContext } from "@/lib/capacitor";
 import { CheckCircle, Loader2, AlertCircle, RotateCw, LogIn } from "lucide-react";
 
 type Status = "loading" | "success" | "error" | "session_missing";
@@ -238,13 +238,18 @@ export default function CheckoutSuccessPage() {
   }
 
   function onSuccess() {
-    console.log("[checkout-success] Payment confirmed — invalidating cache and redirecting to onboarding/setup");
     setStatus("success");
     queryClient.invalidateQueries({ queryKey: ["/api/subscription/status"] });
     queryClient.invalidateQueries({ queryKey: ["/api/profile-stats"] });
     queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
     queryClient.invalidateQueries({ queryKey: ["/api/onboarding-status"] });
-    setTimeout(() => navigate("/onboarding/setup"), 2500);
+
+    // Read and clear the stored checkout context to decide where to navigate.
+    // Falls back to /onboarding/setup when context is missing (safe for all flows).
+    const ctx = consumeCheckoutContext();
+    const destination = ctx?.next ?? "/onboarding/setup";
+    console.log(`[checkout-success] Payment confirmed — source=${ctx?.source ?? "unknown"} navigating to: ${destination}`);
+    setTimeout(() => navigate(destination), 2500);
   }
 
   useEffect(() => {

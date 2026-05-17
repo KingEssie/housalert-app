@@ -2,7 +2,7 @@ import { apiFetch } from "@/lib/api-base";
 import { useHashSearch } from "@/lib/hash-search";
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
-import { isNativePlatform, openCheckoutBrowser } from "@/lib/capacitor";
+import { isNativePlatform, openCheckoutBrowser, saveCheckoutContext } from "@/lib/capacitor";
 import { ArrowLeft, Check, Loader2, X, ShieldAlert, MapPin, CircleArrowRight } from "lucide-react";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { useToast } from "@/hooks/use-toast";
@@ -380,6 +380,13 @@ export default function PaywallPage() {
       }
 
       if (data.url) {
+        // Store checkout context so checkout-success.tsx knows where to send the
+        // user after payment. Signup/onboarding flows (source=website) go back to
+        // setup; direct upgrades go to dashboard.
+        saveCheckoutContext({
+          source: isWebsiteMode ? "signup_onboarding" : "paywall_upgrade",
+          next: isWebsiteMode ? "/onboarding/setup" : "/dashboard",
+        });
         console.log("[paywall] Opening checkout — native:", native, "session_id:", data.session_id?.substring(0, 20));
         if ((window as any).ReactNativeWebView) {
           (window as any).ReactNativeWebView.postMessage(JSON.stringify({ type: "OPEN_EXTERNAL_URL", url: data.url }));

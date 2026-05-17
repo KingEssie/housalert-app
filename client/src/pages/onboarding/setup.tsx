@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import { isNativePlatform, openCheckoutBrowser } from "@/lib/capacitor";
+import { isNativePlatform, openCheckoutBrowser, saveCheckoutContext } from "@/lib/capacitor";
 import { queryClient } from "@/lib/queryClient";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
@@ -1241,6 +1241,8 @@ export default function OnboardingSetup() {
       const result = await res.json();
 
       if (result.url) {
+        // Always continue onboarding after payment from the setup/onboarding paywall.
+        saveCheckoutContext({ source: "setup_onboarding", next: "/onboarding/setup" });
         console.log("[setup] Opening checkout — native:", native, "session_id:", result.session_id?.substring(0, 20));
         if (typeof (window as any).ReactNativeWebView?.postMessage === "function") {
           (window as any).ReactNativeWebView.postMessage(JSON.stringify({ type: "openExternal", url: result.url }));

@@ -1,6 +1,6 @@
 import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect } from "react";
-import { isNativePlatform, openCheckoutBrowser } from "@/lib/capacitor";
+import { isNativePlatform, openCheckoutBrowser, saveCheckoutContext } from "@/lib/capacitor";
 import { useAuth } from "@/lib/auth";
 import { useQuery } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
@@ -157,6 +157,8 @@ function UpgradeSheet({
       });
       const data = await res.json();
       if (data.url) {
+        // Upgrading from apply/detail — return to dashboard after payment.
+        saveCheckoutContext({ source: "apply_upgrade", next: "/dashboard" });
         console.log("[apply] Opening checkout — native:", native, "session_id:", data.session_id?.substring(0, 20));
         if ((window as any).ReactNativeWebView) {
           (window as any).ReactNativeWebView.postMessage(JSON.stringify({ type: "OPEN_EXTERNAL_URL", url: data.url }));

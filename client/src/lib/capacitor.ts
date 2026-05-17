@@ -132,6 +132,52 @@ export async function closeInAppBrowser(): Promise<void> {
   } catch {}
 }
 
+// ---------------------------------------------------------------------------
+// Checkout context — stores the intended post-payment destination so that
+// checkout-success.tsx can continue the correct flow (onboarding vs upgrade)
+// regardless of which entry point triggered the checkout.
+// ---------------------------------------------------------------------------
+
+const CHECKOUT_CONTEXT_KEY = "ha_checkout_context";
+const CHECKOUT_CONTEXT_MAX_AGE_MS = 2 * 60 * 60 * 1000; // 2 hours
+
+export interface CheckoutContext {
+  /** Which UI surface triggered the checkout (for logging/analytics). */
+  source: string;
+  /** Route to navigate to after successful payment confirmation. */
+  next: string;
+  ts: number;
+}
+
+export function saveCheckoutContext(ctx: Omit<CheckoutContext, "ts">): void {
+  try {
+    const full: CheckoutContext = { ...ctx, ts: Date.now() };
+    localStorage.setItem(CHECKOUT_CONTEXT_KEY, JSON.stringify(full));
+    console.log(`[checkout-context] Saved: source=${ctx.source} next=${ctx.next}`);
+  } catch {}
+}
+
+/**
+ * Reads and clears the stored checkout context.
+ * Returns null if absent or older than 2 hours.
+ */
+export function consumeCheckoutContext(): CheckoutContext | null {
+  try {
+    const raw = localStorage.getItem(CHECKOUT_CONTEXT_KEY);
+    localStorage.removeItem(CHECKOUT_CONTEXT_KEY);
+    if (!raw) return null;
+    const ctx: CheckoutContext = JSON.parse(raw);
+    if (Date.now() - ctx.ts > CHECKOUT_CONTEXT_MAX_AGE_MS) {
+      console.log("[checkout-context] Context expired — discarding");
+      return null;
+    }
+    console.log(`[checkout-context] Consumed: source=${ctx.source} next=${ctx.next}`);
+    return ctx;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Registers a listener for when the in-app browser closes (either because
  * the user navigated to a deep-link that re-opened the app, pressed back, or
