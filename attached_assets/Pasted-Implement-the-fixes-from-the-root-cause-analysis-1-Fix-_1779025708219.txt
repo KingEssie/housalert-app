@@ -1,0 +1,66 @@
+Implement the fixes from the root-cause analysis.
+
+1. Fix “Kopiëren en reageer”
+Root cause:
+apply.tsx opens window.open("about:blank", "_blank") before copying.
+
+Fix:
+- Remove window.open("about:blank", "_blank") completely.
+- First copy the text.
+- Then open the external source URL using the existing Capacitor Browser / native-safe external open helper.
+- Never open about:blank on Android.
+- Never use uncontrolled window.open for this flow.
+
+Expected:
+- Tap “Kopiëren en reageer”
+- Text copies successfully
+- Source site opens normally
+- No blank Chrome page
+
+2. Fix Stripe native return
+Root cause:
+housalert:// scheme is not fully handled by Android manifest / checkout-success web flow.
+
+Fix:
+- Add AndroidManifest intent filter for custom scheme:
+  scheme="housalert"
+  host="checkout"
+  pathPrefix="/success"
+  pathPrefix="/cancel" if needed
+- Ensure appUrlOpen catches:
+  housalert://checkout/success?session_id=...
+  housalert://checkout/cancel?session_id=...
+- checkout-success web page should immediately attempt to redirect to:
+  housalert://checkout/success?session_id=...
+  when native=1/session_id exists.
+- Keep visible “Terug naar HousAlert” fallback button.
+
+3. Verify all checkout entry points use the native checkout helper:
+- onboarding paywall
+- detail/apply paywall
+- account upgrade
+- copy-and-react locked flow
+
+4. Detail page performance
+Root cause likely:
+The apply page is the detail page and has expensive mounts.
+
+Tasks:
+- Add timing logs in apply.tsx mount.
+- Identify slow parts:
+  data fetch
+  image/gallery
+  application letter generation
+  subscription check
+  clipboard/setup
+  source metadata
+- Do not generate/fetch heavy application letter data until user taps action.
+- Render listing detail immediately from matches cache if available.
+- Lazy-load lower sections/images.
+
+Final smoke test:
+- Listing card opens detail fast
+- “Kopiëren en reageer” no blank Chrome
+- Stripe returns to app
+- No window.open("about:blank") remains
+- No window.location.href remains in checkout/apply/paywall flows

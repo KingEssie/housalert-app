@@ -35,6 +35,17 @@
                     android:pathPrefix="/checkout" />
             </intent-filter>
 
+            <!-- Custom URL scheme: catches housalert:// deep links from Chrome Custom Tab
+                 after Stripe payment (success_url = housalert://checkout/success?session_id=...).
+                 Android intercepts this URL, closes the Custom Tab automatically, and fires
+                 appUrlOpen in the Capacitor app so DeepLinkHandler can process the session. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="housalert" />
+            </intent-filter>
+
         </activity>
 
         <provider

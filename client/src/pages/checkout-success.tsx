@@ -75,6 +75,20 @@ export default function CheckoutSuccessPage() {
   const confirmedRef = useRef(false);
   const native = isNativePlatform();
 
+  // When this page loads inside Chrome Custom Tab (after Stripe redirects to the
+  // https:// success URL), immediately attempt a deep-link back into the native app.
+  // If the housalert:// intent-filter is registered in AndroidManifest.xml, Android
+  // intercepts the URL, auto-closes the Custom Tab, and fires appUrlOpen in the app.
+  // If not registered this is a silent no-op and the user sees the visible fallback button.
+  useEffect(() => {
+    if (native) return;          // already inside native app — no redirect needed
+    if (!urlSessionId) return;   // no session_id → nothing to redirect
+    const deepLink = `housalert://checkout/success?session_id=${encodeURIComponent(urlSessionId)}`;
+    console.log("[checkout-success] Browser context with session_id — attempting deep-link:", deepLink.substring(0, 80));
+    window.location.href = deepLink;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   async function confirmSession() {
     if (confirmedRef.current) return;
 

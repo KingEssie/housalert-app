@@ -325,17 +325,37 @@ export default function ApplyPage() {
 
   const accessToken = session?.access_token;
 
+  // Performance: start the listing fetch as soon as we have the listing ID.
+  // We pass the auth token only when available — the listing endpoint is public
+  // so this lets us avoid blocking on auth loading time.
   const { data: listing, isLoading: listingLoading } = useQuery<ListingData | null>({
     queryKey: ["/api/listing", listingId],
     queryFn: async () => {
+      const t0 = performance.now();
       const res = await apiFetch(`/api/listings/${listingId}`, {
         headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : {},
       });
+      console.log(`[apply] listing fetch done in ${Math.round(performance.now() - t0)}ms — status:`, res.status);
       if (!res.ok) return null;
       return res.json();
     },
-    enabled: !!listingId && !!accessToken,
+    enabled: !!listingId,
+    staleTime: 5 * 60 * 1000,
   });
+
+  // Timing log: track how long from mount to listing data being ready.
+  useEffect(() => {
+    const t0 = performance.now();
+    console.log("[apply] mounted — listingId:", listingId);
+    return () => console.log("[apply] unmounted after", Math.round(performance.now() - t0), "ms");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (listing) {
+      console.log("[apply] listing data ready:", listing.id, "at", performance.now().toFixed(0) + "ms since page load");
+    }
+  }, [listing]);
 
   useEffect(() => {
     if (!listingId || !accessToken) return;
@@ -521,18 +541,16 @@ export default function ApplyPage() {
 
   const handleCopyAndRespond = async () => {
     const externalUrl = listing.url;
-    let externalWindow: Window | null = null;
-    if (externalUrl) {
-      externalWindow = window.open("about:blank", "_blank");
-    }
 
+    // 1. Copy the letter text first — never pre-open a blank window.
+    //    On Android Capacitor, window.open("about:blank", "_blank") opens a real
+    //    Chrome process that the app cannot control, producing a blank white page.
     let copied = false;
     try {
       await navigator.clipboard.writeText(editedLetter ?? filledLetter);
       copied = true;
     } catch {
       toast({ title: t("applySheet.copyFailed"), description: t("applySheet.copyFailedDesc"), variant: "destructive" });
-      if (externalWindow) externalWindow.close();
     }
 
     if (!copied) return;
@@ -561,10 +579,24 @@ export default function ApplyPage() {
       }).catch(() => {});
     }
 
-    if (externalWindow && externalUrl) {
-      externalWindow.location.href = externalUrl;
-    } else if (externalUrl) {
-      window.location.href = externalUrl;
+    // 2. Open the external source URL AFTER copying.
+    //    Native: use Capacitor Browser (Chrome Custom Tab) so the WebView stays alive.
+    //    Web: window.open in a new tab is safe since there's no popup-blocker risk
+    //    after a user gesture and we don't need the reference.
+    if (externalUrl) {
+      const native = isNativePlatform();
+      console.log("[apply] Opening source URL — native:", native, "url:", externalUrl.substring(0, 60));
+      if (native) {
+        try {
+          const { Browser } = await import("@capacitor/browser");
+          await Browser.open({ url: externalUrl, presentationStyle: "fullscreen" });
+        } catch (err) {
+          console.warn("[apply] Capacitor Browser failed, falling back to window.open:", err);
+          window.open(externalUrl, "_blank", "noopener,noreferrer");
+        }
+      } else {
+        window.open(externalUrl, "_blank", "noopener,noreferrer");
+      }
     }
   };
 

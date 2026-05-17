@@ -6,6 +6,7 @@ import { useTranslation } from "@/i18n";
 import { apiFetch } from "@/lib/api-base";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
+import { isNativePlatform } from "@/lib/capacitor";
 
 export default function PaymentMethodPage() {
   const { t } = useTranslation();
@@ -33,7 +34,18 @@ export default function PaymentMethodPage() {
         return;
       }
       const { url } = await res.json();
-      window.location.href = url;
+      // On native, open Stripe portal in Chrome Custom Tab so the WebView stays alive.
+      // On web, standard redirect.
+      if (isNativePlatform()) {
+        try {
+          const { Browser } = await import("@capacitor/browser");
+          await Browser.open({ url, presentationStyle: "fullscreen" });
+        } catch {
+          window.location.href = url;
+        }
+      } else {
+        window.location.href = url;
+      }
     } catch {
       toast({ title: t("paymentMethodPage.error"), variant: "destructive" });
     } finally {
