@@ -2786,15 +2786,21 @@ export async function registerRoutes(
         ? (process.env.APP_PUBLIC_BASE_URL || PROD_DOMAIN)
         : `${protocol}://${host}`;
 
-      // For native Capacitor builds, use the housalert:// custom scheme so that
-      // when Stripe redirects after payment the OS intercepts the URL and
-      // opens the app directly (rather than staying in Chrome Custom Tab).
-      // The DeepLinkHandler in App.tsx maps housalert://checkout/success → /checkout/success.
+      // For native Capacitor builds we use an HTTPS success URL with a
+      // "from_native=1" marker.  Chrome Custom Tab CAN load HTTPS pages; it
+      // CANNOT navigate to custom-scheme URLs (housalert://) — Chrome silently
+      // blocks custom-scheme navigations for security.
+      //
+      // The checkout-success page detects from_native=1, shows the handoff
+      // screen, and fires an intent:// URI which Chrome *does* handle: it
+      // dispatches a VIEW intent directly to com.housalert.app, closing the
+      // Custom Tab and opening the native app.  The DeepLinkHandler in App.tsx
+      // then maps the resulting housalert://checkout/success URL → /checkout/success.
       const successUrl = is_native
-        ? `housalert://checkout/success?session_id={CHECKOUT_SESSION_ID}`
+        ? `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}&from_native=1`
         : `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
       const cancelUrl = is_native
-        ? `housalert://checkout/cancel`
+        ? `${baseUrl}/onboarding/setup?cancelled=1`
         : `${baseUrl}/onboarding/setup`;
 
       log(`[checkout] Creating Stripe session: plan=${plan}, priceId=${stripePriceId}, customer=${customerId}, native=${!!is_native}, successUrl=${successUrl.substring(0, 80)}`);

@@ -68,10 +68,37 @@ async function waitForSession(maxAttempts = 5, delayMs = 1200): Promise<string |
   return null;
 }
 
+/** Builds the Android intent:// URI for the given Stripe session.
+ *
+ *  Chrome Custom Tab BLOCKS housalert:// navigations (custom schemes are
+ *  rejected silently).  But Chrome explicitly handles intent:// URIs —
+ *  it looks up com.housalert.app, fires a VIEW intent with the reconstructed
+ *  housalert:// URL, closes the Custom Tab, and opens the native app.
+ *
+ *  Format:
+ *    intent://checkout/success?session_id=...
+ *      #Intent;scheme=housalert;package=com.housalert.app;
+ *      S.browser_fallback_url=<encoded-https-fallback>;end
+ */
+function buildIntentUrl(sessionId: string): string {
+  const fallback = encodeURIComponent(
+    `https://app.housalert.com/checkout/success?session_id=${encodeURIComponent(sessionId)}&from_native=1`
+  );
+  return (
+    `intent://checkout/success?session_id=${encodeURIComponent(sessionId)}` +
+    `#Intent;scheme=housalert;package=com.housalert.app;` +
+    `S.browser_fallback_url=${fallback};end`
+  );
+}
+
 export default function CheckoutSuccessPage() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
   const urlSessionId = getUrlParam("session_id");
+  // from_native=1 is appended by the server when creating a Stripe session for
+  // a native-app checkout.  It marks that this page was loaded in a Chrome
+  // Custom Tab (not in the Capacitor WebView) so we must hand off via intent://.
+  const fromNative = getUrlParam("from_native") === "1";
   const [status, setStatus] = useState<Status>("loading");
   const [errorMsg, setErrorMsg] = useState("");
   const [deepLinkAttempt, setDeepLinkAttempt] = useState(0);
@@ -80,12 +107,16 @@ export default function CheckoutSuccessPage() {
   const native = isNativePlatform();
 
   // ---------------------------------------------------------------------------
-  // Deep-link gate for browser (Chrome Custom Tab) context
+  // Routing decision on mount
   //
-  // Strategy: fire housalert:// immediately and retry at 1 s and 3 s.
-  // We NEVER auto-navigate to a browser fallback — the user must explicitly
-  // choose to continue via the browser.  If Android intercepts any attempt the
-  // Chrome Custom Tab auto-closes and the native app handles checkout.
+  //  native=true          → running inside Capacitor WebView (via appUrlOpen or
+  //                         browserFinished path) — run confirmSession now.
+  //
+  //  fromNative=true      → running in Chrome Custom Tab after a native checkout.
+  //                         Must use intent:// to hand off back to the native app.
+  //                         NEVER auto-navigate to browser fallback.
+  //
+  //  otherwise            → real web checkout — run confirmSession now.
   // ---------------------------------------------------------------------------
   useEffect(() => {
     if (native) {
@@ -94,24 +125,23 @@ export default function CheckoutSuccessPage() {
       return;
     }
 
-    if (!urlSessionId) {
-      // Non-native without session_id — show the error path.
+    if (!fromNative || !urlSessionId) {
+      // Web checkout or missing session_id — process in browser directly.
+      console.log(`[checkout-success] Web context (fromNative=${fromNative}, sessionId=${!!urlSessionId}) — running confirmSession`);
       confirmSession();
       return;
     }
 
-    // Non-native with session_id: show the handoff screen and keep retrying.
+    // Chrome Custom Tab from native checkout → show handoff, fire intent:// retries.
     setStatus("deep_link_waiting");
-
-    const deepLink = `housalert://checkout/success?session_id=${encodeURIComponent(urlSessionId)}`;
+    const intentUrl = buildIntentUrl(urlSessionId);
 
     function attempt(n: number) {
-      console.log(`[deep-link] retry ${n}: ${deepLink.substring(0, 80)}`);
+      console.log(`[deep-link] retry ${n}: ${intentUrl.substring(0, 100)}`);
       setDeepLinkAttempt(n);
-      window.location.href = deepLink;
+      window.location.href = intentUrl;
     }
 
-    // Immediate first attempt
     attempt(1);
 
     const timers: ReturnType<typeof setTimeout>[] = [];
@@ -119,7 +149,7 @@ export default function CheckoutSuccessPage() {
       timers.push(setTimeout(() => attempt(idx + 2), delay));
     });
 
-    // No automatic fallback to confirmSession() — user must tap explicitly.
+    // No automatic fallback — user must explicitly choose "Doorgaan in browser".
     return () => timers.forEach(clearTimeout);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -284,9 +314,9 @@ export default function CheckoutSuccessPage() {
   // Render
   // ---------------------------------------------------------------------------
 
-  const deepLinkUrl = urlSessionId
-    ? `housalert://checkout/success?session_id=${encodeURIComponent(urlSessionId)}`
-    : null;
+  // intent:// format is required for Chrome Custom Tab — Chrome blocks housalert://
+  // navigations but explicitly dispatches intent:// URIs to the registered package.
+  const intentUrl = urlSessionId ? buildIntentUrl(urlSessionId) : null;
 
   const iconBg =
     status === "error" ? "var(--ha-danger-light)"
@@ -327,10 +357,10 @@ export default function CheckoutSuccessPage() {
         {/* Deep-link handoff: permanent button + retry status + explicit browser fallback */}
         {status === "deep_link_waiting" && (
           <div className="mt-6 flex flex-col gap-3">
-            {/* Primary — always visible, tappable at any time */}
-            {deepLinkUrl && (
+            {/* Primary — intent:// URI, works in Chrome Custom Tab (unlike housalert://) */}
+            {intentUrl && (
               <a
-                href={deepLinkUrl}
+                href={intentUrl}
                 className="h-[52px] rounded-[12px] text-white text-[16px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
                 style={{ background: "rgb(var(--ha-primary))" }}
                 data-testid="button-open-app-deep-link"
@@ -387,10 +417,10 @@ export default function CheckoutSuccessPage() {
 
         {status === "session_missing" && (
           <div className="mt-6 flex flex-col gap-3">
-            {/* Primary: deep-link back into the native app */}
-            {deepLinkUrl && (
+            {/* Primary: intent:// link back into the native app */}
+            {intentUrl && (
               <a
-                href={deepLinkUrl}
+                href={intentUrl}
                 className="h-[48px] rounded-[10px] text-white text-[15px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
                 style={{ background: "rgb(var(--ha-primary))" }}
                 data-testid="button-return-to-app"
