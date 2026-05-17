@@ -34,22 +34,10 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
-    rollupOptions: {
-      output: {
-        // Split stable vendor libs into separate cached chunks so the main
-        // app bundle stays small. Android only re-downloads these when the
-        // lib version changes, not on every deploy.
-        manualChunks: (id) => {
-          if (id.includes("/node_modules/react/") || id.includes("/node_modules/react-dom/") || id.includes("/node_modules/scheduler/")) {
-            return "vendor-react";
-          }
-          if (id.includes("@tanstack/react-query")) return "vendor-query";
-          if (id.includes("@supabase/")) return "vendor-supabase";
-          if (id.includes("@radix-ui/")) return "vendor-radix";
-          if (id.includes("lucide-react")) return "vendor-icons";
-        },
-      },
-    },
+    // No manualChunks — Vite default splits only lazily-imported routes.
+    // Splitting vendor libs into separate files caused a sequential waterfall
+    // on Android WebView (each file = one asset-loader round-trip before App.js
+    // can execute) and more than doubled cold-start time on Samsung devices.
   },
   server: {
     fs: {

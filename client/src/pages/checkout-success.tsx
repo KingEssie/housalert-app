@@ -31,10 +31,20 @@ function getUrlParam(key: string): string | null {
 
 /** Tries to get a valid Supabase session, refreshing if needed.
  *  On native, the WebView may have been in the background during checkout so
- *  the session token could be stale. */
-async function waitForSession(maxAttempts = 5, delayMs = 1000): Promise<string | null> {
+ *  the session token could be stale or not yet copied to localStorage. */
+async function waitForSession(maxAttempts = 5, delayMs = 1200): Promise<string | null> {
   for (let i = 0; i < maxAttempts; i++) {
     try {
+      // On the first attempt, explicitly restore auth from Capacitor Preferences.
+      // The app may have been suspended while the user was in the payment browser
+      // and the Supabase token may not be in localStorage yet.
+      if (i === 0) {
+        try {
+          const { restoreAuthFromNative } = await import("@/lib/capacitor-storage");
+          await restoreAuthFromNative();
+          console.log("[checkout-success] restoreAuthFromNative() complete");
+        } catch {}
+      }
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.access_token) {
         console.log(`[checkout-success] Session ready on attempt ${i + 1}`);
@@ -186,10 +196,16 @@ export default function CheckoutSuccessPage() {
       }
 
       // No auth session available — payment likely succeeded but the user was
-      // logged out while in the background. Show a friendly "log back in" screen
-      // rather than a generic error.
+      // logged out while in the background. Store the session_id so that after
+      // the user logs in again, the login page resumes the checkout flow.
       if (!token) {
         console.warn("[checkout-success] No auth token and all confirm paths failed — showing session_missing state");
+        if (sessionId) {
+          try {
+            localStorage.setItem("ha_pending_checkout", JSON.stringify({ session_id: sessionId, ts: Date.now() }));
+            console.log("[checkout-success] Stored ha_pending_checkout for post-login resume");
+          } catch {}
+        }
         setStatus("session_missing");
         return;
       }

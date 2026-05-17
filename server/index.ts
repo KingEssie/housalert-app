@@ -1,10 +1,15 @@
 import express, { type Request, Response, NextFunction } from "express";
+import compression from "compression";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
 
 const app = express();
 const httpServer = createServer(app);
+
+// Gzip compress all responses. Reduces /api/matches from ~50-100KB to ~15-30KB
+// over the wire, cutting network time on slow mobile connections.
+app.use(compression());
 
 declare module "http" {
   interface IncomingMessage {

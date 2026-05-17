@@ -15,17 +15,20 @@ import { useBuddyConnections, isBuddyMode } from "@/lib/buddy";
 const IS_NATIVE = isNativePlatform();
 
 // ─── Critical path — loaded eagerly (needed before first paint) ───────────────
+// These pages cover the immediate post-login flow on 99% of sessions.
+// Keeping them eager avoids a lazy-chunk waterfall right when the user is
+// waiting most (auth resolved → route renders → lazy chunk downloads → page).
 import WelcomePage from "@/pages/welcome";
+import DashboardPage from "@/pages/dashboard";       // matches + favorites + profile tabs
+import ListingDetailPage from "@/pages/listing-detail"; // tapped from every match card
+import CheckoutSuccessPage from "@/pages/checkout-success"; // Stripe return path
 import NotFound from "@/pages/not-found";
 import AuthCallbackPage from "@/pages/auth-callback";
 
 // ─── Lazy pages — loaded only when their route is first visited ───────────────
-// Each lazy chunk is downloaded + parsed only on demand, keeping the initial
-// bundle small so Android V8 has far less JS to JIT-compile on startup.
+// Admin, onboarding, guides, tips, settings — rarely visited, large, safe to defer.
 
-const DashboardPage = lazy(() => import("@/pages/dashboard"));
 const AppSearchWizard = lazy(() => import("@/pages/app-search-wizard"));
-const ListingDetailPage = lazy(() => import("@/pages/listing-detail"));
 const ApplicationLetterPage = lazy(() => import("@/pages/application-letter"));
 const ViewingTipsPage = lazy(() => import("@/pages/viewing-tips"));
 const ProfileDetailsPage = lazy(() => import("@/pages/profile-details"));
@@ -55,7 +58,6 @@ const OnboardingPasswordNew = lazy(() => import("@/pages/onboarding/password"));
 const OnboardingPreferencesNew = lazy(() => import("@/pages/onboarding/preferences"));
 const ContinueDraftPage = lazy(() => import("@/pages/continue-draft"));
 
-const CheckoutSuccessPage = lazy(() => import("@/pages/checkout-success"));
 const EmbedSuccessPage = lazy(() => import("@/pages/embed-success"));
 const SubscriptionSuccessPage = lazy(() => import("@/pages/subscription-success"));
 const PaywallPage = lazy(() => import("@/pages/paywall"));

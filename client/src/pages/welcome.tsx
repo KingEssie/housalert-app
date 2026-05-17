@@ -139,6 +139,32 @@ export default function WelcomePage() {
       return;
     }
     console.log(`[WELCOME] Login success — user.id=${signInData?.user?.id?.substring(0, 8) ?? "null"}`);
+
+    // Resume a pending Stripe checkout if the user was sent back to login
+    // because their session expired / wasn't restored during payment.
+    try {
+      const raw = localStorage.getItem("ha_pending_checkout");
+      if (raw) {
+        const { session_id, ts } = JSON.parse(raw);
+        // Ignore stale entries older than 30 minutes
+        if (session_id && Date.now() - (ts ?? 0) < 30 * 60 * 1000) {
+          localStorage.removeItem("ha_pending_checkout");
+          console.log("[WELCOME] Resuming pending checkout session after login");
+          window.location.href = `/checkout/success?session_id=${encodeURIComponent(session_id)}`;
+          return;
+        }
+        localStorage.removeItem("ha_pending_checkout");
+      }
+    } catch {}
+
+    // Handle ?next= redirect param (e.g. /login?next=/onboarding/setup)
+    const searchParams = new URLSearchParams(window.location.search);
+    const next = searchParams.get("next");
+    if (next && next.startsWith("/")) {
+      window.location.href = next;
+      return;
+    }
+
     window.location.href = "/dashboard?tab=matches";
   }
 
