@@ -249,7 +249,15 @@ function DeepLinkHandler() {
     function handleDeepLinkUrl(url: string) {
       try {
         const parsed = new URL(url);
-        const path = parsed.pathname + parsed.search;
+        let path: string;
+        if (parsed.protocol === "housalert:") {
+          // housalert://checkout/success?session_id=abc
+          // URL() treats "checkout" as the host and "/success" as the pathname.
+          // Reconstruct to get /checkout/success?session_id=abc
+          path = "/" + parsed.host + parsed.pathname + parsed.search;
+        } else {
+          path = parsed.pathname + parsed.search;
+        }
         console.log("[deep-link] App Link received — navigating to:", path);
         navigate(path);
       } catch (err) {

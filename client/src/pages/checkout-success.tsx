@@ -66,6 +66,9 @@ async function waitForSession(maxAttempts = 5, delayMs = 1200): Promise<string |
 export default function CheckoutSuccessPage() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
+  // Read session_id from URL once at component level so the session_missing
+  // UI can build a deep-link back into the native app.
+  const urlSessionId = getUrlParam("session_id");
   const [status, setStatus] = useState<Status>("loading");
   const [errorMsg, setErrorMsg] = useState("");
   const retriesRef = useRef(0);
@@ -290,13 +293,29 @@ export default function CheckoutSuccessPage() {
 
         {status === "session_missing" && (
           <div className="mt-6 flex flex-col gap-3">
+            {/* Primary action: deep-link back into the native app.
+                Works from Chrome Custom Tab — Android intercepts housalert://
+                and opens the app, which then processes the session_id via
+                the DeepLinkHandler → CheckoutSuccessPage with a live session. */}
+            {urlSessionId && (
+              <a
+                href={`housalert://checkout/success?session_id=${encodeURIComponent(urlSessionId)}`}
+                className="h-[48px] rounded-[10px] text-white text-[15px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
+                style={{ background: "rgb(var(--ha-primary))" }}
+                data-testid="button-return-to-app"
+              >
+                {t("checkoutSuccess.returnToApp", "Terug naar HousAlert")}
+              </a>
+            )}
+            {/* Fallback: log in via the web flow.
+                The ha_pending_checkout entry in localStorage ensures the login
+                page resumes the checkout automatically after a successful login. */}
             <button
               onClick={() => navigate("/login?next=/onboarding/setup")}
-              className="h-[48px] rounded-[10px] text-white text-[15px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform"
-              style={{ background: "rgb(var(--ha-primary))" }}
+              className="h-[44px] rounded-[10px] text-[15px] font-medium text-ha-text-secondary hover:bg-ha-surface transition-colors"
               data-testid="button-login-continue"
             >
-              <LogIn className="w-4 h-4" />
+              <LogIn className="w-4 h-4 inline mr-2" />
               {t("checkoutSuccess.loginToContinue")}
             </button>
           </div>

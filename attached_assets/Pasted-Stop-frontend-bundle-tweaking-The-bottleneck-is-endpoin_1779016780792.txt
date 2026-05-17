@@ -1,0 +1,82 @@
+Stop frontend bundle tweaking. The bottleneck is endpoint/backend specific.
+
+Current Android timings:
+- Login → Matches: 37 seconds
+- Listing detail: 15 seconds
+- Favorites: 1 second
+
+This proves the app/WebView is not globally slow. Favorites is fast. The slow parts are Matches API and Listing Detail API/rendering.
+
+P0: Fix Matches and Detail performance based on real timing logs.
+
+Tasks:
+1. Inspect server logs for [MATCHES TIMING] from the actual Android test.
+   Report exact:
+   - auth time
+   - subscription time
+   - match query time
+   - listing batch fetch time
+   - scoring time
+   - freshness/stats time
+   - total server time
+   - response payload size
+
+2. If /api/matches server time > 2s:
+   - create a lightweight /api/matches/fast endpoint or optimize existing endpoint
+   - return only fields needed for cards:
+     id, match_id, title, city, price, image_thumbnail, bedrooms, size, source, matched_at, is_favorite, locked
+   - do NOT include full description, all images, full raw listing JSON, freshness history, admin/debug data
+   - limit initial response to 20
+   - paginate with cursor based on matched_at
+
+3. If matching requires expensive joins:
+   - use a DB view/materialized cache/table for match cards
+   - precompute match card data when user_matches are created
+   - do not compute everything on every page load
+
+4. Detail screen:
+   - create /api/listings/:id/fast or optimize detail endpoint
+   - initial detail response should only include critical above-the-fold data
+   - lazy-load heavy sections/images after render
+   - do not fetch freshness/source audit/match stats before first render
+
+5. Add DB indexes if missing:
+   - user_matches(user_id, matched_at DESC)
+   - user_matches(user_id, listing_id)
+   - listings(id)
+   - listings(first_seen_at DESC)
+   - favorites(user_id, listing_id)
+
+6. Replit backend:
+   - check if requests are hitting cold start or slow Replit runtime
+   - add server log for request start/end
+   - if cold start is relevant, recommend Always On / deployment settings
+   - but do not blame Replit unless server timing proves it
+
+P0: Fix Stripe return from Android checkout.
+
+Current behavior:
+- Paywall opens Stripe in external browser/Chrome
+- After successful payment it stays in browser
+- It shows "betaling verifiëren"
+- Then goes to login page in browser
+- It does not return into native app
+
+Required:
+1. Use Capacitor Browser plugin / Chrome Custom Tab for Stripe checkout.
+2. Ensure all paywall entry points use openCheckoutBrowser:
+   - onboarding account creation paywall
+   - account subscription paywall
+   - detail upgrade paywall
+3. Implement robust Browser.addListener('browserFinished') fallback:
+   - when browser closes, native app checks stored checkout session id
+   - navigates inside app to checkout-success
+4. Implement App.addListener('appUrlOpen') for app links.
+5. Until Android App Links are fully verified, add a visible "Terug naar HousAlert" button on checkout success/cancel web page that deep-links back to the app.
+6. checkout-success must not redirect final state to browser login.
+7. If session missing:
+   - store pending checkout success locally
+   - show native login and after login continue onboarding/setup
+8. Report exactly which paywall route was still using window.location.href or browser redirect instead of Capacitor Browser.
+
+Do not make more bundle/code-splitting changes until endpoint timings prove they are needed.
