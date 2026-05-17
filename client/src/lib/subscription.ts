@@ -39,8 +39,9 @@ export function useSubscription() {
   const query = useQuery<SubscriptionState>({
     queryKey: ["/api/subscription/status"],
     queryFn: fetchSubscriptionStatus,
-    staleTime: 60_000,
-    refetchOnWindowFocus: true,
+    staleTime: 5 * 60_000,      // 5 min — subscription rarely changes mid-session
+    gcTime: 15 * 60_000,
+    refetchOnWindowFocus: false, // Android focus events must not trigger subscription refetch
   });
 
   return {

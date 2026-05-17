@@ -111,8 +111,8 @@ function RecentlyViewedSection({ accessToken }: { accessToken: string | undefine
     queryKey: ["/api/matches"],
     queryFn: () => fetchApiMatches(accessToken!),
     enabled: !!accessToken,
-    staleTime: 30_000,
-    refetchOnWindowFocus: true,
+    staleTime: 2 * 60_000,
+    refetchOnWindowFocus: false,
   });
 
   const viewedMatches = (apiMatchesQuery.data?.matches ?? [])
@@ -1236,94 +1236,106 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
   const [sortOption, setSortOption] = useState<string>("date_desc");
   const [sortSheetOpen, setSortSheetOpen] = useState(false);
   const [appliedListings, setAppliedListings] = useState<ApiMatch[]>([]);
+  const [visibleCount, setVisibleCount] = useState(20);
   const { t, locale } = useTranslation();
   const { toast } = useToast();
   const [, navigate] = useLocation();
   const apiMatchesQuery = useQuery<ApiMatchesResponse>({
     queryKey: buddyMode ? ["/api/buddy/shared-matches"] : ["/api/matches"],
-    queryFn: () => buddyMode ? fetchBuddySharedMatches(accessToken!) : fetchApiMatches(accessToken!),
+    queryFn: () => {
+      console.time("[perf] fetch-matches");
+      const p = buddyMode ? fetchBuddySharedMatches(accessToken!) : fetchApiMatches(accessToken!);
+      return p.then((r) => { console.timeEnd("[perf] fetch-matches"); return r; });
+    },
     enabled: !!accessToken,
-    staleTime: 30_000,
-    refetchOnWindowFocus: true,
+    staleTime: 2 * 60_000,      // 2 min — no need to re-fetch on every focus
+    gcTime: 10 * 60_000,
+    refetchOnWindowFocus: false, // Android focus events must not re-fetch matches
   });
 
+  // Compute applied listings from the already-loaded React Query cache —
+  // never make a separate /api/matches call just for this.
   const fetchAppliedListings = useCallback(() => {
-    if (!accessToken || buddyMode) return;
+    if (buddyMode) return;
     const appliedIds = safeGetSet(MATCH_APPLIED_KEY);
-    apiFetch("/api/matches", {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    })
-      .then((r) => r.json())
-      .then((data: ApiMatchesResponse) => {
-        if (data.matches) {
-          const applied = data.matches.filter(
-            (m) => m.canonical_applied || appliedIds.has(m.listing_id)
-          );
-          setAppliedListings(applied);
-        }
-      })
-      .catch(() => {});
-  }, [accessToken, buddyMode]);
+    const cached = queryClient.getQueryData<ApiMatchesResponse>(["/api/matches"]);
+    if (cached?.matches) {
+      setAppliedListings(
+        cached.matches.filter((m) => m.canonical_applied || appliedIds.has(m.listing_id))
+      );
+    }
+  }, [buddyMode]);
 
+  // Recompute whenever matches data refreshes
   useEffect(() => {
-    if (!accessToken || buddyMode) return;
+    if (buddyMode) return;
     fetchAppliedListings();
-  }, [accessToken, fetchAppliedListings, buddyMode]);
+  }, [apiMatchesQuery.data, fetchAppliedListings, buddyMode]);
 
+  // Defer applied-sync 2 s so it doesn't compete with the initial render
   useEffect(() => {
     if (!accessToken || buddyMode) return;
-    apiFetch("/api/matches/applied", {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    })
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.applied && Array.isArray(data.applied)) {
-          const serverApplied = new Set<string>(data.applied);
-          const localApplied = safeGetSet(MATCH_APPLIED_KEY);
-
-          let changed = false;
-          for (const id of data.applied) {
-            if (!localApplied.has(id)) {
-              localApplied.add(id);
-              changed = true;
-            }
-          }
-          if (changed) {
-            safeSetSet(MATCH_APPLIED_KEY, localApplied);
-            setRefreshKey((k) => k + 1);
-          }
-
-          for (const localId of localApplied) {
-            if (!serverApplied.has(localId)) {
-              apiFetch(`/api/matches/${localId}/applied`, {
-                method: "PATCH",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${accessToken}`,
-                },
-                body: JSON.stringify({ applied: true }),
-              }).then(() => {
-                queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
-              }).catch(() => {});
-            }
-          }
-        }
+    const timer = setTimeout(() => {
+      console.time("[perf] applied-sync");
+      apiFetch("/api/matches/applied", {
+        headers: { Authorization: `Bearer ${accessToken}` },
       })
-      .catch(() => {});
+        .then((r) => r.json())
+        .then((data) => {
+          console.timeEnd("[perf] applied-sync");
+          if (data.applied && Array.isArray(data.applied)) {
+            const serverApplied = new Set<string>(data.applied);
+            const localApplied = safeGetSet(MATCH_APPLIED_KEY);
+
+            let changed = false;
+            for (const id of data.applied) {
+              if (!localApplied.has(id)) {
+                localApplied.add(id);
+                changed = true;
+              }
+            }
+            if (changed) {
+              safeSetSet(MATCH_APPLIED_KEY, localApplied);
+              setRefreshKey((k) => k + 1);
+            }
+
+            for (const localId of localApplied) {
+              if (!serverApplied.has(localId)) {
+                apiFetch(`/api/matches/${localId}/applied`, {
+                  method: "PATCH",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${accessToken}`,
+                  },
+                  body: JSON.stringify({ applied: true }),
+                }).then(() => {
+                  queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
+                }).catch(() => {});
+              }
+            }
+          }
+        })
+        .catch(() => {});
+    }, 2000);
+    return () => clearTimeout(timer);
   }, [accessToken]);
 
+  // Defer favorites 1.5 s — not needed for initial render
   useEffect(() => {
     if (!accessToken) return;
-    apiFetch("/api/favorites", {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    })
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.favoriteIds && Array.isArray(data.favoriteIds)) {
-          setFavoriteIds(new Set(data.favoriteIds));
-        }
+    const timer = setTimeout(() => {
+      apiFetch("/api/favorites", {
+        headers: { Authorization: `Bearer ${accessToken}` },
       })
-      .catch(() => {});
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.favoriteIds && Array.isArray(data.favoriteIds)) {
+            setFavoriteIds(new Set(data.favoriteIds));
+          }
+        })
+        .catch(() => {});
+    }, 1500);
+    return () => clearTimeout(timer);
   }, [accessToken]);
 
   const toggleFavorite = useCallback(
@@ -1389,6 +1401,11 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
         );
       })
     : allMatchesSorted;
+
+  // Reset pagination when the user changes sort order or search query
+  useEffect(() => {
+    setVisibleCount(20);
+  }, [sortOption, searchQuery]);
 
   const removeApplied = useCallback(async (listingId: string) => {
     if (!accessToken) return;
@@ -1521,21 +1538,32 @@ function MatchesTab({ accessToken, setActiveTab, initialTopTab, buddyMode, owner
                 {t("matches.noSearchResults").replace("{query}", searchQuery)}
               </p>
             ) : (
-              filteredMatches.map((m) => (
-                <ListingCardFull
-                  key={m.listing_id}
-                  match={m}
-                  isFavorited={favoriteIds.has(m.listing_id)}
-                  onToggleFavorite={toggleFavorite}
-                  onCardClick={() => {
-                    markViewed(m.listing_id);
-                    refreshStatuses();
-                    navigate(`/apply/${m.listing_id}`);
-                  }}
-                  locked={!matchesHasActiveSub}
-                  matchVariant
-                />
-              ))
+              <>
+                {filteredMatches.slice(0, visibleCount).map((m) => (
+                  <ListingCardFull
+                    key={m.listing_id}
+                    match={m}
+                    isFavorited={favoriteIds.has(m.listing_id)}
+                    onToggleFavorite={toggleFavorite}
+                    onCardClick={() => {
+                      markViewed(m.listing_id);
+                      refreshStatuses();
+                      navigate(`/apply/${m.listing_id}`);
+                    }}
+                    locked={!matchesHasActiveSub}
+                    matchVariant
+                  />
+                ))}
+                {visibleCount < filteredMatches.length && (
+                  <button
+                    onClick={() => setVisibleCount((c) => c + 20)}
+                    className="w-full py-3 rounded-[10px] text-[14px] font-semibold text-ha-primary-hover border border-ha-card-border active:opacity-70 transition-opacity"
+                    data-testid="button-load-more-matches"
+                  >
+                    {t("common.loadMore")} ({filteredMatches.length - visibleCount})
+                  </button>
+                )}
+              </>
             )}
           </div>
         )}
@@ -2328,10 +2356,17 @@ export default function DashboardPage() {
   }, [user, loading, navigate]);
 
 
+  // Only run once per login session — scoped invalidation, NOT a global flush.
+  // A global invalidateQueries() with no filter causes a cascade of 8+ parallel
+  // re-fetches on every dashboard mount, adding ~15 s on Android WebView.
+  const didBootstrapRef = useRef(false);
   useEffect(() => {
-    if (user) {
-      console.log(`[IDENTITY] Dashboard user effect — invalidating all queries for user=${user.id.substring(0, 8)}`);
-      queryClient.invalidateQueries();
+    if (user && !didBootstrapRef.current) {
+      didBootstrapRef.current = true;
+      console.log(`[perf] Dashboard bootstrap user=${user.id.substring(0, 8)}`);
+      console.time("[perf] subscription-load");
+      queryClient.invalidateQueries({ queryKey: ["/api/subscription/status"] });
+      queryClient.invalidateQueries({ queryKey: ["/search-profiles"] });
     }
   }, [user?.id]);
 
@@ -2345,12 +2380,22 @@ export default function DashboardPage() {
       queryClient.invalidateQueries({ queryKey: ["/search-profiles"] });
     }
   }, []);
+  // Start fetching matches as soon as we have a token — don't wait for
+  // subscription to resolve. The tab itself gates display on hasActiveSub.
   const apiMatchesQuery = useQuery<ApiMatchesResponse>({
     queryKey: ["/api/matches"],
-    queryFn: () => fetchApiMatches(accessToken!),
-    enabled: !!user && !!accessToken && hasActiveSub,
-    staleTime: 30_000,
-    refetchOnWindowFocus: true,
+    queryFn: () => {
+      console.time("[perf] dashboard-matches-fetch");
+      return fetchApiMatches(accessToken!).then((r) => {
+        console.timeEnd("[perf] dashboard-matches-fetch");
+        console.timeEnd("[perf] subscription-load");
+        return r;
+      });
+    },
+    enabled: !!user && !!accessToken,
+    staleTime: 2 * 60_000,
+    gcTime: 10 * 60_000,
+    refetchOnWindowFocus: false,
   });
 
   const dashProfileQuery = useQuery<{ profile_photo_url?: string | null }>({
