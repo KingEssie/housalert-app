@@ -5,10 +5,15 @@ import { supabase } from "@/lib/supabase";
 import { queryClient } from "@/lib/queryClient";
 import { useTranslation } from "@/i18n";
 import { isNativePlatform, closeInAppBrowser, consumeCheckoutContext } from "@/lib/capacitor";
-import { CheckCircle, Loader2, AlertCircle, RotateCw, LogIn } from "lucide-react";
+import { CheckCircle, Loader2, AlertCircle, RotateCw, LogIn, Smartphone } from "lucide-react";
 
-type Status = "loading" | "success" | "error" | "session_missing";
+type Status = "loading" | "deep_link_waiting" | "success" | "error" | "session_missing";
 const MAX_RETRIES = 8;
+
+// How long to wait for Android to intercept the housalert:// deep link before
+// falling back to web-based confirmation.  If Chrome Custom Tab is still alive
+// after this delay it means the intent filter didn't fire.
+const DEEP_LINK_WAIT_MS = 2000;
 
 /** Reads a URL param from both the standard search string and hash-based routing.
  *  In the native Capacitor app (hash router) the URL is:
@@ -66,26 +71,64 @@ async function waitForSession(maxAttempts = 5, delayMs = 1200): Promise<string |
 export default function CheckoutSuccessPage() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
-  // Read session_id from URL once at component level so the session_missing
-  // UI can build a deep-link back into the native app.
   const urlSessionId = getUrlParam("session_id");
   const [status, setStatus] = useState<Status>("loading");
   const [errorMsg, setErrorMsg] = useState("");
+  const [countdown, setCountdown] = useState(Math.ceil(DEEP_LINK_WAIT_MS / 1000));
   const retriesRef = useRef(0);
   const confirmedRef = useRef(false);
   const native = isNativePlatform();
 
-  // When this page loads inside Chrome Custom Tab (after Stripe redirects to the
-  // https:// success URL), immediately attempt a deep-link back into the native app.
-  // If the housalert:// intent-filter is registered in AndroidManifest.xml, Android
-  // intercepts the URL, auto-closes the Custom Tab, and fires appUrlOpen in the app.
-  // If not registered this is a silent no-op and the user sees the visible fallback button.
+  // ---------------------------------------------------------------------------
+  // Deep-link gate for browser (Chrome Custom Tab) context
+  //
+  // When this page loads in a browser with a session_id it could be:
+  //   A) Chrome Custom Tab from native checkout — should go to native app
+  //   B) Actual web checkout — should process here
+  //
+  // To handle A correctly we MUST attempt the housalert:// deep link FIRST and
+  // wait before letting confirmSession() run.  If Android intercepts the URL the
+  // Custom Tab closes automatically and this timer never fires.  If the tab is
+  // still alive after DEEP_LINK_WAIT_MS it means the intent didn't fire (no
+  // intent filter or web user) — then we fall through to confirmSession().
+  // ---------------------------------------------------------------------------
   useEffect(() => {
-    if (native) return;          // already inside native app — no redirect needed
-    if (!urlSessionId) return;   // no session_id → nothing to redirect
+    if (native) {
+      // Inside the native Capacitor WebView — run confirmSession immediately.
+      console.log("[checkout-success] Native context — running confirmSession directly");
+      confirmSession();
+      return;
+    }
+
+    if (!urlSessionId) {
+      // Non-native, no session_id — run confirmSession so error state shows.
+      confirmSession();
+      return;
+    }
+
+    // Non-native with session_id → attempt deep link and hold confirmSession.
     const deepLink = `housalert://checkout/success?session_id=${encodeURIComponent(urlSessionId)}`;
-    console.log("[checkout-success] Browser context with session_id — attempting deep-link:", deepLink.substring(0, 80));
+    console.log("[deep-link] attempting native redirect:", deepLink.substring(0, 80));
+    setStatus("deep_link_waiting");
     window.location.href = deepLink;
+
+    // Countdown display
+    const tickInterval = setInterval(() => {
+      setCountdown((c) => Math.max(0, c - 1));
+    }, 1000);
+
+    // Fallback: if Chrome Custom Tab is still alive after the wait window the
+    // intent filter didn't fire — fall through to web-based confirmation.
+    const fallbackTimer = setTimeout(() => {
+      clearInterval(tickInterval);
+      console.log("[deep-link] fallback to web processing (timer expired after", DEEP_LINK_WAIT_MS, "ms)");
+      confirmSession();
+    }, DEEP_LINK_WAIT_MS);
+
+    return () => {
+      clearInterval(tickInterval);
+      clearTimeout(fallbackTimer);
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -101,20 +144,16 @@ export default function CheckoutSuccessPage() {
     // Close any in-app browser that may still be open (App Links re-opened the
     // app but Chrome Custom Tab might still be on screen).
     if (native) {
-      await closeInAppBrowser();
+      try {
+        await closeInAppBrowser();
+        console.log("[checkout-success] closeInAppBrowser() called");
+      } catch {}
     }
 
-    // On native, wait for the auth session to be available (the WebView was
-    // backgrounded during checkout so the token may need a refresh cycle).
     let sessionId = getUrlParam("session_id");
     console.log(`[checkout-success] session_id from URL: ${sessionId?.substring(0, 20) ?? "none"}`);
 
     if (!sessionId) {
-      // Fallback: the browserFinished path stores the session_id in localStorage
-      // before navigating here.  consumePendingCheckoutSession() already read and
-      // cleared it in the DeepLinkHandler, but if we land here via a direct
-      // browser-finished navigate the id is already encoded in the URL.
-      // This branch handles edge-cases where the URL parse above failed.
       console.log("[checkout-success] session_id not in URL — checking localStorage fallback");
       const { consumePendingCheckoutSession } = await import("@/lib/capacitor");
       const stored = consumePendingCheckoutSession();
@@ -125,7 +164,7 @@ export default function CheckoutSuccessPage() {
     }
 
     if (!sessionId) {
-      console.warn("[checkout-success] No session_id found — redirecting to setup");
+      console.warn("[checkout-success] No session_id found — showing error");
       setStatus("error");
       setErrorMsg(t("checkoutSuccess.noSession"));
       return;
@@ -212,9 +251,6 @@ export default function CheckoutSuccessPage() {
         }
       }
 
-      // No auth session available — payment likely succeeded but the user was
-      // logged out while in the background. Store the session_id so that after
-      // the user logs in again, the login page resumes the checkout flow.
       if (!token) {
         console.warn("[checkout-success] No auth token and all confirm paths failed — showing session_missing state");
         if (sessionId) {
@@ -252,31 +288,37 @@ export default function CheckoutSuccessPage() {
     setTimeout(() => navigate(destination), 2500);
   }
 
-  useEffect(() => {
-    confirmSession();
-  }, []);
+  // ---------------------------------------------------------------------------
+  // Render
+  // ---------------------------------------------------------------------------
+
+  const deepLinkUrl = urlSessionId
+    ? `housalert://checkout/success?session_id=${encodeURIComponent(urlSessionId)}`
+    : null;
+
+  const iconBg =
+    status === "error" ? "var(--ha-danger-light)"
+    : status === "session_missing" ? "var(--ha-warning-light, #fffbeb)"
+    : status === "deep_link_waiting" ? "#f0fdf4"
+    : "var(--ha-primary-light)";
 
   return (
     <div className="min-h-screen bg-ha-bg flex items-center justify-center px-5" data-testid="page-checkout-success">
-      <div className="text-center max-w-sm">
+      <div className="text-center max-w-sm w-full">
         <div
           className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5"
-          style={{
-            background: status === "error"
-              ? "var(--ha-danger-light)"
-              : status === "session_missing"
-              ? "var(--ha-warning-light, #fffbeb)"
-              : "var(--ha-primary-light)",
-          }}
+          style={{ background: iconBg }}
         >
           {status === "loading" && <Loader2 className="w-8 h-8 animate-spin text-ha-primary" />}
+          {status === "deep_link_waiting" && <Smartphone className="w-8 h-8" style={{ color: "#16a34a" }} />}
           {status === "success" && <CheckCircle className="w-8 h-8 text-ha-success" />}
           {status === "error" && <AlertCircle className="w-8 h-8 text-ha-danger" />}
           {status === "session_missing" && <CheckCircle className="w-8 h-8" style={{ color: "#f59e0b" }} />}
         </div>
 
-        <h1 className="text-[30px] font-semibold text-ha-text mb-2" data-testid="text-checkout-title">
+        <h1 className="text-[26px] font-semibold text-ha-text mb-2" data-testid="text-checkout-title">
           {status === "loading" && t("checkoutSuccess.loading")}
+          {status === "deep_link_waiting" && "HousAlert openen…"}
           {status === "success" && t("checkoutSuccess.success")}
           {status === "error" && t("checkoutSuccess.error")}
           {status === "session_missing" && t("checkoutSuccess.paymentOk")}
@@ -284,10 +326,33 @@ export default function CheckoutSuccessPage() {
 
         <p className="text-[15px] text-ha-text-secondary" data-testid="text-checkout-subtitle">
           {status === "loading" && t("checkoutSuccess.loadingSubtitle")}
+          {status === "deep_link_waiting" && `Je betaling is gelukt. De app opent automatisch…`}
           {status === "success" && t("checkoutSuccess.successSubtitle")}
           {status === "error" && errorMsg}
           {status === "session_missing" && t("checkoutSuccess.sessionMissingSubtitle")}
         </p>
+
+        {/* Deep-link waiting: countdown + immediate manual open button */}
+        {status === "deep_link_waiting" && (
+          <div className="mt-6 flex flex-col gap-3">
+            {deepLinkUrl && (
+              <a
+                href={deepLinkUrl}
+                className="h-[48px] rounded-[10px] text-white text-[15px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
+                style={{ background: "rgb(var(--ha-primary))" }}
+                data-testid="button-open-app-deep-link"
+              >
+                <Smartphone className="w-4 h-4" />
+                Open HousAlert
+              </a>
+            )}
+            <p className="text-[13px] text-ha-text-secondary">
+              {countdown > 0
+                ? `Automatisch doorverwijzen in ${countdown}s…`
+                : "Bezig met doorverwijzen…"}
+            </p>
+          </div>
+        )}
 
         {status === "error" && (
           <div className="mt-6 flex flex-col gap-3">
@@ -312,23 +377,18 @@ export default function CheckoutSuccessPage() {
 
         {status === "session_missing" && (
           <div className="mt-6 flex flex-col gap-3">
-            {/* Primary action: deep-link back into the native app.
-                Works from Chrome Custom Tab — Android intercepts housalert://
-                and opens the app, which then processes the session_id via
-                the DeepLinkHandler → CheckoutSuccessPage with a live session. */}
-            {urlSessionId && (
+            {/* Primary: deep-link back into the native app */}
+            {deepLinkUrl && (
               <a
-                href={`housalert://checkout/success?session_id=${encodeURIComponent(urlSessionId)}`}
+                href={deepLinkUrl}
                 className="h-[48px] rounded-[10px] text-white text-[15px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
                 style={{ background: "rgb(var(--ha-primary))" }}
                 data-testid="button-return-to-app"
               >
+                <Smartphone className="w-4 h-4" />
                 {t("checkoutSuccess.returnToApp", "Terug naar HousAlert")}
               </a>
             )}
-            {/* Fallback: log in via the web flow.
-                The ha_pending_checkout entry in localStorage ensures the login
-                page resumes the checkout automatically after a successful login. */}
             <button
               onClick={() => navigate("/login?next=/onboarding/setup")}
               className="h-[44px] rounded-[10px] text-[15px] font-medium text-ha-text-secondary hover:bg-ha-surface transition-colors"
