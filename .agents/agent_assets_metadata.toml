@@ -41,3 +41,9 @@ id = "Se2Utv4OA2T9HLhjnasxx"
 uri = "file://housalert-source.zip"
 type = "unspecified"
 title = "HousAlert — Full Source with attached_assets (Android build-ready)"
+
+[[outputs]]
+id = "alGOKdTsQsPq0DIDJFfAt"
+uri = "file://housalert-android-clean.zip"
+type = "unspecified"
+title = "housalert-android-clean.zip"
