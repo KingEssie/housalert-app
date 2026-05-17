@@ -10,10 +10,10 @@ import { CheckCircle, Loader2, AlertCircle, RotateCw, LogIn, Smartphone } from "
 type Status = "loading" | "deep_link_waiting" | "success" | "error" | "session_missing";
 const MAX_RETRIES = 8;
 
-// How long to wait for Android to intercept the housalert:// deep link before
-// falling back to web-based confirmation.  If Chrome Custom Tab is still alive
-// after this delay it means the intent filter didn't fire.
-const DEEP_LINK_WAIT_MS = 2000;
+// Retry schedule (ms after mount) for the housalert:// deep-link attempts.
+// If Android intercepts any of these the Chrome Custom Tab auto-closes and
+// none of the later timers fire.  We never auto-redirect to a browser fallback.
+const DEEP_LINK_RETRIES = [0, 1000, 3000];
 
 /** Reads a URL param from both the standard search string and hash-based routing.
  *  In the native Capacitor app (hash router) the URL is:
@@ -74,7 +74,7 @@ export default function CheckoutSuccessPage() {
   const urlSessionId = getUrlParam("session_id");
   const [status, setStatus] = useState<Status>("loading");
   const [errorMsg, setErrorMsg] = useState("");
-  const [countdown, setCountdown] = useState(Math.ceil(DEEP_LINK_WAIT_MS / 1000));
+  const [deepLinkAttempt, setDeepLinkAttempt] = useState(0);
   const retriesRef = useRef(0);
   const confirmedRef = useRef(false);
   const native = isNativePlatform();
@@ -82,53 +82,45 @@ export default function CheckoutSuccessPage() {
   // ---------------------------------------------------------------------------
   // Deep-link gate for browser (Chrome Custom Tab) context
   //
-  // When this page loads in a browser with a session_id it could be:
-  //   A) Chrome Custom Tab from native checkout — should go to native app
-  //   B) Actual web checkout — should process here
-  //
-  // To handle A correctly we MUST attempt the housalert:// deep link FIRST and
-  // wait before letting confirmSession() run.  If Android intercepts the URL the
-  // Custom Tab closes automatically and this timer never fires.  If the tab is
-  // still alive after DEEP_LINK_WAIT_MS it means the intent didn't fire (no
-  // intent filter or web user) — then we fall through to confirmSession().
+  // Strategy: fire housalert:// immediately and retry at 1 s and 3 s.
+  // We NEVER auto-navigate to a browser fallback — the user must explicitly
+  // choose to continue via the browser.  If Android intercepts any attempt the
+  // Chrome Custom Tab auto-closes and the native app handles checkout.
   // ---------------------------------------------------------------------------
   useEffect(() => {
     if (native) {
-      // Inside the native Capacitor WebView — run confirmSession immediately.
       console.log("[checkout-success] Native context — running confirmSession directly");
       confirmSession();
       return;
     }
 
     if (!urlSessionId) {
-      // Non-native, no session_id — run confirmSession so error state shows.
+      // Non-native without session_id — show the error path.
       confirmSession();
       return;
     }
 
-    // Non-native with session_id → attempt deep link and hold confirmSession.
-    const deepLink = `housalert://checkout/success?session_id=${encodeURIComponent(urlSessionId)}`;
-    console.log("[deep-link] attempting native redirect:", deepLink.substring(0, 80));
+    // Non-native with session_id: show the handoff screen and keep retrying.
     setStatus("deep_link_waiting");
-    window.location.href = deepLink;
 
-    // Countdown display
-    const tickInterval = setInterval(() => {
-      setCountdown((c) => Math.max(0, c - 1));
-    }, 1000);
+    const deepLink = `housalert://checkout/success?session_id=${encodeURIComponent(urlSessionId)}`;
 
-    // Fallback: if Chrome Custom Tab is still alive after the wait window the
-    // intent filter didn't fire — fall through to web-based confirmation.
-    const fallbackTimer = setTimeout(() => {
-      clearInterval(tickInterval);
-      console.log("[deep-link] fallback to web processing (timer expired after", DEEP_LINK_WAIT_MS, "ms)");
-      confirmSession();
-    }, DEEP_LINK_WAIT_MS);
+    function attempt(n: number) {
+      console.log(`[deep-link] retry ${n}: ${deepLink.substring(0, 80)}`);
+      setDeepLinkAttempt(n);
+      window.location.href = deepLink;
+    }
 
-    return () => {
-      clearInterval(tickInterval);
-      clearTimeout(fallbackTimer);
-    };
+    // Immediate first attempt
+    attempt(1);
+
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    DEEP_LINK_RETRIES.slice(1).forEach((delay, idx) => {
+      timers.push(setTimeout(() => attempt(idx + 2), delay));
+    });
+
+    // No automatic fallback to confirmSession() — user must tap explicitly.
+    return () => timers.forEach(clearTimeout);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -318,7 +310,7 @@ export default function CheckoutSuccessPage() {
 
         <h1 className="text-[26px] font-semibold text-ha-text mb-2" data-testid="text-checkout-title">
           {status === "loading" && t("checkoutSuccess.loading")}
-          {status === "deep_link_waiting" && "HousAlert openen…"}
+          {status === "deep_link_waiting" && "Betaling gelukt!"}
           {status === "success" && t("checkoutSuccess.success")}
           {status === "error" && t("checkoutSuccess.error")}
           {status === "session_missing" && t("checkoutSuccess.paymentOk")}
@@ -326,31 +318,49 @@ export default function CheckoutSuccessPage() {
 
         <p className="text-[15px] text-ha-text-secondary" data-testid="text-checkout-subtitle">
           {status === "loading" && t("checkoutSuccess.loadingSubtitle")}
-          {status === "deep_link_waiting" && `Je betaling is gelukt. De app opent automatisch…`}
+          {status === "deep_link_waiting" && "Opening HousAlert app…"}
           {status === "success" && t("checkoutSuccess.successSubtitle")}
           {status === "error" && errorMsg}
           {status === "session_missing" && t("checkoutSuccess.sessionMissingSubtitle")}
         </p>
 
-        {/* Deep-link waiting: countdown + immediate manual open button */}
+        {/* Deep-link handoff: permanent button + retry status + explicit browser fallback */}
         {status === "deep_link_waiting" && (
           <div className="mt-6 flex flex-col gap-3">
+            {/* Primary — always visible, tappable at any time */}
             {deepLinkUrl && (
               <a
                 href={deepLinkUrl}
-                className="h-[48px] rounded-[10px] text-white text-[15px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
+                className="h-[52px] rounded-[12px] text-white text-[16px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform no-underline"
                 style={{ background: "rgb(var(--ha-primary))" }}
                 data-testid="button-open-app-deep-link"
               >
-                <Smartphone className="w-4 h-4" />
-                Open HousAlert
+                <Smartphone className="w-5 h-5" />
+                Ga terug naar app
               </a>
             )}
-            <p className="text-[13px] text-ha-text-secondary">
-              {countdown > 0
-                ? `Automatisch doorverwijzen in ${countdown}s…`
-                : "Bezig met doorverwijzen…"}
+
+            {/* Retry status indicator */}
+            <p className="text-[13px] text-ha-text-secondary" data-testid="text-deep-link-attempt">
+              {deepLinkAttempt === 0 && "Verbinden met app…"}
+              {deepLinkAttempt === 1 && "App openen… (poging 1/3)"}
+              {deepLinkAttempt === 2 && "Opnieuw proberen… (poging 2/3)"}
+              {deepLinkAttempt >= 3 && "Nog een keer proberen… (poging 3/3)"}
             </p>
+
+            {/* Secondary — explicit browser fallback, below the fold visually */}
+            <div className="mt-2 pt-4 border-t border-ha-border">
+              <p className="text-[12px] text-ha-text-secondary mb-2">
+                App niet geïnstalleerd?
+              </p>
+              <button
+                onClick={() => { confirmedRef.current = false; confirmSession(); }}
+                className="w-full h-[44px] rounded-[10px] text-[14px] font-medium text-ha-text-secondary hover:bg-ha-surface transition-colors border border-ha-border"
+                data-testid="button-continue-browser"
+              >
+                Doorgaan in browser
+              </button>
+            </div>
           </div>
         )}
 
