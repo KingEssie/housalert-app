@@ -30,9 +30,13 @@ async function adminFetch(path: string, options?: RequestInit) {
   });
   if (res.status === 403) throw new Error("ACCESS_DENIED");
   if (!res.ok) {
+    let rawText = "";
     let body: any = {};
-    try { body = await res.json(); } catch {}
-    throw new Error(body?.error || body?.message || `Request failed: ${res.status}`);
+    try { rawText = await res.text(); } catch {}
+    try { body = JSON.parse(rawText); } catch {}
+    const errorMsg = body?.error || body?.message || rawText.trim().substring(0, 300) || `Request failed: ${res.status}`;
+    const extras = [body?.step && `step=${body.step}`, body?.errorType && body.errorType !== "Error" && `(${body.errorType})`].filter(Boolean).join(" ");
+    throw new Error(`[${res.status}] ${errorMsg}${extras ? " — " + extras : ""}`);
   }
   return res.json();
 }
@@ -2031,8 +2035,9 @@ function AlertsTab() {
         res = await adminFetch("/api/admin/portal/test-alert", { method: "POST", body: JSON.stringify(body) });
       } catch (fetchErr: any) {
         const msg = fetchErr.message || "Unknown error";
-        const isDomain = msg.toLowerCase().includes("domain");
-        const isKey = msg.toLowerCase().includes("key") || msg.toLowerCase().includes("api");
+        const is5xx = msg.startsWith("[5");
+        const isDomain = !is5xx && msg.toLowerCase().includes("domain");
+        const isKey = !is5xx && (msg.toLowerCase().includes("key") || msg.toLowerCase().includes("api"));
         setTestError({
           readable: isDomain
             ? "Domain not verified in Resend. Add and verify your sending domain in the Resend dashboard."

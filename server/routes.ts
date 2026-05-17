@@ -7901,9 +7901,16 @@ export async function registerRoutes(
       }
 
       if (type === "push") {
+        let _step = "resolve-target";
+        try {
+
         // 1. Resolve target user ID
         const rawInput = (typeof userId === "string" ? userId : "").trim();
-        log(`[PUSH TEST] Admin ${adminUser.email} — raw target: "${rawInput || "(blank → self)"}"`);
+        log(`[PUSH TEST] Admin ${adminUser?.email} — raw target: "${rawInput || "(blank → self)"}"`);
+
+        if (!adminUser?.id) {
+          return res.status(500).json({ error: "adminUser.id missing — session may be invalid", step: "resolve-target" });
+        }
 
         let targetUserId: string;
         let resolvedVia: string;
@@ -7912,6 +7919,7 @@ export async function registerRoutes(
           targetUserId = adminUser.id;
           resolvedVia = "blank → admin self";
         } else if (rawInput.includes("@")) {
+          _step = "lookup-email";
           const found = await lookupSupabaseUserByEmail(rawInput);
           if (!found) {
             return res.status(404).json({
@@ -7936,6 +7944,7 @@ export async function registerRoutes(
         log(`[PUSH TEST] Resolved userId=${targetUserId.substring(0, 8)}... via ${resolvedVia}`);
 
         // 2. VAPID check
+        _step = "vapid-check";
         if (!isPushInitialized()) {
           const vapidPub = process.env.VITE_VAPID_PUBLIC_KEY;
           const vapidPriv = process.env.VAPID_PRIVATE_KEY;
@@ -7949,12 +7958,15 @@ export async function registerRoutes(
         }
 
         // 3. Pre-flight subscription count
+        _step = "preflight-subs";
         const adminSb = getSupabaseAdmin();
-        const { data: webSubs } = await adminSb.from("push_subscriptions").select("id").eq("user_id", targetUserId);
-        const { data: expoTokensRows } = await adminSb.from("expo_push_tokens").select("id").eq("user_id", targetUserId).eq("is_active", true);
+        const { data: webSubs, error: webSubErr } = await adminSb.from("push_subscriptions").select("id").eq("user_id", targetUserId);
+        if (webSubErr) log(`[PUSH TEST] push_subscriptions query error: ${webSubErr.message}`);
+        const { data: expoTokensRows, error: expoErr } = await adminSb.from("expo_push_tokens").select("id").eq("user_id", targetUserId).eq("is_active", true);
+        if (expoErr) log(`[PUSH TEST] expo_push_tokens query error: ${expoErr.message}`);
         const webSubCount = webSubs?.length ?? 0;
         const expoTokenCount = expoTokensRows?.length ?? 0;
-        log(`[PUSH TEST] userId=${targetUserId.substring(0, 8)}...: web_subs=${webSubCount} active_expo_tokens=${expoTokenCount}`);
+        log(`[PUSH TEST] userId=${targetUserId.substring(0, 8)}...: web_subs=${webSubCount} active_expo_tokens=${expoTokenCount} (webSubErr=${webSubErr?.message ?? "none"} expoErr=${expoErr?.message ?? "none"})`);
 
         if (webSubCount === 0 && expoTokenCount === 0) {
           return res.json({
@@ -7964,15 +7976,18 @@ export async function registerRoutes(
             message: "No active push subscriptions or Expo tokens found for this user. Ask them to enable push notifications in their account preferences.",
             webSubs: webSubCount,
             expoTokens: expoTokenCount,
+            dbErrors: [webSubErr?.message, expoErr?.message].filter(Boolean),
           });
         }
 
         // 4. Send
+        _step = "send-web-push";
         const webResult = await sendPushToUser(targetUserId, {
           title: "HousAlert Test",
           body: "Push notifications work! 🏠",
           url: "/dashboard",
         }, supabase);
+        _step = "send-expo-push";
         const expoResult = await sendExpoTestPush(targetUserId);
         log(`[PUSH TEST] userId=${targetUserId.substring(0, 8)}...: web_sent=${webResult.sent} web_failed=${webResult.failed} web_removed=${webResult.removed} expo_sent=${expoResult.sent}`);
         if (webResult.errors?.length) {
@@ -8026,12 +8041,24 @@ export async function registerRoutes(
           web: webResult,
           expo: expoResult,
         });
+
+        } catch (pushErr: any) {
+          const msg = pushErr instanceof Error ? pushErr.message : (typeof pushErr === "string" ? pushErr : JSON.stringify(pushErr));
+          const stack = pushErr?.stack || "(no stack)";
+          log(`[PUSH TEST] *** EXCEPTION at step="${_step}": ${msg}\n${stack}`);
+          return res.status(500).json({
+            error: msg || "Internal push error",
+            step: _step,
+            errorType: pushErr?.constructor?.name || typeof pushErr,
+          });
+        }
       }
 
       return res.status(400).json({ error: "type must be 'email' or 'push'" });
     } catch (err: any) {
-      log(`[admin] Test alert error: ${err.message}`);
-      res.status(500).json({ error: err.message || "Internal error" });
+      const msg = err instanceof Error ? err.message : (typeof err === "string" ? err : JSON.stringify(err));
+      log(`[admin] Test alert outer error: ${msg}\n${err?.stack || ""}`);
+      res.status(500).json({ error: msg || "Internal error", errorType: err?.constructor?.name || typeof err });
     }
   });
 
