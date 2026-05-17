@@ -2,7 +2,7 @@ import { apiFetch } from "@/lib/api-base";
 import { useHashSearch } from "@/lib/hash-search";
 import { useState, useEffect, useRef } from "react";
 import { useLocation } from "wouter";
-import { isNativePlatform, openCheckoutBrowser, saveCheckoutContext } from "@/lib/capacitor";
+import { isNativePlatform } from "@/lib/capacitor";
 import { ArrowLeft, Check, Loader2, X, ShieldAlert, MapPin, CircleArrowRight } from "lucide-react";
 import { HousAlertLogo } from "@/components/housalert-logo";
 import { useToast } from "@/hooks/use-toast";
@@ -345,6 +345,15 @@ export default function PaywallPage() {
       return;
     }
 
+    // Native app subscriptions are handled via Google Play / App Store.
+    if (isNativePlatform()) {
+      toast({
+        title: "Binnenkort beschikbaar",
+        description: "Abonnementen in de app komen binnenkort beschikbaar.",
+      });
+      return;
+    }
+
     setLoading(true);
     try {
       const session = await supabase.auth.getSession();
@@ -358,14 +367,13 @@ export default function PaywallPage() {
 
       trackEvent("checkout_started", { plan: selectedPlan });
 
-      const native = isNativePlatform();
       const res = await apiFetch("/api/checkout/session", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ plan: selectedPlan, is_native: native }),
+        body: JSON.stringify({ plan: selectedPlan }),
       });
 
       const data = await res.json();
@@ -380,21 +388,8 @@ export default function PaywallPage() {
       }
 
       if (data.url) {
-        // Store checkout context so checkout-success.tsx knows where to send the
-        // user after payment. Signup/onboarding flows (source=website) go back to
-        // setup; direct upgrades go to dashboard.
-        saveCheckoutContext({
-          source: isWebsiteMode ? "signup_onboarding" : "paywall_upgrade",
-          next: isWebsiteMode ? "/onboarding/setup" : "/dashboard",
-        });
-        console.log("[paywall] Opening checkout — native:", native, "session_id:", data.session_id?.substring(0, 20));
-        if ((window as any).ReactNativeWebView) {
-          (window as any).ReactNativeWebView.postMessage(JSON.stringify({ type: "OPEN_EXTERNAL_URL", url: data.url }));
-        } else if (native) {
-          await openCheckoutBrowser(data.url, data.session_id || "");
-        } else {
-          window.location.href = data.url;
-        }
+        console.log("[paywall] Opening checkout session_id:", data.session_id?.substring(0, 20));
+        window.location.href = data.url;
       } else {
         toast({
           title: t("paywall.paymentUnavailable"),

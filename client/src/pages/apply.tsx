@@ -1,6 +1,6 @@
 import { apiFetch } from "@/lib/api-base";
 import { useState, useEffect } from "react";
-import { isNativePlatform, openCheckoutBrowser, saveCheckoutContext } from "@/lib/capacitor";
+import { isNativePlatform } from "@/lib/capacitor";
 import { useAuth } from "@/lib/auth";
 import { useQuery } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
@@ -144,29 +144,30 @@ function UpgradeSheet({
 
   async function handleCheckout() {
     if (!accessToken || checkoutLoading) return;
+
+    // Native app subscriptions are handled via Google Play / App Store.
+    if (isNativePlatform()) {
+      toast({
+        title: "Binnenkort beschikbaar",
+        description: "Abonnementen in de app komen binnenkort beschikbaar.",
+      });
+      return;
+    }
+
     setCheckoutLoading(true);
     try {
-      const native = isNativePlatform();
       const res = await apiFetch("/api/checkout/session", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ plan: selectedPlan, is_native: native }),
+        body: JSON.stringify({ plan: selectedPlan }),
       });
       const data = await res.json();
       if (data.url) {
-        // Upgrading from apply/detail — return to dashboard after payment.
-        saveCheckoutContext({ source: "apply_upgrade", next: "/dashboard" });
-        console.log("[apply] Opening checkout — native:", native, "session_id:", data.session_id?.substring(0, 20));
-        if ((window as any).ReactNativeWebView) {
-          (window as any).ReactNativeWebView.postMessage(JSON.stringify({ type: "OPEN_EXTERNAL_URL", url: data.url }));
-        } else if (native) {
-          await openCheckoutBrowser(data.url, data.session_id || "");
-        } else {
-          window.location.href = data.url;
-        }
+        console.log("[apply] Opening checkout session_id:", data.session_id?.substring(0, 20));
+        window.location.href = data.url;
       } else {
         toast({ title: "Betaling niet beschikbaar", description: "Probeer het later opnieuw.", variant: "destructive" });
       }

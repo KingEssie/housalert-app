@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import { isNativePlatform, openCheckoutBrowser, saveCheckoutContext } from "@/lib/capacitor";
+import { isNativePlatform } from "@/lib/capacitor";
 import { queryClient } from "@/lib/queryClient";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
@@ -1219,6 +1219,16 @@ export default function OnboardingSetup() {
   async function handleSelectPlan(plan: string) {
     trackEvent("setup_plan_selected", { plan });
 
+    // Native app subscriptions are handled via Google Play / App Store.
+    // Do not open Stripe from within the native app.
+    if (isNativePlatform()) {
+      toast({
+        title: "Binnenkort beschikbaar",
+        description: "Abonnementen in de app komen binnenkort beschikbaar.",
+      });
+      return;
+    }
+
     try {
       const s = await supabase.auth.getSession();
       const token = s.data.session?.access_token;
@@ -1227,11 +1237,10 @@ export default function OnboardingSetup() {
         return;
       }
 
-      const native = isNativePlatform();
       const res = await apiFetch("/api/checkout/session", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ plan, is_native: native }),
+        body: JSON.stringify({ plan }),
       });
 
       if (!res.ok) {
@@ -1241,16 +1250,8 @@ export default function OnboardingSetup() {
       const result = await res.json();
 
       if (result.url) {
-        // Always continue onboarding after payment from the setup/onboarding paywall.
-        saveCheckoutContext({ source: "setup_onboarding", next: "/onboarding/setup" });
-        console.log("[setup] Opening checkout — native:", native, "session_id:", result.session_id?.substring(0, 20));
-        if (typeof (window as any).ReactNativeWebView?.postMessage === "function") {
-          (window as any).ReactNativeWebView.postMessage(JSON.stringify({ type: "openExternal", url: result.url }));
-        } else if (native) {
-          await openCheckoutBrowser(result.url, result.session_id || "");
-        } else {
-          window.location.href = result.url;
-        }
+        console.log("[setup] Opening checkout session_id:", result.session_id?.substring(0, 20));
+        window.location.href = result.url;
       }
     } catch (err: any) {
       toast({ title: t("common.error"), description: err.message, variant: "destructive" });
@@ -1488,7 +1489,30 @@ export default function OnboardingSetup() {
   return (
     <SetupShell step={step} onBack={handleBack} showBack={showBack}>
       {step === "paywall" && (
-        <PaywallStep onSelectPlan={handleSelectPlan} onSkip={handleSkipPaywall} t={t} />
+        isNativePlatform() ? (
+          <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
+            <div
+              className="w-16 h-16 rounded-full flex items-center justify-center mb-5"
+              style={{ background: "var(--ha-primary-light)" }}
+            >
+              <Bell className="w-8 h-8 text-ha-primary" />
+            </div>
+            <h2 className="text-[22px] font-semibold text-ha-text mb-3">Binnenkort beschikbaar</h2>
+            <p className="text-[15px] text-ha-text-secondary mb-8 max-w-xs">
+              Abonnementen in de app komen binnenkort beschikbaar. Je kunt nu al doorgaan en je zoekprofiel instellen.
+            </p>
+            <button
+              onClick={handleSkipPaywall}
+              className="h-[52px] w-full rounded-[12px] text-white text-[16px] font-semibold flex items-center justify-center gap-2 active:scale-[0.97] transition-transform"
+              style={{ background: "rgb(var(--ha-primary))" }}
+              data-testid="button-continue-without-subscription"
+            >
+              Doorgaan zonder abonnement
+            </button>
+          </div>
+        ) : (
+          <PaywallStep onSelectPlan={handleSelectPlan} onSkip={handleSkipPaywall} t={t} />
+        )
       )}
       {step === "limited-access" && (
         <LimitedAccessStep onGoBack={handleLimitedGoBack} onContinue={handleLimitedContinue} t={t} />

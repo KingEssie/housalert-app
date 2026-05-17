@@ -2786,26 +2786,10 @@ export async function registerRoutes(
         ? (process.env.APP_PUBLIC_BASE_URL || PROD_DOMAIN)
         : `${protocol}://${host}`;
 
-      // For native Capacitor builds we use an HTTPS success URL with a
-      // "from_native=1" marker.  Chrome Custom Tab CAN load HTTPS pages; it
-      // CANNOT navigate to custom-scheme URLs (housalert://) — Chrome silently
-      // blocks custom-scheme navigations for security.
-      //
-      // The checkout-success page detects from_native=1, shows the handoff
-      // screen, and fires an intent:// URI which Chrome *does* handle: it
-      // dispatches a VIEW intent directly to com.housalert.app, closing the
-      // Custom Tab and opening the native app.  The DeepLinkHandler in App.tsx
-      // then maps the resulting housalert://checkout/success URL → /checkout/success.
-      // Always include from_native=1 in the success URL regardless of the
-      // client-supplied is_native flag.  Capacitor.isNativePlatform() can
-      // return false in some Android WebView configurations, so we no longer
-      // rely on it to decide the return flow.  checkout-success.tsx detects
-      // the real device context (Android UA) at render time.
-      const successUrl = `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}&from_native=1`;
+      const successUrl = `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`;
       const cancelUrl = `${baseUrl}/onboarding/setup?cancelled=1`;
 
-      log(`[checkout] is_native_from_client=${!!is_native} success_url=${successUrl}`);
-      log(`[checkout] Creating Stripe session: plan=${plan}, priceId=${stripePriceId}, customer=${customerId}`);
+      log(`[checkout] Creating Stripe session: plan=${plan}, priceId=${stripePriceId}, customer=${customerId}, success_url=${successUrl}`);
 
       let referralCouponId: string | undefined;
       try {
@@ -3063,12 +3047,12 @@ export async function registerRoutes(
           trial_period_days: 14,
           metadata: { supabase_user_id: user.id, plan },
         },
-        success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}&from_native=1`,
+        success_url: `${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${baseUrl}/onboarding/setup?cancelled=1`,
         metadata: { supabase_user_id: user.id, plan },
       });
 
-      log(`[checkout-paywall] success_url=${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}&from_native=1`);
+      log(`[checkout-paywall] success_url=${baseUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`);
       return res.json({ url: session.url, session_id: session.id });
     } catch (err: any) {
       console.error("Checkout error:", err);

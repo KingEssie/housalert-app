@@ -244,7 +244,6 @@ function DeepLinkHandler() {
 
   useEffect(() => {
     let cleanupDeepLink: (() => void) | null = null;
-    let cleanupBrowserFinished: (() => void) | null = null;
 
     function handleDeepLinkUrl(url: string) {
       try {
@@ -265,25 +264,16 @@ function DeepLinkHandler() {
       }
     }
 
-    function handleBrowserFinished(sessionId: string | null) {
-      if (!sessionId) {
-        console.log("[checkout-browser] Browser closed with no pending session (user cancelled)");
-        return;
-      }
-      const destination = `/checkout/success?session_id=${encodeURIComponent(sessionId)}&native=1`;
-      console.log("[checkout-browser] Browser finished — navigating to:", destination);
-      navigate(destination);
-    }
-
     (async () => {
-      const { setupDeepLinkListener, setupBrowserFinishedListener } = await import("./lib/capacitor");
+      const { setupDeepLinkListener } = await import("./lib/capacitor");
       cleanupDeepLink = await setupDeepLinkListener(handleDeepLinkUrl);
-      cleanupBrowserFinished = await setupBrowserFinishedListener(handleBrowserFinished);
+      // browserFinished listener removed: native app subscriptions are handled
+      // via Google Play / App Store (not Stripe). Re-add when in-app purchases
+      // are implemented if a browser-based flow is ever needed again.
     })();
 
     return () => {
       cleanupDeepLink?.();
-      cleanupBrowserFinished?.();
     };
   }, []);
 

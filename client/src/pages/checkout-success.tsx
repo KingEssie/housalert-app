@@ -4,27 +4,21 @@ import { apiFetch } from "@/lib/api-base";
 import { supabase } from "@/lib/supabase";
 import { queryClient } from "@/lib/queryClient";
 import { useTranslation } from "@/i18n";
-import { isNativePlatform, closeInAppBrowser, consumeCheckoutContext, markPaymentPendingForLogin } from "@/lib/capacitor";
-import { CheckCircle, Loader2, AlertCircle, RotateCw, LogIn, Smartphone } from "lucide-react";
+import { consumeCheckoutContext, markPaymentPendingForLogin } from "@/lib/capacitor";
+import { CheckCircle, Loader2, AlertCircle, RotateCw, LogIn } from "lucide-react";
 
-type Status = "loading" | "deep_link_waiting" | "success" | "error" | "session_missing";
+type Status = "loading" | "success" | "error" | "session_missing";
 const MAX_RETRIES = 8;
 
-// Retry schedule (ms after mount) for the housalert:// deep-link attempts.
-// If Android intercepts any of these the Chrome Custom Tab auto-closes and
-// none of the later timers fire.  We never auto-redirect to a browser fallback.
-const DEEP_LINK_RETRIES = [0, 1000, 3000];
-
 /** Reads a URL param from both the standard search string and hash-based routing.
- *  In the native Capacitor app (hash router) the URL is:
- *    https://localhost/#/checkout/success?session_id=cs_xxx
- *  so window.location.search is empty — the query string lives inside the hash. */
+ *  In some environments the query string lives inside the hash fragment:
+ *    https://example.com/#/checkout/success?session_id=cs_xxx */
 function getUrlParam(key: string): string | null {
   const searchParams = new URLSearchParams(window.location.search);
   const fromSearch = searchParams.get(key);
   if (fromSearch) return fromSearch;
 
-  const hash = window.location.hash; // e.g. "#/checkout/success?session_id=cs_xxx"
+  const hash = window.location.hash;
   const qIdx = hash.indexOf("?");
   if (qIdx !== -1) {
     const hashParams = new URLSearchParams(hash.slice(qIdx));
@@ -34,29 +28,18 @@ function getUrlParam(key: string): string | null {
   return null;
 }
 
-/** Tries to get a valid Supabase session, refreshing if needed.
- *  On native, the WebView may have been in the background during checkout so
- *  the session token could be stale or not yet copied to localStorage. */
-async function waitForSession(maxAttempts = 5, delayMs = 1200): Promise<string | null> {
+/** Waits for a valid Supabase session, refreshing if needed.
+ *  After a web redirect the browser may briefly have no session in memory. */
+async function waitForSession(maxAttempts = 4, delayMs = 800): Promise<string | null> {
   for (let i = 0; i < maxAttempts; i++) {
     try {
-      // On the first attempt, explicitly restore auth from Capacitor Preferences.
-      // The app may have been suspended while the user was in the payment browser
-      // and the Supabase token may not be in localStorage yet.
-      if (i === 0) {
-        try {
-          const { restoreAuthFromNative } = await import("@/lib/capacitor-storage");
-          await restoreAuthFromNative();
-          console.log("[checkout-success] restoreAuthFromNative() complete");
-        } catch {}
-      }
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.access_token) {
         console.log(`[checkout-success] Session ready on attempt ${i + 1}`);
         return session.access_token;
       }
       if (i < maxAttempts - 1) {
-        console.log(`[checkout-success] No session on attempt ${i + 1} — waiting ${delayMs}ms then refreshing...`);
+        console.log(`[checkout-success] No session on attempt ${i + 1} — waiting ${delayMs}ms then refreshing`);
         await new Promise(r => setTimeout(r, delayMs));
         try { await supabase.auth.refreshSession(); } catch {}
       }
@@ -64,141 +47,46 @@ async function waitForSession(maxAttempts = 5, delayMs = 1200): Promise<string |
       console.warn(`[checkout-success] Session attempt ${i + 1} threw:`, e);
     }
   }
-  console.warn("[checkout-success] Could not restore session after all attempts");
   return null;
-}
-
-/** Builds the Android intent:// URI for the given Stripe session.
- *
- *  Chrome Custom Tab BLOCKS housalert:// navigations (custom schemes are
- *  rejected silently).  But Chrome explicitly handles intent:// URIs —
- *  it looks up com.housalert.app, fires a VIEW intent with the reconstructed
- *  housalert:// URL, closes the Custom Tab, and opens the native app.
- *
- *  Format:
- *    intent://checkout/success?session_id=SESSION_ID
- *      #Intent;scheme=housalert;package=com.housalert.app;
- *      S.browser_fallback_url=<encoded-https-fallback>;end
- *
- *  sessionId may be null if the URL param is missing — in that case the
- *  intent is dispatched without a session_id and the native app recovers
- *  via the pending-checkout session stored in Capacitor Preferences.
- */
-function buildIntentUrl(sessionId: string | null): string {
-  const sessionPart = sessionId
-    ? `?session_id=${encodeURIComponent(sessionId)}`
-    : "";
-  // If the app is not installed, Chrome falls back to this URL.
-  const fallback = encodeURIComponent(
-    `https://app.housalert.com/login?next=/onboarding/setup&payment=success`
-  );
-  return (
-    `intent://checkout/success${sessionPart}` +
-    `#Intent;scheme=housalert;package=com.housalert.app;` +
-    `S.browser_fallback_url=${fallback};end`
-  );
 }
 
 export default function CheckoutSuccessPage() {
   const [, navigate] = useLocation();
   const { t } = useTranslation();
   const urlSessionId = getUrlParam("session_id");
-  // from_native=1 → Capacitor native app checkout (Chrome Custom Tab).
-  //   Shows intent:// button to open the native app.
-  // show_handoff=1 → PWA / web browser checkout.
-  //   Shows web-specific buttons (login with payment=success context).
-  // Either flag causes the static handoff screen to display.
-  // from_native=1 is now ALWAYS included in every Stripe success URL
-  // (both checkout endpoints set it unconditionally).  We no longer rely on
-  // the client-supplied is_native flag because Capacitor.isNativePlatform()
-  // can return false in some Android WebView configurations.
-  const fromNative = getUrlParam("from_native") === "1";
-  const showHandoff = fromNative || getUrlParam("show_handoff") === "1";
   const [status, setStatus] = useState<Status>("loading");
   const [errorMsg, setErrorMsg] = useState("");
-  const [deepLinkAttempt, setDeepLinkAttempt] = useState(0);
   const retriesRef = useRef(0);
   const confirmedRef = useRef(false);
-  const native = isNativePlatform();
 
-  // TODO (Android App Links): when App Links are ready, re-introduce Android
-  // UA detection and buildIntentUrl() to send Android users to the native app.
-  // Until then all paths use the browser login redirect — see handoff screen.
-
-  // ---------------------------------------------------------------------------
-  // Routing decision on mount
-  //
-  //  fromNative=true → Chrome Custom Tab from a native-app checkout.
-  //                    Show the static handoff screen immediately.
-  //                    NO auto-fires, NO hidden redirects.
-  //                    User must tap a button.
-  //
-  //  native=true     → Capacitor WebView (came via appUrlOpen / browserFinished).
-  //                    Run confirmSession directly.
-  //
-  //  otherwise       → Real web browser checkout — run confirmSession.
-  // ---------------------------------------------------------------------------
   useEffect(() => {
-    console.log(`[checkout-success] mount: fromNative=${fromNative} showHandoff=${showHandoff} isNative=${native} session_id=${urlSessionId ?? "none"}`);
-    // showHandoff covers both fromNative (Capacitor/Chrome Custom Tab) and
-    // show_handoff (PWA/web browser).  In both cases we show the static
-    // handoff screen immediately — no confirmSession, no auto-redirects.
-    if (showHandoff) {
-      // Write payment-pending flags so the login page navigates to
-      // /onboarding/setup (not dashboard) after successful sign-in.
-      try {
-        localStorage.setItem("ha_pending_checkout_success", "true");
-        sessionStorage.setItem("ha_pending_checkout_success", "true");
-        localStorage.setItem("ha_pending_checkout_next", "/onboarding/setup");
-        sessionStorage.setItem("ha_pending_checkout_next", "/onboarding/setup");
-        console.log("[checkout-context] saved pending next=/onboarding/setup");
-      } catch {}
-      console.log(`[checkout-success] showHandoff=true (fromNative=${fromNative}) — showing static handoff screen`);
-      setStatus("deep_link_waiting");
-      return;
-    }
-
-    if (native) {
-      console.log("[checkout-success] Native context — running confirmSession directly");
-      confirmSession();
-      return;
-    }
-
-    // Bare web checkout (no handoff flag at all — legacy/direct URL)
-    console.log("[checkout-success] Web context — running confirmSession");
+    console.log(`[checkout-success] mount session_id=${urlSessionId ?? "none"}`);
     confirmSession();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function confirmSession() {
     if (confirmedRef.current) return;
-
     setStatus("loading");
     setErrorMsg("");
     retriesRef.current = 0;
+    console.log(`[checkout-success] Starting — href=${window.location.href}`);
 
-    console.log(`[checkout-success] Starting — native=${native} href=${window.location.href} hash=${window.location.hash}`);
-
-    // Close any in-app browser that may still be open (App Links re-opened the
-    // app but Chrome Custom Tab might still be on screen).
-    if (native) {
-      try {
-        await closeInAppBrowser();
-        console.log("[checkout-success] closeInAppBrowser() called");
-      } catch {}
-    }
-
-    let sessionId = getUrlParam("session_id");
-    console.log(`[checkout-success] session_id from URL: ${sessionId?.substring(0, 20) ?? "none"}`);
-
+    // Try to get session_id from URL, fall back to localStorage (stored before
+    // Stripe redirect so it survives the redirect bounce).
+    let sessionId = urlSessionId;
     if (!sessionId) {
-      console.log("[checkout-success] session_id not in URL — checking localStorage fallback");
-      const { consumePendingCheckoutSession } = await import("@/lib/capacitor");
-      const stored = consumePendingCheckoutSession();
-      if (stored) {
-        sessionId = stored;
-        console.log("[checkout-success] Using localStorage session_id:", stored.substring(0, 20));
-      }
+      console.log("[checkout-success] session_id not in URL — checking localStorage");
+      try {
+        const stored = localStorage.getItem("ha_pending_checkout_session_id");
+        const ts = parseInt(localStorage.getItem("ha_pending_checkout_ts") || "0", 10);
+        if (stored && Date.now() - ts < 30 * 60 * 1000) {
+          sessionId = stored;
+          localStorage.removeItem("ha_pending_checkout_session_id");
+          localStorage.removeItem("ha_pending_checkout_ts");
+          console.log("[checkout-success] Using stored session_id:", stored.substring(0, 20));
+        }
+      } catch {}
     }
 
     if (!sessionId) {
@@ -208,14 +96,11 @@ export default function CheckoutSuccessPage() {
       return;
     }
 
-    if (native) {
-      console.log("[checkout-success] Native: waiting for auth session before confirming...");
-      const token = await waitForSession(5, 1200);
-      if (!token) {
-        console.warn("[checkout-success] Auth session unavailable after waiting — proceeding anyway");
-      } else {
-        console.log("[checkout-success] Auth session restored, proceeding to confirm");
-      }
+    // Wait briefly for the auth session — after a Stripe redirect the browser
+    // may need a moment to restore the session from storage.
+    const token = await waitForSession(4, 800);
+    if (!token) {
+      console.warn("[checkout-success] Auth session not found — proceeding anyway");
     }
 
     await pollConfirm(sessionId);
@@ -223,16 +108,14 @@ export default function CheckoutSuccessPage() {
 
   async function pollConfirm(sessionId: string) {
     if (confirmedRef.current) return;
-
     try {
-      console.log(`[checkout-success] pollConfirm attempt ${retriesRef.current + 1} — session_id:`, sessionId.substring(0, 20));
+      console.log(`[checkout-success] pollConfirm attempt ${retriesRef.current + 1} — session_id: ${sessionId.substring(0, 20)}`);
 
       const res = await apiFetch("/api/stripe/confirm-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ session_id: sessionId }),
       });
-
       const data = await res.json();
 
       if (res.status === 202) {
@@ -257,15 +140,15 @@ export default function CheckoutSuccessPage() {
 
       // Fallback: verify via the token-based endpoint
       const { data: { session } } = await supabase.auth.getSession();
-      const token = session?.access_token;
-      console.log(`[checkout-success] confirm-session failed (${res.status}), token fallback: ${token ? "available" : "missing"}`);
+      const accessToken = session?.access_token;
+      console.log(`[checkout-success] confirm-session failed (${res.status}), token fallback: ${accessToken ? "available" : "missing"}`);
 
-      if (token) {
+      if (accessToken) {
         const verifyRes = await apiFetch("/api/checkout/verify", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${accessToken}`,
           },
           body: JSON.stringify({ session_id: sessionId }),
         });
@@ -279,7 +162,7 @@ export default function CheckoutSuccessPage() {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${accessToken}`,
               },
               body: JSON.stringify({ paywall_completed: true, onboarding_completed: true }),
             });
@@ -289,32 +172,17 @@ export default function CheckoutSuccessPage() {
         }
       }
 
-      if (!token) {
-        console.warn("[checkout-success] No auth token and all confirm paths failed — showing session_missing state");
-
-        // Persist session_id so the login page can resume confirmation after re-login.
-        if (sessionId) {
-          try {
-            localStorage.setItem("ha_pending_checkout", JSON.stringify({ session_id: sessionId, ts: Date.now() }));
-            console.log("[checkout-success] Stored ha_pending_checkout for post-login resume");
-          } catch {}
-        }
-
-        // Read the intended post-payment destination from either the checkout
-        // context key (written by saveCheckoutContext) or the standalone next key.
+      if (!accessToken) {
+        console.warn("[checkout-success] No auth token — showing session_missing");
+        try {
+          localStorage.setItem("ha_pending_checkout", JSON.stringify({ session_id: sessionId, ts: Date.now() }));
+        } catch {}
         const pendingNext =
           localStorage.getItem("ha_pending_checkout_next") ??
           sessionStorage.getItem("ha_pending_checkout_next") ??
           "/onboarding/setup";
-
-        // Mark payment as pending for the login page so it knows to navigate
-        // to onboarding/setup (not dashboard) after successful login.
         markPaymentPendingForLogin(pendingNext);
-        console.log("[checkout-success] session missing, redirecting to login with next:", pendingNext);
-
         setStatus("session_missing");
-
-        // Auto-redirect to login after a short delay so the user can read the message.
         setTimeout(() => {
           navigate(`/login?next=${encodeURIComponent(pendingNext)}&payment=success`);
         }, 3000);
@@ -338,20 +206,12 @@ export default function CheckoutSuccessPage() {
     queryClient.invalidateQueries({ queryKey: ["/api/matches"] });
     queryClient.invalidateQueries({ queryKey: ["/api/onboarding-status"] });
 
-    // Read and clear the stored checkout context to decide where to navigate.
-    // Falls back to /onboarding/setup when context is missing (safe for all flows).
     const ctx = consumeCheckoutContext();
     const destination = ctx?.next ?? "/onboarding/setup";
-
-    // Safety net: if auth was lost during payment and the ProtectedRoute on
-    // destination bounces the user to /, the login page will read this key and
-    // navigate to onboarding/setup instead of the default dashboard.
     markPaymentPendingForLogin(destination);
-
     console.log(`[checkout-success] Payment confirmed — source=${ctx?.source ?? "unknown"} navigating to: ${destination}`);
+
     setTimeout(() => {
-      // Clear the pending flag right before navigating — auth is intact at this
-      // point so there is no need for the login page to recover the destination.
       try {
         localStorage.removeItem("ha_pending_checkout_next");
         sessionStorage.removeItem("ha_pending_checkout_next");
@@ -359,19 +219,12 @@ export default function CheckoutSuccessPage() {
         sessionStorage.removeItem("ha_pending_checkout_success");
       } catch {}
       navigate(destination);
-    }, 2500);
+    }, 2000);
   }
-
-  // ---------------------------------------------------------------------------
-  // Render
-  // ---------------------------------------------------------------------------
-
-  // TODO: re-introduce buildIntentUrl() here when Android App Links are ready.
 
   const iconBg =
     status === "error" ? "var(--ha-danger-light)"
     : status === "session_missing" ? "var(--ha-warning-light, #fffbeb)"
-    : status === "deep_link_waiting" ? "#f0fdf4"
     : "var(--ha-primary-light)";
 
   return (
@@ -382,7 +235,6 @@ export default function CheckoutSuccessPage() {
           style={{ background: iconBg }}
         >
           {status === "loading" && <Loader2 className="w-8 h-8 animate-spin text-ha-primary" />}
-          {status === "deep_link_waiting" && <Smartphone className="w-8 h-8" style={{ color: "#16a34a" }} />}
           {status === "success" && <CheckCircle className="w-8 h-8 text-ha-success" />}
           {status === "error" && <AlertCircle className="w-8 h-8 text-ha-danger" />}
           {status === "session_missing" && <CheckCircle className="w-8 h-8" style={{ color: "#f59e0b" }} />}
@@ -390,7 +242,6 @@ export default function CheckoutSuccessPage() {
 
         <h1 className="text-[26px] font-semibold text-ha-text mb-2" data-testid="text-checkout-title">
           {status === "loading" && t("checkoutSuccess.loading")}
-          {status === "deep_link_waiting" && "Betaling gelukt!"}
           {status === "success" && t("checkoutSuccess.success")}
           {status === "error" && t("checkoutSuccess.error")}
           {status === "session_missing" && t("checkoutSuccess.paymentOk")}
@@ -398,59 +249,10 @@ export default function CheckoutSuccessPage() {
 
         <p className="text-[15px] text-ha-text-secondary" data-testid="text-checkout-subtitle">
           {status === "loading" && t("checkoutSuccess.loadingSubtitle")}
-          {status === "deep_link_waiting" && "Je abonnement is actief. Sluit dit venster om terug te gaan naar de app."}
           {status === "success" && t("checkoutSuccess.successSubtitle")}
           {status === "error" && errorMsg}
           {status === "session_missing" && "Betaling gelukt — log opnieuw in om verder te gaan"}
         </p>
-
-        {/* ── CCT handoff screen ── shown in Chrome Custom Tab after payment ──
-            PRIMARY flow: user presses Android Back button to close the CCT.
-            browserFinished fires in the native app → handleBrowserFinished
-            navigates to /checkout/success?session_id=xxx&native=1 inside
-            the authenticated WebView → confirmSession() → /onboarding/setup.
-            No login required because the WebView session is still active.
-
-            TODO (Android App Links): once assetlinks.json + release keystore
-            SHA-256 are set up, re-enable the intent:// button so the CCT
-            closes automatically without requiring a Back press. Steps:
-              1. Generate release keystore SHA-256 fingerprint
-              2. Publish /.well-known/assetlinks.json on the domain
-              3. Verify in Android Studio App Links Assistant
-              4. Re-enable isAndroid && fromNative intent:// button */}
-        {status === "deep_link_waiting" && (
-          <div className="mt-8 flex flex-col items-center gap-5">
-
-            {/* ── Back button instruction ── */}
-            <div
-              className="w-full rounded-[14px] px-5 py-4 flex items-start gap-3 text-left"
-              style={{ background: "#f0fdf4", border: "1px solid #bbf7d0" }}
-            >
-              <span className="text-[22px] leading-none mt-0.5">◀</span>
-              <div>
-                <p className="text-[15px] font-semibold text-[#166534]">
-                  Druk op de terugknop
-                </p>
-                <p className="text-[13px] text-[#15803d] mt-0.5">
-                  Gebruik de terugknop van je telefoon om terug te gaan naar de HousAlert app. Je onboarding gaat dan automatisch door.
-                </p>
-              </div>
-            </div>
-
-            {/* ── Last-resort browser fallback — very demoted ── */}
-            <p className="text-[12px] text-ha-text-secondary text-center">
-              Terugknop werkt niet?{" "}
-              <a
-                href="/login?next=/onboarding/setup&payment=success"
-                className="underline"
-                data-testid="link-continue-browser-fallback"
-              >
-                Doorgaan in browser
-              </a>
-            </p>
-
-          </div>
-        )}
 
         {status === "error" && (
           <div className="mt-6 flex flex-col gap-3">
@@ -464,7 +266,7 @@ export default function CheckoutSuccessPage() {
               {t("checkoutSuccess.retry")}
             </button>
             <button
-              onClick={() => navigate(native ? "/onboarding/setup" : "/home")}
+              onClick={() => navigate("/onboarding/setup")}
               className="h-[44px] rounded-[10px] text-[15px] font-medium text-ha-text-secondary hover:bg-ha-surface transition-colors"
               data-testid="button-go-home"
             >
@@ -473,11 +275,6 @@ export default function CheckoutSuccessPage() {
           </div>
         )}
 
-        {/* ── Session missing — shown in native WebView when auth is lost ──
-            The WebView's Supabase session expired during checkout. The user
-            must log in again inside the native app (SPA navigation — no
-            browser redirect). The login page reads ha_pending_checkout_next
-            and sends the user directly to /onboarding/setup after login. */}
         {status === "session_missing" && (
           <div className="mt-6 flex flex-col gap-3">
             <button
