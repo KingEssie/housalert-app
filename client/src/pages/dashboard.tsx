@@ -790,7 +790,7 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
               <div
                 key={p.id}
                 className={`rounded-[10px] p-4 flex items-center ${buddyMode ? "cursor-default" : "cursor-pointer active:opacity-80"} transition-all`}
-                style={{ backgroundColor: "#f2f9e9" }}
+                style={{ backgroundColor: "rgb(var(--ha-card-border))" }}
                 onClick={buddyMode ? undefined : () => navigate(`/dashboard/searches/edit/${p.id}`)}
                 data-testid={`row-search-profile-${p.id}`}
               >
@@ -1018,7 +1018,7 @@ function HomeTab({
                 <div className="w-[40px] h-[40px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#bbadfb" }}>
                   <FileText className="w-[22px] h-[22px] text-[#111111]" />
                 </div>
-                <h2 className="text-[21px] font-semibold text-ha-text flex-1">{t("profile.reactionLetter2")}</h2>
+                <h2 className="text-[16px] font-semibold text-ha-text flex-1">{t("profile.reactionLetter2")}</h2>
                 {!buddyMode && (
                   <span className="text-[14px] font-semibold" style={{ color: "#223546" }}>
                     {hasLetter ? t("common.manage") : t("common.generate")}
@@ -1057,7 +1057,7 @@ function HomeTab({
                 <div className="w-[40px] h-[40px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#bbadfb" }}>
                   <Users className="w-[22px] h-[22px] text-[#111111]" />
                 </div>
-                <h2 className="text-[21px] font-semibold text-ha-text flex-1">{t("profile.searchBuddy")}</h2>
+                <h2 className="text-[16px] font-semibold text-ha-text flex-1">{t("profile.searchBuddy")}</h2>
                 <span className="text-[14px] font-semibold" style={{ color: "#223546" }}>{t("common.manage")}</span>
               </div>
               <div className="flex items-center gap-2 pl-[52px]">
@@ -2225,8 +2225,8 @@ function ProfileTab({ user, signOut, navigate, subscription, setActiveTab, canon
       {isAdmin && (
         <button
           onClick={() => navigate("/admin/portal")}
-          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+78px)] left-1/2 -translate-x-1/2 z-40 text-black text-[14px] font-semibold px-6 py-3 rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.15)] active:scale-95 transition-transform"
-          style={{ backgroundColor: "rgb(var(--ha-highlight))" }}
+          className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+78px)] left-1/2 -translate-x-1/2 z-50 text-white text-[14px] font-semibold px-6 py-3 rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.30)] active:scale-95 transition-transform"
+          style={{ backgroundColor: "rgb(var(--ha-dark))" }}
           data-testid="button-admin-portal"
         >
           {t("profile.adminMode")}

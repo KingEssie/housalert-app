@@ -110,7 +110,7 @@ export function ListingCardFull({
   const imageRatio = matchVariant ? "2/1" : "16/9";
 
   const heartFill = isFavorited ? "#85fb8c" : "none";
-  const heartStroke = "#85fb8c";
+  const heartStroke = isFavorited ? "#85fb8c" : "rgba(17,17,17,0.75)";
   const heartActiveFill = "#85fb8c";
 
   return (

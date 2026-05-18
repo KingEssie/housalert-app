@@ -1,0 +1,66 @@
+Apply a focused UI consistency polish pass across the entire app.
+
+Requirements:
+
+1. Global app background
+Use the login/welcome screen background color as the global background across the entire app:
+- onboarding
+- dashboard/home
+- matches
+- favorites
+- account/settings
+- listing detail/apply
+- subscription pages
+- admin portal
+- support
+- all remaining app pages
+
+Ensure body, root containers, page wrappers, mobile layouts, and admin layouts all use this same background unless a card/modal intentionally has its own background.
+
+2. Home section title sizing
+On the home/dashboard screen, make these titles match the listing card title size and font weight:
+- Rond je account af
+- Vergroot je kansen met deze tips
+- Zoekopdrachten
+- Reactiebrief
+- Zoekbuddy
+
+They should no longer be oversized.
+
+3. Favorite heart inactive state
+Inactive favorite hearts should be black outlined, not green.
+Apply consistently to:
+- matches cards
+- favorites cards
+- listing detail/apply screen
+
+Active favorite hearts can stay green.
+
+4. Listing detail sticky footer
+Remove the monthly price from the detail page sticky footer.
+Keep the CTA button clean, prominent, and properly aligned.
+
+5. Search profile card background
+Change the light green search profile card background to the same grey used by the circular back buttons.
+
+6. Admin button visibility
+Fix the admin button so it appears above the white overlay/overflow.
+Use the same dark background as the bottom navigation bar.
+Use white text.
+Ensure z-index and positioning are correct.
+
+7. Subscription title sizing
+Make the “Premium Maandelijks” / subscription plan title smaller so it fits on one line on mobile.
+
+8. Logout modal safe area
+Fix the logout modal so it does not sit behind the bottom navigation bar.
+It should have enough bottom spacing/safe-area padding and appear above the nav.
+
+9. General mobile polish
+Check all changed screens on mobile widths.
+Avoid regressions to spacing, bottom nav overlap, sticky footer overlap, or card readability.
+
+After changes:
+- run npm run build
+- report changed files
+- report any shared CSS/theme tokens introduced or updated

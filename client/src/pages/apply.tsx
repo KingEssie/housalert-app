@@ -777,25 +777,10 @@ export default function ApplyPage() {
             paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))",
           }}
         >
-          <div className="max-w-xl mx-auto flex items-center justify-between px-5 py-3">
-            {listing.price > 0 ? (
-              <div className="flex flex-col justify-center" data-testid="text-sticky-price">
-                <span className="text-[19px] font-semibold" style={{ color: "#111111" }}>
-                  €{listing.price}
-                  <span className="text-[13px] font-normal ml-1" style={{ color: "rgba(17,17,17,0.6)" }}>{t("common.perMonthShort")}</span>
-                </span>
-                {postedLabel && (
-                  <span className="text-[11px] font-medium leading-none mt-[3px]" style={{ color: "#111111" }} data-testid="text-footer-posted">
-                    {postedLabel}
-                  </span>
-                )}
-              </div>
-            ) : (
-              <div />
-            )}
+          <div className="max-w-xl mx-auto px-5 py-3">
             <Button
               onClick={handleCopyAndRespond}
-              className={`ha-btn font-semibold ${listing.price > 0 ? "" : "w-full"}`}
+              className="ha-btn font-semibold w-full"
               style={{
                 borderRadius: "9999px",
                 backgroundColor: "#171429",

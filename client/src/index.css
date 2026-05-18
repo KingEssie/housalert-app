@@ -71,7 +71,7 @@
   --ha-text-placeholder: 156 163 175;  /* #9CA3AF — placeholder / muted icons */
 
   /* Backgrounds */
-  --ha-bg: 249 247 248;                /* #f9f7f8 — warm off-white page bg */
+  --ha-bg: 245 243 239;                /* #f5f3ef — warm off-white page bg (matches login screen) */
   --ha-card: 255 255 255;              /* #FFFFFF — card / modal / nav bg */
   --ha-surface: 252 251 252;           /* #fcfbfc — surface / subtle bg */
   --ha-hover-bg: 247 247 247;          /* #F7F7F7 — list item hover bg */

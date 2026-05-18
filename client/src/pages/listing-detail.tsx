@@ -288,7 +288,7 @@ export default function ListingDetailPage() {
           <Heart
             className="w-[22px] h-[22px] transition-all duration-150"
             fill={isFavorited ? "#FF385C" : "none"}
-            stroke={isFavorited ? "#FF385C" : "#ffffff"}
+            stroke={isFavorited ? "#FF385C" : "rgba(17,17,17,0.75)"}
             strokeWidth={2.5}
             style={{ filter: "drop-shadow(0 1px 4px rgba(0,0,0,0.55))" }}
           />

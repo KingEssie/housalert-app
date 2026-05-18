@@ -503,7 +503,7 @@ export default function PaywallPage() {
                   </div>
                   <div className="flex-1 flex items-start justify-between gap-2">
                     <div>
-                      <p className="text-[22px] font-black leading-none" style={{ color: "#111111" }}>{plan.discountLabel || "—"}</p>
+                      <p className="text-[17px] font-bold leading-tight" style={{ color: "#111111" }}>{plan.discountLabel || "—"}</p>
                       <p className="text-[12px] mt-1" style={{ color: TEXT_SECONDARY }}>{plan.label}</p>
                     </div>
                     <p className="text-[15px] font-bold pt-0.5" style={{ color: "#111111" }}>{plan.perMonth}</p>

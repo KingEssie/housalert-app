@@ -15,7 +15,7 @@ export function LogoutBottomSheet({ open, onClose, onConfirm, loading }: LogoutB
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/40 flex items-end justify-center"
+      className="fixed inset-0 z-50 bg-black/40 flex items-end justify-center pb-[calc(env(safe-area-inset-bottom,0px)+60px)]"
       onClick={onClose}
       data-testid="overlay-logout"
     >
