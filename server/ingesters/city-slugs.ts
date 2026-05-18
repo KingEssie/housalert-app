@@ -126,6 +126,21 @@ export function getImmoScout24Url(city: string): string | null {
   return `https://www.immobilienscout24.de/Suche/de/${state}/${slugs.slug}/wohnung-mieten`;
 }
 
+const WOHNUNGSBOERSE_CITY_NAMES: Record<string, string> = {
+  "München":    "Muenchen",
+  "Köln":       "Koeln",
+  "Düsseldorf": "Duesseldorf",
+  "Nürnberg":   "Nuernberg",
+  "Münster":    "Muenster",
+  "Lübeck":     "Luebeck",
+  "Fürth":      "Fuerth",
+};
+
+export function getWohnungsboerseUrl(city: string): string {
+  const wbCity = WOHNUNGSBOERSE_CITY_NAMES[city] ?? city;
+  return `https://www.wohnungsboerse.net/${encodeURIComponent(wbCity)}/mieten/wohnungen`;
+}
+
 export function getConfigSourceUrls(city: string): Record<string, string> {
   const slugs = getCitySlugs(city);
   const slug = slugs?.slug ?? makeFallbackSlug(city);

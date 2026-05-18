@@ -5,6 +5,7 @@ import { createWgGesuchtIngester } from "./wg-gesucht";
 import { createKleinanzeigenIngester } from "./kleinanzeigen";
 import { createImmoweltIngester } from "./immowelt";
 import { createImmoScout24Ingester } from "./immoscout24";
+import { createWohnungsboerseIngester } from "./wohnungsboerse";
 import { createConfigIngester } from "./html-config";
 import { buildSourcesForCity } from "./config/sources";
 import { getCitySlugs, makeFallbackSlug } from "./city-slugs";
@@ -103,7 +104,7 @@ const SOURCE_STATUSES: SourceStatus[] = [
   { name: "kleinanzeigen", status: "active" },
   { name: "immowelt",      status: "active" },
   { name: "immoscout24",   status: "active", note: "Phase 1: Berlin only. AWS WAF protected — graceful fallback when blocked." },
-  { name: "wohnungsboerse", status: "broken", note: "Returns 504 — gateway timeout" },
+  { name: "wohnungsboerse", status: "active", note: "Phase 1: Berlin only. Accessible with Chrome browser headers. ~20 listings/cycle." },
   { name: "rentola",       status: "broken", note: "Fetch timeout — server unresponsive" },
   { name: "nestpick",      status: "broken", note: "Fetch timeout — server unresponsive" },
   { name: "immonet",       status: "gone",   note: "Returns 410 — service discontinued" },
@@ -222,7 +223,8 @@ function buildIngestersForCity(city: string): Ingester[] {
   if (!SKIP_SOURCES.has("wg-gesucht")    && isSourceEnabledByAdmin("wg-gesucht"))    ingesters.push(createWgGesuchtIngester(city));
   if (!SKIP_SOURCES.has("kleinanzeigen") && isSourceEnabledByAdmin("kleinanzeigen")) ingesters.push(createKleinanzeigenIngester(city));
   if (!SKIP_SOURCES.has("immowelt")      && isSourceEnabledByAdmin("immowelt"))      ingesters.push(createImmoweltIngester(city));
-  if (!SKIP_SOURCES.has("immoscout24")   && isSourceEnabledByAdmin("immoscout24"))   ingesters.push(createImmoScout24Ingester(city));
+  if (!SKIP_SOURCES.has("immoscout24")    && isSourceEnabledByAdmin("immoscout24"))    ingesters.push(createImmoScout24Ingester(city));
+  if (!SKIP_SOURCES.has("wohnungsboerse") && isSourceEnabledByAdmin("wohnungsboerse")) ingesters.push(createWohnungsboerseIngester(city));
 
   const slugs = getCitySlugs(city);
   const slug = slugs?.slug ?? makeFallbackSlug(city);
