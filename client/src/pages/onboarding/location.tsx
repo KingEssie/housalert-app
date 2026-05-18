@@ -613,8 +613,8 @@ export default function OnboardingLocation() {
       {mode === "city" && (
         <div>
           <div className="rounded-[12px] p-4 flex items-center gap-3 border border-ha-card-border bg-white">
-            <div className="w-10 h-10 rounded-[8px] flex items-center justify-center shrink-0 bg-ha-primary/8">
-              <Check className="w-5 h-5 text-ha-primary" />
+            <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "#bbadfb" }}>
+              <Check className="w-5 h-5" style={{ color: "#111111" }} />
             </div>
             <p className="text-[14px] leading-relaxed text-ha-text-secondary">
               {t("onboardingLocation.searchingInCity").replace("{city}", city)}
