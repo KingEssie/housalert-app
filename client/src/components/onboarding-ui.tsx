@@ -159,7 +159,7 @@ export function OBWebHeader({ step, totalSteps = 3, onClose }: { step?: number; 
           {step ? (
             <span
               className="text-[11px] font-semibold px-2.5 py-1 rounded-full tabular-nums"
-              style={{ backgroundColor: "#bbadfb", color: "#171429" }}
+              style={{ backgroundColor: "#171429", color: "rgb(var(--ha-primary))" }}
               data-testid="badge-step"
             >
               {step}/{totalSteps}

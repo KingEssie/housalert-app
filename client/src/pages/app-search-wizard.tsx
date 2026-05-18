@@ -193,7 +193,7 @@ function StepHeader({ step, total = 4, onClose }: { step: number; total?: number
         <div className="flex items-center gap-2">
           <span
             className="text-[11px] font-semibold px-2.5 py-1 rounded-full tabular-nums"
-            style={{ backgroundColor: "#bbadfb", color: "#171429" }}
+            style={{ backgroundColor: "#171429", color: "rgb(var(--ha-primary))" }}
             data-testid="badge-step"
           >
             {step}/{total}

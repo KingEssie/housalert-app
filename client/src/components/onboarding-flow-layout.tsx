@@ -5,6 +5,7 @@ interface OnboardingFlowLayoutProps {
   flowTitle: string;
   currentStep: number;
   totalSteps: number;
+  showStepBadge?: boolean;
   stepTitle: string;
   stepDescription?: string;
   onBack?: (() => void) | null;
@@ -27,6 +28,7 @@ export function OnboardingFlowLayout({
   flowTitle,
   currentStep,
   totalSteps,
+  showStepBadge = true,
   stepTitle,
   stepDescription,
   onBack,
@@ -55,13 +57,15 @@ export function OnboardingFlowLayout({
             <p className="text-[17px] font-semibold text-ha-text truncate" data-testid="text-ob-flow-title">{flowTitle}</p>
           </div>
           <div className="flex items-center gap-3">
-            <span
-              className="text-[12px] font-bold px-2.5 py-1 rounded-full tabular-nums whitespace-nowrap"
-              style={{ backgroundColor: "#bbadfb", color: "#171429" }}
-              data-testid="text-ob-flow-progress"
-            >
-              {currentStep}/{totalSteps}
-            </span>
+            {showStepBadge && (
+              <span
+                className="text-[12px] font-bold px-2.5 py-1 rounded-full tabular-nums whitespace-nowrap"
+                style={{ backgroundColor: "#171429", color: "rgb(var(--ha-primary))" }}
+                data-testid="text-ob-flow-progress"
+              >
+                {currentStep}/{totalSteps}
+              </span>
+            )}
             <button
               onClick={onClose}
               className="w-9 h-9 flex items-center justify-center rounded-full bg-ha-surface hover:bg-ha-card-border transition-colors"

@@ -377,6 +377,7 @@ export default function OnboardingEmail() {
       flowTitle={t("onboarding.accountCreate.flowTitle")}
       currentStep={2}
       totalSteps={3}
+      showStepBadge={false}
       stepTitle={t("onboarding.email.title")}
       stepDescription={t("onboarding.email.subtitle")}
       onBack={handleBack}

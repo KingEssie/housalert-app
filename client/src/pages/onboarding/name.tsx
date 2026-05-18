@@ -178,6 +178,7 @@ export default function OnboardingName() {
       flowTitle={t("onboarding.accountCreate.flowTitle")}
       currentStep={1}
       totalSteps={3}
+      showStepBadge={false}
       stepTitle={t("onboarding.name.title")}
       stepDescription={t("onboarding.name.subtitle")}
       onBack={handleBack}
