@@ -139,7 +139,7 @@ export default function TipsFlowPage() {
   const contentRenderer = tipContent[serverId];
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f6f6f6" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
       <header
         className="sticky top-0 z-10 bg-white"
         style={{ borderBottom: "1px solid #ece7ef", boxShadow: "0 1px 4px rgba(0,0,0,0.05)", paddingTop: "env(safe-area-inset-top)" }}

@@ -132,7 +132,7 @@ export default function ZoekbuddyPage() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f9f7f8" }}>
+    <div className="min-h-screen flex flex-col bg-ha-bg">
       <AppHeader title={t("zoekbuddyPage.pageTitle")} onBack={() => navigate("/dashboard?tab=profile")} />
 
       <div className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-4">

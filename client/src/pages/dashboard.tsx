@@ -756,13 +756,13 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
     <div
       data-testid="section-search-profiles"
       className="bg-white rounded-[12px] p-5"
-      style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid rgb(var(--ha-card-border))" }}
+      style={{ border: "1px solid rgb(var(--ha-card-border))" }}
     >
       <div className="flex items-center gap-2.5 mb-1.5">
         <div className="w-[40px] h-[40px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#bbadfb" }}>
           <Search className="w-[22px] h-[22px] text-[#111111]" />
         </div>
-        <h2 className="text-[21px] font-semibold text-ha-text flex-1" data-testid="text-search-profiles-title">
+        <h2 className="text-[16px] font-bold text-ha-text flex-1" data-testid="text-search-profiles-title">
           {t("home.zoekopdrachtenTitle")}
         </h2>
         {profiles.length > 0 && (
@@ -1018,7 +1018,7 @@ function HomeTab({
                 <div className="w-[40px] h-[40px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#bbadfb" }}>
                   <FileText className="w-[22px] h-[22px] text-[#111111]" />
                 </div>
-                <h2 className="text-[16px] font-semibold text-ha-text flex-1">{t("profile.reactionLetter2")}</h2>
+                <h2 className="text-[16px] font-bold text-ha-text flex-1">{t("profile.reactionLetter2")}</h2>
                 {!buddyMode && (
                   <span className="text-[14px] font-semibold" style={{ color: "#223546" }}>
                     {hasLetter ? t("common.manage") : t("common.generate")}
@@ -1057,7 +1057,7 @@ function HomeTab({
                 <div className="w-[40px] h-[40px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#bbadfb" }}>
                   <Users className="w-[22px] h-[22px] text-[#111111]" />
                 </div>
-                <h2 className="text-[16px] font-semibold text-ha-text flex-1">{t("profile.searchBuddy")}</h2>
+                <h2 className="text-[16px] font-bold text-ha-text flex-1">{t("profile.searchBuddy")}</h2>
                 <span className="text-[14px] font-semibold" style={{ color: "#223546" }}>{t("common.manage")}</span>
               </div>
               <div className="flex items-center gap-2 pl-[52px]">

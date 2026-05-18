@@ -143,10 +143,12 @@
     @apply border-border;
   }
 
-  body {
+  body,
+  #root {
     @apply font-sans antialiased;
     background-color: rgb(var(--ha-bg));
     color: rgb(var(--ha-text));
+    min-height: 100dvh;
   }
 
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]):not([type="submit"]):not([type="reset"]):not([type="button"]):not([role="switch"]),
@@ -200,7 +202,7 @@
   }
 
   .text-section-title {
-    font-size: 22px;
+    font-size: 16px;
     font-weight: 700;
     font-family: 'Montserrat', sans-serif;
     color: rgb(var(--ha-text));

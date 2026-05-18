@@ -71,7 +71,7 @@ export function ExpandableCompletionCard({
               <CardIcon className="w-[20px] h-[20px] text-[#111111]" />
             </div>
           )}
-          <p className="text-[16px] font-semibold text-ha-text leading-snug tracking-[-0.01em] flex-1 min-w-0">
+          <p className="text-[16px] font-bold text-ha-text leading-snug tracking-[-0.01em] flex-1 min-w-0">
             {title}
           </p>
           <ChevronDown

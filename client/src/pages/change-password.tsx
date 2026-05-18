@@ -52,7 +52,7 @@ export default function ChangePasswordPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: "#f9f7f8" }} data-testid="page-password-success">
+      <div className="min-h-screen" style={{ backgroundColor: "rgb(var(--ha-bg))" }} data-testid="page-password-success">
         <AppHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profile")} />
         <div className="max-w-xl mx-auto p-4 pb-8">
           <div
@@ -85,7 +85,7 @@ export default function ChangePasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f9f7f8" }} data-testid="page-change-password">
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }} data-testid="page-change-password">
       <AppHeader title={t("changePassword.title")} onBack={() => navigate("/dashboard?tab=profile")} />
 
       <div className="flex-1 max-w-xl mx-auto w-full px-4 pt-5 pb-8">

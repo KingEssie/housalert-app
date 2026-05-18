@@ -609,7 +609,7 @@ export default function AppSearchWizard() {
   // ── Loading state ──
   if (loading || (isEdit && !editLoaded)) {
     return (
-      <div className="min-h-[100dvh] flex items-center justify-center" style={{ background: "rgb(var(--ha-card))" }}>
+      <div className="min-h-[100dvh] flex items-center justify-center" style={{ background: "rgb(var(--ha-bg))" }}>
         <Loader2 className="w-8 h-8 animate-spin" style={{ color: "rgb(var(--ha-primary))" }} />
       </div>
     );
@@ -620,7 +620,7 @@ export default function AppSearchWizard() {
   // ── Profile limit screen ──
   if (atLimit) {
     return (
-      <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-card))" }}>
+      <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-bg))" }}>
         <StepHeader step={1} onClose={goClose} />
         <div className="flex-1 flex items-center justify-center px-5 pb-10">
           <div className="text-center max-w-sm w-full">
@@ -660,7 +660,7 @@ export default function AppSearchWizard() {
     }
 
     return (
-      <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-card))" }}
+      <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-bg))" }}
         data-testid="screen-wizard-city">
         <StepHeader step={1} onClose={goClose} />
 
@@ -769,7 +769,7 @@ export default function AppSearchWizard() {
     const lng = city?.lng ?? 13.405;
 
     return (
-      <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-card))" }}
+      <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-bg))" }}
         data-testid="screen-wizard-location">
         {isEdit ? (
           <EditHeader cityName={city?.name || ""} onBack={goBack} onMenu={() => setShowDeleteSheet(true)} />
@@ -1030,7 +1030,7 @@ export default function AppSearchWizard() {
     }
 
     return (
-      <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-card))" }}
+      <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-bg))" }}
         data-testid="screen-wizard-filters">
         {isEdit ? (
           <EditHeader cityName={city?.name || ""} onBack={goBack} onMenu={() => setShowDeleteSheet(true)} />
@@ -1102,7 +1102,7 @@ export default function AppSearchWizard() {
                   return (
                     <button key={opt.value} onClick={() => update({ minRooms: opt.value })}
                       className="py-[9px] px-4 text-[12px] font-semibold rounded-full whitespace-nowrap shrink-0 transition-all active:scale-[0.96]"
-                      style={{ backgroundColor: active ? "#bbadfb" : "#f3f4f6", color: "#111111", boxShadow: active ? "0 1px 4px rgba(0,0,0,0.08)" : "none" }}
+                      style={{ backgroundColor: active ? "#bbadfb" : "#f3f4f6", color: "#111111", boxShadow: "none" }}
                       data-testid={`rooms-${opt.value}`}>
                       {opt.label}
                     </button>
@@ -1254,7 +1254,7 @@ export default function AppSearchWizard() {
   }
 
   return (
-    <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-card))" }}
+    <div className="min-h-[100dvh] flex flex-col" style={{ background: "rgb(var(--ha-bg))" }}
       data-testid="screen-wizard-preferences">
       {isEdit ? (
         <EditHeader cityName={city?.name || ""} onBack={goBack} onMenu={() => setShowDeleteSheet(true)} />

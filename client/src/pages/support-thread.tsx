@@ -228,12 +228,11 @@ export default function SupportThreadPage() {
   const willReopen = thread?.status === "resolved";
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f6f6f6" }}>
+    <div className="min-h-screen flex flex-col bg-ha-bg">
 
       {/* ── Sticky Header ── */}
       <div
-        className="sticky top-0 z-20 flex items-center h-[60px] px-4 gap-3"
-        style={{ backgroundColor: "#f6f6f6" }}
+        className="sticky top-0 z-20 flex items-center h-[60px] px-4 gap-3 bg-ha-bg"
       >
         <button
           onClick={() => navigate("/support")}
@@ -313,7 +312,7 @@ export default function SupportThreadPage() {
       {thread && canReply && (
         <div
           className="sticky bottom-0 px-4 pb-6 pt-3"
-          style={{ backgroundColor: "#f6f6f6", borderTop: "1px solid #eeeeee" }}
+          style={{ backgroundColor: "rgb(var(--ha-bg))", borderTop: "1px solid #eeeeee" }}
         >
           <div className="max-w-[520px] mx-auto">
             {willReopen && (
@@ -357,7 +356,7 @@ export default function SupportThreadPage() {
 
       {/* Closed notice */}
       {thread && !canReply && (
-        <div className="sticky bottom-0 px-4 pb-6 pt-3" style={{ backgroundColor: "#f6f6f6", borderTop: "1px solid #eeeeee" }}>
+        <div className="sticky bottom-0 px-4 pb-6 pt-3" style={{ backgroundColor: "rgb(var(--ha-bg))", borderTop: "1px solid #eeeeee" }}>
           <div className="max-w-[520px] mx-auto">
             <p className="text-[13px] text-center" style={{ color: "#aaaaaa" }}>
               Dit ticket is gesloten. Stuur een nieuw bericht via de Support-pagina.

@@ -313,7 +313,7 @@ export default function ApplicationLetterPage() {
 
   if (isLoading || ownerLoading) {
     return (
-      <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f9f7f8" }}>
+      <div className="min-h-screen flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
         <AppHeader title={t("applicationLetter.title")} onBack={() => { if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=home"); }} />
         <div className="flex-1 flex items-center justify-center">
           <Loader2 className="w-6 h-6 animate-spin text-ha-text-secondary" />
@@ -323,7 +323,7 @@ export default function ApplicationLetterPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f9f7f8" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
       <AppHeader title={t("applicationLetter.title")} onBack={handleBack} />
 
       <main className="flex-1 max-w-[480px] mx-auto w-full px-4 py-5 pb-32">

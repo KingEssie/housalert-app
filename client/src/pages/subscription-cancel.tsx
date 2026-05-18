@@ -101,7 +101,7 @@ export function SubscriptionCancelConfirmPage() {
 
   if (step === "feedback") {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: "#f6f6f6" }} data-testid="page-cancel-feedback">
+      <div className="min-h-screen bg-ha-bg" data-testid="page-cancel-feedback">
         <AppHeader title={t("cancellation.feedbackTitle")} onBack={() => setStep("confirm")} />
 
         <div className="max-w-xl mx-auto px-4 pt-4 pb-8">
@@ -185,7 +185,7 @@ export function SubscriptionCancelConfirmPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#f6f6f6" }} data-testid="page-cancel-confirm">
+    <div className="min-h-screen bg-ha-bg" data-testid="page-cancel-confirm">
       <AppHeader title={t("subscription.cancelTitle")} onBack={() => navigate("/account/subscription")} />
 
       <div className="max-w-xl mx-auto px-4 pt-4 pb-8">
