@@ -102,7 +102,7 @@ export default function SubscriptionDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: "#f6f6f6" }}>
+      <div className="min-h-screen" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
         <AppHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profile")} />
         <div className="max-w-lg mx-auto px-4 pt-4">
           <div
@@ -120,7 +120,7 @@ export default function SubscriptionDetailPage() {
 
   if (!subscription?.isActive && !subscription?.isTrial) {
     return (
-      <div className="min-h-screen" style={{ backgroundColor: "#f6f6f6" }} data-testid="page-subscription-detail">
+      <div className="min-h-screen" style={{ backgroundColor: "rgb(var(--ha-bg))" }} data-testid="page-subscription-detail">
         <AppHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profile")} />
         <div className="max-w-lg mx-auto px-4 pt-6 pb-12">
           <div
@@ -212,7 +212,7 @@ export default function SubscriptionDetailPage() {
   ];
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#f6f6f6" }} data-testid="page-subscription-detail">
+    <div className="min-h-screen" style={{ backgroundColor: "rgb(var(--ha-bg))" }} data-testid="page-subscription-detail">
       <AppHeader title={t("subscription.title")} onBack={() => navigate("/dashboard?tab=profile")} />
 
       <div className="max-w-lg mx-auto px-4 pt-3 pb-12 flex flex-col gap-4">
@@ -220,7 +220,7 @@ export default function SubscriptionDetailPage() {
         {/* ── Top membership card ── */}
         <div
           className="bg-white rounded-[28px] overflow-hidden"
-          style={{ border: "1px solid #ece7ef", boxShadow: "0 2px 16px rgba(0,0,0,0.06)" }}
+          style={{ border: "1px solid #ece7ef" }}
           data-testid="card-subscription-info"
         >
           {/* Hero block */}
@@ -228,7 +228,7 @@ export default function SubscriptionDetailPage() {
             <Crown className="w-[30px] h-[30px] text-[#111111] mb-4" strokeWidth={1.8} />
 
             {/* Plan title — never shows "Proefperiode" if user has a paid plan */}
-            <p className="text-[34px] font-extrabold text-[#111111] leading-tight" data-testid="text-plan-summary">
+            <p className="text-[24px] font-extrabold text-[#111111] leading-tight" data-testid="text-plan-summary">
               {isPaidPlan ? getPlanLabel(subscription?.plan) : subscription?.isTrial ? t("subscription.status.trial") : getPlanLabel(subscription?.plan)}
             </p>
 
@@ -286,7 +286,7 @@ export default function SubscriptionDetailPage() {
         {/* ── Management actions ── */}
         <div
           className="bg-white rounded-[28px] overflow-hidden"
-          style={{ border: "1px solid #ece7ef", boxShadow: "0 2px 16px rgba(0,0,0,0.06)" }}
+          style={{ border: "1px solid #ece7ef" }}
           data-testid="card-subscription-actions"
         >
           <button
@@ -328,7 +328,7 @@ export default function SubscriptionDetailPage() {
         {subscription?.isExpired && (
           <div
             className="bg-white rounded-[28px] p-6"
-            style={{ border: "1px solid #ece7ef", boxShadow: "0 2px 16px rgba(0,0,0,0.06)" }}
+            style={{ border: "1px solid #ece7ef" }}
             data-testid="card-expired-cta"
           >
             <div className="flex items-start gap-3 mb-5">

@@ -257,12 +257,11 @@ export default function SupportPage() {
   const busy = isChecking || isSubmitting;
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#f6f6f6" }}>
+    <div className="min-h-screen bg-ha-bg">
 
       {/* ── Header ── */}
       <div
-        className="sticky top-0 z-20 flex items-center h-[60px] px-5 gap-3"
-        style={{ backgroundColor: "#f6f6f6" }}
+        className="sticky top-0 z-20 flex items-center h-[60px] px-5 gap-3 bg-ha-bg"
       >
         <button
           onClick={() => navigate("/dashboard?tab=profile")}

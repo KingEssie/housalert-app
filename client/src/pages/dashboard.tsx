@@ -794,7 +794,7 @@ function HomeProfilesSection({ profiles, navigate, buddyMode }: { profiles: Sear
                 onClick={buddyMode ? undefined : () => navigate(`/dashboard/searches/edit/${p.id}`)}
                 data-testid={`row-search-profile-${p.id}`}
               >
-                <div className="w-[11px] h-[11px] rounded-full flex-shrink-0 mr-3.5" style={{ backgroundColor: "#bbadfb", boxShadow: "0 0 0 3px rgba(187,173,251,0.2)" }} />
+                <div className="w-[11px] h-[11px] rounded-full flex-shrink-0 mr-3.5" style={{ backgroundColor: "rgb(var(--ha-emerald))", boxShadow: "0 0 0 3px rgba(15,186,128,0.2)" }} />
                 <div className="flex-1 min-w-0">
                   <p className="text-[18px] font-semibold text-ha-text truncate">{title}</p>
                   <p className="text-[14px] text-ha-text-muted mt-1 truncate">{priceLine}</p>
@@ -1011,7 +1011,7 @@ function HomeTab({
             <button
               onClick={() => navigate("/application-letter")}
               className="w-full text-left bg-white rounded-[12px] p-5 flex flex-col gap-3 active:scale-[0.985] transition-transform"
-              style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid rgb(var(--ha-card-border))" }}
+              style={{ border: "1px solid rgb(var(--ha-card-border))" }}
               data-testid="card-application-letter-status"
             >
               <div className="flex items-center gap-2.5">
@@ -1050,7 +1050,7 @@ function HomeTab({
             <button
               onClick={() => navigate("/profile/search-buddy")}
               className="w-full text-left bg-white rounded-[12px] p-5 flex flex-col gap-3 active:scale-[0.985] transition-transform"
-              style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.04)", border: "1px solid rgb(var(--ha-card-border))" }}
+              style={{ border: "1px solid rgb(var(--ha-card-border))" }}
               data-testid="card-search-buddy-status"
             >
               <div className="flex items-center gap-2.5">

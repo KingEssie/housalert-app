@@ -15,12 +15,13 @@ export function LogoutBottomSheet({ open, onClose, onConfirm, loading }: LogoutB
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/40 flex items-end justify-center pb-[calc(env(safe-area-inset-bottom,0px)+60px)]"
+      className="fixed inset-0 z-50 bg-black/40 flex items-end justify-center"
       onClick={onClose}
       data-testid="overlay-logout"
     >
       <div
-        className="bg-white w-full max-w-[480px] rounded-t-[20px] px-5 pt-6 pb-[max(24px,env(safe-area-inset-bottom))] shadow-[0_-4px_24px_rgba(0,0,0,0.10)] animate-in slide-in-from-bottom-4 duration-200"
+        className="bg-white w-full max-w-[480px] rounded-t-[20px] px-5 pt-6 animate-in slide-in-from-bottom-4 duration-200"
+        style={{ paddingBottom: "max(84px, calc(env(safe-area-inset-bottom, 0px) + 76px))" }}
         onClick={e => e.stopPropagation()}
         data-testid="sheet-logout"
       >

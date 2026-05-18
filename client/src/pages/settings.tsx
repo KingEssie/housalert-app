@@ -88,7 +88,7 @@ export default function SettingsPage() {
   );
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#f9f7f8" }}>
+    <div className="min-h-screen bg-ha-bg">
       <AppHeader
         title={t("settings.title")}
         onBack={() => { if (window.history.length > 1) window.history.back(); else navigate("/dashboard?tab=profile"); }}

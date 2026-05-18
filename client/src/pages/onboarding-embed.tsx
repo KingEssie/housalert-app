@@ -569,7 +569,7 @@ export default function OnboardingEmbedPage() {
   // ─── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex flex-col" style={{ minHeight: "100dvh", backgroundColor: "rgb(var(--ha-card))" }}
+    <div className="flex flex-col" style={{ minHeight: "100dvh", backgroundColor: "rgb(var(--ha-bg))" }}
       data-testid="onboarding-embed">
 
       {/* Scrollable content */}

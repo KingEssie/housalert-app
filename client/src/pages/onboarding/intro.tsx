@@ -46,7 +46,7 @@ export default function OnboardingIntro() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-ha-surface flex flex-col" data-testid="screen-onboarding-intro">
+    <div className="fixed inset-0 z-50 bg-ha-bg flex flex-col" data-testid="screen-onboarding-intro">
       <div className="bg-white" style={{ paddingTop: "max(0px, env(safe-area-inset-top))" }}>
         <div className="flex items-center justify-between px-5 h-[64px]">
           <HousAlertLogo size={28} />
@@ -65,7 +65,7 @@ export default function OnboardingIntro() {
 
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-lg mx-auto px-4 pt-6 pb-8">
-          <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.06)] px-6 py-7">
+          <div className="bg-white rounded-2xl px-6 py-7">
             <h1
               className="text-[24px] font-bold tracking-[-0.025em] leading-[1.15] mb-6 text-ha-text"
               data-testid="text-intro-title"

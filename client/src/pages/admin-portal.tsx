@@ -78,7 +78,7 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
-const CARD = "bg-white rounded-[20px] border border-[#eeebf3] shadow-[0_1px_4px_rgba(0,0,0,0.04)]";
+const CARD = "bg-white rounded-[20px] border border-[#eeebf3]";
 
 function SectionHeader({ title, action }: { title: string; action?: { label: string; onClick: () => void } }) {
   return (
@@ -352,7 +352,7 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
       {sourcesByCity.length > 0 && (
         <div>
           <SectionHeader title="Source health" action={{ label: "View all", onClick: () => onNavigate("sources") }} />
-          <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+          <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3" }}>
             {citiesWithIssues.length > 0 && (
               <div className="px-4 pt-3 pb-0.5">
                 <span className="text-[10px] font-bold uppercase tracking-[0.07em]" style={{ color: "#e11d48" }}>
@@ -419,7 +419,7 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
               key={label}
               onClick={() => onNavigate(tab)}
               className="bg-white rounded-[16px] p-4 flex flex-col items-center gap-2 transition-all active:scale-[0.97]"
-              style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}
+              style={{ border: "1px solid #eeebf3" }}
               data-testid={`quick-${label.toLowerCase().replace(/\s/g, "-")}`}
             >
               <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ backgroundColor: "rgba(187,173,251,0.12)" }}>
@@ -435,7 +435,7 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
       {activityEvents.length > 0 && (
         <div>
           <SectionHeader title="Recent activity" />
-          <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+          <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3" }}>
             {activityEvents.map(({ icon: Icon, color, text, sub }, i) => (
               <div
                 key={i}
@@ -471,7 +471,7 @@ function DashboardTab({ onNavigate, userName }: { onNavigate: (tab: TabId) => vo
         </button>
         {systemExpanded && (
           systemChecks ? (
-            <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+            <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3" }}>
               {Object.entries(svcLabels).map(([key, { name, Icon }], i, arr) => {
                 const check = systemChecks[key];
                 if (!check) return null;
@@ -2151,7 +2151,7 @@ function AlertsTab() {
       {diagnostics && (
         <div>
           <SectionHeader title="Email health" />
-          <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+          <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3" }}>
             {/* API status banner */}
             <div className="px-5 py-4 flex items-center gap-3" style={{ backgroundColor: diagStatusBg, borderBottom: `1px solid ${diagStatusBorder}` }}>
               <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${diagStatusColor}20` }}>
@@ -2213,7 +2213,7 @@ function AlertsTab() {
       {/* Test email / push */}
       <div>
         <SectionHeader title="Send test" />
-        <div className="bg-white rounded-[20px] p-5" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+        <div className="bg-white rounded-[20px] p-5" style={{ border: "1px solid #eeebf3" }}>
           {/* Type selector */}
           <div className="flex gap-2 mb-4">
             {(["email", "push"] as const).map(t => (
@@ -2475,7 +2475,7 @@ function AlertsTab() {
           action={{ label: previewOpen ? "Close preview" : "Open preview", onClick: () => setPreviewOpen(x => !x) }}
         />
         {previewOpen && (
-          <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+          <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3" }}>
             <div className="flex items-center gap-2 px-4 py-3" style={{ borderBottom: "1px solid #f5f5f7" }}>
               {(["desktop", "mobile"] as const).map(m => (
                 <button
@@ -2525,7 +2525,7 @@ function AlertsTab() {
       {/* Resend to user */}
       <div>
         <SectionHeader title="Resend matches to user" />
-        <div className="bg-white rounded-[20px] p-5" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+        <div className="bg-white rounded-[20px] p-5" style={{ border: "1px solid #eeebf3" }}>
           <p className="text-[13px] mb-4" style={{ color: "#888888" }}>Re-deliver undelivered match alerts for a specific user ID (requires active subscription).</p>
           <div className="flex gap-2">
             <input
@@ -2562,7 +2562,7 @@ function AlertsTab() {
       {/* Recent activity */}
       <div>
         <SectionHeader title="Recent delivery activity" />
-        <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+        <div className="bg-white rounded-[20px] overflow-hidden" style={{ border: "1px solid #eeebf3" }}>
           {activity.length === 0 ? (
             <div className="px-4 py-10 text-center text-[13px]" style={{ color: "#888888" }}>No delivery activity recorded yet</div>
           ) : activity.slice(0, 30).map((a, i) => (

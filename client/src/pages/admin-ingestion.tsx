@@ -269,7 +269,7 @@ export default function AdminIngestionPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#f5f5f7" }}>
+    <div className="min-h-screen bg-ha-bg">
       <header
         className="bg-white sticky top-0 z-10"
         style={{ borderBottom: "1px solid #eeebf3", boxShadow: "0 1px 0 rgba(0,0,0,0.04)" }}

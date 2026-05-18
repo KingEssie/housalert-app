@@ -777,10 +777,18 @@ export default function ApplyPage() {
             paddingBottom: "max(1.25rem, env(safe-area-inset-bottom))",
           }}
         >
-          <div className="max-w-xl mx-auto px-5 py-3">
+          <div className="max-w-xl mx-auto flex items-center justify-between gap-4 px-5 py-3">
+            {listing.price > 0 && (
+              <div className="flex flex-col justify-center flex-shrink-0" data-testid="text-sticky-price">
+                <span className="text-[18px] font-semibold" style={{ color: "#111111" }}>
+                  €{listing.price}
+                  <span className="text-[12px] font-normal ml-1" style={{ color: "rgba(17,17,17,0.6)" }}>{t("common.perMonthShort")}</span>
+                </span>
+              </div>
+            )}
             <Button
               onClick={handleCopyAndRespond}
-              className="ha-btn font-semibold w-full"
+              className={`ha-btn font-semibold ${listing.price > 0 ? "" : "w-full"}`}
               style={{
                 borderRadius: "9999px",
                 backgroundColor: "#171429",

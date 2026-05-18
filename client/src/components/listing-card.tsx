@@ -119,7 +119,7 @@ export function ListingCardFull({
       style={{
         borderRadius: matchVariant ? "24px" : "12px",
         backgroundColor: cardBg,
-        boxShadow: matchVariant ? "0 6px 24px rgba(0,0,0,0.04)" : "0 2px 8px rgba(0,0,0,0.07)",
+        boxShadow: "none",
         border: cardBorder,
       }}
       onClick={onCardClick}
