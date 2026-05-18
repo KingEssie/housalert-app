@@ -6,6 +6,7 @@ import { createKleinanzeigenIngester } from "./kleinanzeigen";
 import { createImmoweltIngester } from "./immowelt";
 import { createImmoScout24Ingester } from "./immoscout24";
 import { createWohnungsboerseIngester } from "./wohnungsboerse";
+import { createVonoviaIngester } from "./vonovia";
 import { createConfigIngester } from "./html-config";
 import { buildSourcesForCity } from "./config/sources";
 import { getCitySlugs, makeFallbackSlug } from "./city-slugs";
@@ -105,6 +106,7 @@ const SOURCE_STATUSES: SourceStatus[] = [
   { name: "immowelt",      status: "active" },
   { name: "immoscout24",   status: "active", note: "Phase 1: Berlin only. AWS WAF protected — graceful fallback when blocked." },
   { name: "wohnungsboerse", status: "active", note: "Phase 1: Berlin only. Accessible with Chrome browser headers. ~20 listings/cycle." },
+  { name: "vonovia",       status: "active", note: "Phase 1: Berlin only. Open JSON API (Deutsche Wohnen/Vonovia shared backend). ~49 listings/cycle, 100% field coverage." },
   { name: "rentola",       status: "broken", note: "Fetch timeout — server unresponsive" },
   { name: "nestpick",      status: "broken", note: "Fetch timeout — server unresponsive" },
   { name: "immonet",       status: "gone",   note: "Returns 410 — service discontinued" },
@@ -201,8 +203,9 @@ const SOURCE_PRIORITY: Record<string, number> = {
   "immowelt":      3,
   "immoscout24":   4,
   "wohnungsboerse": 5,
-  "rentola":       6,
-  "nestpick":      7,
+  "vonovia":       6,
+  "rentola":       7,
+  "nestpick":      8,
 };
 
 function getSourcePriority(name: string): number {
@@ -225,6 +228,7 @@ function buildIngestersForCity(city: string): Ingester[] {
   if (!SKIP_SOURCES.has("immowelt")      && isSourceEnabledByAdmin("immowelt"))      ingesters.push(createImmoweltIngester(city));
   if (!SKIP_SOURCES.has("immoscout24")    && isSourceEnabledByAdmin("immoscout24"))    ingesters.push(createImmoScout24Ingester(city));
   if (!SKIP_SOURCES.has("wohnungsboerse") && isSourceEnabledByAdmin("wohnungsboerse")) ingesters.push(createWohnungsboerseIngester(city));
+  if (!SKIP_SOURCES.has("vonovia")        && isSourceEnabledByAdmin("vonovia"))        ingesters.push(createVonoviaIngester(city));
 
   const slugs = getCitySlugs(city);
   const slug = slugs?.slug ?? makeFallbackSlug(city);
