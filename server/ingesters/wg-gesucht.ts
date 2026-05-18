@@ -12,7 +12,7 @@ const API_BASE = `${WG_GESUCHT_BASE}/api/asset/offers/`;
 const BROWSER_UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36";
 
-const PAGES_TO_FETCH = 3;
+const PAGES_TO_FETCH = 5;
 const PAGE_SIZE = 25;
 const PAGE_DELAY_MS = 2000;
 const REQUEST_TIMEOUT_MS = 15_000;

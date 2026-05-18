@@ -1,0 +1,91 @@
+Audit the full housing alert pipeline end-to-end. This is business-critical.
+
+Problem:
+User has Berlin enabled with almost no filters, but receives very few emails for new listings. Expected volume should be much higher. We need to verify whether the issue is scraping, ingestion, matching, subscription eligibility, email sending, or email delivery.
+
+Audit required:
+
+1. Scraping / ingestion health
+For each source/site:
+- last successful scrape time
+- number of listings scraped in last 24h
+- number of new listings inserted in last 24h
+- number of errors in last 24h
+- blocked/CAPTCHA/HTML change indicators
+- sources with zero results or stale last_success
+
+Report per source:
+source_name | last_success | scraped_24h | inserted_24h | errors_24h | status
+
+2. Berlin listing volume
+Check database:
+- total active Berlin listings
+- new Berlin listings last 24h
+- new Berlin listings last 7d
+- listings grouped by source
+- listings that are active but not matched to any user
+
+3. User search profile matching
+For Martin’s account / Berlin search profile:
+- search profile ID
+- filters applied
+- radius/city
+- max rent
+- bedrooms
+- size
+- property type
+- furnished
+- active status
+- email notifications enabled
+- subscription status
+
+Check how many listings should match:
+- matching listings last 24h
+- matching listings last 7d
+- listings rejected by each filter reason
+
+Important:
+If filters are empty/no filters, matching should be broad. Report if any hidden default filters are excluding listings.
+
+4. Match generation
+Check:
+- are user_matches being created?
+- matches created for this user last 24h / 7d
+- listings that should match but did not create user_matches
+- duplicate suppression logic
+- already_seen/already_sent flags
+- freshness cutoff rules
+
+5. Email queue / delivery
+Check:
+- match alerts queued last 24h
+- match emails sent last 24h
+- failed email sends last 24h
+- resend/provider errors
+- suppression/bounce/spam status
+- whether emails are skipped because of subscription, notification prefs, or rate limits
+
+6. End-to-end trace
+Pick 5 new Berlin listings from last 24h and trace each:
+listing scraped → inserted → matched to Martin? → email queued? → email sent? → delivered?
+If any step fails, explain exactly why.
+
+7. Add/verify admin diagnostics
+If missing, add an admin page or endpoint that shows:
+- source health
+- Berlin ingestion volume
+- match generation count
+- email queue/sent/failed count
+- per-user match eligibility diagnostics
+
+8. Output
+Give a clear root-cause report:
+- scraping issue?
+- matching issue?
+- email sending issue?
+- notification/subscription issue?
+- hidden filters issue?
+- source-specific failure?
+
+Then recommend fixes and implement safe fixes only.
+Do not change business logic blindly without reporting the root cause first.

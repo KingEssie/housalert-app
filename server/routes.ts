@@ -8406,6 +8406,86 @@ export async function registerRoutes(
     }
   });
 
+  app.get("/api/admin/portal/user-pipeline-diagnostic", requireAdmin, async (req, res) => {
+    try {
+      const email = (req.query.email as string || "").trim().toLowerCase();
+      const userId = (req.query.user_id as string || "").trim();
+      if (!email && !userId) return res.status(400).json({ error: "Provide ?email= or ?user_id=" });
+
+      const adminSb = getSupabaseAdmin();
+      let resolvedUserId = userId;
+      let resolvedEmail = email;
+
+      if (email && !resolvedUserId) {
+        const { data: found } = await adminSb.auth.admin.listUsers();
+        const match = (found?.users || []).find((u: any) => u.email?.toLowerCase() === email);
+        if (!match) return res.status(404).json({ error: `No user found with email: ${email}` });
+        resolvedUserId = match.id;
+        resolvedEmail = match.email || email;
+      } else if (resolvedUserId && !resolvedEmail) {
+        const { data: u } = await adminSb.auth.admin.getUserById(resolvedUserId);
+        resolvedEmail = u?.user?.email || resolvedUserId;
+      }
+
+      const [profilesRes, subRes, notifRes] = await Promise.all([
+        supabase.from("search_profiles").select("*").eq("user_id", resolvedUserId),
+        supabase.from("subscriptions").select("*").eq("user_id", resolvedUserId).maybeSingle(),
+        supabase.from("user_notification_settings").select("*").eq("user_id", resolvedUserId).maybeSingle(),
+      ]);
+
+      const profileIds = (profilesRes.data || []).map((p: any) => p.id);
+      let matchStatsByProfile: Record<string, any> = {};
+      if (profileIds.length > 0) {
+        const rows = await pgPool.query(
+          `SELECT search_profile_id,
+             COUNT(*)::int as total_matches,
+             COUNT(*) FILTER (WHERE email_sent = true)::int as email_sent,
+             COUNT(*) FILTER (WHERE matched_at >= NOW() - INTERVAL '7 days')::int as matched_7d,
+             COUNT(*) FILTER (WHERE matched_at >= NOW() - INTERVAL '24 hours')::int as matched_24h,
+             MAX(matched_at) as last_match_at,
+             MAX(email_sent_at) as last_email_at
+           FROM user_matches
+           WHERE user_id = $1 AND search_profile_id = ANY($2::uuid[])
+           GROUP BY search_profile_id`,
+          [resolvedUserId, profileIds]
+        );
+        for (const r of rows.rows) matchStatsByProfile[r.search_profile_id] = r;
+      }
+
+      const recentRuns = await pgPool.query(
+        `SELECT started_at, status, total_found, total_inserted, total_matches, total_errors, duration_sec
+         FROM ingestion_runs ORDER BY started_at DESC LIMIT 5`
+      );
+
+      const userMatchSummary = await pgPool.query(
+        `SELECT COUNT(*)::int as total,
+           COUNT(*) FILTER (WHERE email_sent = true)::int as emailed,
+           COUNT(*) FILTER (WHERE matched_at >= NOW() - INTERVAL '24 hours')::int as matched_24h,
+           COUNT(*) FILTER (WHERE matched_at >= NOW() - INTERVAL '7 days')::int as matched_7d,
+           MAX(matched_at) as last_match, MAX(email_sent_at) as last_email
+         FROM user_matches WHERE user_id = $1`,
+        [resolvedUserId]
+      );
+
+      const profiles = (profilesRes.data || []).map((p: any) => ({
+        ...p,
+        match_stats: matchStatsByProfile[p.id] || { total_matches: 0, email_sent: 0, matched_7d: 0, matched_24h: 0 },
+      }));
+
+      res.json({
+        user: { id: resolvedUserId, email: resolvedEmail },
+        subscription: subRes.data || null,
+        notification_settings: notifRes.data || null,
+        search_profiles: profiles,
+        match_summary: userMatchSummary.rows[0] || null,
+        recent_ingest_runs: recentRuns.rows,
+      });
+    } catch (err: any) {
+      log(`[admin] user-pipeline-diagnostic error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   app.get("/api/support/notifications", async (req, res) => {
     try {
       const authHeader = req.headers.authorization;
