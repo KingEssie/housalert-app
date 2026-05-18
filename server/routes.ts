@@ -1,6 +1,10 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { computeMatchEstimate, type NormalizedFilters } from "./match-estimate";
+import { getSourceHealthSummary, getStaleSourceHealth } from "./monitoring/source-health";
+import { getOpenAlerts, getRecentAlerts, resolveAlertById } from "./monitoring/alerts";
+import { SOURCE_REGISTRY } from "./ingesters/source-registry";
+import { explainMatchInternal } from "./matching/engine";
 import { sendEmailMatchAlert } from "./notifications";
 import {
   runAllIngesters,
@@ -8485,6 +8489,264 @@ export async function registerRoutes(
       res.status(500).json({ error: err.message });
     }
   });
+
+  // ─── Pipeline Monitoring ────────────────────────────────────────────────────
+
+  app.get("/api/admin/portal/source-health", requireAdmin, async (_req, res) => {
+    try {
+      const rows = await getSourceHealthSummary();
+      res.json({ sources: rows });
+    } catch (err: any) {
+      log(`[admin] source-health error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/pipeline-alerts", requireAdmin, async (req, res) => {
+    try {
+      const mode = (req.query.mode as string) || "open";
+      const alerts = mode === "all" ? await getRecentAlerts(100) : await getOpenAlerts();
+      res.json({ alerts, count: alerts.length });
+    } catch (err: any) {
+      log(`[admin] pipeline-alerts error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/admin/portal/pipeline-alerts/:id/resolve", requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id, 10);
+      if (isNaN(id)) return res.status(400).json({ error: "Invalid alert id" });
+      const resolved = await resolveAlertById(id);
+      res.json({ resolved });
+    } catch (err: any) {
+      log(`[admin] resolve-alert error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/listing-trace", requireAdmin, async (req, res) => {
+    try {
+      const listingId = (req.query.listing_id as string || "").trim();
+      if (!listingId) return res.status(400).json({ error: "Provide ?listing_id=" });
+
+      const adminSb = getSupabaseAdmin();
+
+      const [listingRes, freshnessRes] = await Promise.all([
+        adminSb.from("listings").select("id, title, city, price, url, source, created_at, image_url").eq("id", listingId).single(),
+        adminSb.from("listing_freshness").select("listing_id, source, source_id, first_seen_at, last_seen_at").eq("listing_id", listingId).single(),
+      ]);
+
+      const listing = listingRes.data;
+      const freshness = freshnessRes.data;
+
+      const { rows: matchRows } = await pgPool.query(
+        `SELECT user_id, search_profile_id, matched_at, listing_title, listing_city, listing_price,
+                email_sent, email_sent_at, push_sent, push_sent_at, viewed_at, applied_at
+         FROM user_matches WHERE listing_id = $1 ORDER BY matched_at ASC`,
+        [listingId]
+      );
+
+      let nearestRun: any = null;
+      if (freshness?.first_seen_at) {
+        const { rows: runRows } = await pgPool.query(
+          `SELECT id, started_at, finished_at, total_found, total_inserted, total_matches, status
+           FROM ingestion_runs
+           WHERE ABS(EXTRACT(EPOCH FROM (finished_at - $1::timestamptz))) < 600
+           ORDER BY ABS(EXTRACT(EPOCH FROM (finished_at - $1::timestamptz))) ASC
+           LIMIT 1`,
+          [freshness.first_seen_at]
+        );
+        nearestRun = runRows[0] ?? null;
+      }
+
+      res.json({
+        listing: listing ?? null,
+        freshness: freshness ?? null,
+        matches: matchRows,
+        ingestion_run: nearestRun,
+        timeline: [
+          freshness?.first_seen_at ? { event: "first_scraped", at: freshness.first_seen_at } : null,
+          listing?.created_at ? { event: "inserted_to_db", at: listing.created_at } : null,
+          ...matchRows.map(m => ({ event: "matched", at: m.matched_at, user_id: m.user_id })),
+          ...matchRows.filter(m => m.email_sent_at).map(m => ({ event: "email_sent", at: m.email_sent_at, user_id: m.user_id })),
+          ...matchRows.filter(m => m.push_sent_at).map(m => ({ event: "push_sent", at: m.push_sent_at, user_id: m.user_id })),
+          ...matchRows.filter(m => m.viewed_at).map(m => ({ event: "viewed", at: m.viewed_at, user_id: m.user_id })),
+        ].filter(Boolean).sort((a: any, b: any) => new Date(a.at).getTime() - new Date(b.at).getTime()),
+      });
+    } catch (err: any) {
+      log(`[admin] listing-trace error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/sla-metrics", requireAdmin, async (_req, res) => {
+    try {
+      const { rows: emailSla } = await pgPool.query(
+        `SELECT
+           COUNT(*) FILTER (WHERE email_sent AND email_sent_at IS NOT NULL AND matched_at IS NOT NULL) AS email_count,
+           ROUND(AVG(EXTRACT(EPOCH FROM (email_sent_at - matched_at)) / 60)
+             FILTER (WHERE email_sent AND email_sent_at IS NOT NULL AND matched_at IS NOT NULL
+                       AND matched_at >= NOW() - INTERVAL '7 days'))::int AS avg_match_to_email_min,
+           ROUND(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (email_sent_at - matched_at)) / 60)
+             FILTER (WHERE email_sent AND email_sent_at IS NOT NULL AND matched_at IS NOT NULL
+                       AND matched_at >= NOW() - INTERVAL '7 days'))::int AS median_match_to_email_min,
+           ROUND(AVG(EXTRACT(EPOCH FROM (push_sent_at - matched_at)) / 60)
+             FILTER (WHERE push_sent AND push_sent_at IS NOT NULL AND matched_at IS NOT NULL
+                       AND matched_at >= NOW() - INTERVAL '7 days'))::int AS avg_match_to_push_min
+         FROM user_matches
+         WHERE matched_at >= NOW() - INTERVAL '30 days'`
+      );
+
+      const { rows: dailySla } = await pgPool.query(
+        `SELECT
+           DATE(matched_at) AS day,
+           COUNT(*) AS matches,
+           COUNT(*) FILTER (WHERE email_sent) AS emails_sent,
+           COUNT(*) FILTER (WHERE push_sent) AS push_sent,
+           ROUND(AVG(EXTRACT(EPOCH FROM (email_sent_at - matched_at)) / 60)
+             FILTER (WHERE email_sent AND email_sent_at IS NOT NULL))::int AS avg_email_min,
+           ROUND(AVG(EXTRACT(EPOCH FROM (push_sent_at - matched_at)) / 60)
+             FILTER (WHERE push_sent AND push_sent_at IS NOT NULL))::int AS avg_push_min
+         FROM user_matches
+         WHERE matched_at >= NOW() - INTERVAL '14 days'
+         GROUP BY DATE(matched_at)
+         ORDER BY day DESC`
+      );
+
+      const { rows: ingestSla } = await pgPool.query(
+        `SELECT
+           DATE(finished_at) AS day,
+           COUNT(*) AS runs,
+           ROUND(AVG(duration_sec))::int AS avg_duration_sec,
+           SUM(total_found) AS total_found,
+           SUM(total_inserted) AS total_inserted,
+           SUM(total_matches) AS total_matches,
+           SUM(total_errors) AS total_errors,
+           COUNT(*) FILTER (WHERE status = 'success') AS success_runs,
+           COUNT(*) FILTER (WHERE status = 'failed') AS failed_runs
+         FROM ingestion_runs
+         WHERE finished_at >= NOW() - INTERVAL '14 days'
+         GROUP BY DATE(finished_at)
+         ORDER BY day DESC`
+      );
+
+      const { rows: openAlertCounts } = await pgPool.query(
+        `SELECT severity, COUNT(*) AS count FROM admin_alerts WHERE status = 'open' GROUP BY severity`
+      );
+
+      res.json({
+        summary: emailSla[0] ?? {},
+        daily: dailySla,
+        ingest_daily: ingestSla,
+        open_alert_counts: openAlertCounts,
+      });
+    } catch (err: any) {
+      log(`[admin] sla-metrics error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/source-registry", requireAdmin, async (_req, res) => {
+    try {
+      const healthRows = await getSourceHealthSummary();
+      const healthMap = new Map(healthRows.map(h => [`${h.source_name}:${h.city}`, h]));
+
+      const registry = SOURCE_REGISTRY.map(entry => {
+        const healthEntries = healthRows.filter(h => h.source_name.toLowerCase() === entry.name.toLowerCase());
+        const anyHealthy = healthEntries.some(h => h.status === "healthy");
+        const lastSuccess = healthEntries.reduce((best: string | null, h) => {
+          if (!h.last_success_at) return best;
+          if (!best) return h.last_success_at;
+          return h.last_success_at > best ? h.last_success_at : best;
+        }, null);
+        return { ...entry, health_entries: healthEntries, any_healthy: anyHealthy, last_success_global: lastSuccess };
+      });
+
+      res.json({ registry });
+    } catch (err: any) {
+      log(`[admin] source-registry error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/portal/rejection-trace", requireAdmin, async (req, res) => {
+    try {
+      const email = (req.query.email as string || "").trim().toLowerCase();
+      const userId = (req.query.user_id as string || "").trim();
+      if (!email && !userId) return res.status(400).json({ error: "Provide ?email= or ?user_id=" });
+
+      const adminSb = getSupabaseAdmin();
+      let resolvedUserId = userId;
+
+      if (email && !resolvedUserId) {
+        const result = await lookupSupabaseUserByEmail(adminSb, email);
+        if (!result) return res.status(404).json({ error: "User not found" });
+        resolvedUserId = result.id;
+      }
+
+      const { data: profiles } = await adminSb
+        .from("search_profiles")
+        .select("*")
+        .eq("user_id", resolvedUserId)
+        .eq("is_active", true);
+
+      if (!profiles || profiles.length === 0) {
+        return res.json({ profiles: [], traces: [], message: "No active profiles found" });
+      }
+
+      const cities = [...new Set(profiles.map((p: any) => p.city_name || p.city).filter(Boolean))];
+      const traces: any[] = [];
+
+      for (const city of cities) {
+        const { data: recentListings } = await adminSb
+          .from("listings")
+          .select("id, title, city, price, rooms, size_sqm, source, url, created_at, extra_features")
+          .ilike("city", city)
+          .order("created_at", { ascending: false })
+          .limit(15);
+
+        if (!recentListings || recentListings.length === 0) continue;
+
+        for (const listing of recentListings) {
+          const profileResults: any[] = [];
+          for (const profile of profiles) {
+            if ((profile.city_name || profile.city || "").toLowerCase() !== city.toLowerCase()) continue;
+            try {
+              const explanation = explainMatchInternal(listing as any, profile as any);
+              profileResults.push({
+                profile_id: profile.id,
+                profile_summary: `€${profile.max_rent ?? "?"} | ${profile.min_rooms ?? "?"}+ rooms | r=${profile.max_radius_km ?? "?"}km`,
+                matched: explanation.matched,
+                score: explanation.score,
+                reasons: explanation.reasons,
+                rejections: explanation.rejections,
+              });
+            } catch {
+              profileResults.push({ profile_id: profile.id, matched: false, score: 0, reasons: [], rejections: ["Engine error"] });
+            }
+          }
+          traces.push({
+            listing_id: listing.id,
+            title: listing.title,
+            city: listing.city,
+            price: listing.price,
+            rooms: listing.rooms,
+            source: listing.source,
+            created_at: listing.created_at,
+            profiles: profileResults,
+          });
+        }
+      }
+
+      res.json({ profiles, traces, cities });
+    } catch (err: any) {
+      log(`[admin] rejection-trace error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // ─── End Pipeline Monitoring ────────────────────────────────────────────────
 
   app.get("/api/support/notifications", async (req, res) => {
     try {

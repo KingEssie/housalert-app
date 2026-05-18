@@ -1828,9 +1828,17 @@ function SystemTab() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-[24px] font-bold text-ha-text">System</h1>
-        <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-ha-hover-bg flex items-center justify-center hover:bg-ha-divider" data-testid="button-refresh-system">
-          <RefreshCw className={`w-4 h-4 text-ha-text-secondary ${refreshing ? "animate-spin" : ""}`} />
-        </button>
+        <div className="flex items-center gap-2">
+          <a href="/admin/pipeline-health"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-colors hover:opacity-80"
+            style={{ background: "rgba(187,173,251,0.12)", color: "#7c5fc5" }}
+            data-testid="link-pipeline-health">
+            <Activity className="w-3.5 h-3.5" /> Pipeline Health
+          </a>
+          <button onClick={() => { setRefreshing(true); load(); }} className="w-9 h-9 rounded-full bg-ha-hover-bg flex items-center justify-center hover:bg-ha-divider" data-testid="button-refresh-system">
+            <RefreshCw className={`w-4 h-4 text-ha-text-secondary ${refreshing ? "animate-spin" : ""}`} />
+          </button>
+        </div>
       </div>
 
       {matchStats && (

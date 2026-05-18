@@ -69,6 +69,7 @@ const AdminPortalPage = lazy(() => import("@/pages/admin-portal"));
 const AdminMatchAuditPage = lazy(() => import("@/pages/admin-match-audit"));
 const AdminActivationPage = lazy(() => import("@/pages/admin-activation"));
 const AdminImageAuditPage = lazy(() => import("@/pages/admin-image-audit"));
+const AdminPipelineHealthPage = lazy(() => import("@/pages/admin-pipeline-health"));
 
 const ApplyPage = lazy(() => import("@/pages/apply"));
 const TipDetailPage = lazy(() => import("@/pages/tip-detail"));
@@ -347,6 +348,7 @@ function Router() {
           <Route path="/admin/match-audit" component={() => <ProtectedRoute component={AdminMatchAuditPage} />} />
           <Route path="/admin/activation" component={() => <ProtectedRoute component={AdminActivationPage} />} />
           <Route path="/admin/image-audit" component={() => <ProtectedRoute component={AdminImageAuditPage} />} />
+          <Route path="/admin/pipeline-health" component={() => <ProtectedRoute component={AdminPipelineHealthPage} skipOnboardingCheck />} />
           <Route path="/support" component={() => <ProtectedRoute component={SupportPage} skipOnboardingCheck />} />
           <Route path="/support/:id" component={() => <ProtectedRoute component={SupportThreadPage} skipOnboardingCheck />} />
           <Route path="/profile/search-buddy" component={() => <BuddyProtectedRoute component={ZoekbuddyPage} />} />

@@ -1,0 +1,103 @@
+Build production-grade monitoring and alerting for the HousAlert scraping/matching/notification pipeline.
+
+Goal:
+HousAlert must reliably help users react first to new housing listings. The full pipeline must be observable, diagnosable, and alert the admin when anything breaks.
+
+Part 1 — Pipeline health model
+Create/extend database tables if needed for:
+- ingestion_runs
+- source_health
+- match_generation_runs
+- notification_events
+- admin_alerts
+
+Track per source:
+- source_name
+- city
+- last_started_at
+- last_success_at
+- duration_ms
+- found_count
+- inserted_count
+- duplicate_count
+- error_count
+- last_error
+- status: healthy / degraded / down
+- consecutive_failures
+
+Part 2 — Admin monitoring dashboard/API
+Add admin endpoint/page showing:
+- source health by city/source
+- listings found/inserted last 24h and 7d
+- match counts last 24h and 7d
+- emails sent/failed last 24h
+- push sent/failed last 24h
+- stale sources
+- sources with abnormal zero results
+- users/profiles with no matches despite available inventory
+
+Part 3 — Admin alert rules
+Create alert rules for:
+- source has no success for 30 minutes
+- source found 0 listings for 3 consecutive runs
+- source error rate > 30% in last hour
+- ingestion job failed
+- matching job failed
+- email provider failure
+- push provider failure
+- new listings inserted but 0 matches created
+- active subscribed user has no matches for 24h while matching inventory exists
+- search profile has invalid coordinates/radius/filter state
+
+Part 4 — Admin notifications
+When an admin alert is created:
+- send e-mail if admin has email notifications enabled
+- send push if admin has push notifications enabled
+- avoid spam by deduplicating same alert type/source for a cooldown period
+- store alert status as open/resolved
+- auto-resolve when source/job becomes healthy again
+
+Part 5 — Listing trace
+Add diagnostic endpoint:
+GET /api/admin/portal/listing-trace?listing_id=...
+Return:
+scraped_at, inserted_at, matched_users, queued_notifications, sent_notifications, failures.
+
+Part 6 — User pipeline diagnostic
+Improve existing user diagnostic endpoint to show:
+- active profiles
+- filters
+- hidden/default filters
+- invalid radius/coordinates
+- last match
+- last email
+- why last 20 relevant listings were accepted/rejected
+
+Part 7 — SLA metrics
+Track and display:
+- time from scrape detected → inserted
+- inserted → matched
+- matched → notification sent
+- total alert latency
+
+Target:
+- matching within 30 seconds
+- notification within 60 seconds after detection
+
+Part 8 — Source expansion plan
+Create a structured source registry so new sources can be added cleanly.
+Prepare placeholders/priorities for:
+- Kleinanzeigen
+- ImmoScout24
+- Immonet
+- Wohnungsbörse
+- Vonovia / Deutsche Wohnen
+
+Do not implement all new scrapers yet unless safe.
+First make monitoring robust.
+
+Build and report:
+- database changes
+- endpoints/pages added
+- alert rules added
+- how to test by simulating a source failure

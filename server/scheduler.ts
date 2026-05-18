@@ -6,6 +6,8 @@ import { recoverUndeliveredMatches } from "./notifications/buffer";
 import { checkExpoReceipts } from "./notifications/expo-push";
 import { updateStalenessStatuses } from "./listing-status";
 import { runImageBackfill, ensureBackfillRunsTable, ensureTrackingTable, isBackfillEnabled, isBackfillRunning } from "./image-backfill";
+import { upsertSourceHealth, ensureMonitoringTables } from "./monitoring/source-health";
+import { evaluateAlertRules } from "./monitoring/alerts";
 
 const intervalMinutes = parseInt(process.env.INGEST_INTERVAL_MINUTES || "5", 10);
 const INTERVAL_MS = intervalMinutes * 60 * 1000;
@@ -28,28 +30,45 @@ async function runStalenessCheck() {
 
 async function tick() {
   const startedAt = new Date();
+  let report: any = null;
+  let runStatus = "success";
+
   try {
-    const report = await runAllIngesters();
+    report = await runAllIngesters();
     await persistIngestionRun(report, startedAt);
+    runStatus = report.total.errors === 0 ? "success" : "partial";
   } catch (err: any) {
     if (err instanceof OverlapError) {
       log("[INGEST] Skipping — previous run still in progress", "scheduler");
+      return;
     } else {
       log(`[INGEST ERROR] ${err.message}`, "scheduler");
+      runStatus = "failed";
       const durationSec = (Date.now() - startedAt.getTime()) / 1000;
-      await persistIngestionRun(
-        {
-          sources: [],
-          cityReports: [],
-          total: { found: 0, inserted: 0, duplicates: 0, matches: 0, errors: 1 },
-          cities: [],
-          durationSec,
-        },
-        startedAt,
-        err.message
-      );
+      report = {
+        sources: [],
+        cityReports: [],
+        total: { found: 0, inserted: 0, duplicates: 0, matches: 0, errors: 1 },
+        cities: [],
+        durationSec,
+      };
+      await persistIngestionRun(report, startedAt, err.message);
     }
   }
+
+  if (report) {
+    try {
+      await upsertSourceHealth(report, startedAt);
+    } catch (err: any) {
+      log(`[MONITORING] upsertSourceHealth error: ${err.message}`, "scheduler");
+    }
+    try {
+      await evaluateAlertRules(report, startedAt, runStatus);
+    } catch (err: any) {
+      log(`[MONITORING] evaluateAlertRules error: ${err.message}`, "scheduler");
+    }
+  }
+
   await runStalenessCheck();
   nextRunAt = new Date(Date.now() + INTERVAL_MS);
 }
@@ -83,6 +102,7 @@ export function getNextRun() {
 
 export async function startScheduler() {
   await ensureIngestionRunsColumns();
+  await ensureMonitoringTables();
 
   const cleaned = await cleanupStaleFetchRuns();
   if (cleaned > 0) {
