@@ -2494,7 +2494,7 @@ function AlertsTab() {
               ))}
               <span className="ml-auto text-[11px]" style={{ color: "#aaaaaa" }}>Live render of the actual email template</span>
             </div>
-            <div className="flex items-center justify-center p-4" style={{ backgroundColor: "#f5f5f7" }}>
+            <div className="flex items-center justify-center p-4" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
               {previewUrl ? (
                 <iframe
                   src={previewUrl}
@@ -3055,7 +3055,7 @@ function SupportTab() {
                               onClick={() => updateStatus(ticket.id, "closed")}
                               disabled={updatingId === ticket.id}
                               className="px-3 py-1.5 rounded-full text-[12px] font-semibold border transition-all disabled:opacity-50"
-                              style={{ backgroundColor: "#f5f5f7", color: "#666666", borderColor: "#e0e0e0" }}
+                              style={{ backgroundColor: "rgb(var(--ha-bg))", color: "#666666", borderColor: "#e0e0e0" }}
                               data-testid={`button-close-${ticket.id}`}
                             >
                               Close
@@ -3075,7 +3075,7 @@ function SupportTab() {
                           <button
                             onClick={() => loadThread(ticket.id)}
                             className="px-3 py-1.5 rounded-full text-[12px] font-semibold border transition-all"
-                            style={{ backgroundColor: "#f5f5f7", color: "#666", borderColor: "#e0e0e0" }}
+                            style={{ backgroundColor: "rgb(var(--ha-bg))", color: "#666", borderColor: "#e0e0e0" }}
                             data-testid={`button-reload-thread-${ticket.id}`}
                           >
                             ↻ Vernieuwen
@@ -3116,7 +3116,7 @@ function SupportTab() {
                   <button
                     onClick={() => setExpanded(isExpanded ? null : ticket.id)}
                     className="w-8 h-8 flex items-center justify-center rounded-full flex-shrink-0 transition-all"
-                    style={{ backgroundColor: "#f5f5f7" }}
+                    style={{ backgroundColor: "rgb(var(--ha-bg))" }}
                     data-testid={`button-expand-${ticket.id}`}
                   >
                     <ChevronDown
@@ -3213,7 +3213,7 @@ export default function AdminPortalPage() {
 
   if (checking) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#f5f5f7" }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
         <Loader2 className="w-7 h-7 animate-spin" style={{ color: "#bbadfb" }} />
       </div>
     );
@@ -3221,7 +3221,7 @@ export default function AdminPortalPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "#f5f5f7" }}>
+      <div className="min-h-screen flex items-center justify-center px-5" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
         <div className="text-center max-w-sm">
           <h1 className="text-[20px] font-bold mb-2" style={{ color: "#111111" }}>Not authenticated</h1>
           <p className="text-[13px] mb-5" style={{ color: "#888888" }}>Please log in to access the admin portal.</p>
@@ -3244,7 +3244,7 @@ export default function AdminPortalPage() {
   }
 
   return (
-    <div className="min-h-screen flex" style={{ backgroundColor: "#f5f5f7" }}>
+    <div className="min-h-screen flex" style={{ backgroundColor: "rgb(var(--ha-bg))" }}>
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div

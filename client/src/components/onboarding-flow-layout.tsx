@@ -86,7 +86,6 @@ export function OnboardingFlowLayout({
             <div>
               <div className="text-left mb-6">
                 <h1 className="text-[22px] font-bold text-ha-text leading-tight mb-3" data-testid="text-ob-step-title">
-                  <span className="text-ha-primary mr-1.5">{currentStep}</span>
                   {stepTitle}
                 </h1>
                 {stepDescription && (
@@ -98,10 +97,9 @@ export function OnboardingFlowLayout({
               {children}
             </div>
           ) : (
-            <div className="bg-white rounded-2xl shadow-[0_1px_4px_rgba(0,0,0,0.06)] px-6 py-7">
+            <div className="bg-white rounded-2xl px-6 py-7">
               <div className="text-left mb-6">
                 <h1 className="text-[22px] font-bold text-ha-text leading-tight mb-3" data-testid="text-ob-step-title">
-                  <span className="text-ha-primary mr-1.5">{currentStep}</span>
                   {stepTitle}
                 </h1>
                 {stepDescription && (

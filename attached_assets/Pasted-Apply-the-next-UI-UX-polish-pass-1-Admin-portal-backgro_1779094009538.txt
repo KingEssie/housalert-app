@@ -1,0 +1,60 @@
+Apply the next UI/UX polish pass.
+
+1. Admin portal background
+The admin portal background is still not using the global --ha-bg background.
+Find the admin portal root/layout wrapper and force the page background to rgb(var(--ha-bg)).
+This must apply to all admin pages, not only one card.
+
+2. Dashboard card alignment: Reactiebrief + Zoekbuddy
+The Reactiebrief and Zoekbuddy cards are not aligned nicely.
+Change these cards to a compact horizontal layout:
+- icon on the left
+- title on the right top
+- status directly below the title
+- title and status aligned vertically as one text block
+- reduce card height/padding so the cards are more compact
+- keep “Beheren” aligned right if present
+
+3. Account creation flow icons
+In account creation steps:
+- remove the green step number before “Hoe heet je?”
+- remove the green step number before “Wat is je e-mailadres?”
+- use black icons with a purple circular background instead.
+
+4. Account creation flow simplification
+Move password input to the same page as email.
+Remove the separate password confirmation field.
+Remove the separate password step entirely.
+
+New flow:
+Step 1: name
+Step 2: email + password
+Then continue to next onboarding/paywall logic.
+
+Update progress indicator from 1/3, 2/3, 3/3 to 1/2 and 2/2.
+
+5. Search profile wizard icons
+The check icon next to “We zoeken in heel Berlijn…” should also be:
+- black icon
+- purple circular background
+
+6. Radius selector
+Replace the radius pills:
+2 km, 5 km, 10 km, 15 km, 25 km, 50 km
+with a dropdown/select field.
+
+7. Filter pill colors
+For “Slaapkamers” and “Overige wensen”:
+- selected pills should be black background with white text
+- not green
+
+8. Sliders
+Change rent and minimum surface sliders from green to purple.
+
+9. Keep global background consistent
+While editing these components, make sure no wrapper reintroduces white page background.
+Cards can remain white, but page background must stay rgb(var(--ha-bg)).
+
+10. Build
+Run npm run build.
+Report changed files and summarize each adjustment.

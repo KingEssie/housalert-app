@@ -856,7 +856,11 @@ export default function AppSearchWizard() {
                         style={{ padding: "10px 14px", borderBottom: i < districtList.length - 1 ? "1px solid rgb(var(--ha-divider))" : "none" }}
                         data-testid={`district-${d}`}>
                         <span className="text-[13.5px] font-medium" style={{ color: active ? OBW.text : OBW.textSecondary }}>{d}</span>
-                        {active && <Check className="w-3.5 h-3.5" style={{ color: "rgb(var(--ha-primary))" }} />}
+                        {active && (
+                          <div className="w-[20px] h-[20px] rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "#bbadfb" }}>
+                            <Check className="w-3 h-3 text-[#111111]" />
+                          </div>
+                        )}
                       </button>
                     );
                   })}
@@ -872,27 +876,22 @@ export default function AppSearchWizard() {
           {/* Radius mode */}
           {loc.mode === "radius" && (
             <div data-testid="section-radius">
-              <style>{`
-                .ha-radius-slider{-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer;width:100%;height:4px}
-                .ha-radius-slider::-webkit-slider-runnable-track{background:linear-gradient(to right,#bbadfb 0%,#bbadfb var(--sl-pct,0%),rgb(var(--ha-card-border)) var(--sl-pct,0%),rgb(var(--ha-card-border)) 100%);border-radius:9999px;height:4px}
-                .ha-radius-slider::-moz-range-track{background:rgb(var(--ha-card-border));border-radius:9999px;height:4px}
-                .ha-radius-slider::-moz-range-progress{background:#bbadfb;border-radius:9999px;height:4px}
-                .ha-radius-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:white;box-shadow:0 1px 6px rgba(0,0,0,.18),0 0 0 1.5px rgba(0,0,0,.07);margin-top:-8px;cursor:pointer}
-                .ha-radius-slider::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:white;box-shadow:0 1px 6px rgba(0,0,0,.18),0 0 0 1.5px rgba(0,0,0,.07);border:none;cursor:pointer}
-              `}</style>
               <div className="flex items-center justify-between mb-3">
                 <span className="text-[13.5px] font-semibold" style={{ color: OBW.textSecondary }}>{t("onboarding.location.distanceLabel")}</span>
                 <span className="text-[13px] font-medium" style={{ color: OBW.textMuted }}>{city?.name}</span>
               </div>
-              <div className="flex items-center gap-3 mb-4">
-                <input type="range" min={1} max={50} step={1} value={loc.radiusKm}
+              <div className="mb-4">
+                <select
+                  value={[2, 5, 10, 15, 25, 50].includes(loc.radiusKm) ? loc.radiusKm : 10}
                   onChange={(e) => setLoc((prev) => ({ ...prev, radiusKm: parseInt(e.target.value) }))}
-                  className="ha-radius-slider flex-1"
-                  style={{ "--sl-pct": `${((loc.radiusKm - 1) / 49) * 100}%` } as React.CSSProperties}
-                  data-testid="slider-radius" />
-                <span className="text-[14px] font-semibold shrink-0 w-[48px] text-right" style={{ color: "#111111" }}>
-                  {loc.radiusKm} km
-                </span>
+                  className="w-full h-[48px] px-4 rounded-[10px] border text-[15px] font-medium outline-none cursor-pointer"
+                  style={{ borderColor: "rgb(var(--ha-border-input))", backgroundColor: OBW.inputBg, color: OBW.text }}
+                  data-testid="select-radius"
+                >
+                  {[2, 5, 10, 15, 25, 50].map((km) => (
+                    <option key={km} value={km}>{km} km</option>
+                  ))}
+                </select>
               </div>
               <div style={{ aspectRatio: "1/1" }} className="rounded-[10px] overflow-hidden w-full">
                 <MapView lat={lat} lng={lng} zoom={10} markers={[{ lat, lng, type: "primary" }]}
@@ -1102,7 +1101,7 @@ export default function AppSearchWizard() {
                   return (
                     <button key={opt.value} onClick={() => update({ minRooms: opt.value })}
                       className="py-[9px] px-4 text-[12px] font-semibold rounded-full whitespace-nowrap shrink-0 transition-all active:scale-[0.96]"
-                      style={{ backgroundColor: active ? "#bbadfb" : "#f3f4f6", color: "#111111", boxShadow: "none" }}
+                      style={{ backgroundColor: active ? "#111111" : "#f3f4f6", color: active ? "#ffffff" : "#111111", boxShadow: "none" }}
                       data-testid={`rooms-${opt.value}`}>
                       {opt.label}
                     </button>
@@ -1162,9 +1161,9 @@ export default function AppSearchWizard() {
                     <button key={value} onClick={() => toggleAmenity(value)}
                       className="flex items-center gap-1.5 h-[36px] px-3.5 rounded-full text-[13px] font-medium border transition-all active:scale-[0.96]"
                       style={{
-                        backgroundColor: active ? "#bbadfb" : "transparent",
-                        borderColor: active ? "#bbadfb" : OBW.chipBorder,
-                        color: "#111111",
+                        backgroundColor: active ? "#111111" : "transparent",
+                        borderColor: active ? "#111111" : OBW.chipBorder,
+                        color: active ? "#ffffff" : "#111111",
                       }}
                       data-testid={`amenity-${value}`}>
                       {active ? <Check className="w-3 h-3 shrink-0" /> : <Icon className="w-3.5 h-3.5 shrink-0" />}

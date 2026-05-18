@@ -177,7 +177,7 @@ export default function OnboardingName() {
     <OnboardingFlowLayout
       flowTitle={t("onboarding.accountCreate.flowTitle")}
       currentStep={1}
-      totalSteps={3}
+      totalSteps={2}
       stepTitle={t("onboarding.name.title")}
       stepDescription={t("onboarding.name.subtitle")}
       onBack={handleBack}

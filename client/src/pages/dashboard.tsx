@@ -1010,34 +1010,34 @@ function HomeTab({
           return (
             <button
               onClick={() => navigate("/application-letter")}
-              className="w-full text-left bg-white rounded-[12px] p-5 flex flex-col gap-3 active:scale-[0.985] transition-transform"
+              className="w-full text-left bg-white rounded-[12px] px-4 py-3 flex items-center gap-3 active:scale-[0.985] transition-transform"
               style={{ border: "1px solid rgb(var(--ha-card-border))" }}
               data-testid="card-application-letter-status"
             >
-              <div className="flex items-center gap-2.5">
-                <div className="w-[40px] h-[40px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#bbadfb" }}>
-                  <FileText className="w-[22px] h-[22px] text-[#111111]" />
+              <div className="w-[38px] h-[38px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#bbadfb" }}>
+                <FileText className="w-[20px] h-[20px] text-[#111111]" />
+              </div>
+              <div className="flex flex-col flex-1 min-w-0">
+                <span className="text-[14px] font-bold text-ha-text leading-snug">{t("profile.reactionLetter2")}</span>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  {hasLetter ? (
+                    <>
+                      <Check className="w-[13px] h-[13px] flex-shrink-0" style={{ color: "rgb(var(--ha-emerald))" }} />
+                      <span className="text-[12px] font-medium" style={{ color: "rgb(var(--ha-emerald))" }}>{t("home.reactionLetterConfigured")}</span>
+                    </>
+                  ) : (
+                    <>
+                      <X className="w-[13px] h-[13px] flex-shrink-0" style={{ color: "rgb(var(--ha-danger))" }} />
+                      <span className="text-[12px] font-medium" style={{ color: "rgb(var(--ha-danger))" }}>{t("home.reactionLetterMissing")}</span>
+                    </>
+                  )}
                 </div>
-                <h2 className="text-[16px] font-bold text-ha-text flex-1">{t("profile.reactionLetter2")}</h2>
-                {!buddyMode && (
-                  <span className="text-[14px] font-semibold" style={{ color: "#223546" }}>
-                    {hasLetter ? t("common.manage") : t("common.generate")}
-                  </span>
-                )}
               </div>
-              <div className="flex items-center gap-2 pl-[52px]">
-                {hasLetter ? (
-                  <>
-                    <Check className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "rgb(var(--ha-emerald))" }} />
-                    <span className="text-[13px] font-medium" style={{ color: "rgb(var(--ha-emerald))" }}>{t("home.reactionLetterConfigured")}</span>
-                  </>
-                ) : (
-                  <>
-                    <X className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "rgb(var(--ha-danger))" }} />
-                    <span className="text-[13px] font-medium" style={{ color: "rgb(var(--ha-danger))" }}>{t("home.reactionLetterMissing")}</span>
-                  </>
-                )}
-              </div>
+              {!buddyMode && (
+                <span className="text-[13px] font-semibold flex-shrink-0" style={{ color: "#223546" }}>
+                  {hasLetter ? t("common.manage") : t("common.generate")}
+                </span>
+              )}
             </button>
           );
         })()}
@@ -1049,35 +1049,30 @@ function HomeTab({
           return (
             <button
               onClick={() => navigate("/profile/search-buddy")}
-              className="w-full text-left bg-white rounded-[12px] p-5 flex flex-col gap-3 active:scale-[0.985] transition-transform"
+              className="w-full text-left bg-white rounded-[12px] px-4 py-3 flex items-center gap-3 active:scale-[0.985] transition-transform"
               style={{ border: "1px solid rgb(var(--ha-card-border))" }}
               data-testid="card-search-buddy-status"
             >
-              <div className="flex items-center gap-2.5">
-                <div className="w-[40px] h-[40px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#bbadfb" }}>
-                  <Users className="w-[22px] h-[22px] text-[#111111]" />
+              <div className="w-[38px] h-[38px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#bbadfb" }}>
+                <Users className="w-[20px] h-[20px] text-[#111111]" />
+              </div>
+              <div className="flex flex-col flex-1 min-w-0">
+                <span className="text-[14px] font-bold text-ha-text leading-snug">{t("profile.searchBuddy")}</span>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  {hasBuddy ? (
+                    <>
+                      <Check className="w-[13px] h-[13px] flex-shrink-0" style={{ color: "rgb(var(--ha-emerald))" }} />
+                      <span className="text-[12px] font-medium" style={{ color: "rgb(var(--ha-emerald))" }}>{t("home.zoekbuddyConfigured")}</span>
+                    </>
+                  ) : (
+                    <>
+                      <X className="w-[13px] h-[13px] flex-shrink-0" style={{ color: "rgb(var(--ha-danger))" }} />
+                      <span className="text-[12px] font-medium" style={{ color: "rgb(var(--ha-danger))" }}>{t("home.zoekbuddyMissing")}</span>
+                    </>
+                  )}
                 </div>
-                <h2 className="text-[16px] font-bold text-ha-text flex-1">{t("profile.searchBuddy")}</h2>
-                <span className="text-[14px] font-semibold" style={{ color: "#223546" }}>{t("common.manage")}</span>
               </div>
-              <div className="flex items-center gap-2 pl-[52px]">
-                {hasBuddy ? (
-                  <>
-                    <Check className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "rgb(var(--ha-emerald))" }} />
-                    <span className="text-[13px] font-medium" style={{ color: "rgb(var(--ha-emerald))" }}>{t("home.zoekbuddyConfigured")}</span>
-                  </>
-                ) : (
-                  <>
-                    <X className="w-[15px] h-[15px] flex-shrink-0" style={{ color: "rgb(var(--ha-danger))" }} />
-                    <span className="text-[13px] font-medium" style={{ color: "rgb(var(--ha-danger))" }}>{t("home.zoekbuddyMissing")}</span>
-                  </>
-                )}
-              </div>
-              {!hasBuddy && (
-                <p className="text-[13px] leading-snug pl-[52px]" style={{ color: "#444444" }}>
-                  {t("profile.buddyDescription")}
-                </p>
-              )}
+              <span className="text-[13px] font-semibold flex-shrink-0" style={{ color: "#223546" }}>{t("common.manage")}</span>
             </button>
           );
         })()}

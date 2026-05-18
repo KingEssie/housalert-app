@@ -82,7 +82,7 @@ export default function OnboardingPassword() {
   const matchCount30 = estimate?.matchesLast30Days ?? null;
 
   if (!city) return <Redirect to="/onboarding/filters" />;
-  if (!w && !params.get("email")) return <Redirect to="/onboarding/email" />;
+  if (!w) return <Redirect to="/onboarding/email" />;
 
   async function saveSearchProfile(userId: string) {
     const spMinPrice = parseInt(params.get("minPrice") || "") || 0;
