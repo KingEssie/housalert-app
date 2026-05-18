@@ -27,13 +27,14 @@ async function adminFetch(path: string, options?: RequestInit) {
   return res.json();
 }
 
-type Tab = "overview" | "sources" | "alerts" | "trace" | "sla" | "diagnostic" | "registry";
+type Tab = "overview" | "sources" | "alerts" | "trace" | "dedup" | "sla" | "diagnostic" | "registry";
 
 const TABS: { id: Tab; label: string; icon: any }[] = [
   { id: "overview", label: "Overview", icon: Activity },
   { id: "sources", label: "Source Health", icon: Radio },
   { id: "alerts", label: "Alerts", icon: AlertTriangle },
   { id: "trace", label: "Listing Trace", icon: Search },
+  { id: "dedup", label: "Dedup Audit", icon: Database },
   { id: "sla", label: "SLA Metrics", icon: BarChart2 },
   { id: "diagnostic", label: "User Diagnostic", icon: Shield },
   { id: "registry", label: "Source Registry", icon: Globe },
@@ -483,11 +484,59 @@ function ListingTraceTab() {
                 <div><span className="text-gray-400">City</span><p className="font-medium">{data.listing.city || "—"}</p></div>
                 <div><span className="text-gray-400">Price</span><p className="font-medium">€{data.listing.price ?? "—"}</p></div>
                 <div><span className="text-gray-400">Source</span><p className="font-medium">{data.listing.source || "—"}</p></div>
+                <div><span className="text-gray-400">District</span><p className="font-medium">{data.listing.district || "—"}</p></div>
+                <div><span className="text-gray-400">Coord Precision</span><p className="font-medium">{data.listing.coordinate_precision || "—"}</p></div>
+                {data.listing.postcode && <div><span className="text-gray-400">Postcode</span><p className="font-medium">{data.listing.postcode}</p></div>}
+                {data.listing.street && <div><span className="text-gray-400">Street</span><p className="font-medium">{data.listing.street}</p></div>}
                 <div><span className="text-gray-400">Inserted</span><p className="font-medium">{data.listing.created_at ? new Date(data.listing.created_at).toLocaleString() : "—"}</p></div>
                 {data.listing.url && (
                   <div><a href={data.listing.url} target="_blank" rel="noreferrer" className="text-blue-600 underline text-sm flex items-center gap-1">View listing <ExternalLink className="w-3 h-3" /></a></div>
                 )}
               </div>
+            </div>
+          )}
+
+          {data.cluster ? (
+            <div className="border rounded-xl p-4 bg-white">
+              <h3 className="font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                <Zap className="w-4 h-4 text-orange-500" />
+                Cross-source Cluster
+                <span className={`ml-1 text-xs font-medium px-2 py-0.5 rounded-full ${data.cluster.size > 1 ? "bg-orange-100 text-orange-700" : "bg-gray-100 text-gray-500"}`}>
+                  {data.cluster.size === 1 ? "solo (no duplicates found)" : `${data.cluster.size} listings in cluster`}
+                </span>
+              </h3>
+              <p className="text-xs text-gray-400 font-mono mb-3 break-all">Cluster ID: {data.cluster.id}</p>
+              {data.cluster.siblings.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-xs">
+                    <thead><tr className="text-gray-400 border-b">
+                      {["Source", "Price", "Inserted", "Coord Precision", "Link"].map(h => <th key={h} className="px-2 py-1.5 text-left">{h}</th>)}
+                    </tr></thead>
+                    <tbody>
+                      {data.cluster.siblings.map((s: any, i: number) => (
+                        <tr key={i} className="border-b last:border-0 hover:bg-gray-50">
+                          <td className="px-2 py-1.5 font-medium">{s.source}</td>
+                          <td className="px-2 py-1.5">€{s.price ?? "—"}</td>
+                          <td className="px-2 py-1.5">{s.created_at ? new Date(s.created_at).toLocaleString() : "—"}</td>
+                          <td className="px-2 py-1.5">{s.coordinate_precision || "—"}</td>
+                          <td className="px-2 py-1.5">
+                            {s.url
+                              ? <a href={s.url} target="_blank" rel="noreferrer" className="text-blue-500 hover:underline flex items-center gap-0.5">View <ExternalLink className="w-3 h-3" /></a>
+                              : "—"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p className="text-sm text-gray-400">This listing has its own cluster UUID but no siblings from other sources yet.</p>
+              )}
+            </div>
+          ) : (
+            <div className="border rounded-xl p-4 bg-white">
+              <h3 className="font-semibold text-gray-700 mb-1 flex items-center gap-2"><Zap className="w-4 h-4 text-gray-300" /> Cross-source Cluster</h3>
+              <p className="text-sm text-gray-400">No cluster assigned — migration 031 not yet applied or listing predates clustering.</p>
             </div>
           )}
 
@@ -794,7 +843,132 @@ function UserDiagnosticTab() {
   );
 }
 
-// ─── Source Registry Tab ─────────────────────────────────────────────────────
+// ─── Dedup Audit Tab ─────────────────────────────────────────────────────────
+
+function DedupAuditTab() {
+  const [city, setCity] = useState("Berlin");
+  const [days, setDays] = useState("7");
+  const [params, setParams] = useState({ city: "Berlin", days: "7" });
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["/api/admin/portal/dedup-audit", params.city, params.days],
+    queryFn: () => adminFetch(`/api/admin/portal/dedup-audit?city=${encodeURIComponent(params.city)}&days=${params.days}`),
+    staleTime: 120000,
+  });
+
+  const run = () => setParams({ city: city.trim() || "Berlin", days: days || "7" });
+
+  return (
+    <div className="space-y-5">
+      <div className="flex gap-2 items-end">
+        <div>
+          <label className="text-xs text-gray-400 block mb-1">City</label>
+          <input className="border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 w-36"
+            value={city} onChange={e => setCity(e.target.value)} onKeyDown={e => e.key === "Enter" && run()}
+            data-testid="input-dedup-city" />
+        </div>
+        <div>
+          <label className="text-xs text-gray-400 block mb-1">Days</label>
+          <input className="border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 w-20"
+            type="number" min={1} max={30} value={days} onChange={e => setDays(e.target.value)} onKeyDown={e => e.key === "Enter" && run()}
+            data-testid="input-dedup-days" />
+        </div>
+        <Button onClick={run} disabled={isLoading} data-testid="button-dedup-run">
+          <Search className="w-4 h-4 mr-1" /> Analyse
+        </Button>
+      </div>
+
+      {isLoading && <div className="text-center py-10 text-gray-400">Running dedup analysis…</div>}
+      {error && <div className="text-red-500 text-sm">{(error as Error).message}</div>}
+
+      {data && (
+        <div className="space-y-4">
+          {!data.cluster_column_active && (
+            <div className="border border-amber-200 rounded-xl p-4 bg-amber-50 text-sm text-amber-800">
+              <strong>Migration 031 not applied.</strong> Run it in the Supabase SQL Editor to activate clustering.
+              Cluster-based stats below are inactive until then.
+            </div>
+          )}
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { label: "Total Listings", value: data.total_listings },
+              { label: "Sources", value: (data.sources || []).join(", ") || "—" },
+              { label: "Coord Coverage", value: data.coord_coverage_pct != null ? `${data.coord_coverage_pct}%` : "—" },
+              { label: "Multi-source Clusters", value: data.cluster_column_active ? data.multi_source_clusters : "N/A" },
+            ].map(k => (
+              <div key={k.label} className="border rounded-xl p-4 bg-white text-center">
+                <div className="text-2xl font-bold text-gray-800">{k.value}</div>
+                <div className="text-xs text-gray-400 mt-1">{k.label}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { label: "Algo Candidate Pairs", value: data.algorithm_candidate_pairs, sub: "price ±8% + same beds" },
+              { label: "Coord-confirmed", value: data.coord_confirmed_pairs, sub: "< 200 m apart ✓", color: "text-green-600" },
+              { label: "Coord-refuted", value: data.coord_refuted_pairs, sub: "> 200 m — false positives", color: "text-red-500" },
+              { label: "False Positive Rate", value: data.false_positive_rate_pct != null ? `${data.false_positive_rate_pct}%` : "—", sub: "old algo without coords", color: data.false_positive_rate_pct > 90 ? "text-red-600" : "text-gray-800" },
+            ].map(k => (
+              <div key={k.label} className="border rounded-xl p-4 bg-white text-center">
+                <div className={`text-2xl font-bold ${(k as any).color || "text-gray-800"}`}>{k.value}</div>
+                <div className="text-xs text-gray-400 mt-1">{k.label}</div>
+                <div className="text-xs text-gray-300">{k.sub}</div>
+              </div>
+            ))}
+          </div>
+
+          {(data.pairs_by_source || []).length > 0 && (
+            <div className="border rounded-xl p-4 bg-white">
+              <h3 className="font-semibold text-gray-700 mb-3 flex items-center gap-2"><TrendingUp className="w-4 h-4" /> Candidate Pairs by Source</h3>
+              <div className="space-y-2">
+                {data.pairs_by_source.map((p: any) => (
+                  <div key={p.pair} className="flex items-center gap-3 text-sm">
+                    <span className="font-mono text-gray-600 w-52 shrink-0">{p.pair}</span>
+                    <div className="flex-1 bg-gray-100 rounded-full h-2">
+                      <div className="bg-blue-400 h-2 rounded-full" style={{ width: `${Math.min(100, p.count / (data.algorithm_candidate_pairs || 1) * 100)}%` }} />
+                    </div>
+                    <span className="text-gray-500 w-8 text-right">{p.count}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {(data.example_confirmed_duplicates || []).length > 0 && (
+            <div className="border rounded-xl p-4 bg-white">
+              <h3 className="font-semibold text-gray-700 mb-3 flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-500" /> Coord-confirmed Duplicates (examples)</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead><tr className="text-gray-400 border-b">
+                    {["Sources", "Price A / B", "Size A / B", "Bedrooms", "Distance", "Clustered"].map(h => <th key={h} className="px-2 py-1.5 text-left">{h}</th>)}
+                  </tr></thead>
+                  <tbody>
+                    {data.example_confirmed_duplicates.map((d: any, i: number) => (
+                      <tr key={i} className="border-b last:border-0 hover:bg-gray-50">
+                        <td className="px-2 py-1.5 font-medium">{(d.sources || []).join(" ↔ ")}</td>
+                        <td className="px-2 py-1.5">€{d.price?.[0]} / €{d.price?.[1]}</td>
+                        <td className="px-2 py-1.5">{d.size_m2?.[0] ?? "—"}m² / {d.size_m2?.[1] ?? "—"}m²</td>
+                        <td className="px-2 py-1.5">{d.bedrooms}</td>
+                        <td className="px-2 py-1.5">{d.dist_m}m</td>
+                        <td className="px-2 py-1.5">
+                          {d.clustered
+                            ? <CheckCircle2 className="w-3 h-3 text-green-500" />
+                            : <XCircle className="w-3 h-3 text-red-400" />}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function SourceRegistryTab() {
   const { data, isLoading } = useQuery({
@@ -896,6 +1070,7 @@ export default function AdminPipelineHealthPage() {
         {activeTab === "sources" && <SourceHealthTab />}
         {activeTab === "alerts" && <AlertsTab />}
         {activeTab === "trace" && <ListingTraceTab />}
+        {activeTab === "dedup" && <DedupAuditTab />}
         {activeTab === "sla" && <SlaMetricsTab />}
         {activeTab === "diagnostic" && <UserDiagnosticTab />}
         {activeTab === "registry" && <SourceRegistryTab />}

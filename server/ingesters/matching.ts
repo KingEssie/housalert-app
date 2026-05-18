@@ -133,55 +133,172 @@ async function checkCoordMetadataColumns(): Promise<boolean> {
 }
 
 let hasClusterIdColumn: boolean | null = null;
+let hasPostcodeColumn: boolean | null = null;
+let hasStreetColumn: boolean | null = null;
 
 async function checkClusterIdColumn(): Promise<boolean> {
   if (hasClusterIdColumn !== null) return hasClusterIdColumn;
   const { error } = await supabase.from("listings").select("listing_cluster_id").limit(1);
   hasClusterIdColumn = !error;
   if (!hasClusterIdColumn) {
-    log("listing_cluster_id column not found — run migration 030_cross_source_dedup.sql in Supabase SQL Editor to enable cross-source deduplication.");
+    log("listing_cluster_id column not found — run migration 031_postcode_street_cluster.sql in Supabase SQL Editor to enable cross-source deduplication.");
   }
   return hasClusterIdColumn;
 }
 
+async function checkPostcodeColumn(): Promise<boolean> {
+  if (hasPostcodeColumn !== null) return hasPostcodeColumn;
+  const { error } = await supabase.from("listings").select("postcode").limit(1);
+  hasPostcodeColumn = !error;
+  return hasPostcodeColumn;
+}
+
+async function checkStreetColumn(): Promise<boolean> {
+  if (hasStreetColumn !== null) return hasStreetColumn;
+  const { error } = await supabase.from("listings").select("street").limit(1);
+  hasStreetColumn = !error;
+  return hasStreetColumn;
+}
+
+/**
+ * Haversine distance in metres between two coordinate pairs.
+ */
+function haversineMetres(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6_371_000;
+  const d2r = Math.PI / 180;
+  const dLat = (lat2 - lat1) * d2r;
+  const dLng = (lng2 - lng1) * d2r;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * d2r) * Math.cos(lat2 * d2r) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+/**
+ * Cross-source cluster assignment.
+ *
+ * Algorithm (coordinate-first):
+ *   1. Fetch up to 10 candidate listings: same city, different source,
+ *      price ±12%, exact bedrooms, inserted within 7 days.
+ *   2. Score each candidate:
+ *      a. COORDINATE PROXIMITY (primary signal — all sources have coords):
+ *         - <100 m  → HIGH confidence (coord_confirmed)
+ *         - 100–400 m → MEDIUM (requires price ±6% + size ±10% to promote)
+ *         - >400 m  → REFUTED — skip regardless of price match
+ *      b. PRICE+SIZE FALLBACK (when coord_precision is city_fallback on both):
+ *         price ±6%, size ±10%, district match if both have it.
+ *   3. First confirmed candidate wins. Joins existing cluster or starts a new one.
+ *   4. Solo listings (no confirmed match) get their own UUID cluster so that
+ *      a future duplicate can join it.
+ */
 async function assignCrossSourceCluster(insertedId: string, listing: ParsedListing): Promise<void> {
   try {
     if (!listing.price || !listing.city) return;
-    const priceLow  = Math.round(listing.price * 0.92);
-    const priceHigh = Math.round(listing.price * 1.08);
+
+    // Wide price window so coordinates can narrow it down
+    const priceLow  = Math.round(listing.price * 0.88);
+    const priceHigh = Math.round(listing.price * 1.12);
+    const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
     let query = supabase
       .from("listings")
-      .select("id, listing_cluster_id")
+      .select("id, listing_cluster_id, latitude, longitude, coordinate_precision, district, size_m2, price, postcode")
       .eq("city", listing.city)
       .neq("source", listing.source)
       .neq("id", insertedId)
       .gte("price", priceLow)
       .lte("price", priceHigh)
-      .gte("created_at", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
-      .limit(3);
+      .gte("created_at", since)
+      .limit(10);
 
     if (listing.bedrooms && listing.bedrooms > 0) {
       query = (query as any).eq("bedrooms", listing.bedrooms);
     }
-    if (listing.size_m2 && listing.size_m2 > 0) {
-      const sizeLow  = Math.round(listing.size_m2 * 0.85);
-      const sizeHigh = Math.round(listing.size_m2 * 1.15);
-      query = (query as any).gte("size_m2", sizeLow).lte("size_m2", sizeHigh);
-    }
 
     const { data: candidates } = await query;
-    let clusterId: string | null = null;
+    if (!candidates || candidates.length === 0) {
+      // Solo listing — still needs a cluster UUID so future duplicates can join
+      const solo = crypto.randomUUID();
+      await supabase.from("listings").update({ listing_cluster_id: solo }).eq("id", insertedId);
+      return;
+    }
 
-    if (candidates && candidates.length > 0) {
-      const withCluster = candidates.find((r: any) => r.listing_cluster_id);
-      clusterId = withCluster?.listing_cluster_id ?? crypto.randomUUID();
-      if (!withCluster) {
-        await supabase.from("listings").update({ listing_cluster_id: clusterId }).eq("id", candidates[0].id);
+    const newLat = listing.latitude;
+    const newLng = listing.longitude;
+    const newPrec = listing.coordinate_precision ?? "unknown";
+    const newIsCityFallback = newPrec === "city_fallback";
+
+    let matchedCandidate: any | null = null;
+    let matchReason = "";
+
+    for (const cand of candidates) {
+      const candLat: number | null = cand.latitude;
+      const candLng: number | null = cand.longitude;
+      const candPrec: string = cand.coordinate_precision ?? "unknown";
+      const candIsCityFallback = candPrec === "city_fallback";
+
+      // ── Coordinate-based matching ────────────────────────────────────────────
+      if (newLat && newLng && candLat && candLng) {
+        if (!newIsCityFallback || !candIsCityFallback) {
+          // At least one side has better-than-city precision
+          const dist = haversineMetres(newLat, newLng, candLat, candLng);
+
+          if (dist < 100) {
+            // Extremely close — almost certainly same building
+            matchedCandidate = cand;
+            matchReason = `coord_confirmed dist=${Math.round(dist)}m`;
+            break;
+          }
+
+          if (dist < 400) {
+            // Medium proximity — require tight price + size match too
+            const priceDiff = Math.abs(listing.price - cand.price) / Math.max(listing.price, cand.price);
+            const sizeOk = !listing.size_m2 || !cand.size_m2 ||
+              Math.abs(listing.size_m2 - cand.size_m2) / Math.max(listing.size_m2, cand.size_m2) <= 0.10;
+            if (priceDiff <= 0.06 && sizeOk) {
+              matchedCandidate = cand;
+              matchReason = `coord_medium dist=${Math.round(dist)}m price_diff=${(priceDiff * 100).toFixed(1)}%`;
+              break;
+            }
+          }
+          // dist ≥ 400 m → coordinates actively refute this candidate, skip it
+          continue;
+        }
       }
-      log(`[CLUSTER] Linked ${insertedId} ↔ ${candidates[0].id} via cluster ${clusterId} (cross-source: ${listing.source} ↔ ${candidates[0].listing_cluster_id ? "existing" : "new"})`);
+
+      // ── Fallback: both sides are city-level only (no precise coords) ─────────
+      // Use tighter thresholds + district to reduce false positives
+      const priceDiff = Math.abs(listing.price - cand.price) / Math.max(listing.price, cand.price);
+      if (priceDiff > 0.06) continue;
+
+      if (listing.size_m2 && cand.size_m2) {
+        if (Math.abs(listing.size_m2 - cand.size_m2) / Math.max(listing.size_m2, cand.size_m2) > 0.10) continue;
+      }
+
+      // Require postcode match if both listings have one
+      if (listing.postcode && cand.postcode && listing.postcode !== cand.postcode) continue;
+
+      // Require district match if both have one
+      if (listing.district && cand.district && listing.district !== cand.district) continue;
+
+      matchedCandidate = cand;
+      matchReason = `price_size_fallback price_diff=${(priceDiff * 100).toFixed(1)}%`;
+      break;
+    }
+
+    let clusterId: string;
+    if (matchedCandidate) {
+      if (matchedCandidate.listing_cluster_id) {
+        clusterId = matchedCandidate.listing_cluster_id;
+      } else {
+        clusterId = crypto.randomUUID();
+        await supabase.from("listings").update({ listing_cluster_id: clusterId }).eq("id", matchedCandidate.id);
+      }
+      log(`[CLUSTER] Linked ${insertedId} ↔ ${matchedCandidate.id} cluster=${clusterId} reason=${matchReason} (${listing.source} ↔ prev)`);
     } else {
+      // Candidates existed but none passed confidence checks — solo cluster
       clusterId = crypto.randomUUID();
+      log(`[CLUSTER] No confident match for ${insertedId} among ${candidates.length} price-range candidates — solo cluster assigned`);
     }
 
     await supabase.from("listings").update({ listing_cluster_id: clusterId }).eq("id", insertedId);
@@ -210,6 +327,8 @@ export async function insertAndMatchListings(
   const useAdvanced   = await checkAdvancedColumns();
   const useCoordMeta  = await checkCoordMetadataColumns();
   const useClusterId  = await checkClusterIdColumn();
+  const usePostcode   = await checkPostcodeColumn();
+  const useStreet     = await checkStreetColumn();
 
   let inserted = 0;
   let duplicates = 0;
@@ -391,6 +510,13 @@ export async function insertAndMatchListings(
           insertData[field] = listing[field];
         }
       }
+    }
+
+    if (usePostcode && listing.postcode != null) {
+      insertData.postcode = listing.postcode;
+    }
+    if (useStreet && listing.street != null) {
+      insertData.street = listing.street;
     }
 
     const { data: row, error: insertErr } = await supabase

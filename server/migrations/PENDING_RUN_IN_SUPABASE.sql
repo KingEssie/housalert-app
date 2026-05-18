@@ -331,3 +331,33 @@ ALTER TABLE subscriptions
 -- Force PostgREST schema cache reload so the column is immediately visible
 -- (Supabase auto-reloads within ~60 s; this statement makes it instant)
 NOTIFY pgrst, 'reload schema';
+
+-- -----------------------------------------------
+-- Migration 031: Cross-source deduplication + address storage
+-- listing_cluster_id groups the same physical apartment
+-- posted across multiple sources (Immowelt, Vonovia, WG-Gesucht, etc.)
+-- postcode and street enable address-based dedup disambiguation.
+-- Algorithm uses coordinate proximity as primary signal (<100m = same building).
+-- -----------------------------------------------
+ALTER TABLE listings
+  ADD COLUMN IF NOT EXISTS listing_cluster_id UUID,
+  ADD COLUMN IF NOT EXISTS postcode           TEXT DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS street             TEXT DEFAULT NULL;
+
+-- Index for cluster-based lookups (join all cluster members)
+CREATE INDEX IF NOT EXISTS idx_listings_cluster_id
+  ON listings (listing_cluster_id)
+  WHERE listing_cluster_id IS NOT NULL;
+
+-- Composite index for the cross-source candidate query
+-- (city + bedrooms + price scan, optimised for the clustering lookup)
+CREATE INDEX IF NOT EXISTS idx_listings_cross_source_lookup
+  ON listings (city, bedrooms, price)
+  WHERE price > 0 AND bedrooms > 0;
+
+-- Index for postcode-based lookups
+CREATE INDEX IF NOT EXISTS idx_listings_postcode
+  ON listings (postcode)
+  WHERE postcode IS NOT NULL;
+
+NOTIFY pgrst, 'reload schema';

@@ -144,11 +144,15 @@ export interface BufferedMatch {
   url?: string | null;
   image_url?: string | null;
   matched_at?: string;
+  /** Phase 2 cluster-level dedup: same cluster_id = same physical apartment */
+  cluster_id?: string | null;
 }
 
 interface UserBuffer {
   email: string;
   seenListingIds: Set<string>;
+  /** Phase 2: tracks cluster UUIDs already buffered to suppress cross-source duplicates */
+  seenClusterIds: Set<string>;
   listings: BufferedMatch[];
 }
 
@@ -172,11 +176,19 @@ export function bufferMatchAlert(
   const existing = buffer.get(userId);
   if (existing) {
     if (existing.seenListingIds.has(listing.listing_id)) return;
+    // Phase 2: suppress cross-source duplicate when another listing in the same
+    // cluster is already buffered for this user
+    if (listing.cluster_id && existing.seenClusterIds.has(listing.cluster_id)) {
+      log(`[ALERTS] Suppressing cross-source duplicate for user ${userId.substring(0, 8)}... — cluster ${listing.cluster_id.substring(0, 8)} already buffered`);
+      return;
+    }
     existing.seenListingIds.add(listing.listing_id);
+    if (listing.cluster_id) existing.seenClusterIds.add(listing.cluster_id);
     existing.listings.push(listing);
   } else {
     const seenListingIds = new Set<string>([listing.listing_id]);
-    buffer.set(userId, { email: userEmail, seenListingIds, listings: [listing] });
+    const seenClusterIds = new Set<string>(listing.cluster_id ? [listing.cluster_id] : []);
+    buffer.set(userId, { email: userEmail, seenListingIds, seenClusterIds, listings: [listing] });
   }
 }
 

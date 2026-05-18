@@ -8533,12 +8533,27 @@ export async function registerRoutes(
       const adminSb = getSupabaseAdmin();
 
       const [listingRes, freshnessRes] = await Promise.all([
-        adminSb.from("listings").select("id, title, city, price, url, source, created_at, image_url").eq("id", listingId).single(),
+        // Try to select all fields including migration-031 columns; fall back to base set if they don't exist yet
+        adminSb.from("listings").select("id, title, city, price, url, source, created_at, image_url, listing_cluster_id, district, latitude, longitude, coordinate_precision, postcode, street").eq("id", listingId).single()
+          .then(r => r.error ? adminSb.from("listings").select("id, title, city, price, url, source, created_at, image_url, district, latitude, longitude, coordinate_precision").eq("id", listingId).single() : r),
         adminSb.from("listing_freshness").select("listing_id, source, source_id, first_seen_at, last_seen_at").eq("listing_id", listingId).single(),
       ]);
 
-      const listing = listingRes.data;
+      const listing = (listingRes as any).data;
       const freshness = freshnessRes.data;
+
+      // Fetch cluster siblings if this listing has a cluster_id (requires migration 031)
+      let clusterSiblings: any[] = [];
+      if (listing?.listing_cluster_id) {
+        const { data: siblings } = await adminSb
+          .from("listings")
+          .select("id, source, title, price, url, created_at, coordinate_precision")
+          .eq("listing_cluster_id", listing.listing_cluster_id)
+          .neq("id", listingId)
+          .order("created_at", { ascending: true })
+          .limit(20);
+        clusterSiblings = siblings ?? [];
+      }
 
       const { rows: matchRows } = await pgPool.query(
         `SELECT user_id, search_profile_id, matched_at, listing_title, listing_city, listing_price,
@@ -8565,6 +8580,9 @@ export async function registerRoutes(
         freshness: freshness ?? null,
         matches: matchRows,
         ingestion_run: nearestRun,
+        cluster: listing?.listing_cluster_id
+          ? { id: listing.listing_cluster_id, size: clusterSiblings.length + 1, siblings: clusterSiblings }
+          : null,
         timeline: [
           freshness?.first_seen_at ? { event: "first_scraped", at: freshness.first_seen_at } : null,
           listing?.created_at ? { event: "inserted_to_db", at: listing.created_at } : null,
@@ -8576,6 +8594,117 @@ export async function registerRoutes(
       });
     } catch (err: any) {
       log(`[admin] listing-trace error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // Dedup audit — cross-source duplicate statistics
+  app.get("/api/admin/portal/dedup-audit", requireAdmin, async (req, res) => {
+    try {
+      const adminSb = getSupabaseAdmin();
+      const days = parseInt((req.query.days as string) || "7", 10);
+      const city = (req.query.city as string || "Berlin").trim();
+      const since = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+
+      // Fetch listings for analysis (fields available without migration 031)
+      const { data: listings, error: lErr } = await adminSb
+        .from("listings")
+        .select("id, source, price, size_m2, bedrooms, district, latitude, longitude, coordinate_precision, listing_cluster_id")
+        .eq("city", city)
+        .gte("created_at", since)
+        .limit(5000);
+
+      if (lErr) throw new Error(lErr.message);
+      const rows: any[] = listings ?? [];
+
+      const hasClusterCol = rows.length > 0 && "listing_cluster_id" in rows[0];
+      const totalListings = rows.length;
+
+      // Count clustered listings (cluster_id assigned and not solo)
+      const clusterGroups: Record<string, any[]> = {};
+      if (hasClusterCol) {
+        for (const r of rows) {
+          if (r.listing_cluster_id) {
+            if (!clusterGroups[r.listing_cluster_id]) clusterGroups[r.listing_cluster_id] = [];
+            clusterGroups[r.listing_cluster_id].push(r);
+          }
+        }
+      }
+
+      const multiSourceClusters = Object.entries(clusterGroups)
+        .filter(([, members]) => {
+          const srcs = new Set(members.map((m: any) => m.source));
+          return srcs.size > 1;
+        });
+
+      // Haversine helper
+      const hav = (lat1: number, lng1: number, lat2: number, lng2: number) => {
+        const R = 6_371_000, d2r = Math.PI / 180;
+        const dLat = (lat2 - lat1) * d2r, dLng = (lng2 - lng1) * d2r;
+        const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * d2r) * Math.cos(lat2 * d2r) * Math.sin(dLng / 2) ** 2;
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      };
+
+      // Run price-based candidate pair analysis for false positive rate estimation
+      let algoCandidates = 0, coordConfirmed = 0, coordRefuted = 0;
+      const pairsBySrc: Record<string, number> = {};
+      const exampleDups: any[] = [];
+
+      for (let i = 0; i < rows.length; i++) {
+        const a = rows[i];
+        if (!a.price || !a.bedrooms) continue;
+        for (let j = i + 1; j < rows.length; j++) {
+          const b = rows[j];
+          if (a.source === b.source || !b.price || !b.bedrooms) continue;
+          if (a.bedrooms !== b.bedrooms) continue;
+          const pd = Math.abs(a.price - b.price) / Math.max(a.price, b.price);
+          if (pd > 0.08) continue;
+          if (a.size_m2 && b.size_m2 && Math.abs(a.size_m2 - b.size_m2) / Math.max(a.size_m2, b.size_m2) > 0.15) continue;
+          algoCandidates++;
+          const pk = [a.source, b.source].sort().join(" <-> ");
+          pairsBySrc[pk] = (pairsBySrc[pk] || 0) + 1;
+          if (a.latitude && a.longitude && b.latitude && b.longitude) {
+            const dist = hav(a.latitude, a.longitude, b.latitude, b.longitude);
+            if (dist < 200) {
+              coordConfirmed++;
+              if (exampleDups.length < 5) {
+                exampleDups.push({
+                  sources: [a.source, b.source],
+                  price: [a.price, b.price],
+                  bedrooms: a.bedrooms,
+                  size_m2: [a.size_m2, b.size_m2],
+                  dist_m: Math.round(dist),
+                  clustered: hasClusterCol && a.listing_cluster_id && a.listing_cluster_id === b.listing_cluster_id,
+                });
+              }
+            } else {
+              coordRefuted++;
+            }
+          }
+        }
+      }
+
+      const falsePosRate = algoCandidates > 0 ? ((algoCandidates - coordConfirmed) / algoCandidates * 100).toFixed(1) : null;
+
+      res.json({
+        city,
+        days,
+        total_listings: totalListings,
+        sources: Array.from(new Set(rows.map((r: any) => r.source))),
+        cluster_column_active: hasClusterCol,
+        multi_source_clusters: multiSourceClusters.length,
+        coord_coverage_pct: rows.length > 0 ? parseFloat((rows.filter((r: any) => r.latitude).length / rows.length * 100).toFixed(1)) : 0,
+        algorithm_candidate_pairs: algoCandidates,
+        coord_confirmed_pairs: coordConfirmed,
+        coord_refuted_pairs: coordRefuted,
+        false_positive_rate_pct: falsePosRate ? parseFloat(falsePosRate) : null,
+        pairs_by_source: Object.entries(pairsBySrc)
+          .sort((a, b) => b[1] - a[1])
+          .map(([pair, count]) => ({ pair, count })),
+        example_confirmed_duplicates: exampleDups,
+      });
+    } catch (err: any) {
+      log(`[admin] dedup-audit error: ${err.message}`);
       res.status(500).json({ error: err.message });
     }
   });

@@ -94,7 +94,7 @@ async function checkAdvancedListingColumns(): Promise<boolean> {
 }
 
 function getListingSelect(): string {
-  const base = "id, source, url, title, city, price, bedrooms, size_m2, image_url, created_at";
+  const base = "id, source, url, title, city, price, bedrooms, size_m2, image_url, created_at, listing_cluster_id";
   const parts = [base];
   if (hasFurnishedColumn !== false) parts.push("furnished");
   if (hasDistrictColumn !== false) parts.push("district");
@@ -964,6 +964,7 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
         url: l.url,
         image_url: l.image_url,
         matched_at: result.matched_at,
+        cluster_id: (l as any).listing_cluster_id ?? null,
       });
     }
   }
@@ -1113,6 +1114,7 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
               url: l.url,
               image_url: l.image_url,
               matched_at,
+              cluster_id: (l as any).listing_cluster_id ?? null,
             });
           }
         }
