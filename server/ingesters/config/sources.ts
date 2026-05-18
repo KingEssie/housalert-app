@@ -32,23 +32,6 @@ interface SourceTemplate {
 
 const templates: SourceTemplate[] = [
   {
-    name: "wohnungsboerse",
-    baseUrl: "https://www.wohnungsboerse.net",
-    source: "wohnungsboerse",
-    cardSelector: "a[href*='/immodetail/']",
-    fields: {
-      title: { selector: "h3" },
-      url: { selector: "a[href*='/immodetail/']", attr: "href" },
-      price: { selector: "dl:has(dt:contains('Kaltmiete')) dd, dl:first-of-type dd", regex: "([\\d.]+)\\s*€" },
-      size_m2: { selector: "dl:has(dt:contains('Fläche')) dd, dl:last-of-type dd", regex: "([\\d.,]+)\\s*m" },
-      bedrooms: { selector: "dl:has(dt:contains('Zimmer')) dd, dl:nth-of-type(2) dd", regex: "([\\d,]+)" },
-      image: { selector: "img[src*='wohnungsboerse.net/assets']", attr: "src" },
-    },
-    sourceIdRegex: "/immodetail/(\\d+)",
-    rateLimitMs: 1000,
-    buildSearchUrl: (cityName) => `https://www.wohnungsboerse.net/${cityName}/mieten/wohnungen`,
-  },
-  {
     name: "immoscout",
     baseUrl: "https://www.immobilienscout24.de",
     source: "immoscout",
@@ -124,7 +107,7 @@ export function buildSourcesForCity(city: string, slug: string): SourceConfig[] 
   return templates.map((t) => ({
     name: t.name,
     baseUrl: t.baseUrl,
-    searchUrl: t.buildSearchUrl(t.name === "wohnungsboerse" ? city : slug),
+    searchUrl: t.buildSearchUrl(slug),
     city,
     source: t.source,
     cardSelector: t.cardSelector,
