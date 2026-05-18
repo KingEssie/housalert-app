@@ -1028,7 +1028,7 @@ export default function AppSearchWizard() {
             return (
               <button key={opt.value} onClick={() => onChange(opt.value)}
                 className="flex-1 py-[9px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
-                style={{ backgroundColor: isActive ? "#bbadfb" : "transparent", color: "#111111", boxShadow: isActive ? "0 1px 4px rgba(0,0,0,0.08)" : "none" }}
+                style={{ backgroundColor: isActive ? "#111111" : "transparent", color: isActive ? "#ffffff" : "#111111", boxShadow: isActive ? "0 1px 4px rgba(0,0,0,0.08)" : "none" }}
                 data-testid={`${testId}-${opt.value}`}>
                 {opt.label}
               </button>
@@ -1131,9 +1131,9 @@ export default function AppSearchWizard() {
                 <button onClick={() => update({ sizeNA: !f.sizeNA, minSize: f.sizeNA ? 30 : 0 })}
                   className="text-[12px] font-semibold px-3 py-[5px] rounded-full border transition-all"
                   style={{
-                    borderColor: "rgb(var(--ha-card-border))",
-                    backgroundColor: f.sizeNA ? "var(--ha-primary-light)" : "transparent",
-                    color: f.sizeNA ? "rgb(var(--ha-primary))" : OBW.textSecondary,
+                    borderColor: f.sizeNA ? "#111111" : "rgb(var(--ha-card-border))",
+                    backgroundColor: f.sizeNA ? "#111111" : "transparent",
+                    color: f.sizeNA ? "#ffffff" : OBW.textSecondary,
                   }}
                   data-testid="button-size-na">
                   {t("common.na")}

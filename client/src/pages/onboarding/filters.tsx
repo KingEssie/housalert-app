@@ -223,12 +223,12 @@ function RangeSlider({
         onChange={(e) => onChange(Number(e.target.value))}
         className={`w-full${extraClass ? ` ${extraClass}` : ""}`}
         style={{
-          background: `linear-gradient(to right, ${OB.primary} 0%, ${OB.primary} ${pct}%, ${trackInactive} ${pct}%, ${trackInactive} 100%)`,
+          background: `linear-gradient(to right, #bbadfb 0%, #bbadfb ${pct}%, ${trackInactive} ${pct}%, ${trackInactive} 100%)`,
         }}
       />
       <div className="flex justify-between mt-1">
         <span className="text-[12px]" style={{ color: t.textSecondary }}>{formatLabel(min)}</span>
-        <span className="text-[13px] font-semibold" style={{ color: OB.primary }}>{formatLabel(value)}</span>
+        <span className="text-[13px] font-semibold" style={{ color: "#bbadfb" }}>{formatLabel(value)}</span>
         <span className="text-[12px]" style={{ color: t.textSecondary }}>{formatLabel(max)}</span>
       </div>
     </div>
@@ -264,7 +264,7 @@ function DualRangeSlider({
   const trackInactive = "rgb(var(--ha-card-border))";
   const pctLow = ((valueLow - min) / (max - min)) * 100;
   const pctHigh = ((valueHigh - min) / (max - min)) * 100;
-  const trackBg = `linear-gradient(to right, ${trackInactive} 0%, ${trackInactive} ${pctLow}%, ${OB.primary} ${pctLow}%, ${OB.primary} ${pctHigh}%, ${trackInactive} ${pctHigh}%, ${trackInactive} 100%)`;
+  const trackBg = `linear-gradient(to right, ${trackInactive} 0%, ${trackInactive} ${pctLow}%, #bbadfb ${pctLow}%, #bbadfb ${pctHigh}%, ${trackInactive} ${pctHigh}%, ${trackInactive} 100%)`;
 
   return (
     <div data-testid={testId}>
@@ -628,7 +628,7 @@ export default function OnboardingFilters() {
                 onClick={() => update({ minRooms: opt.value })}
                 className="h-[40px] px-4 rounded-full text-[13px] font-semibold whitespace-nowrap transition-all active:scale-[0.96] shrink-0"
                 style={{
-                  backgroundColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-surface))",
+                  backgroundColor: active ? "#111111" : "rgb(var(--ha-surface))",
                   color: active ? "white" : T.textSecondary,
                 }}
                 data-testid={`rooms-${opt.value}`}
@@ -651,9 +651,9 @@ export default function OnboardingFilters() {
             onClick={() => update({ sizeNA: !f.sizeNA, minSize: f.sizeNA ? 30 : 0 })}
             className="text-[12px] font-medium px-2.5 py-1 rounded-full border transition-all"
             style={{
-              borderColor: f.sizeNA ? T.selectedBorder : T.cardBorder,
-              backgroundColor: f.sizeNA ? T.selectedBg : "transparent",
-              color: f.sizeNA ? OB.primary : T.textSecondary,
+              borderColor: f.sizeNA ? "#111111" : T.cardBorder,
+              backgroundColor: f.sizeNA ? "#111111" : "transparent",
+              color: f.sizeNA ? "#ffffff" : T.textSecondary,
             }}
             data-testid="button-size-na"
           >
@@ -704,8 +704,8 @@ export default function OnboardingFilters() {
                 onClick={() => toggleAmenity(value)}
                 className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium border transition-all"
                 style={{
-                  backgroundColor: active ? OB.primary : "transparent",
-                  borderColor: active ? OB.primary : T.cardBorder,
+                  backgroundColor: active ? "#111111" : "transparent",
+                  borderColor: active ? "#111111" : T.cardBorder,
                   color: active ? "white" : T.textSecondary,
                 }}
                 data-testid={`amenity-${value}`}
@@ -819,7 +819,7 @@ export default function OnboardingFilters() {
                       onClick={() => update({ propertyType: opt.value })}
                       className="flex-1 py-[8px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
                       style={{
-                        backgroundColor: isActive ? "rgb(var(--ha-primary))" : "transparent",
+                        backgroundColor: isActive ? "#111111" : "transparent",
                         color: isActive ? "white" : "rgb(var(--ha-text))",
                       }}
                       data-testid={`property-type-${opt.value}`}
@@ -855,7 +855,7 @@ export default function OnboardingFilters() {
                       onClick={() => update({ minRooms: opt.value })}
                       className="py-[8px] px-4 text-[12px] font-semibold rounded-full whitespace-nowrap shrink-0 transition-all active:scale-[0.96]"
                       style={{
-                        backgroundColor: active ? "rgb(var(--ha-primary))" : "rgb(var(--ha-toggle-bg))",
+                        backgroundColor: active ? "#111111" : "rgb(var(--ha-toggle-bg))",
                         color: active ? "white" : "rgb(var(--ha-text))",
                       }}
                       data-testid={`rooms-${opt.value}`}
@@ -879,9 +879,9 @@ export default function OnboardingFilters() {
                   onClick={() => update({ sizeNA: !f.sizeNA, minSize: f.sizeNA ? 30 : 0 })}
                   className="text-[12px] font-semibold px-3 py-[5px] rounded-full border transition-all"
                   style={{
-                    borderColor: "rgb(var(--ha-card-border))",
-                    backgroundColor: f.sizeNA ? "var(--ha-primary-light)" : "transparent",
-                    color: f.sizeNA ? "rgb(var(--ha-primary))" : OBW.textSecondary,
+                    borderColor: f.sizeNA ? "#111111" : "rgb(var(--ha-card-border))",
+                    backgroundColor: f.sizeNA ? "#111111" : "transparent",
+                    color: f.sizeNA ? "#ffffff" : OBW.textSecondary,
                   }}
                   data-testid="button-size-na"
                 >
@@ -922,7 +922,7 @@ export default function OnboardingFilters() {
                       onClick={() => update({ furnished: opt.value })}
                       className="flex-1 py-[8px] text-[12px] font-semibold rounded-full text-center transition-all whitespace-nowrap overflow-hidden"
                       style={{
-                        backgroundColor: isActive ? "rgb(var(--ha-primary))" : "transparent",
+                        backgroundColor: isActive ? "#111111" : "transparent",
                         color: isActive ? "white" : "rgb(var(--ha-text))",
                       }}
                       data-testid={`furnished-selector-${opt.value}`}
@@ -950,8 +950,8 @@ export default function OnboardingFilters() {
                       onClick={() => toggleAmenity(value)}
                       className="flex items-center gap-1.5 h-[36px] px-3.5 rounded-full text-[13px] font-medium border transition-all active:scale-[0.96]"
                       style={{
-                        backgroundColor: active ? "rgb(var(--ha-primary))" : "transparent",
-                        borderColor: active ? "rgb(var(--ha-primary))" : OBW.chipBorder,
+                        backgroundColor: active ? "#111111" : "transparent",
+                        borderColor: active ? "#111111" : OBW.chipBorder,
                         color: active ? "white" : OBW.textSecondary,
                       }}
                       data-testid={`amenity-${value}`}
