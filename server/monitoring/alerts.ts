@@ -66,13 +66,22 @@ async function upsertAlert(
 
 async function resolveAlert(alertKey: string, reason?: string): Promise<void> {
   try {
-    await pool.query(
-      `UPDATE admin_alerts
-       SET status = 'resolved', resolved_at = NOW(), updated_at = NOW(),
-           message = CASE WHEN $2 IS NOT NULL THEN message || ' [Auto-resolved: ' || $2 || ']' ELSE message END
-       WHERE alert_key = $1 AND status = 'open'`,
-      [alertKey, reason ?? null]
-    );
+    if (reason) {
+      await pool.query(
+        `UPDATE admin_alerts
+         SET status = 'resolved', resolved_at = NOW(), updated_at = NOW(),
+             message = message || ' [Auto-resolved: ' || $2 || ']'
+         WHERE alert_key = $1 AND status = 'open'`,
+        [alertKey, reason]
+      );
+    } else {
+      await pool.query(
+        `UPDATE admin_alerts
+         SET status = 'resolved', resolved_at = NOW(), updated_at = NOW()
+         WHERE alert_key = $1 AND status = 'open'`,
+        [alertKey]
+      );
+    }
   } catch (err: any) {
     log(`[alerts] resolveAlert error: ${err.message}`);
   }

@@ -8746,6 +8746,164 @@ export async function registerRoutes(
     }
   });
 
+  // ─── Alert Engine Simulation (admin-only, non-destructive) ─────────────────
+
+  const SIM_SOURCE = "sim-source";
+  const SIM_CITY   = "SimCity";
+  const SIM_KEY    = `${SIM_SOURCE}:${SIM_CITY}`;
+
+  app.post("/api/admin/portal/simulate-failure", requireAdmin, async (_req, res) => {
+    try {
+      // 1. Clean up any leftover sim data from a previous run
+      await pgPool.query(`DELETE FROM source_health WHERE source_name = $1 AND city = $2`, [SIM_SOURCE, SIM_CITY]);
+      await pgPool.query(`UPDATE admin_alerts SET status = 'resolved', resolved_at = NOW() WHERE alert_key LIKE $1 AND status = 'open'`, [`%${SIM_KEY}%`]);
+
+      // 2. Plant a fake source_health row that looks like it's been failing for 35 minutes
+      const fakeLastSuccess = new Date(Date.now() - 35 * 60 * 1000);
+      await pgPool.query(
+        `INSERT INTO source_health
+          (source_name, city, last_started_at, last_success_at, last_failure_at,
+           duration_ms, found_count, inserted_count, duplicate_count, error_count,
+           last_error, status, consecutive_failures, consecutive_zeros, total_runs)
+         VALUES ($1, $2, NOW(), $3, NOW(), 1200, 0, 0, 0, 3,
+                 '[SIMULATION] HTTP 429 Too Many Requests — bot protection triggered',
+                 'degraded', 5, 5, 8)`,
+        [SIM_SOURCE, SIM_CITY, fakeLastSuccess.toISOString()]
+      );
+
+      // 3. Build a fake IngestionReport with this source erroring out
+      const fakeReport = {
+        sources: [{
+          name: `${SIM_SOURCE} (${SIM_CITY})`,
+          found: 0,
+          inserted: 0,
+          duplicates: 0,
+          matches: 0,
+          errors: 3,
+          errorMessage: "[SIMULATION] HTTP 429 Too Many Requests — bot protection triggered",
+          durationMs: 1200,
+        }],
+        cityReports: [],
+        total: { found: 0, inserted: 0, duplicates: 0, matches: 0, errors: 3 },
+        cities: [SIM_CITY],
+        durationSec: 1.2,
+      };
+
+      // 4. Run the alert engine — this should create a source_down alert + send email
+      await evaluateAlertRules(fakeReport as any, new Date(), "partial");
+
+      // 5. Fetch what was created
+      const { rows: alertRows } = await pgPool.query(
+        `SELECT * FROM admin_alerts WHERE alert_key LIKE $1 ORDER BY created_at DESC LIMIT 5`,
+        [`%${SIM_KEY}%`]
+      );
+      const { rows: healthRows } = await pgPool.query(
+        `SELECT * FROM source_health WHERE source_name = $1 AND city = $2`,
+        [SIM_SOURCE, SIM_CITY]
+      );
+
+      const createdAlert = alertRows.find((a: any) => a.status === "open");
+      const resendConfigured = !!process.env.RESEND_API_KEY;
+      const adminEmails = (process.env.ADMIN_EMAILS || "").split(",").map((e: string) => e.trim()).filter(Boolean);
+
+      res.json({
+        success: true,
+        phase: "failure_simulated",
+        summary: {
+          source: `${SIM_SOURCE} (${SIM_CITY})`,
+          minutes_since_last_success: 35,
+          consecutive_failures: 5,
+          alert_created: !!createdAlert,
+          alert_id: createdAlert?.id ?? null,
+          alert_type: createdAlert?.alert_type ?? null,
+          alert_severity: createdAlert?.severity ?? null,
+          email_attempted: resendConfigured && adminEmails.length > 0,
+          email_recipients: adminEmails,
+          notification_count: createdAlert?.notification_count ?? 0,
+          last_notified_at: createdAlert?.last_notified_at ?? null,
+          resend_configured: resendConfigured,
+        },
+        alert: createdAlert ?? null,
+        health_row: healthRows[0] ?? null,
+        next_step: "POST /api/admin/portal/simulate-recovery to verify auto-resolution and clean up",
+      });
+    } catch (err: any) {
+      log(`[simulate-failure] error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/admin/portal/simulate-recovery", requireAdmin, async (_req, res) => {
+    try {
+      // 1. Check if there's an open alert to resolve
+      const { rows: beforeRows } = await pgPool.query(
+        `SELECT * FROM admin_alerts WHERE alert_key LIKE $1 AND status = 'open'`,
+        [`%${SIM_KEY}%`]
+      );
+      const alertWasOpen = beforeRows.length > 0;
+
+      // 2. Run the alert engine with a successful report — triggers auto-resolution
+      const fakeSuccessReport = {
+        sources: [{
+          name: `${SIM_SOURCE} (${SIM_CITY})`,
+          found: 18,
+          inserted: 4,
+          duplicates: 14,
+          matches: 2,
+          errors: 0,
+          errorMessage: undefined,
+          durationMs: 980,
+        }],
+        cityReports: [],
+        total: { found: 18, inserted: 4, duplicates: 14, matches: 2, errors: 0 },
+        cities: [SIM_CITY],
+        durationSec: 0.98,
+      };
+      await evaluateAlertRules(fakeSuccessReport as any, new Date(), "success");
+
+      // 3. Verify the alert was resolved
+      const { rows: afterRows } = await pgPool.query(
+        `SELECT * FROM admin_alerts WHERE alert_key LIKE $1 ORDER BY updated_at DESC LIMIT 5`,
+        [`%${SIM_KEY}%`]
+      );
+
+      // 4. Clean up the fake source_health row
+      await pgPool.query(`DELETE FROM source_health WHERE source_name = $1 AND city = $2`, [SIM_SOURCE, SIM_CITY]);
+
+      const resolvedAlert = afterRows.find((a: any) => a.status === "resolved" && beforeRows.some((b: any) => b.id === a.id));
+      const allResolved = afterRows.every((a: any) => a.status === "resolved");
+
+      res.json({
+        success: true,
+        phase: "recovery_simulated",
+        summary: {
+          source: `${SIM_SOURCE} (${SIM_CITY})`,
+          alert_was_open_before: alertWasOpen,
+          alert_auto_resolved: !!resolvedAlert || allResolved,
+          alert_resolved_at: resolvedAlert?.resolved_at ?? afterRows[0]?.resolved_at ?? null,
+          sim_health_row_cleaned_up: true,
+        },
+        alerts: afterRows,
+        message: allResolved
+          ? "✓ Full cycle verified: failure detected → alert created → email sent → recovery detected → auto-resolved → cleaned up"
+          : "⚠ Some alerts may still be open — check admin_alerts table manually",
+      });
+    } catch (err: any) {
+      log(`[simulate-recovery] error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.delete("/api/admin/portal/simulate-cleanup", requireAdmin, async (_req, res) => {
+    try {
+      await pgPool.query(`DELETE FROM source_health WHERE source_name = $1`, [SIM_SOURCE]);
+      await pgPool.query(`UPDATE admin_alerts SET status = 'resolved', resolved_at = NOW() WHERE alert_key LIKE $1 AND status = 'open'`, [`%${SIM_KEY}%`]);
+      res.json({ success: true, message: "Simulation data cleaned up" });
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   // ─── End Pipeline Monitoring ────────────────────────────────────────────────
 
   app.get("/api/support/notifications", async (req, res) => {
