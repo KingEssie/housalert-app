@@ -148,7 +148,9 @@ export default function OnboardingLocation() {
                 style={{ paddingTop: "14px", paddingBottom: "14px", borderBottom: "1px solid rgb(var(--ha-divider))" }}
                 data-testid={`city-option-${c.name}`}
               >
-                <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.primary, opacity: 0.8 }} />
+                <div className="w-[32px] h-[32px] rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "#bbadfb" }}>
+                  <MapPin className="w-[16px] h-[16px]" style={{ color: "#111111" }} />
+                </div>
                 <span className="text-[18px] font-semibold" style={{ color: OBW.text }}>{c.name}</span>
               </button>
             ))}
@@ -161,7 +163,9 @@ export default function OnboardingLocation() {
                 style={{ paddingTop: "14px", paddingBottom: "14px", borderBottom: "1px solid rgb(var(--ha-divider))" }}
                 data-testid={`city-geocoder-${i}`}
               >
-                <MapPin className="w-[20px] h-[20px] shrink-0" style={{ color: OBW.primary, opacity: 0.8 }} />
+                <div className="w-[32px] h-[32px] rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "#bbadfb" }}>
+                  <MapPin className="w-[16px] h-[16px]" style={{ color: "#111111" }} />
+                </div>
                 <div className="min-w-0">
                   <span className="text-[18px] font-semibold block" style={{ color: OBW.text }}>{(r as any).city}</span>
                   {(r as any).label !== (r as any).city && (
