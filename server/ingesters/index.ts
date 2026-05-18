@@ -4,6 +4,7 @@ import type { Ingester, IngestionResult } from "./types";
 import { createWgGesuchtIngester } from "./wg-gesucht";
 import { createKleinanzeigenIngester } from "./kleinanzeigen";
 import { createImmoweltIngester } from "./immowelt";
+import { createImmoScout24Ingester } from "./immoscout24";
 import { createConfigIngester } from "./html-config";
 import { buildSourcesForCity } from "./config/sources";
 import { getCitySlugs, makeFallbackSlug } from "./city-slugs";
@@ -98,14 +99,14 @@ export interface SourceStatus {
 }
 
 const SOURCE_STATUSES: SourceStatus[] = [
-  { name: "wg-gesucht", status: "active" },
+  { name: "wg-gesucht",    status: "active" },
   { name: "kleinanzeigen", status: "active" },
-  { name: "immowelt", status: "active" },
+  { name: "immowelt",      status: "active" },
+  { name: "immoscout24",   status: "active", note: "Phase 1: Berlin only. AWS WAF protected — graceful fallback when blocked." },
   { name: "wohnungsboerse", status: "broken", note: "Returns 504 — gateway timeout" },
-  { name: "immoscout", status: "broken", note: "Returns 401 — bot-blocked" },
-  { name: "rentola", status: "broken", note: "Fetch timeout — server unresponsive" },
-  { name: "nestpick", status: "broken", note: "Fetch timeout — server unresponsive" },
-  { name: "immonet", status: "gone", note: "Returns 410 — service discontinued" },
+  { name: "rentola",       status: "broken", note: "Fetch timeout — server unresponsive" },
+  { name: "nestpick",      status: "broken", note: "Fetch timeout — server unresponsive" },
+  { name: "immonet",       status: "gone",   note: "Returns 410 — service discontinued" },
 ];
 
 export function getSourceStatuses(): SourceStatus[] {
@@ -194,12 +195,13 @@ function delay(ms: number): Promise<void> {
 }
 
 const SOURCE_PRIORITY: Record<string, number> = {
-  "wg-gesucht": 1,
+  "wg-gesucht":    1,
   "kleinanzeigen": 2,
-  "immowelt": 3,
-  "wohnungsboerse": 4,
-  "rentola": 5,
-  "nestpick": 6,
+  "immowelt":      3,
+  "immoscout24":   4,
+  "wohnungsboerse": 5,
+  "rentola":       6,
+  "nestpick":      7,
 };
 
 function getSourcePriority(name: string): number {
@@ -217,9 +219,10 @@ const SKIP_SOURCES = new Set(
 function buildIngestersForCity(city: string): Ingester[] {
   const ingesters: Ingester[] = [];
 
-  if (!SKIP_SOURCES.has("wg-gesucht") && isSourceEnabledByAdmin("wg-gesucht")) ingesters.push(createWgGesuchtIngester(city));
+  if (!SKIP_SOURCES.has("wg-gesucht")    && isSourceEnabledByAdmin("wg-gesucht"))    ingesters.push(createWgGesuchtIngester(city));
   if (!SKIP_SOURCES.has("kleinanzeigen") && isSourceEnabledByAdmin("kleinanzeigen")) ingesters.push(createKleinanzeigenIngester(city));
-  if (!SKIP_SOURCES.has("immowelt") && isSourceEnabledByAdmin("immowelt")) ingesters.push(createImmoweltIngester(city));
+  if (!SKIP_SOURCES.has("immowelt")      && isSourceEnabledByAdmin("immowelt"))      ingesters.push(createImmoweltIngester(city));
+  if (!SKIP_SOURCES.has("immoscout24")   && isSourceEnabledByAdmin("immoscout24"))   ingesters.push(createImmoScout24Ingester(city));
 
   const slugs = getCitySlugs(city);
   const slug = slugs?.slug ?? makeFallbackSlug(city);
