@@ -44,6 +44,7 @@ export interface ParsedListing {
   street?: string | null;
   coordinate_source?: string | null;
   coordinate_precision?: string | null;
+  listing_cluster_id?: string | null;
 }
 
 interface DbListing {
@@ -131,6 +132,64 @@ async function checkCoordMetadataColumns(): Promise<boolean> {
   return hasCoordMetadataColumns;
 }
 
+let hasClusterIdColumn: boolean | null = null;
+
+async function checkClusterIdColumn(): Promise<boolean> {
+  if (hasClusterIdColumn !== null) return hasClusterIdColumn;
+  const { error } = await supabase.from("listings").select("listing_cluster_id").limit(1);
+  hasClusterIdColumn = !error;
+  if (!hasClusterIdColumn) {
+    log("listing_cluster_id column not found — run migration 030_cross_source_dedup.sql in Supabase SQL Editor to enable cross-source deduplication.");
+  }
+  return hasClusterIdColumn;
+}
+
+async function assignCrossSourceCluster(insertedId: string, listing: ParsedListing): Promise<void> {
+  try {
+    if (!listing.price || !listing.city) return;
+    const priceLow  = Math.round(listing.price * 0.92);
+    const priceHigh = Math.round(listing.price * 1.08);
+
+    let query = supabase
+      .from("listings")
+      .select("id, listing_cluster_id")
+      .eq("city", listing.city)
+      .neq("source", listing.source)
+      .neq("id", insertedId)
+      .gte("price", priceLow)
+      .lte("price", priceHigh)
+      .gte("created_at", new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+      .limit(3);
+
+    if (listing.bedrooms && listing.bedrooms > 0) {
+      query = (query as any).eq("bedrooms", listing.bedrooms);
+    }
+    if (listing.size_m2 && listing.size_m2 > 0) {
+      const sizeLow  = Math.round(listing.size_m2 * 0.85);
+      const sizeHigh = Math.round(listing.size_m2 * 1.15);
+      query = (query as any).gte("size_m2", sizeLow).lte("size_m2", sizeHigh);
+    }
+
+    const { data: candidates } = await query;
+    let clusterId: string | null = null;
+
+    if (candidates && candidates.length > 0) {
+      const withCluster = candidates.find((r: any) => r.listing_cluster_id);
+      clusterId = withCluster?.listing_cluster_id ?? crypto.randomUUID();
+      if (!withCluster) {
+        await supabase.from("listings").update({ listing_cluster_id: clusterId }).eq("id", candidates[0].id);
+      }
+      log(`[CLUSTER] Linked ${insertedId} ↔ ${candidates[0].id} via cluster ${clusterId} (cross-source: ${listing.source} ↔ ${candidates[0].listing_cluster_id ? "existing" : "new"})`);
+    } else {
+      clusterId = crypto.randomUUID();
+    }
+
+    await supabase.from("listings").update({ listing_cluster_id: clusterId }).eq("id", insertedId);
+  } catch (err: any) {
+    log(`[CLUSTER] assignCrossSourceCluster error: ${err.message}`);
+  }
+}
+
 const ADVANCED_FIELDS: (keyof ParsedListing)[] = [
   "pets_allowed", "balcony", "elevator",
   "garden", "bath", "roof_terrace", "parking", "energy_label", "property_type",
@@ -144,12 +203,13 @@ const COORD_METADATA_FIELDS: (keyof ParsedListing)[] = [
 export async function insertAndMatchListings(
   parsed: ParsedListing[]
 ): Promise<{ inserted: number; duplicates: number; matches: number; errors: number }> {
-  const useSourceId = await checkSourceIdColumn();
-  const useImageUrl = await checkImageUrlColumn();
-  const useFurnished = await checkFurnishedColumn();
-  const useDistrict = await checkDistrictColumn();
-  const useAdvanced = await checkAdvancedColumns();
-  const useCoordMeta = await checkCoordMetadataColumns();
+  const useSourceId   = await checkSourceIdColumn();
+  const useImageUrl   = await checkImageUrlColumn();
+  const useFurnished  = await checkFurnishedColumn();
+  const useDistrict   = await checkDistrictColumn();
+  const useAdvanced   = await checkAdvancedColumns();
+  const useCoordMeta  = await checkCoordMetadataColumns();
+  const useClusterId  = await checkClusterIdColumn();
 
   let inserted = 0;
   let duplicates = 0;
@@ -367,6 +427,9 @@ export async function insertAndMatchListings(
 
     if (row) {
       trackListingSeen(row.id, listing.source, listing.source_id).catch(() => {});
+      if (useClusterId) {
+        assignCrossSourceCluster(row.id, listing).catch(() => {});
+      }
       const matchStart = Date.now();
       const matchCount = await runMatchingForListing(row as DbListing);
       if (matchCount > 0) {

@@ -99,7 +99,7 @@ export interface SourceStatus {
 
 const SOURCE_STATUSES: SourceStatus[] = [
   { name: "wg-gesucht", status: "active" },
-  { name: "kleinanzeigen", status: "broken", note: "Returns 403 — bot-blocked" },
+  { name: "kleinanzeigen", status: "active" },
   { name: "immowelt", status: "active" },
   { name: "wohnungsboerse", status: "broken", note: "Returns 504 — gateway timeout" },
   { name: "immoscout", status: "broken", note: "Returns 401 — bot-blocked" },
