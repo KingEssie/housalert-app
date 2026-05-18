@@ -27,7 +27,7 @@ import MapView from "@/components/map-view";
 import { defaultCities, cityDistricts } from "../../../config/market";
 import {
   X, ChevronLeft, Check, ChevronDown, Search, Bath, Sun, Trees, Leaf,
-  Info, Loader2, AlertCircle, Plus, MoreVertical, Trash2,
+  Info, Loader2, AlertCircle, Plus, MoreVertical, Trash2, MapPin,
 } from "lucide-react";
 
 const MAX_PROFILES = 4;
@@ -689,7 +689,10 @@ export default function AppSearchWizard() {
                   className="w-full flex items-center gap-3 px-4 py-3 hover:bg-ha-surface transition-colors text-left"
                   style={{ borderBottom: i < geocoder.results.length - 1 ? "1px solid rgb(var(--ha-divider))" : "none" }}
                   data-testid={`geocoder-result-${i}`}>
-                  <span className="text-[15px] font-medium" style={{ color: OBW.text }}>{r.city_name}</span>
+                  <div className="w-[28px] h-[28px] rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "#bbadfb" }}>
+                    <MapPin className="w-[14px] h-[14px]" style={{ color: "#111111" }} />
+                  </div>
+                  <span className="text-[15px] font-medium flex-1" style={{ color: OBW.text }}>{r.city_name}</span>
                   {r.country_code && <span className="text-[13px]" style={{ color: OBW.textMuted }}>{r.country_code}</span>}
                 </button>
               ))}
@@ -710,8 +713,15 @@ export default function AppSearchWizard() {
                   backgroundColor: city?.name === c.name ? "var(--ha-primary-light)" : "rgb(var(--ha-surface))",
                 }}
                 data-testid={`city-preset-${c.name}`}>
+                <div className="w-[28px] h-[28px] rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "#bbadfb" }}>
+                  <MapPin className="w-[14px] h-[14px]" style={{ color: "#111111" }} />
+                </div>
                 <span className="text-[15px] font-medium flex-1" style={{ color: OBW.text }}>{c.name}</span>
-                {city?.name === c.name && <Check className="w-4 h-4" style={{ color: "rgb(var(--ha-primary))" }} />}
+                {city?.name === c.name && (
+                  <div className="w-[22px] h-[22px] rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: "#bbadfb" }}>
+                    <Check className="w-3 h-3" style={{ color: "#111111" }} />
+                  </div>
+                )}
               </button>
             ))}
           </div>

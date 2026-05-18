@@ -30,8 +30,6 @@ export default function OnboardingEmail() {
   const [email, setEmail] = useState(incomingParams.get("email") || "");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const storedRef = typeof window !== "undefined" ? localStorage.getItem("ha_referral_code") : null;
   const [referralCode, setReferralCode] = useState(storedRef || "");
   const [showReferral, setShowReferral] = useState(!!storedRef);
@@ -92,7 +90,7 @@ export default function OnboardingEmail() {
   async function handleCreateAccount() {
     setSubmitError("");
     const pwOk = isPasswordValid(validatePassword(password));
-    if (!email || !pwOk || password !== confirmPassword) return;
+    if (!email || !pwOk) return;
     if (loading || submittingRef.current) return;
     submittingRef.current = true;
     setLoading(true);
@@ -264,8 +262,7 @@ export default function OnboardingEmail() {
 
   const pwStrength = validatePassword(password);
   const passwordOk = isPasswordValid(pwStrength);
-  const confirmOk = confirmPassword.length > 0 && password === confirmPassword;
-  const canSubmit = isValidEmail(email) && passwordOk && confirmOk && !loading;
+  const canSubmit = isValidEmail(email) && passwordOk && !loading;
 
   const formContent = (
     <div className="flex flex-col gap-5">
@@ -311,36 +308,6 @@ export default function OnboardingEmail() {
           </button>
         </div>
         <PasswordRules password={password} />
-      </div>
-
-      <div>
-        <label className="text-[15px] font-semibold mb-2 block text-ha-text">
-          {t("onboarding.password.confirmLabel")}
-        </label>
-        <div className="relative">
-          <input
-            type={showConfirmPassword ? "text" : "password"}
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder={t("onboarding.password.confirmPlaceholder")}
-            className="w-full h-[56px] border border-ha-border-input rounded-[8px] bg-white px-4 pr-12 text-[15px] text-ha-text placeholder:text-ha-text-placeholder outline-none transition-all focus:border-ha-primary"
-            autoComplete="new-password"
-            data-testid="input-confirm-password"
-          />
-          <button
-            type="button"
-            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors text-ha-text-placeholder hover:text-ha-text-muted"
-            data-testid="button-toggle-confirm-password"
-          >
-            {showConfirmPassword ? <EyeOff className="w-[18px] h-[18px]" /> : <Eye className="w-[18px] h-[18px]" />}
-          </button>
-        </div>
-        {confirmPassword.length > 0 && password !== confirmPassword && (
-          <p className="text-[13px] mt-2 text-ha-danger" data-testid="text-confirm-mismatch">
-            {t("onboarding.password.passwordMismatch")}
-          </p>
-        )}
       </div>
 
       {!showReferral ? (
@@ -409,7 +376,7 @@ export default function OnboardingEmail() {
     <OnboardingFlowLayout
       flowTitle={t("onboarding.accountCreate.flowTitle")}
       currentStep={2}
-      totalSteps={2}
+      totalSteps={3}
       stepTitle={t("onboarding.email.title")}
       stepDescription={t("onboarding.email.subtitle")}
       onBack={handleBack}
