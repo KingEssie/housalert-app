@@ -361,3 +361,68 @@ CREATE INDEX IF NOT EXISTS idx_listings_postcode
   WHERE postcode IS NOT NULL;
 
 NOTIFY pgrst, 'reload schema';
+
+-- -----------------------------------------------
+-- Migration 020: Status tracking on listing_freshness
+-- -----------------------------------------------
+ALTER TABLE listing_freshness
+  ADD COLUMN IF NOT EXISTS status TEXT DEFAULT NULL,
+  ADD COLUMN IF NOT EXISTS status_changed_at TIMESTAMPTZ DEFAULT NULL;
+
+CREATE INDEX IF NOT EXISTS idx_listing_freshness_status
+  ON listing_freshness (status);
+
+CREATE INDEX IF NOT EXISTS idx_listing_freshness_last_seen
+  ON listing_freshness (last_seen_at DESC);
+
+-- -----------------------------------------------
+-- Migration 021: search_buddy_enabled on user_profile_data
+-- -----------------------------------------------
+ALTER TABLE user_profile_data
+  ADD COLUMN IF NOT EXISTS search_buddy_enabled BOOLEAN DEFAULT FALSE;
+
+UPDATE user_profile_data
+  SET search_buddy_enabled = FALSE
+  WHERE search_buddy_enabled IS NULL;
+
+-- -----------------------------------------------
+-- Migration 022: search_buddy_status + search_buddy_removed_at
+-- -----------------------------------------------
+ALTER TABLE user_profile_data
+  ADD COLUMN IF NOT EXISTS search_buddy_status TEXT DEFAULT 'removed',
+  ADD COLUMN IF NOT EXISTS search_buddy_removed_at TIMESTAMPTZ;
+
+UPDATE user_profile_data
+  SET search_buddy_status = 'active'
+  WHERE search_buddy_email IS NOT NULL
+    AND search_buddy_email != ''
+    AND search_buddy_enabled = TRUE;
+
+UPDATE user_profile_data
+  SET search_buddy_status = 'removed',
+      search_buddy_removed_at = NOW()
+  WHERE search_buddy_status != 'active';
+
+-- -----------------------------------------------
+-- Migration 023: send_unclear + price_flexible on search_profiles
+-- FIXES: "Could not find the 'price_flexible' column of 'search_profiles'
+--         in the schema cache"
+-- Both columns are required for every search profile insert/update.
+-- send_unclear  — whether to send alerts for listings without a clear match signal
+-- price_flexible — whether to allow listings up to 10% above price_max
+-- -----------------------------------------------
+ALTER TABLE search_profiles
+  ADD COLUMN IF NOT EXISTS send_unclear BOOLEAN DEFAULT TRUE;
+
+ALTER TABLE search_profiles
+  ADD COLUMN IF NOT EXISTS price_flexible BOOLEAN DEFAULT FALSE;
+
+-- -----------------------------------------------
+-- Migration 028: completed_prep_steps on user_profile_data
+-- Tracks which onboarding prep tasks the user has completed.
+-- -----------------------------------------------
+ALTER TABLE user_profile_data
+  ADD COLUMN IF NOT EXISTS completed_prep_steps TEXT[] DEFAULT '{}';
+
+-- Force PostgREST schema cache reload so all new columns are immediately visible.
+NOTIFY pgrst, 'reload schema';
