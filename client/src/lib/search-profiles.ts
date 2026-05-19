@@ -113,8 +113,9 @@ export async function createSearchProfile(
     if (err.error === "profile_limit_reached") {
       throw new Error(err.message || "Je kunt maximaal 4 zoekopdrachten aanmaken.");
     }
+    const realMessage = err.message || err.error || "Unknown error";
     console.error("[search-profiles] API create failed:", res.status, err);
-    throw new Error("Suchauftrag konnte nicht gespeichert werden. Überprüfe deinen Standort und versuche es erneut.");
+    throw new Error(realMessage);
   }
 
   const data = await res.json();
@@ -170,8 +171,9 @@ export async function updateSearchProfile(
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: "Unknown error" }));
+    const realMessage = err.message || err.error || "Unknown error";
     console.error("[search-profiles] Update failed:", res.status, err);
-    throw new Error("Suchauftrag konnte nicht aktualisiert werden. Bitte erneut versuchen.");
+    throw new Error(realMessage);
   }
 
   return { success: true };

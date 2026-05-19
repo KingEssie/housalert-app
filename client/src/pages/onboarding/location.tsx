@@ -33,8 +33,20 @@ export default function OnboardingLocation() {
   const params = new URLSearchParams(searchString);
 
   const [city, setCity] = useState(() => params.get("city") || "");
-  const [lat, setLat] = useState(() => params.get("lat") || "0");
-  const [lng, setLng] = useState(() => params.get("lng") || "0");
+  const [lat, setLat] = useState(() => {
+    const fromParam = params.get("lat");
+    if (fromParam && fromParam !== "0") return fromParam;
+    const cityName = params.get("city") || "";
+    const match = defaultCities.find((c) => c.name === cityName);
+    return match ? String(match.lat) : "0";
+  });
+  const [lng, setLng] = useState(() => {
+    const fromParam = params.get("lng");
+    if (fromParam && fromParam !== "0") return fromParam;
+    const cityName = params.get("city") || "";
+    const match = defaultCities.find((c) => c.name === cityName);
+    return match ? String(match.lng) : "0";
+  });
 
   const districtList = cityDistricts[city] || [];
   const hasDistricts = districtList.length > 0;

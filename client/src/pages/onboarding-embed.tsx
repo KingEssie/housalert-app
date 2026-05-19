@@ -657,7 +657,7 @@ export default function OnboardingEmbedPage() {
                       </div>
                     )}
                     {showGeoResults && (geocoder.results as any[]).map((r, i) => (
-                      <button key={i} onClick={() => handleSelectCity({ name: r.city, lat: r.lat ?? 0, lng: r.lng ?? 0 })}
+                      <button key={i} onClick={() => { const fb = defaultCities.find((c) => c.name === r.city); handleSelectCity({ name: r.city, lat: r.lat ?? fb?.lat ?? 0, lng: r.lng ?? fb?.lng ?? 0 }); }}
                         className="w-full flex items-center gap-3 px-4 py-3 hover:bg-ha-surface transition-colors text-left"
                         style={{ borderBottom: i < geocoder.results.length - 1 ? "1px solid rgb(var(--ha-surface))" : "none" }}
                         data-testid={`city-result-${i}`}>

@@ -3484,18 +3484,43 @@ export async function registerRoutes(
         return res.status(400).json({ error: "Invalid request body" });
       }
 
+      // ── Field validation ──────────────────────────────────────────────────
+      const cityName = (input.city_name ?? "").toString().trim();
+      if (!cityName) {
+        return res.status(400).json({ error: "validation_city_required", message: "City name is required." });
+      }
+      const priceMin = Number(input.price_min);
+      const priceMax = Number(input.price_max);
+      const bedroomsMin = Number(input.bedrooms_min ?? 0);
+      const sizeMin = Number(input.size_min ?? 0);
+      if (isNaN(priceMin) || isNaN(priceMax)) {
+        return res.status(400).json({ error: "validation_price_invalid", message: "Invalid price values." });
+      }
+      if (isNaN(bedroomsMin) || isNaN(sizeMin)) {
+        return res.status(400).json({ error: "validation_fields_invalid", message: "Invalid numeric fields." });
+      }
+
+      // Sanitise coordinates: JSON.stringify converts NaN→null which is fine,
+      // but explicit null is cleaner and avoids Supabase type-coercion issues.
+      const latRaw = input.latitude;
+      const lngRaw = input.longitude;
+      const latitude = latRaw != null && !isNaN(Number(latRaw)) ? Number(latRaw) : null;
+      const longitude = lngRaw != null && !isNaN(Number(lngRaw)) ? Number(lngRaw) : null;
+
+      log(`[search-profiles] POST attempt — city="${cityName}" lat=${latitude} lng=${longitude} mode=${input.location_mode ?? "city"} user=${user.id.substring(0, 8)}`);
+
       const row: Record<string, unknown> = {
         user_id: user.id,
-        city: input.city_name,
-        city_name: input.city_name,
+        city: cityName,
+        city_name: cityName,
         country_code: input.country_code ?? "DE",
-        latitude: input.latitude,
-        longitude: input.longitude,
-        place_id: input.place_id,
-        price_min: input.price_min,
-        price_max: input.price_max,
-        bedrooms_min: input.bedrooms_min,
-        size_min: input.size_min,
+        latitude,
+        longitude,
+        place_id: input.place_id ?? null,
+        price_min: priceMin,
+        price_max: priceMax,
+        bedrooms_min: bedroomsMin,
+        size_min: sizeMin,
       };
 
       if (input.location_mode) row.location_mode = input.location_mode;
@@ -3521,8 +3546,8 @@ export async function registerRoutes(
         .single();
 
       if (error) {
-        log(`[search-profiles] POST insert error: ${error.message}`);
-        return res.status(500).json({ error: error.message });
+        log(`[search-profiles] POST insert error: code=${(error as any).code} msg=${error.message} city="${cityName}" lat=${latitude} lng=${longitude} mode=${row.location_mode ?? "city"} keys=${Object.keys(row).join(",")}`);
+        return res.status(500).json({ error: error.message, message: error.message });
       }
 
       const profileId = data.id;

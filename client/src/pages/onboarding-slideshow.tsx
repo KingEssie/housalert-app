@@ -119,7 +119,12 @@ export default function OnboardingSlideshow() {
   }
 
   function handleSelectGeoResult(r: { city: string; label: string; lat?: number; lng?: number }) {
-    const city: SelectedCity = { name: r.city, lat: r.lat ?? 0, lng: r.lng ?? 0 };
+    const fallback = defaultCities.find((c) => c.name === r.city);
+    const city: SelectedCity = {
+      name: r.city,
+      lat: r.lat ?? fallback?.lat ?? 0,
+      lng: r.lng ?? fallback?.lng ?? 0,
+    };
     handleSelectCity(city);
   }
 
