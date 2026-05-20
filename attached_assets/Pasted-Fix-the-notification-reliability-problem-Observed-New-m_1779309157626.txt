@@ -1,0 +1,121 @@
+Fix the notification reliability problem.
+
+Observed:
+- New matches appear in the app.
+- User received no match email all day.
+- SLA dashboard shows matches created but far fewer emails/pushes sent.
+- Avg Email Delay is too high.
+- Source Health also shows 0 tracked sources, which suggests monitoring data is incomplete or reading the wrong store.
+
+Business requirement:
+If a new listing matches an active user profile, the system must either:
+1. send push/email immediately, or
+2. record an explicit suppression reason.
+
+No match should disappear silently.
+
+Tasks:
+
+1. Build a notification trace
+For every user_match, expose/admin-trace:
+- listing_id
+- match_id
+- user_id
+- source
+- source_published_at
+- first_seen_at
+- inserted_at
+- matched_at
+- buffered_at
+- flush_started_at
+- push_sent_at
+- email_sent_at
+- failed_at
+- suppression_reason
+- provider_error
+
+2. Add suppression reasons
+Every skipped notification must store a reason:
+- stale_listing
+- duplicate_cluster
+- user_unsubscribed
+- no_active_subscription
+- push_disabled
+- email_disabled
+- already_sent
+- quiet_hours
+- missing_contact_channel
+- provider_error
+- unknown_error
+
+3. Audit Martin’s account for today
+For martin.essie87@gmail.com:
+- count matches created today
+- count visible in app
+- count email sent
+- count push sent
+- count suppressed by reason
+- list the latest 20 matches with notification status
+
+4. Fix notification flush
+When fast-lane inserts new listings and creates matches:
+- flush notifications immediately
+- do not wait for batch cron
+- do not silently drop buffered matches
+- log flush start/end/counts
+
+5. Fix email/push eligibility
+Check:
+- subscription active
+- email notifications enabled
+- push token exists
+- push notifications enabled
+- quiet hours settings
+- stale listing rules
+- duplicate cluster suppression
+
+If a user is eligible and the listing is fresh, notification must be sent.
+
+6. Fix Source Health showing 0 sources
+Investigate why Source Health tab shows 0 source×city pairs even though scrapers are running.
+Check:
+- source_health writes
+- DB connection used
+- API endpoint query
+- frontend fetch endpoint
+- schema/table mismatch
+- Replit PG vs Supabase mismatch
+
+Source Health must show active Berlin source pairs:
+- WG-Gesucht
+- Kleinanzeigen
+- Wohnungsbörse
+- Vonovia
+- Immowelt if active
+
+7. Fix broken SLA duration metrics
+Avg duration shows unrealistic 3196s.
+Separate:
+- fast-lane duration
+- deep-scan duration
+- stale/historical runs
+- failed/timeout runs
+
+Do not mix old/deep runs into realtime SLA cards.
+
+8. Add admin UI
+Add/extend admin tabs:
+- Notification Trace
+- User Notification Diagnostic
+- Source Health fixed
+- SLA metrics corrected
+
+9. Build and report
+After changes, report:
+- why Martin received no email today
+- exact suppression reasons
+- whether push was attempted
+- whether email was attempted
+- why Source Health was empty
+- what was fixed
+- how to verify with the next new Berlin listing
