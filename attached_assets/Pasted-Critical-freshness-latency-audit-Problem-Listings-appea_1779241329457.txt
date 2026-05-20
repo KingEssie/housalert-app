@@ -1,0 +1,103 @@
+Critical freshness/latency audit.
+
+Problem:
+Listings appear in HousAlert app and emails as “new” or “12 min geleden”, but on the original source they already have many views. This suggests HousAlert is detecting/importing them too late, or incorrectly using first_seen_at as freshness instead of source posted_at.
+
+This affects:
+- in-app matches
+- match timestamps
+- email alerts
+- push notifications
+- USP: users must be able to react first
+
+Audit required:
+
+1. Trace the affected Kleinanzeigen listings currently shown as “12 min geleden”
+For each:
+- HousAlert listing_id
+- source_id
+- source URL
+- HousAlert first_seen_at
+- inserted_at
+- matched_at
+- email queued/sent time if any
+- source posted_at / published_at / created_at if available
+- source visible age text if available
+- number of views if available
+
+2. Determine the real latency:
+source posted time → first scraped
+first scraped → inserted
+inserted → matched
+matched → shown in app
+matched → email/push sent
+
+3. Fix displayed freshness
+The app should not show “12 min geleden” if that only means “12 min since HousAlert first found it”.
+If source posted_at is available, show age based on source posted_at.
+If not available, label internally as first_seen_at, but do not pretend it is the source posting time.
+
+4. Kleinanzeigen freshness extraction
+Investigate whether Kleinanzeigen provides:
+- posted date/time
+- “online seit”
+- metadata JSON
+- listing timestamp
+- update timestamp
+- view count
+
+Extract and store if available:
+- source_posted_at
+- source_updated_at
+- source_view_count
+
+5. Alert freshness rule
+For in-app “new” and email/push alerts:
+- prioritize truly fresh listings
+- if source_posted_at is older than threshold, do not send as urgent alert
+- still show in app if relevant, but mark/handle differently
+Suggested:
+- urgent alerts only if source_posted_at <= 2 hours old
+- if source_posted_at unknown, allow alerts only after source has been stable and not in warmup/backfill
+
+6. Scrape frequency
+Check how often Kleinanzeigen and other sources are scraped.
+Report:
+- interval per source
+- actual last run times
+- average delay between runs
+- whether scheduler is delayed by long-running jobs
+- whether sources run sequentially causing late detection
+
+7. App-open side effects
+Confirm whether opening the app triggers:
+- matching
+- email sending
+- ingestion
+- delayed notification flush
+If yes, fix it. App open may fetch matches, but must not create “new listing” events or send emails.
+
+8. Backfill/source rollout handling
+Newly enabled sources must not flood app/email as if old listings are fresh.
+Add source warmup logic:
+- first X hours/cycles after source activation = backfill mode
+- backfill listings visible in app but not urgent emailed/pushed unless source_posted_at proves they are recent
+
+9. Admin monitoring
+Add freshness metrics:
+- source_posted_at → first_seen_at latency
+- first_seen_at → matched_at latency
+- matched_at → email/push latency
+- percentage of alerts sent for listings older than 2h / 6h / 24h
+- per-source freshness quality
+
+10. Report root cause
+Answer clearly:
+- Are listings actually being posted late at night?
+- Or are we discovering old listings late?
+- Is “12 min geleden” misleading?
+- Is the scheduler too slow?
+- Is Kleinanzeigen missing posted_at extraction?
+- Is app-open flushing old matches/emails?
+
+Implement safe fixes only after identifying the exact cause.

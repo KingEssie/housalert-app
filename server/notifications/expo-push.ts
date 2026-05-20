@@ -100,7 +100,7 @@ export function buildMatchPayload(listings: ExpoMatchListing[], lang: ServerLoca
     const l = listings[0];
     const city = l.city || t(lang, "push.yourCity");
     title = t(lang, "push.newMatch", { city });
-    const label = truncate(getDisplayTitle(l) || t(lang, "push.webTitle"), 60);
+    const label = truncate(getDisplayTitle(l, true) || t(lang, "push.webTitle"), 60);
     body = l.price > 0 ? `${label} · €${l.price}` : label;
     if (l.listing_id) deepLink = `/listing/${l.listing_id}`;
   } else {

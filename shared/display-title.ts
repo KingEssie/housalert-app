@@ -1,17 +1,24 @@
 /**
  * Shared display-title utility — used by both backend (email/push/API) and frontend.
  *
- * Rules (per spec):
- *   1. If the listing has a street, strip the house number → street name only.
- *   2. If no street but district exists → "{district}, {city}".
- *   3. Otherwise → "Woning in {city}".
+ * Subscription-based visibility rules:
+ *   hasActiveSubscription = true  → show full street with house number
+ *   hasActiveSubscription = false → show street name only (strip house number)
  *
- * Examples:
+ * Fallback chain (both tiers):
+ *   1. street (with or without number, depending on subscription)
+ *   2. district + ", " + city
+ *   3. "Woning in " + city
+ *
+ * Examples (non-subscriber):
  *   "Mainzer Landstraße 12"      → "Mainzer Landstraße"
  *   "Berliner Straße 45A"        → "Berliner Straße"
  *   "Kantstr. 8, 10623 Berlin"   → "Kantstr."
  *   "Am Park 3-5"                → "Am Park"
- *   "Schillerstraße 12a-14b"     → "Schillerstraße"
+ *
+ * Examples (active subscriber):
+ *   "Mainzer Landstraße 12"      → "Mainzer Landstraße 12"
+ *   "Kantstr. 8, 10623 Berlin"   → "Kantstr. 8"
  */
 
 export function stripHouseNumber(street: string): string {
@@ -26,16 +33,35 @@ export function stripHouseNumber(street: string): string {
   );
 }
 
+/** Strip only the postcode/city remainder, keeping the house number intact. */
+export function stripPostcodeSuffix(street: string): string {
+  return street.replace(/,\s*\d{4,5}.*$/, "").trim();
+}
+
 export interface DisplayTitleFields {
   street?: string | null;
   district?: string | null;
   city: string;
 }
 
-export function getDisplayTitle(listing: DisplayTitleFields): string {
+/**
+ * Returns the display title for a listing.
+ * @param listing  Fields needed to compute the title.
+ * @param hasActiveSubscription  When true, the full street (with house number) is shown.
+ *                               When false (default), the house number is stripped.
+ */
+export function getDisplayTitle(
+  listing: DisplayTitleFields,
+  hasActiveSubscription = false
+): string {
   if (listing.street) {
-    const stripped = stripHouseNumber(listing.street);
-    if (stripped) return stripped;
+    if (hasActiveSubscription) {
+      const full = stripPostcodeSuffix(listing.street);
+      if (full) return full;
+    } else {
+      const stripped = stripHouseNumber(listing.street);
+      if (stripped) return stripped;
+    }
   }
   if (listing.district) {
     return `${listing.district}, ${listing.city}`;

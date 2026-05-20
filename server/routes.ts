@@ -71,6 +71,23 @@ function computeFreshLabel(firstSeenAt: string): string {
   return "ouder";
 }
 
+/**
+ * Fast subscription-status check for display-title visibility.
+ * Reads only from Supabase DB (no Stripe sync) — suitable for per-request use.
+ * Returns true when the user has an active or trialing subscription with a valid period.
+ */
+async function isSubscriptionActive(userId: string): Promise<boolean> {
+  const { data } = await supabase
+    .from("subscriptions")
+    .select("status, current_period_ends_at")
+    .eq("user_id", userId)
+    .single();
+  if (!data) return false;
+  if (data.status !== "active" && data.status !== "trial") return false;
+  if (data.current_period_ends_at && new Date(data.current_period_ends_at) <= new Date()) return false;
+  return true;
+}
+
 export async function registerRoutes(
   httpServer: Server,
   app: Express
@@ -742,7 +759,7 @@ export async function registerRoutes(
           match_label,
           match_reasons,
           hybrid_filters,
-          display_title: getDisplayTitle(l),
+          display_title: getDisplayTitle(l, true),
           street: l.street ?? null,
           in_latest_email: false,
           canonical_viewed: false,
@@ -1565,7 +1582,7 @@ export async function registerRoutes(
         return res.json((fallbackRows ?? []).map((l: any) => ({
           listing_id: l.id,
           title: l.title,
-          display_title: getDisplayTitle(l),
+          display_title: getDisplayTitle(l, false),
           street: l.street ?? null,
           price: l.price,
           size_m2: l.size_m2,
@@ -1605,7 +1622,7 @@ export async function registerRoutes(
           return {
             listing_id: id,
             title: l.title,
-            display_title: getDisplayTitle(l),
+            display_title: getDisplayTitle(l, false),
             street: l.street ?? null,
             price: l.price,
             size_m2: l.size_m2,
@@ -1648,7 +1665,7 @@ export async function registerRoutes(
           const l = listingMap[r.listing_id];
           return {
             title: l.title,
-            display_title: getDisplayTitle(l),
+            display_title: getDisplayTitle(l, false),
             street: l.street ?? null,
             price: l.price,
             size_m2: l.size_m2,
@@ -1767,12 +1784,14 @@ export async function registerRoutes(
       // an extra ~300ms on the critical path. Moving it here saves that time.
       const tParallel = Date.now();
       const [subResult, blockedSources] = await Promise.all([
-        supabase.from("subscriptions").select("created_at, status").eq("user_id", user.id).single(),
+        supabase.from("subscriptions").select("created_at, status, current_period_ends_at").eq("user_id", user.id).single(),
         getBlockedSources(user.id),
       ]);
       log(`[MATCHES TIMING] userId=${user.id.substring(0, 8)} sub+blocked=${Date.now() - tParallel}ms`);
 
       const subRow = subResult.data;
+      const isActiveSub = (subRow?.status === "active" || subRow?.status === "trial") &&
+        (!subRow?.current_period_ends_at || new Date(subRow.current_period_ends_at) > new Date());
       const premiumStartedAt = subRow?.created_at || null;
 
       const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
@@ -1907,7 +1926,7 @@ export async function registerRoutes(
           match_label,
           match_reasons,
           hybrid_filters,
-          display_title: getDisplayTitle(l),
+          display_title: getDisplayTitle(l, isActiveSub),
           street: l.street ?? null,
           in_latest_email: emailedIdSet.has(m.listing_id),
         };
@@ -2083,10 +2102,13 @@ export async function registerRoutes(
       const favIds = favRows.map((r: any) => r.listing_id);
       if (favIds.length === 0) return res.json({ listings: [] });
 
-      const { data: listings, error } = await supabase
-        .from("listings")
-        .select("id, title, street, price, size_m2, bedrooms, city, source, url, image_url, created_at, furnished, pets_allowed, district")
-        .in("id", favIds);
+      const [{ data: listings, error }, isActiveSub] = await Promise.all([
+        supabase
+          .from("listings")
+          .select("id, title, street, price, size_m2, bedrooms, city, source, url, image_url, created_at, furnished, pets_allowed, district")
+          .in("id", favIds),
+        isSubscriptionActive(user.id),
+      ]);
 
       if (error) return res.status(500).json({ error: error.message });
 
@@ -2096,7 +2118,7 @@ export async function registerRoutes(
         .map((l: any) => ({
           listing_id: l.id,
           title: l.title,
-          display_title: getDisplayTitle(l),
+          display_title: getDisplayTitle(l, isActiveSub),
           street: l.street ?? null,
           price: l.price,
           size_m2: l.size_m2,
@@ -2229,11 +2251,13 @@ export async function registerRoutes(
       let match_label = null;
       let match_reasons: string[] = [];
       let hybrid_filters = null;
+      let isActiveSub = false;
       const token = req.headers.authorization?.replace("Bearer ", "");
       if (token) {
         try {
           const { data: { user } } = await supabase.auth.getUser(token);
           if (user) {
+            isActiveSub = await isSubscriptionActive(user.id);
             const { data: matchRow } = await supabase
               .from("matches")
               .select("search_profile_id")
@@ -2269,7 +2293,7 @@ export async function registerRoutes(
 
       return res.json({
         ...data,
-        display_title: getDisplayTitle(data),
+        display_title: getDisplayTitle(data, isActiveSub),
         published_at: publishedAt,
         source_published_at: sourcePublishedAt,
         first_seen_at: firstSeenAt,

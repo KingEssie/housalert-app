@@ -303,7 +303,7 @@ function listingCard(listing: ListingInfo, showButton = false, cardNumber?: numb
 ${imageHtml}
 <tr><td style="padding:18px 20px 22px;">
   ${cardNumber ? `<p style="margin:0 0 6px;font-size:11px;font-weight:600;color:${C.purple};text-transform:uppercase;letter-spacing:0.06em;font-family:${FONT_STACK};">${escapeHtml(t(lang, "email.listingLabel"))} ${cardNumber}</p>` : ""}
-  <h3 style="margin:0 0 6px;font-size:18px;font-weight:800;color:${C.text};line-height:1.25;font-family:${FONT_STACK};">${escapeHtml(getDisplayTitle(listing))}</h3>
+  <h3 style="margin:0 0 6px;font-size:18px;font-weight:800;color:${C.text};line-height:1.25;font-family:${FONT_STACK};">${escapeHtml(getDisplayTitle(listing, true))}</h3>
   ${priceLine}
   ${metaHtml}
   ${buttonHtml}
@@ -320,7 +320,7 @@ export async function sendMatchAlert(
   try {
     const client = await getResendClient();
 
-    const displayT = getDisplayTitle(listing);
+    const displayT = getDisplayTitle(listing, true);
     const subject = sanitizeSubject(t(lang, "email.subject.single", { title: displayT }));
     const pricePart = listing.price > 0 ? `${formatPrice(listing.price)}${t(lang, "email.perMonth")} \u2014 ` : "";
     const preheader = `${displayT} \u2014 ${pricePart}${listing.city}`;
@@ -385,7 +385,7 @@ export async function sendBatchMatchAlert(
     const textListings = listings.map((l, i) => {
       const safeUrl = sanitizeUrl(l.url);
       const priceStr = l.price > 0 ? `${formatPrice(l.price)}${t(lang, "email.perMonth")} \u2014 ` : "";
-      return `${i + 1}. ${getDisplayTitle(l)}\n   ${priceStr}${l.city}${safeUrl ? `\n   ${safeUrl}` : ""}`;
+      return `${i + 1}. ${getDisplayTitle(l, true)}\n   ${priceStr}${l.city}${safeUrl ? `\n   ${safeUrl}` : ""}`;
     }).join("\n\n");
 
     const textBody = `${t(lang, "email.greeting")},\n\n${t(lang, "email.batchIntro", { count: listings.length })}\n\n${textListings}\n\n${t(lang, "email.closing")}`;

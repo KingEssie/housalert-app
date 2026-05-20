@@ -1,0 +1,83 @@
+Investigate why match emails are being sent at night and apparently when opening the app.
+
+Observed:
+At around 03:25, user received an email with 11 new woningen.
+This feels unrealistic because landlords/agents usually do not post many listings at that time.
+It also seems like opening the app may trigger emails.
+
+Critical business rule:
+Opening the app must NEVER trigger match email sending.
+Emails should be sent only by ingestion/matching/notification pipeline, not by user page loads.
+
+Audit required:
+
+1. Trace the email event
+Find the exact email sent at ~03:25:
+- user_id
+- email subject
+- listing IDs included
+- match IDs
+- created_at
+- matched_at
+- first_seen_at
+- source
+- source posted/updated date if available
+- notification queued_at/sent_at
+- which job/function sent it
+
+2. Determine if listings were truly new
+For each listing in that email:
+- first_seen_at in HousAlert
+- source posted_at if available
+- listing inserted_at
+- source name
+- whether source was newly enabled recently
+- whether this was a backfill from Vonovia/Wohnungsbörse/Kleinanzeigen
+
+3. Check app-open side effects
+Audit all frontend and backend calls triggered on app open/login/dashboard:
+- /api/matches
+- subscription heal
+- profile sync
+- match generation
+- notification buffer
+- email sending
+- backfill jobs
+Confirm none of these trigger email sending.
+
+4. Separate backfill from real-time alerts
+When a new source is enabled, existing listings should NOT be emailed as urgent “new listing” alerts.
+Implement:
+- source_warmup/backfill mode
+- suppress email/push for listings that are first discovered during source rollout unless source posted_at is recent
+- optionally show them in-app only
+
+5. Add freshness rule for notifications
+Email/push should only be sent if:
+- listing source posted_at is within a reasonable recent window, OR
+- source posted_at unknown but first_seen_at is within recent ingest window AND source is not in warmup/backfill mode.
+
+Suggested:
+- urgent email threshold: source posted_at <= 24h old
+- if posted_at unknown: allow only after source has completed warmup period.
+
+6. Add quiet hours
+Do not send normal match emails between e.g. 22:00 and 07:00 user local time.
+During quiet hours:
+- queue notifications
+- send after 07:00
+Exception later: user can opt into instant alerts.
+
+7. Admin controls
+Add admin/source setting:
+- source warmup enabled/disabled
+- suppress notifications for first X hours after enabling a new source
+- show backfill listings in app only
+
+8. Report root cause
+Answer clearly:
+- Was this caused by opening the app?
+- Was this caused by a new source backfill?
+- Which function sent the email?
+- Why at 03:25?
+- What fix prevents it from happening again?
