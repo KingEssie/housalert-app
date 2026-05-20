@@ -1,0 +1,65 @@
+Implement subscription-based address visibility.
+
+Goal:
+Active subscribers can see the full street address including house number.
+Users without an active subscription only see street name without house number.
+
+Rules:
+1. If user has active subscription:
+   display_title = street + house_number when available
+   fallback = street_without_number
+   fallback = district + ", " + city
+   fallback = "Woning in " + city
+
+2. If user has no active subscription, expired subscription, or cancelled without access:
+   display_title = street_without_number
+   fallback = district + ", " + city
+   fallback = "Woning in " + city
+
+3. Apply in-app everywhere:
+   - matches cards
+   - favorites cards
+   - listing detail/apply screen
+   - reacted/applied lists
+   - account/match history if listing title appears there
+
+4. Do not retroactively change already-sent emails or push notifications.
+   But for future emails/pushes:
+   - use the same visibility rule at send time if the recipient subscription is known.
+   - if uncertain, default to no house number.
+
+5. API:
+   Do not rely only on frontend hiding.
+   Backend should return display_title based on user subscription status.
+   Avoid exposing full address/title to non-active users in normal user APIs.
+
+6. Admin:
+   Admin views may show:
+   - original scraped title
+   - full address
+   - display_title for user
+   - subscription-based visibility result
+
+7. Parsing:
+   Ensure address is stored as structured fields when available:
+   - street
+   - house_number
+   - postcode
+   - district
+   - city
+
+8. Formatting:
+   - "Mainzer Landstraße" + "12" → "Mainzer Landstraße 12"
+   - non-active users see "Mainzer Landstraße"
+   - strip house numbers safely from raw street strings if needed.
+
+9. Edge cases:
+   - If subscription expires while app is open, refetch subscription/listings or recompute display_title.
+   - If user downgrades/cancels but still has access until period end, treat as active until access ends.
+   - If subscription status is unknown, default to no house number.
+
+Build and report:
+- files changed
+- API endpoints updated
+- subscription logic used
+- places where title/address visibility was applied

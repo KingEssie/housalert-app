@@ -177,7 +177,7 @@ export function ListingCardFull({
           style={{ color: "#111111", fontWeight: matchVariant ? 800 : 700 }}
           data-testid={`text-match-title-${match.listing_id}`}
         >
-          {match.title}
+          {match.display_title || match.title}
         </h3>
 
         {(timeAgo || sourceName) && (
@@ -381,7 +381,7 @@ export function ListingCardCompact({ match, onCardClick }: ListingCardCompactPro
 
       <div className="pt-2 pb-0.5">
         <h3 className="text-[14px] font-semibold text-ha-text leading-snug truncate" data-testid={`text-recent-title-${match.listing_id}`}>
-          {match.title}
+          {match.display_title || match.title}
         </h3>
         <p className="text-[12px] text-ha-text-secondary mt-[2px] truncate" data-testid={`text-recent-city-${match.listing_id}`}>
           {match.city}
@@ -432,7 +432,7 @@ export function ListingCardMini({ match, onCardClick }: ListingCardMiniProps) {
         )}
       </div>
       <div className="pt-2 pb-0.5">
-        <p className="text-[13px] font-semibold text-ha-text truncate" data-testid={`text-mini-title-${match.listing_id}`}>{match.title}</p>
+        <p className="text-[13px] font-semibold text-ha-text truncate" data-testid={`text-mini-title-${match.listing_id}`}>{match.display_title || match.title}</p>
         <p className="text-[12px] text-ha-text-secondary mt-[2px]" data-testid={`text-mini-meta-${match.listing_id}`}>
           {match.price > 0 && <span className="font-semibold text-ha-text">€{match.price}</span>}
           {match.price > 0 && match.size_m2 > 0 && <span> · </span>}

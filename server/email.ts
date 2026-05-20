@@ -2,6 +2,7 @@ import { Resend } from "resend";
 import { createHmac } from "crypto";
 import { log } from "./log";
 import { t, type ServerLocale } from "./i18n";
+import { getDisplayTitle } from "../shared/display-title";
 
 async function getEmailConfigAsync() {
   return getEmailConfig();
@@ -83,6 +84,8 @@ interface ListingInfo {
   size_m2: number;
   url?: string | null;
   image_url?: string | null;
+  street?: string | null;
+  district?: string | null;
 }
 
 const C = {
@@ -300,7 +303,7 @@ function listingCard(listing: ListingInfo, showButton = false, cardNumber?: numb
 ${imageHtml}
 <tr><td style="padding:18px 20px 22px;">
   ${cardNumber ? `<p style="margin:0 0 6px;font-size:11px;font-weight:600;color:${C.purple};text-transform:uppercase;letter-spacing:0.06em;font-family:${FONT_STACK};">${escapeHtml(t(lang, "email.listingLabel"))} ${cardNumber}</p>` : ""}
-  <h3 style="margin:0 0 6px;font-size:18px;font-weight:800;color:${C.text};line-height:1.25;font-family:${FONT_STACK};">${escapeHtml(listing.title)}</h3>
+  <h3 style="margin:0 0 6px;font-size:18px;font-weight:800;color:${C.text};line-height:1.25;font-family:${FONT_STACK};">${escapeHtml(getDisplayTitle(listing))}</h3>
   ${priceLine}
   ${metaHtml}
   ${buttonHtml}
@@ -317,9 +320,10 @@ export async function sendMatchAlert(
   try {
     const client = await getResendClient();
 
-    const subject = sanitizeSubject(t(lang, "email.subject.single", { title: listing.title }));
+    const displayT = getDisplayTitle(listing);
+    const subject = sanitizeSubject(t(lang, "email.subject.single", { title: displayT }));
     const pricePart = listing.price > 0 ? `${formatPrice(listing.price)}${t(lang, "email.perMonth")} \u2014 ` : "";
-    const preheader = `${listing.title} \u2014 ${pricePart}${listing.city}`;
+    const preheader = `${displayT} \u2014 ${pricePart}${listing.city}`;
 
     const detailsText = [
       `${t(lang, "email.city")}: ${listing.city}`,
@@ -329,7 +333,7 @@ export async function sendMatchAlert(
     ].filter(Boolean).join("\n");
 
     const safeUrl = sanitizeUrl(listing.url);
-    const textBody = `${t(lang, "email.greeting")},\n\n${t(lang, "email.singleIntro")}\n\n${listing.title}\n${detailsText}${safeUrl ? `\n\n${t(lang, "email.viewProperty")}: ${safeUrl}` : ""}\n\n${t(lang, "email.closing")}`;
+    const textBody = `${t(lang, "email.greeting")},\n\n${t(lang, "email.singleIntro")}\n\n${displayT}\n${detailsText}${safeUrl ? `\n\n${t(lang, "email.viewProperty")}: ${safeUrl}` : ""}\n\n${t(lang, "email.closing")}`;
 
     const htmlContent = `
 <p style="margin:0 0 6px;font-size:11px;font-weight:600;color:${C.primary};text-transform:uppercase;letter-spacing:0.06em;font-family:${FONT_STACK};">${escapeHtml(t(lang, "email.newMatch"))}</p>
@@ -381,7 +385,7 @@ export async function sendBatchMatchAlert(
     const textListings = listings.map((l, i) => {
       const safeUrl = sanitizeUrl(l.url);
       const priceStr = l.price > 0 ? `${formatPrice(l.price)}${t(lang, "email.perMonth")} \u2014 ` : "";
-      return `${i + 1}. ${l.title}\n   ${priceStr}${l.city}${safeUrl ? `\n   ${safeUrl}` : ""}`;
+      return `${i + 1}. ${getDisplayTitle(l)}\n   ${priceStr}${l.city}${safeUrl ? `\n   ${safeUrl}` : ""}`;
     }).join("\n\n");
 
     const textBody = `${t(lang, "email.greeting")},\n\n${t(lang, "email.batchIntro", { count: listings.length })}\n\n${textListings}\n\n${t(lang, "email.closing")}`;

@@ -7,6 +7,8 @@ export interface Listing {
   source: string;
   url: string | null;
   title: string;
+  display_title?: string | null;
+  street?: string | null;
   city: string;
   price: number;
   bedrooms: number;
@@ -117,6 +119,8 @@ async function sendMatchAlertToServer(userEmail: string, listing: Listing) {
 
 export interface FreshListing {
   title: string;
+  display_title?: string | null;
+  street?: string | null;
   price: number;
   size_m2: number;
   bedrooms: number;

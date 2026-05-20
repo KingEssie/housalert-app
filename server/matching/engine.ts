@@ -57,6 +57,7 @@ interface DbListing {
   energy_label?: string | null;
   property_type?: string | null;
   district?: string | null;
+  street?: string | null;
   latitude?: number | null;
   longitude?: number | null;
   extra_features?: string[] | null;
@@ -97,7 +98,7 @@ function getListingSelect(): string {
   const base = "id, source, url, title, city, price, bedrooms, size_m2, image_url, created_at, listing_cluster_id";
   const parts = [base];
   if (hasFurnishedColumn !== false) parts.push("furnished");
-  if (hasDistrictColumn !== false) parts.push("district");
+  if (hasDistrictColumn !== false) parts.push("district, street, postcode");
   if (hasAdvancedListingColumns !== false) parts.push("pets_allowed, balcony, elevator, garden, bath, roof_terrace, parking, energy_label, property_type, latitude, longitude, extra_features, target_categories");
   return parts.join(", ");
 }
@@ -965,6 +966,8 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
         image_url: l.image_url,
         matched_at: result.matched_at,
         cluster_id: (l as any).listing_cluster_id ?? null,
+        street: l.street ?? null,
+        district: l.district ?? null,
       });
     }
   }
@@ -1115,6 +1118,8 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
               image_url: l.image_url,
               matched_at,
               cluster_id: (l as any).listing_cluster_id ?? null,
+              street: l.street ?? null,
+              district: l.district ?? null,
             });
           }
         }

@@ -344,7 +344,7 @@ export default function ListingDetailPage() {
 
       <main className="flex-1 max-w-xl mx-auto w-full px-5 pt-4 pb-32">
         <h1 className="text-[20px] font-semibold text-ha-text leading-[1.3]" data-testid="text-listing-title">
-          {listing.title}
+          {listing.display_title || listing.title}
         </h1>
 
         <div className="flex items-center gap-1 text-[14px] text-ha-text-secondary mt-1">

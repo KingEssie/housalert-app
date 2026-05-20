@@ -146,6 +146,8 @@ export interface BufferedMatch {
   matched_at?: string;
   /** Phase 2 cluster-level dedup: same cluster_id = same physical apartment */
   cluster_id?: string | null;
+  street?: string | null;
+  district?: string | null;
 }
 
 interface UserBuffer {
@@ -482,6 +484,8 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
           city: l.city,
           price: l.price,
           url: l.url,
+          street: l.street ?? null,
+          district: l.district ?? null,
         }));
         const expoResult = await sendExpoMatchPush(userId, expoListings, userLang);
         if (expoResult.sent > 0) {
@@ -640,6 +644,8 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
         city: l.city,
         price: l.price,
         url: l.url,
+        street: l.street ?? null,
+        district: l.district ?? null,
       }));
       const expoResult = await sendExpoMatchPush(userId, expoListings, backfillLang);
       if (expoResult.sent > 0) {
@@ -901,11 +907,11 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
     log(`[RECOVERY] User ${userId.substring(0, 8)}: buffering ${eligibleMatches.length} matches for ${email} (${skippedOld} pre-sub filtered out)`);
 
     const listingIds = eligibleMatches.map(m => m.listing_id);
-    let enrichMap = new Map<string, { image_url: string | null; bedrooms: number; size_m2: number; created_at: string | null }>();
+    let enrichMap = new Map<string, { image_url: string | null; bedrooms: number; size_m2: number; created_at: string | null; street: string | null; district: string | null }>();
     try {
       const { data: listingRows } = await supabase
         .from("listings")
-        .select("id, image_url, bedrooms, size_m2, created_at")
+        .select("id, image_url, bedrooms, size_m2, created_at, street, district")
         .in("id", listingIds);
       if (listingRows) {
         for (const row of listingRows) {
@@ -914,6 +920,8 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
             bedrooms: row.bedrooms || 0,
             size_m2: row.size_m2 || 0,
             created_at: row.created_at || null,
+            street: row.street || null,
+            district: row.district || null,
           });
         }
       }
@@ -947,6 +955,8 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
         bedrooms: enriched?.bedrooms || 0,
         size_m2: enriched?.size_m2 || 0,
         url: m.listing_url,
+        street: enriched?.street ?? null,
+        district: enriched?.district ?? null,
         image_url: enriched?.image_url || null,
         matched_at: m.matched_at,
       });

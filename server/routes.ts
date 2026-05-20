@@ -28,6 +28,7 @@ import {
   stripeStatusToDb,
 } from "./subscriptions";
 import { log } from "./log";
+import { getDisplayTitle } from "../shared/display-title";
 import { validateBuddyUnsubscribeToken, sendBuddyInvitationEmail, sendBuddyCollaborationEmail, sendBuddyRevokedEmail, sendBuddyRevokedOwnerEmail } from "./email";
 import {
   inviteBuddy, acceptInvite, revokeBuddy, revokeBuddyAsBuddy,
@@ -676,7 +677,7 @@ export async function registerRoutes(
       const [listingsData, freshnessMap, profilesData] = await Promise.all([
         batchedIn<any>(
           "listings", "id", allListingIds,
-          "id, title, price, size_m2, bedrooms, city, source, url, image_url, furnished, pets_allowed, district",
+          "id, title, street, price, size_m2, bedrooms, city, source, url, image_url, furnished, pets_allowed, district",
           (q: any) => q.not("title", "is", null)
         ),
         getListingFreshness(allListingIds),
@@ -741,6 +742,8 @@ export async function registerRoutes(
           match_label,
           match_reasons,
           hybrid_filters,
+          display_title: getDisplayTitle(l),
+          street: l.street ?? null,
           in_latest_email: false,
           canonical_viewed: false,
           canonical_saved: false,
@@ -1550,7 +1553,7 @@ export async function registerRoutes(
       if (rankedIds.length === 0) {
         const { data: fallbackRows, error: fbErr } = await supabase
           .from("listings")
-          .select("id, title, price, size_m2, bedrooms, city, source, url, image_url, created_at")
+          .select("id, title, street, district, price, size_m2, bedrooms, city, source, url, image_url, created_at")
           .order("created_at", { ascending: false })
           .limit(6);
 
@@ -1562,6 +1565,8 @@ export async function registerRoutes(
         return res.json((fallbackRows ?? []).map((l: any) => ({
           listing_id: l.id,
           title: l.title,
+          display_title: getDisplayTitle(l),
+          street: l.street ?? null,
           price: l.price,
           size_m2: l.size_m2,
           bedrooms: l.bedrooms,
@@ -1579,7 +1584,7 @@ export async function registerRoutes(
       const [listingsRes, freshnessMap] = await Promise.all([
         supabase
           .from("listings")
-          .select("id, title, price, size_m2, bedrooms, city, source, url, image_url, created_at")
+          .select("id, title, street, district, price, size_m2, bedrooms, city, source, url, image_url, created_at")
           .in("id", listingIds),
         getListingFreshness(listingIds),
       ]);
@@ -1600,6 +1605,8 @@ export async function registerRoutes(
           return {
             listing_id: id,
             title: l.title,
+            display_title: getDisplayTitle(l),
+            street: l.street ?? null,
             price: l.price,
             size_m2: l.size_m2,
             bedrooms: l.bedrooms,
@@ -1627,7 +1634,7 @@ export async function registerRoutes(
       const ids = freshRows.map((r) => r.listing_id);
       const { data: listings, error } = await supabase
         .from("listings")
-        .select("id, title, price, size_m2, bedrooms, city, source, url, image_url")
+        .select("id, title, street, district, price, size_m2, bedrooms, city, source, url, image_url")
         .in("id", ids);
 
       if (error) return res.status(500).json({ error: error.message });
@@ -1641,6 +1648,8 @@ export async function registerRoutes(
           const l = listingMap[r.listing_id];
           return {
             title: l.title,
+            display_title: getDisplayTitle(l),
+            street: l.street ?? null,
             price: l.price,
             size_m2: l.size_m2,
             bedrooms: l.bedrooms,
@@ -1818,7 +1827,7 @@ export async function registerRoutes(
       const [listingsData, freshnessMap, profilesData] = await Promise.all([
         batchedIn<any>(
           "listings", "id", allListingIds,
-          "id, title, price, size_m2, bedrooms, city, source, url, image_url, furnished, pets_allowed, district",
+          "id, title, street, price, size_m2, bedrooms, city, source, url, image_url, furnished, pets_allowed, district",
           (q: any) => q.not("title", "is", null)
         ),
         getListingFreshness(allListingIds),
@@ -1898,6 +1907,8 @@ export async function registerRoutes(
           match_label,
           match_reasons,
           hybrid_filters,
+          display_title: getDisplayTitle(l),
+          street: l.street ?? null,
           in_latest_email: emailedIdSet.has(m.listing_id),
         };
       });
@@ -2074,7 +2085,7 @@ export async function registerRoutes(
 
       const { data: listings, error } = await supabase
         .from("listings")
-        .select("id, title, price, size_m2, bedrooms, city, source, url, image_url, created_at, furnished, pets_allowed, district")
+        .select("id, title, street, price, size_m2, bedrooms, city, source, url, image_url, created_at, furnished, pets_allowed, district")
         .in("id", favIds);
 
       if (error) return res.status(500).json({ error: error.message });
@@ -2085,6 +2096,8 @@ export async function registerRoutes(
         .map((l: any) => ({
           listing_id: l.id,
           title: l.title,
+          display_title: getDisplayTitle(l),
+          street: l.street ?? null,
           price: l.price,
           size_m2: l.size_m2,
           bedrooms: l.bedrooms,
@@ -2197,7 +2210,7 @@ export async function registerRoutes(
 
       const { data, error } = await supabase
         .from("listings")
-        .select("id, title, price, size_m2, bedrooms, city, source, url, image_url, created_at, furnished, pets_allowed, district")
+        .select("id, title, street, price, size_m2, bedrooms, city, source, url, image_url, created_at, furnished, pets_allowed, district")
         .eq("id", id)
         .single();
 
@@ -2256,6 +2269,7 @@ export async function registerRoutes(
 
       return res.json({
         ...data,
+        display_title: getDisplayTitle(data),
         published_at: publishedAt,
         source_published_at: sourcePublishedAt,
         first_seen_at: firstSeenAt,

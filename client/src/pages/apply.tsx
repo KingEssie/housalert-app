@@ -522,13 +522,14 @@ export default function ApplyPage() {
 
   const defaultTemplate = getDefaultTemplate(locale);
   const tmpl = profileData?.application_template || defaultTemplate;
+  const displayTitle = listing.display_title || listing.title;
   const address = listing.district
-    ? `${listing.title}, ${listing.district}`
-    : listing.title;
+    ? `${displayTitle}, ${listing.district}`
+    : displayTitle;
   const filledLetter = fillTemplate(
     tmpl,
     {
-      title: listing.title,
+      title: displayTitle,
       city: listing.city,
       price: listing.price,
       address,
@@ -668,7 +669,7 @@ export default function ApplyPage() {
               style={{ color: "#111111", fontWeight: 800 }}
               data-testid="text-apply-title"
             >
-              {listing.title}
+              {listing.display_title || listing.title}
             </h3>
             {metaLine && (
               <p className="text-[13px]" style={{ color: "#111111", fontWeight: 500 }} data-testid="text-apply-meta">
