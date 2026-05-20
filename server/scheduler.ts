@@ -8,11 +8,10 @@ import { updateStalenessStatuses } from "./listing-status";
 import { runImageBackfill, ensureBackfillRunsTable, ensureTrackingTable, isBackfillEnabled, isBackfillRunning } from "./image-backfill";
 import { upsertSourceHealth, ensureMonitoringTables } from "./monitoring/source-health";
 import { evaluateAlertRules } from "./monitoring/alerts";
-import { runFastLane } from "./ingesters/fast-lane";
+import { startPerSourceTimers } from "./ingesters/fast-lane";
 
 const intervalMinutes = parseInt(process.env.INGEST_INTERVAL_MINUTES || "5", 10);
 const INTERVAL_MS = intervalMinutes * 60 * 1000;
-const FAST_LANE_INTERVAL_MS = 45_000;
 const RECOVERY_INTERVAL_MS = 5 * 60 * 1000;
 const BACKFILL_INTERVAL_MS = 12 * 60 * 1000;
 
@@ -146,13 +145,9 @@ export async function startScheduler() {
   setTimeout(() => tick(), INITIAL_DELAY_MS);
   setInterval(() => tick(), INTERVAL_MS);
 
-  // Fast-lane: Berlin priority sources every 45s (page 1 only, immediate flush)
-  const FAST_LANE_INITIAL_DELAY_MS = 60_000;
-  setTimeout(async () => {
-    try { await runFastLane(); } catch (e: any) { log(`[FAST-LANE ERROR] ${e.message}`, "scheduler"); }
-  }, FAST_LANE_INITIAL_DELAY_MS);
-  setInterval(async () => {
-    try { await runFastLane(); } catch (e: any) { log(`[FAST-LANE ERROR] ${e.message}`, "scheduler"); }
-  }, FAST_LANE_INTERVAL_MS);
-  log(`Fast-lane scheduler started — running every ${FAST_LANE_INTERVAL_MS / 1000}s`, "scheduler");
+  // Fast-lane: per-source independent timers (KA/WG: 15s, Vonovia/WB: 30s)
+  setTimeout(() => {
+    startPerSourceTimers();
+    log(`Fast-lane per-source timers started (KA/WG every 15s, Vonovia/WB every 30s)`, "scheduler");
+  }, 60_000);
 }

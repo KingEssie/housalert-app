@@ -2,6 +2,7 @@ export interface SourceCapability {
   source: string;
   supportsSourcePublishedAt: boolean;
   supportsFastLane: boolean;
+  fastLaneIntervalSeconds: number;
   recommendedIntervalSeconds: number;
   antiBotRisk: "low" | "medium" | "high";
   priorityLevel: number;
@@ -13,7 +14,8 @@ export const SOURCE_CAPABILITIES: Record<string, SourceCapability> = {
     source: "kleinanzeigen",
     supportsSourcePublishedAt: true,
     supportsFastLane: true,
-    recommendedIntervalSeconds: 45,
+    fastLaneIntervalSeconds: 15,
+    recommendedIntervalSeconds: 15,
     antiBotRisk: "medium",
     priorityLevel: 1,
     fastLaneCities: ["Berlin"],
@@ -22,7 +24,8 @@ export const SOURCE_CAPABILITIES: Record<string, SourceCapability> = {
     source: "wg-gesucht",
     supportsSourcePublishedAt: false,
     supportsFastLane: true,
-    recommendedIntervalSeconds: 45,
+    fastLaneIntervalSeconds: 15,
+    recommendedIntervalSeconds: 15,
     antiBotRisk: "low",
     priorityLevel: 1,
     fastLaneCities: ["Berlin"],
@@ -31,7 +34,8 @@ export const SOURCE_CAPABILITIES: Record<string, SourceCapability> = {
     source: "vonovia",
     supportsSourcePublishedAt: false,
     supportsFastLane: true,
-    recommendedIntervalSeconds: 60,
+    fastLaneIntervalSeconds: 30,
+    recommendedIntervalSeconds: 30,
     antiBotRisk: "low",
     priorityLevel: 2,
     fastLaneCities: ["Berlin"],
@@ -40,7 +44,8 @@ export const SOURCE_CAPABILITIES: Record<string, SourceCapability> = {
     source: "wohnungsboerse",
     supportsSourcePublishedAt: false,
     supportsFastLane: true,
-    recommendedIntervalSeconds: 60,
+    fastLaneIntervalSeconds: 30,
+    recommendedIntervalSeconds: 30,
     antiBotRisk: "medium",
     priorityLevel: 2,
     fastLaneCities: ["Berlin"],
@@ -49,6 +54,7 @@ export const SOURCE_CAPABILITIES: Record<string, SourceCapability> = {
     source: "immowelt",
     supportsSourcePublishedAt: false,
     supportsFastLane: false,
+    fastLaneIntervalSeconds: 300,
     recommendedIntervalSeconds: 300,
     antiBotRisk: "medium",
     priorityLevel: 3,
@@ -58,6 +64,7 @@ export const SOURCE_CAPABILITIES: Record<string, SourceCapability> = {
     source: "immoscout24",
     supportsSourcePublishedAt: false,
     supportsFastLane: false,
+    fastLaneIntervalSeconds: 300,
     recommendedIntervalSeconds: 300,
     antiBotRisk: "high",
     priorityLevel: 3,
@@ -70,12 +77,12 @@ export function getSourceCapability(source: string): SourceCapability | null {
 }
 
 /** Returns priority-sorted list of (source, city) pairs that should run on the fast lane. */
-export function getFastLanePairs(): Array<{ source: string; city: string }> {
-  const pairs: Array<{ source: string; city: string }> = [];
+export function getFastLanePairs(): Array<{ source: string; city: string; intervalSeconds: number }> {
+  const pairs: Array<{ source: string; city: string; intervalSeconds: number }> = [];
   for (const cap of Object.values(SOURCE_CAPABILITIES)) {
     if (!cap.supportsFastLane) continue;
     for (const city of cap.fastLaneCities) {
-      pairs.push({ source: cap.source, city });
+      pairs.push({ source: cap.source, city, intervalSeconds: cap.fastLaneIntervalSeconds });
     }
   }
   pairs.sort((a, b) => {

@@ -178,7 +178,7 @@ function normalizeItem(item: DwListing, city: string): ParsedListing | null {
   };
 }
 
-async function fetchAllListings(city: string, options?: { maxPages?: number }): Promise<{
+export async function fetchAllListings(city: string, options?: { maxPages?: number }): Promise<{
   listings: ParsedListing[];
   apiTotal: number;
   pagesAttempted: number;

@@ -3164,7 +3164,7 @@ function RealtimeSlaTab() {
     if (!iso) return "—";
     const secs = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
     if (secs < 60) return `${secs}s ago`;
-    if (secs < 3600) return `${Math.floor(secs / 60)}m ago`;
+    if (secs < 3600) return `${Math.floor(secs / 60)}m ${secs % 60}s ago`;
     return `${Math.floor(secs / 3600)}h ago`;
   }
 
@@ -3175,13 +3175,22 @@ function RealtimeSlaTab() {
 
   function fmtSec(s: number | null | undefined): string {
     if (s == null) return "—";
-    return `${s}s`;
+    if (s < 60) return `${s}s`;
+    return `${Math.floor(s / 60)}m ${s % 60}s`;
   }
 
   function slaColor(s: number | null): string {
     if (s == null) return "#888";
-    if (s <= 60) return "#22c55e";
+    if (s <= 30) return "#22c55e";
+    if (s <= 60) return "#84cc16";
     if (s <= 120) return "#f59e0b";
+    return "#ef4444";
+  }
+
+  function pctColor(pct: number | null): string {
+    if (pct == null) return "#888";
+    if (pct >= 90) return "#22c55e";
+    if (pct >= 70) return "#f59e0b";
     return "#ef4444";
   }
 
@@ -3189,6 +3198,13 @@ function RealtimeSlaTab() {
     low: "bg-green-100 text-green-700",
     medium: "bg-yellow-100 text-yellow-700",
     high: "bg-red-100 text-red-700",
+  };
+
+  const alertTypeLabel: Record<string, string> = {
+    sla_p95_exceeded: "Source→Notif p95 > 60s",
+    match_to_notif_p95_exceeded: "Match→Notif p95 > 30s",
+    fast_lane_stale: "Fast-lane stale > 2min",
+    flush_stuck: "Flush stuck > 2min",
   };
 
   if (loading) return (
@@ -3199,7 +3215,21 @@ function RealtimeSlaTab() {
   if (error) return <div className="text-red-500 text-sm py-4">Error: {error}</div>;
   if (!data) return null;
 
-  const { pairs = [], lastFastLaneAt, isRunning, slaMetrics = [], sourceCapabilities = [], fastLaneIntervalSeconds, slaTargetSeconds, totalEventCount } = data;
+  const {
+    pairs = [],
+    lastFastLaneAt,
+    isRunning,
+    fastLaneStalenessMs,
+    slaMetrics = [],
+    sourceCapabilities = [],
+    slaTargetSeconds,
+    totalEventCount,
+    slaAlerts = [],
+    flushStatus,
+    bottleneckReport,
+  } = data;
+
+  const fastLaneStale = fastLaneStalenessMs !== null && fastLaneStalenessMs > 120_000;
 
   return (
     <div className="space-y-8">
@@ -3208,7 +3238,7 @@ function RealtimeSlaTab() {
         <div>
           <h2 className="text-[17px] font-semibold text-gray-900">Realtime SLA</h2>
           <p className="text-[13px] text-gray-500 mt-0.5">
-            Fast-lane runs every <strong>{fastLaneIntervalSeconds}s</strong> · target ≤ <strong>{slaTargetSeconds}s</strong> source→notification
+            Per-source fast-lane timers · target ≤ <strong>{slaTargetSeconds}s</strong> source→notification · {totalEventCount} events (24h)
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -3217,11 +3247,35 @@ function RealtimeSlaTab() {
               <Loader2 className="w-3 h-3 animate-spin" /> Running
             </span>
           )}
+          {fastLaneStale && (
+            <span className="flex items-center gap-1 text-xs text-red-600 bg-red-50 px-2 py-1 rounded-full">
+              <AlertTriangle className="w-3 h-3" /> Stale {Math.round(fastLaneStalenessMs / 1000)}s
+            </span>
+          )}
           <button onClick={load} className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors" data-testid="button-sla-refresh">
             <RefreshCw className="w-4 h-4 text-gray-500" />
           </button>
         </div>
       </div>
+
+      {/* SLA Alerts */}
+      {slaAlerts.length > 0 && (
+        <div className="rounded-[14px] border border-red-100 bg-red-50 p-4 space-y-2">
+          <p className="text-[12px] font-semibold text-red-700 uppercase tracking-wide flex items-center gap-1.5">
+            <AlertTriangle className="w-3.5 h-3.5" /> SLA Alerts
+          </p>
+          {slaAlerts.map((a: any, i: number) => (
+            <div key={i} className="flex items-start gap-2 text-[13px]">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-500 mt-1.5 flex-shrink-0" />
+              <div>
+                <span className="font-medium text-red-800">{alertTypeLabel[a.type] ?? a.type}</span>
+                {a.source && <span className="text-red-600 ml-1.5">({a.source}/{a.city})</span>}
+                <span className="text-red-600 ml-1.5">— {a.message}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Fast-lane pair status */}
       <div>
@@ -3231,10 +3285,11 @@ function RealtimeSlaTab() {
             <thead>
               <tr className="bg-gray-50 text-left text-gray-500 text-[11px] uppercase tracking-wide">
                 <th className="px-4 py-3 font-medium">Source</th>
-                <th className="px-4 py-3 font-medium">City</th>
+                <th className="px-4 py-3 font-medium">Interval</th>
                 <th className="px-4 py-3 font-medium">Last run</th>
                 <th className="px-4 py-3 font-medium">Found</th>
-                <th className="px-4 py-3 font-medium">Inserted</th>
+                <th className="px-4 py-3 font-medium">New</th>
+                <th className="px-4 py-3 font-medium">Known skip</th>
                 <th className="px-4 py-3 font-medium">Duration</th>
                 <th className="px-4 py-3 font-medium">Status</th>
               </tr>
@@ -3242,13 +3297,18 @@ function RealtimeSlaTab() {
             <tbody className="divide-y divide-gray-50">
               {pairs.map((p: any, i: number) => {
                 const lr = p.lastRun;
-                const hasError = lr?.error;
+                const hasError = lr?.error && lr.error !== "bot-blocked";
+                const isBot = lr?.error === "bot-blocked";
                 const isCircuit = p.circuitOpen;
+                const runAgeSec = lr?.runAt ? Math.floor((Date.now() - new Date(lr.runAt).getTime()) / 1000) : null;
+                const isStale = runAgeSec !== null && runAgeSec > (p.intervalSeconds ?? 60) * 3;
                 return (
                   <tr key={i} className="bg-white hover:bg-gray-50/50">
                     <td className="px-4 py-3 font-medium text-gray-900">{p.source}</td>
-                    <td className="px-4 py-3 text-gray-600">{p.city}</td>
-                    <td className="px-4 py-3 text-gray-500">{formatAge(lr?.runAt ?? null)}</td>
+                    <td className="px-4 py-3 text-purple-600 font-mono text-[12px]">{p.intervalSeconds ?? "—"}s</td>
+                    <td className="px-4 py-3 text-gray-500" style={{ color: isStale ? "#ef4444" : undefined }}>
+                      {formatAge(lr?.runAt ?? null)}
+                    </td>
                     <td className="px-4 py-3 text-gray-700">{lr ? lr.found : "—"}</td>
                     <td className="px-4 py-3">
                       {lr ? (
@@ -3257,11 +3317,22 @@ function RealtimeSlaTab() {
                         </span>
                       ) : "—"}
                     </td>
+                    <td className="px-4 py-3 text-gray-400 text-[12px]">
+                      {lr?.knownSkipped != null ? (
+                        <span className={lr.earlyExit ? "text-blue-500" : ""}>
+                          {lr.knownSkipped}{lr.earlyExit ? " ⚡" : ""}
+                        </span>
+                      ) : "—"}
+                    </td>
                     <td className="px-4 py-3 text-gray-500">{fmtMs(lr?.durationMs)}</td>
                     <td className="px-4 py-3">
                       {isCircuit ? (
                         <span className="inline-flex items-center gap-1 text-xs bg-red-50 text-red-600 px-2 py-0.5 rounded-full">
                           <WifiOff className="w-3 h-3" /> Circuit open
+                        </span>
+                      ) : isBot ? (
+                        <span className="inline-flex items-center gap-1 text-xs bg-orange-50 text-orange-600 px-2 py-0.5 rounded-full">
+                          <AlertTriangle className="w-3 h-3" /> Bot-blocked
                         </span>
                       ) : hasError ? (
                         <span className="inline-flex items-center gap-1 text-xs bg-orange-50 text-orange-600 px-2 py-0.5 rounded-full">
@@ -3282,59 +3353,160 @@ function RealtimeSlaTab() {
           </table>
         </div>
         <p className="text-[11px] text-gray-400 mt-1.5 px-1">
-          Last fast-lane cycle: {formatAge(lastFastLaneAt)} · {totalEventCount} SLA events recorded (24h)
+          Last global fast-lane activity: {formatAge(lastFastLaneAt)} · ⚡ = early-exit (all remaining were known IDs)
+          {flushStatus?.stuckSinceMs != null && (
+            <span className="text-red-500 ml-2">⚠ Flush running {Math.round(flushStatus.stuckSinceMs / 1000)}s</span>
+          )}
         </p>
       </div>
 
-      {/* SLA metrics */}
+      {/* SLA metrics — end-to-end */}
       <div>
-        <SectionHeader title={`SLA metrics (last 24h)`} />
+        <SectionHeader title="End-to-end latency (source_published_at → notification sent, last 24h)" />
         {slaMetrics.length === 0 ? (
           <div className="rounded-[14px] border border-gray-100 bg-gray-50 px-6 py-8 text-center text-[13px] text-gray-400">
-            No SLA events recorded yet — data will appear after the fast-lane has run and matched listings.
+            No SLA events recorded yet — data will appear after the fast-lane inserts new listings and sends notifications.
           </div>
         ) : (
           <div className="rounded-[14px] border border-gray-100 overflow-hidden">
             <table className="w-full text-[13px]">
               <thead>
                 <tr className="bg-gray-50 text-left text-gray-500 text-[11px] uppercase tracking-wide">
+                  <th className="px-4 py-3 font-medium">Source / City</th>
+                  <th className="px-4 py-3 font-medium">n</th>
+                  <th className="px-4 py-3 font-medium">P50</th>
+                  <th className="px-4 py-3 font-medium">P90</th>
+                  <th className="px-4 py-3 font-medium">P95</th>
+                  <th className="px-4 py-3 font-medium">Worst</th>
+                  <th className="px-4 py-3 font-medium">≤60s</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {slaMetrics.map((m: any, i: number) => {
+                  const e = m.endToEnd;
+                  return (
+                    <tr key={i} className="bg-white hover:bg-gray-50/50">
+                      <td className="px-4 py-3">
+                        <span className="font-medium text-gray-900">{m.source}</span>
+                        <span className="text-gray-400 ml-1">/ {m.city}</span>
+                        {m.withPublishedAt === 0 && (
+                          <span className="text-[10px] text-gray-400 ml-1">(no pub timestamp)</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-gray-500">{e?.count ?? 0}</td>
+                      <td className="px-4 py-3" style={{ color: slaColor(e?.p50) }}>{fmtSec(e?.p50)}</td>
+                      <td className="px-4 py-3" style={{ color: slaColor(e?.p90) }}>{fmtSec(e?.p90)}</td>
+                      <td className="px-4 py-3" style={{ color: slaColor(e?.p95) }}>{fmtSec(e?.p95)}</td>
+                      <td className="px-4 py-3" style={{ color: slaColor(e?.worst) }}>{fmtSec(e?.worst)}</td>
+                      <td className="px-4 py-3">
+                        {e?.pctUnder60 != null ? (
+                          <span style={{ color: pctColor(e.pctUnder60) }}>{e.pctUnder60}%</span>
+                        ) : "—"}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* Stage breakdown */}
+      {slaMetrics.length > 0 && (
+        <div>
+          <SectionHeader title="Stage breakdown (p95 per stage, last 24h)" />
+          <div className="rounded-[14px] border border-gray-100 overflow-hidden">
+            <table className="w-full text-[13px]">
+              <thead>
+                <tr className="bg-gray-50 text-left text-gray-500 text-[11px] uppercase tracking-wide">
                   <th className="px-4 py-3 font-medium">Source</th>
-                  <th className="px-4 py-3 font-medium">Events</th>
-                  <th className="px-4 py-3 font-medium">Fast-lane</th>
-                  <th className="px-4 py-3 font-medium">P50 detect</th>
-                  <th className="px-4 py-3 font-medium">P90 detect</th>
-                  <th className="px-4 py-3 font-medium">P50 total</th>
-                  <th className="px-4 py-3 font-medium">P95 total</th>
-                  <th className="px-4 py-3 font-medium">SLA pass</th>
+                  <th className="px-4 py-3 font-medium">Detection p95</th>
+                  <th className="px-4 py-3 font-medium">Insertion p95</th>
+                  <th className="px-4 py-3 font-medium">Match p95</th>
+                  <th className="px-4 py-3 font-medium">Push p95</th>
+                  <th className="px-4 py-3 font-medium">Email p95</th>
+                  <th className="px-4 py-3 font-medium">Match→Notif p95</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
                 {slaMetrics.map((m: any, i: number) => (
                   <tr key={i} className="bg-white hover:bg-gray-50/50">
-                    <td className="px-4 py-3 font-medium text-gray-900">{m.source}</td>
-                    <td className="px-4 py-3 text-gray-500">{m.count}</td>
-                    <td className="px-4 py-3 text-purple-600">{m.fastLaneCount}</td>
-                    <td className="px-4 py-3 text-gray-600">{fmtSec(m.p50DetectionS)}</td>
-                    <td className="px-4 py-3 text-gray-600">{fmtSec(m.p90DetectionS)}</td>
-                    <td className="px-4 py-3" style={{ color: slaColor(m.p50TotalS) }}>{fmtSec(m.p50TotalS)}</td>
-                    <td className="px-4 py-3" style={{ color: slaColor(m.p95TotalS) }}>{fmtSec(m.p95TotalS)}</td>
-                    <td className="px-4 py-3">
-                      {m.slaPassRate != null ? (
-                        <span style={{ color: m.slaPassRate >= 80 ? "#22c55e" : m.slaPassRate >= 50 ? "#f59e0b" : "#ef4444" }}>
-                          {m.slaPassRate}%
-                        </span>
-                      ) : "—"}
-                    </td>
+                    <td className="px-4 py-3 font-medium text-gray-900">{m.source}<span className="text-gray-400 font-normal ml-1">/{m.city}</span></td>
+                    <td className="px-4 py-3" style={{ color: slaColor(m.detection?.p95) }}>{fmtSec(m.detection?.p95)}</td>
+                    <td className="px-4 py-3" style={{ color: slaColor(m.insertion?.p95) }}>{fmtSec(m.insertion?.p95)}</td>
+                    <td className="px-4 py-3" style={{ color: slaColor(m.matching?.p95) }}>{fmtSec(m.matching?.p95)}</td>
+                    <td className="px-4 py-3" style={{ color: slaColor(m.pushLatency?.p95) }}>{fmtSec(m.pushLatency?.p95)}</td>
+                    <td className="px-4 py-3" style={{ color: slaColor(m.emailLatency?.p95) }}>{fmtSec(m.emailLatency?.p95)}</td>
+                    <td className="px-4 py-3" style={{ color: slaColor(m.matchToNotif?.p95) }}>{fmtSec(m.matchToNotif?.p95)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        )}
-        <p className="text-[11px] text-gray-400 mt-1.5 px-1">
-          Detection = source_published_at → HousAlert first seen. Total = source_published_at → notification sent. SLA target: ≤{slaTargetSeconds}s.
-        </p>
-      </div>
+          <p className="text-[11px] text-gray-400 mt-1.5 px-1">
+            Detection requires source_published_at. Only Kleinanzeigen currently provides it — other sources show "—".
+          </p>
+        </div>
+      )}
+
+      {/* Bottleneck Report */}
+      {bottleneckReport && (
+        <div>
+          <SectionHeader title="Bottleneck analysis" />
+          <div className="space-y-4">
+            {bottleneckReport.bottlenecks.length > 0 && (
+              <div className="rounded-[14px] border border-orange-100 bg-orange-50 p-4 space-y-2">
+                <p className="text-[12px] font-semibold text-orange-700 uppercase tracking-wide">Active bottlenecks</p>
+                {bottleneckReport.bottlenecks.map((b: any, i: number) => (
+                  <div key={i} className="flex items-start gap-2 text-[13px]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-orange-400 mt-1.5 flex-shrink-0" />
+                    <span className="text-orange-800">
+                      <strong>{b.source}/{b.city}</strong> — {b.stage} (p95={b.p95S}s)
+                      <span className={`ml-2 text-[11px] px-1.5 py-0.5 rounded-full ${b.impact === "SLA breach" ? "bg-red-100 text-red-700" : b.impact === "Near limit" ? "bg-yellow-100 text-yellow-700" : "bg-green-100 text-green-700"}`}>
+                        {b.impact}
+                      </span>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="rounded-[14px] border border-gray-100 bg-gray-50 p-4 space-y-3">
+              <p className="text-[12px] font-semibold text-gray-600 uppercase tracking-wide">Why 12m / 17m / 283m delays happened</p>
+              {bottleneckReport.delayExplanation.historicDelays.map((d: string, i: number) => (
+                <p key={i} className="text-[13px] text-gray-700 leading-relaxed">{d}</p>
+              ))}
+              <p className="text-[12px] font-semibold text-gray-600 uppercase tracking-wide mt-3">Root causes</p>
+              {bottleneckReport.delayExplanation.rootCauses.map((c: string, i: number) => (
+                <p key={i} className="text-[13px] text-gray-600">• {c}</p>
+              ))}
+            </div>
+
+            <div className="rounded-[14px] border border-blue-100 bg-blue-50 p-4 space-y-2">
+              <p className="text-[12px] font-semibold text-blue-700 uppercase tracking-wide">New intervals (active)</p>
+              {Object.entries(bottleneckReport.newIntervals).map(([source, desc]: [string, any]) => (
+                <div key={source} className="flex items-start gap-2 text-[13px]">
+                  <span className="text-blue-400 mt-0.5">→</span>
+                  <span className="text-blue-800"><strong>{source}:</strong> {desc}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="rounded-[14px] border border-green-100 bg-green-50 p-4">
+              <p className="text-[12px] font-semibold text-green-700 uppercase tracking-wide mb-1">Expected SLA after changes</p>
+              <p className="text-[13px] text-green-800 leading-relaxed">{bottleneckReport.expectedSlaAfterChanges}</p>
+            </div>
+
+            <div className="rounded-[14px] border border-gray-100 p-4">
+              <p className="text-[12px] font-semibold text-gray-600 uppercase tracking-wide mb-2">Sources that cannot meet 60s</p>
+              {bottleneckReport.sourcesCannotMeet60s.map((s: string, i: number) => (
+                <p key={i} className="text-[13px] text-gray-600">• {s}</p>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Source capabilities */}
       <div>
@@ -3345,9 +3517,9 @@ function RealtimeSlaTab() {
               <tr className="bg-gray-50 text-left text-gray-500 text-[11px] uppercase tracking-wide">
                 <th className="px-4 py-3 font-medium">Source</th>
                 <th className="px-4 py-3 font-medium">Fast-lane</th>
-                <th className="px-4 py-3 font-medium">Published timestamp</th>
+                <th className="px-4 py-3 font-medium">Pub. timestamp</th>
                 <th className="px-4 py-3 font-medium">Interval</th>
-                <th className="px-4 py-3 font-medium">Anti-bot risk</th>
+                <th className="px-4 py-3 font-medium">Anti-bot</th>
                 <th className="px-4 py-3 font-medium">Priority</th>
                 <th className="px-4 py-3 font-medium">Cities</th>
               </tr>
@@ -3372,7 +3544,9 @@ function RealtimeSlaTab() {
                       <span className="text-xs text-gray-400">—</span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-gray-600">{cap.recommendedIntervalSeconds}s</td>
+                  <td className="px-4 py-3 font-mono text-[12px] text-purple-600">
+                    {cap.fastLaneIntervalSeconds ?? cap.recommendedIntervalSeconds}s
+                  </td>
                   <td className="px-4 py-3">
                     <span className={`text-xs px-2 py-0.5 rounded-full capitalize ${antiBotBadge[cap.antiBotRisk] ?? ""}`}>
                       {cap.antiBotRisk}
@@ -3380,7 +3554,7 @@ function RealtimeSlaTab() {
                   </td>
                   <td className="px-4 py-3 text-gray-600">P{cap.priorityLevel}</td>
                   <td className="px-4 py-3 text-gray-500">
-                    {cap.fastLaneCities.length > 0 ? cap.fastLaneCities.join(", ") : "—"}
+                    {cap.fastLaneCities?.length > 0 ? cap.fastLaneCities.join(", ") : "—"}
                   </td>
                 </tr>
               ))}

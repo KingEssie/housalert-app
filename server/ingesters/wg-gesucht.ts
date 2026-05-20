@@ -381,7 +381,7 @@ async function fetchPage(
   throw new Error("Unreachable");
 }
 
-async function fetchAndParseListings(city: string, options?: { maxPages?: number }): Promise<ParsedListing[]> {
+export async function fetchAndParseListings(city: string, options?: { maxPages?: number }): Promise<ParsedListing[]> {
   const slugs = getCitySlugs(city);
   if (!slugs?.wgGesuchtCode) {
     log(`[WG-GESUCHT] No city code for "${city}" — skipping`);

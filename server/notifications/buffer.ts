@@ -8,6 +8,7 @@ import { markEmailSent, markPushSent, getUndeliveredMatches } from "../user-matc
 import { pool as pgPool } from "../pg-pool";
 import { getOwnerBuddyRelation, type BuddyRelation } from "../buddy";
 import { getSupabaseAdmin } from "../supabase-admin";
+import { updatePushSent as slaPushSent, updateEmailSent as slaEmailSent, recordFlushStart, recordFlushEnd } from "../monitoring/sla-metrics";
 
 export function areAlertsEnabled(): boolean {
   return process.env.ALERTS_ENABLED === "true";
@@ -282,23 +283,24 @@ async function getAppVisibleListingIds(userId: string, supabase: any, candidateL
   return new Set(existingListings.map((l: any) => l.id));
 }
 
-export async function flushMatchAlertBuffer(supabase: any, source: string = "flush"): Promise<{ sent: number; failed: number }> {
+export async function flushMatchAlertBuffer(supabase: any, source: string = "flush"): Promise<{ sent: number; failed: number; pushesSent: number }> {
   if (!areAlertsEnabled()) {
     buffer.clear();
-    return { sent: 0, failed: 0 };
+    return { sent: 0, failed: 0, pushesSent: 0 };
   }
 
   if (_flushing) {
     log(`[ALERTS] Flush already in progress — skipping`);
-    return { sent: 0, failed: 0 };
+    return { sent: 0, failed: 0, pushesSent: 0 };
   }
 
   if (buffer.size === 0) {
-    return { sent: 0, failed: 0 };
+    return { sent: 0, failed: 0, pushesSent: 0 };
   }
 
   _flushing = true;
   _flushImageBudget = MAX_IMAGE_FETCHES_PER_FLUSH;
+  recordFlushStart();
 
   try {
   const snapshot = new Map(buffer);
@@ -470,6 +472,8 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
     if (emailedListingIds.length > 0) {
       recentEmailedIds.set(userId, { listing_ids: emailedListingIds, timestamp: Date.now() });
       try { await markEmailSent(userId, emailedListingIds); } catch {}
+      const emailSentAt = new Date().toISOString();
+      for (const id of emailedListingIds) { slaEmailSent(id, emailSentAt); }
       const MAX_HISTORY = 100;
       if (recentEmailedIds.size > MAX_HISTORY) {
         const oldest = [...recentEmailedIds.entries()].sort((a, b) => a[1].timestamp - b[1].timestamp);
@@ -491,6 +495,8 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
         if (pushResult.sent > 0) {
           const pushedIds = alertable.map(l => l.listing_id);
           try { await markPushSent(userId, pushedIds); } catch {}
+          const webPushSentAt = new Date().toISOString();
+          for (const id of pushedIds) { slaPushSent(id, webPushSentAt); }
           totalPushesSent += pushResult.sent;
         }
       } catch (err: any) {
@@ -513,6 +519,8 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
           totalPushesSent += expoResult.sent;
           const expoPushedIds = alertable.map(l => l.listing_id);
           try { await markPushSent(userId, expoPushedIds); } catch {}
+          const expoPushSentAt = new Date().toISOString();
+          for (const id of expoPushedIds) { slaPushSent(id, expoPushSentAt); }
         }
       } catch (err: any) {
         log(`[ALERTS] Expo push error for user ${userId.substring(0, 8)}...: ${err.message}`);
@@ -527,6 +535,7 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
   return { sent, failed, pushesSent: totalPushesSent };
   } finally {
     _flushing = false;
+    recordFlushEnd();
   }
 }
 

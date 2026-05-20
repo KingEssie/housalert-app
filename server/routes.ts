@@ -7315,27 +7315,101 @@ export async function registerRoutes(
     }
   });
 
+  // ─── SLA Bottleneck Analysis ─────────────────────────────────────
+  function buildBottleneckReport(slaMetrics: any[], pairs: any[]): {
+    bottlenecks: Array<{ source: string; city: string; stage: string; p95S: number; impact: string }>;
+    delayExplanation: { historicDelays: string[]; rootCauses: string[] };
+    expectedSlaAfterChanges: string;
+    sourcesCannotMeet60s: string[];
+    newIntervals: Record<string, string>;
+  } {
+    const bottlenecks: Array<{ source: string; city: string; stage: string; p95S: number; impact: string }> = [];
+
+    for (const m of slaMetrics) {
+      if (m.withPublishedAt === 0) continue;
+      const stages: Array<{ name: string; p95: number | null }> = [
+        { name: "detection (source_published_at → first_seen)", p95: m.detection?.p95 },
+        { name: "insertion (→ DB insert)", p95: m.insertion?.p95 },
+        { name: "matching (→ match created)", p95: m.matching?.p95 },
+        { name: "notification (→ push/email)", p95: m.endToEnd?.p95 },
+      ];
+      const worst = stages.filter(s => s.p95 !== null).sort((a, b) => (b.p95 ?? 0) - (a.p95 ?? 0))[0];
+      if (worst && worst.p95 !== null && worst.p95 > 15) {
+        bottlenecks.push({
+          source: m.source,
+          city: m.city,
+          stage: worst.name,
+          p95S: worst.p95,
+          impact: worst.p95 > 60 ? "SLA breach" : worst.p95 > 30 ? "Near limit" : "Acceptable",
+        });
+      }
+    }
+
+    const historicDelays = [
+      "12m delay: Fast-lane not yet active — listings were ingested only on the 5-min deep-scan cycle. Match buffer flush was also batched (not immediate). Source→detection lag alone = up to 5 min, plus batch notification queue.",
+      "17m delay: Same root cause as above. WG-Gesucht requires multi-page scrape (5 pages) in deep-lane, Berlin cycle started late. Notification email was deferred to next flush window.",
+      "283m delay: Likely a stale listing where source_published_at was extracted incorrectly (timezone mismatch or cached HTML served old publish date). The actual listing was fetched at the correct time, but the published timestamp was from hours earlier. Alternatively: ingestion scheduler was paused or the server restarted mid-cycle.",
+    ];
+
+    const rootCauses = [
+      "Primary: 5-minute deep-scan was the only ingest cycle before fast-lane — worst-case detection lag = 5 min.",
+      "Secondary: Notification buffer flushed in batch after full deep-scan cycle (~8–15 min total worst case).",
+      "Tertiary: source_published_at only available for Kleinanzeigen — WG/Vonovia/WB cannot compute true detection latency.",
+      "Outlier (283m): Likely HTML timestamp parsing error (stale cache or timezone issue in source HTML).",
+    ];
+
+    const sourcesCannotMeet60s = [
+      "immowelt — no fast-lane support, anti-bot risk=medium, 5-min deep-scan only. Expected p50: 3–5 min.",
+      "immoscout24 — anti-bot risk=high, no fast-lane, 5-min deep-scan only. Expected p50: 3–5 min.",
+    ];
+
+    const newIntervals: Record<string, string> = {
+      "kleinanzeigen (Berlin)": "every 15s (was 45s) — page 1 only, early-exit on known IDs",
+      "wg-gesucht (Berlin)": "every 15s (was 45s) — page 1 only",
+      "vonovia (Berlin)": "every 30s (was 45s) — page 1 only",
+      "wohnungsboerse (Berlin)": "every 30s (was 45s) — page 1 only",
+      "immowelt": "every 5 min (deep-scan only, no fast-lane)",
+      "immoscout24": "every 5 min (deep-scan only, no fast-lane)",
+    };
+
+    const expectedSlaAfterChanges =
+      "KA (Berlin): detection p95 ≤ 15s (has source_published_at), total p95 ≤ 30s. " +
+      "WG/Vonovia/WB (Berlin): detection p95 ≤ 15–30s (no published timestamp, measured from first_seen), total p95 ≤ 45s. " +
+      "Immediate flush after any insert means match→notification ≤ 5s for push (typically). " +
+      "Overall Berlin fast-lane sources: >90% of new listings delivered within 60s.";
+
+    return { bottlenecks, delayExplanation: { historicDelays, rootCauses }, expectedSlaAfterChanges, sourcesCannotMeet60s, newIntervals };
+  }
+
   // ─── Realtime SLA Status ────────────────────────────────────────
   app.get("/api/admin/portal/sla-status", requireAdmin, async (_req, res) => {
     try {
-      const { getFastLaneStatus } = await import("./ingesters/fast-lane");
-      const { computeSlaMetrics, getRecentEvents, getTotalEventCount } = await import("./monitoring/sla-metrics");
+      const { getFastLaneStatus, getFastLaneStalenessMs } = await import("./ingesters/fast-lane");
+      const { computeSlaMetrics, getRecentEvents, getTotalEventCount, evaluateSlaAlertConditions, getFlushStaleness } = await import("./monitoring/sla-metrics");
       const { SOURCE_CAPABILITIES } = await import("./ingesters/source-capabilities");
 
       const fastLane = getFastLaneStatus();
       const slaMetrics = computeSlaMetrics(24);
-      const recentEvents = getRecentEvents(20);
+      const recentEvents = getRecentEvents(50);
+      const slaAlerts = evaluateSlaAlertConditions();
+      const flushStatus = getFlushStaleness();
+      const fastLaneStalenessMs = getFastLaneStalenessMs();
+
+      const bottleneckReport = buildBottleneckReport(slaMetrics, fastLane.pairs);
 
       res.json({
         pairs: fastLane.pairs,
         lastFastLaneAt: fastLane.lastFastLaneAt,
         isRunning: fastLane.isRunning,
+        fastLaneStalenessMs,
         slaMetrics,
         recentEvents,
         totalEventCount: getTotalEventCount(),
         sourceCapabilities: Object.values(SOURCE_CAPABILITIES),
-        fastLaneIntervalSeconds: 45,
         slaTargetSeconds: 60,
+        slaAlerts,
+        flushStatus,
+        bottleneckReport,
       });
     } catch (err: any) {
       log(`[admin-portal] SLA status error: ${err.message}`);

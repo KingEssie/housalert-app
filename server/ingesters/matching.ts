@@ -3,6 +3,7 @@ import { log } from "../log";
 import { trackListingSeen } from "../freshness";
 import { matchListingAgainstProfiles } from "../matching/engine";
 import { resolveCoordinates, type GeocodableFields } from "./geocoding";
+import { recordSlaEvent, updateInsertedAt, updateMatchedAt as slaUpdateMatchedAt } from "../monitoring/sla-metrics";
 
 const SUPABASE_URL = (process.env.VITE_SUPABASE_URL ?? "").replace(/\/$/, "");
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
@@ -572,7 +573,17 @@ export async function insertAndMatchListings(
     inserted++;
 
     if (row) {
+      const nowIso = new Date().toISOString();
       trackListingSeen(row.id, listing.source, listing.source_id).catch(() => {});
+      recordSlaEvent({
+        listingId: row.id,
+        source: listing.source,
+        city: listing.city,
+        sourcePublishedAt: listing.source_published_at ?? null,
+        firstSeenAt: nowIso,
+        isFastLane: false,
+      });
+      updateInsertedAt(row.id, nowIso);
       if (useClusterId) {
         assignCrossSourceCluster(row.id, listing).catch(() => {});
       }
@@ -581,6 +592,7 @@ export async function insertAndMatchListings(
       if (matchCount > 0) {
         const matchDuration = Date.now() - matchStart;
         log(`[LATENCY] insert→match for ${row.id}: ${matchDuration}ms (${matchCount} matches)`);
+        slaUpdateMatchedAt(row.id, new Date().toISOString());
       }
       totalMatches += matchCount;
     }

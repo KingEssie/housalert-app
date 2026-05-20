@@ -281,6 +281,40 @@ export async function evaluateAlertRules(
       }
     }
   } catch { }
+
+  // ─── SLA Alert Rules ────────────────────────────────────────────
+  try {
+    const { evaluateSlaAlertConditions } = await import("./sla-metrics");
+    const slaAlerts = evaluateSlaAlertConditions();
+
+    for (const a of slaAlerts) {
+      const dbKey = `${a.type}:${a.source ?? "global"}:${a.city ?? ""}`;
+      const severity = a.type === "sla_p95_exceeded" ? "critical" : "warning";
+      const title =
+        a.type === "sla_p95_exceeded" ? `SLA breach: ${a.source}/${a.city} — end-to-end p95 > 60s` :
+        a.type === "match_to_notif_p95_exceeded" ? `Slow notification: ${a.source}/${a.city} — match→notif p95 > 30s` :
+        a.type === "fast_lane_stale" ? "Fast-lane stale — no run in >2 minutes" :
+        a.type === "flush_stuck" ? "Alert flush stuck — in progress >2 minutes" :
+        a.type;
+      const { isNew, alert: dbAlert } = await upsertAlert(
+        dbKey, a.type as any, severity, title, a.message,
+        a.source ?? null, a.city ?? null, {}
+      );
+      if (isNew && dbAlert) await sendAdminAlertEmail(dbAlert);
+    }
+
+    const activeTypes = new Set(slaAlerts.map(a => `${a.type}:${a.source ?? "global"}:${a.city ?? ""}`));
+    const slaAlertTypes = ["sla_p95_exceeded", "match_to_notif_p95_exceeded", "fast_lane_stale", "flush_stuck"];
+    const openSlaAlerts = await pool.query(
+      `SELECT alert_key FROM admin_alerts WHERE alert_type = ANY($1) AND status = 'open'`,
+      [slaAlertTypes]
+    );
+    for (const row of openSlaAlerts.rows) {
+      if (!activeTypes.has(row.alert_key)) {
+        await resolveAlert(row.alert_key, "SLA condition resolved");
+      }
+    }
+  } catch { }
 }
 
 export async function getOpenAlerts(): Promise<AdminAlert[]> {
