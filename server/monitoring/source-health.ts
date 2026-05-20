@@ -79,17 +79,17 @@ export async function upsertSourceHealth(report: IngestionReport, runStartedAt: 
           (source_name, city, last_started_at, last_success_at, last_failure_at,
            duration_ms, found_count, inserted_count, duplicate_count, error_count,
            last_error, status, consecutive_failures, consecutive_zeros, total_runs, updated_at)
-         VALUES ($1, $2, $3,
-           CASE WHEN $4 THEN $3 ELSE NULL END,
-           CASE WHEN NOT $4 THEN $3 ELSE NULL END,
+         VALUES ($1, $2, $3::TIMESTAMPTZ,
+           CASE WHEN $4 THEN $3::TIMESTAMPTZ ELSE NULL END,
+           CASE WHEN NOT $4 THEN $3::TIMESTAMPTZ ELSE NULL END,
            $5, $6, $7, $8, $9, $10, $11,
            CASE WHEN $4 THEN 0 ELSE 1 END,
            CASE WHEN $12 THEN 1 ELSE 0 END,
            1, NOW())
          ON CONFLICT (source_name, city) DO UPDATE SET
-           last_started_at   = $3,
-           last_success_at   = CASE WHEN $4 THEN $3 ELSE source_health.last_success_at END,
-           last_failure_at   = CASE WHEN NOT $4 THEN $3 ELSE source_health.last_failure_at END,
+           last_started_at   = $3::TIMESTAMPTZ,
+           last_success_at   = CASE WHEN $4 THEN $3::TIMESTAMPTZ ELSE source_health.last_success_at END,
+           last_failure_at   = CASE WHEN NOT $4 THEN $3::TIMESTAMPTZ ELSE source_health.last_failure_at END,
            duration_ms       = $5,
            found_count       = $6,
            inserted_count    = $7,

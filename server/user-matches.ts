@@ -94,6 +94,45 @@ export async function markPushSent(userId: string, listingIds: string[]): Promis
   }
 }
 
+export async function markSuppressed(userId: string, listingIds: string[], reason: string): Promise<void> {
+  if (!(await ensureTable()) || listingIds.length === 0) return;
+  try {
+    await pool.query(
+      `UPDATE user_matches SET suppression_reason = $3
+       WHERE user_id = $1 AND listing_id = ANY($2) AND suppression_reason IS NULL`,
+      [userId, listingIds, reason]
+    );
+  } catch (err: any) {
+    log(`[user-matches] markSuppressed error: ${err.message}`);
+  }
+}
+
+export async function markBuffered(userId: string, listingIds: string[]): Promise<void> {
+  if (!(await ensureTable()) || listingIds.length === 0) return;
+  try {
+    await pool.query(
+      `UPDATE user_matches SET buffered_at = NOW()
+       WHERE user_id = $1 AND listing_id = ANY($2) AND buffered_at IS NULL`,
+      [userId, listingIds]
+    );
+  } catch (err: any) {
+    log(`[user-matches] markBuffered error: ${err.message}`);
+  }
+}
+
+export async function markFlushAttempted(userId: string, listingIds: string[]): Promise<void> {
+  if (!(await ensureTable()) || listingIds.length === 0) return;
+  try {
+    await pool.query(
+      `UPDATE user_matches SET flush_attempted_at = NOW()
+       WHERE user_id = $1 AND listing_id = ANY($2) AND flush_attempted_at IS NULL`,
+      [userId, listingIds]
+    );
+  } catch (err: any) {
+    log(`[user-matches] markFlushAttempted error: ${err.message}`);
+  }
+}
+
 export async function markViewed(userId: string, listingIds: string[]): Promise<void> {
   if (!(await ensureTable()) || listingIds.length === 0) return;
   try {

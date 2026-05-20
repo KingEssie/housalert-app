@@ -4,7 +4,7 @@ import { getSubscriptionStatus } from "../subscriptions";
 import { sendMatchPushNotifications, type PushMatchListing } from "./push";
 import { sendExpoMatchPush, type ExpoMatchListing } from "./expo-push";
 import { batchedIn } from "../freshness";
-import { markEmailSent, markPushSent, getUndeliveredMatches } from "../user-matches";
+import { markEmailSent, markPushSent, markSuppressed, markFlushAttempted, getUndeliveredMatches } from "../user-matches";
 import { pool as pgPool } from "../pg-pool";
 import { getOwnerBuddyRelation, type BuddyRelation } from "../buddy";
 import { getSupabaseAdmin } from "../supabase-admin";
@@ -323,6 +323,9 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
 
     if (!hasAccess) {
       skippedNoSub++;
+      const noSubIds = listings.map(l => l.listing_id);
+      markSuppressed(userId, noSubIds, "no_subscription").catch(() => {});
+      markFlushAttempted(userId, noSubIds).catch(() => {});
       log(`[ALERTS] Skipping user ${userId.substring(0, 8)}... — no active subscription (status=${subStatus.status})`);
       continue;
     }
@@ -350,6 +353,8 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
       const skipIds = listings.map(l => l.listing_id);
       try { await markEmailSent(userId, skipIds); } catch {}
       try { await markPushSent(userId, skipIds); } catch {}
+      markSuppressed(userId, skipIds, "all_channels_disabled").catch(() => {});
+      markFlushAttempted(userId, skipIds).catch(() => {});
       log(`[ALERTS] Skipping user ${userId.substring(0, 8)}... (email_enabled=false, push_enabled=false) — marked ${skipIds.length} as sent`);
       continue;
     }
@@ -396,16 +401,21 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
       log(`[ALERTS] User ${userId.substring(0, 8)}...: ${staleGateIds.length} listing(s) suppressed (source_published_at > 2h) — visible in app, no email/push`);
       try { await markEmailSent(userId, staleGateIds); } catch {}
       try { await markPushSent(userId, staleGateIds); } catch {}
+      markSuppressed(userId, staleGateIds, "stale_listing_gt_2h").catch(() => {});
     }
 
     const emailedListingIds: string[] = [];
     const allVerifiedIds = alertable.map(l => l.listing_id);
 
+    markFlushAttempted(userId, allVerifiedIds).catch(() => {});
+
     if (!emailEnabled) {
       try { await markEmailSent(userId, allVerifiedIds); } catch {}
+      markSuppressed(userId, allVerifiedIds, "email_disabled").catch(() => {});
     }
     if (!pushEnabled) {
       try { await markPushSent(userId, allVerifiedIds); } catch {}
+      markSuppressed(userId, allVerifiedIds, "push_disabled").catch(() => {});
     }
 
     if (emailEnabled) {
@@ -413,6 +423,7 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
       const overflowIds = alertable.slice(MAX_LISTINGS_PER_EMAIL).map(l => l.listing_id);
       if (overflowIds.length > 0) {
         try { await markEmailSent(userId, overflowIds); } catch {}
+        markSuppressed(userId, overflowIds, "email_cap_exceeded").catch(() => {});
         log(`[ALERTS] User ${userId.substring(0, 8)}...: ${overflowIds.length} overflow listings beyond cap=${MAX_LISTINGS_PER_EMAIL} — marked email_sent (visible in app)`);
       }
       await enrichMissingImages(capped, supabase);

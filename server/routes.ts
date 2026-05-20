@@ -8655,6 +8655,63 @@ export async function registerRoutes(
     }
   });
 
+  // ─── Notification Trace ─────────────────────────────────────────────────────
+
+  app.get("/api/admin/portal/notification-trace", requireAdmin, async (req, res) => {
+    try {
+      const email = (req.query.email as string || "").trim().toLowerCase();
+      const userId = (req.query.user_id as string || "").trim();
+      const limit = Math.min(parseInt(req.query.limit as string || "100", 10), 500);
+      if (!email && !userId) return res.status(400).json({ error: "Provide ?email= or ?user_id=" });
+
+      const adminSb = getSupabaseAdmin();
+      let resolvedUserId = userId;
+      let resolvedEmail = email;
+
+      if (email && !resolvedUserId) {
+        const { data: found } = await adminSb.auth.admin.listUsers();
+        const match = (found?.users || []).find((u: any) => u.email?.toLowerCase() === email);
+        if (!match) return res.status(404).json({ error: `No user found with email: ${email}` });
+        resolvedUserId = match.id;
+        resolvedEmail = match.email || email;
+      } else if (resolvedUserId && !resolvedEmail) {
+        const { data: u } = await adminSb.auth.admin.getUserById(resolvedUserId);
+        resolvedEmail = u?.user?.email || resolvedUserId;
+      }
+
+      const [notifRes, subRes, matchRows] = await Promise.all([
+        supabase.from("user_notification_settings").select("email_enabled, push_enabled").eq("user_id", resolvedUserId).maybeSingle(),
+        supabase.from("subscriptions").select("status, plan, current_period_ends_at").eq("user_id", resolvedUserId).maybeSingle(),
+        pgPool.query(
+          `SELECT listing_id, listing_title, listing_source, listing_city, listing_price,
+                  matched_at, email_sent, email_sent_at, push_sent, push_sent_at,
+                  visible_in_app, suppression_reason, buffered_at, flush_attempted_at, provider_error
+           FROM user_matches
+           WHERE user_id = $1
+           ORDER BY matched_at DESC
+           LIMIT $2`,
+          [resolvedUserId, limit]
+        ),
+      ]);
+
+      const matches = matchRows.rows;
+      const suppressed   = matches.filter((m: any) => m.suppression_reason).length;
+      const emailSent    = matches.filter((m: any) => m.email_sent && !m.suppression_reason?.includes("email")).length;
+      const pushSent     = matches.filter((m: any) => m.push_sent  && !m.suppression_reason?.includes("push") && m.suppression_reason !== "all_channels_disabled" && m.suppression_reason !== "no_subscription" && m.suppression_reason !== "stale_listing_gt_2h").length;
+
+      res.json({
+        user: { id: resolvedUserId, email: resolvedEmail },
+        notification_settings: notifRes.data || null,
+        subscription: subRes.data || null,
+        summary: { total: matches.length, suppressed, email_sent: emailSent, push_sent: pushSent },
+        matches,
+      });
+    } catch (err: any) {
+      log(`[admin] notification-trace error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   // ─── Pipeline Monitoring ────────────────────────────────────────────────────
 
   app.get("/api/admin/portal/source-health", requireAdmin, async (_req, res) => {

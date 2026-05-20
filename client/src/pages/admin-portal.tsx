@@ -19,7 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
 import { resetPushBrowserSide } from "@/lib/push";
 
-type TabId = "dashboard" | "listings" | "images" | "sources" | "users" | "subscriptions" | "alerts" | "settings" | "system" | "support" | "realtime-sla";
+type TabId = "dashboard" | "listings" | "images" | "sources" | "users" | "subscriptions" | "alerts" | "settings" | "system" | "support" | "realtime-sla" | "notifications";
 
 async function adminFetch(path: string, options?: RequestInit) {
   const { data: { session } } = await supabase.auth.getSession();
@@ -3142,6 +3142,149 @@ function SupportTab() {
   );
 }
 
+function NotificationsTab() {
+  const [query, setQuery] = useState("");
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  function search() {
+    if (!query.trim()) return;
+    setLoading(true);
+    setError(null);
+    setData(null);
+    adminFetch(`/api/admin/portal/notification-trace?email=${encodeURIComponent(query.trim())}`)
+      .then(d => setData(d))
+      .catch(e => setError(e.message))
+      .finally(() => setLoading(false));
+  }
+
+  function suppressionLabel(reason: string | null) {
+    if (!reason) return null;
+    const labels: Record<string, string> = {
+      "no_subscription":       "No sub",
+      "all_channels_disabled": "All off",
+      "email_disabled":        "Email off",
+      "push_disabled":         "Push off",
+      "stale_listing_gt_2h":   "Stale >2h",
+      "email_cap_exceeded":    "Cap exceed",
+    };
+    return labels[reason] || reason;
+  }
+
+  function suppressionColor(reason: string | null) {
+    if (!reason) return "#22c55e";
+    if (reason === "push_disabled" || reason === "email_disabled") return "#f59e0b";
+    return "#ef4444";
+  }
+
+  return (
+    <div className="space-y-6">
+      <SectionHeader title="Notification Trace" />
+      <div className="flex gap-2">
+        <input
+          type="text"
+          className="flex-1 px-3 py-2 text-[13px] rounded-[10px] border"
+          style={{ borderColor: "#eeebf3", outline: "none" }}
+          placeholder="User email address…"
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && search()}
+          data-testid="input-notif-email"
+        />
+        <Button size="sm" onClick={search} disabled={loading} data-testid="button-notif-search">
+          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+        </Button>
+      </div>
+
+      {error && (
+        <div className="rounded-[12px] p-4 text-[13px]" style={{ backgroundColor: "#fef2f2", color: "#dc2626" }}>
+          {error}
+        </div>
+      )}
+
+      {data && (
+        <div className="space-y-5">
+          {/* User + settings summary */}
+          <div className="rounded-[14px] p-4 space-y-3" style={{ border: "1px solid #eeebf3", backgroundColor: "#fafafa" }}>
+            <div className="flex items-center gap-3 flex-wrap">
+              <span className="text-[13px] font-semibold" style={{ color: "#111" }}>{data.user.email}</span>
+              <Badge style={{ backgroundColor: data.subscription?.status === "active" ? "#dcfce7" : "#fee2e2", color: data.subscription?.status === "active" ? "#16a34a" : "#dc2626" }}>
+                {data.subscription?.status || "no sub"} · {data.subscription?.plan || "–"}
+              </Badge>
+            </div>
+            <div className="flex gap-4 flex-wrap text-[12px]" style={{ color: "#666" }}>
+              <span>Email: <b style={{ color: data.notification_settings?.email_enabled ? "#16a34a" : "#dc2626" }}>{data.notification_settings?.email_enabled ? "on" : "off"}</b></span>
+              <span>Push: <b style={{ color: data.notification_settings?.push_enabled ? "#16a34a" : "#dc2626" }}>{data.notification_settings?.push_enabled ? "on" : "off"}</b></span>
+            </div>
+            <div className="flex gap-6 flex-wrap">
+              {[
+                { label: "Matches", value: data.summary.total },
+                { label: "Emails sent", value: data.summary.email_sent },
+                { label: "Pushes sent", value: data.summary.push_sent },
+                { label: "Suppressed", value: data.summary.suppressed },
+              ].map(m => (
+                <div key={m.label} className="text-center">
+                  <div className="text-[22px] font-bold" style={{ color: "#111" }}>{m.value}</div>
+                  <div className="text-[11px]" style={{ color: "#888" }}>{m.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Match table */}
+          <div className="rounded-[14px] overflow-hidden" style={{ border: "1px solid #eeebf3" }}>
+            <div className="overflow-x-auto">
+              <table className="w-full text-[12px]">
+                <thead>
+                  <tr style={{ backgroundColor: "#f9f8fc", borderBottom: "1px solid #eeebf3" }}>
+                    {["Listing", "Source", "Matched at", "Email", "Push", "Suppression"].map(h => (
+                      <th key={h} className="text-left px-3 py-2.5 font-semibold" style={{ color: "#666" }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.matches.map((m: any, i: number) => (
+                    <tr key={m.listing_id} style={{ borderBottom: i < data.matches.length - 1 ? "1px solid #f0eef6" : "none" }}>
+                      <td className="px-3 py-2.5 max-w-[220px]">
+                        <div className="font-medium truncate" style={{ color: "#111" }} title={m.listing_title}>{m.listing_title || "–"}</div>
+                        <div style={{ color: "#999" }}>{m.listing_city || ""}{m.listing_price ? ` · €${m.listing_price}` : ""}</div>
+                      </td>
+                      <td className="px-3 py-2.5" style={{ color: "#666" }}>{m.listing_source || "–"}</td>
+                      <td className="px-3 py-2.5 whitespace-nowrap" style={{ color: "#666" }}>
+                        {m.matched_at ? new Date(m.matched_at).toLocaleString("de-DE", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }) : "–"}
+                      </td>
+                      <td className="px-3 py-2.5">
+                        <span style={{ color: m.email_sent ? "#16a34a" : "#dc2626" }}>{m.email_sent ? "✓" : "✗"}</span>
+                        {m.email_sent_at && <span className="ml-1" style={{ color: "#999", fontSize: "11px" }}>{new Date(m.email_sent_at).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</span>}
+                      </td>
+                      <td className="px-3 py-2.5">
+                        <span style={{ color: m.push_sent ? "#16a34a" : "#dc2626" }}>{m.push_sent ? "✓" : "✗"}</span>
+                      </td>
+                      <td className="px-3 py-2.5">
+                        {m.suppression_reason ? (
+                          <span className="px-1.5 py-0.5 rounded text-[11px] font-medium" style={{ backgroundColor: suppressionColor(m.suppression_reason) + "22", color: suppressionColor(m.suppression_reason) }}>
+                            {suppressionLabel(m.suppression_reason)}
+                          </span>
+                        ) : (
+                          <span style={{ color: "#22c55e" }}>sent</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                  {data.matches.length === 0 && (
+                    <tr><td colSpan={6} className="px-3 py-8 text-center" style={{ color: "#999" }}>No matches found</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function RealtimeSlaTab() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -3589,6 +3732,7 @@ const NAV_GROUPS: { label: string; items: { id: TabId; label: string; icon: any 
     items: [
       { id: "users",         label: "Users",         icon: Users },
       { id: "subscriptions", label: "Subscriptions", icon: CreditCard },
+      { id: "notifications", label: "Notifications", icon: Mail },
       { id: "support",       label: "Support",       icon: MessageCircle },
     ],
   },
@@ -3780,6 +3924,7 @@ export default function AdminPortalPage() {
           {activeTab === "system"        && <SystemTab />}
           {activeTab === "support"       && <SupportTab />}
           {activeTab === "realtime-sla"  && <RealtimeSlaTab />}
+          {activeTab === "notifications" && <NotificationsTab />}
         </main>
       </div>
     </div>
