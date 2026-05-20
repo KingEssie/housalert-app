@@ -148,6 +148,8 @@ export interface BufferedMatch {
   cluster_id?: string | null;
   street?: string | null;
   district?: string | null;
+  /** ISO timestamp of when the listing was posted on the source site (null = unknown). */
+  source_published_at?: string | null;
 }
 
 interface UserBuffer {
@@ -375,8 +377,27 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
 
     log(`[ALERTS] User ${userId.substring(0, 8)}...: raw=${listings.length} → deduped=${deduped.length} → app-visible=${verified.length}`);
 
+    // Freshness gate: suppress email/push for listings we know are older than 2h on the source.
+    // If source_published_at is null we allow the alert (age unknown — benefit of the doubt).
+    const FRESHNESS_GATE_MS = 2 * 60 * 60 * 1000;
+    const gateNow = Date.now();
+    const alertable: BufferedMatch[] = [];
+    const staleGateIds: string[] = [];
+    for (const l of verified) {
+      if (l.source_published_at && (gateNow - new Date(l.source_published_at).getTime()) > FRESHNESS_GATE_MS) {
+        staleGateIds.push(l.listing_id);
+      } else {
+        alertable.push(l);
+      }
+    }
+    if (staleGateIds.length > 0) {
+      log(`[ALERTS] User ${userId.substring(0, 8)}...: ${staleGateIds.length} listing(s) suppressed (source_published_at > 2h) — visible in app, no email/push`);
+      try { await markEmailSent(userId, staleGateIds); } catch {}
+      try { await markPushSent(userId, staleGateIds); } catch {}
+    }
+
     const emailedListingIds: string[] = [];
-    const allVerifiedIds = verified.map(l => l.listing_id);
+    const allVerifiedIds = alertable.map(l => l.listing_id);
 
     if (!emailEnabled) {
       try { await markEmailSent(userId, allVerifiedIds); } catch {}
@@ -386,8 +407,8 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
     }
 
     if (emailEnabled) {
-      const capped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
-      const overflowIds = verified.slice(MAX_LISTINGS_PER_EMAIL).map(l => l.listing_id);
+      const capped = alertable.slice(0, MAX_LISTINGS_PER_EMAIL);
+      const overflowIds = alertable.slice(MAX_LISTINGS_PER_EMAIL).map(l => l.listing_id);
       if (overflowIds.length > 0) {
         try { await markEmailSent(userId, overflowIds); } catch {}
         log(`[ALERTS] User ${userId.substring(0, 8)}...: ${overflowIds.length} overflow listings beyond cap=${MAX_LISTINGS_PER_EMAIL} — marked email_sent (visible in app)`);
@@ -400,7 +421,7 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
         if (success) {
           sent++;
           emailedListingIds.push(...capped.map(l => l.listing_id));
-          log(`[ALERTS] Sent digest to ${email} with ${capped.length} listings lang=${userLang}${verified.length > MAX_LISTINGS_PER_EMAIL ? ` (capped from ${verified.length})` : ""}`);
+          log(`[ALERTS] Sent digest to ${email} with ${capped.length} listings lang=${userLang}${alertable.length > MAX_LISTINGS_PER_EMAIL ? ` (capped from ${alertable.length})` : ""}`);
         } else {
           failed++;
           log(`[ALERTS] Failed digest to ${email} lang=${userLang}`);
@@ -417,19 +438,19 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
         const buddyLang = await getUserLanguage(v2Buddy.buddy_user_id);
         log(`[BUDDY V2] flush: buddyUserId=${v2Buddy.buddy_user_id.substring(0, 8)}... buddyLang=${buddyLang} ownerLang=${userLang}`);
         if (v2Buddy.push_notifications_enabled) {
-          const pushListings: PushMatchListing[] = verified.map((l) => ({
+          const pushListings: PushMatchListing[] = alertable.map((l) => ({
             listing_id: l.listing_id,
             city: l.city,
           }));
           try {
-            log(`[NOTIF] v2-buddy webpush buddyUserId=${v2Buddy.buddy_user_id.substring(0, 8)}... count=${verified.length} path=${source} lang=${buddyLang}`);
+            log(`[NOTIF] v2-buddy webpush buddyUserId=${v2Buddy.buddy_user_id.substring(0, 8)}... count=${alertable.length} path=${source} lang=${buddyLang}`);
             await sendMatchPushNotifications(v2Buddy.buddy_user_id, pushListings, supabase, buddyLang);
           } catch (e: any) {
             log(`[BUDDY V2] flush push error for buddy ${v2Buddy.buddy_user_id.substring(0, 8)}...: ${e.message}`);
           }
         }
         if (v2Buddy.email_notifications_enabled) {
-          const buddyCapped = verified.slice(0, MAX_LISTINGS_PER_EMAIL);
+          const buddyCapped = alertable.slice(0, MAX_LISTINGS_PER_EMAIL);
           try {
             const adminClient = getSupabaseAdmin();
             const { data: { user: buddyAuthUser } } = await adminClient.auth.admin.getUserById(v2Buddy.buddy_user_id);
@@ -461,14 +482,14 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
     if (pushEnabled) {
       const pushStart = Date.now();
       try {
-        log(`[NOTIF] ${source} webpush userId=${userId.substring(0, 8)}... lang=${userLang} count=${verified.length} path=${source}`);
-        const pushListings: PushMatchListing[] = verified.map((l) => ({
+        log(`[NOTIF] ${source} webpush userId=${userId.substring(0, 8)}... lang=${userLang} count=${alertable.length} path=${source}`);
+        const pushListings: PushMatchListing[] = alertable.map((l) => ({
           listing_id: l.listing_id,
           city: l.city,
         }));
         const pushResult = await sendMatchPushNotifications(userId, pushListings, supabase, userLang);
         if (pushResult.sent > 0) {
-          const pushedIds = verified.map(l => l.listing_id);
+          const pushedIds = alertable.map(l => l.listing_id);
           try { await markPushSent(userId, pushedIds); } catch {}
           totalPushesSent += pushResult.sent;
         }
@@ -477,8 +498,8 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
       }
 
       try {
-        log(`[NOTIF] ${source} expo userId=${userId.substring(0, 8)}... lang=${userLang} count=${verified.length} path=${source}`);
-        const expoListings: ExpoMatchListing[] = verified.map((l) => ({
+        log(`[NOTIF] ${source} expo userId=${userId.substring(0, 8)}... lang=${userLang} count=${alertable.length} path=${source}`);
+        const expoListings: ExpoMatchListing[] = alertable.map((l) => ({
           listing_id: l.listing_id,
           title: l.title,
           city: l.city,
@@ -490,7 +511,7 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
         const expoResult = await sendExpoMatchPush(userId, expoListings, userLang);
         if (expoResult.sent > 0) {
           totalPushesSent += expoResult.sent;
-          const expoPushedIds = verified.map(l => l.listing_id);
+          const expoPushedIds = alertable.map(l => l.listing_id);
           try { await markPushSent(userId, expoPushedIds); } catch {}
         }
       } catch (err: any) {
@@ -498,7 +519,7 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
       }
 
       const pushDuration = Date.now() - pushStart;
-      log(`[LATENCY] match→push dispatch for user ${userId.substring(0, 8)}...: ${pushDuration}ms (${verified.length} listings)`);
+      log(`[LATENCY] match→push dispatch for user ${userId.substring(0, 8)}...: ${pushDuration}ms (${alertable.length} listings)`);
     }
   }
 

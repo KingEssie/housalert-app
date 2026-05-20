@@ -694,7 +694,7 @@ export async function registerRoutes(
       const [listingsData, freshnessMap, profilesData] = await Promise.all([
         batchedIn<any>(
           "listings", "id", allListingIds,
-          "id, title, street, price, size_m2, bedrooms, city, source, url, image_url, furnished, pets_allowed, district",
+          "id, title, street, price, size_m2, bedrooms, city, source, url, image_url, furnished, pets_allowed, district, source_published_at",
           (q: any) => q.not("title", "is", null)
         ),
         getListingFreshness(allListingIds),
@@ -717,9 +717,9 @@ export async function registerRoutes(
       const validResults = validMatches.map((m: any) => {
         const l = listingMap[m.listing_id];
         const firstSeenAt = freshnessMap[m.listing_id]?.first_seen_at || m.created_at;
-        const publishedAt = l?.published_at ?? null;
         const sourcePublishedAt = l?.source_published_at ?? null;
-        const displayTime = publishedAt || sourcePublishedAt || firstSeenAt;
+        const publishedAt = l?.published_at ?? null;
+        const displayTime = sourcePublishedAt || publishedAt || firstSeenAt;
         const profile = profileMap[m.search_profile_id];
         let match_score = null;
         let match_label = null;
@@ -1846,7 +1846,7 @@ export async function registerRoutes(
       const [listingsData, freshnessMap, profilesData] = await Promise.all([
         batchedIn<any>(
           "listings", "id", allListingIds,
-          "id, title, street, price, size_m2, bedrooms, city, source, url, image_url, furnished, pets_allowed, district",
+          "id, title, street, price, size_m2, bedrooms, city, source, url, image_url, furnished, pets_allowed, district, source_published_at",
           (q: any) => q.not("title", "is", null)
         ),
         getListingFreshness(allListingIds),
@@ -1882,9 +1882,9 @@ export async function registerRoutes(
       const validResults = validMatches.map((m: any) => {
         const l = listingMap[m.listing_id];
         const firstSeenAt = freshnessMap[m.listing_id]?.first_seen_at || m.created_at;
-        const publishedAt = l?.published_at ?? null;
         const sourcePublishedAt = l?.source_published_at ?? null;
-        const displayTime = publishedAt || sourcePublishedAt || firstSeenAt;
+        const publishedAt = l?.published_at ?? null;
+        const displayTime = sourcePublishedAt || publishedAt || firstSeenAt;
         const profile = profileMap[m.search_profile_id];
 
         let match_score = null;

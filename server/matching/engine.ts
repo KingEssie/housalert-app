@@ -65,13 +65,20 @@ interface DbListing {
   coordinate_source?: string | null;
   coordinate_precision?: string | null;
   created_at?: string | null;
+  source_published_at?: string | null;
 }
-
-
 
 let hasFurnishedColumn: boolean | null = null;
 let hasDistrictColumn: boolean | null = null;
 let hasAdvancedListingColumns: boolean | null = null;
+let hasSrcPublishedAtColumn: boolean | null = null;
+
+async function checkSrcPublishedAtColumn(): Promise<boolean> {
+  if (hasSrcPublishedAtColumn !== null) return hasSrcPublishedAtColumn;
+  const { error } = await supabase.from("listings").select("source_published_at").limit(1);
+  hasSrcPublishedAtColumn = !error;
+  return hasSrcPublishedAtColumn;
+}
 
 async function checkFurnishedColumn(): Promise<boolean> {
   if (hasFurnishedColumn !== null) return hasFurnishedColumn;
@@ -100,6 +107,7 @@ function getListingSelect(): string {
   if (hasFurnishedColumn !== false) parts.push("furnished");
   if (hasDistrictColumn !== false) parts.push("district, street, postcode");
   if (hasAdvancedListingColumns !== false) parts.push("pets_allowed, balcony, elevator, garden, bath, roof_terrace, parking, energy_label, property_type, latitude, longitude, extra_features, target_categories");
+  if (hasSrcPublishedAtColumn !== false) parts.push("source_published_at");
   return parts.join(", ");
 }
 
@@ -968,6 +976,7 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
         cluster_id: (l as any).listing_cluster_id ?? null,
         street: l.street ?? null,
         district: l.district ?? null,
+        source_published_at: l.source_published_at ?? null,
       });
     }
   }
@@ -1120,6 +1129,7 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
               cluster_id: (l as any).listing_cluster_id ?? null,
               street: l.street ?? null,
               district: l.district ?? null,
+              source_published_at: (l as any).source_published_at ?? null,
             });
           }
         }

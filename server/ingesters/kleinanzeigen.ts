@@ -297,6 +297,66 @@ function extractDistrict(locationText: string, title: string, city: string): str
   return null;
 }
 
+/**
+ * Approximate Berlin timezone offset in milliseconds.
+ * Germany uses CET (UTC+1) in winter and CEST (UTC+2) in summer.
+ * Summer = last Sunday of March → last Sunday of October.
+ */
+function getBerlinOffsetMs(): number {
+  const now = new Date();
+  const y = now.getUTCFullYear();
+  const lastSundayBefore = (month: number) => {
+    const d = new Date(Date.UTC(y, month, 1));
+    d.setUTCDate(d.getUTCDate() - (d.getUTCDay() || 7));
+    return d;
+  };
+  const isSummer = now >= lastSundayBefore(3) && now < lastSundayBefore(10);
+  return isSummer ? 2 * 3_600_000 : 3_600_000;
+}
+
+/**
+ * Parse Kleinanzeigen German date text into an ISO timestamp.
+ * Supported formats: "Heute, 15:32", "Gestern, 20:00", "30.04.2026",
+ *                    "vor N Stunden", "vor N Minuten".
+ * Returns null when the format is unrecognised.
+ */
+function parseKADate(text: string): string | null {
+  const t = text.trim();
+  if (!t) return null;
+  const now = new Date();
+  const offset = getBerlinOffsetMs();
+
+  const todayM = t.match(/^Heute,?\s*(\d{1,2}):(\d{2})/i);
+  if (todayM) {
+    const h = parseInt(todayM[1], 10);
+    const m = parseInt(todayM[2], 10);
+    const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), h, m) - offset);
+    if (d.getTime() > now.getTime()) d.setUTCDate(d.getUTCDate() - 1);
+    return d.toISOString();
+  }
+
+  const yestM = t.match(/^Gestern,?\s*(\d{1,2}):(\d{2})/i);
+  if (yestM) {
+    const h = parseInt(yestM[1], 10);
+    const m = parseInt(yestM[2], 10);
+    const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), h, m) - offset - 86_400_000);
+    return d.toISOString();
+  }
+
+  const dateM = t.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})/);
+  if (dateM) {
+    return new Date(Date.UTC(parseInt(dateM[3], 10), parseInt(dateM[2], 10) - 1, parseInt(dateM[1], 10))).toISOString();
+  }
+
+  const hoursM = t.match(/^vor\s*(\d+)\s*Stunden?/i);
+  if (hoursM) return new Date(now.getTime() - parseInt(hoursM[1], 10) * 3_600_000).toISOString();
+
+  const minutesM = t.match(/^vor\s*(\d+)\s*Minuten?/i);
+  if (minutesM) return new Date(now.getTime() - parseInt(minutesM[1], 10) * 60_000).toISOString();
+
+  return null;
+}
+
 function normalizeImageUrl(raw: string | null | undefined): string | null {
   if (!raw) return null;
   const t = raw.trim();
@@ -367,6 +427,10 @@ function parseListingCard($: cheerio.CheerioAPI, card: cheerio.Element, city: st
   const district    = extractDistrict(locationText, title, city);
   const postcode    = extractPostcodeFromText(locationText) || extractPostcodeFromText(title) || null;
 
+  const dateEl = $card.find(".aditem-main--top--right").first();
+  const dateText = dateEl.text().trim();
+  const sourcePublishedAt = dateText ? parseKADate(dateText) : null;
+
   const imageUrl = extractImage($card, $);
 
   const targetCategories = features.property_type ? [features.property_type] : null;
@@ -396,6 +460,7 @@ function parseListingCard($: cheerio.CheerioAPI, card: cheerio.Element, city: st
     property_type: features.property_type,
     district,
     postcode,
+    source_published_at: sourcePublishedAt,
     target_categories: targetCategories,
     extra_features: extraFeatures.length > 0 ? extraFeatures : null,
   };

@@ -45,6 +45,8 @@ export interface ParsedListing {
   coordinate_source?: string | null;
   coordinate_precision?: string | null;
   listing_cluster_id?: string | null;
+  /** ISO timestamp of when the listing was posted on the source site (if extractable). */
+  source_published_at?: string | null;
 }
 
 interface DbListing {
@@ -135,6 +137,7 @@ async function checkCoordMetadataColumns(): Promise<boolean> {
 let hasClusterIdColumn: boolean | null = null;
 let hasPostcodeColumn: boolean | null = null;
 let hasStreetColumn: boolean | null = null;
+let hasSrcPublishedAtColumn: boolean | null = null;
 
 async function checkClusterIdColumn(): Promise<boolean> {
   if (hasClusterIdColumn !== null) return hasClusterIdColumn;
@@ -158,6 +161,16 @@ async function checkStreetColumn(): Promise<boolean> {
   const { error } = await supabase.from("listings").select("street").limit(1);
   hasStreetColumn = !error;
   return hasStreetColumn;
+}
+
+async function checkSrcPublishedAtColumn(): Promise<boolean> {
+  if (hasSrcPublishedAtColumn !== null) return hasSrcPublishedAtColumn;
+  const { error } = await supabase.from("listings").select("source_published_at").limit(1);
+  hasSrcPublishedAtColumn = !error;
+  if (!hasSrcPublishedAtColumn) {
+    log("source_published_at column not found — run PENDING_RUN_IN_SUPABASE.sql to enable source timestamp tracking");
+  }
+  return hasSrcPublishedAtColumn;
 }
 
 /**
@@ -326,9 +339,10 @@ export async function insertAndMatchListings(
   const useDistrict   = await checkDistrictColumn();
   const useAdvanced   = await checkAdvancedColumns();
   const useCoordMeta  = await checkCoordMetadataColumns();
-  const useClusterId  = await checkClusterIdColumn();
-  const usePostcode   = await checkPostcodeColumn();
-  const useStreet     = await checkStreetColumn();
+  const useClusterId        = await checkClusterIdColumn();
+  const usePostcode         = await checkPostcodeColumn();
+  const useStreet           = await checkStreetColumn();
+  const useSrcPublishedAt   = await checkSrcPublishedAtColumn();
 
   let inserted = 0;
   let duplicates = 0;
@@ -462,6 +476,9 @@ export async function insertAndMatchListings(
             }
           }
         }
+        if (useSrcPublishedAt && listing.source_published_at != null) {
+          updateData.source_published_at = listing.source_published_at;
+        }
         if (Object.keys(updateData).length > 0) {
           supabase.from("listings").update(updateData).eq("id", duplicateId).then(() => {}).catch(() => {});
         }
@@ -517,6 +534,9 @@ export async function insertAndMatchListings(
     }
     if (useStreet && listing.street != null) {
       insertData.street = listing.street;
+    }
+    if (useSrcPublishedAt && listing.source_published_at != null) {
+      insertData.source_published_at = listing.source_published_at;
     }
 
     const { data: row, error: insertErr } = await supabase
