@@ -7315,6 +7315,34 @@ export async function registerRoutes(
     }
   });
 
+  // ─── Realtime SLA Status ────────────────────────────────────────
+  app.get("/api/admin/portal/sla-status", requireAdmin, async (_req, res) => {
+    try {
+      const { getFastLaneStatus } = await import("./ingesters/fast-lane");
+      const { computeSlaMetrics, getRecentEvents, getTotalEventCount } = await import("./monitoring/sla-metrics");
+      const { SOURCE_CAPABILITIES } = await import("./ingesters/source-capabilities");
+
+      const fastLane = getFastLaneStatus();
+      const slaMetrics = computeSlaMetrics(24);
+      const recentEvents = getRecentEvents(20);
+
+      res.json({
+        pairs: fastLane.pairs,
+        lastFastLaneAt: fastLane.lastFastLaneAt,
+        isRunning: fastLane.isRunning,
+        slaMetrics,
+        recentEvents,
+        totalEventCount: getTotalEventCount(),
+        sourceCapabilities: Object.values(SOURCE_CAPABILITIES),
+        fastLaneIntervalSeconds: 45,
+        slaTargetSeconds: 60,
+      });
+    } catch (err: any) {
+      log(`[admin-portal] SLA status error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   // ─── Image Coverage Audit ───────────────────────────────────────
   app.get("/api/admin/portal/image-audit", requireAdmin, async (req, res) => {
     try {

@@ -1,0 +1,125 @@
+Redesign the HousAlert ingestion/matching/notification pipeline around a strict near-real-time SLA.
+
+Business goal:
+Users must receive a notification within 60 seconds after a listing is published on the source website, wherever technically possible.
+
+This is the core USP. Treat it as production-critical.
+
+Definitions:
+source_published_at = when the source website says the listing was posted
+first_seen_at = when HousAlert first detects it
+inserted_at = DB insert time
+matched_at = user_match creation time
+notification_sent_at = push/email sent time
+
+Target SLA:
+source_published_at → notification_sent_at <= 60 seconds for priority sources/cities.
+
+Priority sources/cities:
+Phase 1:
+- Berlin
+- WG-Gesucht
+- Kleinanzeigen
+- Vonovia/DW
+- Wohnungsbörse
+
+Tasks:
+
+1. Latency instrumentation
+Add/verify timestamps everywhere:
+- source_published_at
+- first_seen_at
+- inserted_at
+- matched_at
+- notification_queued_at
+- notification_sent_at
+
+Add SLA metrics:
+- source_published_at → first_seen_at
+- first_seen_at → inserted_at
+- inserted_at → matched_at
+- matched_at → notification_sent_at
+- total latency
+
+Show P50, P90, P95, worst-case per source/city in admin.
+
+2. Fast-lane ingestion
+Create a fast-lane scheduler for priority source/city pairs:
+- runs every 30–60 seconds
+- checks only newest page/feed/API result
+- stops as soon as known source_id is reached
+- inserts only genuinely new listings
+- immediately triggers matching + notification
+
+3. Deep-lane ingestion
+Keep existing full/deep scrape separately:
+- runs every 10–30 minutes
+- scans multiple pages
+- catches missed listings
+- marks results as backfill if source_published_at is older than SLA window
+- backfill listings visible in app, but not urgent-pushed unless genuinely recent
+
+4. Parallel execution
+Run priority source/city scrapers in parallel with safe concurrency limits.
+One slow/blocking source must not delay the others.
+
+5. Immediate matching
+When a new listing is inserted by fast lane:
+- immediately match against active profiles
+- immediately enqueue push/email notifications
+- do not wait for a later batch job
+
+6. Push-first notifications
+Prioritize push for instant alerts.
+Email can be sent as backup/digest, but the 60-second SLA should be measured primarily against push.
+If user has email only, still send email immediately but track separately.
+
+7. Freshness gates
+Do not send urgent alerts for listings where:
+- source_published_at is older than 2 hours
+- listing was discovered during backfill/warmup
+- source_published_at is unknown and source is in warmup
+
+8. Source capabilities
+Add source capability config:
+- supports_source_published_at: true/false
+- supports_fast_lane: true/false
+- recommended_interval_seconds
+- anti_bot_risk
+- priority_level
+
+9. Monitoring + alerts
+Add admin alerts:
+- source/city p95 total latency > 60 seconds
+- fast-lane job failed
+- fast-lane stale > 2 minutes
+- matching latency > 10 seconds
+- notification latency > 20 seconds
+- source missing source_published_at unexpectedly
+
+10. Admin dashboard
+Add a “Realtime SLA” tab showing:
+- live source/city status
+- last fast-lane run
+- listings detected in last 10 min
+- median and p95 latency
+- SLA pass/fail
+- notification counts
+- delayed listings with reason
+
+11. Safety
+Do not overload sources.
+Add:
+- rate limits
+- jitter
+- backoff on blocking
+- circuit breaker per source/city
+
+12. Report
+After implementation, run a Berlin test and report:
+- current scrape interval per source
+- detection latency estimate per source
+- match latency
+- notification latency
+- sources that can realistically meet 60 sec
+- sources that cannot without API/proxy/browser infrastructure

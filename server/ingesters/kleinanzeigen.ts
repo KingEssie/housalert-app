@@ -517,19 +517,20 @@ async function fetchPage(
   return { listings, botBlocked: false, pageHtml: html };
 }
 
-export async function fetchKleinanzeigenListings(city: string): Promise<{
+export async function fetchKleinanzeigenListings(city: string, options?: { maxPages?: number }): Promise<{
   listings: ParsedListing[];
   botBlocked: boolean;
   pagesAttempted: number;
   pagesFetched: number;
 }> {
+  const pagesToFetch = options?.maxPages ?? PAGES_TO_FETCH;
   const baseUrl = getKleinanzeigenUrl(city);
   if (!baseUrl) {
     log(`[KA] No URL mapping for city "${city}" — skipping`);
     return { listings: [], botBlocked: false, pagesAttempted: 0, pagesFetched: 0 };
   }
 
-  log(`[KA] Fetching Kleinanzeigen ${city} listings (${PAGES_TO_FETCH} pages)`);
+  log(`[KA] Fetching Kleinanzeigen ${city} listings (${pagesToFetch} page${pagesToFetch === 1 ? "" : "s"})`);
 
   const cookies = await acquireSession();
   const allListings: ParsedListing[] = [];
@@ -537,7 +538,7 @@ export async function fetchKleinanzeigenListings(city: string): Promise<{
   let pagesAttempted = 0;
   let pagesFetched = 0;
 
-  for (let page = 1; page <= PAGES_TO_FETCH; page++) {
+  for (let page = 1; page <= pagesToFetch; page++) {
     pagesAttempted++;
     const pageUrl = buildPageUrl(baseUrl, page);
 
@@ -567,14 +568,14 @@ export async function fetchKleinanzeigenListings(city: string): Promise<{
       break;
     }
 
-    if (page < PAGES_TO_FETCH) await delay(PAGE_DELAY_MS);
+    if (page < pagesToFetch) await delay(PAGE_DELAY_MS);
   }
 
   log(`[KA] Kleinanzeigen ${city}: fetched ${allListings.length} unique listings across ${pagesFetched} pages`);
   return { listings: allListings, botBlocked: false, pagesAttempted, pagesFetched };
 }
 
-export function createKleinanzeigenIngester(city: string): Ingester {
+export function createKleinanzeigenIngester(city: string, options?: { maxPages?: number }): Ingester {
   return {
     name: `kleinanzeigen:${city}`,
     async run(): Promise<IngestionResult> {
@@ -584,7 +585,7 @@ export function createKleinanzeigenIngester(city: string): Ingester {
       }
 
       const { listings, botBlocked, pagesAttempted, pagesFetched } =
-        await fetchKleinanzeigenListings(city);
+        await fetchKleinanzeigenListings(city, options);
 
       if (botBlocked) {
         log(`[KA] ${city} bot-blocked after ${pagesAttempted} attempts — skipping this cycle`);

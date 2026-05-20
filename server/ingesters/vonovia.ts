@@ -178,7 +178,7 @@ function normalizeItem(item: DwListing, city: string): ParsedListing | null {
   };
 }
 
-async function fetchAllListings(city: string): Promise<{
+async function fetchAllListings(city: string, options?: { maxPages?: number }): Promise<{
   listings: ParsedListing[];
   apiTotal: number;
   pagesAttempted: number;
@@ -194,8 +194,9 @@ async function fetchAllListings(city: string): Promise<{
   let pagesFetched = 0;
   let anomaly = false;
   let anomalyReason = "";
+  const maxPages = options?.maxPages ?? MAX_PAGES;
 
-  for (let page = 1; page <= MAX_PAGES; page++) {
+  for (let page = 1; page <= maxPages; page++) {
     pagesAttempted++;
     const { data, error } = await fetchApiPageWithRetry(city, page);
 
@@ -287,7 +288,7 @@ function qualityReport(listings: ParsedListing[]): {
   return { ok, summary, pricePct, sizePct, roomsPct, coordsPct };
 }
 
-export function createVonoviaIngester(city: string): Ingester {
+export function createVonoviaIngester(city: string, options?: { maxPages?: number }): Ingester {
   return {
     name: `vonovia:${city}`,
     async run(): Promise<IngestionResult> {
@@ -299,7 +300,7 @@ export function createVonoviaIngester(city: string): Ingester {
       log(`[VONOVIA] Fetching Vonovia/Deutsche Wohnen ${city} listings — ${DW_API_BASE}`);
 
       const { listings, apiTotal, pagesAttempted, pagesFetched, anomaly, anomalyReason, fatalError } =
-        await fetchAllListings(city);
+        await fetchAllListings(city, options);
 
       if (anomaly) {
         log(`[VONOVIA] ANOMALY for ${city}: ${anomalyReason}`);

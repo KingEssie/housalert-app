@@ -19,7 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
 import { resetPushBrowserSide } from "@/lib/push";
 
-type TabId = "dashboard" | "listings" | "images" | "sources" | "users" | "subscriptions" | "alerts" | "settings" | "system" | "support";
+type TabId = "dashboard" | "listings" | "images" | "sources" | "users" | "subscriptions" | "alerts" | "settings" | "system" | "support" | "realtime-sla";
 
 async function adminFetch(path: string, options?: RequestInit) {
   const { data: { session } } = await supabase.auth.getSession();
@@ -3142,13 +3142,264 @@ function SupportTab() {
   );
 }
 
+function RealtimeSlaTab() {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  function load() {
+    adminFetch("/api/admin/portal/sla-status")
+      .then(d => { setData(d); setError(null); })
+      .catch(e => setError(e.message))
+      .finally(() => setLoading(false));
+  }
+
+  useEffect(() => {
+    load();
+    const interval = setInterval(load, 10_000);
+    return () => clearInterval(interval);
+  }, []);
+
+  function formatAge(iso: string | null): string {
+    if (!iso) return "—";
+    const secs = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+    if (secs < 60) return `${secs}s ago`;
+    if (secs < 3600) return `${Math.floor(secs / 60)}m ago`;
+    return `${Math.floor(secs / 3600)}h ago`;
+  }
+
+  function fmtMs(ms: number | null | undefined): string {
+    if (ms == null) return "—";
+    return ms < 1000 ? `${ms}ms` : `${(ms / 1000).toFixed(1)}s`;
+  }
+
+  function fmtSec(s: number | null | undefined): string {
+    if (s == null) return "—";
+    return `${s}s`;
+  }
+
+  function slaColor(s: number | null): string {
+    if (s == null) return "#888";
+    if (s <= 60) return "#22c55e";
+    if (s <= 120) return "#f59e0b";
+    return "#ef4444";
+  }
+
+  const antiBotBadge: Record<string, string> = {
+    low: "bg-green-100 text-green-700",
+    medium: "bg-yellow-100 text-yellow-700",
+    high: "bg-red-100 text-red-700",
+  };
+
+  if (loading) return (
+    <div className="flex items-center gap-2 text-sm text-gray-500 py-8">
+      <Loader2 className="w-4 h-4 animate-spin" /> Loading SLA status…
+    </div>
+  );
+  if (error) return <div className="text-red-500 text-sm py-4">Error: {error}</div>;
+  if (!data) return null;
+
+  const { pairs = [], lastFastLaneAt, isRunning, slaMetrics = [], sourceCapabilities = [], fastLaneIntervalSeconds, slaTargetSeconds, totalEventCount } = data;
+
+  return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex items-start justify-between">
+        <div>
+          <h2 className="text-[17px] font-semibold text-gray-900">Realtime SLA</h2>
+          <p className="text-[13px] text-gray-500 mt-0.5">
+            Fast-lane runs every <strong>{fastLaneIntervalSeconds}s</strong> · target ≤ <strong>{slaTargetSeconds}s</strong> source→notification
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          {isRunning && (
+            <span className="flex items-center gap-1 text-xs text-purple-600 bg-purple-50 px-2 py-1 rounded-full">
+              <Loader2 className="w-3 h-3 animate-spin" /> Running
+            </span>
+          )}
+          <button onClick={load} className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors" data-testid="button-sla-refresh">
+            <RefreshCw className="w-4 h-4 text-gray-500" />
+          </button>
+        </div>
+      </div>
+
+      {/* Fast-lane pair status */}
+      <div>
+        <SectionHeader title="Fast-lane sources" />
+        <div className="rounded-[14px] border border-gray-100 overflow-hidden">
+          <table className="w-full text-[13px]">
+            <thead>
+              <tr className="bg-gray-50 text-left text-gray-500 text-[11px] uppercase tracking-wide">
+                <th className="px-4 py-3 font-medium">Source</th>
+                <th className="px-4 py-3 font-medium">City</th>
+                <th className="px-4 py-3 font-medium">Last run</th>
+                <th className="px-4 py-3 font-medium">Found</th>
+                <th className="px-4 py-3 font-medium">Inserted</th>
+                <th className="px-4 py-3 font-medium">Duration</th>
+                <th className="px-4 py-3 font-medium">Status</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {pairs.map((p: any, i: number) => {
+                const lr = p.lastRun;
+                const hasError = lr?.error;
+                const isCircuit = p.circuitOpen;
+                return (
+                  <tr key={i} className="bg-white hover:bg-gray-50/50">
+                    <td className="px-4 py-3 font-medium text-gray-900">{p.source}</td>
+                    <td className="px-4 py-3 text-gray-600">{p.city}</td>
+                    <td className="px-4 py-3 text-gray-500">{formatAge(lr?.runAt ?? null)}</td>
+                    <td className="px-4 py-3 text-gray-700">{lr ? lr.found : "—"}</td>
+                    <td className="px-4 py-3">
+                      {lr ? (
+                        <span className={lr.inserted > 0 ? "text-green-600 font-medium" : "text-gray-400"}>
+                          {lr.inserted}
+                        </span>
+                      ) : "—"}
+                    </td>
+                    <td className="px-4 py-3 text-gray-500">{fmtMs(lr?.durationMs)}</td>
+                    <td className="px-4 py-3">
+                      {isCircuit ? (
+                        <span className="inline-flex items-center gap-1 text-xs bg-red-50 text-red-600 px-2 py-0.5 rounded-full">
+                          <WifiOff className="w-3 h-3" /> Circuit open
+                        </span>
+                      ) : hasError ? (
+                        <span className="inline-flex items-center gap-1 text-xs bg-orange-50 text-orange-600 px-2 py-0.5 rounded-full">
+                          <AlertTriangle className="w-3 h-3" /> Error
+                        </span>
+                      ) : lr ? (
+                        <span className="inline-flex items-center gap-1 text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded-full">
+                          <CheckCircle className="w-3 h-3" /> OK
+                        </span>
+                      ) : (
+                        <span className="text-xs text-gray-400">Pending</span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        <p className="text-[11px] text-gray-400 mt-1.5 px-1">
+          Last fast-lane cycle: {formatAge(lastFastLaneAt)} · {totalEventCount} SLA events recorded (24h)
+        </p>
+      </div>
+
+      {/* SLA metrics */}
+      <div>
+        <SectionHeader title={`SLA metrics (last 24h)`} />
+        {slaMetrics.length === 0 ? (
+          <div className="rounded-[14px] border border-gray-100 bg-gray-50 px-6 py-8 text-center text-[13px] text-gray-400">
+            No SLA events recorded yet — data will appear after the fast-lane has run and matched listings.
+          </div>
+        ) : (
+          <div className="rounded-[14px] border border-gray-100 overflow-hidden">
+            <table className="w-full text-[13px]">
+              <thead>
+                <tr className="bg-gray-50 text-left text-gray-500 text-[11px] uppercase tracking-wide">
+                  <th className="px-4 py-3 font-medium">Source</th>
+                  <th className="px-4 py-3 font-medium">Events</th>
+                  <th className="px-4 py-3 font-medium">Fast-lane</th>
+                  <th className="px-4 py-3 font-medium">P50 detect</th>
+                  <th className="px-4 py-3 font-medium">P90 detect</th>
+                  <th className="px-4 py-3 font-medium">P50 total</th>
+                  <th className="px-4 py-3 font-medium">P95 total</th>
+                  <th className="px-4 py-3 font-medium">SLA pass</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {slaMetrics.map((m: any, i: number) => (
+                  <tr key={i} className="bg-white hover:bg-gray-50/50">
+                    <td className="px-4 py-3 font-medium text-gray-900">{m.source}</td>
+                    <td className="px-4 py-3 text-gray-500">{m.count}</td>
+                    <td className="px-4 py-3 text-purple-600">{m.fastLaneCount}</td>
+                    <td className="px-4 py-3 text-gray-600">{fmtSec(m.p50DetectionS)}</td>
+                    <td className="px-4 py-3 text-gray-600">{fmtSec(m.p90DetectionS)}</td>
+                    <td className="px-4 py-3" style={{ color: slaColor(m.p50TotalS) }}>{fmtSec(m.p50TotalS)}</td>
+                    <td className="px-4 py-3" style={{ color: slaColor(m.p95TotalS) }}>{fmtSec(m.p95TotalS)}</td>
+                    <td className="px-4 py-3">
+                      {m.slaPassRate != null ? (
+                        <span style={{ color: m.slaPassRate >= 80 ? "#22c55e" : m.slaPassRate >= 50 ? "#f59e0b" : "#ef4444" }}>
+                          {m.slaPassRate}%
+                        </span>
+                      ) : "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        <p className="text-[11px] text-gray-400 mt-1.5 px-1">
+          Detection = source_published_at → HousAlert first seen. Total = source_published_at → notification sent. SLA target: ≤{slaTargetSeconds}s.
+        </p>
+      </div>
+
+      {/* Source capabilities */}
+      <div>
+        <SectionHeader title="Source capabilities" />
+        <div className="rounded-[14px] border border-gray-100 overflow-hidden">
+          <table className="w-full text-[13px]">
+            <thead>
+              <tr className="bg-gray-50 text-left text-gray-500 text-[11px] uppercase tracking-wide">
+                <th className="px-4 py-3 font-medium">Source</th>
+                <th className="px-4 py-3 font-medium">Fast-lane</th>
+                <th className="px-4 py-3 font-medium">Published timestamp</th>
+                <th className="px-4 py-3 font-medium">Interval</th>
+                <th className="px-4 py-3 font-medium">Anti-bot risk</th>
+                <th className="px-4 py-3 font-medium">Priority</th>
+                <th className="px-4 py-3 font-medium">Cities</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {sourceCapabilities.map((cap: any, i: number) => (
+                <tr key={i} className="bg-white hover:bg-gray-50/50">
+                  <td className="px-4 py-3 font-medium text-gray-900">{cap.source}</td>
+                  <td className="px-4 py-3">
+                    {cap.supportsFastLane ? (
+                      <span className="inline-flex items-center gap-1 text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded-full">
+                        <Zap className="w-3 h-3" /> Yes
+                      </span>
+                    ) : (
+                      <span className="text-xs text-gray-400">No</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    {cap.supportsSourcePublishedAt ? (
+                      <span className="text-xs text-green-600">✓ Available</span>
+                    ) : (
+                      <span className="text-xs text-gray-400">—</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-gray-600">{cap.recommendedIntervalSeconds}s</td>
+                  <td className="px-4 py-3">
+                    <span className={`text-xs px-2 py-0.5 rounded-full capitalize ${antiBotBadge[cap.antiBotRisk] ?? ""}`}>
+                      {cap.antiBotRisk}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-gray-600">P{cap.priorityLevel}</td>
+                  <td className="px-4 py-3 text-gray-500">
+                    {cap.fastLaneCities.length > 0 ? cap.fastLaneCities.join(", ") : "—"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const NAV_GROUPS: { label: string; items: { id: TabId; label: string; icon: any }[] }[] = [
   {
     label: "Overview",
     items: [
-      { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-      { id: "alerts",    label: "Alerts",    icon: Bell },
-      { id: "system",    label: "System",    icon: Signal },
+      { id: "dashboard",    label: "Dashboard",   icon: LayoutDashboard },
+      { id: "alerts",       label: "Alerts",      icon: Bell },
+      { id: "realtime-sla", label: "Realtime SLA", icon: Zap },
+      { id: "system",       label: "System",      icon: Signal },
     ],
   },
   {
@@ -3354,6 +3605,7 @@ export default function AdminPortalPage() {
           {activeTab === "settings"      && <SettingsTab />}
           {activeTab === "system"        && <SystemTab />}
           {activeTab === "support"       && <SupportTab />}
+          {activeTab === "realtime-sla"  && <RealtimeSlaTab />}
         </main>
       </div>
     </div>

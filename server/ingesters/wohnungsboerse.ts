@@ -435,20 +435,21 @@ async function fetchPage(
   return { listings, botBlocked: false, botReason: "" };
 }
 
-export async function fetchWohnungsboerseListings(city: string): Promise<{
+export async function fetchWohnungsboerseListings(city: string, options?: { maxPages?: number }): Promise<{
   listings: ParsedListing[];
   botBlocked: boolean;
   botReason: string;
   pagesAttempted: number;
   pagesFetched: number;
 }> {
+  const pagesToFetch = options?.maxPages ?? PAGES_TO_FETCH;
   const baseUrl = getWohnungsboerseUrl(city);
   if (!baseUrl) {
     log(`[WB] No URL mapping for city "${city}" — skipping`);
     return { listings: [], botBlocked: false, botReason: "", pagesAttempted: 0, pagesFetched: 0 };
   }
 
-  log(`[WB] Fetching Wohnungsbörse ${city} listings (up to ${PAGES_TO_FETCH} pages) — ${baseUrl}`);
+  log(`[WB] Fetching Wohnungsbörse ${city} listings (up to ${pagesToFetch} page${pagesToFetch === 1 ? "" : "s"}) — ${baseUrl}`);
 
   const cookies = await acquireSession();
   const allListings: ParsedListing[] = [];
@@ -456,7 +457,7 @@ export async function fetchWohnungsboerseListings(city: string): Promise<{
   let pagesAttempted = 0;
   let pagesFetched = 0;
 
-  for (let page = 1; page <= PAGES_TO_FETCH; page++) {
+  for (let page = 1; page <= pagesToFetch; page++) {
     pagesAttempted++;
     const pageUrl = buildPageUrl(baseUrl, page);
     const { listings, botBlocked, botReason } = await fetchPage(pageUrl, cookies, city);
@@ -486,14 +487,14 @@ export async function fetchWohnungsboerseListings(city: string): Promise<{
       break;
     }
 
-    if (page < PAGES_TO_FETCH) await delay(PAGE_DELAY_MS);
+    if (page < pagesToFetch) await delay(PAGE_DELAY_MS);
   }
 
   log(`[WB] Wohnungsbörse ${city}: fetched ${allListings.length} unique listings across ${pagesFetched} pages`);
   return { listings: allListings, botBlocked: false, botReason: "", pagesAttempted, pagesFetched };
 }
 
-export function createWohnungsboerseIngester(city: string): Ingester {
+export function createWohnungsboerseIngester(city: string, options?: { maxPages?: number }): Ingester {
   return {
     name: `wohnungsboerse:${city}`,
     async run(): Promise<IngestionResult> {
@@ -503,7 +504,7 @@ export function createWohnungsboerseIngester(city: string): Ingester {
       }
 
       const { listings, botBlocked, botReason, pagesAttempted, pagesFetched } =
-        await fetchWohnungsboerseListings(city);
+        await fetchWohnungsboerseListings(city, options);
 
       if (botBlocked) {
         log(`[WB] ${city} bot-blocked after ${pagesAttempted} attempt(s) — reason: ${botReason} — skipping cycle`);

@@ -381,19 +381,20 @@ async function fetchPage(
   throw new Error("Unreachable");
 }
 
-async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
+async function fetchAndParseListings(city: string, options?: { maxPages?: number }): Promise<ParsedListing[]> {
   const slugs = getCitySlugs(city);
   if (!slugs?.wgGesuchtCode) {
     log(`[WG-GESUCHT] No city code for "${city}" — skipping`);
     return [];
   }
 
+  const pagesToFetch = options?.maxPages ?? PAGES_TO_FETCH;
   const cityId = slugs.wgGesuchtCode;
   const allListings: ParsedListing[] = [];
   const seenIds = new Set<string>();
 
-  for (let page = 1; page <= PAGES_TO_FETCH; page++) {
-    log(`[WG-GESUCHT] ${city} page ${page}/${PAGES_TO_FETCH}`);
+  for (let page = 1; page <= pagesToFetch; page++) {
+    log(`[WG-GESUCHT] ${city} page ${page}/${pagesToFetch}`);
 
     let offers: WgOffer[];
     let totalPages: number;
@@ -415,7 +416,7 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
     }
 
     if (page >= totalPages) break;
-    if (page < PAGES_TO_FETCH) await delay(PAGE_DELAY_MS);
+    if (page < pagesToFetch) await delay(PAGE_DELAY_MS);
   }
 
   log(`[WG-GESUCHT] ${city}: found ${allListings.length} listings`);
@@ -449,11 +450,11 @@ async function backfillImagesForNewListings(listings: ParsedListing[]): Promise<
   return { fetched: toFetch.length, found };
 }
 
-export function createWgGesuchtIngester(city: string): Ingester {
+export function createWgGesuchtIngester(city: string, options?: { maxPages?: number }): Ingester {
   return {
     name: `wg-gesucht:${city}`,
     async run(): Promise<IngestionResult> {
-      const parsed = await fetchAndParseListings(city);
+      const parsed = await fetchAndParseListings(city, options);
       const result = await insertAndMatchListings(parsed);
 
       log(
