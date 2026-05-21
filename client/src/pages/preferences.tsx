@@ -7,7 +7,7 @@ import { apiFetch } from "@/lib/api-base";
 import { queryClient } from "@/lib/queryClient";
 import { Check, ChevronRight, Bell, Loader2 } from "lucide-react";
 import { isPushSupported, getPushPermissionState, subscribeToPush, unsubscribeFromPush } from "@/lib/push";
-import { isNativePlatform, registerNativePush, getPlatform } from "@/lib/capacitor";
+import { isNativePlatform, isCapacitorNative, isExpoWebView, registerNativePush, getPlatform } from "@/lib/capacitor";
 import { AppHeader } from "@/components/ui/app-header";
 
 export default function PreferencesPage() {
@@ -56,9 +56,34 @@ export default function PreferencesPage() {
       if (!session?.access_token) return;
 
       if (key === "push_enabled") {
-        if (isNativePlatform()) {
+        const _expo = isExpoWebView();
+        const _cap  = isCapacitorNative();
+        console.log(`[PUSH-TOGGLE] expo=${_expo} cap=${_cap} current=${currentVal} __NATIVE__=${(window as any).__HOUSALERT_NATIVE__} Capacitor=${!!(window as any).Capacitor}`);
+
+        if (_expo) {
+          // ── Expo WebView mode ──────────────────────────────────────────────
+          // Token is registered by native App.tsx layer on startup.
+          // Web UI only flips push_enabled on the backend.
+          console.log("[PUSH-TOGGLE] Path: expo-webview — toggling push_enabled via API");
+          const res = await apiFetch("/api/notifications/settings", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+            body: JSON.stringify({ push_enabled: !currentVal }),
+          });
+          if (!res.ok) throw new Error("Update failed");
+          setNotifSettings((prev) => prev ? { ...prev, push_enabled: !currentVal } : prev);
+          queryClient.invalidateQueries({ queryKey: ["/api/notifications/settings"] });
+          toast({ title: !currentVal ? "Push-meldingen ingeschakeld" : "Push-meldingen uitgeschakeld" });
+          setNotifUpdating(null);
+          return;
+        }
+
+        if (_cap) {
+          // ── Capacitor native WebView ────────────────────────────────────────
+          console.log("[PUSH-TOGGLE] Path: capacitor-native");
           if (!currentVal) {
             const token = await registerNativePush();
+            console.log("[PUSH-TOGGLE] registerNativePush token:", token ? token.substring(0, 30) + "…" : "null");
             if (!token) {
               toast({ title: t("settings.pushDenied"), description: "Verleen toestemming voor meldingen via Android-instellingen → HousAlert.", variant: "destructive" });
               setNotifUpdating(null);
@@ -93,6 +118,8 @@ export default function PreferencesPage() {
           return;
         }
 
+        // ── Web browser ────────────────────────────────────────────────────
+        console.log("[PUSH-TOGGLE] Path: web-browser");
         if (!currentVal) {
           const supported = isPushSupported();
           if (!supported) {
@@ -169,8 +196,22 @@ export default function PreferencesPage() {
     }
   }
 
-  const isAndroidNative = isNativePlatform();
+  const _isExpo = isExpoWebView();
+  const _isCap  = isCapacitorNative();
+  const isAndroidNative = _isExpo || _isCap;
   const pushActive = notifSettings?.push_enabled && (activeTokenCount === null || activeTokenCount > 0);
+
+  // Debug info (always computed, only rendered in native contexts)
+  const debugInfo = {
+    platform: (window as any).__HOUSALERT_PLATFORM__ ?? (navigator.userAgent.includes("Android") ? "android" : "web"),
+    expoWebView: _isExpo,
+    capacitorNative: _isCap,
+    pushPath: _isExpo ? "expo-webview" : _isCap ? "capacitor-native" : "web-browser",
+    nativeFlag: (window as any).__HOUSALERT_NATIVE__ ?? false,
+    capacitorObj: !!(window as any).Capacitor,
+    tokens: activeTokenCount,
+    pushEnabled: notifSettings?.push_enabled ?? false,
+  } as const;
 
   return (
     <div className="min-h-screen bg-ha-bg">
@@ -254,6 +295,22 @@ export default function PreferencesPage() {
               </div>
             )}
           </div>
+
+          {/* Debug panel — visible in native mode OR when ?debug=1 / localStorage.ha_debug=1
+              Always render in any native context so detection failures are diagnosable. */}
+          {(isAndroidNative || (() => { try { return new URLSearchParams(window.location.search).get("debug") === "1" || localStorage.getItem("ha_debug") === "1"; } catch { return false; } })()) && (
+            <div className="mx-5 mb-4 rounded-[12px] px-3 py-2.5 text-[10px] font-mono leading-relaxed" style={{ backgroundColor: "#f8f5ff", border: "1px solid #ddd6fe", color: "#4c1d95" }}>
+              <p className="font-bold text-[11px] mb-1" style={{ color: "#7c3aed" }}>Push debug info</p>
+              <p>platform: <strong>{debugInfo.platform}</strong></p>
+              <p>push path: <strong>{debugInfo.pushPath}</strong></p>
+              <p>expo webview: <strong>{String(debugInfo.expoWebView)}</strong></p>
+              <p>capacitor native: <strong>{String(debugInfo.capacitorNative)}</strong></p>
+              <p>__NATIVE__ flag: <strong>{String(debugInfo.nativeFlag)}</strong></p>
+              <p>window.Capacitor: <strong>{String(debugInfo.capacitorObj)}</strong></p>
+              <p>push_enabled: <strong>{String(debugInfo.pushEnabled)}</strong></p>
+              <p>active tokens: <strong>{debugInfo.tokens === null ? "loading…" : String(debugInfo.tokens)}</strong></p>
+            </div>
+          )}
 
           <div className="h-px mx-5" style={{ backgroundColor: "#ece7ef" }} />
 

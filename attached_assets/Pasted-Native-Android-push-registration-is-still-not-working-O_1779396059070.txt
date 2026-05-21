@@ -1,0 +1,84 @@
+Native Android push registration is still not working.
+
+Observed on Samsung after fresh rebuild/install:
+When enabling push notifications, the app shows:
+"Push/meldingen worden niet ondersteund door deze browser"
+
+This proves the app is still entering the WEB push path instead of the native Capacitor/Expo path.
+
+Goal:
+Native Android builds must use Capacitor Push Notifications + Expo token flow only.
+They must NEVER hit the browser PushManager/serviceWorker logic.
+
+Investigate and fix:
+
+1. Verify native detection
+Check:
+- Capacitor.isNativePlatform()
+- Capacitor.getPlatform()
+- isNativePlatform() helper
+- any browser fallback conditions
+
+Log clearly:
+- platform
+- isNative
+- userAgent
+- which push branch is selected
+
+2. Verify app is actually running as Capacitor native
+Check:
+- capacitor plugins loaded
+- PushNotifications plugin available
+- Android bridge active
+- no browser-only environment accidentally used
+
+3. Fix push toggle logic
+On Android native:
+- NEVER check serviceWorker
+- NEVER check PushManager
+- NEVER show "browser unsupported"
+- ALWAYS use registerNativePush()
+
+4. Add explicit logging
+When user taps enable push:
+log:
+- native=true/false
+- selected push path
+- permission result
+- token result
+- backend registration result
+
+5. Verify Expo token generation
+Confirm:
+- Expo token actually generated
+- token POST succeeds
+- DB row created
+- push_enabled=true updated
+
+6. Verify Android build configuration
+Check:
+- @capacitor/push-notifications installed/synced
+- google-services.json placement if required
+- MainActivity correct
+- AndroidManifest permissions
+- Android 13 POST_NOTIFICATIONS permission
+- capacitor.config correct
+
+7. Add temporary debug UI
+In preferences screen show:
+- platform
+- isNative
+- push path selected
+- token status
+- last registration error
+
+8. Final proof required
+After fix:
+- Samsung opens app
+- enable push
+- Android permission dialog appears
+- Expo token stored
+- push_enabled=true
+- admin test push received on device
+
+Return exact root cause.

@@ -1,25 +1,83 @@
+const NATIVE_CACHE_KEY = "ha_native_v1";
+
 function getCap(): any {
   return (window as any).Capacitor;
 }
 
-export function isNativePlatform(): boolean {
-  if (getCap()?.isNativePlatform?.() === true) return true;
+/**
+ * Run at module-load time to detect native context and persist it.
+ * Must run before any SPA navigation strips the ?native=1 query param.
+ */
+function detectNativeOnStartup(): void {
+  try {
+    // Real Capacitor bridge
+    if (getCap()?.isNativePlatform?.() === true) {
+      localStorage.setItem(NATIVE_CACHE_KEY, "capacitor");
+      return;
+    }
+    // Expo WebView injected flag (set by injectedJavaScriptBeforeContentLoaded)
+    if ((window as any).__HOUSALERT_NATIVE__ === true) {
+      if (localStorage.getItem(NATIVE_CACHE_KEY) !== "capacitor") {
+        localStorage.setItem(NATIVE_CACHE_KEY, "expo");
+      }
+      return;
+    }
+    // URL param ?native=1 — must capture BEFORE router strips it
+    if (new URLSearchParams(window.location.search).get("native") === "1") {
+      if (localStorage.getItem(NATIVE_CACHE_KEY) !== "capacitor") {
+        localStorage.setItem(NATIVE_CACHE_KEY, "expo");
+      }
+      (window as any).__HOUSALERT_NATIVE__ = true;
+      return;
+    }
+  } catch {}
+}
+
+// Run immediately at module load — before React renders, before routing
+detectNativeOnStartup();
+
+/** True only when running inside a real Capacitor WebView (native bridge present). */
+export function isCapacitorNative(): boolean {
+  return getCap()?.isNativePlatform?.() === true;
+}
+
+/**
+ * True when running inside the Expo React Native WebView wrapper.
+ * The native layer (mobile-clean/App.tsx) handles Expo push token registration.
+ * The web UI should NOT call Capacitor APIs — they don't exist here.
+ */
+export function isExpoWebView(): boolean {
+  if (isCapacitorNative()) return false;
   if ((window as any).__HOUSALERT_NATIVE__ === true) return true;
   try {
-    if (new URLSearchParams(window.location.search).get("native") === "1") {
-      (window as any).__HOUSALERT_NATIVE__ = true;
-      return true;
-    }
+    const cached = localStorage.getItem(NATIVE_CACHE_KEY);
+    if (cached === "expo") return true;
+  } catch {}
+  try {
+    if (new URLSearchParams(window.location.search).get("native") === "1") return true;
   } catch {}
   return false;
 }
 
+/**
+ * True when running in any native context (Capacitor OR Expo WebView).
+ * Use isCapacitorNative() / isExpoWebView() for specific behavior.
+ */
+export function isNativePlatform(): boolean {
+  return isCapacitorNative() || isExpoWebView();
+}
+
 export function getPlatform(): string {
-  return getCap()?.getPlatform?.() ?? "web";
+  if (isCapacitorNative()) return getCap()?.getPlatform?.() ?? "android";
+  try {
+    const p = (window as any).__HOUSALERT_PLATFORM__;
+    if (p) return p;
+  } catch {}
+  return "android";
 }
 
 export async function initCapacitorPlugins(): Promise<void> {
-  if (!isNativePlatform()) return;
+  if (!isCapacitorNative()) return;
 
   try {
     const { StatusBar, Style } = await import('@capacitor/status-bar');
@@ -33,8 +91,12 @@ export async function initCapacitorPlugins(): Promise<void> {
   } catch {}
 }
 
+/**
+ * Register for push notifications via Capacitor PushNotifications plugin.
+ * Only valid in isCapacitorNative() context. Returns Expo token or null.
+ */
 export async function registerNativePush(): Promise<string | null> {
-  if (!isNativePlatform()) return null;
+  if (!isCapacitorNative()) return null;
 
   try {
     const { PushNotifications } = await import('@capacitor/push-notifications');
@@ -105,7 +167,7 @@ export function consumePendingCheckoutSession(): string | null {
  */
 export async function openCheckoutBrowser(url: string, sessionId: string): Promise<void> {
   savePendingCheckoutSession(sessionId);
-  if (isNativePlatform()) {
+  if (isCapacitorNative()) {
     try {
       const { Browser } = await import('@capacitor/browser');
       console.log("[checkout-browser] Opening Stripe in in-app browser (native)");
@@ -124,7 +186,7 @@ export async function openCheckoutBrowser(url: string, sessionId: string): Promi
  * page is reached via an App Link and the Custom Tab is still open).
  */
 export async function closeInAppBrowser(): Promise<void> {
-  if (!isNativePlatform()) return;
+  if (!isCapacitorNative()) return;
   try {
     const { Browser } = await import('@capacitor/browser');
     await Browser.close();
@@ -238,7 +300,7 @@ export function consumeCheckoutContext(): CheckoutContext | null {
 export async function setupBrowserFinishedListener(
   onFinished: (sessionId: string | null) => void
 ): Promise<() => void> {
-  if (!isNativePlatform()) return () => {};
+  if (!isCapacitorNative()) return () => {};
   try {
     const { Browser } = await import('@capacitor/browser');
     const handle = await Browser.addListener('browserFinished', () => {
@@ -263,7 +325,7 @@ export async function setupBrowserFinishedListener(
 export async function setupDeepLinkListener(
   onUrl: (url: string) => void
 ): Promise<() => void> {
-  if (!isNativePlatform()) return () => {};
+  if (!isCapacitorNative()) return () => {};
   try {
     const { App } = await import('@capacitor/app');
     const handle = await App.addListener('appUrlOpen', (data: { url: string }) => {
