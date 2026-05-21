@@ -54,6 +54,7 @@ import { getTipsReadSet } from "@/pages/tips";
 import { getFlowTipSteps } from "@/pages/tips-flow";
 import { ACCOUNT_FLOW, SEARCH_PREP_FLOW, resolveFlowSteps, buildCompletionMap, type StepOverride } from "@/lib/task-flows";
 import { isPushSupported, getPushPermissionState, subscribeToPush, unsubscribeFromPush } from "@/lib/push";
+import { isNativePlatform, registerNativePush, getPlatform } from "@/lib/capacitor";
 import { generateOnboardingLetter, type OnboardingLetterData } from "@/lib/application-letter";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ListingCardFull, ListingCardMini } from "@/components/listing-card";
@@ -376,13 +377,50 @@ function NotificationsInline({ accessToken }: { accessToken: string | undefined 
     const current = settings[key];
     setUpdating(key);
     try {
-      if (key === "push_enabled" && !current) {
-        if (!isPushSupported()) { toast({ title: t("settings.pushNotSupported"), variant: "destructive" }); setUpdating(null); return; }
-        const perm = await getPushPermissionState();
-        if (perm === "denied") { toast({ title: t("settings.pushDenied"), variant: "destructive" }); setUpdating(null); return; }
-        await subscribeToPush(accessToken);
-      } else if (key === "push_enabled" && current) {
-        await unsubscribeFromPush(accessToken);
+      if (key === "push_enabled") {
+        if (isNativePlatform()) {
+          if (!current) {
+            const token = await registerNativePush();
+            if (!token) {
+              toast({ title: t("settings.pushDenied"), description: "Grant notification permission in Android Settings for HousAlert.", variant: "destructive" });
+              setUpdating(null);
+              return;
+            }
+            const regRes = await apiFetch("/api/expo-push-token", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+              body: JSON.stringify({ expo_push_token: token, platform: getPlatform() }),
+            });
+            if (!regRes.ok) {
+              toast({ title: t("common.error"), description: "Token registration failed. Try again.", variant: "destructive" });
+              setUpdating(null);
+              return;
+            }
+            setSettings((p) => p ? { ...p, push_enabled: true } : p);
+            queryClient.invalidateQueries({ queryKey: ["/api/notifications/settings"] });
+            queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
+            toast({ title: "Push notifications enabled" });
+          } else {
+            const res = await apiFetch("/api/notifications/settings", {
+              method: "PUT",
+              headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+              body: JSON.stringify({ push_enabled: false }),
+            });
+            if (!res.ok) throw new Error("fail");
+            setSettings((p) => p ? { ...p, push_enabled: false } : p);
+            queryClient.invalidateQueries({ queryKey: ["/api/notifications/settings"] });
+          }
+          setUpdating(null);
+          return;
+        }
+        if (!current) {
+          if (!isPushSupported()) { toast({ title: t("settings.pushNotSupported"), variant: "destructive" }); setUpdating(null); return; }
+          const perm = await getPushPermissionState();
+          if (perm === "denied") { toast({ title: t("settings.pushDenied"), variant: "destructive" }); setUpdating(null); return; }
+          await subscribeToPush(accessToken);
+        } else {
+          await unsubscribeFromPush(accessToken);
+        }
       }
       const res = await apiFetch("/api/notifications/settings", {
         method: "PUT",

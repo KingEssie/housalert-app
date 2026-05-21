@@ -496,6 +496,7 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
 
     if (pushEnabled) {
       const pushStart = Date.now();
+      let userPushesSent = 0;
       try {
         log(`[NOTIF] ${source} webpush userId=${userId.substring(0, 8)}... lang=${userLang} count=${alertable.length} path=${source}`);
         const pushListings: PushMatchListing[] = alertable.map((l) => ({
@@ -504,6 +505,7 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
         }));
         const pushResult = await sendMatchPushNotifications(userId, pushListings, supabase, userLang);
         if (pushResult.sent > 0) {
+          userPushesSent += pushResult.sent;
           const pushedIds = alertable.map(l => l.listing_id);
           try { await markPushSent(userId, pushedIds); } catch {}
           const webPushSentAt = new Date().toISOString();
@@ -527,6 +529,7 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
         }));
         const expoResult = await sendExpoMatchPush(userId, expoListings, userLang);
         if (expoResult.sent > 0) {
+          userPushesSent += expoResult.sent;
           totalPushesSent += expoResult.sent;
           const expoPushedIds = alertable.map(l => l.listing_id);
           try { await markPushSent(userId, expoPushedIds); } catch {}
@@ -535,6 +538,12 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
         }
       } catch (err: any) {
         log(`[ALERTS] Expo push error for user ${userId.substring(0, 8)}...: ${err.message}`);
+      }
+
+      if (userPushesSent === 0) {
+        const noTokenIds = alertable.map(l => l.listing_id);
+        markSuppressed(userId, noTokenIds, "no_token").catch(() => {});
+        log(`[ALERTS] User ${userId.substring(0, 8)}...: push_enabled=true but no active tokens — suppressed with no_token`);
       }
 
       const pushDuration = Date.now() - pushStart;

@@ -1,0 +1,1 @@
+- [Android native push registration](android-native-push.md) — isPushSupported() always returns false on Capacitor; use isNativePlatform() branch + registerNativePush() + POST /api/expo-push-token instead

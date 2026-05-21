@@ -5,8 +5,9 @@ import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/i18n";
 import { apiFetch } from "@/lib/api-base";
 import { queryClient } from "@/lib/queryClient";
-import { Check, ChevronRight } from "lucide-react";
+import { Check, ChevronRight, Bell, Loader2 } from "lucide-react";
 import { isPushSupported, getPushPermissionState, subscribeToPush, unsubscribeFromPush } from "@/lib/push";
+import { isNativePlatform, registerNativePush, getPlatform } from "@/lib/capacitor";
 import { AppHeader } from "@/components/ui/app-header";
 
 export default function PreferencesPage() {
@@ -19,6 +20,8 @@ export default function PreferencesPage() {
   const [notifSettings, setNotifSettings] = useState<{ push_enabled: boolean; email_enabled: boolean } | null>(null);
   const [notifUpdating, setNotifUpdating] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [activeTokenCount, setActiveTokenCount] = useState<number | null>(null);
+  const [sendingTestPush, setSendingTestPush] = useState(false);
 
   const LANG_OPTIONS = [
     { code: "de" as const, label: "Deutsch" },
@@ -36,6 +39,15 @@ export default function PreferencesPage() {
       .then((data) => setNotifSettings(data))
       .catch(() => {})
       .finally(() => setLoading(false));
+
+    if (isNativePlatform()) {
+      apiFetch("/api/push/status", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      })
+        .then((r) => r.json())
+        .then((data) => setActiveTokenCount(data?.devices ?? 0))
+        .catch(() => {});
+    }
   }, [session?.access_token]);
 
   async function handleToggleNotif(key: "email_enabled" | "push_enabled", currentVal: boolean) {
@@ -43,27 +55,66 @@ export default function PreferencesPage() {
     try {
       if (!session?.access_token) return;
 
-      if (key === "push_enabled" && !currentVal) {
-        const supported = isPushSupported();
-        if (!supported) {
-          toast({ title: t("settings.pushNotSupported"), variant: "destructive" });
+      if (key === "push_enabled") {
+        if (isNativePlatform()) {
+          if (!currentVal) {
+            const token = await registerNativePush();
+            if (!token) {
+              toast({ title: t("settings.pushDenied"), description: "Verleen toestemming voor meldingen via Android-instellingen → HousAlert.", variant: "destructive" });
+              setNotifUpdating(null);
+              return;
+            }
+            const regRes = await apiFetch("/api/expo-push-token", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+              body: JSON.stringify({ expo_push_token: token, platform: getPlatform() }),
+            });
+            if (!regRes.ok) {
+              toast({ title: t("common.error"), description: "Token registratie mislukt. Probeer opnieuw.", variant: "destructive" });
+              setNotifUpdating(null);
+              return;
+            }
+            const regData = await regRes.json();
+            setActiveTokenCount(regData.active_token_count ?? 1);
+            setNotifSettings((prev) => prev ? { ...prev, push_enabled: true } : prev);
+            queryClient.invalidateQueries({ queryKey: ["/api/notifications/settings"] });
+            toast({ title: "Push-meldingen ingeschakeld" });
+          } else {
+            const res = await apiFetch("/api/notifications/settings", {
+              method: "PUT",
+              headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+              body: JSON.stringify({ push_enabled: false }),
+            });
+            if (!res.ok) throw new Error("Update failed");
+            setNotifSettings((prev) => prev ? { ...prev, push_enabled: false } : prev);
+            queryClient.invalidateQueries({ queryKey: ["/api/notifications/settings"] });
+          }
           setNotifUpdating(null);
           return;
         }
-        const perm = await getPushPermissionState();
-        if (perm === "denied") {
-          toast({ title: t("settings.pushDenied"), variant: "destructive" });
-          setNotifUpdating(null);
-          return;
+
+        if (!currentVal) {
+          const supported = isPushSupported();
+          if (!supported) {
+            toast({ title: t("settings.pushNotSupported"), variant: "destructive" });
+            setNotifUpdating(null);
+            return;
+          }
+          const perm = await getPushPermissionState();
+          if (perm === "denied") {
+            toast({ title: t("settings.pushDenied"), variant: "destructive" });
+            setNotifUpdating(null);
+            return;
+          }
+          const subscribeOk = await subscribeToPush(session.access_token);
+          if (!subscribeOk) {
+            toast({ title: t("notifications.pushFailedTitle"), description: t("notifications.pushFailedDesc"), variant: "destructive" });
+            setNotifUpdating(null);
+            return;
+          }
+        } else {
+          await unsubscribeFromPush(session.access_token);
         }
-        const subscribeOk = await subscribeToPush(session.access_token);
-        if (!subscribeOk) {
-          toast({ title: t("notifications.pushFailedTitle"), description: t("notifications.pushFailedDesc"), variant: "destructive" });
-          setNotifUpdating(null);
-          return;
-        }
-      } else if (key === "push_enabled" && currentVal) {
-        await unsubscribeFromPush(session.access_token);
       }
 
       const res = await apiFetch("/api/notifications/settings", {
@@ -78,6 +129,27 @@ export default function PreferencesPage() {
       toast({ title: t("common.error"), variant: "destructive" });
     } finally {
       setNotifUpdating(null);
+    }
+  }
+
+  async function sendTestPush() {
+    if (!session?.access_token || sendingTestPush) return;
+    setSendingTestPush(true);
+    try {
+      const res = await apiFetch("/api/push/test", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      });
+      const data = await res.json();
+      if (data.ok) {
+        toast({ title: "Test melding verstuurd", description: `${data.sent} melding(en) verzonden.` });
+      } else {
+        toast({ title: "Test mislukt", description: data.error || "Geen actieve tokens gevonden.", variant: "destructive" });
+      }
+    } catch {
+      toast({ title: t("common.error"), variant: "destructive" });
+    } finally {
+      setSendingTestPush(false);
     }
   }
 
@@ -97,6 +169,9 @@ export default function PreferencesPage() {
     }
   }
 
+  const isAndroidNative = isNativePlatform();
+  const pushActive = notifSettings?.push_enabled && (activeTokenCount === null || activeTokenCount > 0);
+
   return (
     <div className="min-h-screen bg-ha-bg">
       <AppHeader title={t("settings.preferences")} onBack={() => navigate("/dashboard?tab=profile")} />
@@ -105,7 +180,7 @@ export default function PreferencesPage() {
 
         <div
           className="bg-white rounded-[28px] overflow-hidden"
-          style={{ border: "1px solid #ece7ef", boxShadow: "0 2px_8px_rgba(0,0,0,0.04)" }}
+          style={{ border: "1px solid #ece7ef", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
         >
 
           {/* TAAL section */}
@@ -136,17 +211,48 @@ export default function PreferencesPage() {
           </p>
 
           {/* Push row */}
-          <div className="flex items-center px-5 h-[56px]">
-            <span className="text-[15px] font-semibold text-[#111111] flex-1">{t("profile.pushNotifications")}</span>
-            <button
-              onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
-              disabled={loading || notifUpdating === "push_enabled"}
-              className={`w-[48px] h-[28px] rounded-full relative transition-colors flex-shrink-0 ${(loading || notifUpdating === "push_enabled") ? "opacity-50" : ""}`}
-              style={{ backgroundColor: notifSettings?.push_enabled ? "#b9a7ff" : "#d9d3e3" }}
-              data-testid="toggle-push"
-            >
-              <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[23px]" : "left-[3px]"}`} />
-            </button>
+          <div className="px-5">
+            <div className="flex items-center h-[56px]">
+              <div className="flex-1 min-w-0">
+                <span className="text-[15px] font-semibold text-[#111111]">{t("profile.pushNotifications")}</span>
+                {isAndroidNative && notifSettings?.push_enabled && (
+                  <p className="text-[11px] mt-0.5" style={{ color: activeTokenCount === 0 ? "#e11d48" : "#15803d" }}>
+                    {activeTokenCount === 0 ? "⚠ Geen actief token" : `✓ Actief (${activeTokenCount} apparaat${activeTokenCount !== 1 ? "en" : ""})`}
+                  </p>
+                )}
+              </div>
+              <button
+                onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
+                disabled={loading || notifUpdating === "push_enabled"}
+                className={`w-[48px] h-[28px] rounded-full relative transition-colors flex-shrink-0 ${(loading || notifUpdating === "push_enabled") ? "opacity-50" : ""}`}
+                style={{ backgroundColor: notifSettings?.push_enabled ? "#b9a7ff" : "#d9d3e3" }}
+                data-testid="toggle-push"
+              >
+                <span className={`absolute top-[3px] w-[22px] h-[22px] rounded-full bg-white shadow-sm transition-transform ${notifSettings?.push_enabled ? "left-[23px]" : "left-[3px]"}`} />
+              </button>
+            </div>
+
+            {/* Native push: test button + Samsung hint */}
+            {isAndroidNative && notifSettings?.push_enabled && (
+              <div className="pb-4 space-y-3">
+                <button
+                  onClick={sendTestPush}
+                  disabled={sendingTestPush}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full text-[13px] font-semibold transition-all active:opacity-70 disabled:opacity-50"
+                  style={{ backgroundColor: "#f0eaff", color: "#7c3aed", border: "1px solid #ddd6fe" }}
+                  data-testid="button-test-push"
+                >
+                  {sendingTestPush ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Bell className="w-3.5 h-3.5" />}
+                  {sendingTestPush ? "Verzenden…" : "Stuur testmelding"}
+                </button>
+                <div className="rounded-[12px] px-3 py-2.5" style={{ backgroundColor: "#fef9ee", border: "1px solid #fde68a" }}>
+                  <p className="text-[11px] font-semibold mb-0.5" style={{ color: "#92400e" }}>Samsung / Xiaomi tip</p>
+                  <p className="text-[11px] leading-snug" style={{ color: "#78350f" }}>
+                    Als je geen meldingen ontvangt: open Instellingen → Apps → HousAlert → Batterij → Sta achtergrondactiviteit toe. Schakel ook "Slaapstand" uit.
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="h-px mx-5" style={{ backgroundColor: "#ece7ef" }} />

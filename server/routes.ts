@@ -1188,6 +1188,17 @@ export async function registerRoutes(
         .eq("is_active", true);
 
       log(`[EXPO-PUSH] Token registered OK for user ${user.id.substring(0, 8)}... platform=${plat} active_count=${count}`);
+
+      try {
+        await sb.from("user_notification_settings").upsert(
+          { user_id: user.id, push_enabled: true, updated_at: now },
+          { onConflict: "user_id" }
+        );
+        log(`[EXPO-PUSH] push_enabled=true set for user ${user.id.substring(0, 8)}...`);
+      } catch (pushSettErr: any) {
+        log(`[EXPO-PUSH] Warning: could not auto-set push_enabled: ${pushSettErr.message}`);
+      }
+
       return res.json({ ok: true, persisted: true, active_token_count: count });
     } catch (err: any) {
       log(`[EXPO-PUSH] EXCEPTION registering token: ${err.message}`);
@@ -1219,6 +1230,38 @@ export async function registerRoutes(
       return res.json({ ok: true });
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/push/test", async (req, res) => {
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) return res.status(401).json({ error: "Unauthorized" });
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) return res.status(401).json({ error: "Unauthorized" });
+
+      const [webResult, expoResult] = await Promise.all([
+        sendPushToUser(user.id, {
+          title: "HousAlert Test",
+          body: "Push-meldingen werken! 🏠",
+          url: "/dashboard",
+        }, supabase),
+        sendExpoTestPush(user.id),
+      ]);
+
+      const sent = webResult.sent + expoResult.sent;
+      log(`[PUSH/TEST] user=${user.id.substring(0, 8)}... web_sent=${webResult.sent} expo_sent=${expoResult.sent} expo_tokens=${expoResult.tokens}`);
+
+      return res.json({
+        ok: sent > 0,
+        sent,
+        web: { sent: webResult.sent, failed: webResult.failed },
+        expo: { sent: expoResult.sent, failed: expoResult.failed, tokens: expoResult.tokens },
+        error: sent === 0 ? "no_token" : undefined,
+      });
+    } catch (err: any) {
+      log(`[PUSH/TEST] Error: ${err.message}`);
+      return res.status(500).json({ ok: false, error: err.message });
     }
   });
 
