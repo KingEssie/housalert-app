@@ -493,9 +493,9 @@ export async function insertAndMatchListings(
       url: listing.url,
       title: listing.title,
       city: listing.city,
-      price: listing.price,
-      bedrooms: listing.bedrooms,
-      size_m2: listing.size_m2,
+      price: Math.round(listing.price ?? 0),
+      bedrooms: Math.round(listing.bedrooms ?? 0),
+      size_m2: Math.round(listing.size_m2 ?? 0),
     };
 
     if (useImageUrl && listing.image_url) {
