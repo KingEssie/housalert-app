@@ -48,6 +48,9 @@ export interface ParsedListing {
   listing_cluster_id?: string | null;
   /** ISO timestamp of when the listing was posted on the source site (if extractable). */
   source_published_at?: string | null;
+  /** Fractional room count as advertised (e.g. 2.5 for "2.5 Zimmer"). Stored separately from the
+   *  integer `bedrooms` field (which holds Math.floor of this value) so filters stay precise. */
+  rooms_decimal?: number | null;
 }
 
 interface DbListing {
@@ -139,6 +142,7 @@ let hasClusterIdColumn: boolean | null = null;
 let hasPostcodeColumn: boolean | null = null;
 let hasStreetColumn: boolean | null = null;
 let hasSrcPublishedAtColumn: boolean | null = null;
+let hasRoomsDecimalColumn: boolean | null = null;
 
 async function checkClusterIdColumn(): Promise<boolean> {
   if (hasClusterIdColumn !== null) return hasClusterIdColumn;
@@ -172,6 +176,16 @@ async function checkSrcPublishedAtColumn(): Promise<boolean> {
     log("source_published_at column not found — run PENDING_RUN_IN_SUPABASE.sql to enable source timestamp tracking");
   }
   return hasSrcPublishedAtColumn;
+}
+
+async function checkRoomsDecimalColumn(): Promise<boolean> {
+  if (hasRoomsDecimalColumn !== null) return hasRoomsDecimalColumn;
+  const { error } = await supabase.from("listings").select("rooms_decimal").limit(1);
+  hasRoomsDecimalColumn = !error;
+  if (!hasRoomsDecimalColumn) {
+    log("rooms_decimal column not found — run migration 032_listings_rooms_decimal.sql in Supabase SQL Editor");
+  }
+  return hasRoomsDecimalColumn;
 }
 
 /**
@@ -344,6 +358,7 @@ export async function insertAndMatchListings(
   const usePostcode         = await checkPostcodeColumn();
   const useStreet           = await checkStreetColumn();
   const useSrcPublishedAt   = await checkSrcPublishedAtColumn();
+  const useRoomsDecimal     = await checkRoomsDecimalColumn();
 
   let inserted = 0;
   let duplicates = 0;
@@ -494,9 +509,12 @@ export async function insertAndMatchListings(
       title: listing.title,
       city: listing.city,
       price: Math.round(listing.price ?? 0),
-      bedrooms: Math.round(listing.bedrooms ?? 0),
+      bedrooms: Math.floor(listing.bedrooms ?? 0),
       size_m2: Math.round(listing.size_m2 ?? 0),
     };
+    if (useRoomsDecimal && listing.rooms_decimal != null) {
+      insertData.rooms_decimal = listing.rooms_decimal;
+    }
 
     if (useImageUrl && listing.image_url) {
       insertData.image_url = listing.image_url;

@@ -44,6 +44,7 @@ interface DbListing {
   city: string;
   price: number;
   bedrooms: number;
+  rooms_decimal?: number | null;
   size_m2: number;
   image_url?: string | null;
   furnished?: boolean | null;
@@ -72,12 +73,20 @@ let hasFurnishedColumn: boolean | null = null;
 let hasDistrictColumn: boolean | null = null;
 let hasAdvancedListingColumns: boolean | null = null;
 let hasSrcPublishedAtColumn: boolean | null = null;
+let hasRoomsDecimalColumn: boolean | null = null;
 
 async function checkSrcPublishedAtColumn(): Promise<boolean> {
   if (hasSrcPublishedAtColumn !== null) return hasSrcPublishedAtColumn;
   const { error } = await supabase.from("listings").select("source_published_at").limit(1);
   hasSrcPublishedAtColumn = !error;
   return hasSrcPublishedAtColumn;
+}
+
+async function checkRoomsDecimalColumn(): Promise<boolean> {
+  if (hasRoomsDecimalColumn !== null) return hasRoomsDecimalColumn;
+  const { error } = await supabase.from("listings").select("rooms_decimal").limit(1);
+  hasRoomsDecimalColumn = !error;
+  return hasRoomsDecimalColumn;
 }
 
 async function checkFurnishedColumn(): Promise<boolean> {
@@ -108,6 +117,7 @@ function getListingSelect(): string {
   if (hasDistrictColumn !== false) parts.push("district, street, postcode");
   if (hasAdvancedListingColumns !== false) parts.push("pets_allowed, balcony, elevator, garden, bath, roof_terrace, parking, energy_label, property_type, latitude, longitude, extra_features, target_categories");
   if (hasSrcPublishedAtColumn !== false) parts.push("source_published_at");
+  if (hasRoomsDecimalColumn !== false) parts.push("rooms_decimal");
   return parts.join(", ");
 }
 
@@ -424,7 +434,9 @@ export function explainMatchInternal(listing: DbListing, profile: SearchProfile)
   });
   if (!priceMaxPassed) return { matched: false, checks, reason: `Price ${listing.price} > max ${priceFlexible ? Math.round(profile.price_max * 1.10) : profile.price_max}${priceFlexible ? " (flexible +10%)" : ""}` };
 
-  const listingBedsKnown = listing.bedrooms > 0;
+  // Use rooms_decimal (fractional) when available for precise comparison; fall back to integer bedrooms.
+  const effectiveRooms = listing.rooms_decimal != null ? listing.rooms_decimal : listing.bedrooms;
+  const listingBedsKnown = effectiveRooms > 0;
   let bedroomsPassed: boolean;
   let bedroomsHybrid = false;
   if (profile.bedrooms_min <= 0) {
@@ -433,21 +445,21 @@ export function explainMatchInternal(listing: DbListing, profile: SearchProfile)
     bedroomsPassed = true;
     bedroomsHybrid = true;
   } else {
-    bedroomsPassed = listing.bedrooms >= profile.bedrooms_min;
+    bedroomsPassed = effectiveRooms >= profile.bedrooms_min;
   }
   checks.push({
     filter: "bedrooms_min",
     profileField: "bedrooms_min",
     profileValue: String(profile.bedrooms_min),
-    listingField: "bedrooms",
-    listingValue: String(listing.bedrooms),
+    listingField: listing.rooms_decimal != null ? "rooms_decimal" : "bedrooms",
+    listingValue: String(effectiveRooms),
     rule: listingBedsKnown
-      ? "listing.bedrooms >= profile.bedrooms_min (skipped if bedrooms_min=0)"
-      : "hybrid: listing.bedrooms=0 (unknown) → allowed",
+      ? "listing.rooms >= profile.bedrooms_min (skipped if bedrooms_min=0)"
+      : "hybrid: listing.rooms=0 (unknown) → allowed",
     passed: bedroomsPassed,
     hybridPass: bedroomsHybrid,
   });
-  if (!bedroomsPassed) return { matched: false, checks, reason: `Bedrooms ${listing.bedrooms} < min ${profile.bedrooms_min}` };
+  if (!bedroomsPassed) return { matched: false, checks, reason: `Rooms ${effectiveRooms} < min ${profile.bedrooms_min}` };
 
   const listingSizeKnown = listing.size_m2 > 0;
   let sizePassed: boolean;
@@ -712,6 +724,7 @@ export async function explainMatch(
   await checkFurnishedColumn();
   await checkDistrictColumn();
   await checkAdvancedListingColumns();
+  await checkRoomsDecimalColumn();
 
   const { data: listing } = await supabase
     .from("listings")
@@ -747,6 +760,7 @@ export async function explainAllProfilesForListing(
   await checkFurnishedColumn();
   await checkDistrictColumn();
   await checkAdvancedListingColumns();
+  await checkRoomsDecimalColumn();
 
   const { data: listing } = await supabase
     .from("listings")
@@ -859,6 +873,7 @@ export async function matchListingAgainstProfiles(listingId: string): Promise<nu
   await checkFurnishedColumn();
   await checkDistrictColumn();
   await checkAdvancedListingColumns();
+  await checkRoomsDecimalColumn();
 
   const { data: listing, error: lErr } = await supabase
     .from("listings")
@@ -992,6 +1007,7 @@ export async function backfillMatchesForSearchProfile(searchProfileId: string): 
   await checkFurnishedColumn();
   await checkDistrictColumn();
   await checkAdvancedListingColumns();
+  await checkRoomsDecimalColumn();
 
   const { data: profile, error: pErr } = await supabase
     .from("search_profiles")

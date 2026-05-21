@@ -141,9 +141,12 @@ async function fetchAndParse(
     const size = Math.round(parseNumber(sizeText, config.fields.size_m2?.regex));
 
     let bedrooms = 0;
+    let roomsDecimal: number | null = null;
     if (config.fields.bedrooms) {
       const roomsText = extractField($card, $, config.fields.bedrooms);
-      bedrooms = Math.round(parseNumber(roomsText, config.fields.bedrooms.regex));
+      const parsed = parseNumber(roomsText, config.fields.bedrooms.regex);
+      roomsDecimal = parsed > 0 ? parsed : null;
+      bedrooms = Math.floor(parsed);
     }
 
     let imageUrl: string | null = null;
@@ -198,6 +201,7 @@ async function fetchAndParse(
       city: config.city,
       price,
       bedrooms,
+      rooms_decimal: roomsDecimal,
       size_m2: size,
       source: config.source,
       source_id: sourceId,

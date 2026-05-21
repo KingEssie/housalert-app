@@ -177,7 +177,8 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
     const price = parsePrice(priceLabel);
 
     const keyFacts = card.find('[data-testid="cardmfe-keyfacts-testid"]').text();
-    const bedrooms = Math.round(parseZimmer(keyFacts));
+    const zimmerDecimal = parseZimmer(keyFacts);
+    const bedrooms = Math.floor(zimmerDecimal);
     const size = Math.round(parseSize(keyFacts));
 
     let imageUrl: string | null = null;
@@ -226,6 +227,7 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
       city,
       price,
       bedrooms,
+      rooms_decimal: zimmerDecimal > 0 ? zimmerDecimal : null,
       size_m2: size,
       source: "immowelt",
       source_id: sourceId,

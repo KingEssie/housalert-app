@@ -408,7 +408,8 @@ function parseListingCard($: cheerio.CheerioAPI, card: cheerio.Element, city: st
   const priceText = priceEl.text();
 
   const size     = Math.round(parseSize(tagsText));
-  const bedrooms = Math.round(parseRooms(tagsText) || parseRooms(title));
+  const roomsDecimal = parseRooms(tagsText) || parseRooms(title) || 0;
+  const bedrooms = Math.floor(roomsDecimal);
   const price    = parsePrice(priceText);
 
   const descEl = $card.find(".aditem-main--middle--description, .text-module-begin").first();
@@ -444,6 +445,7 @@ function parseListingCard($: cheerio.CheerioAPI, card: cheerio.Element, city: st
     city,
     price: effectivePrice || price,
     bedrooms,
+    rooms_decimal: roomsDecimal > 0 ? roomsDecimal : null,
     size_m2: size,
     source: "kleinanzeigen",
     source_id: sourceId,

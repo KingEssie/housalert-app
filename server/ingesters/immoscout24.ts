@@ -347,7 +347,8 @@ function parseJsonEntry(entry: Is24JsonEntry, city: string): ParsedListing | nul
   const price = warmRentVal > baseRent ? warmRentVal : (baseRent || warmRentVal);
 
   const size_m2 = re.livingSpace ? Math.round(re.livingSpace) : 0;
-  const bedrooms = re.numberOfRooms ? Math.round(re.numberOfRooms) : 0;
+  const roomsDecimal = re.numberOfRooms ?? null;
+  const bedrooms = roomsDecimal != null ? Math.floor(roomsDecimal) : 0;
 
   const addr = re.address ?? {};
   const quarter = addr.quarter?.trim() || null;
@@ -391,6 +392,7 @@ function parseJsonEntry(entry: Is24JsonEntry, city: string): ParsedListing | nul
     city,
     price: Math.round(price),
     bedrooms,
+    rooms_decimal: roomsDecimal != null && roomsDecimal > 0 ? roomsDecimal : null,
     size_m2,
     source: "immoscout24",
     source_id: exposeId,
@@ -544,7 +546,8 @@ function extractFromHtml(html: string, city: string): ParsedListing[] {
         ".result-list-entry__criteria, [class*='criteria'], dl"
       ).text();
 
-      const bedrooms = Math.round(parseRooms(criteriaText));
+      const rawRoomsHtml = parseRooms(criteriaText);
+      const bedrooms = Math.floor(rawRoomsHtml);
       const size_m2  = parseSize(criteriaText);
 
       const allText = [$card.text()].join(" ");
@@ -571,6 +574,7 @@ function extractFromHtml(html: string, city: string): ParsedListing[] {
         city,
         price: effectivePrice || price,
         bedrooms,
+        rooms_decimal: rawRoomsHtml > 0 ? rawRoomsHtml : null,
         size_m2,
         source: "immoscout24",
         source_id: sourceId,
