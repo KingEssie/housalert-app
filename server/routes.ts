@@ -8586,11 +8586,19 @@ export async function registerRoutes(
       let resolvedEmail = email;
 
       if (email && !resolvedUserId) {
-        const { data: found } = await adminSb.auth.admin.listUsers();
-        const match = (found?.users || []).find((u: any) => u.email?.toLowerCase() === email);
-        if (!match) return res.status(404).json({ error: `No user found with email: ${email}` });
-        resolvedUserId = match.id;
-        resolvedEmail = match.email || email;
+        let page = 1;
+        const perPage = 1000;
+        let matchedUser: any = null;
+        while (!matchedUser) {
+          const { data: pageData } = await adminSb.auth.admin.listUsers({ page, perPage });
+          const users = pageData?.users || [];
+          matchedUser = users.find((u: any) => u.email?.toLowerCase() === email);
+          if (matchedUser || users.length < perPage) break;
+          page++;
+        }
+        if (!matchedUser) return res.status(404).json({ error: `No user found with email: ${email}` });
+        resolvedUserId = matchedUser.id;
+        resolvedEmail = matchedUser.email || email;
       } else if (resolvedUserId && !resolvedEmail) {
         const { data: u } = await adminSb.auth.admin.getUserById(resolvedUserId);
         resolvedEmail = u?.user?.email || resolvedUserId;
@@ -8669,11 +8677,19 @@ export async function registerRoutes(
       let resolvedEmail = email;
 
       if (email && !resolvedUserId) {
-        const { data: found } = await adminSb.auth.admin.listUsers();
-        const match = (found?.users || []).find((u: any) => u.email?.toLowerCase() === email);
-        if (!match) return res.status(404).json({ error: `No user found with email: ${email}` });
-        resolvedUserId = match.id;
-        resolvedEmail = match.email || email;
+        let page = 1;
+        const perPage = 1000;
+        let matchedUser: any = null;
+        while (!matchedUser) {
+          const { data: pageData } = await adminSb.auth.admin.listUsers({ page, perPage });
+          const users = pageData?.users || [];
+          matchedUser = users.find((u: any) => u.email?.toLowerCase() === email);
+          if (matchedUser || users.length < perPage) break;
+          page++;
+        }
+        if (!matchedUser) return res.status(404).json({ error: `No user found with email: ${email}` });
+        resolvedUserId = matchedUser.id;
+        resolvedEmail = matchedUser.email || email;
       } else if (resolvedUserId && !resolvedEmail) {
         const { data: u } = await adminSb.auth.admin.getUserById(resolvedUserId);
         resolvedEmail = u?.user?.email || resolvedUserId;
