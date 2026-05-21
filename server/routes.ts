@@ -6297,8 +6297,8 @@ export async function registerRoutes(
       }
 
       try {
-        const sourceHealthRes = await pgPool.query("SELECT source_reports FROM ingestion_runs ORDER BY started_at DESC LIMIT 1");
-        sourceHealth = sourceHealthRes.rows[0]?.source_reports || [];
+        const shRows = await getSourceHealthSummary();
+        sourceHealth = shRows.map(r => ({ ...r, found: r.found_count }));
       } catch (e: any) {
         log(`[admin-portal] Overview: source health failed: ${e.message}`);
       }

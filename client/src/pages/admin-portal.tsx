@@ -3433,7 +3433,7 @@ function RealtimeSlaTab() {
                 <th className="px-4 py-3 font-medium">Found</th>
                 <th className="px-4 py-3 font-medium">New</th>
                 <th className="px-4 py-3 font-medium">Known skip</th>
-                <th className="px-4 py-3 font-medium">Duration</th>
+                <th className="px-4 py-3 font-medium">Last run time</th>
                 <th className="px-4 py-3 font-medium">Status</th>
               </tr>
             </thead>
@@ -3517,6 +3517,7 @@ function RealtimeSlaTab() {
                 <tr className="bg-gray-50 text-left text-gray-500 text-[11px] uppercase tracking-wide">
                   <th className="px-4 py-3 font-medium">Source / City</th>
                   <th className="px-4 py-3 font-medium">n</th>
+                  <th className="px-4 py-3 font-medium">⚡ FL</th>
                   <th className="px-4 py-3 font-medium">P50</th>
                   <th className="px-4 py-3 font-medium">P90</th>
                   <th className="px-4 py-3 font-medium">P95</th>
@@ -3527,6 +3528,7 @@ function RealtimeSlaTab() {
               <tbody className="divide-y divide-gray-50">
                 {slaMetrics.map((m: any, i: number) => {
                   const e = m.endToEnd;
+                  const flPct = m.eventCount > 0 ? Math.round((m.fastLaneCount / m.eventCount) * 100) : 0;
                   return (
                     <tr key={i} className="bg-white hover:bg-gray-50/50">
                       <td className="px-4 py-3">
@@ -3537,6 +3539,15 @@ function RealtimeSlaTab() {
                         )}
                       </td>
                       <td className="px-4 py-3 text-gray-500">{e?.count ?? 0}</td>
+                      <td className="px-4 py-3 text-[12px]">
+                        {m.fastLaneCount > 0 ? (
+                          <span title={`${m.fastLaneCount} of ${m.eventCount} events were fast-lane`} style={{ color: flPct >= 50 ? "#7c5fc5" : "#aaa" }}>
+                            {m.fastLaneCount}/{m.eventCount}
+                          </span>
+                        ) : (
+                          <span className="text-gray-300">—</span>
+                        )}
+                      </td>
                       <td className="px-4 py-3" style={{ color: slaColor(e?.p50) }}>{fmtSec(e?.p50)}</td>
                       <td className="px-4 py-3" style={{ color: slaColor(e?.p90) }}>{fmtSec(e?.p90)}</td>
                       <td className="px-4 py-3" style={{ color: slaColor(e?.p95) }}>{fmtSec(e?.p95)}</td>
