@@ -138,12 +138,12 @@ async function fetchAndParse(
     const price = parseNumber(priceText, config.fields.price?.regex);
 
     const sizeText = extractField($card, $, config.fields.size_m2);
-    const size = parseNumber(sizeText, config.fields.size_m2?.regex);
+    const size = Math.round(parseNumber(sizeText, config.fields.size_m2?.regex));
 
     let bedrooms = 0;
     if (config.fields.bedrooms) {
       const roomsText = extractField($card, $, config.fields.bedrooms);
-      bedrooms = parseNumber(roomsText, config.fields.bedrooms.regex);
+      bedrooms = Math.round(parseNumber(roomsText, config.fields.bedrooms.regex));
     }
 
     let imageUrl: string | null = null;

@@ -17,7 +17,7 @@ function parsePrice(ariaLabel: string): number {
 
 function parseZimmer(text: string): number {
   const match = text.match(/([\d,]+)\s*Zimmer/);
-  if (match) return Math.floor(parseFloat(match[1].replace(",", ".")));
+  if (match) return parseFloat(match[1].replace(",", "."));
   return 0;
 }
 
@@ -177,8 +177,8 @@ async function fetchAndParseListings(city: string): Promise<ParsedListing[]> {
     const price = parsePrice(priceLabel);
 
     const keyFacts = card.find('[data-testid="cardmfe-keyfacts-testid"]').text();
-    const bedrooms = parseZimmer(keyFacts);
-    const size = parseSize(keyFacts);
+    const bedrooms = Math.round(parseZimmer(keyFacts));
+    const size = Math.round(parseSize(keyFacts));
 
     let imageUrl: string | null = null;
     const galleryDiv = card.find('[data-testid="card-mfe-picture-box-gallery-test-id"]');

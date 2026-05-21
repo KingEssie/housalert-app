@@ -156,9 +156,9 @@ function parsePrice(raw: string): { price: number; rentType: "kalt" | "warm" | "
 
 function parseRooms(text: string): number {
   const m = text.match(/([\d,]+)\s*(?:Zimmer|Zi\.?)/i);
-  if (m) return Math.floor(parseFloat(m[1].replace(",", ".")));
+  if (m) return parseFloat(m[1].replace(",", "."));
   const simple = text.trim().match(/^([\d,]+)$/);
-  if (simple) return Math.floor(parseFloat(simple[1].replace(",", ".")));
+  if (simple) return parseFloat(simple[1].replace(",", "."));
   return 0;
 }
 
@@ -357,8 +357,8 @@ function parseListingCard(
     url: fullUrl,
     city,
     price: effectivePrice || price,
-    bedrooms: rooms,
-    size_m2,
+    bedrooms: Math.round(rooms),
+    size_m2: Math.round(size_m2),
     source: "wohnungsboerse",
     source_id: sourceId,
     image_url: imageUrl,

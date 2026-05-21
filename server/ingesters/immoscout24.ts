@@ -189,7 +189,7 @@ function parseRooms(text: string): number {
   ];
   for (const p of patterns) {
     const m = text.trim().match(p);
-    if (m) return Math.floor(parseFloat(m[1].replace(",", ".")));
+    if (m) return parseFloat(m[1].replace(",", "."));
   }
   return 0;
 }
@@ -347,7 +347,7 @@ function parseJsonEntry(entry: Is24JsonEntry, city: string): ParsedListing | nul
   const price = warmRentVal > baseRent ? warmRentVal : (baseRent || warmRentVal);
 
   const size_m2 = re.livingSpace ? Math.round(re.livingSpace) : 0;
-  const bedrooms = re.numberOfRooms ? Math.floor(re.numberOfRooms) : 0;
+  const bedrooms = re.numberOfRooms ? Math.round(re.numberOfRooms) : 0;
 
   const addr = re.address ?? {};
   const quarter = addr.quarter?.trim() || null;
@@ -544,7 +544,7 @@ function extractFromHtml(html: string, city: string): ParsedListing[] {
         ".result-list-entry__criteria, [class*='criteria'], dl"
       ).text();
 
-      const bedrooms = parseRooms(criteriaText);
+      const bedrooms = Math.round(parseRooms(criteriaText));
       const size_m2  = parseSize(criteriaText);
 
       const allText = [$card.text()].join(" ");

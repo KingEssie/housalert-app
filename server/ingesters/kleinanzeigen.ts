@@ -187,7 +187,7 @@ function parseRooms(text: string): number {
   ];
   for (const p of patterns) {
     const m = text.match(p);
-    if (m) return Math.floor(parseFloat(m[1].replace(",", ".")));
+    if (m) return parseFloat(m[1].replace(",", "."));
   }
   return 0;
 }
@@ -407,8 +407,8 @@ function parseListingCard($: cheerio.CheerioAPI, card: cheerio.Element, city: st
   const priceEl  = $card.find(".aditem-main--middle--price-shipping--price, [class*='price']").first();
   const priceText = priceEl.text();
 
-  const size     = parseSize(tagsText);
-  const bedrooms = parseRooms(tagsText) || parseRooms(title);
+  const size     = Math.round(parseSize(tagsText));
+  const bedrooms = Math.round(parseRooms(tagsText) || parseRooms(title));
   const price    = parsePrice(priceText);
 
   const descEl = $card.find(".aditem-main--middle--description, .text-module-begin").first();

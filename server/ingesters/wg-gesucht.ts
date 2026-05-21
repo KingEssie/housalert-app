@@ -262,8 +262,8 @@ function offerToListing(offer: WgOffer, city: string): ParsedListing | null {
   if (!title) return null;
 
   const price = parseInt(offer.total_costs, 10) || 0;
-  const size = parseInt(offer.property_size, 10) || 0;
-  const rooms = parseInt(offer.number_of_rooms, 10) || 0;
+  const size = parseFloat(offer.property_size) || 0;
+  const rooms = parseFloat(offer.number_of_rooms) || 0;
 
   const lat = parseFloat(offer.geo_latitude) || null;
   const lng = parseFloat(offer.geo_longitude) || null;
@@ -283,8 +283,8 @@ function offerToListing(offer: WgOffer, city: string): ParsedListing | null {
     url: buildListingUrl(offer),
     city,
     price,
-    bedrooms: rooms,
-    size_m2: size,
+    bedrooms: Math.round(rooms),
+    size_m2: Math.round(size),
     source: "wg-gesucht",
     source_id: offer.offer_id,
     image_url: null,
