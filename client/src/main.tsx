@@ -17,11 +17,27 @@ function renderError(err: unknown) {
 
 function isNative(): boolean {
   const w = window as any;
-  if (w.Capacitor?.isNativePlatform?.() === true) return true;
-  if (w.__HOUSALERT_NATIVE__ === true) return true;
+  if (w.Capacitor?.isNativePlatform?.() === true) {
+    try { localStorage.setItem("ha_native_v1", "capacitor"); } catch {}
+    return true;
+  }
+  if (w.__HOUSALERT_NATIVE__ === true) {
+    try { if (localStorage.getItem("ha_native_v1") !== "capacitor") localStorage.setItem("ha_native_v1", "expo"); } catch {}
+    return true;
+  }
   try {
-    if (new URLSearchParams(window.location.search).get("native") === "1") return true;
+    if (new URLSearchParams(window.location.search).get("native") === "1") {
+      // Persist BEFORE any SPA routing strips the query param
+      w.__HOUSALERT_NATIVE__ = true;
+      try { if (localStorage.getItem("ha_native_v1") !== "capacitor") localStorage.setItem("ha_native_v1", "expo"); } catch {}
+      return true;
+    }
   } catch {}
+  // Android WebView UA marker — React Native / Expo WebView always sets "wv"
+  if (/Android.*wv\b/.test(navigator.userAgent)) {
+    try { if (localStorage.getItem("ha_native_v1") !== "capacitor") localStorage.setItem("ha_native_v1", "expo"); } catch {}
+    return true;
+  }
   return false;
 }
 

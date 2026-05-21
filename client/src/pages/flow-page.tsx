@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiFetch } from "@/lib/api-base";
 import { FlowLayout } from "@/components/flow-layout";
 import { isPushSupported, getPushPermissionState, subscribeToPush } from "@/lib/push";
+import { isExpoWebView, isCapacitorNative, registerNativePush, getPlatform } from "@/lib/capacitor";
 import {
   getFlowById,
   getStepIndex,
@@ -167,23 +168,102 @@ function InlineNotifications({ accessToken }: { accessToken: string }) {
   const [settings, setSettings] = useState<{ push_enabled: boolean; email_enabled: boolean } | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
+  const [activeTokenCount, setActiveTokenCount] = useState<number | null>(null);
 
   useEffect(() => {
     apiFetch("/api/notifications/settings", { headers: { Authorization: `Bearer ${accessToken}` } })
       .then(r => r.json())
       .then(d => { setSettings(d); setLoading(false); })
       .catch(() => setLoading(false));
+
+    if (isExpoWebView() || isCapacitorNative()) {
+      apiFetch("/api/push/status", { headers: { Authorization: `Bearer ${accessToken}` } })
+        .then(r => r.json())
+        .then(d => setActiveTokenCount(d?.devices ?? 0))
+        .catch(() => {});
+    }
   }, [accessToken]);
 
   async function handleToggle(key: "push_enabled" | "email_enabled", current: boolean) {
+    console.log("[push-toggle] clicked", { key, current });
     setUpdating(key);
     try {
-      if (key === "push_enabled" && !current) {
-        if (!isPushSupported()) { toast({ title: t("settings.pushNotSupported"), variant: "destructive" }); setUpdating(null); return; }
-        const perm = await getPushPermissionState();
-        if (perm === "denied") { toast({ title: t("settings.pushDenied"), variant: "destructive" }); setUpdating(null); return; }
-        await subscribeToPush(accessToken);
+      if (key === "push_enabled") {
+        const _expo = isExpoWebView();
+        const _cap  = isCapacitorNative();
+        const selectedBranch = _expo ? "expo-webview" : _cap ? "capacitor-native" : "web-browser";
+        console.log("[push-toggle]", {
+          isExpoWebView: _expo,
+          isCapacitorNative: _cap,
+          isNativePlatform: _expo || _cap,
+          selectedBranch,
+          __NATIVE__: (window as any).__HOUSALERT_NATIVE__,
+          Capacitor: !!(window as any).Capacitor,
+          ua: navigator.userAgent.slice(0, 80),
+        });
+
+        if (_expo) {
+          // ── Expo WebView: native layer (App.tsx) already holds the token.
+          // Just flip push_enabled on the backend.
+          const res = await apiFetch("/api/notifications/settings", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+            body: JSON.stringify({ push_enabled: !current }),
+          });
+          if (!res.ok) throw new Error("Failed");
+          setSettings(prev => prev ? { ...prev, push_enabled: !current } : prev);
+          queryClient.invalidateQueries({ queryKey: ["/api/notifications/settings"] });
+          queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
+          toast({ title: !current ? "Push-meldingen ingeschakeld" : "Push-meldingen uitgeschakeld" });
+          setUpdating(null);
+          return;
+        }
+
+        if (_cap) {
+          // ── Capacitor native: register via PushNotifications plugin.
+          if (!current) {
+            const token = await registerNativePush();
+            console.log("[push-toggle] registerNativePush:", token ? token.slice(0, 30) + "…" : "null");
+            if (!token) {
+              toast({ title: t("settings.pushDenied"), description: "Verleen toestemming in Android-instellingen → HousAlert.", variant: "destructive" });
+              setUpdating(null);
+              return;
+            }
+            const regRes = await apiFetch("/api/expo-push-token", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+              body: JSON.stringify({ expo_push_token: token, platform: getPlatform() }),
+            });
+            if (!regRes.ok) throw new Error("Token registration failed");
+            const regData = await regRes.json();
+            setActiveTokenCount(regData.active_token_count ?? 1);
+            setSettings(prev => prev ? { ...prev, push_enabled: true } : prev);
+            queryClient.invalidateQueries({ queryKey: ["/api/notifications/settings"] });
+            queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
+            toast({ title: "Push-meldingen ingeschakeld" });
+          } else {
+            const res = await apiFetch("/api/notifications/settings", {
+              method: "PUT",
+              headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
+              body: JSON.stringify({ push_enabled: false }),
+            });
+            if (!res.ok) throw new Error("Failed");
+            setSettings(prev => prev ? { ...prev, push_enabled: false } : prev);
+            queryClient.invalidateQueries({ queryKey: ["/api/notifications/settings"] });
+          }
+          setUpdating(null);
+          return;
+        }
+
+        // ── Web browser: use VAPID / serviceWorker push.
+        if (!current) {
+          if (!isPushSupported()) { toast({ title: t("settings.pushNotSupported"), variant: "destructive" }); setUpdating(null); return; }
+          const perm = await getPushPermissionState();
+          if (perm === "denied") { toast({ title: t("settings.pushDenied"), variant: "destructive" }); setUpdating(null); return; }
+          await subscribeToPush(accessToken);
+        }
       }
+
       const res = await apiFetch("/api/notifications/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
@@ -204,6 +284,9 @@ function InlineNotifications({ accessToken }: { accessToken: string }) {
   if (!settings) return null;
 
   const anyEnabled = settings.push_enabled || settings.email_enabled;
+  const _expo = isExpoWebView();
+  const _cap  = isCapacitorNative();
+  const pushPath = _expo ? "expo-webview" : _cap ? "capacitor-native" : "web-browser";
 
   return (
     <div data-testid="inline-notifications">
@@ -218,6 +301,18 @@ function InlineNotifications({ accessToken }: { accessToken: string }) {
           onToggle={() => handleToggle("push_enabled", settings.push_enabled)}
           testId="toggle-push"
         />
+        {/* Debug row — visible in native mode or ?debug=1 */}
+        {(_expo || _cap || (() => { try { return new URLSearchParams(window.location.search).get("debug") === "1" || localStorage.getItem("ha_debug") === "1"; } catch { return false; } })()) && (
+          <div className="px-5 pb-3 text-[10px] font-mono" style={{ color: "#7c3aed" }}>
+            <span>push path: <strong>{pushPath}</strong></span>
+            {" · "}
+            <span>expo webview: <strong>{String(_expo)}</strong></span>
+            {" · "}
+            <span>cap native: <strong>{String(_cap)}</strong></span>
+            {" · "}
+            <span>tokens: <strong>{activeTokenCount === null ? "…" : activeTokenCount}</strong></span>
+          </div>
+        )}
         <div className="h-px bg-ha-divider mx-5" />
         <NotifToggleRow
           icon={<Mail className="w-5 h-5 text-ha-primary" />}

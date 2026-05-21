@@ -45,17 +45,26 @@ export function isCapacitorNative(): boolean {
  * True when running inside the Expo React Native WebView wrapper.
  * The native layer (mobile-clean/App.tsx) handles Expo push token registration.
  * The web UI should NOT call Capacitor APIs — they don't exist here.
+ *
+ * Detection order (most to least reliable):
+ *  1. window.__HOUSALERT_NATIVE__ injected by App.tsx
+ *  2. localStorage cache written by main.tsx at startup (before routing strips URL)
+ *  3. ?native=1 URL param (only works before SPA router navigates away)
+ *  4. Android WebView UA fingerprint ("wv" token) — reliable fallback
  */
 export function isExpoWebView(): boolean {
   if (isCapacitorNative()) return false;
   if ((window as any).__HOUSALERT_NATIVE__ === true) return true;
   try {
-    const cached = localStorage.getItem(NATIVE_CACHE_KEY);
-    if (cached === "expo") return true;
+    if (localStorage.getItem(NATIVE_CACHE_KEY) === "expo") return true;
   } catch {}
   try {
     if (new URLSearchParams(window.location.search).get("native") === "1") return true;
   } catch {}
+  // Android WebView always includes "wv" in the UA string — this app's
+  // production web URL is never intentionally opened inside 3rd-party WebViews,
+  // so this is a safe signal that we're inside the Expo wrapper.
+  if (/Android.*wv\b/.test(navigator.userAgent)) return true;
   return false;
 }
 
