@@ -368,10 +368,10 @@ function Router() {
 
 function BuildVersionBadge() {
   const v = (window as any).__BUILD_VERSION__ as string | undefined;
-  const [open, setOpen] = React.useState(false);
-  const [info, setInfo] = React.useState<Record<string, string>>({});
+  const [open, setOpen] = useState(false);
+  const [info, setInfo] = useState<Record<string, string>>({});
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!open) return;
     (async () => {
       const out: Record<string, string> = {};
