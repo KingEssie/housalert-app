@@ -1120,6 +1120,18 @@ export async function registerRoutes(
   const PUSH_REG_VERSION = "v2-2026-03-14";
   const PUSH_REG_BUILD_TIME = new Date().toISOString();
 
+  // Public version endpoint — no auth required.
+  // Curl: curl -s https://app.housalert.com/api/version
+  app.get("/api/version", (_req, res) => {
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    return res.json({
+      build: "push-fix-v5-20260522",
+      server_started: PUSH_REG_BUILD_TIME,
+      push_reg_version: PUSH_REG_VERSION,
+      ok: true,
+    });
+  });
+
   app.get("/api/version/push-registration", (_req, res) => {
     return res.json({
       version: PUSH_REG_VERSION,

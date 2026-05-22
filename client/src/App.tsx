@@ -366,6 +366,29 @@ function Router() {
   );
 }
 
+function BuildVersionBadge() {
+  const v = (window as any).__BUILD_VERSION__ as string | undefined;
+  if (!v) return null;
+  return (
+    <div
+      style={{
+        position: "fixed",
+        bottom: 4,
+        right: 6,
+        zIndex: 9999,
+        fontSize: 9,
+        fontFamily: "monospace",
+        color: "#a78bfa",
+        opacity: 0.55,
+        pointerEvents: "none",
+        userSelect: "none",
+      }}
+    >
+      {v}
+    </div>
+  );
+}
+
 function AppShell() {
   return (
     <ThemeProvider>
@@ -375,6 +398,7 @@ function AppShell() {
             <AuthProvider>
               <Toaster />
               <Router />
+              <BuildVersionBadge />
             </AuthProvider>
           </TooltipProvider>
         </QueryClientProvider>

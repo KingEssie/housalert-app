@@ -6,6 +6,17 @@ import "./index.css";
 export const BUILD_VERSION = "push-fix-v5-20260522";
 (window as any).__BUILD_VERSION__ = BUILD_VERSION;
 console.log("[BUILD]", BUILD_VERSION);
+
+// Force the service worker to check for an update on every page load.
+// This ensures stale SWs (v4) are replaced by v5 without waiting 24h.
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.getRegistration().then((reg) => {
+    if (reg) {
+      reg.update().catch(() => {});
+      console.log("[SW] Update check triggered for version", BUILD_VERSION);
+    }
+  }).catch(() => {});
+}
 // mapbox-gl CSS is loaded inside map-view-mapbox.tsx (lazy) — do NOT import here.
 // Importing it at this level pulled mapbox-gl into the initial bundle and added
 // ~2MB of JS that Android V8 had to parse before the app could render.
