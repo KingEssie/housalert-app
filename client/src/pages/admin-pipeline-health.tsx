@@ -692,7 +692,7 @@ function SlaMetricsTab() {
               <div className="overflow-x-auto">
                 <table className="w-full text-xs">
                   <thead><tr className="text-gray-400 border-b">
-                    {["Day", "Runs", "Success", "Failed", "Found", "Inserted", "Matches", "Errors", "Avg Duration"].map(h => (
+                    {["Day", "Runs", "✓", "✗", "⚡ Fast-lane", "🔍 Deep-scan", "Fast avg", "Deep avg", "Found", "Inserted", "Matches", "Errors"].map(h => (
                       <th key={h} className="px-3 py-2 text-left font-medium">{h}</th>
                     ))}
                   </tr></thead>
@@ -703,11 +703,14 @@ function SlaMetricsTab() {
                         <td className="px-3 py-2">{d.runs}</td>
                         <td className="px-3 py-2 text-green-600">{d.success_runs}</td>
                         <td className="px-3 py-2 text-red-500">{d.failed_runs || "—"}</td>
+                        <td className="px-3 py-2 text-blue-600">{d.fast_lane_runs || "—"}</td>
+                        <td className="px-3 py-2 text-gray-600">{d.deep_scan_runs || "—"}</td>
+                        <td className="px-3 py-2 text-blue-500">{d.avg_fast_lane_sec != null ? `${d.avg_fast_lane_sec}s` : "—"}</td>
+                        <td className="px-3 py-2 text-gray-500">{d.avg_deep_scan_sec != null ? `${d.avg_deep_scan_sec}s` : "—"}</td>
                         <td className="px-3 py-2">{d.total_found}</td>
                         <td className="px-3 py-2">{d.total_inserted}</td>
                         <td className="px-3 py-2">{d.total_matches}</td>
                         <td className="px-3 py-2 text-red-500">{d.total_errors || "—"}</td>
-                        <td className="px-3 py-2">{d.avg_duration_sec != null ? `${d.avg_duration_sec}s` : "—"}</td>
                       </tr>
                     ))}
                   </tbody>

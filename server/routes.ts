@@ -9040,13 +9040,16 @@ export async function registerRoutes(
         `SELECT
            DATE(finished_at) AS day,
            COUNT(*) AS runs,
-           ROUND(AVG(duration_sec))::int AS avg_duration_sec,
+           COUNT(*) FILTER (WHERE status = 'success') AS success_runs,
+           COUNT(*) FILTER (WHERE status = 'failed') AS failed_runs,
+           COUNT(*) FILTER (WHERE duration_sec < 30) AS fast_lane_runs,
+           COUNT(*) FILTER (WHERE duration_sec >= 30) AS deep_scan_runs,
+           ROUND(AVG(duration_sec) FILTER (WHERE duration_sec >= 30))::int AS avg_deep_scan_sec,
+           ROUND(AVG(duration_sec) FILTER (WHERE duration_sec < 30))::int AS avg_fast_lane_sec,
            SUM(total_found) AS total_found,
            SUM(total_inserted) AS total_inserted,
            SUM(total_matches) AS total_matches,
-           SUM(total_errors) AS total_errors,
-           COUNT(*) FILTER (WHERE status = 'success') AS success_runs,
-           COUNT(*) FILTER (WHERE status = 'failed') AS failed_runs
+           SUM(total_errors) AS total_errors
          FROM ingestion_runs
          WHERE finished_at >= NOW() - INTERVAL '14 days'
          GROUP BY DATE(finished_at)

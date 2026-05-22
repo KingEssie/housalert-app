@@ -80,8 +80,8 @@ export async function upsertSourceHealth(report: IngestionReport, runStartedAt: 
            duration_ms, found_count, inserted_count, duplicate_count, error_count,
            last_error, status, consecutive_failures, consecutive_zeros, total_runs, updated_at)
          VALUES ($1, $2, $3::TIMESTAMPTZ,
-           CASE WHEN $4::BOOLEAN THEN $3::TIMESTAMPTZ ELSE NULL END,
-           CASE WHEN NOT $4::BOOLEAN THEN $3::TIMESTAMPTZ ELSE NULL END,
+           CASE WHEN $4::BOOLEAN THEN $3::TIMESTAMPTZ ELSE NULL::TIMESTAMPTZ END,
+           CASE WHEN NOT $4::BOOLEAN THEN $3::TIMESTAMPTZ ELSE NULL::TIMESTAMPTZ END,
            $5, $6, $7, $8, $9, $10, $11,
            CASE WHEN $4::BOOLEAN THEN 0 ELSE 1 END,
            CASE WHEN $12::BOOLEAN THEN 1 ELSE 0 END,
