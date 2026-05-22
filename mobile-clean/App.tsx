@@ -18,9 +18,10 @@ import * as Device from "expo-device";
 import Constants from "expo-constants";
 
 const WEB_APP_URL = "https://app.housalert.com";
+const BUILD_TAG = "push-fix-v5-20260522";
 const API_BASE = "https://app.housalert.com";
 
-console.log("[BOOT] HousAlert push v6 — production-ready");
+console.log("[BOOT] HousAlert push v6 — production-ready —", BUILD_TAG);
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -383,7 +384,7 @@ export default function App() {
       <StatusBar style="dark" />
       <WebView
         ref={webViewRef}
-        source={{ uri: `${WEB_APP_URL}?native=1` }}
+        source={{ uri: `${WEB_APP_URL}?native=1&v=${BUILD_TAG}` }}
         style={styles.webview}
         injectedJavaScriptBeforeContentLoaded={INJECTED_JS}
         injectedJavaScript={INJECTED_JS}

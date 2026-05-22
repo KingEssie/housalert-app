@@ -1,6 +1,6 @@
 // HousAlert Service Worker
-// SW_VERSION: v4 — force cache-bust on deploy; bump this string on every release
-const SW_VERSION = "v4";
+// SW_VERSION: v5 — force cache-bust on deploy; bump this string on every release
+const SW_VERSION = "v5";
 
 // On install: skip waiting immediately so the new SW activates without
 // requiring all tabs to close. Critical for Safari PWA where the old SW
@@ -23,7 +23,7 @@ self.addEventListener("activate", (event) => {
       caches.keys().then((keys) =>
         Promise.all(
           keys
-            .filter((k) => !k.startsWith("housalert-v4"))
+            .filter((k) => !k.startsWith("housalert-v5"))
             .map((k) => {
               console.log("[SW] Deleting stale cache:", k);
               return caches.delete(k);

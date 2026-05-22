@@ -304,11 +304,13 @@ function InlineNotifications({ accessToken }: { accessToken: string }) {
         {/* Debug row — visible in native mode or ?debug=1 */}
         {(_expo || _cap || (() => { try { return new URLSearchParams(window.location.search).get("debug") === "1" || localStorage.getItem("ha_debug") === "1"; } catch { return false; } })()) && (
           <div className="px-5 pb-3 text-[10px] font-mono" style={{ color: "#7c3aed" }}>
+            <span>build: <strong>{(window as any).__BUILD_VERSION__ ?? "?"}</strong></span>
+            {" · "}
             <span>push path: <strong>{pushPath}</strong></span>
             {" · "}
-            <span>expo webview: <strong>{String(_expo)}</strong></span>
+            <span>expo: <strong>{String(_expo)}</strong></span>
             {" · "}
-            <span>cap native: <strong>{String(_cap)}</strong></span>
+            <span>cap: <strong>{String(_cap)}</strong></span>
             {" · "}
             <span>tokens: <strong>{activeTokenCount === null ? "…" : activeTokenCount}</strong></span>
           </div>

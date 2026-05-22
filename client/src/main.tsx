@@ -1,5 +1,11 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
+
+// Build version — bump this with every release to verify the correct bundle is running.
+// Visible in: browser console, preferences debug panel, flow-page push debug row.
+export const BUILD_VERSION = "push-fix-v5-20260522";
+(window as any).__BUILD_VERSION__ = BUILD_VERSION;
+console.log("[BUILD]", BUILD_VERSION);
 // mapbox-gl CSS is loaded inside map-view-mapbox.tsx (lazy) — do NOT import here.
 // Importing it at this level pulled mapbox-gl into the initial bundle and added
 // ~2MB of JS that Android V8 had to parse before the app could render.

@@ -301,6 +301,7 @@ export default function PreferencesPage() {
           {(isAndroidNative || (() => { try { return new URLSearchParams(window.location.search).get("debug") === "1" || localStorage.getItem("ha_debug") === "1"; } catch { return false; } })()) && (
             <div className="mx-5 mb-4 rounded-[12px] px-3 py-2.5 text-[10px] font-mono leading-relaxed" style={{ backgroundColor: "#f8f5ff", border: "1px solid #ddd6fe", color: "#4c1d95" }}>
               <p className="font-bold text-[11px] mb-1" style={{ color: "#7c3aed" }}>Push debug info</p>
+              <p>build: <strong>{(window as any).__BUILD_VERSION__ ?? "unknown"}</strong></p>
               <p>platform: <strong>{debugInfo.platform}</strong></p>
               <p>push path: <strong>{debugInfo.pushPath}</strong></p>
               <p>expo webview: <strong>{String(debugInfo.expoWebView)}</strong></p>
