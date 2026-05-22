@@ -1125,7 +1125,7 @@ export async function registerRoutes(
   app.get("/api/version", (_req, res) => {
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
     return res.json({
-      build: "push-fix-v5-20260522",
+      build: "push-fix-v6-20260522",
       server_started: PUSH_REG_BUILD_TIME,
       push_reg_version: PUSH_REG_VERSION,
       ok: true,

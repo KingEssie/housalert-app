@@ -368,24 +368,73 @@ function Router() {
 
 function BuildVersionBadge() {
   const v = (window as any).__BUILD_VERSION__ as string | undefined;
+  const [open, setOpen] = React.useState(false);
+  const [info, setInfo] = React.useState<Record<string, string>>({});
+
+  React.useEffect(() => {
+    if (!open) return;
+    (async () => {
+      const out: Record<string, string> = {};
+      out.build = v ?? "unknown";
+      out.pwa = (window.matchMedia("(display-mode: standalone)").matches || (window.navigator as any).standalone === true) ? "standalone ✓" : "browser";
+      try {
+        const reg = await navigator.serviceWorker.getRegistration();
+        out.sw_active = reg?.active?.scriptURL ?? "none";
+        out.sw_state = reg?.active?.state ?? "none";
+      } catch { out.sw_active = "n/a"; }
+      try {
+        const keys = await caches.keys();
+        out.caches = keys.length ? keys.join(", ") : "empty";
+      } catch { out.caches = "n/a"; }
+      try {
+        const r = await fetch("/api/version", { cache: "no-store" });
+        const d = await r.json();
+        out.server_build = d.build ?? "?";
+        out.match = d.build === v ? "✓ match" : "⚠ MISMATCH";
+      } catch { out.server_build = "fetch failed"; }
+      setInfo(out);
+    })();
+  }, [open, v]);
+
   if (!v) return null;
   return (
-    <div
-      style={{
-        position: "fixed",
-        bottom: 4,
-        right: 6,
-        zIndex: 9999,
-        fontSize: 9,
-        fontFamily: "monospace",
-        color: "#a78bfa",
-        opacity: 0.55,
-        pointerEvents: "none",
-        userSelect: "none",
-      }}
-    >
-      {v}
-    </div>
+    <>
+      <div
+        onClick={() => setOpen(o => !o)}
+        style={{
+          position: "fixed", bottom: 4, right: 6, zIndex: 9999,
+          fontSize: 9, fontFamily: "monospace", color: "#a78bfa",
+          opacity: 0.55, cursor: "pointer", userSelect: "none",
+        }}
+      >
+        {v}
+      </div>
+      {open && (
+        <div
+          style={{
+            position: "fixed", bottom: 20, right: 8, zIndex: 10000,
+            backgroundColor: "#1e1b4b", color: "#c4b5fd", borderRadius: 10,
+            padding: "10px 14px", fontSize: 10, fontFamily: "monospace",
+            maxWidth: 320, boxShadow: "0 4px 24px rgba(0,0,0,0.5)",
+            lineHeight: 1.7, whiteSpace: "pre-wrap",
+          }}
+          onClick={() => setOpen(false)}
+        >
+          <div style={{ fontWeight: 700, marginBottom: 4, color: "#e9d5ff" }}>
+            🔍 PWA Debug
+          </div>
+          {Object.entries(info).length === 0
+            ? "Loading…"
+            : Object.entries(info).map(([k, val]) => (
+                <div key={k}>
+                  <span style={{ color: "#818cf8" }}>{k}:</span>{" "}
+                  <strong style={{ color: val.includes("MISMATCH") ? "#f87171" : val.includes("✓") ? "#4ade80" : "#e9d5ff" }}>{val}</strong>
+                </div>
+              ))}
+          <div style={{ marginTop: 6, color: "#6d28d9", fontSize: 9 }}>tap to close</div>
+        </div>
+      )}
+    </>
   );
 }
 

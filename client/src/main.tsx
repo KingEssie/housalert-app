@@ -3,20 +3,57 @@ import "./index.css";
 
 // Build version — bump this with every release to verify the correct bundle is running.
 // Visible in: browser console, preferences debug panel, flow-page push debug row.
-export const BUILD_VERSION = "push-fix-v5-20260522";
+export const BUILD_VERSION = "push-fix-v6-20260522";
 (window as any).__BUILD_VERSION__ = BUILD_VERSION;
 console.log("[BUILD]", BUILD_VERSION);
 
-// Force the service worker to check for an update on every page load.
-// This ensures stale SWs (v4) are replaced by v5 without waiting 24h.
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.getRegistration().then((reg) => {
+// ─── Service Worker update + version-mismatch reload ───────────────────────
+// 1. Trigger SW update check immediately (instead of waiting 24h).
+// 2. Compare running BUILD_VERSION against /api/version — if they differ,
+//    the installed PWA is running stale JS. Unregister all SWs, clear all
+//    caches, and force one reload to pick up the new bundle.
+//    sessionStorage prevents an infinite reload loop if the server is down.
+(async () => {
+  if (!("serviceWorker" in navigator)) return;
+
+  // Step 1: force SW update check.
+  try {
+    const reg = await navigator.serviceWorker.getRegistration();
     if (reg) {
       reg.update().catch(() => {});
-      console.log("[SW] Update check triggered for version", BUILD_VERSION);
+      console.log("[SW] Update check triggered —", BUILD_VERSION);
     }
-  }).catch(() => {});
-}
+  } catch {}
+
+  // Step 2: version-mismatch hard-reload for installed PWA.
+  try {
+    const RELOAD_KEY = "ha_forced_reload_" + BUILD_VERSION;
+    if (sessionStorage.getItem(RELOAD_KEY)) return; // already tried once
+
+    const resp = await fetch("/api/version", { cache: "no-store" });
+    const { build: serverBuild } = await resp.json() as { build: string };
+
+    if (serverBuild && serverBuild !== BUILD_VERSION) {
+      console.warn(
+        `[VERSION] Mismatch: running=${BUILD_VERSION} server=${serverBuild} — forcing reload`
+      );
+      sessionStorage.setItem(RELOAD_KEY, "1");
+
+      // Unregister all service workers.
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map((r) => r.unregister()));
+
+      // Clear all caches.
+      const keys = await caches.keys();
+      await Promise.all(keys.map((k) => caches.delete(k)));
+
+      // Hard reload — bypass all caches.
+      location.reload();
+    } else {
+      console.log("[VERSION] OK — running", BUILD_VERSION);
+    }
+  } catch {}
+})();
 // mapbox-gl CSS is loaded inside map-view-mapbox.tsx (lazy) — do NOT import here.
 // Importing it at this level pulled mapbox-gl into the initial bundle and added
 // ~2MB of JS that Android V8 had to parse before the app could render.

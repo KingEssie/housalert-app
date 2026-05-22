@@ -1,6 +1,6 @@
 // HousAlert Service Worker
-// SW_VERSION: v5 — force cache-bust on deploy; bump this string on every release
-const SW_VERSION = "v5";
+// SW_VERSION: v6 — add network-first navigation fetch handler to fix PWA nav cache
+const SW_VERSION = "v6";
 
 // On install: skip waiting immediately so the new SW activates without
 // requiring all tabs to close. Critical for Safari PWA where the old SW
@@ -23,7 +23,7 @@ self.addEventListener("activate", (event) => {
       caches.keys().then((keys) =>
         Promise.all(
           keys
-            .filter((k) => !k.startsWith("housalert-v5"))
+            .filter((k) => !k.startsWith("housalert-v6"))
             .map((k) => {
               console.log("[SW] Deleting stale cache:", k);
               return caches.delete(k);
@@ -62,6 +62,33 @@ self.addEventListener("push", (event) => {
       tag: "housalert-match",
       renotify: true,
     })
+  );
+});
+
+// ─── Navigation fetch handler ───────────────────────────────────────────────
+// Chrome's installed PWA caches the start_url response in a "navigation cache"
+// that is separate from both the SW cache and the HTTP cache. Without a fetch
+// handler here, Chrome serves that stale navigation-cached HTML when the PWA
+// is opened from the home screen — even though index.html has no-store headers.
+//
+// This handler intercepts every navigation (HTML page) request and always goes
+// to the network first, bypassing the navigation cache. Content-hashed assets
+// (JS/CSS/images) are not intercepted — the browser's HTTP cache handles those
+// normally (immutable + content-hashed filenames guarantee freshness there).
+self.addEventListener("fetch", (event) => {
+  // Only intercept navigation requests (the initial HTML document load).
+  if (event.request.mode !== "navigate") return;
+
+  event.respondWith(
+    fetch(event.request, { cache: "no-store" })
+      .catch(() => {
+        // Network unavailable — fall back to whatever the browser has cached.
+        return caches.match(event.request).then((cached) => {
+          if (cached) return cached;
+          // Last resort: serve the root index.html from cache if available.
+          return caches.match("/").then((root) => root || Response.error());
+        });
+      })
   );
 });
 
