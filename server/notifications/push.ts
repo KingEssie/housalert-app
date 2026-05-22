@@ -129,13 +129,21 @@ export async function sendPushToUser(
           endpoint: endpointDomain,
           body,
         });
-      } else if (statusCode === 403 && body.includes("BadJwtToken")) {
+      } else if (statusCode === 403) {
+        // 403 from any push service = VAPID key mismatch or invalid JWT.
+        // Covers FCM ("permission denied: invalid JWT provided") and
+        // Apple Web Push ("BadJwtToken"). Remove the stale subscription so the
+        // next send attempt doesn't keep failing — the user must re-enable push
+        // to create a fresh subscription tied to the current VAPID key.
         await supabase.from("push_subscriptions").delete().eq("id", sub.id);
         removed++;
-        log(`[PUSH] Removed Apple Web Push subscription with BadJwtToken (403) id=${sub.id} endpoint=${endpointDomain}`);
+        const isApple = body.includes("BadJwtToken");
+        const isFcm = endpointDomain.includes("googleapis.com");
+        const detail = isApple ? "BadJwtToken (Apple)" : isFcm ? `invalid JWT (FCM): ${body}` : body;
+        log(`[PUSH] Removed stale subscription with VAPID mismatch (403) id=${sub.id} endpoint=${endpointDomain} detail=${detail}`);
         errors.push({
           statusCode: 403,
-          message: "Apple Web Push subscription rejected: BadJwtToken (403). The subscription was created with a different VAPID key than the one currently configured. The stale subscription has been removed automatically — the user must re-enable push notifications to create a fresh subscription with the current key.",
+          message: `Push subscription rejected (403) — VAPID key mismatch. The stale subscription has been removed automatically. The user must re-enable push notifications to create a fresh subscription with the current VAPID key. Detail: ${detail}`,
           endpoint: endpointDomain,
           body,
         });
