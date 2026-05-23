@@ -4,6 +4,7 @@ import { fetchListings as fetchMyhome }      from "./myhome";
 import { fetchListings as fetchLetie }       from "./letie";
 import { fetchListings as fetchPropertyie }  from "./propertyie";
 import { fetchListings as fetchPropertyPal } from "./propertypal";
+import { fetchListings as fetchLisney }      from "./lisney";
 
 export const irelandSources = [
   { name: "daft",        fetchListings: fetchDaft },
@@ -12,4 +13,5 @@ export const irelandSources = [
   { name: "letie",       fetchListings: fetchLetie },
   { name: "propertyie",  fetchListings: fetchPropertyie },
   { name: "propertypal", fetchListings: fetchPropertyPal },
+  { name: "lisney",      fetchListings: fetchLisney },
 ];

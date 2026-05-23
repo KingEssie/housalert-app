@@ -10,6 +10,7 @@
  *   LETIE_PROXY_URL       — Let.ie proxy  (JS rendering required; Daft-powered, use render=true)
  *   PROPERTYIE_PROXY_URL   — Property.ie proxy (blocked via ScraperAPI; needs capable proxy)
  *   PROPERTYPAL_PROXY_URL  — PropertyPal proxy (direct fetch preferred; proxy fallback acceptable, no render=true needed)
+ *   LISNEY_PROXY_URL       — Lisney.com proxy (direct Node.js fetch works; no Cloudflare block; no render=true needed)
  *
  * Supported proxy URL formats:
  *   ScraperAPI prefix:  https://api.scraperapi.com?api_key=KEY&url=

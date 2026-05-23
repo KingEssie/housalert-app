@@ -1,0 +1,174 @@
+Build the Lisney Ireland source for HousAlert.
+
+Context:
+HousAlert now has two live Ireland/Dublin sources:
+- Daft.ie ✅ working via ScraperAPI
+- PropertyPal ✅ working direct via curl
+
+Discovery results showed Lisney as a top candidate:
+- Score: 5/5
+- Direct HTTP 200
+- Prices visible in HTML
+- Listing URLs visible in HTML
+- Worth implementing as the third reliable Dublin source
+
+Goal:
+Implement Lisney as the third live Dublin rental source using the existing Ireland pipeline.
+
+IMPORTANT:
+Do NOT touch:
+- service worker
+- push notifications
+- VAPID/FCM
+- Stripe/paywall
+- Germany infrastructure
+- matching architecture
+- notification traces
+- admin systems
+
+Do NOT add:
+- browser automation
+- Playwright
+- Puppeteer
+- render=true
+- heavy dependencies
+- new scraper framework
+
+==================================================
+1. CREATE LISNEY SOURCE
+==================================================
+
+Create:
+
+server/sources/ireland/lisney/
+
+Follow the lightweight patterns used by Daft and PropertyPal.
+
+==================================================
+2. IMPLEMENT FETCHER
+==================================================
+
+Fetch Dublin rental listings from Lisney.
+
+Requirements:
+- direct fetch preferred
+- use proxy only if needed
+- parse listings from HTML/embedded JSON
+- source = "lisney"
+- stable externalId
+- title
+- price numeric if possible
+- location
+- absolute URL
+- imageUrl if available
+- bedrooms if available
+- latitude/longitude if available
+- createdAt/listedAt if available
+
+Skip invalid listings safely.
+
+==================================================
+3. DUBLIN RENTALS ONLY
+==================================================
+
+Ensure only rental listings are inserted.
+
+Defensive validation:
+- rental/letting signal required
+- Dublin-focused URLs or location
+- no sale listings
+- no commercial listings
+
+Avoid the previous MyHome bug:
+Do not trust generic homepage/listing links unless the page is clearly a rental results page.
+
+==================================================
+4. CONNECT TO EXISTING PIPELINE
+==================================================
+
+Wire Lisney into:
+- irelandSources registry
+- existing Ireland orchestrator
+- existing scheduler
+- source health
+- ingestion logs
+- insertAndMatchListings
+
+Do NOT create a parallel system.
+
+==================================================
+5. SCHEDULER + LOGGING
+==================================================
+
+Lisney should run with the existing Ireland scheduler cadence.
+
+Log:
+- HTTP status
+- raw candidate count
+- normalized count
+- inserted
+- duplicates
+- matches
+- errors
+- duration
+
+No crash loops.
+
+==================================================
+6. DEDUPE SAFETY
+==================================================
+
+Use stable Lisney external IDs.
+
+Existing source/source_id dedupe is enough.
+Do NOT build complex cross-source dedupe yet.
+
+==================================================
+7. MANUAL TEST SCRIPT
+==================================================
+
+If useful, add:
+
+server/scripts/test-lisney.ts
+
+Output:
+- HTTP status
+- raw candidates
+- normalized count
+- first 1–3 listings:
+  - title
+  - price
+  - bedrooms
+  - location
+  - URL
+
+Do not print huge HTML.
+Do not print secrets.
+
+==================================================
+8. MINIMAL VERIFICATION
+==================================================
+
+Run:
+- Lisney test script
+- TypeScript/build check if available
+- server start if practical
+
+Confirm:
+- no push/SW files changed
+- no Germany changes
+- existing Daft and PropertyPal remain registered
+
+==================================================
+9. REPORT BACK
+==================================================
+
+Report:
+- files created/modified
+- whether direct fetch worked
+- whether proxy was required
+- listing count
+- sample listings
+- any anti-bot risks
+- whether Lisney is now live in scheduler
+- confirmation push/service-worker untouched

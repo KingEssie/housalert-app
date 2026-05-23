@@ -67,22 +67,25 @@ export async function upsertSourceHealth(report: IngestionReport, runStartedAt: 
     // fall back to sr.source so the row is stored under a meaningful key.
     const rawName = (sr as any).name || (sr as any).source || "unknown";
     const { sourceName, city } = parseSourceName(rawName);
-    const isSuccess = sr.errors === 0;
-    const isZero = sr.found === 0;
+    // A run is a "data success" only when it found actual listings (no errors AND found > 0).
+    // A run is a "failure" only when it had actual errors (errors > 0).
+    // A zero-result run (errors=0, found=0) neither advances last_success_at nor
+    // last_failure_at — it only increments consecutive_zeros.
+    // This prevents blocked sources (403 → found=0, errors=0) from incorrectly
+    // showing "last success: just now" in the dashboard.
+    const isActualSuccess = sr.errors === 0 && sr.found > 0;
+    const isActualFailure = sr.errors > 0;
+    const isZero          = sr.found === 0;
 
-    const status = !isSuccess
-      ? "degraded"
-      : isZero
-        ? "degraded"
-        : "healthy";
+    const status = isActualSuccess ? "healthy" : "degraded";
 
     // Pre-compute nullable timestamps in JS to avoid $N parameter reuse
     // inside CASE expressions (PostgreSQL type-inference ambiguity).
     const startedAtIso  = runStartedAt.toISOString();
-    const successAtIso  = isSuccess ? startedAtIso : null;
-    const failureAtIso  = isSuccess ? null : startedAtIso;
-    const consecutiveFailuresOnInsert = isSuccess ? 0 : 1;
-    const consecutiveZerosOnInsert    = isZero    ? 1 : 0;
+    const successAtIso  = isActualSuccess ? startedAtIso : null;
+    const failureAtIso  = isActualFailure ? startedAtIso : null;
+    const consecutiveFailuresOnInsert = isActualFailure ? 1 : 0;
+    const consecutiveZerosOnInsert    = isZero           ? 1 : 0;
 
     try {
       await pool.query(
@@ -95,34 +98,45 @@ export async function upsertSourceHealth(report: IngestionReport, runStartedAt: 
                  $13, $14, 1, NOW())
          ON CONFLICT (source_name, city) DO UPDATE SET
            last_started_at   = $3::TIMESTAMPTZ,
+           -- Only advance last_success_at when this run actually found listings ($4 non-null).
+           -- Zero-result runs (found=0, errors=0) leave last_success_at unchanged.
            last_success_at   = CASE WHEN $4::TIMESTAMPTZ IS NOT NULL THEN $4::TIMESTAMPTZ ELSE source_health.last_success_at END,
+           -- Only advance last_failure_at when there were actual errors ($5 non-null).
            last_failure_at   = CASE WHEN $5::TIMESTAMPTZ IS NOT NULL THEN $5::TIMESTAMPTZ ELSE source_health.last_failure_at END,
            duration_ms       = $6,
            found_count       = $7,
            inserted_count    = $8,
            duplicate_count   = $9,
            error_count       = $10,
-           last_error        = CASE WHEN $5::TIMESTAMPTZ IS NOT NULL THEN $11 ELSE NULL END,
+           last_error        = CASE WHEN $5::TIMESTAMPTZ IS NOT NULL THEN $11 ELSE source_health.last_error END,
            status            = $12,
-           consecutive_failures = CASE WHEN $4::TIMESTAMPTZ IS NOT NULL THEN 0 ELSE source_health.consecutive_failures + 1 END,
+           -- consecutive_failures only resets on a data-success run ($4 non-null);
+           -- increments only on an actual-error run ($15=true);
+           -- zero-result runs leave it unchanged.
+           consecutive_failures = CASE
+             WHEN $4::TIMESTAMPTZ IS NOT NULL THEN 0
+             WHEN $15 THEN source_health.consecutive_failures + 1
+             ELSE source_health.consecutive_failures
+           END,
            consecutive_zeros    = CASE WHEN $14 = 1 THEN source_health.consecutive_zeros + 1 ELSE 0 END,
            total_runs           = source_health.total_runs + 1,
            updated_at           = NOW()`,
         [
-          sourceName,          // $1
-          city,                // $2
-          startedAtIso,        // $3  last_started_at
-          successAtIso,        // $4  last_success_at (null when failed)
-          failureAtIso,        // $5  last_failure_at (null when succeeded)
-          sr.durationMs ?? 0,  // $6
-          sr.found,            // $7
-          sr.inserted,         // $8
-          sr.duplicates,       // $9
-          sr.errors,           // $10
-          sr.errorMessage ?? null, // $11
-          status,              // $12
+          sourceName,               // $1
+          city,                     // $2
+          startedAtIso,             // $3  last_started_at
+          successAtIso,             // $4  last_success_at (null unless found > 0 AND errors = 0)
+          failureAtIso,             // $5  last_failure_at (null unless errors > 0)
+          sr.durationMs ?? 0,       // $6
+          sr.found,                 // $7
+          sr.inserted,              // $8
+          sr.duplicates,            // $9
+          sr.errors,                // $10
+          sr.errorMessage ?? null,  // $11
+          status,                   // $12
           consecutiveFailuresOnInsert, // $13
           consecutiveZerosOnInsert,    // $14
+          isActualFailure,             // $15  true when errors > 0 (drives consecutive_failures on UPDATE)
         ]
       );
     } catch (err: any) {

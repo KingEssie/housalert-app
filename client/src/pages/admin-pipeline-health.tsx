@@ -197,7 +197,7 @@ function SourceHealthTab() {
               <table className="w-full text-xs">
                 <thead>
                   <tr className="text-gray-400 border-b">
-                    {["City", "Status", "Found", "Inserted", "Errors", "Duration", "Last Success", "Consec Failures"].map(h => (
+                    {["City", "Status", "Found", "Inserted", "Errors", "Duration", "Last Data", "Zero Runs", "Consec Fail"].map(h => (
                       <th key={h} className="px-3 py-2 text-left font-medium">{h}</th>
                     ))}
                   </tr>
@@ -215,10 +215,21 @@ function SourceHealthTab() {
                       <td className="px-3 py-2 text-gray-600">{r.inserted_count}</td>
                       <td className="px-3 py-2 text-red-500">{r.error_count || "—"}</td>
                       <td className="px-3 py-2 text-gray-500">{r.duration_ms ? formatDuration(r.duration_ms) : "—"}</td>
-                      <td className="px-3 py-2 text-gray-500">{relativeTime(r.last_success_at)}</td>
+                      <td className="px-3 py-2" title="Last run that actually returned listings">
+                        {r.last_success_at ? (
+                          <span className="text-gray-500">{relativeTime(r.last_success_at)}</span>
+                        ) : (
+                          <span className="text-red-400 font-medium">never</span>
+                        )}
+                      </td>
+                      <td className="px-3 py-2">
+                        {r.consecutive_zeros > 0 ? (
+                          <span className="text-amber-500" title="Consecutive runs returning 0 listings">{r.consecutive_zeros}</span>
+                        ) : "—"}
+                      </td>
                       <td className="px-3 py-2">
                         {r.consecutive_failures > 0 ? (
-                          <span className="text-red-500 font-semibold">{r.consecutive_failures}</span>
+                          <span className="text-red-500 font-semibold" title="Consecutive runs with actual errors">{r.consecutive_failures}</span>
                         ) : "—"}
                       </td>
                     </tr>
@@ -1040,14 +1051,18 @@ function SourceRegistryTab() {
 
 // ─── Notification Trace Tab ───────────────────────────────────────────────────
 
-const SUPPRESSION_LABELS: Record<string, { label: string; color: string }> = {
-  no_subscription:        { label: "No subscription", color: "text-red-600 bg-red-50" },
-  all_channels_disabled:  { label: "All channels off", color: "text-gray-500 bg-gray-100" },
-  email_disabled:         { label: "Email off", color: "text-gray-500 bg-gray-100" },
-  push_disabled:          { label: "Push off", color: "text-gray-500 bg-gray-100" },
-  stale_listing_gt_2h:    { label: "Stale >2h", color: "text-amber-600 bg-amber-50" },
-  email_cap_exceeded:     { label: "Email cap", color: "text-amber-600 bg-amber-50" },
-  no_token:               { label: "No push token", color: "text-orange-600 bg-orange-50" },
+const SUPPRESSION_LABELS: Record<string, { label: string; color: string; note?: string }> = {
+  no_subscription:        { label: "No subscription",   color: "text-red-600 bg-red-50" },
+  all_channels_disabled:  { label: "All channels off",  color: "text-gray-500 bg-gray-100" },
+  email_disabled:         { label: "Email off",         color: "text-gray-500 bg-gray-100" },
+  push_disabled:          { label: "Push off",          color: "text-gray-500 bg-gray-100" },
+  stale_listing_gt_2h:    { label: "Stale >2h",         color: "text-amber-600 bg-amber-50" },
+  email_cap_exceeded:     { label: "Email cap",         color: "text-amber-600 bg-amber-50" },
+  no_token:               { label: "No push token",     color: "text-orange-600 bg-orange-50" },
+  bad_source_data:        { label: "Bad source data",   color: "text-red-600 bg-red-50",
+                            note: "Listing was ingested but had missing/invalid fields (no price, no title, etc). Marked sent to prevent retry." },
+  profile_inactive:       { label: "Profile inactive",  color: "text-gray-500 bg-gray-100" },
+  duplicate:              { label: "Duplicate",         color: "text-gray-400 bg-gray-50" },
 };
 
 function SuppressionBadge({ reason }: { reason: string | null }) {
@@ -1064,6 +1079,21 @@ function NotifTraceSummary({ data }: { data: any }) {
   const s = data.summary ?? {};
   const settings = data.notification_settings;
   const sub = data.subscription;
+  const matches: any[] = data.matches ?? [];
+
+  // Build suppression breakdown
+  const suppressionCounts: Record<string, number> = {};
+  for (const m of matches) {
+    if (m.suppression_reason) {
+      suppressionCounts[m.suppression_reason] = (suppressionCounts[m.suppression_reason] ?? 0) + 1;
+    }
+  }
+  const suppressionEntries = Object.entries(suppressionCounts).sort((a, b) => b[1] - a[1]);
+
+  // Determine if push_sent=true exists alongside suppression (mark-as-sent pattern)
+  const suppressedWithPushSent = matches.filter((m: any) => m.suppression_reason && m.push_sent).length;
+  const suppressedWithEmailSent = matches.filter((m: any) => m.suppression_reason && m.email_sent).length;
+
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
@@ -1079,6 +1109,7 @@ function NotifTraceSummary({ data }: { data: any }) {
           </div>
         ))}
       </div>
+
       <div className="flex flex-wrap gap-3 text-xs">
         {settings && (
           <>
@@ -1096,6 +1127,31 @@ function NotifTraceSummary({ data }: { data: any }) {
           </span>
         )}
       </div>
+
+      {suppressionEntries.length > 0 && (
+        <div className="border rounded-xl p-4 bg-amber-50 border-amber-200 space-y-2">
+          <div className="text-xs font-semibold text-amber-700 uppercase tracking-wide">Suppression Breakdown</div>
+          <div className="flex flex-wrap gap-2">
+            {suppressionEntries.map(([reason, cnt]) => {
+              const meta = SUPPRESSION_LABELS[reason] ?? { label: reason, color: "text-purple-600 bg-purple-50" };
+              return (
+                <span key={reason} className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium border ${meta.color}`}
+                  title={(meta as any).note ?? reason}>
+                  {meta.label} <span className="font-bold">×{cnt}</span>
+                </span>
+              );
+            })}
+          </div>
+          {(suppressedWithPushSent > 0 || suppressedWithEmailSent > 0) && (
+            <div className="text-xs text-amber-600 mt-1 border-t border-amber-200 pt-2">
+              <span className="font-semibold">ℹ️ push_sent / email_sent = true on suppressed rows</span> — this is intentional.
+              When a match is suppressed the system marks both flags true to prevent the notification buffer from
+              re-processing the same listing on the next ingest cycle. No actual notification was delivered.
+              Affected: {suppressedWithEmailSent} email, {suppressedWithPushSent} push.
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
