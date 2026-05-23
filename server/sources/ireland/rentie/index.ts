@@ -111,12 +111,22 @@ function extractListings(html: string): { rawCount: number; listings: SourceList
     const hasRender = isJsRenderingEnabled(SOURCE_ENV);
     if (!hasRender) {
       log(
-        "[rentie] Client-side SPA shell received — JS rendering required. " +
+        "[rentie] Client-side XHTML shell received — JS rendering required. " +
         "Set RENTIE_PROXY_URL=https://api.scraperapi.com/?api_key=KEY&render=true&url=",
         "rentie"
       );
     } else {
-      log("[rentie] JS rendering enabled but SPA did not populate listings — page structure may have changed", "rentie");
+      // render=true returns the page but a GDPR consent overlay blocks
+      // the listing search from executing. The response has price-range
+      // filter options (€200–€8000) but no individual listing cards/data.
+      // Rent.ie requires a full browser session with cookie acceptance
+      // before the search results are populated.
+      log(
+        "[rentie] JS rendering active but GDPR consent overlay blocks listing load " +
+        `(${html.length} chars returned — price filters visible but 0 listings). ` +
+        "Rent.ie requires a cookie-accepted browser session; ScraperAPI render=true alone is insufficient.",
+        "rentie"
+      );
     }
   } else {
     log(`[rentie] No listing data found in response (${html.length} chars)`, "rentie");

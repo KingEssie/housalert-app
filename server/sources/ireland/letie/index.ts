@@ -127,7 +127,15 @@ function extractListings(html: string, fromUrl: string): { rawCount: number; lis
       "letie"
     );
   } else {
-    log(`[letie] JS rendering enabled but no __NEXT_DATA__ found from ${fromUrl} — URL or page structure may have changed`, "letie");
+    // Let.ie with render=true times out (>55s) consistently via ScraperAPI.
+    // The site appears to trigger heavy JS evaluation that exceeds ScraperAPI's
+    // render budget. Without JS rendering it returns for-sale listings from Daft's backend.
+    log(
+      `[letie] JS rendering enabled but request timed out or returned no data from ${fromUrl}. ` +
+      "Let.ie render=true consistently exceeds ScraperAPI's timeout budget. " +
+      "Without render=true, only for-sale listings are returned (Daft-powered backend).",
+      "letie"
+    );
   }
   return { rawCount: 0, listings: [] };
 }

@@ -21,7 +21,13 @@ export const FETCH_TIMEOUT_MS = 25_000;
 
 /** Resolve the proxy URL to use for a given source. Falls back to DAFT_PROXY_URL. */
 function resolveProxy(sourceEnvVar: string): string {
-  return (process.env[sourceEnvVar] || process.env.DAFT_PROXY_URL || "").trim();
+  let val = (process.env[sourceEnvVar] || process.env.DAFT_PROXY_URL || "").replace(/\s+/g, "");
+  // Guard: if the secret was saved as "KEY=value" instead of just "value", strip the prefix
+  const eqIdx = val.indexOf("=");
+  if (eqIdx > 0 && !val.startsWith("http") && val.slice(eqIdx + 1).startsWith("http")) {
+    val = val.slice(eqIdx + 1);
+  }
+  return val;
 }
 
 export function buildProxyUrl(

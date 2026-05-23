@@ -125,7 +125,16 @@ function extractListings(html: string): { rawCount: number; listings: SourceList
   } else if (!hasRender) {
     log(`[myhome] No listing data found (${html.length} chars) — JS rendering may be required`, "myhome");
   } else {
-    log("[myhome] JS rendering enabled but no rental listings found — search URL or page structure may have changed", "myhome");
+    // render=true returns the homepage/featured properties (SaleTypeId=17, prices ~€800k+)
+    // regardless of the transactionType=3 search param. MyHome.ie redirects to its
+    // homepage on first visit via ScraperAPI; the search param is dropped.
+    // A session cookie or direct API access would be needed to reach rental search results.
+    log(
+      "[myhome] JS rendering active but returning homepage (for-sale listings, SaleTypeId=17) " +
+      `(${html.length} chars). MyHome.ie ignores transactionType=3 on first render — ` +
+      "a pre-seeded session cookie is required to reach rental search results.",
+      "myhome"
+    );
   }
 
   return { rawCount: 0, listings: [] };
