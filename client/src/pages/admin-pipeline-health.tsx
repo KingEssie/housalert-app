@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import {
   AlertTriangle, CheckCircle2, XCircle, Clock, RefreshCw, Search,
   Activity, Database, Radio, Globe, Zap, ChevronRight, Info,
-  Shield, BarChart2, TrendingUp, ArrowLeft, ExternalLink,
+  Shield, BarChart2, TrendingUp, ArrowLeft, ExternalLink, Bell,
 } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -27,13 +27,14 @@ async function adminFetch(path: string, options?: RequestInit) {
   return res.json();
 }
 
-type Tab = "overview" | "sources" | "alerts" | "trace" | "dedup" | "sla" | "diagnostic" | "registry";
+type Tab = "overview" | "sources" | "alerts" | "trace" | "notiftrace" | "dedup" | "sla" | "diagnostic" | "registry";
 
 const TABS: { id: Tab; label: string; icon: any }[] = [
   { id: "overview", label: "Overview", icon: Activity },
   { id: "sources", label: "Source Health", icon: Radio },
   { id: "alerts", label: "Alerts", icon: AlertTriangle },
   { id: "trace", label: "Listing Trace", icon: Search },
+  { id: "notiftrace", label: "Notif Trace", icon: Bell },
   { id: "dedup", label: "Dedup Audit", icon: Database },
   { id: "sla", label: "SLA Metrics", icon: BarChart2 },
   { id: "diagnostic", label: "User Diagnostic", icon: Shield },
@@ -123,7 +124,8 @@ function OverviewTab() {
               ["Matches", lastIngest.total_matches],
               ["Errors", lastIngest.total_errors],
               ["Runs Today", lastIngest.runs],
-              ["Avg Duration", `${lastIngest.avg_duration_sec}s`],
+              ["⚡ Fast-lane avg", lastIngest.avg_fast_lane_sec != null ? `${lastIngest.avg_fast_lane_sec}s` : "—"],
+              ["🔍 Deep-scan avg", lastIngest.avg_deep_scan_sec != null ? `${lastIngest.avg_deep_scan_sec}s` : "—"],
             ].map(([lbl, val]) => (
               <div key={lbl as string} className="text-center">
                 <div className="text-lg font-bold text-gray-800">{val}</div>
@@ -1036,6 +1038,182 @@ function SourceRegistryTab() {
   );
 }
 
+// ─── Notification Trace Tab ───────────────────────────────────────────────────
+
+const SUPPRESSION_LABELS: Record<string, { label: string; color: string }> = {
+  no_subscription:        { label: "No subscription", color: "text-red-600 bg-red-50" },
+  all_channels_disabled:  { label: "All channels off", color: "text-gray-500 bg-gray-100" },
+  email_disabled:         { label: "Email off", color: "text-gray-500 bg-gray-100" },
+  push_disabled:          { label: "Push off", color: "text-gray-500 bg-gray-100" },
+  stale_listing_gt_2h:    { label: "Stale >2h", color: "text-amber-600 bg-amber-50" },
+  email_cap_exceeded:     { label: "Email cap", color: "text-amber-600 bg-amber-50" },
+  no_token:               { label: "No push token", color: "text-orange-600 bg-orange-50" },
+};
+
+function SuppressionBadge({ reason }: { reason: string | null }) {
+  if (!reason) return null;
+  const meta = SUPPRESSION_LABELS[reason] ?? { label: reason, color: "text-purple-600 bg-purple-50" };
+  return (
+    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${meta.color}`}>
+      {meta.label}
+    </span>
+  );
+}
+
+function NotifTraceSummary({ data }: { data: any }) {
+  const s = data.summary ?? {};
+  const settings = data.notification_settings;
+  const sub = data.subscription;
+  return (
+    <div className="space-y-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+        {[
+          ["User", data.user?.email ?? data.user?.id?.slice(0, 12)],
+          ["Total matches", s.total ?? 0],
+          ["Email sent", s.email_sent ?? 0],
+          ["Suppressed", s.suppressed ?? 0],
+        ].map(([l, v]) => (
+          <div key={l as string} className="border rounded-lg p-3 bg-white">
+            <div className="text-xs text-gray-400">{l}</div>
+            <div className="font-semibold text-gray-800">{v}</div>
+          </div>
+        ))}
+      </div>
+      <div className="flex flex-wrap gap-3 text-xs">
+        {settings && (
+          <>
+            <span className={`px-2 py-1 rounded-full border font-medium ${settings.email_enabled ? "bg-green-50 text-green-700 border-green-200" : "bg-gray-100 text-gray-500 border-gray-200"}`}>
+              Email: {settings.email_enabled ? "on" : "off"}
+            </span>
+            <span className={`px-2 py-1 rounded-full border font-medium ${settings.push_enabled ? "bg-green-50 text-green-700 border-green-200" : "bg-gray-100 text-gray-500 border-gray-200"}`}>
+              Push: {settings.push_enabled ? "on" : "off"}
+            </span>
+          </>
+        )}
+        {sub && (
+          <span className={`px-2 py-1 rounded-full border font-medium ${sub.status === "active" || sub.status === "trialing" ? "bg-green-50 text-green-700 border-green-200" : "bg-red-50 text-red-600 border-red-200"}`}>
+            Sub: {sub.status} {sub.plan ? `(${sub.plan})` : ""}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function NotificationTraceTab() {
+  const [email, setEmail] = useState("");
+  const [query, setQuery] = useState("");
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["/api/admin/portal/notification-trace", query],
+    queryFn: () => adminFetch(`/api/admin/portal/notification-trace?email=${encodeURIComponent(query)}&limit=100`),
+    enabled: !!query,
+  });
+
+  const matches: any[] = data?.matches ?? [];
+
+  return (
+    <div className="space-y-5">
+      <div className="border rounded-xl p-4 bg-white space-y-3">
+        <h3 className="font-semibold text-gray-700 flex items-center gap-2">
+          <Bell className="w-4 h-4" /> Notification Trace
+          <span className="text-xs text-gray-400 font-normal ml-1">— full match + delivery audit for a user</span>
+        </h3>
+        <div className="flex gap-2">
+          <input
+            className="flex-1 border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="User email…"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && setQuery(email.trim())}
+            data-testid="input-notif-trace-email"
+          />
+          <Button onClick={() => setQuery(email.trim())} disabled={!email.trim() || isLoading} data-testid="button-notif-trace-search">
+            <Search className="w-4 h-4 mr-1" /> Trace
+          </Button>
+        </div>
+        {isLoading && <div className="text-center py-4 text-gray-400">Loading notification trace…</div>}
+        {error && <div className="text-red-500 text-sm">{(error as Error).message}</div>}
+      </div>
+
+      {data && (
+        <>
+          <NotifTraceSummary data={data} />
+
+          {matches.length === 0 ? (
+            <div className="text-center py-10 text-gray-400">No matches found for this user.</div>
+          ) : (
+            <div className="border rounded-xl overflow-hidden bg-white">
+              <div className="px-4 py-3 border-b bg-gray-50 flex items-center justify-between">
+                <span className="font-semibold text-gray-700 text-sm">Match Delivery Log ({matches.length})</span>
+                <span className="text-xs text-gray-400">newest first</span>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="text-gray-400 border-b bg-gray-50">
+                      {["Matched", "Listing", "Source", "Price", "Email", "Push", "Buffered", "Flush attempted", "Suppression", "Provider error"].map(h => (
+                        <th key={h} className="px-3 py-2 text-left font-medium whitespace-nowrap">{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {matches.map((m: any) => (
+                      <tr key={`${m.listing_id}`} className="border-b last:border-0 hover:bg-gray-50">
+                        <td className="px-3 py-2 text-gray-500 whitespace-nowrap">{relativeTime(m.matched_at)}</td>
+                        <td className="px-3 py-2 max-w-[180px]">
+                          <div className="truncate font-medium text-gray-700" title={m.listing_title}>{m.listing_title || "—"}</div>
+                          <div className="text-gray-400 truncate">{m.listing_city}</div>
+                        </td>
+                        <td className="px-3 py-2 text-gray-500 whitespace-nowrap">{m.listing_source || "—"}</td>
+                        <td className="px-3 py-2 text-gray-500">
+                          {m.listing_price ? `€${Number(m.listing_price).toLocaleString()}` : "—"}
+                        </td>
+                        <td className="px-3 py-2">
+                          {m.email_sent ? (
+                            <span className="text-green-600 font-medium">
+                              ✓{m.email_sent_at ? ` ${relativeTime(m.email_sent_at)}` : ""}
+                            </span>
+                          ) : (
+                            <span className="text-gray-300">—</span>
+                          )}
+                        </td>
+                        <td className="px-3 py-2">
+                          {m.push_sent ? (
+                            <span className="text-blue-600 font-medium">
+                              ✓{m.push_sent_at ? ` ${relativeTime(m.push_sent_at)}` : ""}
+                            </span>
+                          ) : (
+                            <span className="text-gray-300">—</span>
+                          )}
+                        </td>
+                        <td className="px-3 py-2 text-gray-400 whitespace-nowrap">
+                          {m.buffered_at ? relativeTime(m.buffered_at) : "—"}
+                        </td>
+                        <td className="px-3 py-2 text-gray-400 whitespace-nowrap">
+                          {m.flush_attempted_at ? relativeTime(m.flush_attempted_at) : "—"}
+                        </td>
+                        <td className="px-3 py-2">
+                          <SuppressionBadge reason={m.suppression_reason} />
+                        </td>
+                        <td className="px-3 py-2 max-w-[160px]">
+                          {m.provider_error ? (
+                            <span className="text-red-500 truncate block" title={m.provider_error}>{m.provider_error.slice(0, 40)}</span>
+                          ) : "—"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function AdminPipelineHealthPage() {
@@ -1073,6 +1251,7 @@ export default function AdminPipelineHealthPage() {
         {activeTab === "sources" && <SourceHealthTab />}
         {activeTab === "alerts" && <AlertsTab />}
         {activeTab === "trace" && <ListingTraceTab />}
+        {activeTab === "notiftrace" && <NotificationTraceTab />}
         {activeTab === "dedup" && <DedupAuditTab />}
         {activeTab === "sla" && <SlaMetricsTab />}
         {activeTab === "diagnostic" && <UserDiagnosticTab />}
