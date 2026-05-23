@@ -380,14 +380,12 @@ function NotificationsInline({ accessToken }: { accessToken: string | undefined 
       if (key === "push_enabled") {
         const _expo = isExpoWebView();
         const _cap  = isCapacitorNative();
-        console.log(`[PUSH-TOGGLE] expo=${_expo} cap=${_cap} current=${current} __NATIVE__=${(window as any).__HOUSALERT_NATIVE__} Capacitor=${!!(window as any).Capacitor}`);
 
         if (_expo) {
           // ── Expo WebView mode ──────────────────────────────────────────────
           // The native App.tsx layer (mobile-clean) already registered the Expo
           // push token on startup via expo-notifications + /api/expo-push-token.
           // The web UI only needs to flip push_enabled on the backend.
-          console.log("[PUSH-TOGGLE] Path: expo-webview — toggling push_enabled via API");
           const res = await apiFetch("/api/notifications/settings", {
             method: "PUT",
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
@@ -404,10 +402,8 @@ function NotificationsInline({ accessToken }: { accessToken: string | undefined 
 
         if (_cap) {
           // ── Capacitor native WebView ────────────────────────────────────────
-          console.log("[PUSH-TOGGLE] Path: capacitor-native");
           if (!current) {
             const token = await registerNativePush();
-            console.log("[PUSH-TOGGLE] registerNativePush token:", token ? token.substring(0, 30) + "…" : "null");
             if (!token) {
               toast({ title: t("settings.pushDenied"), description: "Verleen toestemming in Android-instellingen → HousAlert.", variant: "destructive" });
               setUpdating(null);
@@ -442,7 +438,6 @@ function NotificationsInline({ accessToken }: { accessToken: string | undefined 
         }
 
         // ── Web browser ────────────────────────────────────────────────────
-        console.log("[PUSH-TOGGLE] Path: web-browser");
         if (!current) {
           if (!isPushSupported()) { toast({ title: t("settings.pushNotSupported"), variant: "destructive" }); setUpdating(null); return; }
           const perm = await getPushPermissionState();

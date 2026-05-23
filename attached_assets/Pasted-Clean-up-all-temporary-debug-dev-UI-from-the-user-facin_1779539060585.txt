@@ -1,0 +1,83 @@
+Clean up all temporary debug/dev UI from the user-facing app.
+
+Context:
+Push notifications now work. During debugging we added many visible build markers, debug rows, push diagnostics, version labels, and developer panels. These must be removed from the normal user app before the Dublin/Ireland pivot.
+
+Goal:
+The app should look like a normal consumer app again. Admin/debug tooling may remain only inside admin-only routes.
+
+Tasks:
+
+1. Remove user-facing build/version markers
+Remove or hide:
+- push-fix-v6-20260522 badge
+- bottom-right build label
+- tappable build/version debug overlay
+- server build marker if visible
+- any "BUILD_VERSION" visible text in normal screens
+
+2. Remove user-facing push debug rows
+From Preferences, onboarding, notification setup, dashboard, and any user-facing screen remove:
+- push path
+- expo webview true/false
+- capacitor native true/false
+- active tokens
+- service worker status
+- debug registration context
+- VAPID details
+- token counts
+- platform/native debug text
+
+3. Keep admin-only diagnostics
+It is OK to keep these in admin portal only:
+- Email Operations
+- Push channels
+- VAPID key status
+- source health
+- notification trace
+- SLA metrics
+- delivery failures
+
+But make sure normal users can never see these.
+
+4. Hide debug panels behind admin/dev flags only
+If any debug component is still useful, gate it behind:
+- admin route only, OR
+- import.meta.env.DEV only, OR
+- explicit ?debug=1 plus admin check
+
+Do not show debug info just because the app is native/PWA.
+
+5. Remove console spam
+Remove or reduce noisy logs:
+- push-toggle clicked
+- selectedBranch
+- registration context
+- service worker version checks
+Keep only meaningful error logs.
+
+6. Keep the actual fixes
+Do NOT remove:
+- SW v6 network-first navigation fix
+- version mismatch cache recovery logic if it runs silently
+- push subscription registration
+- VAPID key usage
+- push reset functionality if user-facing and useful
+- notification settings toggles
+
+7. User-facing push screen should show only:
+- Push notifications toggle
+- Email notifications toggle
+- Optional small helper text:
+  “Tip: allow notifications and disable battery restrictions for reliable alerts.”
+- Optional “Send test notification” button if it looks polished
+
+8. Build and verify
+After cleanup:
+- app has no visible build/debug labels
+- no token/platform/debug text on normal screens
+- push still works
+- admin push diagnostics still work
+- browser/PWA still receives newest version correctly
+
+Report exact files changed and confirm no user-facing debug UI remains.

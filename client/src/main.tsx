@@ -1,11 +1,9 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
 
-// Build version — bump this with every release to verify the correct bundle is running.
-// Visible in: browser console, preferences debug panel, flow-page push debug row.
-export const BUILD_VERSION = "push-fix-v6-20260522";
+// Build version — bump this with every release for PWA cache-bust / version-mismatch reload.
+export const BUILD_VERSION = "vapid-fix-v7-20260523";
 (window as any).__BUILD_VERSION__ = BUILD_VERSION;
-console.log("[BUILD]", BUILD_VERSION);
 
 // ─── Service Worker update + version-mismatch reload ───────────────────────
 // 1. Trigger SW update check immediately (instead of waiting 24h).
@@ -21,7 +19,6 @@ console.log("[BUILD]", BUILD_VERSION);
     const reg = await navigator.serviceWorker.getRegistration();
     if (reg) {
       reg.update().catch(() => {});
-      console.log("[SW] Update check triggered —", BUILD_VERSION);
     }
   } catch {}
 
@@ -49,8 +46,6 @@ console.log("[BUILD]", BUILD_VERSION);
 
       // Hard reload — bypass all caches.
       location.reload();
-    } else {
-      console.log("[VERSION] OK — running", BUILD_VERSION);
     }
   } catch {}
 })();
@@ -117,15 +112,9 @@ async function bootstrap() {
       import("./lib/capacitor-storage").then(m => m.restoreAuthFromNative()).catch(() => {}),
       import("./lib/capacitor").then(m => m.initCapacitorPlugins()).catch(() => {}),
     ]);
-    console.log(`[BOOT] plugins ready in ${Math.round(performance.now() - t0)}ms`);
 
-    const tApp = performance.now();
     const { default: App } = await import("./App");
-    console.log(`[BOOT] App chunk loaded in ${Math.round(performance.now() - tApp)}ms`);
-
-    const tRender = performance.now();
     createRoot(document.getElementById("root")!).render(<App />);
-    console.log(`[BOOT] first render scheduled in ${Math.round(performance.now() - tRender)}ms — total bootstrap=${Math.round(performance.now() - t0)}ms`);
   } catch (err) {
     console.error("[HousAlert] Bootstrap failed:", err);
     renderError(err);

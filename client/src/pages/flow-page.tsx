@@ -168,7 +168,6 @@ function InlineNotifications({ accessToken }: { accessToken: string }) {
   const [settings, setSettings] = useState<{ push_enabled: boolean; email_enabled: boolean } | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
-  const [activeTokenCount, setActiveTokenCount] = useState<number | null>(null);
 
   useEffect(() => {
     apiFetch("/api/notifications/settings", { headers: { Authorization: `Bearer ${accessToken}` } })
@@ -185,23 +184,11 @@ function InlineNotifications({ accessToken }: { accessToken: string }) {
   }, [accessToken]);
 
   async function handleToggle(key: "push_enabled" | "email_enabled", current: boolean) {
-    console.log("[push-toggle] clicked", { key, current });
     setUpdating(key);
     try {
       if (key === "push_enabled") {
         const _expo = isExpoWebView();
         const _cap  = isCapacitorNative();
-        const selectedBranch = _expo ? "expo-webview" : _cap ? "capacitor-native" : "web-browser";
-        console.log("[push-toggle]", {
-          isExpoWebView: _expo,
-          isCapacitorNative: _cap,
-          isNativePlatform: _expo || _cap,
-          selectedBranch,
-          __NATIVE__: (window as any).__HOUSALERT_NATIVE__,
-          Capacitor: !!(window as any).Capacitor,
-          ua: navigator.userAgent.slice(0, 80),
-        });
-
         if (_expo) {
           // ── Expo WebView: native layer (App.tsx) already holds the token.
           // Just flip push_enabled on the backend.
@@ -223,7 +210,6 @@ function InlineNotifications({ accessToken }: { accessToken: string }) {
           // ── Capacitor native: register via PushNotifications plugin.
           if (!current) {
             const token = await registerNativePush();
-            console.log("[push-toggle] registerNativePush:", token ? token.slice(0, 30) + "…" : "null");
             if (!token) {
               toast({ title: t("settings.pushDenied"), description: "Verleen toestemming in Android-instellingen → HousAlert.", variant: "destructive" });
               setUpdating(null);
@@ -235,8 +221,6 @@ function InlineNotifications({ accessToken }: { accessToken: string }) {
               body: JSON.stringify({ expo_push_token: token, platform: getPlatform() }),
             });
             if (!regRes.ok) throw new Error("Token registration failed");
-            const regData = await regRes.json();
-            setActiveTokenCount(regData.active_token_count ?? 1);
             setSettings(prev => prev ? { ...prev, push_enabled: true } : prev);
             queryClient.invalidateQueries({ queryKey: ["/api/notifications/settings"] });
             queryClient.invalidateQueries({ queryKey: ["/api/profile-strength"] });
@@ -284,10 +268,6 @@ function InlineNotifications({ accessToken }: { accessToken: string }) {
   if (!settings) return null;
 
   const anyEnabled = settings.push_enabled || settings.email_enabled;
-  const _expo = isExpoWebView();
-  const _cap  = isCapacitorNative();
-  const pushPath = _expo ? "expo-webview" : _cap ? "capacitor-native" : "web-browser";
-
   return (
     <div data-testid="inline-notifications">
       <div className="bg-white rounded-2xl border border-ha-card-border overflow-hidden">
@@ -301,20 +281,6 @@ function InlineNotifications({ accessToken }: { accessToken: string }) {
           onToggle={() => handleToggle("push_enabled", settings.push_enabled)}
           testId="toggle-push"
         />
-        {/* Debug row — visible in native mode or ?debug=1 */}
-        {(_expo || _cap || (() => { try { return new URLSearchParams(window.location.search).get("debug") === "1" || localStorage.getItem("ha_debug") === "1"; } catch { return false; } })()) && (
-          <div className="px-5 pb-3 text-[10px] font-mono" style={{ color: "#7c3aed" }}>
-            <span>build: <strong>{(window as any).__BUILD_VERSION__ ?? "?"}</strong></span>
-            {" · "}
-            <span>push path: <strong>{pushPath}</strong></span>
-            {" · "}
-            <span>expo: <strong>{String(_expo)}</strong></span>
-            {" · "}
-            <span>cap: <strong>{String(_cap)}</strong></span>
-            {" · "}
-            <span>tokens: <strong>{activeTokenCount === null ? "…" : activeTokenCount}</strong></span>
-          </div>
-        )}
         <div className="h-px bg-ha-divider mx-5" />
         <NotifToggleRow
           icon={<Mail className="w-5 h-5 text-ha-primary" />}

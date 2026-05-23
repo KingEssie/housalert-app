@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
@@ -11,10 +11,8 @@ import {
   getPushPermissionState,
   subscribeToPush,
   unsubscribeFromPush,
-  gatherPushContext,
-  reportRegistrationContext,
 } from "@/lib/push";
-import { isNativePlatform, isCapacitorNative, isExpoWebView, registerNativePush, getPlatform } from "@/lib/capacitor";
+import { isCapacitorNative, isExpoWebView, registerNativePush, getPlatform } from "@/lib/capacitor";
 import { AppHeader } from "@/components/ui/app-header";
 
 export default function PreferencesPage() {
@@ -27,8 +25,6 @@ export default function PreferencesPage() {
   const [notifSettings, setNotifSettings] = useState<{ push_enabled: boolean; email_enabled: boolean } | null>(null);
   const [notifUpdating, setNotifUpdating] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTokenCount, setActiveTokenCount] = useState<number | null>(null);
-  const [webSubCount, setWebSubCount] = useState<number | null>(null);
   const [sendingTestPush, setSendingTestPush] = useState(false);
 
   const LANG_OPTIONS = [
@@ -47,28 +43,10 @@ export default function PreferencesPage() {
       .then((data) => setNotifSettings(data))
       .catch(() => {})
       .finally(() => setLoading(false));
-
-    // Always fetch push status — native context gets token count, web gets sub count
-    apiFetch("/api/push/status", {
-      headers: { Authorization: `Bearer ${session.access_token}` },
-    })
-      .then((r) => r.json())
-      .then((data) => {
-        setActiveTokenCount(data?.expo_tokens ?? 0);
-        setWebSubCount(data?.web_subscriptions ?? 0);
-      })
-      .catch(() => {});
   }, [session?.access_token]);
 
   const _isExpo = isExpoWebView();
   const _isCap  = isCapacitorNative();
-  const isAndroidNative = _isExpo || _isCap;
-
-  // Report push context to server (fire-and-forget)
-  const reportContext = useCallback((extra?: { token_result?: string; error_message?: string; selected_branch?: string }) => {
-    if (!session?.access_token) return;
-    reportRegistrationContext(session.access_token, extra).catch(() => {});
-  }, [session?.access_token]);
 
   async function handleToggleNotif(key: "email_enabled" | "push_enabled", currentVal: boolean) {
     setNotifUpdating(key);
@@ -76,21 +54,7 @@ export default function PreferencesPage() {
       if (!session?.access_token) return;
 
       if (key === "push_enabled") {
-        const ctx = gatherPushContext();
-        console.log(`[PUSH-TOGGLE] app_context=${ctx.app_context} branch=${ctx.selected_branch} current=${currentVal} perm=${ctx.permission_state} sw=${ctx.service_worker_available} pm=${ctx.push_manager_available}`);
-
         if (_isExpo) {
-          // ── Expo WebView mode ──────────────────────────────────────────────
-          // Token is registered by the NATIVE App.tsx layer on startup.
-          // The web UI can only flip push_enabled on the backend here.
-          // If activeTokenCount===0, the native registration failed — log it.
-          console.log("[PUSH-TOGGLE] Path: expo-webview — toggling push_enabled via API");
-          if (!currentVal && activeTokenCount === 0) {
-            console.warn("[PUSH-TOGGLE] expo-webview: enabling push but no native token registered — native layer likely failed to obtain Expo push token");
-            reportContext({ selected_branch: ctx.selected_branch, error_message: "push_enabled toggled ON but no native expo token exists — native layer registration failed" });
-          } else {
-            reportContext({ selected_branch: ctx.selected_branch, token_result: activeTokenCount ? `${activeTokenCount} active` : "none" });
-          }
           const res = await apiFetch("/api/notifications/settings", {
             method: "PUT",
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
@@ -105,12 +69,8 @@ export default function PreferencesPage() {
         }
 
         if (_isCap) {
-          // ── Capacitor native WebView ────────────────────────────────────────
-          console.log("[PUSH-TOGGLE] Path: capacitor-native");
           if (!currentVal) {
             const token = await registerNativePush();
-            console.log("[PUSH-TOGGLE] registerNativePush token:", token ? token.substring(0, 30) + "…" : "null");
-            reportContext({ selected_branch: ctx.selected_branch, token_result: token ? token.substring(0, 20) : "null", error_message: token ? undefined : "registerNativePush returned null" });
             if (!token) {
               toast({ title: t("settings.pushDenied"), description: "Verleen toestemming voor meldingen via Android-instellingen → HousAlert.", variant: "destructive" });
               setNotifUpdating(null);
@@ -126,8 +86,6 @@ export default function PreferencesPage() {
               setNotifUpdating(null);
               return;
             }
-            const regData = await regRes.json();
-            setActiveTokenCount(regData.active_token_count ?? 1);
             setNotifSettings((prev) => prev ? { ...prev, push_enabled: true } : prev);
             queryClient.invalidateQueries({ queryKey: ["/api/notifications/settings"] });
             toast({ title: "Push-meldingen ingeschakeld" });
@@ -145,36 +103,27 @@ export default function PreferencesPage() {
           return;
         }
 
-        // ── Web browser / PWA ────────────────────────────────────────────────
-        console.log("[PUSH-TOGGLE] Path: web-browser");
+        // ── Web browser / PWA ──────────────────────────────────────────────
         if (!currentVal) {
-          const supported = isPushSupported();
-          if (!supported) {
-            reportContext({ selected_branch: ctx.selected_branch, error_message: `push not supported: ${ctx.push_unsupported_reason}` });
+          if (!isPushSupported()) {
             toast({ title: t("settings.pushNotSupported"), variant: "destructive" });
             setNotifUpdating(null);
             return;
           }
           const perm = await getPushPermissionState();
           if (perm === "denied") {
-            reportContext({ selected_branch: ctx.selected_branch, error_message: "permission denied", permission_result: "denied" } as any);
             toast({ title: t("settings.pushDenied"), variant: "destructive" });
             setNotifUpdating(null);
             return;
           }
           const subscribeOk = await subscribeToPush(session.access_token);
-          reportContext({ selected_branch: ctx.selected_branch, token_result: subscribeOk ? "subscribed" : "failed", error_message: subscribeOk ? undefined : "subscribeToPush returned false" });
           if (!subscribeOk) {
             toast({ title: t("notifications.pushFailedTitle"), description: t("notifications.pushFailedDesc"), variant: "destructive" });
             setNotifUpdating(null);
             return;
           }
-          // Refresh sub count
-          apiFetch("/api/push/status", { headers: { Authorization: `Bearer ${session.access_token}` } })
-            .then(r => r.json()).then(d => { setWebSubCount(d?.subscriptions ?? d?.devices ?? 0); setActiveTokenCount(d?.devices ?? 0); }).catch(() => {});
         } else {
           await unsubscribeFromPush(session.access_token);
-          setWebSubCount(0);
         }
       }
 
@@ -230,20 +179,6 @@ export default function PreferencesPage() {
     }
   }
 
-  const pushActive = notifSettings?.push_enabled && (activeTokenCount === null || activeTokenCount > 0 || webSubCount === null || webSubCount > 0);
-
-  // Native token missing but push enabled — something failed during native registration
-  const nativeTokenMissing = _isExpo && notifSettings?.push_enabled && activeTokenCount === 0;
-
-  // Show test push when push is enabled AND we have either a token (native) or a web sub
-  const showTestPush = !!notifSettings?.push_enabled && ((isAndroidNative && (activeTokenCount ?? 0) > 0) || (!isAndroidNative && (webSubCount ?? 0) > 0));
-
-  // Debug panel visible in native OR when ?debug=1 / localStorage.ha_debug=1
-  const showDebug = isAndroidNative || (() => { try { return new URLSearchParams(window.location.search).get("debug") === "1" || localStorage.getItem("ha_debug") === "1"; } catch { return false; } })();
-
-  // Gather full context for debug display (lazy — only in debug mode)
-  const ctx = showDebug ? gatherPushContext() : null;
-
   return (
     <div className="min-h-screen bg-ha-bg">
       <AppHeader title={t("settings.preferences")} onBack={() => navigate("/dashboard?tab=profile")} />
@@ -285,19 +220,9 @@ export default function PreferencesPage() {
           {/* Push row */}
           <div className="px-5">
             <div className="flex items-center h-[56px]">
-              <div className="flex-1 min-w-0">
-                <span className="text-[15px] font-semibold text-[#111111]">{t("profile.pushNotifications")}</span>
-                {isAndroidNative && notifSettings?.push_enabled && (
-                  <p className="text-[11px] mt-0.5" style={{ color: activeTokenCount === 0 ? "#e11d48" : "#15803d" }}>
-                    {activeTokenCount === 0 ? "⚠ Geen actief token" : `✓ Actief (${activeTokenCount} apparaat${activeTokenCount !== 1 ? "en" : ""})`}
-                  </p>
-                )}
-                {!isAndroidNative && notifSettings?.push_enabled && webSubCount !== null && (
-                  <p className="text-[11px] mt-0.5" style={{ color: webSubCount === 0 ? "#e11d48" : "#15803d" }}>
-                    {webSubCount === 0 ? "⚠ Geen web-abonnement" : `✓ Web push actief (${webSubCount})`}
-                  </p>
-                )}
-              </div>
+              <span className="text-[15px] font-semibold text-[#111111] flex-1">
+                {t("profile.pushNotifications")}
+              </span>
               <button
                 onClick={() => handleToggleNotif("push_enabled", !!notifSettings?.push_enabled)}
                 disabled={loading || notifUpdating === "push_enabled"}
@@ -309,19 +234,8 @@ export default function PreferencesPage() {
               </button>
             </div>
 
-            {/* Warning: Expo WebView context but native token not registered */}
-            {nativeTokenMissing && (
-              <div className="mb-3 rounded-[12px] px-3 py-2.5" style={{ backgroundColor: "#fff1f2", border: "1px solid #fca5a5" }}>
-                <p className="text-[11px] font-semibold mb-0.5" style={{ color: "#b91c1c" }}>⚠ Native push niet geregistreerd</p>
-                <p className="text-[11px] leading-snug" style={{ color: "#7f1d1d" }}>
-                  De app heeft toestemming maar kon geen Expo-token aanmaken. Controleer of je de nieuwste app-versie hebt. Als dit probleem aanhoudt, herinstalleer de app.
-                </p>
-              </div>
-            )}
-
-            {/* Test push button — shown for native (with token) OR web (with sub) */}
-            {showTestPush && (
-              <div className="pb-4 space-y-3">
+            {notifSettings?.push_enabled && (
+              <div className="pb-4 space-y-2">
                 <button
                   onClick={sendTestPush}
                   disabled={sendingTestPush}
@@ -332,39 +246,12 @@ export default function PreferencesPage() {
                   {sendingTestPush ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Bell className="w-3.5 h-3.5" />}
                   {sendingTestPush ? "Verzenden…" : "Stuur testmelding"}
                 </button>
-                {isAndroidNative && (
-                  <div className="rounded-[12px] px-3 py-2.5" style={{ backgroundColor: "#fef9ee", border: "1px solid #fde68a" }}>
-                    <p className="text-[11px] font-semibold mb-0.5" style={{ color: "#92400e" }}>Samsung / Xiaomi tip</p>
-                    <p className="text-[11px] leading-snug" style={{ color: "#78350f" }}>
-                      Als je geen meldingen ontvangt: open Instellingen → Apps → HousAlert → Batterij → Sta achtergrondactiviteit toe. Schakel ook "Slaapstand" uit.
-                    </p>
-                  </div>
-                )}
+                <p className="text-[11px]" style={{ color: "#6b6677" }}>
+                  Tip: sta meldingen toe en schakel batterijbeperkingen uit voor betrouwbare alerts.
+                </p>
               </div>
             )}
           </div>
-
-          {/* Debug panel — visible in native mode OR when ?debug=1 / localStorage.ha_debug=1 */}
-          {showDebug && ctx && (
-            <div className="mx-5 mb-4 rounded-[12px] px-3 py-2.5 text-[10px] font-mono leading-relaxed" style={{ backgroundColor: "#f8f5ff", border: "1px solid #ddd6fe", color: "#4c1d95" }}>
-              <p className="font-bold text-[11px] mb-1" style={{ color: "#7c3aed" }}>Push debug info</p>
-              <p>app context: <strong>{ctx.app_context}</strong></p>
-              <p>selected branch: <strong>{ctx.selected_branch}</strong></p>
-              <p>expo webview: <strong>{String(ctx.is_expo_webview)}</strong></p>
-              <p>capacitor native: <strong>{String(ctx.is_capacitor_native)}</strong></p>
-              <p>standalone (PWA): <strong>{String(ctx.is_standalone)}</strong></p>
-              <p>__NATIVE__ flag: <strong>{String(ctx.native_flag)}</strong></p>
-              <p>window.Capacitor: <strong>{String(ctx.capacitor_obj)}</strong></p>
-              <p>serviceWorker API: <strong>{String(ctx.service_worker_available)}</strong></p>
-              <p>PushManager API: <strong>{String(ctx.push_manager_available)}</strong></p>
-              <p>Notification API: <strong>{String(ctx.notification_api_available)}</strong></p>
-              <p>permission: <strong>{ctx.permission_state}</strong></p>
-              <p>unsupported reason: <strong>{ctx.push_unsupported_reason ?? "none"}</strong></p>
-              <p>push_enabled: <strong>{String(notifSettings?.push_enabled ?? false)}</strong></p>
-              <p>expo tokens: <strong>{activeTokenCount === null ? "loading…" : String(activeTokenCount)}</strong></p>
-              <p>web subs: <strong>{webSubCount === null ? "loading…" : String(webSubCount)}</strong></p>
-            </div>
-          )}
 
           <div className="h-px mx-5" style={{ backgroundColor: "#ece7ef" }} />
 

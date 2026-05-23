@@ -6,7 +6,6 @@ const SW_VERSION = "v6";
 // requiring all tabs to close. Critical for Safari PWA where the old SW
 // (and its cached VAPID key binding) can linger indefinitely.
 self.addEventListener("install", (event) => {
-  console.log("[SW] Installing version", SW_VERSION);
   self.skipWaiting();
 });
 
@@ -14,7 +13,6 @@ self.addEventListener("install", (event) => {
 // the old SW are instantly handed to the new one. Also purge any stale
 // caches left from previous versions.
 self.addEventListener("activate", (event) => {
-  console.log("[SW] Activating version", SW_VERSION);
   event.waitUntil(
     Promise.all([
       // Claim all clients (tabs/windows) without waiting for reload
@@ -24,10 +22,7 @@ self.addEventListener("activate", (event) => {
         Promise.all(
           keys
             .filter((k) => !k.startsWith("housalert-v6"))
-            .map((k) => {
-              console.log("[SW] Deleting stale cache:", k);
-              return caches.delete(k);
-            })
+            .map((k) => caches.delete(k))
         )
       ),
     ])
