@@ -92,24 +92,50 @@ function extractListings(html: string): { rawCount: number; listings: SourceList
   }
 
   // ── Path 2: Angular SSR with hydrated rental listing links ──────────────
-  // Only meaningful when JS rendering loads actual search results
+  // DISABLED: with render=true MyHome redirects to the homepage which shows
+  // featured FOR-SALE properties (not rental search results). Any brochure
+  // links found in that response are for-sale listings from Cork, Wicklow, etc.
+  // — not Dublin rentals. Returning them would insert bad data into the DB.
+  //
+  // Rental-specific signals we would need to trust Path 2:
+  //   - HTML contains "transactionType=3" (rental search param preserved)
+  //   - HTML contains "to-let" or "for-rent" page context
+  // Without these signals we cannot distinguish rental vs for-sale results.
   const brochureLinks = [...html.matchAll(/href="(\/residential\/brochure\/[^"]+\/(\d+))"/g)];
   const uniqueLinks = [...new Map(brochureLinks.map(m => [m[2], m])).values()];
 
   if (uniqueLinks.length > 0 && isJsRenderingEnabled(SOURCE_ENV)) {
-    // With JS rendering the search results should be real rentals
-    const results: SourceListing[] = [];
-    for (const m of uniqueLinks) {
-      const path = m[1];
-      const id   = m[2];
-      const url  = `${LISTING_BASE}${path}`;
-      // Slug usually contains the address
-      const slugTitle = path.split("/").slice(-2, -1)[0]?.replace(/-/g, " ") ?? "Dublin Rental";
-      const title = slugTitle.charAt(0).toUpperCase() + slugTitle.slice(1);
-      results.push({ source: "myhome", externalId: id, title, url });
+    // Validate that these links come from a RENTAL search result page, not
+    // the homepage. Presence of the rental transaction type in the HTML is
+    // the strongest signal we can check without fetching each listing.
+    const isRentalPage = html.includes("transactionType=3")
+      || html.includes("transaction-type-3")
+      || html.includes('"transactionTypeId":3')
+      || html.includes("to-let")
+      || html.includes('"propertyType":"Apartment to Let"')
+      || html.includes('"propertyType":"House to Let"');
+
+    if (!isRentalPage) {
+      log(
+        `[myhome] ${uniqueLinks.length} brochure link(s) found but page lacks rental signals ` +
+        "(likely homepage redirect — contains for-sale featured properties, not search results). " +
+        "Discarding to prevent inserting for-sale listings as rentals.",
+        "myhome"
+      );
+      // Fall through to the "no actionable data" block below
+    } else {
+      const results: SourceListing[] = [];
+      for (const m of uniqueLinks) {
+        const path = m[1];
+        const id   = m[2];
+        const url  = `${LISTING_BASE}${path}`;
+        const slugTitle = path.split("/").slice(-2, -1)[0]?.replace(/-/g, " ") ?? "Dublin Rental";
+        const title = slugTitle.charAt(0).toUpperCase() + slugTitle.slice(1);
+        results.push({ source: "myhome", externalId: id, title, url });
+      }
+      log(`[myhome] Extracted ${results.length} rental listings via Angular SSR link parsing`, "myhome");
+      return { rawCount: results.length, listings: results };
     }
-    log(`[myhome] Extracted ${results.length} rental listings via Angular SSR link parsing`, "myhome");
-    return { rawCount: results.length, listings: results };
   }
 
   // ── No actionable data ───────────────────────────────────────────────────

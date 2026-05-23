@@ -1,0 +1,142 @@
+Ireland Source Discovery Sprint — find 4 more easy Dublin rental sources
+
+Context:
+HousAlert needs at least 5 live sources before public launch.
+
+Current verified source status:
+- Daft.ie = working/live via ScraperAPI, ~20 listings/cycle
+- Rent.ie = blocked by GDPR overlay even with render=true
+- MyHome.ie = homepage/session redirect, rental params dropped
+- Let.ie = render=true timeout / wrong Daft for-sale data without render
+- Property.ie = URL patterns returned 404
+
+Goal:
+Find additional Ireland/Dublin rental sources that are easier to scrape than Rent.ie/MyHome/Let.ie.
+
+IMPORTANT:
+Do NOT implement full scrapers yet.
+This is discovery/probing only.
+
+Do NOT touch:
+- push notifications
+- service worker
+- VAPID/FCM
+- Stripe/paywall
+- Germany infrastructure
+- matching pipeline
+- database schema
+
+==================================================
+1. DISCOVER CANDIDATE SOURCES
+==================================================
+
+Find 10–15 possible Ireland/Dublin rental listing sources.
+
+Include letting agents and portals if they have listing pages.
+
+Examples to investigate:
+- Sherry FitzGerald rentals
+- DNG rentals
+- Ray Cooke rentals
+- Savills Ireland rentals
+- Owen Reilly rentals
+- Hooke & MacDonald rentals
+- Lisney rentals
+- Eoin O'Neill Property Advisers rentals
+- Allen & Jacobs rentals
+- Wyse rentals
+- Owen Reilly Dublin apartments
+- PropertyPal rentals Ireland if relevant
+- College Cribs if relevant
+- Spotahome Dublin if relevant
+- HousingAnywhere Dublin if relevant
+
+Focus on:
+- Dublin rentals
+- pages with public listing cards
+- SSR/static HTML where possible
+- no login
+- no Facebook/private groups
+
+==================================================
+2. PROBE EACH SOURCE LIGHTLY
+==================================================
+
+For each candidate:
+- fetch the rental search/listings page directly
+- if direct fetch fails, try existing proxy helper
+- do NOT use browser automation
+- do NOT add heavy dependencies
+
+For each source record:
+- URL tested
+- HTTP status
+- page size
+- whether listing cards appear in raw HTML
+- whether prices appear in raw HTML
+- whether listing URLs appear in raw HTML
+- whether images appear in raw HTML
+- whether it likely requires JS rendering
+- whether it has GDPR/cookie blocking
+- whether it looks scrapeable
+
+==================================================
+3. SCORE SOURCES
+==================================================
+
+Score each source from 1–5:
+
+5 = easy SSR/static HTML, clear listings, prices, URLs
+4 = scrapeable with minor parsing work
+3 = possible but needs proxy or fragile selectors
+2 = likely JS/session/cookie problem
+1 = blocked/not useful
+
+==================================================
+4. PICK THE BEST 4
+==================================================
+
+Recommend the top 4 sources to implement next.
+
+Prioritize:
+- scrapeability
+- Dublin rental relevance
+- listing volume
+- stability
+- low maintenance
+
+Do not pick sources just because they are famous.
+Pick sources because they can actually work.
+
+==================================================
+5. OPTIONAL: CREATE A DISCOVERY SCRIPT
+==================================================
+
+If useful, create a temporary script such as:
+
+server/scripts/probe-ireland-sources.ts
+
+It should:
+- test candidate URLs
+- print status/page size/signals
+- avoid printing huge HTML
+- avoid exposing secrets
+
+Remove or keep it only if useful.
+If kept, make it clearly dev-only.
+
+==================================================
+6. REPORT BACK
+==================================================
+
+Report:
+- all candidates tested
+- source scores
+- top 4 recommendation
+- why each top source was chosen
+- which sources to avoid for now
+- whether any need proxy/rendering
+- exact next implementation plan
+
+Reminder:
+No full scraper implementations in this sprint unless the probe shows an extremely easy source and the change is tiny.
