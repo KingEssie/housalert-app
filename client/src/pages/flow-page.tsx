@@ -525,13 +525,13 @@ export function getTipContent(t: TFn): Record<string, () => React.ReactNode> {
       <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_facebook_groups.para1")}</p>
       <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_facebook_groups.para2")}</p>
       <a
-        href="https://www.facebook.com/search/groups/?q=wohnung%20mieten"
+        href="https://www.facebook.com/search/groups/?q=rooms+to+rent+dublin"
         target="_blank"
         rel="noopener noreferrer"
         className="text-[14px] font-semibold text-ha-primary hover:underline"
         data-testid="link-facebook-groups"
       >
-        » Rooms &amp; Apartments in Berlin, Munich, Hamburg, Frankfurt, Cologne
+        » Rooms &amp; Apartments in Dublin, Cork and Galway
       </a>
       <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_facebook_groups.para3")}</p>
       <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_facebook_groups.searchIntro")}</p>
@@ -551,13 +551,13 @@ export function getTipContent(t: TFn): Record<string, () => React.ReactNode> {
       <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_new_build.para4")}</p>
       <p className="text-[14px] text-ha-text leading-relaxed">{t("flowPage.tips.tip_new_build.para5")}</p>
       <a
-        href="https://www.neubaukompass.de"
+        href="https://www.daft.ie/new-homes"
         target="_blank"
         rel="noopener noreferrer"
         className="text-[14px] font-semibold text-ha-primary hover:underline"
-        data-testid="link-neubaukompass"
+        data-testid="link-new-homes"
       >
-        » neubaukompass.de
+        » daft.ie/new-homes
       </a>
     </TipBody>
   ),

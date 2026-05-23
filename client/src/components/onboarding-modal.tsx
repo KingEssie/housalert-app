@@ -325,10 +325,10 @@ export default function OnboardingModal({ city, lat, lng, onClose }: OnboardingM
           await createSearchProfile({
             user_id: userId,
             city_name: city,
-            country_code: "DE",
+            country_code: "IE",
             latitude: lat,
             longitude: lng,
-            place_id: city.toLowerCase().replace(/\s+/g, "_") + "_de",
+            place_id: city.toLowerCase().replace(/\s+/g, "_") + "_ie",
             price_min: filters.minPrice,
             price_max: filters.maxPrice,
             bedrooms_min: filters.minRooms === "any" ? 0 : parseInt(filters.minRooms, 10),
