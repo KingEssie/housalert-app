@@ -2,3 +2,5 @@
 - [VAPID key rotation pitfall](vapid-key-rotation.md) — shared env var silently shadows secret with same name; must delete from shared env before rotation takes effect
 - [user_profile_data schema](user-profile-data-schema.md) — table lives in Replit PG, has no email column; email is in Supabase auth.users only — never JOIN upd.email from pgPool
 - [Push test 500 hardening](push-test-hardening.md) — sendPushToUser and sendExpoTestPush must each have independent try/catch at call site; any throw in either propagates to inner catch → 500
+- [Dual-DB source health fallback](source-health-fallback.md) — source_reports in ingestion_runs is empty in dev (no deep-scan scheduler); sources endpoint must fall back to source_health table (203 rows) for SourcesTab to show data
+- [markBuffered must be fire-and-forget](buffer-mark-buffered.md) — bufferMatchAlert is sync (void); call markBuffered().catch(()=>{}) inline — never await or make the function async

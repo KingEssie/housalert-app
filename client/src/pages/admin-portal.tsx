@@ -3168,6 +3168,7 @@ function NotificationsTab() {
       "push_disabled":         "Push off",
       "stale_listing_gt_2h":   "Stale >2h",
       "email_cap_exceeded":    "Cap exceed",
+      "no_token":              "No token",
     };
     return labels[reason] || reason;
   }
@@ -3238,7 +3239,7 @@ function NotificationsTab() {
               <table className="w-full text-[12px]">
                 <thead>
                   <tr style={{ backgroundColor: "#f9f8fc", borderBottom: "1px solid #eeebf3" }}>
-                    {["Listing", "Source", "Matched at", "Email", "Push", "Suppression"].map(h => (
+                    {["Listing", "Source", "Matched at", "Buffered", "Flush attempt", "Email", "Push", "Suppression", "Provider error"].map(h => (
                       <th key={h} className="text-left px-3 py-2.5 font-semibold" style={{ color: "#666" }}>{h}</th>
                     ))}
                   </tr>
@@ -3246,7 +3247,7 @@ function NotificationsTab() {
                 <tbody>
                   {data.matches.map((m: any, i: number) => (
                     <tr key={m.listing_id} style={{ borderBottom: i < data.matches.length - 1 ? "1px solid #f0eef6" : "none" }}>
-                      <td className="px-3 py-2.5 max-w-[220px]">
+                      <td className="px-3 py-2.5 max-w-[180px]">
                         <div className="font-medium truncate" style={{ color: "#111" }} title={m.listing_title}>{m.listing_title || "–"}</div>
                         <div style={{ color: "#999" }}>{m.listing_city || ""}{m.listing_price ? ` · €${m.listing_price}` : ""}</div>
                       </td>
@@ -3254,12 +3255,19 @@ function NotificationsTab() {
                       <td className="px-3 py-2.5 whitespace-nowrap" style={{ color: "#666" }}>
                         {m.matched_at ? new Date(m.matched_at).toLocaleString("de-DE", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }) : "–"}
                       </td>
+                      <td className="px-3 py-2.5 whitespace-nowrap" style={{ color: "#888", fontSize: "11px" }}>
+                        {m.buffered_at ? new Date(m.buffered_at).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : <span style={{ color: "#ccc" }}>–</span>}
+                      </td>
+                      <td className="px-3 py-2.5 whitespace-nowrap" style={{ color: "#888", fontSize: "11px" }}>
+                        {m.flush_attempted_at ? new Date(m.flush_attempted_at).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : <span style={{ color: "#ccc" }}>–</span>}
+                      </td>
                       <td className="px-3 py-2.5">
                         <span style={{ color: m.email_sent ? "#16a34a" : "#dc2626" }}>{m.email_sent ? "✓" : "✗"}</span>
                         {m.email_sent_at && <span className="ml-1" style={{ color: "#999", fontSize: "11px" }}>{new Date(m.email_sent_at).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</span>}
                       </td>
                       <td className="px-3 py-2.5">
                         <span style={{ color: m.push_sent ? "#16a34a" : "#dc2626" }}>{m.push_sent ? "✓" : "✗"}</span>
+                        {m.push_sent_at && <span className="ml-1" style={{ color: "#999", fontSize: "11px" }}>{new Date(m.push_sent_at).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</span>}
                       </td>
                       <td className="px-3 py-2.5">
                         {m.suppression_reason ? (
@@ -3269,6 +3277,11 @@ function NotificationsTab() {
                         ) : (
                           <span style={{ color: "#22c55e" }}>sent</span>
                         )}
+                      </td>
+                      <td className="px-3 py-2.5 max-w-[160px]">
+                        {m.provider_error ? (
+                          <span className="text-[11px] truncate block" style={{ color: "#dc2626" }} title={m.provider_error}>{m.provider_error}</span>
+                        ) : <span style={{ color: "#ccc" }}>–</span>}
                       </td>
                     </tr>
                   ))}
@@ -3289,6 +3302,7 @@ function RealtimeSlaTab() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [slaHist, setSlaHist] = useState<any>(null);
 
   function load() {
     adminFetch("/api/admin/portal/sla-status")
@@ -3300,6 +3314,7 @@ function RealtimeSlaTab() {
   useEffect(() => {
     load();
     const interval = setInterval(load, 10_000);
+    adminFetch("/api/admin/portal/sla-metrics").then(d => setSlaHist(d)).catch(() => {});
     return () => clearInterval(interval);
   }, []);
 
@@ -3659,6 +3674,58 @@ function RealtimeSlaTab() {
               ))}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Ingest run duration — fast-lane vs deep-scan split */}
+      {slaHist?.ingest_daily && slaHist.ingest_daily.length > 0 && (
+        <div>
+          <SectionHeader title="Ingest run duration — fast-lane vs deep-scan (14 days)" />
+          <div className="rounded-[14px] border border-gray-100 overflow-hidden">
+            <table className="w-full text-[13px]">
+              <thead>
+                <tr className="bg-gray-50 text-left text-gray-500 text-[11px] uppercase tracking-wide">
+                  <th className="px-4 py-3 font-medium">Day</th>
+                  <th className="px-4 py-3 font-medium">Total runs</th>
+                  <th className="px-4 py-3 font-medium">⚡ Fast-lane</th>
+                  <th className="px-4 py-3 font-medium">Avg FL dur.</th>
+                  <th className="px-4 py-3 font-medium">Deep-scan</th>
+                  <th className="px-4 py-3 font-medium">Avg DS dur.</th>
+                  <th className="px-4 py-3 font-medium">Found</th>
+                  <th className="px-4 py-3 font-medium">Inserted</th>
+                  <th className="px-4 py-3 font-medium">Matches</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {slaHist.ingest_daily.slice(0, 7).map((row: any, i: number) => (
+                  <tr key={i} className="bg-white hover:bg-gray-50/50">
+                    <td className="px-4 py-2.5 font-medium text-gray-800">{row.day}</td>
+                    <td className="px-4 py-2.5 text-gray-500">{row.runs}</td>
+                    <td className="px-4 py-2.5">
+                      <span style={{ color: "#7c5fc5" }} className="font-medium">{row.fast_lane_runs ?? 0}</span>
+                    </td>
+                    <td className="px-4 py-2.5" style={{ color: (row.avg_fast_lane_sec ?? 0) <= 15 ? "#22c55e" : "#f59e0b" }}>
+                      {row.avg_fast_lane_sec != null ? `${row.avg_fast_lane_sec}s` : "—"}
+                    </td>
+                    <td className="px-4 py-2.5 text-gray-500">{row.deep_scan_runs ?? 0}</td>
+                    <td className="px-4 py-2.5" style={{ color: (row.avg_deep_scan_sec ?? 0) <= 120 ? "#22c55e" : (row.avg_deep_scan_sec ?? 0) <= 300 ? "#f59e0b" : "#ef4444" }}>
+                      {row.avg_deep_scan_sec != null ? `${row.avg_deep_scan_sec}s` : "—"}
+                    </td>
+                    <td className="px-4 py-2.5 text-gray-600">{row.total_found ?? 0}</td>
+                    <td className="px-4 py-2.5">
+                      <span style={{ color: (row.total_inserted ?? 0) > 0 ? "#16a34a" : "#aaa" }}>{row.total_inserted ?? 0}</span>
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <span style={{ color: (row.total_matches ?? 0) > 0 ? "#7c5fc5" : "#aaa" }}>{row.total_matches ?? 0}</span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-[11px] text-gray-400 mt-1.5 px-1">
+            ⚡ Fast-lane = runs under 30s (real-time ticker). Deep-scan = full 5-min ingest cycles.
+          </p>
         </div>
       )}
 

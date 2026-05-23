@@ -6772,7 +6772,25 @@ export async function registerRoutes(
       );
 
       const latestRun = runsRes.rows[0] || null;
-      const sources = latestRun?.source_reports || [];
+      let sources = latestRun?.source_reports || [];
+
+      if (!sources || sources.length === 0) {
+        try {
+          const shRows = await getSourceHealthSummary();
+          sources = shRows.map(r => ({
+            name: r.source_name + (r.city ? ` (${r.city})` : ""),
+            source: r.source_name,
+            city: r.city,
+            found: r.found_count,
+            inserted: r.inserted_count,
+            duplicates: r.duplicate_count,
+            errors: r.error_count,
+            status: r.status,
+            durationMs: r.duration_ms,
+            lastError: r.last_error,
+          }));
+        } catch {}
+      }
 
       res.json({ sources, latestRun: latestRun ? { started_at: latestRun.started_at, finished_at: latestRun.finished_at, duration_sec: latestRun.duration_sec, status: latestRun.status } : null });
     } catch (err: any) {

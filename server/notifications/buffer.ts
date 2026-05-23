@@ -4,7 +4,7 @@ import { getSubscriptionStatus } from "../subscriptions";
 import { sendMatchPushNotifications, type PushMatchListing } from "./push";
 import { sendExpoMatchPush, type ExpoMatchListing } from "./expo-push";
 import { batchedIn } from "../freshness";
-import { markEmailSent, markPushSent, markSuppressed, markFlushAttempted, getUndeliveredMatches } from "../user-matches";
+import { markEmailSent, markPushSent, markSuppressed, markFlushAttempted, markBuffered, getUndeliveredMatches } from "../user-matches";
 import { pool as pgPool } from "../pg-pool";
 import { getOwnerBuddyRelation, type BuddyRelation } from "../buddy";
 import { getSupabaseAdmin } from "../supabase-admin";
@@ -195,6 +195,7 @@ export function bufferMatchAlert(
     const seenClusterIds = new Set<string>(listing.cluster_id ? [listing.cluster_id] : []);
     buffer.set(userId, { email: userEmail, seenListingIds, seenClusterIds, listings: [listing] });
   }
+  markBuffered(userId, [listing.listing_id]).catch(() => {});
 }
 
 async function getAppVisibleListingIds(userId: string, supabase: any, candidateListingIds?: string[]): Promise<Set<string>> {
@@ -994,7 +995,34 @@ export async function recoverUndeliveredMatches(supabase: any): Promise<{ recove
       }
       if (m.email_sent && !m.push_sent) {
         skippedAlreadyEmailed++;
-        try { await markPushSent(userId, [m.listing_id]); } catch {}
+        if (pushOn) {
+          // Email was delivered but push was missed (e.g. no tokens at flush time).
+          // Attempt push directly — don't re-buffer to avoid a duplicate email.
+          const lang = await getUserLanguage(userId).catch(() => "en" as import("../i18n").ServerLocale);
+          const pushListings: PushMatchListing[] = [{ listing_id: m.listing_id, city: m.listing_city || "" }];
+          const expoListings: ExpoMatchListing[] = [{
+            listing_id: m.listing_id,
+            title: m.listing_title || "Neue Wohnung",
+            city: m.listing_city || "",
+            price: Number(m.listing_price) || 0,
+            url: m.listing_url || "",
+            street: null,
+            district: null,
+          }];
+          const [webResult, expoResult] = await Promise.all([
+            sendMatchPushNotifications(userId, pushListings, supabase, lang).catch(() => ({ sent: 0, failed: 0, removed: 0, errors: [] })),
+            sendExpoMatchPush(userId, expoListings, lang).catch(() => ({ sent: 0, skipped: 0, failed: 0 })),
+          ]);
+          const totalSent = (webResult.sent || 0) + (expoResult.sent || 0);
+          log(`[RECOVERY] User ${userId.substring(0, 8)}: direct push for already-emailed match ${m.listing_id.substring(0, 8)}: sent=${totalSent}`);
+          if (totalSent > 0) {
+            try { await markPushSent(userId, [m.listing_id]); } catch {}
+            slaPushSent(m.listing_id, new Date().toISOString());
+          }
+          // If no tokens, leave push_sent=false so the next recovery can retry
+        } else {
+          try { await markPushSent(userId, [m.listing_id]); } catch {}
+        }
         continue;
       }
       bufferMatchAlert(userId, email, {
