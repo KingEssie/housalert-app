@@ -1,0 +1,191 @@
+Phase: 5-Source Dublin Launch Sprint
+
+Context:
+HousAlert already has:
+- stable realtime ingestion pipeline
+- Daft.ie working through ScraperAPI
+- Ireland scheduler
+- matching pipeline
+- push/email notifications
+- source health
+- notification traces
+- Dublin/Ireland-first onboarding and UX
+
+Goal:
+Expand Dublin coverage to 5 reliable rental sources before public launch.
+
+Current source status:
+- Daft.ie = working/live
+- Rent.ie = scaffolded/prepared
+- MyHome.ie = scaffolded/prepared
+- Property.ie = not implemented
+- Let.ie = not implemented
+
+IMPORTANT:
+Do NOT touch:
+- service worker
+- push notification infrastructure
+- VAPID/FCM
+- Stripe/paywall
+- Germany dormant infrastructure
+- matching architecture
+- notification traces
+- stable ingestion systems
+
+Do NOT over-engineer.
+Do NOT create a new scraper framework.
+Keep using the existing Ireland orchestrator + scheduler.
+
+==================================================
+1. COMPLETE RENT.IE SOURCE
+==================================================
+
+Implement a working Rent.ie fetcher.
+
+Requirements:
+- Dublin-focused initially
+- proxy-compatible
+- use RENTIE_PROXY_URL if set
+- fallback to DAFT_PROXY_URL
+- normalized SourceListing output
+- stable external IDs
+- absolute URLs
+- numeric price parsing if possible
+- bedrooms if available
+- defensive parsing
+- skip invalid listings safely
+
+If the site requires JS rendering:
+- log clearly
+- explain exactly which proxy/render mode is needed
+- do not crash
+
+==================================================
+2. COMPLETE MYHOME.IE SOURCE
+==================================================
+
+Same requirements as Rent.ie.
+
+Use:
+- MYHOME_PROXY_URL first
+- fallback to DAFT_PROXY_URL
+
+Keep implementation lightweight and pragmatic.
+
+==================================================
+3. ADD PROPERTY.IE SOURCE
+==================================================
+
+Create:
+server/sources/ireland/propertyie/
+
+Implement minimal MVP fetcher:
+- Dublin rentals only initially
+- normalized listings
+- stable IDs
+- absolute URLs
+- safe parsing
+
+Use existing source patterns.
+
+==================================================
+4. ADD LET.IE SOURCE
+==================================================
+
+Create:
+server/sources/ireland/letie/
+
+Same lightweight MVP approach:
+- Dublin-focused
+- normalized output
+- proxy-compatible if needed
+- no browser automation unless unavoidable
+
+==================================================
+5. SCHEDULER INTEGRATION
+==================================================
+
+Ensure all Ireland sources run through the existing Ireland scheduler.
+
+Requirements:
+- safe error handling
+- no crash loops
+- clear logs per source:
+  - fetched
+  - normalized
+  - inserted
+  - duplicates
+  - matches
+  - errors
+  - duration
+
+==================================================
+6. DEDUPE SAFETY
+==================================================
+
+Check whether duplicate Dublin listings from multiple sources create problems.
+
+Do NOT build a complex dedupe engine.
+
+Only:
+- identify obvious duplicate collisions
+- ensure listings remain stable
+- avoid repeated spam inserts if possible
+
+==================================================
+7. SOURCE HEALTH
+==================================================
+
+Ensure all 5 Ireland sources appear correctly in:
+- source health
+- ingestion logs
+- admin monitoring
+
+Track:
+- success/failure
+- counts
+- duration
+- last run
+
+Reuse existing monitoring.
+
+==================================================
+8. NO FAKE DATA
+==================================================
+
+If a source blocks:
+- return []
+- log clearly
+- do not inject fake listings
+- do not pretend success
+
+==================================================
+9. MINIMAL VERIFICATION
+==================================================
+
+Run lightweight checks only:
+- server starts
+- scheduler starts
+- fetchers compile
+- no SW/push changes
+- no Germany changes
+
+If sources work:
+show:
+- HTTP status
+- raw candidates
+- normalized count
+- 1–2 sample listings
+
+==================================================
+10. REPORT BACK
+==================================================
+
+Report:
+- which sources work
+- which sources block
+- whether proxies/rendering were required
+- estimated total Dublin listing coverage
+- files created/modified
+- any major anti-bot risks
+- confirmation push/service-worker untouched
