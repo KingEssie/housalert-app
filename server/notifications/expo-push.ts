@@ -102,7 +102,7 @@ export function buildMatchPayload(listings: ExpoMatchListing[], lang: ServerLoca
     title = t(lang, "push.newMatch", { city });
     const label = truncate(getDisplayTitle(l, true) || t(lang, "push.webTitle"), 60);
     body = l.price > 0 ? `${label} · €${l.price}` : label;
-    if (l.listing_id) deepLink = `/listing/${l.listing_id}`;
+    if (l.listing_id) deepLink = `/apply/${l.listing_id}`;
   } else {
     const cities = [...new Set(listings.map((l) => l.city).filter(Boolean))];
     const cityText = cities.length > 0 ? cities.slice(0, 2).join(", ") : t(lang, "push.yourCity");

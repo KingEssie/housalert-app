@@ -44,7 +44,7 @@ self.addEventListener("push", (event) => {
       if (parsed.body) data.body = parsed.body;
       if (parsed.listing_id) data.listing_id = parsed.listing_id;
       if (parsed.url) data.url = parsed.url;
-      else if (parsed.listing_id) data.url = "/listing/" + parsed.listing_id;
+      else if (parsed.listing_id) data.url = "/apply/" + parsed.listing_id;
     }
   } catch (e) {}
 
@@ -91,11 +91,14 @@ self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 
   const notifData = event.notification.data || {};
-  let url = "/matches";
-  if (notifData.listing_id) {
-    url = "/listing/" + notifData.listing_id;
-  } else if (notifData.url) {
+  let url = "/dashboard?tab=matches";
+  if (notifData.url) {
+    // Use the explicit url from the push payload (e.g. /apply/:listingId or /dashboard?tab=matches).
+    // This takes priority — the server sets the correct deep-link target.
     url = notifData.url;
+  } else if (notifData.listing_id) {
+    // Fallback: older payloads that only carry listing_id with no url field.
+    url = "/apply/" + notifData.listing_id;
   }
 
   const appOrigin = self.location.origin;
