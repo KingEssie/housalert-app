@@ -8,3 +8,4 @@
 - [markBuffered must be fire-and-forget](buffer-mark-buffered.md) — bufferMatchAlert is sync (void); call markBuffered().catch(()=>{}) inline — never await or make the function async
 - [source_health SQL param reuse](source-health-sql.md) — upsertSourceHealth INSERT used $3 in multiple CASE branches causing PG type-inference ambiguity; fix by pre-computing successAt/failureAt as nullable ISO strings in JS and passing as separate params
 - [MyHome Path 2 for-sale contamination](myhome-path2-bug.md) — render=true redirects to homepage; brochure links found there are for-sale (Cork/Wicklow), not Dublin rentals; always check isRentalPage signals before trusting Path 2
+- [PropertyPal TLS fingerprint block](propertypal-curl.md) — Node.js fetch (undici/h2 ALPN) gets 403; curl gets 200 from same IP; use execFile('curl') for this source; PROPERTYPAL_PROXY_URL only works with real curl proxy format

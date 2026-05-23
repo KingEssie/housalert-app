@@ -8,7 +8,8 @@
  *   RENTIE_PROXY_URL      — Rent.ie proxy  (JS rendering required, e.g. add &render=true)
  *   MYHOME_PROXY_URL      — MyHome.ie proxy (JS rendering required, e.g. add &render=true)
  *   LETIE_PROXY_URL       — Let.ie proxy  (JS rendering required; Daft-powered, use render=true)
- *   PROPERTYIE_PROXY_URL  — Property.ie proxy (blocked via ScraperAPI; needs capable proxy)
+ *   PROPERTYIE_PROXY_URL   — Property.ie proxy (blocked via ScraperAPI; needs capable proxy)
+ *   PROPERTYPAL_PROXY_URL  — PropertyPal proxy (direct fetch preferred; proxy fallback acceptable, no render=true needed)
  *
  * Supported proxy URL formats:
  *   ScraperAPI prefix:  https://api.scraperapi.com?api_key=KEY&url=

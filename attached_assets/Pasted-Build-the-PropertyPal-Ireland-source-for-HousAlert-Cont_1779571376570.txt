@@ -1,0 +1,182 @@
+Build the PropertyPal Ireland source for HousAlert.
+
+Context:
+HousAlert already has:
+- stable Ireland ingestion pipeline
+- Daft.ie working live via ScraperAPI
+- source health
+- notification traces
+- Ireland scheduler
+- matching + push pipeline
+- PropertyPal discovery results showing:
+  - __NEXT_DATA__ available
+  - listing URLs visible
+  - prices visible
+  - listings accessible without render=true
+  - score 5/5 for scrapeability
+
+Goal:
+Implement PropertyPal as the second reliable Dublin source using the SAME lightweight pattern as Daft.ie.
+
+IMPORTANT:
+Do NOT touch:
+- service worker
+- push notifications
+- VAPID/FCM
+- Stripe/paywall
+- Germany infrastructure
+- matching architecture
+- notification traces
+- admin systems
+
+Do NOT add:
+- browser automation
+- Playwright
+- Puppeteer
+- render=true
+- heavy dependencies
+- new scraper frameworks
+
+Keep implementation lightweight and pragmatic.
+
+==================================================
+1. CREATE PROPERTYPAL SOURCE
+==================================================
+
+Create:
+
+server/sources/ireland/propertypal/
+
+Use the same structure/pattern style as Daft.ie where practical.
+
+==================================================
+2. IMPLEMENT FETCHER
+==================================================
+
+Fetch Dublin rental listings from PropertyPal.
+
+Requirements:
+- use existing proxy helper if needed
+- direct fetch preferred
+- proxy fallback acceptable
+- NO render=true
+
+Parse listing data from:
+- __NEXT_DATA__
+- initialState
+- embedded JSON
+- whichever stable SSR structure exists
+
+Requirements:
+- source = "propertypal"
+- stable externalId
+- title
+- price (numeric if possible)
+- location
+- absolute URL
+- imageUrl if available
+- bedrooms if available
+- latitude/longitude if available
+- createdAt/listedAt if available
+
+Skip invalid listings safely.
+
+==================================================
+3. DUBLIN RENTALS ONLY
+==================================================
+
+Ensure:
+- only rental listings
+- Dublin-focused initially
+- no for-sale listings
+- no Northern Ireland listings unless clearly intended
+
+Be defensive:
+- validate rental signals before inserting
+- avoid repeating the MyHome bug
+
+==================================================
+4. CONNECT TO EXISTING PIPELINE
+==================================================
+
+Use the existing:
+- Ireland orchestrator
+- insertAndMatchListings
+- source health
+- scheduler
+- ingestion logging
+
+Do NOT create parallel ingestion systems.
+
+==================================================
+5. SCHEDULER
+==================================================
+
+Add PropertyPal into the existing Ireland scheduler.
+
+Requirements:
+- safe error handling
+- no crash loops
+- clear logs:
+  - fetched
+  - normalized
+  - inserted
+  - duplicates
+  - matches
+  - errors
+  - duration
+
+Use a conservative interval aligned with the current Ireland cadence.
+
+==================================================
+6. SOURCE HEALTH
+==================================================
+
+Ensure PropertyPal appears in:
+- source health
+- ingestion logs
+- admin monitoring
+
+Reuse existing systems only.
+
+==================================================
+7. DEDUPE SAFETY
+==================================================
+
+Ensure obvious duplicate listings between:
+- Daft
+- PropertyPal
+
+do not create spam insertion loops.
+
+Do NOT build a complex dedupe engine.
+
+==================================================
+8. MINIMAL VERIFICATION
+==================================================
+
+Run lightweight checks only:
+- server starts
+- fetcher works
+- scheduler works
+- no push/SW changes
+- no Germany changes
+
+Show:
+- HTTP status
+- raw candidate count
+- normalized listing count
+- 1–3 sample normalized listings
+
+==================================================
+9. REPORT BACK
+==================================================
+
+Report:
+- files created/modified
+- whether direct fetch worked
+- whether proxy was required
+- listing counts
+- sample listings
+- any anti-bot risks
+- confirmation push/service-worker untouched
