@@ -133,6 +133,19 @@ export async function markFlushAttempted(userId: string, listingIds: string[]): 
   }
 }
 
+export async function markProviderError(userId: string, listingIds: string[], errorMsg: string): Promise<void> {
+  if (!(await ensureTable()) || listingIds.length === 0) return;
+  try {
+    await pool.query(
+      `UPDATE user_matches SET provider_error = $3
+       WHERE user_id = $1 AND listing_id = ANY($2) AND provider_error IS NULL`,
+      [userId, listingIds, errorMsg.substring(0, 500)]
+    );
+  } catch (err: any) {
+    log(`[user-matches] markProviderError error: ${err.message}`);
+  }
+}
+
 export async function markViewed(userId: string, listingIds: string[]): Promise<void> {
   if (!(await ensureTable()) || listingIds.length === 0) return;
   try {

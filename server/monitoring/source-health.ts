@@ -73,47 +73,53 @@ export async function upsertSourceHealth(report: IngestionReport, runStartedAt: 
         ? "degraded"
         : "healthy";
 
+    // Pre-compute nullable timestamps in JS to avoid $N parameter reuse
+    // inside CASE expressions (PostgreSQL type-inference ambiguity).
+    const startedAtIso  = runStartedAt.toISOString();
+    const successAtIso  = isSuccess ? startedAtIso : null;
+    const failureAtIso  = isSuccess ? null : startedAtIso;
+    const consecutiveFailuresOnInsert = isSuccess ? 0 : 1;
+    const consecutiveZerosOnInsert    = isZero    ? 1 : 0;
+
     try {
       await pool.query(
         `INSERT INTO source_health
           (source_name, city, last_started_at, last_success_at, last_failure_at,
            duration_ms, found_count, inserted_count, duplicate_count, error_count,
            last_error, status, consecutive_failures, consecutive_zeros, total_runs, updated_at)
-         VALUES ($1, $2, $3::TIMESTAMPTZ,
-           CASE WHEN $4::BOOLEAN THEN $3::TIMESTAMPTZ ELSE NULL::TIMESTAMPTZ END,
-           CASE WHEN NOT $4::BOOLEAN THEN $3::TIMESTAMPTZ ELSE NULL::TIMESTAMPTZ END,
-           $5, $6, $7, $8, $9, $10, $11,
-           CASE WHEN $4::BOOLEAN THEN 0 ELSE 1 END,
-           CASE WHEN $12::BOOLEAN THEN 1 ELSE 0 END,
-           1, NOW())
+         VALUES ($1, $2, $3::TIMESTAMPTZ, $4::TIMESTAMPTZ, $5::TIMESTAMPTZ,
+                 $6, $7, $8, $9, $10, $11, $12,
+                 $13, $14, 1, NOW())
          ON CONFLICT (source_name, city) DO UPDATE SET
            last_started_at   = $3::TIMESTAMPTZ,
-           last_success_at   = CASE WHEN $4::BOOLEAN THEN $3::TIMESTAMPTZ ELSE source_health.last_success_at END,
-           last_failure_at   = CASE WHEN NOT $4::BOOLEAN THEN $3::TIMESTAMPTZ ELSE source_health.last_failure_at END,
-           duration_ms       = $5,
-           found_count       = $6,
-           inserted_count    = $7,
-           duplicate_count   = $8,
-           error_count       = $9,
-           last_error        = CASE WHEN NOT $4::BOOLEAN THEN $10 ELSE NULL END,
-           status            = $11,
-           consecutive_failures = CASE WHEN $4::BOOLEAN THEN 0 ELSE source_health.consecutive_failures + 1 END,
-           consecutive_zeros    = CASE WHEN $12::BOOLEAN THEN source_health.consecutive_zeros + 1 ELSE 0 END,
+           last_success_at   = CASE WHEN $4::TIMESTAMPTZ IS NOT NULL THEN $4::TIMESTAMPTZ ELSE source_health.last_success_at END,
+           last_failure_at   = CASE WHEN $5::TIMESTAMPTZ IS NOT NULL THEN $5::TIMESTAMPTZ ELSE source_health.last_failure_at END,
+           duration_ms       = $6,
+           found_count       = $7,
+           inserted_count    = $8,
+           duplicate_count   = $9,
+           error_count       = $10,
+           last_error        = CASE WHEN $5::TIMESTAMPTZ IS NOT NULL THEN $11 ELSE NULL END,
+           status            = $12,
+           consecutive_failures = CASE WHEN $4::TIMESTAMPTZ IS NOT NULL THEN 0 ELSE source_health.consecutive_failures + 1 END,
+           consecutive_zeros    = CASE WHEN $14 = 1 THEN source_health.consecutive_zeros + 1 ELSE 0 END,
            total_runs           = source_health.total_runs + 1,
            updated_at           = NOW()`,
         [
-          sourceName,
-          city,
-          runStartedAt.toISOString(),
-          isSuccess,
-          sr.durationMs ?? 0,
-          sr.found,
-          sr.inserted,
-          sr.duplicates,
-          sr.errors,
-          sr.errorMessage ?? null,
-          status,
-          isZero,
+          sourceName,          // $1
+          city,                // $2
+          startedAtIso,        // $3  last_started_at
+          successAtIso,        // $4  last_success_at (null when failed)
+          failureAtIso,        // $5  last_failure_at (null when succeeded)
+          sr.durationMs ?? 0,  // $6
+          sr.found,            // $7
+          sr.inserted,         // $8
+          sr.duplicates,       // $9
+          sr.errors,           // $10
+          sr.errorMessage ?? null, // $11
+          status,              // $12
+          consecutiveFailuresOnInsert, // $13
+          consecutiveZerosOnInsert,    // $14
         ]
       );
     } catch (err: any) {

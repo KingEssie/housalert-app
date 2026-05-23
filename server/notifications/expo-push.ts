@@ -169,7 +169,7 @@ export async function sendExpoMatchPush(
   userId: string,
   listings: ExpoMatchListing[],
   lang: ServerLocale = "en"
-): Promise<{ sent: number; skipped: number; failed: number }> {
+): Promise<{ sent: number; skipped: number; failed: number; providerError?: string }> {
   const uid = userId.substring(0, 8);
 
   if (listings.length === 0) {
@@ -223,11 +223,12 @@ export async function sendExpoMatchPush(
       status: "api_error",
       errorMessage: error,
     });
-    return { sent: 0, skipped: 0, failed: tokens.length };
+    return { sent: 0, skipped: 0, failed: tokens.length, providerError: error };
   }
 
   let sent = 0;
   let failed = 0;
+  const failedErrors: string[] = [];
 
   for (let i = 0; i < tickets.length; i++) {
     const ticket = tickets[i];
@@ -251,6 +252,7 @@ export async function sendExpoMatchPush(
     } else {
       failed++;
       const errType = ticket.details?.error || "unknown";
+      failedErrors.push(ticket.message ? `${errType}: ${ticket.message}` : errType);
       log(`[EXPO-PUSH] User ${uid}...: failed ${tokenSnippet(tokenStr)} error=${errType} msg=${ticket.message}`);
 
       await logDelivery({
@@ -277,7 +279,8 @@ export async function sendExpoMatchPush(
   }
 
   log(`[EXPO-PUSH] User ${uid}...: ${sent} sent, ${failed} failed (${listings.length} listings, ${tokens.length} tokens)`);
-  return { sent, skipped: 0, failed };
+  const providerError = failed > 0 ? failedErrors.join("; ") || "provider_rejected" : undefined;
+  return { sent, skipped: 0, failed, providerError };
 }
 
 export async function sendExpoTestPush(

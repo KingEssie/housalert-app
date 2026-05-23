@@ -5048,24 +5048,29 @@ export async function registerRoutes(
   });
 
   async function requireAdmin(req: any, res: any, next: any) {
-    const token = req.headers.authorization?.replace("Bearer ", "");
-    if (!token) {
-      log(`[admin] requireAdmin: no token in Authorization header`);
-      return res.status(401).json({ error: "Unauthorized — no token provided" });
-    }
+    try {
+      const token = req.headers.authorization?.replace("Bearer ", "");
+      if (!token) {
+        log(`[admin] requireAdmin: no token in Authorization header`);
+        return res.status(401).json({ error: "Unauthorized — no token provided" });
+      }
 
-    const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
-    if (authErr || !user) {
-      log(`[admin] requireAdmin: auth failed — ${authErr?.message || "no user"}`);
-      return res.status(401).json({ error: "Unauthorized — invalid session" });
-    }
-    if (!isAdminEmail(user.email || "")) {
-      log(`[admin] requireAdmin: ${user.email} is not an admin`);
-      return res.status(403).json({ error: "Forbidden — not an admin" });
-    }
+      const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+      if (authErr || !user) {
+        log(`[admin] requireAdmin: auth failed — ${authErr?.message || "no user"}`);
+        return res.status(401).json({ error: "Unauthorized — invalid session" });
+      }
+      if (!isAdminEmail(user.email || "")) {
+        log(`[admin] requireAdmin: ${user.email} is not an admin`);
+        return res.status(403).json({ error: "Forbidden — not an admin" });
+      }
 
-    (req as any).adminUser = user;
-    next();
+      (req as any).adminUser = user;
+      next();
+    } catch (err: any) {
+      log(`[admin] requireAdmin: unexpected error — ${err.message}`);
+      return res.status(500).json({ error: "Auth check failed", message: err.message });
+    }
   }
 
   app.post("/api/admin/reset-onboarding", requireAdmin, async (req, res) => {
@@ -8817,7 +8822,45 @@ export async function registerRoutes(
 
   app.get("/api/admin/portal/source-health", requireAdmin, async (_req, res) => {
     try {
-      const rows = await getSourceHealthSummary();
+      let rows = await getSourceHealthSummary();
+
+      // Fallback: synthesise health rows from recent ingestion_runs when the
+      // source_health table is empty (e.g. first boot before any upsert runs).
+      if (rows.length === 0) {
+        try {
+          const { rows: runRows } = await pgPool.query(
+            `SELECT source_reports, started_at, finished_at, duration_sec, status
+             FROM ingestion_runs
+             ORDER BY started_at DESC LIMIT 5`
+          );
+          const latest = runRows[0];
+          if (latest?.source_reports?.length) {
+            rows = (latest.source_reports as any[]).map((sr: any) => ({
+              id: 0,
+              source_name: sr.name || sr.source || "unknown",
+              city: sr.city || "",
+              last_started_at: latest.started_at,
+              last_success_at: sr.errors === 0 ? latest.started_at : null,
+              last_failure_at: sr.errors > 0 ? latest.started_at : null,
+              duration_ms: sr.durationMs ?? 0,
+              found_count: sr.found ?? 0,
+              inserted_count: sr.inserted ?? 0,
+              duplicate_count: sr.duplicates ?? 0,
+              error_count: sr.errors ?? 0,
+              last_error: sr.errorMessage ?? null,
+              status: sr.errors === 0 && sr.found > 0 ? "healthy" : "degraded",
+              consecutive_failures: sr.errors > 0 ? 1 : 0,
+              consecutive_zeros: sr.found === 0 ? 1 : 0,
+              total_runs: 1,
+              updated_at: latest.finished_at || latest.started_at,
+              _from_ingestion_run: true,
+            }));
+          }
+        } catch (fbErr: any) {
+          log(`[admin] source-health fallback error: ${fbErr.message}`);
+        }
+      }
+
       res.json({ sources: rows });
     } catch (err: any) {
       log(`[admin] source-health error: ${err.message}`);

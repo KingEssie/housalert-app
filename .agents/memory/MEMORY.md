@@ -1,6 +1,7 @@
 - [Android native push registration](android-native-push.md) — isPushSupported() always returns false on Capacitor; use isNativePlatform() branch + registerNativePush() + POST /api/expo-push-token instead
 - [VAPID key rotation pitfall](vapid-key-rotation.md) — shared env var silently shadows secret with same name; must delete from shared env before rotation takes effect
 - [user_profile_data schema](user-profile-data-schema.md) — table lives in Replit PG, has no email column; email is in Supabase auth.users only — never JOIN upd.email from pgPool
-- [Push test 500 hardening](push-test-hardening.md) — sendPushToUser and sendExpoTestPush must each have independent try/catch at call site; any throw in either propagates to inner catch → 500
-- [Dual-DB source health fallback](source-health-fallback.md) — source_reports in ingestion_runs is empty in dev (no deep-scan scheduler); sources endpoint must fall back to source_health table (203 rows) for SourcesTab to show data
+- [Push test 500 hardening](push-test-hardening.md) — Express 5 auto-catches async middleware errors; requireAdmin must have try/catch or a Supabase network hiccup returns unstructured {message:"Internal Server Error"} 500
+- [Dual-DB source health fallback](source-health-fallback.md) — source_health table has 203 rows in Replit PG; /sources endpoint shows latest ingestion_run source_reports first, falls back to source_health; /source-health endpoint now also falls back to ingestion_runs if table is empty
 - [markBuffered must be fire-and-forget](buffer-mark-buffered.md) — bufferMatchAlert is sync (void); call markBuffered().catch(()=>{}) inline — never await or make the function async
+- [source_health SQL param reuse](source-health-sql.md) — upsertSourceHealth INSERT used $3 in multiple CASE branches causing PG type-inference ambiguity; fix by pre-computing successAt/failureAt as nullable ISO strings in JS and passing as separate params

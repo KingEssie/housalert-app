@@ -4,7 +4,7 @@ import { getSubscriptionStatus } from "../subscriptions";
 import { sendMatchPushNotifications, type PushMatchListing } from "./push";
 import { sendExpoMatchPush, type ExpoMatchListing } from "./expo-push";
 import { batchedIn } from "../freshness";
-import { markEmailSent, markPushSent, markSuppressed, markFlushAttempted, markBuffered, getUndeliveredMatches } from "../user-matches";
+import { markEmailSent, markPushSent, markSuppressed, markFlushAttempted, markBuffered, markProviderError, getUndeliveredMatches } from "../user-matches";
 import { pool as pgPool } from "../pg-pool";
 import { getOwnerBuddyRelation, type BuddyRelation } from "../buddy";
 import { getSupabaseAdmin } from "../supabase-admin";
@@ -537,6 +537,10 @@ export async function flushMatchAlertBuffer(supabase: any, source: string = "flu
           const expoPushSentAt = new Date().toISOString();
           for (const id of expoPushedIds) { slaPushSent(id, expoPushSentAt); }
         }
+        if (expoResult.failed > 0 && expoResult.providerError) {
+          const failedIds = alertable.map(l => l.listing_id);
+          markProviderError(userId, failedIds, `expo: ${expoResult.providerError}`).catch(() => {});
+        }
       } catch (err: any) {
         log(`[ALERTS] Expo push error for user ${userId.substring(0, 8)}...: ${err.message}`);
       }
@@ -702,6 +706,10 @@ export async function flushUserAlerts(userId: string, supabase: any): Promise<vo
       if (expoResult.sent > 0) {
         const expoPushedIds = verified.map(l => l.listing_id);
         try { await markPushSent(userId, expoPushedIds); } catch {}
+      }
+      if (expoResult.failed > 0 && expoResult.providerError) {
+        const failedIds = verified.map(l => l.listing_id);
+        markProviderError(userId, failedIds, `expo: ${expoResult.providerError}`).catch(() => {});
       }
     } catch (err: any) {
       log(`[ALERTS] Backfill expo push error for user ${userId.substring(0, 8)}...: ${err.message}`);
