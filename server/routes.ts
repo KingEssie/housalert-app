@@ -1245,6 +1245,36 @@ export async function registerRoutes(
     }
   });
 
+  // ── Push registration diagnostic log ────────────────────────────────────────
+  // Lightweight circular buffer — last 200 entries from any client/device.
+  const _pushRegLog: Array<{ ts: string; uid?: string; ua?: string; body: any }> = [];
+
+  app.post("/api/push/registration-log", async (req, res) => {
+    try {
+      const now = new Date().toISOString();
+      const authHeader = req.headers.authorization?.replace("Bearer ", "");
+      let uid: string | undefined;
+      if (authHeader) {
+        try {
+          const { data: { user } } = await supabase.auth.getUser(authHeader);
+          uid = user?.id?.substring(0, 8);
+        } catch {}
+      }
+      const ua = (req.headers["user-agent"] || "").substring(0, 80);
+      const entry = { ts: now, uid, ua, body: req.body };
+      _pushRegLog.push(entry);
+      if (_pushRegLog.length > 200) _pushRegLog.shift();
+      log(`[PUSH-REG-LOG] uid=${uid ?? "anon"} branch=${req.body?.selected_branch ?? "?"} ctx=${req.body?.app_context ?? "?"} perm=${req.body?.permission_result ?? "?"} token=${req.body?.token_result ?? "?"} err=${req.body?.error_message ?? "none"}`);
+      return res.json({ ok: true });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/push/registration-log", requireAdmin, async (_req, res) => {
+    return res.json({ entries: [..._pushRegLog].reverse().slice(0, 100) });
+  });
+
   app.post("/api/push/test", async (req, res) => {
     try {
       const token = req.headers.authorization?.replace("Bearer ", "");

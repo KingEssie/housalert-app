@@ -41,6 +41,30 @@ if (Platform.OS === "android") {
   }).catch(() => {});
 }
 
+async function reportRegistrationError(
+  stage: string,
+  error: string,
+  permissionResult?: string
+): Promise<void> {
+  try {
+    await fetch(`${API_BASE}/api/push/registration-log`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        app_context: "expo-webview",
+        selected_branch: "expo-native (mobile-clean/App.tsx)",
+        is_expo_webview: true,
+        is_capacitor_native: false,
+        platform: Platform.OS,
+        permission_result: permissionResult ?? "unknown",
+        token_result: "failed",
+        error_message: `[${stage}] ${error}`,
+        user_agent: `ExpoApp/${BUILD_TAG}`,
+      }),
+    });
+  } catch {}
+}
+
 async function registerForPushNotifications(): Promise<string | null> {
   if (!Device.isDevice) {
     console.log("[PUSH] Not a physical device — skipping");
@@ -49,14 +73,17 @@ async function registerForPushNotifications(): Promise<string | null> {
 
   const { status: existing } = await Notifications.getPermissionsAsync();
   let finalStatus = existing;
+  console.log("[PUSH] Existing permission status:", existing);
 
   if (existing !== "granted") {
     const { status } = await Notifications.requestPermissionsAsync();
     finalStatus = status;
+    console.log("[PUSH] Permission after request:", status);
   }
 
   if (finalStatus !== "granted") {
-    console.log("[PUSH] Permission denied");
+    console.log("[PUSH] Permission denied — not registering");
+    await reportRegistrationError("permissions", `Permission denied: finalStatus=${finalStatus}`, finalStatus);
     return null;
   }
 
@@ -65,17 +92,24 @@ async function registerForPushNotifications(): Promise<string | null> {
     Constants.easConfig?.projectId ??
     null;
 
+  console.log("[PUSH] EAS projectId:", projectId);
+
   if (!projectId || projectId === "YOUR_PROJECT_ID") {
-    console.warn("[PUSH] No valid Expo projectId — run `npx eas init`");
+    const msg = `No valid Expo projectId (got: ${projectId}) — run 'npx eas init'`;
+    console.warn("[PUSH]", msg);
+    await reportRegistrationError("projectId", msg, finalStatus);
     return null;
   }
 
   try {
+    console.log("[PUSH] Calling getExpoPushTokenAsync with projectId:", projectId);
     const tokenData = await Notifications.getExpoPushTokenAsync({ projectId });
-    console.log("[PUSH] Expo push token:", tokenData.data);
+    console.log("[PUSH] Expo push token obtained:", tokenData.data.substring(0, 30) + "...");
     return tokenData.data;
-  } catch (err) {
-    console.warn("[PUSH] Could not obtain push token:", err);
+  } catch (err: any) {
+    const msg = err?.message || String(err);
+    console.warn("[PUSH] getExpoPushTokenAsync failed:", msg);
+    await reportRegistrationError("getExpoPushTokenAsync", msg, finalStatus);
     return null;
   }
 }
@@ -214,7 +248,8 @@ export default function App() {
       registeredForUserRef.current = auth.user_id;
       registeredTokenRef.current = token;
     } else {
-      console.log("[PUSH] Will retry in 10s");
+      console.log("[PUSH] sendTokenToBackend failed — will retry in 10s");
+      reportRegistrationError("sendTokenToBackend", "Backend returned failure or network error", "granted").catch(() => {});
       setTimeout(() => tryRegister(), 10000);
     }
   }, []);

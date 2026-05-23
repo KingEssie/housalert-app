@@ -192,6 +192,84 @@ export async function unsubscribeFromPush(accessToken: string): Promise<boolean>
  * 2. Unsubscribes from any active push subscription
  * Returns a summary of what was done.
  */
+// ─── Push context diagnostics ─────────────────────────────────────────────────
+
+export interface PushContext {
+  app_context: "expo-webview" | "capacitor-native" | "pwa-standalone" | "web-browser";
+  selected_branch: string;
+  is_expo_webview: boolean;
+  is_capacitor_native: boolean;
+  is_standalone: boolean;
+  service_worker_available: boolean;
+  push_manager_available: boolean;
+  notification_api_available: boolean;
+  permission_state: NotificationPermission | "unsupported";
+  native_flag: boolean;
+  capacitor_obj: boolean;
+  user_agent: string;
+  push_unsupported_reason: PushUnsupportedReason;
+  token_result?: string | null;
+  error_message?: string;
+}
+
+export function gatherPushContext(overrides?: Partial<PushContext>): PushContext {
+  const w = window as any;
+  const isExpoWV = !!(w.Capacitor?.isNativePlatform?.() !== true &&
+    (w.__HOUSALERT_NATIVE__ === true ||
+     (() => { try { return localStorage.getItem("ha_native_v1") === "expo"; } catch { return false; } })() ||
+     /Android.*wv\b/.test(navigator.userAgent)));
+  const isCap = w.Capacitor?.isNativePlatform?.() === true;
+  const isStandAlone = window.matchMedia("(display-mode: standalone)").matches ||
+    ("standalone" in navigator && (navigator as any).standalone === true);
+
+  let appContext: PushContext["app_context"];
+  if (isCap) appContext = "capacitor-native";
+  else if (isExpoWV) appContext = "expo-webview";
+  else if (isStandAlone) appContext = "pwa-standalone";
+  else appContext = "web-browser";
+
+  let branch: string;
+  if (isExpoWV) branch = "expo-webview (token from native layer)";
+  else if (isCap) branch = "capacitor-native (registerNativePush)";
+  else branch = "web-browser (subscribeToPush → /api/push/register)";
+
+  let permState: NotificationPermission | "unsupported" = "unsupported";
+  try { permState = "Notification" in window ? Notification.permission : "unsupported"; } catch {}
+
+  return {
+    app_context: appContext,
+    selected_branch: branch,
+    is_expo_webview: isExpoWV,
+    is_capacitor_native: isCap,
+    is_standalone: isStandAlone,
+    service_worker_available: "serviceWorker" in navigator,
+    push_manager_available: "PushManager" in window,
+    notification_api_available: "Notification" in window,
+    permission_state: permState,
+    native_flag: w.__HOUSALERT_NATIVE__ === true,
+    capacitor_obj: !!w.Capacitor,
+    user_agent: navigator.userAgent.substring(0, 120),
+    push_unsupported_reason: getPushUnsupportedReason(),
+    ...overrides,
+  };
+}
+
+export async function reportRegistrationContext(
+  accessToken: string | null,
+  overrides?: Partial<PushContext>
+): Promise<void> {
+  try {
+    const ctx = gatherPushContext(overrides);
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (accessToken) headers["Authorization"] = `Bearer ${accessToken}`;
+    await apiFetch("/api/push/registration-log", {
+      method: "POST",
+      headers,
+      body: JSON.stringify(ctx),
+    });
+  } catch {}
+}
+
 export async function resetPushBrowserSide(): Promise<{
   swsUnregistered: number;
   subUnsubscribed: boolean;
