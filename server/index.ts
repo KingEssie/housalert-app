@@ -153,6 +153,9 @@ console.log("BOOT: server init");
     () => {
       console.log(`BOOT: server listening on 0.0.0.0:${port}`);
       log(`serving on port ${port}`);
+      if (process.env.ADMIN_ALERT_EMAILS_ENABLED !== "true") {
+        log("[alerts] Admin alert emails disabled (ADMIN_ALERT_EMAILS_ENABLED != true)");
+      }
 
       const BACKGROUND_DELAY_MS = 10_000;
       setTimeout(async () => {

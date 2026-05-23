@@ -88,6 +88,8 @@ async function resolveAlert(alertKey: string, reason?: string): Promise<void> {
 }
 
 async function sendAdminAlertEmail(alert: AdminAlert): Promise<void> {
+  if (process.env.ADMIN_ALERT_EMAILS_ENABLED !== "true") return;
+
   const adminEmails = (process.env.ADMIN_EMAILS || "")
     .split(",").map(e => e.trim()).filter(Boolean);
   if (adminEmails.length === 0) return;
