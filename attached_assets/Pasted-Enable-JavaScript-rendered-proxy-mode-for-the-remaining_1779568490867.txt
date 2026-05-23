@@ -1,0 +1,99 @@
+Enable JavaScript-rendered proxy mode for the remaining Ireland rental sources.
+
+Context:
+Daft.ie is already working through ScraperAPI.
+Rent.ie, MyHome.ie, and Let.ie currently return SPA/client-shell HTML without JS rendering.
+
+The source fetchers are already implemented and support per-source proxy env vars:
+- RENTIE_PROXY_URL
+- MYHOME_PROXY_URL
+- LETIE_PROXY_URL
+
+Goal:
+Enable render=true mode for those three sources and verify whether real listings can now be fetched and normalized.
+
+Tasks:
+
+==================================================
+1. CHECK CURRENT SECRETS
+==================================================
+
+Check whether these env vars already exist:
+- RENTIE_PROXY_URL
+- MYHOME_PROXY_URL
+- LETIE_PROXY_URL
+
+Do NOT print full secret values.
+
+==================================================
+2. IF MISSING, ASK ME TO ADD THEM
+==================================================
+
+If any are missing, tell me exactly which ones to add in Replit Secrets using this format:
+
+RENTIE_PROXY_URL=https://api.scraperapi.com?api_key=YOUR_KEY&render=true&url=
+
+MYHOME_PROXY_URL=https://api.scraperapi.com?api_key=YOUR_KEY&render=true&url=
+
+LETIE_PROXY_URL=https://api.scraperapi.com?api_key=YOUR_KEY&render=true&url=
+
+Do not hardcode API keys into source files.
+
+==================================================
+3. TEST EACH SOURCE
+==================================================
+
+Run lightweight fetch tests for:
+- Rent.ie
+- MyHome.ie
+- Let.ie
+
+Use the existing fetchers and scheduler-safe logic.
+
+For each source report:
+- fetch method
+- HTTP status
+- raw candidate count
+- normalized listing count
+- whether listings are rentals or incorrect content
+- whether JS rendering solved the issue
+
+==================================================
+4. VERIFY NORMALIZED OUTPUT
+==================================================
+
+If listings are returned:
+show 1–2 normalized examples with:
+- title
+- price
+- bedrooms
+- location
+- URL
+
+Do NOT expose secrets.
+
+==================================================
+5. KEEP EVERYTHING STABLE
+==================================================
+
+Do NOT modify:
+- service worker
+- push notifications
+- VAPID/FCM
+- Stripe/paywall
+- Germany infrastructure
+- matching pipeline
+- notification traces
+
+Do NOT add browser automation unless absolutely necessary.
+
+==================================================
+6. REPORT FINAL LIVE SOURCE STATUS
+==================================================
+
+At the end, summarize:
+
+- which Ireland sources are now fully working
+- which still require work
+- estimated Dublin listing coverage
+- whether the next scheduler cycle will automatically ingest new listings
