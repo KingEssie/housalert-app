@@ -40,6 +40,31 @@ export async function runStartupMigration() {
   await createSupportTicketMessagesTable();
   await ensureSupportTicketExtraColumns();
   await ensureSupportMessageTranslationColumns();
+  await ensureUserMatchesTraceColumns();
+}
+
+async function ensureUserMatchesTraceColumns() {
+  const cols = [
+    { name: "suppression_reason",  sql: "TEXT" },
+    { name: "buffered_at",         sql: "TIMESTAMPTZ" },
+    { name: "flush_attempted_at",  sql: "TIMESTAMPTZ" },
+    { name: "provider_error",      sql: "TEXT" },
+  ];
+
+  for (const col of cols) {
+    try {
+      const exists = await pool.query(
+        "SELECT 1 FROM information_schema.columns WHERE table_name = 'user_matches' AND column_name = $1",
+        [col.name]
+      );
+      if (exists.rows.length === 0) {
+        await pool.query(`ALTER TABLE user_matches ADD COLUMN ${col.name} ${col.sql}`);
+        log(`[MIGRATION] Added user_matches.${col.name}`, "migration");
+      }
+    } catch (err: any) {
+      log(`[MIGRATION] Error adding user_matches.${col.name}: ${err.message}`, "migration");
+    }
+  }
 }
 
 async function ensureSupportMessageTranslationColumns() {

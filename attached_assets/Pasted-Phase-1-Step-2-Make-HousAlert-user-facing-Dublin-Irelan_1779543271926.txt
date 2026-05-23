@@ -1,0 +1,87 @@
+Phase 1 Step 2 — Make HousAlert user-facing Dublin/Ireland-first.
+
+Context:
+Phase 1 Step 1 is complete.
+runtimeConfig exists and logs:
+germany=false ireland=true defaultCity=Dublin country=IE lang=en currency=EUR
+
+Germany code must remain as fallback, but the user-facing product should now feel fully Dublin/Ireland-first.
+
+IMPORTANT:
+Do NOT touch push notification infrastructure:
+- client/public/sw.js
+- VAPID
+- FCM/web push registration
+- /apply/:listingId behavior
+- service worker cache/version logic
+
+Do NOT add debug UI.
+
+Goal:
+Update user-facing copy and defaults so the app feels like a Dublin rental alert product.
+
+Tasks:
+
+1. Search the frontend for visible references to:
+- Berlin
+- Germany
+- German
+- Deutschland
+- Wohnung
+- apartments in Berlin
+- German rental
+- DE
+
+2. Replace visible user-facing copy with Dublin/Ireland-first English copy.
+
+Preferred messaging:
+- “Get Dublin rental alerts before everyone else.”
+- “New Dublin rentals, delivered instantly to your phone.”
+- “Stop refreshing property sites all day.”
+- “Be first to apply for Dublin rentals.”
+- “Instant alerts for Dublin apartments, rooms and houses.”
+- “Built for Dublin’s competitive rental market.”
+
+3. Update onboarding copy:
+- Default city should be Dublin.
+- Do not show Germany/Berlin as suggested presets when ENABLE_GERMANY=false.
+- Keep the flow simple and English.
+- Avoid adding country complexity.
+
+4. Update empty states:
+If no listings/search results/alerts exist yet, use Dublin-focused copy.
+
+Examples:
+“No Dublin rentals found yet.”
+“We’ll notify you as soon as a matching Dublin rental appears.”
+“Your Dublin alerts are ready.”
+
+5. Update pricing/paywall copy if it contains Germany/Berlin references.
+Focus on speed:
+- instant alerts
+- apply faster
+- be first
+- Dublin rental market
+
+6. Update email/user notification copy ONLY if it contains visible Berlin/Germany references.
+Do not change delivery logic.
+
+7. Leave internal Germany references alone:
+- scraper names
+- test data
+- database columns
+- admin-only source health labels
+- germanCities export
+- i18n locale files unless actively shown in the UI
+
+8. Run minimal checks:
+- app starts
+- no visible Berlin/Germany copy in normal user flow
+- onboarding shows Dublin/Ireland-first copy
+- push files unchanged
+- Germany schedulers still disabled
+
+9. Report:
+- files changed
+- exact visible copy changes
+- remaining Germany references and why they are internal/fallback

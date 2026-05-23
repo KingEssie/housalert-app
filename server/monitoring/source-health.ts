@@ -155,6 +155,33 @@ export async function getSourceHealthSummary(): Promise<SourceHealthRow[]> {
   return rows;
 }
 
+export async function backfillSourceHealthFromRuns(): Promise<void> {
+  try {
+    const { rows: countRows } = await pool.query("SELECT COUNT(*) AS cnt FROM source_health");
+    if (parseInt(countRows[0]?.cnt ?? "1", 10) > 0) return;
+
+    const { rows: runRows } = await pool.query(
+      `SELECT source_reports, started_at
+       FROM ingestion_runs
+       WHERE source_reports IS NOT NULL
+         AND started_at IS NOT NULL
+       ORDER BY started_at ASC
+       LIMIT 100`
+    );
+    if (runRows.length === 0) return;
+
+    log(`[source-health] backfilling from ${runRows.length} ingestion runs`);
+    for (const run of runRows) {
+      if (!Array.isArray(run.source_reports) || run.source_reports.length === 0) continue;
+      const report = { sources: run.source_reports };
+      await upsertSourceHealth(report as import("../ingesters").IngestionReport, new Date(run.started_at));
+    }
+    log(`[source-health] backfill complete`);
+  } catch (err: any) {
+    log(`[source-health] backfill error: ${err.message}`);
+  }
+}
+
 export async function getStaleSourceHealth(thresholdMinutes = 60): Promise<SourceHealthRow[]> {
   const { rows } = await pool.query(
     `SELECT * FROM source_health

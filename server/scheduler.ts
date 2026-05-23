@@ -6,7 +6,7 @@ import { recoverUndeliveredMatches } from "./notifications/buffer";
 import { checkExpoReceipts } from "./notifications/expo-push";
 import { updateStalenessStatuses } from "./listing-status";
 import { runImageBackfill, ensureBackfillRunsTable, ensureTrackingTable, isBackfillEnabled, isBackfillRunning } from "./image-backfill";
-import { upsertSourceHealth, ensureMonitoringTables } from "./monitoring/source-health";
+import { upsertSourceHealth, ensureMonitoringTables, backfillSourceHealthFromRuns } from "./monitoring/source-health";
 import { evaluateAlertRules } from "./monitoring/alerts";
 import { startPerSourceTimers } from "./ingesters/fast-lane";
 import { runtimeConfig } from "./config/runtime";
@@ -105,6 +105,7 @@ export function getNextRun() {
 export async function startScheduler() {
   await ensureIngestionRunsColumns();
   await ensureMonitoringTables();
+  backfillSourceHealthFromRuns().catch((e: any) => log(`[source-health] backfill startup error: ${e.message}`, "scheduler"));
 
   const cleaned = await cleanupStaleFetchRuns();
   if (cleaned > 0) {
