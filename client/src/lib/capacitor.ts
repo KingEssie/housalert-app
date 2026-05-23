@@ -82,7 +82,7 @@ export function getPlatform(): string {
     const p = (window as any).__HOUSALERT_PLATFORM__;
     if (p) return p;
   } catch {}
-  return "android";
+  return "web";
 }
 
 export async function initCapacitorPlugins(): Promise<void> {

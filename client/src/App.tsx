@@ -447,7 +447,6 @@ function AppShell() {
             <AuthProvider>
               <Toaster />
               <Router />
-              <BuildVersionBadge />
             </AuthProvider>
           </TooltipProvider>
         </QueryClientProvider>
