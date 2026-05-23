@@ -8252,15 +8252,31 @@ export async function registerRoutes(
           });
         }
 
-        // 4. Send
+        // 4. Send — each provider wrapped independently so one failure doesn't 500 the whole response
         _step = "send-web-push";
-        const webResult = await sendPushToUser(targetUserId, {
-          title: "HousAlert Test",
-          body: "Push notifications work! 🏠",
-          url: "/dashboard",
-        }, supabase);
+        let webResult: Awaited<ReturnType<typeof sendPushToUser>>;
+        try {
+          webResult = await sendPushToUser(targetUserId, {
+            title: "HousAlert Test",
+            body: "Push notifications work! 🏠",
+            url: "/dashboard",
+          }, supabase);
+        } catch (webErr: any) {
+          const msg = webErr?.message || String(webErr);
+          log(`[PUSH TEST] sendPushToUser threw (step=send-web-push): ${msg}\n${webErr?.stack || ""}`);
+          webResult = { sent: 0, failed: 1, removed: 0, errors: [{ message: `sendPushToUser threw: ${msg}` }] };
+        }
+
         _step = "send-expo-push";
-        const expoResult = await sendExpoTestPush(targetUserId);
+        let expoResult: { sent: number; failed: number; tokens: number };
+        try {
+          expoResult = await sendExpoTestPush(targetUserId);
+        } catch (expoErr: any) {
+          const msg = expoErr?.message || String(expoErr);
+          log(`[PUSH TEST] sendExpoTestPush threw (step=send-expo-push): ${msg}\n${expoErr?.stack || ""}`);
+          expoResult = { sent: 0, failed: 1, tokens: 0 };
+        }
+
         log(`[PUSH TEST] userId=${targetUserId.substring(0, 8)}...: web_sent=${webResult.sent} web_failed=${webResult.failed} web_removed=${webResult.removed} expo_sent=${expoResult.sent}`);
         if (webResult.errors?.length) {
           log(`[PUSH TEST] Provider errors: ${JSON.stringify(webResult.errors)}`);
@@ -8271,11 +8287,8 @@ export async function registerRoutes(
 
         if (!success) {
           const firstErr = webResult.errors?.length ? webResult.errors[0] : null;
-          const isVapidMismatch = firstErr?.statusCode === 401 ||
-            (firstErr?.statusCode === 403 && (
-              firstErr?.body?.includes("BadJwtToken") ||
-              firstErr?.message?.includes("BadJwtToken")
-            ));
+          // Any 401 or 403 from the push provider = VAPID key mismatch
+          const isVapidMismatch = firstErr?.statusCode === 401 || firstErr?.statusCode === 403;
           const repairNeeded = firstErr && (isVapidMismatch || firstErr.statusCode === 410 || firstErr.statusCode === 404);
           return res.json({
             success: false,
@@ -8458,9 +8471,8 @@ export async function registerRoutes(
   app.get("/api/admin/portal/alert-activity", requireAdmin, async (_req, res) => {
     try {
       const recentEmails = await pgPool.query(
-        `SELECT um.user_id, um.listing_title, um.email_sent_at, um.push_sent_at, upd.email
+        `SELECT um.user_id, um.listing_title, um.email_sent_at, um.push_sent_at
          FROM user_matches um
-         LEFT JOIN user_profile_data upd ON um.user_id::text = upd.user_id::text
          WHERE um.email_sent = true OR um.push_sent = true
          ORDER BY COALESCE(um.email_sent_at, um.push_sent_at) DESC
          LIMIT 50`
