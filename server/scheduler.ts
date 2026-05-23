@@ -9,6 +9,7 @@ import { runImageBackfill, ensureBackfillRunsTable, ensureTrackingTable, isBackf
 import { upsertSourceHealth, ensureMonitoringTables } from "./monitoring/source-health";
 import { evaluateAlertRules } from "./monitoring/alerts";
 import { startPerSourceTimers } from "./ingesters/fast-lane";
+import { runtimeConfig } from "./config/runtime";
 
 const intervalMinutes = parseInt(process.env.INGEST_INTERVAL_MINUTES || "5", 10);
 const INTERVAL_MS = intervalMinutes * 60 * 1000;
@@ -145,9 +146,13 @@ export async function startScheduler() {
   setTimeout(() => tick(), INITIAL_DELAY_MS);
   setInterval(() => tick(), INTERVAL_MS);
 
-  // Fast-lane: per-source independent timers (KA/WG: 15s, Vonovia/WB: 30s)
-  setTimeout(() => {
-    startPerSourceTimers();
-    log(`Fast-lane per-source timers started (KA/WG every 15s, Vonovia/WB every 30s)`, "scheduler");
-  }, 60_000);
+  // Fast-lane: per-source independent timers — Germany-only sources, only start when enabled
+  if (runtimeConfig.germanyEnabled) {
+    setTimeout(() => {
+      startPerSourceTimers();
+      log(`Fast-lane per-source timers started (KA/WG every 15s, Vonovia/WB every 30s)`, "scheduler");
+    }, 60_000);
+  } else {
+    log(`Fast-lane timers skipped — Germany disabled (ENABLE_GERMANY != true)`, "scheduler");
+  }
 }

@@ -3,6 +3,7 @@ import compression from "compression";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import { logRuntimeConfig } from "./config/runtime";
 
 const app = express();
 const httpServer = createServer(app);
@@ -156,6 +157,7 @@ console.log("BOOT: server init");
       if (process.env.ADMIN_ALERT_EMAILS_ENABLED !== "true") {
         log("[alerts] Admin alert emails disabled (ADMIN_ALERT_EMAILS_ENABLED != true)");
       }
+      logRuntimeConfig();
 
       const BACKGROUND_DELAY_MS = 10_000;
       setTimeout(async () => {

@@ -1,0 +1,97 @@
+We are starting Phase 1, Step 1 of the HousAlert Dublin/Ireland pivot.
+
+Context:
+HousAlert is a realtime rental alert PWA. The app currently has Germany/Berlin functionality in the codebase, but we are pivoting fully to Dublin/Ireland.
+
+IMPORTANT:
+Do NOT delete Germany/Berlin code, database structures, scrapers, ingestion logic, or fallback infrastructure.
+Only hide/disable Germany from active user-facing flows and schedulers.
+
+Goal:
+Add simple environment-based feature flags and Dublin defaults.
+
+Add/use these env vars:
+
+ENABLE_GERMANY=false
+ENABLE_IRELAND=true
+DEFAULT_COUNTRY=IE
+DEFAULT_CITY=Dublin
+DEFAULT_LANGUAGE=en
+DEFAULT_CURRENCY=EUR
+
+Tasks:
+
+1. Create a central runtime config file.
+Use the most natural location in the current codebase, for example:
+server/config/runtime.ts
+or
+shared/config/runtime.ts
+
+It should export something like:
+
+export const runtimeConfig = {
+  germanyEnabled: process.env.ENABLE_GERMANY === "true",
+  irelandEnabled: process.env.ENABLE_IRELAND !== "false",
+  defaultCountry: process.env.DEFAULT_COUNTRY || "IE",
+  defaultCity: process.env.DEFAULT_CITY || "Dublin",
+  defaultLanguage: process.env.DEFAULT_LANGUAGE || "en",
+  defaultCurrency: process.env.DEFAULT_CURRENCY || "EUR",
+};
+
+2. Use these flags only in the minimum high-impact places:
+- onboarding defaults
+- country/city selection UI
+- scheduler startup
+- Germany/Berlin user-facing visibility
+
+3. Germany must be disabled when ENABLE_GERMANY=false:
+- no Germany/Berlin option in onboarding
+- no Germany/Berlin default search profile
+- no Germany/Berlin user-facing copy
+- no Germany scheduler startup
+
+4. Ireland/Dublin must be enabled when ENABLE_IRELAND=true:
+- default city = Dublin
+- default country = Ireland / IE
+- language = English
+- currency = EUR
+
+5. Do NOT touch the stable push notification system unless absolutely required.
+Do NOT modify:
+- service worker logic
+- VAPID logic
+- FCM/web push registration
+- push deep link route
+- /apply/:listingId behavior
+- notification traces
+
+Current stable push build:
+push-fix-v6-20260522
+
+6. Do NOT add debug UI to the user-facing app.
+Admin tooling can remain.
+
+7. Admin alert emails are intentionally disabled:
+ADMIN_ALERT_EMAILS_ENABLED=false
+Do not re-enable them.
+
+8. Keep the implementation pragmatic.
+No large refactors.
+No new feature flag system.
+No database migration unless absolutely required.
+No i18n framework.
+No native app/Expo work.
+No architecture rewrite.
+
+9. After changes, run only minimal checks:
+- app starts
+- TypeScript/build check if available
+- onboarding shows Dublin/Ireland only
+- Germany schedulers do not start when ENABLE_GERMANY=false
+- push notification code untouched
+
+10. Report back with:
+- files changed
+- exact behavior changed
+- any assumptions made
+- any places where Germany still appears but was intentionally left alone because it is internal/fallback
