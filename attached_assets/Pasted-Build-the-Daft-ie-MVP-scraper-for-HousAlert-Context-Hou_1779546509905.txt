@@ -1,0 +1,189 @@
+Build the Daft.ie MVP scraper for HousAlert.
+
+Context:
+HousAlert has pivoted to Dublin/Ireland.
+Germany remains dormant fallback infrastructure.
+Ireland source architecture placeholders already exist.
+Push notifications, matching, admin traces, and source health are stable.
+
+DO NOT TOUCH:
+- client/public/sw.js
+- service worker cache/version logic
+- VAPID/FCM registration
+- /apply/:listingId route behavior
+- push notification delivery logic
+- Stripe/paywall
+- existing Germany scraper code except for shared compatibility if absolutely required
+
+Goal:
+Create the first working Ireland rental source:
+Daft.ie rentals for Dublin.
+
+Primary product goal:
+New Dublin rental listing → normalized → ingested into existing listing pipeline → eligible for matching/push within existing system.
+
+Keep it simple. No giant refactor.
+
+==================================================
+1. Inspect existing ingestion pipeline
+==================================================
+
+Find how existing German sources insert listings.
+
+Identify:
+- normalized listing shape
+- dedupe key
+- source name conventions
+- required fields
+- ingestion run tracking
+- source health update flow
+- how listings become eligible for matching
+
+Reuse existing pipeline wherever possible.
+
+Do NOT create a parallel ingestion system.
+
+==================================================
+2. Implement Daft.ie source fetcher
+==================================================
+
+Use existing Ireland source folder, likely:
+
+server/sources/ireland/daft/
+
+Implement a simple fetcher for Dublin rental listings.
+
+Target URL should be configurable, defaulting to Daft.ie Dublin rentals.
+
+Use env var if helpful:
+
+DAFT_DUBLIN_RENT_URL=https://www.daft.ie/property-for-rent/dublin-city
+
+Fetcher should return normalized SourceListing objects.
+
+Minimum fields:
+- source = "daft"
+- externalId
+- title
+- price
+- location
+- url
+- imageUrl if available
+- bedrooms if available
+- createdAt/listedAt if available
+
+Important:
+- externalId must be stable
+- url must be absolute
+- price should be numeric if possible
+- location should be Dublin-focused
+- skip invalid listings rather than crashing
+
+==================================================
+3. Scraping approach
+==================================================
+
+Start with the simplest reliable approach already supported in the app.
+
+Preferred order:
+1. Native fetch + HTML parse if possible
+2. Existing scraper helper utilities if already present
+3. Only use browser automation if the codebase already uses it and it is necessary
+
+Do NOT add Puppeteer/Playwright unless absolutely unavoidable.
+Do NOT add heavy dependencies unless clearly justified.
+
+Add polite request headers:
+- User-Agent
+- Accept-Language: en-IE,en;q=0.9
+
+Add basic timeout/error handling.
+
+==================================================
+4. Normalize into existing pipeline
+==================================================
+
+Connect Daft listings into the existing ingestion system.
+
+Requirements:
+- use existing listing storage path
+- use existing dedupe behavior or add minimal Daft-specific dedupe
+- source should appear as daft / Ireland / Dublin in source health/admin where applicable
+- ingestion failures should be logged cleanly
+- no crash loop if Daft blocks or changes markup
+
+==================================================
+5. Add manual admin/dev trigger if easy
+==================================================
+
+If there is already an admin/source test endpoint or ingestion trigger pattern, add Daft to it.
+
+If not easy, add a minimal server-side manual function or script.
+
+Do NOT build new admin UI unless trivial.
+Do NOT add user-facing debug UI.
+
+==================================================
+6. Scheduler wiring
+==================================================
+
+Add Daft.ie to Ireland scheduler only when runtimeConfig.irelandEnabled=true.
+
+For MVP, use a conservative interval first:
+- every 60 seconds OR align with existing fast-lane scheduler style
+
+Do NOT start Germany timers.
+Do NOT modify Germany gating.
+
+Log clearly:
+- Daft scheduler started
+- fetched count
+- normalized count
+- inserted/new count if available
+- errors without stack spam
+
+==================================================
+7. Source health + traces
+==================================================
+
+Wire Daft into existing source health if compatible.
+
+Track:
+- last success
+- last error
+- listings fetched
+- listings inserted/new if available
+- duration
+
+Do not create new monitoring tables unless absolutely needed.
+
+==================================================
+8. Tests / verification
+==================================================
+
+Run only minimal checks:
+- TypeScript/build check if available
+- server starts
+- Daft fetcher returns listings or cleanly returns empty with useful error
+- ingestion does not crash
+- push files unchanged
+- Germany remains disabled when ENABLE_GERMANY=false
+
+If Daft blocks scraping or markup is not accessible:
+- do not fake success
+- report exactly what happened
+- keep the fetcher defensive and ready for next iteration
+
+==================================================
+9. Report back
+==================================================
+
+Report:
+- files changed
+- Daft URL used
+- scraping method used
+- sample normalized listing shape, without exposing private user data
+- whether listings inserted successfully
+- source health/admin visibility
+- errors or risks
+- confirmation push/SW untouched

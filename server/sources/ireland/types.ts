@@ -7,5 +7,8 @@ export interface SourceListing {
   url: string;
   imageUrl?: string;
   bedrooms?: number;
+  size_m2?: number;
+  latitude?: number;
+  longitude?: number;
   createdAt?: Date;
 }

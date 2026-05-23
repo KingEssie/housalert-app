@@ -157,8 +157,32 @@ export async function startScheduler() {
     log(`Fast-lane timers skipped — Germany disabled (ENABLE_GERMANY != true)`, "scheduler");
   }
 
-  // Ireland source pipeline — placeholder, no real jobs started yet
+  // Ireland source pipeline — Daft.ie + future sources, independent of Germany
   if (runtimeConfig.irelandEnabled) {
-    log(`Ireland source pipeline ready — sources: daft, rentie, myhome`, "scheduler");
+    const IRELAND_INTERVAL_MS = 60_000;
+    let _irelandRunning = false;
+
+    const runIreland = async () => {
+      if (_irelandRunning) return;
+      _irelandRunning = true;
+      try {
+        const { runIrelandIngestion } = await import("./ingesters/ireland");
+        const result = await runIrelandIngestion();
+        if (result.total.found > 0 || result.total.errors > 0) {
+          log(
+            `[ireland] found=${result.total.found} ins=${result.total.inserted} match=${result.total.matches} err=${result.total.errors} (${result.durationSec.toFixed(1)}s)`,
+            "scheduler"
+          );
+        }
+      } catch (err: any) {
+        log(`[ireland] ingestion error: ${err.message}`, "scheduler");
+      } finally {
+        _irelandRunning = false;
+      }
+    };
+
+    log(`Daft.ie scheduler started (Ireland) — interval ${IRELAND_INTERVAL_MS / 1000}s`, "scheduler");
+    setTimeout(runIreland, 8_000); // First run 8s after startup
+    setInterval(runIreland, IRELAND_INTERVAL_MS);
   }
 }
