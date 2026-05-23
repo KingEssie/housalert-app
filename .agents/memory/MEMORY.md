@@ -1,1 +1,4 @@
 - [Android native push registration](android-native-push.md) — isPushSupported() always returns false on Capacitor; use isNativePlatform() branch + registerNativePush() + POST /api/expo-push-token instead
+- [VAPID key rotation pitfall](vapid-key-rotation.md) — shared env var silently shadows secret with same name; must delete from shared env before rotation takes effect
+- [user_profile_data schema](user-profile-data-schema.md) — table lives in Replit PG, has no email column; email is in Supabase auth.users only — never JOIN upd.email from pgPool
+- [Push test 500 hardening](push-test-hardening.md) — sendPushToUser and sendExpoTestPush must each have independent try/catch at call site; any throw in either propagates to inner catch → 500
