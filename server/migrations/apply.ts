@@ -277,6 +277,10 @@ async function createUserMatchesTable() {
         saved BOOLEAN NOT NULL DEFAULT FALSE,
         applied BOOLEAN NOT NULL DEFAULT FALSE,
         dismissed BOOLEAN NOT NULL DEFAULT FALSE,
+        suppression_reason TEXT,
+        buffered_at TIMESTAMPTZ,
+        flush_attempted_at TIMESTAMPTZ,
+        provider_error TEXT,
         created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
         UNIQUE(user_id, listing_id)
       )
@@ -286,6 +290,12 @@ async function createUserMatchesTable() {
     await pool.query(`CREATE INDEX IF NOT EXISTS idx_user_matches_listing_id ON user_matches(listing_id)`);
     await pool.query(`CREATE INDEX IF NOT EXISTS idx_user_matches_matched_at ON user_matches(matched_at DESC)`);
     await pool.query(`CREATE INDEX IF NOT EXISTS idx_user_matches_dedup ON user_matches(dedup_key)`);
+
+    // Add trace columns to tables that existed before this migration
+    await pool.query(`ALTER TABLE user_matches ADD COLUMN IF NOT EXISTS suppression_reason TEXT`);
+    await pool.query(`ALTER TABLE user_matches ADD COLUMN IF NOT EXISTS buffered_at TIMESTAMPTZ`);
+    await pool.query(`ALTER TABLE user_matches ADD COLUMN IF NOT EXISTS flush_attempted_at TIMESTAMPTZ`);
+    await pool.query(`ALTER TABLE user_matches ADD COLUMN IF NOT EXISTS provider_error TEXT`);
 
     const colCheck = await pool.query(
       "SELECT column_name FROM information_schema.columns WHERE table_name = 'user_matches' ORDER BY ordinal_position"

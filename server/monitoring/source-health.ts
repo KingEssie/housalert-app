@@ -63,7 +63,10 @@ export async function upsertSourceHealth(report: IngestionReport, runStartedAt: 
   const now = new Date();
 
   for (const sr of report.sources) {
-    const { sourceName, city } = parseSourceName(sr.name);
+    // sr.name may be undefined in backfill data from ingestion_runs JSONB —
+    // fall back to sr.source so the row is stored under a meaningful key.
+    const rawName = (sr as any).name || (sr as any).source || "unknown";
+    const { sourceName, city } = parseSourceName(rawName);
     const isSuccess = sr.errors === 0;
     const isZero = sr.found === 0;
 

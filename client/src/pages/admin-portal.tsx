@@ -3425,6 +3425,15 @@ function NotificationsTab() {
               </table>
             </div>
           </div>
+
+          {/* Legend */}
+          <div className="rounded-[12px] px-4 py-3 text-[12px] space-y-1" style={{ backgroundColor: "#f9f8fc", border: "1px solid #eeebf3", color: "#666" }}>
+            <div className="font-semibold mb-1" style={{ color: "#444" }}>How to read this table</div>
+            <div><span className="font-medium" style={{ color: "#16a34a" }}>push ✓</span> + <span className="font-medium" style={{ color: "#f59e0b" }}>Push off</span> badge — match was <em>marked as handled</em> so it won&apos;t be retried, but no push was actually delivered (user had push disabled at send time).</div>
+            <div><span className="font-medium" style={{ color: "#16a34a" }}>push ✓</span> with no suppression — push was delivered successfully.</div>
+            <div><span className="font-medium" style={{ color: "#dc2626" }}>push ✗</span> — delivery not yet attempted or failed; check Provider error column.</div>
+            <div className="pt-0.5" style={{ color: "#999" }}>Buffered / Flush attempt times are only set when the notification passed through the async delivery buffer (large batches).</div>
+          </div>
         </div>
       )}
     </div>

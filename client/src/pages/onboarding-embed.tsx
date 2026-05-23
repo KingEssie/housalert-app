@@ -207,10 +207,10 @@ export default function OnboardingEmbedPage() {
   // Step
   const [step, setStep] = useState<EmbedStep>(1);
 
-  // City — pre-filled with Berlin, editable inline on step 1
-  const BERLIN = defaultCities.find((c) => c.name === "Berlin") ?? { name: "Berlin", lat: 52.52, lng: 13.405 };
-  const [city, setCity] = useState<CityData | null>(BERLIN);
-  const [searchText, setSearchText] = useState(BERLIN.name);
+  // City — pre-filled with Dublin, editable inline on step 1
+  const DUBLIN = defaultCities.find((c) => c.name === "Dublin") ?? { name: "Dublin", lat: 53.3498, lng: -6.2603 };
+  const [city, setCity] = useState<CityData | null>(DUBLIN);
+  const [searchText, setSearchText] = useState(DUBLIN.name);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);

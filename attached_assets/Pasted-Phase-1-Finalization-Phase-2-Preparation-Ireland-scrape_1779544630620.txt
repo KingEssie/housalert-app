@@ -1,0 +1,212 @@
+Phase 1 Finalization + Phase 2 Preparation — Ireland scraper architecture setup
+
+Context:
+HousAlert is now pivoting fully to Dublin/Ireland.
+Feature flags and Ireland-first onboarding/copy are already complete.
+
+Current stable production-sensitive systems that MUST NOT be broken:
+- realtime matching pipeline
+- push notifications
+- VAPID/FCM web push
+- service worker v6
+- /apply/:listingId deep links
+- Stripe/paywall
+- notification traces
+- SLA monitoring
+
+Current stable push build:
+push-fix-v6-20260522
+
+IMPORTANT:
+Do NOT refactor working infrastructure.
+Do NOT introduce complex abstractions.
+Do NOT add debug UI.
+Do NOT touch service worker logic unless absolutely required.
+Do NOT modify existing matching logic unless needed for Ireland compatibility.
+
+Goal:
+Prepare the codebase cleanly for Ireland rental sources while keeping implementation minimal and pragmatic.
+
+Tasks:
+
+==================================================
+1. FINAL USER-FACING GERMANY CLEANUP
+==================================================
+
+Search for remaining user-visible references to:
+- Berlin
+- Germany
+- Deutschland
+- Wohnung
+- SCHUFA
+- WG-Gesucht
+- Kleinanzeigen
+- German housing platforms
+
+Only clean up NORMAL USER FLOWS:
+- landing pages
+- onboarding
+- FAQ
+- pricing
+- notifications
+- empty states
+- email copy
+- placeholders
+- SEO metadata/titles/descriptions
+
+DO NOT touch:
+- internal test data
+- admin tools
+- scraper names
+- DB schemas
+- historical data
+- internal enums unless necessary
+
+==================================================
+2. CREATE IRELAND SOURCE ARCHITECTURE
+==================================================
+
+Create a clean but SIMPLE source structure.
+
+Preferred structure:
+
+server/sources/ireland/
+  daft/
+  rentie/
+  myhome/
+
+Inside each source create minimal placeholder files.
+
+Example:
+
+server/sources/ireland/daft/index.ts
+server/sources/ireland/rentie/index.ts
+server/sources/ireland/myhome/index.ts
+
+Goal:
+Prepare clear insertion points for upcoming scraper work.
+
+==================================================
+3. CREATE A MINIMAL SHARED SOURCE INTERFACE
+==================================================
+
+Create ONE lightweight shared source type/interface.
+
+Example:
+
+export interface SourceListing {
+  source: string;
+  externalId: string;
+  title: string;
+  price?: number;
+  location?: string;
+  url: string;
+  imageUrl?: string;
+  bedrooms?: number;
+  createdAt?: Date;
+}
+
+Do NOT create a giant abstraction system.
+Do NOT refactor all existing Germany scrapers into it yet.
+
+This is only for future Ireland sources.
+
+==================================================
+4. CREATE SIMPLE PLACEHOLDER FETCH FUNCTIONS
+==================================================
+
+Each Ireland source should export something simple like:
+
+export async function fetchListings(): Promise<SourceListing[]> {
+  return [];
+}
+
+No real scraping yet.
+No puppeteer yet.
+No browser automation yet.
+No cron wiring yet.
+
+==================================================
+5. CREATE SOURCE REGISTRY (MINIMAL)
+==================================================
+
+Create a tiny Ireland source registry.
+
+Example:
+
+export const irelandSources = [
+  {
+    name: "daft",
+    fetchListings,
+  },
+];
+
+Keep it extremely lightweight.
+
+==================================================
+6. PREPARE FUTURE SCHEDULER HOOK
+==================================================
+
+In scheduler/bootstrap logic:
+
+Add a clearly marked placeholder section like:
+
+if (runtimeConfig.irelandEnabled) {
+  logger.info("Ireland source pipeline ready");
+}
+
+DO NOT start real Ireland jobs yet.
+DO NOT add aggressive intervals yet.
+
+==================================================
+7. KEEP ALL EXISTING GERMANY INFRASTRUCTURE
+==================================================
+
+Do NOT delete:
+- Germany scrapers
+- ingestion pipeline
+- DB tables
+- matching logic
+- Germany schedulers
+- source health systems
+
+Germany remains dormant fallback infrastructure.
+
+==================================================
+8. DO NOT OVER-ENGINEER
+==================================================
+
+Explicitly avoid:
+- plugin systems
+- dependency injection
+- scraper frameworks
+- queue rebuilds
+- event buses
+- multi-country architecture rewrites
+- advanced feature flag systems
+- microservices
+
+Keep everything boring and practical.
+
+==================================================
+9. MINIMAL VERIFICATION
+==================================================
+
+Run only lightweight checks:
+- app starts
+- TS/build passes if available
+- no push/service worker changes
+- no runtime crashes
+- Ireland source placeholders compile
+
+==================================================
+10. REPORT BACK
+==================================================
+
+Report:
+- files created
+- files modified
+- remaining Germany references intentionally left alone
+- architecture created
+- any assumptions made
+- any future scraper risks noticed

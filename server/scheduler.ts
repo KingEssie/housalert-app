@@ -156,4 +156,9 @@ export async function startScheduler() {
   } else {
     log(`Fast-lane timers skipped — Germany disabled (ENABLE_GERMANY != true)`, "scheduler");
   }
+
+  // Ireland source pipeline — placeholder, no real jobs started yet
+  if (runtimeConfig.irelandEnabled) {
+    log(`Ireland source pipeline ready — sources: daft, rentie, myhome`, "scheduler");
+  }
 }
