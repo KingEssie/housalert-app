@@ -54,8 +54,8 @@ export default function PreferencesPage() {
     })
       .then((r) => r.json())
       .then((data) => {
-        setActiveTokenCount(data?.devices ?? 0);
-        setWebSubCount(data?.subscriptions ?? data?.devices ?? 0);
+        setActiveTokenCount(data?.expo_tokens ?? 0);
+        setWebSubCount(data?.web_subscriptions ?? 0);
       })
       .catch(() => {});
   }, [session?.access_token]);

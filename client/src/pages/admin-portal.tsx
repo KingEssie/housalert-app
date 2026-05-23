@@ -1968,6 +1968,9 @@ function AlertsTab() {
   const [resettingPush, setResettingPush] = useState(false);
   const [resetPushResult, setResetPushResult] = useState<any>(null);
 
+  const [pushProfile, setPushProfile] = useState<any>(null);
+  const [pushProfileLoading, setPushProfileLoading] = useState(false);
+
   const [resendUserId, setResendUserId] = useState("");
   const [resending, setResending] = useState(false);
   const [resendResult, setResendResult] = useState<{ success: boolean; message: string } | null>(null);
@@ -1995,6 +1998,17 @@ function AlertsTab() {
       adminFetch("/api/admin/portal/vapid-debug").then(setVapidDebug).catch(() => {});
     }
   }, [testType]);
+
+  useEffect(() => {
+    if (testType !== "push") return;
+    setPushProfile(null);
+    setPushProfileLoading(true);
+    const params = testUserId ? `?userId=${encodeURIComponent(testUserId)}` : "";
+    adminFetch(`/api/admin/portal/push-profile${params}`)
+      .then(setPushProfile)
+      .catch(() => setPushProfile(null))
+      .finally(() => setPushProfileLoading(false));
+  }, [testType, testUserId]);
 
   useEffect(() => {
     if (previewOpen && !previewUrl) {
@@ -2264,6 +2278,90 @@ function AlertsTab() {
             </div>
           )}
 
+          {/* Push channels pre-flight (push only) */}
+          {testType === "push" && (
+            <div className="mb-4 rounded-[14px] overflow-hidden" style={{ border: "1px solid #ece7ef" }}>
+              {/* Header */}
+              <div className="px-4 py-2.5 flex items-center justify-between" style={{ backgroundColor: "#f8f5ff", borderBottom: "1px solid #ece7ef" }}>
+                <span className="text-[11px] font-bold uppercase tracking-[0.07em]" style={{ color: "#7c3aed" }}>Push channels</span>
+                {pushProfileLoading && <Loader2 className="w-3 h-3 animate-spin" style={{ color: "#7c3aed" }} />}
+                {pushProfile && !pushProfileLoading && (
+                  <span className="text-[10px] font-mono" style={{ color: "#9ca3af" }}>
+                    {pushProfile.userId?.substring(0, 8)}…
+                  </span>
+                )}
+              </div>
+
+              {/* Web Push row */}
+              <div className="px-4 py-3" style={{ borderBottom: "1px solid #f3f0f8" }}>
+                <div className="flex items-start gap-2">
+                  <span className="text-[13px] leading-none mt-0.5">🌐</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[12px] font-bold" style={{ color: "#111" }}>Web Push (VAPID)</span>
+                      <span
+                        className="px-1.5 py-0.5 rounded-full text-[10px] font-bold"
+                        style={pushProfileLoading
+                          ? { backgroundColor: "#f3f4f6", color: "#9ca3af" }
+                          : (pushProfile?.web_sub_count ?? 0) > 0
+                            ? { backgroundColor: "#dcfce7", color: "#15803d" }
+                            : { backgroundColor: "#fee2e2", color: "#dc2626" }}
+                      >
+                        {pushProfileLoading ? "…" : `${pushProfile?.web_sub_count ?? 0} sub${(pushProfile?.web_sub_count ?? 0) !== 1 ? "s" : ""}`}
+                      </span>
+                    </div>
+                    {pushProfile?.web_subs?.length > 0 && (
+                      <div className="mt-1.5 space-y-1">
+                        {pushProfile.web_subs.map((s: any) => (
+                          <div key={s.id} className="text-[11px] font-mono leading-snug" style={{ color: "#6b7280" }}>
+                            #{s.id} · <span style={{ color: "#374151" }}>{s.endpoint_domain}</span> · {s.created_at ? new Date(s.created_at).toLocaleDateString("nl-NL", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "—"}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {!pushProfileLoading && (pushProfile?.web_sub_count ?? 0) === 0 && (
+                      <p className="text-[11px] mt-0.5" style={{ color: "#dc2626" }}>No web push subscriptions — user must enable push notifications in PWA.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Expo native row */}
+              <div className="px-4 py-3">
+                <div className="flex items-start gap-2">
+                  <span className="text-[13px] leading-none mt-0.5">📱</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[12px] font-bold" style={{ color: "#111" }}>Expo native (APK)</span>
+                      <span
+                        className="px-1.5 py-0.5 rounded-full text-[10px] font-bold"
+                        style={pushProfileLoading
+                          ? { backgroundColor: "#f3f4f6", color: "#9ca3af" }
+                          : (pushProfile?.expo_token_count ?? 0) > 0
+                            ? { backgroundColor: "#dcfce7", color: "#15803d" }
+                            : { backgroundColor: "#f3f4f6", color: "#9ca3af" }}
+                      >
+                        {pushProfileLoading ? "…" : `${pushProfile?.expo_token_count ?? 0} token${(pushProfile?.expo_token_count ?? 0) !== 1 ? "s" : ""}`}
+                      </span>
+                    </div>
+                    {pushProfile?.expo_tokens?.length > 0 && (
+                      <div className="mt-1.5 space-y-1">
+                        {pushProfile.expo_tokens.map((t: any) => (
+                          <div key={t.id} className="text-[11px] font-mono leading-snug" style={{ color: "#6b7280" }}>
+                            #{t.id} · <span style={{ color: "#374151" }}>{t.platform}</span> · {t.created_at ? new Date(t.created_at).toLocaleDateString("nl-NL", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "—"}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {!pushProfileLoading && (pushProfile?.expo_token_count ?? 0) === 0 && (
+                      <p className="text-[11px] mt-0.5" style={{ color: "#9ca3af" }}>No Expo tokens — only applies to native Android/iOS app (not PWA).</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Target input */}
           <div className="mb-4">
             <label className="text-[11px] font-semibold uppercase tracking-[0.06em] mb-1.5 block" style={{ color: "#aaaaaa" }}>
@@ -2363,15 +2461,50 @@ function AlertsTab() {
               <div className="space-y-1.5">
                 {testSuccess.type === "push" ? (
                   <>
+                    {/* Channel breakdown */}
+                    <div className="space-y-2 mb-3">
+                      {/* Web Push */}
+                      <div className="rounded-[10px] px-3 py-2" style={{ backgroundColor: (testSuccess.web?.sent ?? 0) > 0 ? "#f0fdf4" : "#f9f9f9", border: `1px solid ${(testSuccess.web?.sent ?? 0) > 0 ? "#bbf7d0" : "#e5e7eb"}` }}>
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <span className="text-[11px]">🌐</span>
+                          <span className="text-[11px] font-bold" style={{ color: (testSuccess.web?.sent ?? 0) > 0 ? "#15803d" : "#6b7280" }}>Web Push (VAPID)</span>
+                          <span className="ml-auto text-[11px] font-bold" style={{ color: (testSuccess.web?.sent ?? 0) > 0 ? "#15803d" : "#6b7280" }}>
+                            {(testSuccess.web?.sent ?? 0) > 0 ? `✓ ${testSuccess.web.sent} delivered to FCM` : "0 sent"}
+                          </span>
+                        </div>
+                        {(testSuccess.web?.sent ?? 0) > 0 && (
+                          <p className="text-[10px] leading-snug" style={{ color: "#15803d" }}>
+                            FCM accepted (HTTP 201). If notification didn't appear: disable battery optimization for Chrome in Samsung Settings → Apps → Chrome → Battery → Unrestricted.
+                          </p>
+                        )}
+                        {(testSuccess.web?.removed ?? 0) > 0 && (
+                          <p className="text-[10px] mt-0.5" style={{ color: "#dc2626" }}>⚠ {testSuccess.web.removed} stale subscription(s) removed — user must re-enable push.</p>
+                        )}
+                        {testSuccess.web?.errors?.length > 0 && (
+                          <p className="text-[10px] mt-0.5 font-mono" style={{ color: "#dc2626" }}>{testSuccess.web.errors[0]?.message}</p>
+                        )}
+                      </div>
+
+                      {/* Expo native */}
+                      <div className="rounded-[10px] px-3 py-2" style={{ backgroundColor: "#f9f9f9", border: "1px solid #e5e7eb" }}>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px]">📱</span>
+                          <span className="text-[11px] font-bold" style={{ color: "#6b7280" }}>Expo native (APK)</span>
+                          <span className="ml-auto text-[11px] font-semibold" style={{ color: (testSuccess.expo?.sent ?? 0) > 0 ? "#15803d" : "#9ca3af" }}>
+                            {(testSuccess.expo?.sent ?? 0) > 0 ? `✓ ${testSuccess.expo.sent} sent` : "0 sent (no tokens)"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Meta */}
                     {[
                       { label: "Target user", value: testSuccess.targetUserId ? testSuccess.targetUserId.substring(0, 8) + "..." : "—", mono: true },
-                      { label: "Web push", value: `${testSuccess.web?.sent ?? 0} sent, ${testSuccess.web?.failed ?? 0} failed, ${testSuccess.web?.removed ?? 0} removed` },
-                      { label: "Expo push", value: `${testSuccess.expo?.sent ?? 0} sent, ${testSuccess.expo?.failed ?? 0} failed` },
-                      { label: "Web subs", value: String(testSuccess.webSubs ?? "—") },
-                      { label: "Expo tokens", value: String(testSuccess.expoTokens ?? "—") },
+                      { label: "Web subs in DB", value: String(testSuccess.webSubs ?? "—") },
+                      { label: "Expo tokens in DB", value: String(testSuccess.expoTokens ?? "—") },
                     ].map(({ label, value, mono }) => (
                       <div key={label} className="flex gap-2 text-[12px]">
-                        <span className="w-24 flex-shrink-0 font-semibold" style={{ color: "#223546" }}>{label}</span>
+                        <span className="w-32 flex-shrink-0 font-semibold" style={{ color: "#223546" }}>{label}</span>
                         <span className={mono ? "font-mono text-[11px]" : ""} style={{ color: "#111111" }}>{value}</span>
                       </div>
                     ))}

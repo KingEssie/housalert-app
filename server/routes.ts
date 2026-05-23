@@ -8400,6 +8400,63 @@ export async function registerRoutes(
     }
   });
 
+  // Push profile for a user — returns web sub list + expo token list, used by admin push test UI pre-flight
+  app.get("/api/admin/portal/push-profile", requireAdmin, async (req, res) => {
+    try {
+      const adminSb = getSupabaseAdmin();
+      let targetUserId = (req.query.userId as string | undefined)?.trim() || "";
+
+      // Resolve email → userId if needed
+      if (targetUserId && targetUserId.includes("@")) {
+        const { data: found } = await adminSb.auth.admin.listUsers();
+        const matched = (found?.users ?? []).find((u: any) => u.email?.toLowerCase() === targetUserId.toLowerCase());
+        if (!matched) return res.status(404).json({ error: `No user found with email ${targetUserId}` });
+        targetUserId = matched.id;
+      }
+
+      // If no userId, use the admin's own userId from auth token
+      if (!targetUserId) {
+        const token = req.headers.authorization?.replace("Bearer ", "").trim();
+        if (token) {
+          const { data: { user } } = await adminSb.auth.getUser(token);
+          targetUserId = user?.id || "";
+        }
+      }
+
+      if (!targetUserId) return res.status(400).json({ error: "userId required" });
+
+      const [webRes, expoRes, settingsRes] = await Promise.all([
+        adminSb.from("push_subscriptions").select("id, endpoint, created_at").eq("user_id", targetUserId),
+        adminSb.from("expo_push_tokens").select("id, platform, created_at").eq("user_id", targetUserId).eq("is_active", true),
+        adminSb.from("user_notification_settings").select("push_enabled").eq("user_id", targetUserId).maybeSingle(),
+      ]);
+
+      const webSubs = (webRes.data ?? []).map((s: any) => ({
+        id: s.id,
+        endpoint_domain: (() => { try { return new URL(s.endpoint).hostname; } catch { return s.endpoint?.substring(0, 30) || "?"; } })(),
+        endpoint_token: s.endpoint ? s.endpoint.split("/").pop()?.substring(0, 20) + "…" : "?",
+        created_at: s.created_at,
+      }));
+
+      const expoTokens = (expoRes.data ?? []).map((t: any) => ({
+        id: t.id,
+        platform: t.platform || "unknown",
+        created_at: t.created_at,
+      }));
+
+      return res.json({
+        userId: targetUserId,
+        push_enabled: settingsRes.data?.push_enabled ?? false,
+        web_subs: webSubs,
+        expo_tokens: expoTokens,
+        web_sub_count: webSubs.length,
+        expo_token_count: expoTokens.length,
+      });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
   app.get("/api/admin/portal/vapid-debug", requireAdmin, (_req, res) => {
     const publicKey = process.env.VITE_VAPID_PUBLIC_KEY || "";
     const privateKey = process.env.VAPID_PRIVATE_KEY || "";
