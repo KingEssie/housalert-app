@@ -1,0 +1,139 @@
+Daft.ie Access Investigation — fix 403 without changing HousAlert infrastructure
+
+Context:
+Ireland/Dublin pipeline is live:
+- Ireland scheduler runs every 60s
+- Daft fetcher exists
+- Ireland orchestrator exists
+- insertAndMatchListings path is wired
+- source health works
+- Daft currently returns HTTP 403 due to Cloudflare
+- No fake data should be inserted
+
+DO NOT TOUCH:
+- push notifications
+- service worker
+- VAPID/FCM
+- /apply/:listingId
+- Stripe/paywall
+- matching logic
+- Germany scrapers/schedulers
+- database schema unless absolutely required
+
+Goal:
+Find the simplest reliable way to retrieve real Daft.ie Dublin rental listings and feed them into the existing Daft fetcher.
+
+==================================================
+1. Investigate Daft response structure
+==================================================
+
+Inspect how Daft.ie serves listing data.
+
+Check:
+- whether rental listings exist in __NEXT_DATA__
+- whether there is a Next.js JSON data endpoint
+- whether there are internal API endpoints used by the site
+- whether buildId is required
+- whether search parameters can target Dublin rentals
+
+Do not hardcode brittle assumptions without logging what was found.
+
+==================================================
+2. Try low-impact fetch improvements first
+==================================================
+
+Improve the existing fetcher only if useful:
+- realistic browser headers
+- Accept-Language: en-IE,en;q=0.9
+- Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+- Referer: https://www.daft.ie/
+- cache-control/no-cache if useful
+- timeout handling
+
+Do NOT add heavy dependencies yet.
+
+If still 403, keep clean handling.
+
+==================================================
+3. Add optional proxy support
+==================================================
+
+Add env-based optional proxy support, but do not require it.
+
+Supported env proposal:
+DAFT_PROXY_URL=
+
+Expected behavior:
+- If DAFT_PROXY_URL is empty, use direct fetch.
+- If DAFT_PROXY_URL is set, route Daft request through that proxy.
+- Keep logs clear:
+  - direct fetch used
+  - proxy fetch used
+  - status code
+  - normalized listing count
+
+Make this generic enough to work with services like ScraperAPI/Bright Data, but do not hardcode vendor-specific logic unless very small and isolated.
+
+==================================================
+4. Do NOT fake data
+==================================================
+
+If Daft still blocks:
+- return []
+- log useful warning
+- mark source health as blocked/error if existing health system supports it
+- do not insert test listings into production tables
+
+==================================================
+5. Keep parser defensive
+==================================================
+
+If HTML or JSON is available:
+- parse real listings from __NEXT_DATA__ or internal JSON
+- externalId must be stable
+- url must be absolute
+- price numeric if possible
+- location/title required
+- skip invalid listings
+
+==================================================
+6. Add a manual test mode if easy
+==================================================
+
+If there is an existing script/test pattern, add a lightweight manual command or function to test only Daft fetching.
+
+It should print:
+- fetch method
+- HTTP status
+- raw listing candidate count
+- normalized listing count
+- first 1–3 normalized listing examples
+
+Do not print huge HTML or secrets.
+
+==================================================
+7. Minimal verification
+==================================================
+
+Run:
+- TypeScript/build check if available
+- server start if possible
+- one Daft fetch test
+
+Confirm:
+- no push/SW files changed
+- no matching logic changed
+- no Germany logic changed
+- Ireland scheduler still starts safely
+
+==================================================
+8. Report back
+==================================================
+
+Report:
+- whether direct fetch still 403s
+- whether Next.js/internal data route was found
+- whether proxy support was added
+- env vars added
+- sample normalized listing if real data was fetched
+- if blocked, exact next recommendation
