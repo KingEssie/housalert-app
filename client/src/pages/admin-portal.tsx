@@ -3302,6 +3302,7 @@ function NotificationsTab() {
       "stale_listing_gt_2h":   "Stale >2h",
       "email_cap_exceeded":    "Cap exceed",
       "no_token":              "No token",
+      "bad_source_data":       "Bad data",
     };
     return labels[reason] || reason;
   }
@@ -3353,17 +3354,35 @@ function NotificationsTab() {
             </div>
             <div className="flex gap-6 flex-wrap">
               {[
-                { label: "Matches", value: data.summary.total },
-                { label: "Emails sent", value: data.summary.email_sent },
-                { label: "Pushes sent", value: data.summary.push_sent },
-                { label: "Suppressed", value: data.summary.suppressed },
+                { label: "Matches", value: data.summary.total, color: "#111" },
+                { label: "Emails sent", value: data.summary.email_sent, color: "#16a34a" },
+                { label: "Pushes sent", value: data.summary.push_sent, color: "#16a34a" },
+                { label: "Suppressed", value: data.summary.suppressed, color: "#dc2626" },
               ].map(m => (
                 <div key={m.label} className="text-center">
-                  <div className="text-[22px] font-bold" style={{ color: "#111" }}>{m.value}</div>
+                  <div className="text-[22px] font-bold" style={{ color: m.color }}>{m.value}</div>
                   <div className="text-[11px]" style={{ color: "#888" }}>{m.label}</div>
                 </div>
               ))}
             </div>
+            {(data.summary.email_marked_sent > 0 || data.summary.push_marked_sent > 0) && (
+              <div className="text-[11px] px-3 py-1.5 rounded-lg" style={{ backgroundColor: "#fff8e1", color: "#b45309", border: "1px solid #fef3c7" }}>
+                ⚠ {data.summary.email_marked_sent > 0 && <span>{data.summary.email_marked_sent} email{data.summary.email_marked_sent !== 1 ? "s" : ""} marked-sent (not delivered)</span>}
+                {data.summary.email_marked_sent > 0 && data.summary.push_marked_sent > 0 && <span> · </span>}
+                {data.summary.push_marked_sent > 0 && <span>{data.summary.push_marked_sent} push marked-sent (not delivered)</span>}
+                <span className="ml-1 opacity-70">— suppression prevented actual delivery</span>
+              </div>
+            )}
+            {data.by_reason && Object.keys(data.by_reason).length > 0 && (
+              <div className="flex flex-wrap gap-2 pt-1">
+                {Object.entries(data.by_reason as Record<string, number>).sort((a,b) => b[1]-a[1]).map(([reason, count]) => (
+                  <span key={reason} className="px-2 py-0.5 rounded-full text-[11px] font-medium"
+                    style={{ backgroundColor: reason === "sent" ? "#dcfce7" : suppressionColor(reason) + "20", color: reason === "sent" ? "#16a34a" : suppressionColor(reason) }}>
+                    {reason === "sent" ? "✓ sent" : suppressionLabel(reason)} ×{count}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Match table */}
@@ -3419,7 +3438,7 @@ function NotificationsTab() {
                     </tr>
                   ))}
                   {data.matches.length === 0 && (
-                    <tr><td colSpan={6} className="px-3 py-8 text-center" style={{ color: "#999" }}>No matches found</td></tr>
+                    <tr><td colSpan={9} className="px-3 py-8 text-center" style={{ color: "#999" }}>No matches found</td></tr>
                   )}
                 </tbody>
               </table>

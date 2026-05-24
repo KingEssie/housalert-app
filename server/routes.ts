@@ -8905,6 +8905,13 @@ export async function registerRoutes(
       const pushMarkedSent         = matches.filter((m: any) => m.push_sent  && m.suppression_reason && PUSH_MARK_AS_SENT_REASONS.has(m.suppression_reason)).length;
       const emailMarkedSent        = matches.filter((m: any) => m.email_sent && m.suppression_reason && EMAIL_MARK_AS_SENT_REASONS.has(m.suppression_reason)).length;
 
+      // Per-reason breakdown for quick audit (reason → count, "sent" = no suppression + actually delivered)
+      const byReason: Record<string, number> = {};
+      for (const m of matches) {
+        const key = m.suppression_reason || "sent";
+        byReason[key] = (byReason[key] ?? 0) + 1;
+      }
+
       res.json({
         user: { id: resolvedUserId, email: resolvedEmail },
         notification_settings: notifRes.data || null,
@@ -8917,6 +8924,7 @@ export async function registerRoutes(
           push_marked_sent: pushMarkedSent,
           email_marked_sent: emailMarkedSent,
         },
+        by_reason: byReason,
         matches,
       });
     } catch (err: any) {
@@ -9170,18 +9178,27 @@ export async function registerRoutes(
 
   app.get("/api/admin/portal/sla-metrics", requireAdmin, async (_req, res) => {
     try {
+      // Suppression reasons that mean "marked sent to stop re-processing" — not real deliveries.
+      // Excluded from SLA averages so latency stats reflect actual delivery, not suppression timestamps.
+      const EMAIL_SUPPRESS = `suppression_reason NOT IN ('email_disabled','all_channels_disabled','no_subscription','stale_listing_gt_2h')`;
+      const PUSH_SUPPRESS  = `suppression_reason NOT IN ('push_disabled','all_channels_disabled','no_subscription','stale_listing_gt_2h','email_cap_exceeded')`;
+
       const { rows: emailSla } = await pgPool.query(
         `SELECT
-           COUNT(*) FILTER (WHERE email_sent AND email_sent_at IS NOT NULL AND matched_at IS NOT NULL) AS email_count,
+           COUNT(*) FILTER (WHERE email_sent AND email_sent_at IS NOT NULL AND matched_at IS NOT NULL
+                             AND (suppression_reason IS NULL OR ${EMAIL_SUPPRESS})) AS email_count,
            ROUND(AVG(EXTRACT(EPOCH FROM (email_sent_at - matched_at)) / 60)
              FILTER (WHERE email_sent AND email_sent_at IS NOT NULL AND matched_at IS NOT NULL
-                       AND matched_at >= NOW() - INTERVAL '7 days'))::int AS avg_match_to_email_min,
+                       AND matched_at >= NOW() - INTERVAL '7 days'
+                       AND (suppression_reason IS NULL OR ${EMAIL_SUPPRESS})))::int AS avg_match_to_email_min,
            ROUND(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (email_sent_at - matched_at)) / 60)
              FILTER (WHERE email_sent AND email_sent_at IS NOT NULL AND matched_at IS NOT NULL
-                       AND matched_at >= NOW() - INTERVAL '7 days'))::int AS median_match_to_email_min,
+                       AND matched_at >= NOW() - INTERVAL '7 days'
+                       AND (suppression_reason IS NULL OR ${EMAIL_SUPPRESS})))::int AS median_match_to_email_min,
            ROUND(AVG(EXTRACT(EPOCH FROM (push_sent_at - matched_at)) / 60)
              FILTER (WHERE push_sent AND push_sent_at IS NOT NULL AND matched_at IS NOT NULL
-                       AND matched_at >= NOW() - INTERVAL '7 days'))::int AS avg_match_to_push_min
+                       AND matched_at >= NOW() - INTERVAL '7 days'
+                       AND (suppression_reason IS NULL OR ${PUSH_SUPPRESS})))::int AS avg_match_to_push_min
          FROM user_matches
          WHERE matched_at >= NOW() - INTERVAL '30 days'`
       );
@@ -9190,12 +9207,14 @@ export async function registerRoutes(
         `SELECT
            DATE(matched_at) AS day,
            COUNT(*) AS matches,
-           COUNT(*) FILTER (WHERE email_sent) AS emails_sent,
-           COUNT(*) FILTER (WHERE push_sent) AS push_sent,
+           COUNT(*) FILTER (WHERE email_sent AND (suppression_reason IS NULL OR ${EMAIL_SUPPRESS})) AS emails_sent,
+           COUNT(*) FILTER (WHERE push_sent  AND (suppression_reason IS NULL OR ${PUSH_SUPPRESS}))  AS push_sent,
            ROUND(AVG(EXTRACT(EPOCH FROM (email_sent_at - matched_at)) / 60)
-             FILTER (WHERE email_sent AND email_sent_at IS NOT NULL))::int AS avg_email_min,
+             FILTER (WHERE email_sent AND email_sent_at IS NOT NULL
+                       AND (suppression_reason IS NULL OR ${EMAIL_SUPPRESS})))::int AS avg_email_min,
            ROUND(AVG(EXTRACT(EPOCH FROM (push_sent_at - matched_at)) / 60)
-             FILTER (WHERE push_sent AND push_sent_at IS NOT NULL))::int AS avg_push_min
+             FILTER (WHERE push_sent AND push_sent_at IS NOT NULL
+                       AND (suppression_reason IS NULL OR ${PUSH_SUPPRESS})))::int AS avg_push_min
          FROM user_matches
          WHERE matched_at >= NOW() - INTERVAL '14 days'
          GROUP BY DATE(matched_at)

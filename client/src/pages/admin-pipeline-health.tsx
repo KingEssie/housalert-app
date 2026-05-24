@@ -225,8 +225,16 @@ function SourceHealthTab() {
                       <span className="text-gray-400">never</span>
                     )}
                   </td>
-                  <td className="px-3 py-2 text-gray-400">—</td>
-                  <td className="px-3 py-2 text-gray-400">—</td>
+                  <td className="px-3 py-2 text-gray-500">
+                    {r.consecutive_zeros > 0
+                      ? <span className="text-amber-600 font-medium">{r.consecutive_zeros}</span>
+                      : <span className="text-gray-300">0</span>}
+                  </td>
+                  <td className="px-3 py-2 text-gray-500">
+                    {r.consecutive_failures > 0
+                      ? <span className="text-red-500 font-medium">{r.consecutive_failures}</span>
+                      : <span className="text-gray-300">0</span>}
+                  </td>
                 </tr>
               ))}
             </tbody>
