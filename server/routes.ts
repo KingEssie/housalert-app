@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { computeMatchEstimate, type NormalizedFilters } from "./match-estimate";
-import { getSourceHealthSummary, getStaleSourceHealth } from "./monitoring/source-health";
+import { getSourceHealthSummary, getStaleSourceHealth, synthesizeSourceHealthRows } from "./monitoring/source-health";
 import { getOpenAlerts, getRecentAlerts, resolveAlertById } from "./monitoring/alerts";
 import { SOURCE_REGISTRY } from "./ingesters/source-registry";
 import { explainMatchInternal } from "./matching/engine";
@@ -43,7 +43,7 @@ import { computeMatchScore, getMatchReasons, computeHybridFilters } from "../sha
 import { normalizeCity } from "../shared/city-normalize";
 import { pool as pgPool } from "./pg-pool";
 import { getFaqSuggestions } from "./support-faq";
-import { isAdminEmail, getRecentRuns, getRunDetail, getLatestRunCities, getSourceAggregates, getDynamicCitiesReport } from "./admin";
+import { isAdminEmail, getRecentRuns, getRunDetail, getLatestRunCities, getLatestRunSources, getSourceAggregates, getDynamicCitiesReport } from "./admin";
 import { trackEvent as trackActivationEvent, getUserActivationStatus, getActivationFunnel, hasEvent as hasActivationEvent } from "./activation-events";
 import { saveCancellationFeedback, getCancellationStats } from "./cancellation-feedback";
 import { getBlockedSources, addBlockedSource, removeBlockedSource, normalizeSourceName } from "./blocked-sources";
@@ -8938,6 +8938,7 @@ export async function registerRoutes(
   app.get("/api/admin/portal/source-health", requireAdmin, async (_req, res) => {
     try {
       let rows = await getSourceHealthSummary();
+      let synthetic = false;
 
       // If table is empty, run a backfill from ingestion_runs first (force=true).
       if (rows.length === 0) {
@@ -8950,7 +8951,23 @@ export async function registerRoutes(
         }
       }
 
-      res.json({ sources: rows, _from_ingestion_run: rows.length === 0 });
+      // Last-resort fallback: synthesize rows directly from the latest ingestion run's
+      // source_reports so the dashboard always shows something useful while the
+      // source_health table is being rebuilt.
+      if (rows.length === 0) {
+        try {
+          const latestSources = await getLatestRunSources();
+          if (Array.isArray(latestSources) && latestSources.length > 0) {
+            rows = synthesizeSourceHealthRows(latestSources) as any[];
+            synthetic = true;
+            log(`[admin] source-health: synthesized ${rows.length} rows from latest ingestion run`);
+          }
+        } catch (synthErr: any) {
+          log(`[admin] source-health synthesis error: ${synthErr.message}`);
+        }
+      }
+
+      res.json({ sources: rows, _synthetic: synthetic });
     } catch (err: any) {
       log(`[admin] source-health error: ${err.message}`);
       res.status(500).json({ error: err.message });

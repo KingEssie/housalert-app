@@ -2,7 +2,7 @@ import { pool } from "../pg-pool";
 import { log } from "../log";
 import type { IngestionReport, SourceReport } from "../ingesters";
 
-function parseSourceName(raw: string): { sourceName: string; city: string } {
+export function parseSourceName(raw: string): { sourceName: string; city: string } {
   const m = raw.match(/^(.+?)\s*\((.+)\)$/);
   if (m) {
     let sourceName = m[1].trim();
@@ -125,7 +125,7 @@ export async function upsertSourceHealth(report: IngestionReport, runStartedAt: 
            -- zero-result runs leave it unchanged.
            consecutive_failures = CASE
              WHEN $4::TIMESTAMPTZ IS NOT NULL THEN 0
-             WHEN $15 THEN source_health.consecutive_failures + 1
+             WHEN $15::boolean THEN source_health.consecutive_failures + 1
              ELSE source_health.consecutive_failures
            END,
            consecutive_zeros    = CASE WHEN $14 = 1 THEN source_health.consecutive_zeros + 1 ELSE 0 END,
@@ -213,6 +213,43 @@ export async function backfillSourceHealthFromRuns(force = false): Promise<{ pro
     log(`[source-health] backfill error: ${err.message}`);
     return { processed: 0 };
   }
+}
+
+/**
+ * Build synthetic SourceHealthRow objects directly from a source_reports JSONB array
+ * (e.g. from ingestion_runs) without writing to the DB.  Used as a last-resort fallback
+ * when source_health is empty and backfill found nothing.
+ */
+export function synthesizeSourceHealthRows(sourceReports: any[], runFinishedAt?: Date): SourceHealthRow[] {
+  const ts = (runFinishedAt ?? new Date()).toISOString();
+  const rows: SourceHealthRow[] = [];
+  for (const sr of sourceReports) {
+    if (!sr) continue;
+    const rawName = (sr as any).name || (sr as any).source || "unknown";
+    const { sourceName, city } = parseSourceName(rawName);
+    const isSuccess = (sr.errors === 0 || sr.errors == null) && (sr.found ?? 0) > 0;
+    const isFailure = (sr.errors ?? 0) > 0;
+    rows.push({
+      id: 0,
+      source_name: sourceName,
+      city,
+      last_started_at: ts,
+      last_success_at: isSuccess ? ts : null,
+      last_failure_at: isFailure ? ts : null,
+      duration_ms: sr.durationMs ?? 0,
+      found_count: sr.found ?? 0,
+      inserted_count: sr.inserted ?? 0,
+      duplicate_count: sr.duplicates ?? 0,
+      error_count: sr.errors ?? 0,
+      last_error: isFailure ? (sr.errorMessage ?? null) : null,
+      status: isSuccess ? "healthy" : "degraded",
+      consecutive_failures: isFailure ? 1 : 0,
+      consecutive_zeros: (!isSuccess && !isFailure) ? 1 : 0,
+      total_runs: 1,
+      updated_at: ts,
+    });
+  }
+  return rows;
 }
 
 export async function getStaleSourceHealth(thresholdMinutes = 60): Promise<SourceHealthRow[]> {

@@ -173,6 +173,7 @@ function SourceHealthTab() {
     onError: (err: Error) => alert(`Backfill failed: ${err.message}`),
   });
   const sources = data?.sources ?? [];
+  const isSynthetic = !!data?._synthetic;
   const activeSources   = sources.filter((s: any) => s.status !== "disabled");
   const disabledSources = sources.filter((s: any) => s.status === "disabled");
 
@@ -272,6 +273,17 @@ function SourceHealthTab() {
         </div>
       ) : (
         <>
+          {isSynthetic && (
+            <div className="border border-amber-200 rounded-xl px-4 py-3 bg-amber-50 text-xs text-amber-800 flex items-start gap-2">
+              <Info className="w-3.5 h-3.5 mt-0.5 shrink-0 text-amber-500" />
+              <span>
+                <strong>Synthesized from latest ingestion run</strong> — the{" "}
+                <code className="bg-amber-100 px-1 rounded">source_health</code> table is empty or being rebuilt.
+                Stats show last-run snapshot only; consecutive_failures and total_runs are not yet tracked.
+                Click <strong>Force Backfill</strong> to rebuild from history.
+              </span>
+            </div>
+          )}
           {Object.entries(activeGrouped).map(([srcName, rows]) => (
             <SourceTable key={srcName} srcName={srcName} rows={rows} />
           ))}

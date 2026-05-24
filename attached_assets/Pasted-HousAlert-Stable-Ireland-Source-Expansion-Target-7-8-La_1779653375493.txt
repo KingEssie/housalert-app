@@ -1,0 +1,195 @@
+HousAlert — Stable Ireland Source Expansion (Target: 7–8 Launch-Ready Sources)
+
+Context:
+HousAlert currently has 5 working low-cost Ireland/Dublin sources:
+
+1. Daft.ie ✅
+2. PropertyPal ✅
+3. Lisney ✅
+4. CityHomes ✅
+5. SherryFitz ✅
+
+Current Ireland coverage:
+~148 listings per cycle
+
+Architecture already exists and is STABLE:
+- realtime ingestion pipeline
+- Ireland scheduler
+- source health
+- notification traces
+- matching pipeline
+- push/email notifications
+- low-cost scraping strategy
+
+Goal:
+Expand from 5 → 7 or 8 TOTAL stable sources, but ONLY if the new sources are:
+- cheap to scrape
+- SSR/static HTML
+- low maintenance
+- stable structure
+- direct fetch compatible
+
+IMPORTANT:
+We are NOT chasing famous portals anymore.
+We are optimizing for:
+- low operating cost
+- reliability
+- inventory density
+- fast maintenance
+- launch readiness
+
+DO NOT touch:
+- service worker
+- push notifications
+- VAPID/FCM
+- Stripe/paywall
+- Germany infrastructure
+- matching architecture
+- notification traces
+- stable ingestion systems
+
+DO NOT add:
+- browser automation
+- Playwright
+- Puppeteer
+- render=true
+- heavy dependencies
+- scraper frameworks
+- large refactors
+
+==================================================
+PHASE 1 — PROBE FINAL CANDIDATES
+==================================================
+
+Probe these remaining candidates:
+
+- Owen Reilly
+- Allen & Jacobs
+- Ray Cooke
+- DNG rentals
+- Hooke & MacDonald
+- Savills rentals
+- Wyse rentals
+- Hunters Estate Agent rentals
+- Brock Delappe
+- Casey Kennedy
+- Be Lettings
+- Murphy Mullan
+
+For each:
+- HTTP status
+- direct fetch works?
+- listing cards visible in raw HTML?
+- prices visible?
+- listing URLs visible?
+- rentals distinguishable from sales?
+- anti-bot behavior?
+- scrapeability score (1–5)
+- estimated maintenance level
+
+==================================================
+PHASE 2 — SELECT ONLY THE BEST 2–3
+==================================================
+
+Choose ONLY the strongest candidates.
+
+Selection priorities:
+1. stable HTML
+2. low maintenance
+3. direct fetch compatibility
+4. low anti-bot risk
+5. decent Dublin rental inventory
+
+Reject:
+- JS-heavy sources
+- fragile selectors
+- cookie/session flows
+- aggressive WAFs
+- low-value inventory
+
+==================================================
+PHASE 3 — IMPLEMENT SOURCES
+==================================================
+
+For each selected source:
+
+Create:
+server/sources/ireland/<source>/
+
+Requirements:
+- Dublin rentals only initially
+- normalized SourceListing output
+- stable externalId
+- title
+- price
+- location
+- absolute URL
+- imageUrl if available
+- bedrooms if available
+- coordinates if available
+
+Use lightweight HTML parsing only.
+
+==================================================
+PHASE 4 — PIPELINE INTEGRATION
+==================================================
+
+Wire each source into:
+- irelandSources registry
+- Ireland scheduler
+- source health
+- ingestion logs
+- insertAndMatchListings
+
+Reuse patterns from:
+- Daft
+- PropertyPal
+- Lisney
+- CityHomes
+- SherryFitz
+
+Do NOT create new ingestion systems.
+
+==================================================
+PHASE 5 — SAFETY + VALIDATION
+==================================================
+
+Requirements:
+- safe error handling
+- no crash loops
+- no fake listings
+- no commercial listings
+- no sale listings
+- defensive rental validation
+- skip invalid listings safely
+
+==================================================
+PHASE 6 — TESTING
+==================================================
+
+For each implemented source:
+- HTTP status
+- raw candidate count
+- normalized count
+- 1–2 sample listings
+
+Keep tests lightweight.
+
+==================================================
+PHASE 7 — FINAL REPORT
+==================================================
+
+Report:
+- all candidates tested
+- scrapeability scores
+- which sources were selected
+- which were rejected and why
+- files created/modified
+- estimated total Dublin inventory coverage now
+- estimated scraping cost profile
+- whether HousAlert is close to launch-ready from a listings perspective
+
+Reminder:
+The mission is NOT perfect scraping.
+The mission is:
+7–8 stable low-cost Ireland sources with enough inventory to feel genuinely valuable before launch.

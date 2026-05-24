@@ -16,10 +16,19 @@ export function isAdminEmail(email: string): boolean {
 }
 
 export async function ensureIngestionRunsColumns(): Promise<void> {
-  try {
-    await pool.query(`ALTER TABLE ingestion_runs ADD COLUMN IF NOT EXISTS error_message text`);
-  } catch (err: any) {
-    log(`[admin] ensureIngestionRunsColumns: ${err.message}`, "express");
+  const alterStatements = [
+    `ALTER TABLE ingestion_runs ADD COLUMN IF NOT EXISTS error_message text`,
+    `ALTER TABLE ingestion_runs ADD COLUMN IF NOT EXISTS source_reports jsonb`,
+    `ALTER TABLE ingestion_runs ADD COLUMN IF NOT EXISTS city_reports jsonb`,
+    `ALTER TABLE ingestion_runs ADD COLUMN IF NOT EXISTS fast_lane boolean DEFAULT false`,
+    `ALTER TABLE ingestion_runs ADD COLUMN IF NOT EXISTS duration_sec numeric`,
+  ];
+  for (const sql of alterStatements) {
+    try {
+      await pool.query(sql);
+    } catch (err: any) {
+      log(`[admin] ensureIngestionRunsColumns: ${err.message}`, "express");
+    }
   }
 }
 
