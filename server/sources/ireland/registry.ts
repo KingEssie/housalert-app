@@ -8,6 +8,7 @@ import { fetchListings as fetchLisney }      from "./lisney";
 import { fetchListings as fetchOwenReilly }  from "./owenreilly";
 import { fetchListings as fetchCityhomes }   from "./cityhomes";
 import { fetchListings as fetchSherryFitz }  from "./sherryfitz";
+import { fetchListings as fetchRayCooke }    from "./raycooke";
 import type { SourceListing } from "./types";
 
 export interface IrelandSource {
@@ -42,4 +43,5 @@ export const irelandSources: IrelandSource[] = [
   { name: "owenreilly",  fetchListings: fetchOwenReilly },
   { name: "cityhomes",   fetchListings: fetchCityhomes },
   { name: "sherryfitz",  fetchListings: fetchSherryFitz },
+  { name: "raycooke",    fetchListings: fetchRayCooke },
 ];

@@ -1,0 +1,126 @@
+Implement Ray Cooke as the next low-cost Ireland source for HousAlert.
+
+Context:
+HousAlert currently has 6 live/stable Ireland sources:
+- Daft.ie
+- PropertyPal
+- Lisney
+- Owen Reilly
+- CityHomes
+- SherryFitz
+
+Goal:
+Try to add Ray Cooke as source #7, but ONLY if it is cheap/stable:
+- direct fetch
+- simple HTML
+- no render=true
+- no Playwright/Puppeteer
+- no heavy dependencies
+- no browser automation
+
+IMPORTANT:
+Do NOT touch:
+- service worker
+- push notifications
+- VAPID/FCM
+- Stripe/paywall
+- Germany infrastructure
+- matching architecture
+- notification traces
+- stable ingestion systems
+
+==================================================
+1. PROBE RAY COOKE FIRST
+==================================================
+
+Before implementing anything, probe Ray Cooke rental/listing pages.
+
+Report:
+- URL tested
+- HTTP status
+- page size
+- listing cards visible in raw HTML?
+- prices visible?
+- listing URLs visible?
+- rental/sale distinction clear?
+- anti-bot issues?
+- scrapeability score 1–5
+
+Reject immediately if:
+- JS rendering required
+- cookie/session wall
+- aggressive WAF
+- no prices in HTML
+- no stable listing URLs
+
+==================================================
+2. IMPLEMENT ONLY IF SCORE >= 4
+==================================================
+
+If scrapeability score is 4 or 5:
+
+Create:
+server/sources/ireland/raycooke/
+
+Requirements:
+- Dublin/Ireland rentals only
+- normalized SourceListing output
+- stable externalId
+- title
+- price
+- location
+- absolute URL
+- imageUrl if available
+- bedrooms if available
+- coordinates if available
+
+Use existing patterns from:
+- Lisney
+- Owen Reilly
+- CityHomes
+- SherryFitz
+- PropertyPal
+
+==================================================
+3. INTEGRATE
+==================================================
+
+Wire Ray Cooke into:
+- irelandSources registry
+- Ireland scheduler
+- source health
+- ingestion logs
+- insertAndMatchListings
+
+Do not create any parallel system.
+
+==================================================
+4. TEST
+==================================================
+
+Add a lightweight manual test if useful:
+server/scripts/test-raycooke.ts
+
+Output:
+- HTTP status
+- raw candidates
+- normalized count
+- 1–2 sample listings
+
+Confirm:
+- no push/SW changes
+- disabled expensive sources remain disabled
+- existing sources still active
+
+==================================================
+5. REPORT
+==================================================
+
+Report:
+- whether Ray Cooke was accepted or rejected
+- scrapeability score
+- files changed
+- listing count
+- sample listings
+- total live source count after this
+- estimated total listings per cycle
