@@ -57,6 +57,7 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   const isEmbedRoute =
     req.path === "/onboarding-embed" ||
+    req.path === "/widget.html" ||
     req.path.startsWith("/api/onboarding-drafts") ||
     req.path.startsWith("/onboarding/");
 
@@ -64,7 +65,7 @@ app.use((req, res, next) => {
     res.removeHeader("X-Frame-Options");
     res.setHeader(
       "Content-Security-Policy",
-      "frame-ancestors 'self' https://*.housalert.com https://housalert.com https://*.housalert.de https://housalert.de https://*.duda.co https://*.dudaone.com"
+      "frame-ancestors *"
     );
   } else {
     res.setHeader("X-Frame-Options", "SAMEORIGIN");

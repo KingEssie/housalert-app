@@ -27,6 +27,8 @@ import {
   findUserByStripeCustomerId,
   stripeStatusToDb,
 } from "./subscriptions";
+import fs from "fs";
+import path from "path";
 import { log } from "./log";
 import { getDisplayTitle } from "../shared/display-title";
 import { validateBuddyUnsubscribeToken, sendBuddyInvitationEmail, sendBuddyCollaborationEmail, sendBuddyRevokedEmail, sendBuddyRevokedOwnerEmail } from "./email";
@@ -1808,6 +1810,23 @@ export async function registerRoutes(
     } catch (err: any) {
       return res.status(500).json({ error: err.message });
     }
+  });
+
+  // -----------------------------------------------------------------------
+  // Serve the standalone embeddable widget HTML.
+  // Reads from dist/public (prod) or client/public (dev) — whichever exists.
+  // X-Frame-Options is stripped in server/index.ts for this path.
+  // -----------------------------------------------------------------------
+  app.get("/widget.html", (_req, res) => {
+    const candidates = [
+      path.resolve(process.cwd(), "dist", "public", "widget.html"),
+      path.resolve(process.cwd(), "client", "public", "widget.html"),
+    ];
+    const found = candidates.find((p) => fs.existsSync(p));
+    if (!found) return res.status(404).send("Widget not found");
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    return res.sendFile(found);
   });
 
   // -----------------------------------------------------------------------
