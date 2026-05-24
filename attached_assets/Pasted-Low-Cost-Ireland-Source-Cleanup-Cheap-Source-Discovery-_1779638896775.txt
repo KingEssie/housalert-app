@@ -1,0 +1,134 @@
+Low-Cost Ireland Source Cleanup + Cheap Source Discovery
+
+Context:
+HousAlert currently has 3 working low-cost Dublin sources:
+- Daft.ie ✅
+- PropertyPal ✅
+- Lisney ✅
+
+The following sources are expensive/problematic because they require JS rendering or heavy proxy usage:
+- Rent.ie
+- MyHome.ie
+- Let.ie
+
+Goal:
+Remove expensive render=true source usage and identify 2 additional low-cost Dublin rental sources that are cheap and stable to scrape.
+
+IMPORTANT:
+Do NOT touch:
+- push notifications
+- service worker
+- VAPID/FCM
+- Stripe/paywall
+- Germany infrastructure
+- matching pipeline
+- notification traces
+- existing stable ingestion systems
+
+==================================================
+1. DISABLE EXPENSIVE SOURCES
+==================================================
+
+Disable scheduler execution for:
+- Rent.ie
+- MyHome.ie
+- Let.ie
+
+BUT:
+- keep their source files
+- keep their parsers
+- keep registry entries if useful
+- do NOT delete infrastructure
+
+Requirements:
+- no render=true requests should execute anymore
+- no expensive proxy usage
+- no crash loops
+- logs should clearly say:
+  "Source disabled due to high scraping cost"
+
+==================================================
+2. REMOVE RENDER=TRUE DEPENDENCY
+==================================================
+
+Ensure the system no longer depends on:
+- RENTIE_PROXY_URL
+- MYHOME_PROXY_URL
+- LETIE_PROXY_URL
+
+They can remain supported internally, but should not be active.
+
+==================================================
+3. DISCOVER 2 MORE CHEAP SOURCES
+==================================================
+
+Probe these candidate agency/rental sources:
+
+- Allen & Jacobs
+- Owen Reilly
+- Ray Cooke
+- DNG rentals
+- Savills rentals
+- Sherry FitzGerald rentals
+- Hooke & MacDonald
+
+Goal:
+Find sources that:
+- return listing HTML directly
+- expose prices in HTML
+- expose listing URLs in HTML
+- do NOT require JS rendering
+- do NOT require browser automation
+- do NOT aggressively block requests
+
+==================================================
+4. SCORE EACH SOURCE
+==================================================
+
+For each source report:
+- HTTP status
+- whether direct fetch works
+- whether listings appear in raw HTML
+- whether prices appear
+- whether URLs appear
+- whether images appear
+- whether rentals are distinguishable from sales
+- scrapeability score (1–5)
+
+==================================================
+5. RECOMMEND THE BEST 2
+==================================================
+
+Recommend the 2 best low-cost sources to implement next.
+
+Prioritize:
+- stability
+- low scraping cost
+- SSR/static HTML
+- listing volume
+- low maintenance
+
+Do NOT prioritize brand recognition.
+
+==================================================
+6. MINIMAL VERIFICATION
+==================================================
+
+Run lightweight checks only:
+- server starts
+- Ireland scheduler still works
+- Daft/PropertyPal/Lisney remain active
+- no SW/push changes
+- no Germany changes
+
+==================================================
+7. REPORT BACK
+==================================================
+
+Report:
+- which expensive sources were disabled
+- estimated proxy cost reduction
+- which candidate sources look promising
+- top 2 recommended next sources
+- whether they require proxy support
+- exact next implementation recommendation

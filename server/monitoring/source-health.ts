@@ -4,7 +4,15 @@ import type { IngestionReport, SourceReport } from "../ingesters";
 
 function parseSourceName(raw: string): { sourceName: string; city: string } {
   const m = raw.match(/^(.+?)\s*\((.+)\)$/);
-  if (m) return { sourceName: m[1].trim(), city: m[2].trim() };
+  if (m) {
+    let sourceName = m[1].trim();
+    const city = m[2].trim();
+    // German ingester emits "source:city (city)" — strip the redundant ":city" suffix.
+    if (sourceName.toLowerCase().endsWith(`:${city.toLowerCase()}`)) {
+      sourceName = sourceName.slice(0, sourceName.length - 1 - city.length);
+    }
+    return { sourceName, city };
+  }
   return { sourceName: raw.trim(), city: "" };
 }
 
@@ -109,7 +117,9 @@ export async function upsertSourceHealth(report: IngestionReport, runStartedAt: 
            duplicate_count   = $9,
            error_count       = $10,
            last_error        = CASE WHEN $5::TIMESTAMPTZ IS NOT NULL THEN $11 ELSE source_health.last_error END,
-           status            = $12,
+           -- Never overwrite a manually-set 'disabled' status — disabled sources are
+           -- excluded by the ingester so they should not revert to 'degraded' via backfill.
+           status            = CASE WHEN source_health.status = 'disabled' THEN 'disabled' ELSE $12 END,
            -- consecutive_failures only resets on a data-success run ($4 non-null);
            -- increments only on an actual-error run ($15=true);
            -- zero-result runs leave it unchanged.

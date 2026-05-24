@@ -53,6 +53,16 @@ export async function runIrelandIngestion(): Promise<IrelandIngestionResult> {
   const total = { found: 0, inserted: 0, duplicates: 0, matches: 0, errors: 0 };
 
   for (const src of irelandSources) {
+    // Skip disabled sources — preserve their files/parsers but never execute
+    if (src.disabled) {
+      log(
+        `[ireland] ${src.name}: Source disabled due to high scraping cost — skipping` +
+        (src.disabledReason ? ` (${src.disabledReason})` : ""),
+        "ingest"
+      );
+      continue;
+    }
+
     const srcStart = Date.now();
     let found = 0;
     let inserted = 0;

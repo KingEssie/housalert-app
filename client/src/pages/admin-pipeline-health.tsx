@@ -42,9 +42,10 @@ const TABS: { id: Tab; label: string; icon: any }[] = [
 ];
 
 function statusColor(status: string) {
-  if (status === "healthy") return "text-green-600 bg-green-50 border-green-200";
+  if (status === "healthy")  return "text-green-600 bg-green-50 border-green-200";
   if (status === "degraded") return "text-yellow-600 bg-yellow-50 border-yellow-200";
-  if (status === "down") return "text-red-600 bg-red-50 border-red-200";
+  if (status === "down")     return "text-red-600 bg-red-50 border-red-200";
+  if (status === "disabled") return "text-gray-400 bg-gray-50 border-gray-200";
   return "text-gray-500 bg-gray-50 border-gray-200";
 }
 
@@ -84,8 +85,8 @@ function OverviewTab() {
   const { data: alertDat } = useQuery({ queryKey: ["/api/admin/portal/pipeline-alerts"], queryFn: () => adminFetch("/api/admin/portal/pipeline-alerts"), staleTime: 30000 });
   const { data: srcDat } = useQuery({ queryKey: ["/api/admin/portal/source-health"], queryFn: () => adminFetch("/api/admin/portal/source-health"), staleTime: 60000 });
 
-  const healthySources = (srcDat?.sources || []).filter((s: any) => s.status === "healthy").length;
-  const degradedSources = (srcDat?.sources || []).filter((s: any) => s.status === "degraded").length;
+  const healthySources  = (srcDat?.sources || []).filter((s: any) => s.status === "healthy").length;
+  const degradedSources = (srcDat?.sources || []).filter((s: any) => s.status === "degraded" || s.status === "down").length;
   const openAlerts = alertDat?.count ?? 0;
   const critAlerts = (alertDat?.alerts || []).filter((a: any) => a.severity === "critical").length;
   const sla = slaDat?.summary ?? {};
@@ -163,16 +164,76 @@ function SourceHealthTab() {
     staleTime: 30000,
   });
   const sources = data?.sources ?? [];
-  const grouped = sources.reduce((acc: any, s: any) => {
-    if (!acc[s.source_name]) acc[s.source_name] = [];
-    acc[s.source_name].push(s);
-    return acc;
-  }, {});
+  const activeSources   = sources.filter((s: any) => s.status !== "disabled");
+  const disabledSources = sources.filter((s: any) => s.status === "disabled");
+
+  function groupByName(list: any[]) {
+    return list.reduce((acc: any, s: any) => {
+      if (!acc[s.source_name]) acc[s.source_name] = [];
+      acc[s.source_name].push(s);
+      return acc;
+    }, {} as Record<string, any[]>);
+  }
+
+  const activeGrouped   = groupByName(activeSources);
+  const disabledGrouped = groupByName(disabledSources);
+
+  function SourceTable({ srcName, rows, dimmed }: { srcName: string; rows: any[]; dimmed?: boolean }) {
+    return (
+      <div className={`border rounded-xl overflow-hidden ${dimmed ? "bg-gray-50 opacity-60" : "bg-white"}`}>
+        <div className="px-4 py-2 bg-gray-50 border-b flex items-center gap-2">
+          <Radio className={`w-4 h-4 ${dimmed ? "text-gray-300" : "text-gray-400"}`} />
+          <span className={`font-semibold ${dimmed ? "text-gray-400" : "text-gray-700"}`}>{srcName}</span>
+          <span className="text-xs text-gray-400 ml-1">{rows.length} {rows.length === 1 ? "city" : "cities"}</span>
+          {dimmed && <span className="text-xs px-2 py-0.5 bg-gray-200 text-gray-500 rounded-full ml-1">disabled — skipped by ingester</span>}
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-xs">
+            <thead>
+              <tr className="text-gray-400 border-b">
+                {["City", "Status", "Found", "Inserted", "Errors", "Duration", "Last Data", "Zero Runs", "Consec Fail"].map(h => (
+                  <th key={h} className="px-3 py-2 text-left font-medium">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r: any) => (
+                <tr key={`${r.source_name}:${r.city}`} className="border-b last:border-0 hover:bg-gray-50">
+                  <td className="px-3 py-2 font-medium text-gray-700">{r.city || "—"}</td>
+                  <td className="px-3 py-2">
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full border text-xs font-medium capitalize ${statusColor(r.status)}`}>
+                      {r.status}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2 text-gray-600">{r.found_count}</td>
+                  <td className="px-3 py-2 text-gray-600">{r.inserted_count}</td>
+                  <td className="px-3 py-2 text-red-500">{r.error_count || "—"}</td>
+                  <td className="px-3 py-2 text-gray-500">{r.duration_ms ? formatDuration(r.duration_ms) : "—"}</td>
+                  <td className="px-3 py-2" title="Last run that actually returned listings">
+                    {r.last_success_at ? (
+                      <span className="text-gray-500">{relativeTime(r.last_success_at)}</span>
+                    ) : (
+                      <span className="text-gray-400">never</span>
+                    )}
+                  </td>
+                  <td className="px-3 py-2 text-gray-400">—</td>
+                  <td className="px-3 py-2 text-gray-400">—</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-500">{sources.length} source×city pairs tracked</p>
+        <p className="text-sm text-gray-500">
+          {activeSources.length} active source×city pairs
+          {disabledSources.length > 0 && <span className="text-gray-400"> · {disabledSources.length} disabled</span>}
+        </p>
         <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching}>
           <RefreshCw className={`w-3 h-3 mr-1 ${isFetching ? "animate-spin" : ""}`} /> Refresh
         </Button>
@@ -186,59 +247,19 @@ function SourceHealthTab() {
           <p>No source health data yet. It will populate after the next ingest cycle completes.</p>
         </div>
       ) : (
-        Object.entries(grouped).map(([srcName, rows]: [string, any]) => (
-          <div key={srcName} className="border rounded-xl overflow-hidden bg-white">
-            <div className="px-4 py-2 bg-gray-50 border-b flex items-center gap-2">
-              <Radio className="w-4 h-4 text-gray-400" />
-              <span className="font-semibold text-gray-700">{srcName}</span>
-              <span className="text-xs text-gray-400 ml-1">{rows.length} cities</span>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs">
-                <thead>
-                  <tr className="text-gray-400 border-b">
-                    {["City", "Status", "Found", "Inserted", "Errors", "Duration", "Last Data", "Zero Runs", "Consec Fail"].map(h => (
-                      <th key={h} className="px-3 py-2 text-left font-medium">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map((r: any) => (
-                    <tr key={`${r.source_name}:${r.city}`} className="border-b last:border-0 hover:bg-gray-50">
-                      <td className="px-3 py-2 font-medium text-gray-700">{r.city || "—"}</td>
-                      <td className="px-3 py-2">
-                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full border text-xs font-medium capitalize ${statusColor(r.status)}`}>
-                          {r.status}
-                        </span>
-                      </td>
-                      <td className="px-3 py-2 text-gray-600">{r.found_count}</td>
-                      <td className="px-3 py-2 text-gray-600">{r.inserted_count}</td>
-                      <td className="px-3 py-2 text-red-500">{r.error_count || "—"}</td>
-                      <td className="px-3 py-2 text-gray-500">{r.duration_ms ? formatDuration(r.duration_ms) : "—"}</td>
-                      <td className="px-3 py-2" title="Last run that actually returned listings">
-                        {r.last_success_at ? (
-                          <span className="text-gray-500">{relativeTime(r.last_success_at)}</span>
-                        ) : (
-                          <span className="text-red-400 font-medium">never</span>
-                        )}
-                      </td>
-                      <td className="px-3 py-2">
-                        {r.consecutive_zeros > 0 ? (
-                          <span className="text-amber-500" title="Consecutive runs returning 0 listings">{r.consecutive_zeros}</span>
-                        ) : "—"}
-                      </td>
-                      <td className="px-3 py-2">
-                        {r.consecutive_failures > 0 ? (
-                          <span className="text-red-500 font-semibold" title="Consecutive runs with actual errors">{r.consecutive_failures}</span>
-                        ) : "—"}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        ))
+        <>
+          {Object.entries(activeGrouped).map(([srcName, rows]) => (
+            <SourceTable key={srcName} srcName={srcName} rows={rows} />
+          ))}
+          {Object.keys(disabledGrouped).length > 0 && (
+            <>
+              <div className="pt-2 pb-1 text-xs text-gray-400 font-medium uppercase tracking-wide">Disabled sources (skipped by ingester)</div>
+              {Object.entries(disabledGrouped).map(([srcName, rows]) => (
+                <SourceTable key={srcName} srcName={srcName} rows={rows} dimmed />
+              ))}
+            </>
+          )}
+        </>
       )}
     </div>
   );

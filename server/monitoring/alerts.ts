@@ -176,9 +176,27 @@ export async function evaluateAlertRules(
 
   for (const sr of report.sources) {
     const m = sr.name.match(/^(.+?)\s*\((.+)\)$/);
-    const sourceName = m ? m[1].trim() : sr.name.trim();
+    let sourceName = m ? m[1].trim() : sr.name.trim();
     const city = m ? m[2].trim() : "";
+    // Strip redundant ":city" suffix that the German ingester appends (e.g. "vonovia:Berlin (Berlin)").
+    if (city && sourceName.toLowerCase().endsWith(`:${city.toLowerCase()}`)) {
+      sourceName = sourceName.slice(0, sourceName.length - 1 - city.length);
+    }
     const baseKey = `${sourceName}:${city}`;
+
+    // Skip alert evaluation for sources marked as disabled in source_health.
+    // Disabled sources are intentionally excluded from the ingester and should
+    // not generate alerts.
+    const disabledCheck = await pool.query(
+      `SELECT 1 FROM source_health WHERE source_name = $1 AND city = $2 AND status = 'disabled'`,
+      [sourceName, city]
+    );
+    if (disabledCheck.rows.length > 0) {
+      await resolveAlert(`source_down:${baseKey}`, "source disabled");
+      await resolveAlert(`zero_results:${baseKey}`, "source disabled");
+      await resolveAlert(`high_error_rate:${baseKey}`, "source disabled");
+      continue;
+    }
 
     if (sr.errors > 0) {
       const healthRow = await pool.query(
