@@ -1,0 +1,166 @@
+Final Ireland Source Sprint — add source #8 before Top 10 Cities expansion
+
+Context:
+HousAlert currently has 7 stable live Ireland sources:
+
+1. Daft.ie
+2. PropertyPal
+3. Lisney
+4. Owen Reilly
+5. CityHomes
+6. SherryFitz
+7. Ray Cooke
+
+Current total:
+~158 listings/cycle
+
+Goal:
+Add ONE final low-cost/stable source before moving to Top 10 Irish cities.
+
+IMPORTANT:
+The source must be:
+- direct fetch
+- static/simple HTML
+- low maintenance
+- low anti-bot risk
+- no JS rendering
+- no browser automation
+
+DO NOT touch:
+- service worker
+- push notifications
+- VAPID/FCM
+- Stripe/paywall
+- Germany infrastructure
+- matching architecture
+- notification traces
+- stable ingestion systems
+
+DO NOT add:
+- Playwright
+- Puppeteer
+- render=true
+- heavy dependencies
+- scraper frameworks
+- major refactors
+
+==================================================
+1. PROBE FINAL CANDIDATES
+==================================================
+
+Probe these remaining candidates:
+
+- Allen & Jacobs
+- Hooke & MacDonald
+- DNG rentals
+- Savills rentals
+- Wyse rentals
+- Hunters Estate Agent rentals
+- Brock Delappe
+- Casey Kennedy
+- Be Lettings
+- Murphy Mullan
+
+For each:
+- URL tested
+- HTTP status
+- listing cards visible in raw HTML?
+- prices visible?
+- listing URLs visible?
+- rentals distinguishable from sales?
+- anti-bot issues?
+- scrapeability score 1–5
+- estimated maintenance level
+
+Reject immediately if:
+- JS rendering required
+- cookie/session wall
+- unstable selectors
+- no prices in HTML
+- no stable listing URLs
+
+==================================================
+2. SELECT ONLY THE BEST ONE
+==================================================
+
+Pick ONLY the strongest candidate.
+
+Prioritize:
+1. low maintenance
+2. direct fetch
+3. simple HTML
+4. stable structure
+5. decent Dublin rental inventory
+
+==================================================
+3. IMPLEMENT THE SOURCE
+==================================================
+
+Create:
+server/sources/ireland/<source>/
+
+Requirements:
+- Dublin/Ireland rentals only
+- normalized SourceListing output
+- stable externalId
+- title
+- price
+- location
+- absolute URL
+- imageUrl if available
+- bedrooms if available
+- coordinates if available
+
+Use existing patterns from:
+- Ray Cooke
+- Lisney
+- Owen Reilly
+- CityHomes
+- SherryFitz
+
+==================================================
+4. INTEGRATE
+==================================================
+
+Wire the source into:
+- irelandSources registry
+- Ireland scheduler
+- source health
+- ingestion logs
+- insertAndMatchListings
+
+Do not create any parallel systems.
+
+==================================================
+5. TEST
+==================================================
+
+Add lightweight manual test if useful.
+
+Output:
+- HTTP status
+- raw candidates
+- normalized count
+- 1–2 sample listings
+
+Confirm:
+- no push/SW changes
+- disabled expensive sources remain disabled
+- existing 7 sources still active
+
+==================================================
+6. FINAL REPORT
+==================================================
+
+Report:
+- which source was selected and why
+- scrapeability score
+- files changed
+- listing count
+- sample listings
+- total live source count
+- estimated total listings per cycle
+
+If source count reaches 8:
+explicitly confirm readiness for:
+PHASE NEXT = Top 10 Ireland cities expansion
