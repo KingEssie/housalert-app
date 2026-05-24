@@ -1,0 +1,233 @@
+Polish the Duda Latest Listings widget UI and listing data formatting.
+
+Context:
+The Duda embed widget is live at:
+https://app.housalert.com/widget.html
+
+It uses:
+GET /api/public/latest-listings?city=Dublin&limit=10
+
+The widget works, but needs visual and data improvements.
+
+The public marketing website is built in Duda.
+This widget is embedded via iframe/custom HTML.
+
+Goal:
+Make the widget feel much closer to the in-app listing UI, more prominent on the homepage, and cleaner for desktop/mobile.
+
+IMPORTANT:
+Do NOT touch:
+- service worker
+- push notifications
+- VAPID/FCM
+- Stripe/paywall
+- matching pipeline
+- ingestion scheduler
+- Germany infrastructure
+- emails
+- app listing detail UI
+
+==================================================
+1. Remove label
+==================================================
+
+Remove the small label:
+"LIVE RENTAL LISTINGS"
+
+It should not appear anymore.
+
+==================================================
+2. Remove footer and CTA
+==================================================
+
+Remove:
+- "Powered by HousAlert"
+- "Get free alerts →" button
+
+The widget should only show:
+- heading
+- city dropdown
+- listing slider/cards
+
+==================================================
+3. Header copy and dropdown
+==================================================
+
+Change the heading to uppercase and make it prominent like an H2 section header.
+
+Desired text:
+
+OVER THE LAST 24H, HOUSALERT FOUND
+[COUNT] RENTAL HOMES IN [CITY DROPDOWN]
+
+Important:
+- Entire heading text should be uppercase.
+- The city name at the end should be the dropdown itself.
+- Do not show a separate dropdown box floating at the top-right.
+- Dropdown should sit inline after “IN”.
+- Text and dropdown should be larger/bolder.
+- This should visually feel like an H2 on the marketing website.
+- On desktop it can be one or two lines.
+- On mobile it should remain readable and not overflow.
+
+Example:
+OVER THE LAST 24H, HOUSALERT FOUND
+127 RENTAL HOMES IN [Dublin ▼]
+
+==================================================
+4. Full-width layout
+==================================================
+
+The widget should use the full available width of the Duda section/container.
+
+Desktop/laptop:
+- around 5 listing cards should be visible in the horizontal slider
+- cards should be compact enough to fit 5 across on a normal laptop width
+- remove narrow max-width restrictions like 900px
+
+Mobile:
+- show 1 main card at a time
+- horizontal scroll should remain smooth
+
+Update the recommended Duda iframe snippet if needed:
+- width="100%"
+- no max-width restriction
+- height adjusted to fit the new design
+
+==================================================
+5. Card UI should match app design
+==================================================
+
+Update listing cards to match the in-app listing cards as closely as practical.
+
+Each card should have:
+- rounded white or very light card
+- large rounded image at top
+- heart/favorite icon circle top-right over image
+- bold title below image
+- second line: “[time ago] · [source]”
+- pill badge for city/location
+- pill badge for price
+- soft shadow or subtle border
+- generous border radius
+- clean mobile-first spacing
+
+Do not keep the current simple rectangular/card-grid style.
+
+The embedded widget does not need real favorite functionality.
+The heart icon can be decorative/non-interactive.
+
+==================================================
+6. Street/title formatting for website only
+==================================================
+
+Problem:
+The website currently sometimes shows city + house number, such as:
+“Dublin 8, Dublin”
+or source titles that include house numbers.
+
+For the embed only:
+- Prefer street/area name when available.
+- Do NOT show house numbers.
+- Do NOT show only city if a better title/street can be derived.
+- Keep app behavior unchanged.
+- Keep email behavior unchanged.
+
+Examples:
+- “138 Southmede, Ballinteer Road, Dundrum” → “Southmede, Ballinteer Road”
+- “18 Newmarket Square, Dublin 8” → “Newmarket Square”
+- “Apartment 68 The Plaza Shangan Road, Dublin” → “The Plaza Shangan Road”
+- “Dublin 8, Dublin” → “Dublin 8” is acceptable only if no better street/title exists.
+
+Implementation:
+- Add a widget-only display formatter in widget.html OR
+- Add displayTitle/displayLocation fields to /api/public/latest-listings if cleaner.
+
+Do NOT remove house numbers globally.
+Do NOT change emails.
+Do NOT change app listing detail pages.
+
+==================================================
+7. API changes if needed
+==================================================
+
+If needed, update:
+GET /api/public/latest-listings
+
+Optional new fields:
+- displayTitle
+- displayLocation
+
+Rules:
+- public API remains read-only
+- no private user data
+- no admin/debug/internal tracing fields
+- no source URLs unless already intentionally exposed
+- keep payload lightweight
+
+==================================================
+8. Styling details
+==================================================
+
+Make the widget feel premium and modern.
+
+Desired feel:
+- closer to the HousAlert app cards
+- bold heading
+- clean white background
+- rounded cards
+- smooth horizontal scroll
+- professional on desktop
+- strong mobile layout
+
+Do not copy Rentbird exactly.
+Use HousAlert styling/brand direction.
+
+==================================================
+9. Duda iframe snippet
+==================================================
+
+After changes, provide the final recommended Duda iframe snippet.
+
+It should probably look like:
+
+<iframe
+  src="https://app.housalert.com/widget.html"
+  width="100%"
+  height="560"
+  frameborder="0"
+  scrolling="no"
+  style="border:none; display:block; width:100%; height:560px;"
+></iframe>
+
+Adjust height if needed.
+
+==================================================
+10. Verification
+==================================================
+
+Verify:
+- https://app.housalert.com/widget.html loads directly
+- Duda iframe still works
+- desktop shows around 5 cards
+- mobile shows 1 main card
+- city dropdown is inline in heading
+- "LIVE RENTAL LISTINGS" removed
+- "Powered by HousAlert" removed
+- "Get free alerts" button removed
+- listing titles no longer show house numbers where avoidable
+- app emails unchanged
+- app listing detail unchanged
+- no push/service worker changes
+
+==================================================
+11. Report back
+==================================================
+
+Report:
+- files changed
+- final iframe snippet
+- visual changes made
+- how displayTitle removes house numbers
+- any limitations if source data lacks street-level fields
+- confirmation app/emails/push/SW unchanged

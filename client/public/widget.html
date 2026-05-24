@@ -6,256 +6,269 @@
 <title>HousAlert – Latest Rentals</title>
 <style>
   :root {
-    --ha-accent: #1a56db;
-    --ha-accent-hover: #1e429f;
-    --ha-bg: #ffffff;
-    --ha-surface: #f8fafc;
-    --ha-border: #e2e8f0;
-    --ha-text: #0f172a;
-    --ha-muted: #64748b;
-    --ha-badge: #eff6ff;
-    --ha-badge-text: #1e40af;
-    --ha-radius: 14px;
-    --ha-card-w: 240px;
-    --ha-shadow: 0 1px 4px rgba(0,0,0,.07), 0 4px 16px rgba(0,0,0,.04);
+    --ha-accent:       #1a56db;
+    --ha-bg:           #ffffff;
+    --ha-surface:      #ffffff;
+    --ha-border:       #e2e8f0;
+    --ha-text:         #0f172a;
+    --ha-muted:        #64748b;
+    --ha-card-shadow:  0 1px 3px rgba(0,0,0,.08), 0 6px 20px rgba(0,0,0,.06);
+    --ha-card-w:       200px;
+    --ha-img-h:        150px;
+    --ha-radius:       16px;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  html, body {
+    background: transparent;
+    overflow-x: hidden;
+  }
+
   #ha-widget {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-size: 15px;
     color: var(--ha-text);
-    background: var(--ha-bg);
-    border-radius: var(--ha-radius);
-    border: 1px solid var(--ha-border);
-    padding: 24px 20px 20px;
-    max-width: 900px;
-    margin: 0 auto;
-    overflow: hidden;
+    background: transparent;
+    padding: 0 0 20px;
+    width: 100%;
   }
 
-  .ha-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
-  }
+  /* ── Heading ─────────────────────────────────────────── */
 
   .ha-headline {
-    flex: 1;
-    min-width: 180px;
-  }
-
-  .ha-eyebrow {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: .06em;
+    font-size: clamp(20px, 2.4vw, 30px);
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -.01em;
     text-transform: uppercase;
-    color: var(--ha-accent);
-    margin-bottom: 4px;
-  }
-
-  .ha-count-line {
-    font-size: 22px;
-    font-weight: 700;
-    line-height: 1.2;
     color: var(--ha-text);
+    margin-bottom: 20px;
+    display: block;
   }
 
-  .ha-count-line .ha-num {
+  .ha-num {
     color: var(--ha-accent);
+    display: inline;
+  }
+
+  /* Inline city select — styled to blend into the heading */
+  .ha-city-select-wrap {
     display: inline-block;
-    min-width: 28px;
-  }
-
-  .ha-select-wrap {
     position: relative;
-    flex-shrink: 0;
+    vertical-align: baseline;
+    margin-left: 4px;
   }
 
-  .ha-select-wrap select {
+  .ha-city-select-wrap select {
     appearance: none;
     -webkit-appearance: none;
-    background: var(--ha-surface);
-    border: 1.5px solid var(--ha-border);
-    border-radius: 8px;
-    padding: 9px 36px 9px 14px;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--ha-text);
+    background: transparent;
+    border: none;
+    border-bottom: 2.5px solid var(--ha-accent);
+    border-radius: 0;
+    padding: 0 28px 2px 0;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    color: var(--ha-accent);
     cursor: pointer;
     outline: none;
-    transition: border-color .15s;
+    line-height: inherit;
   }
 
-  .ha-select-wrap select:hover,
-  .ha-select-wrap select:focus {
-    border-color: var(--ha-accent);
-  }
-
-  .ha-select-wrap::after {
+  .ha-city-select-wrap::after {
     content: "";
     position: absolute;
-    right: 12px;
+    right: 4px;
     top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 5px solid var(--ha-muted);
+    transform: translateY(-60%);
+    width: 0; height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 7px solid var(--ha-accent);
     pointer-events: none;
   }
 
-  .ha-scroll-container {
-    position: relative;
-  }
+  /* ── Scroll strip ─────────────────────────────────────── */
 
   .ha-cards {
     display: flex;
     gap: 14px;
     overflow-x: auto;
-    padding-bottom: 8px;
+    padding-bottom: 12px;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-    scrollbar-color: var(--ha-border) transparent;
+    scrollbar-width: none;
   }
 
-  .ha-cards::-webkit-scrollbar {
-    height: 4px;
-  }
-  .ha-cards::-webkit-scrollbar-track { background: transparent; }
-  .ha-cards::-webkit-scrollbar-thumb {
-    background: var(--ha-border);
-    border-radius: 2px;
-  }
+  .ha-cards::-webkit-scrollbar { display: none; }
+
+  /* ── Card ────────────────────────────────────────────── */
 
   .ha-card {
     flex: 0 0 var(--ha-card-w);
     scroll-snap-align: start;
     background: var(--ha-surface);
-    border: 1px solid var(--ha-border);
-    border-radius: 12px;
+    border-radius: var(--ha-radius);
     overflow: hidden;
-    box-shadow: var(--ha-shadow);
+    box-shadow: var(--ha-card-shadow);
+    border: 1px solid var(--ha-border);
     text-decoration: none;
     color: inherit;
     display: flex;
     flex-direction: column;
-    transition: transform .15s, box-shadow .15s;
+    transition: transform .18s ease, box-shadow .18s ease;
   }
 
   .ha-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,.1), 0 8px 28px rgba(0,0,0,.06);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0,0,0,.10), 0 12px 32px rgba(0,0,0,.09);
   }
 
-  .ha-card-img {
+  /* Image area */
+  .ha-card-img-wrap {
+    position: relative;
     width: 100%;
-    height: 144px;
-    object-fit: cover;
-    background: var(--ha-border);
-    display: block;
+    height: var(--ha-img-h);
     flex-shrink: 0;
+    overflow: hidden;
+    background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);
   }
 
-  .ha-card-img-placeholder {
-    width: 100%;
-    height: 144px;
-    background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);
+  .ha-card-img-wrap .ha-img-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transition: transform .35s ease;
+  }
+
+  .ha-card:hover .ha-img-bg {
+    transform: scale(1.04);
+  }
+
+  .ha-card-img-wrap .ha-img-placeholder {
+    position: absolute;
+    inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .ha-card-img-placeholder svg {
     opacity: .25;
   }
 
+  /* Heart badge top-right */
+  .ha-heart {
+    position: absolute;
+    top: 9px;
+    right: 9px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.88);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    box-shadow: 0 1px 4px rgba(0,0,0,.12);
+  }
+
+  .ha-heart svg { display: block; }
+
+  /* Card body */
   .ha-card-body {
-    padding: 12px;
+    padding: 12px 12px 14px;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 7px;
     flex: 1;
   }
 
-  .ha-card-price {
-    font-size: 17px;
+  .ha-card-title {
+    font-size: 13.5px;
     font-weight: 700;
+    line-height: 1.3;
     color: var(--ha-text);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
-
-  .ha-card-price .ha-eur { font-weight: 400; font-size: 13px; color: var(--ha-muted); }
 
   .ha-card-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-
-  .ha-pill {
     font-size: 11.5px;
-    font-weight: 500;
-    padding: 3px 8px;
-    border-radius: 20px;
-    background: var(--ha-badge);
-    color: var(--ha-badge-text);
-    white-space: nowrap;
-  }
-
-  .ha-card-location {
-    font-size: 12.5px;
     color: var(--ha-muted);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  /* Pills row */
+  .ha-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
     margin-top: auto;
   }
 
-  .ha-card-age {
+  .ha-pill {
     font-size: 11px;
-    color: var(--ha-muted);
-    margin-top: 2px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
   }
+
+  .ha-pill-loc {
+    background: #f1f5f9;
+    color: #475569;
+  }
+
+  .ha-pill-price {
+    background: #eff6ff;
+    color: #1e40af;
+  }
+
+  .ha-pill-bed {
+    background: #f0fdf4;
+    color: #166534;
+  }
+
+  /* ── Empty / error ────────────────────────────────────── */
 
   .ha-empty {
+    padding: 40px 0;
     text-align: center;
-    padding: 32px 16px;
     color: var(--ha-muted);
     font-size: 14px;
+    width: 100%;
   }
 
-  .ha-loading {
-    display: flex;
-    gap: 14px;
-    overflow: hidden;
-  }
+  /* ── Skeleton ─────────────────────────────────────────── */
 
   .ha-skeleton-card {
     flex: 0 0 var(--ha-card-w);
-    border-radius: 12px;
+    border-radius: var(--ha-radius);
     overflow: hidden;
     border: 1px solid var(--ha-border);
+    background: #fff;
+    box-shadow: var(--ha-card-shadow);
   }
 
   .ha-skeleton-img {
     width: 100%;
-    height: 144px;
+    height: var(--ha-img-h);
     background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
     background-size: 200% 100%;
     animation: ha-shimmer 1.4s ease-in-out infinite;
   }
 
-  .ha-skeleton-body { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .ha-skeleton-body { padding: 12px; display: flex; flex-direction: column; gap: 9px; }
 
   .ha-skeleton-line {
-    height: 13px;
+    height: 12px;
     border-radius: 6px;
     background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
     background-size: 200% 100%;
@@ -267,60 +280,27 @@
     100% { background-position: -200% 0; }
   }
 
-  .ha-footer {
-    margin-top: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
+  /* ── Mobile ───────────────────────────────────────────── */
 
-  .ha-powered {
-    font-size: 11.5px;
-    color: var(--ha-muted);
-  }
-
-  .ha-powered a {
-    color: var(--ha-accent);
-    text-decoration: none;
-    font-weight: 500;
-  }
-
-  .ha-cta {
-    display: inline-block;
-    background: var(--ha-accent);
-    color: #fff;
-    font-size: 13px;
-    font-weight: 600;
-    padding: 8px 18px;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: background .15s;
-  }
-
-  .ha-cta:hover { background: var(--ha-accent-hover); }
-
-  @media (max-width: 480px) {
-    #ha-widget { padding: 16px 14px 16px; border-radius: 12px; }
-    .ha-count-line { font-size: 18px; }
-    :root { --ha-card-w: 200px; }
-    .ha-card-img, .ha-card-img-placeholder { height: 120px; }
+  @media (max-width: 540px) {
+    :root {
+      --ha-card-w: 82vw;
+      --ha-img-h: 140px;
+    }
+    .ha-headline {
+      font-size: clamp(18px, 5.5vw, 24px);
+    }
   }
 </style>
 </head>
 <body>
 
 <div id="ha-widget">
-  <div class="ha-header">
-    <div class="ha-headline">
-      <div class="ha-eyebrow">Live rental listings</div>
-      <div class="ha-count-line" id="ha-count-line">
-        Over the last 24h, HousAlert found<br>
-        <span class="ha-num" id="ha-count">—</span> rental homes in <span id="ha-city-name">Dublin</span>
-      </div>
-    </div>
-    <div class="ha-select-wrap">
+
+  <div class="ha-headline">
+    OVER THE LAST 24H, HOUSALERT FOUND<br>
+    <span class="ha-num" id="ha-count">—</span> RENTAL HOMES IN
+    <span class="ha-city-select-wrap">
       <select id="ha-city-select" aria-label="Select city">
         <option value="Dublin">Dublin</option>
         <option value="Cork">Cork</option>
@@ -333,24 +313,13 @@
         <option value="Bray">Bray</option>
         <option value="Kilkenny">Kilkenny</option>
       </select>
-    </div>
+    </span>
   </div>
 
-  <div class="ha-scroll-container">
-    <div class="ha-cards" id="ha-cards">
-      <div class="ha-loading" id="ha-loading">
-        <div class="ha-skeleton-card"><div class="ha-skeleton-img"></div><div class="ha-skeleton-body"><div class="ha-skeleton-line" style="width:60%"></div><div class="ha-skeleton-line" style="width:80%"></div><div class="ha-skeleton-line" style="width:50%"></div></div></div>
-        <div class="ha-skeleton-card"><div class="ha-skeleton-img"></div><div class="ha-skeleton-body"><div class="ha-skeleton-line" style="width:55%"></div><div class="ha-skeleton-line" style="width:75%"></div><div class="ha-skeleton-line" style="width:45%"></div></div></div>
-        <div class="ha-skeleton-card"><div class="ha-skeleton-img"></div><div class="ha-skeleton-body"><div class="ha-skeleton-line" style="width:65%"></div><div class="ha-skeleton-line" style="width:70%"></div><div class="ha-skeleton-line" style="width:55%"></div></div></div>
-        <div class="ha-skeleton-card"><div class="ha-skeleton-img"></div><div class="ha-skeleton-body"><div class="ha-skeleton-line" style="width:50%"></div><div class="ha-skeleton-line" style="width:80%"></div><div class="ha-skeleton-line" style="width:40%"></div></div></div>
-      </div>
-    </div>
+  <div class="ha-cards" id="ha-cards">
+    <!-- skeleton injected by JS on init -->
   </div>
 
-  <div class="ha-footer">
-    <div class="ha-powered">Powered by <a href="https://app.housalert.com" target="_blank" rel="noopener">HousAlert</a></div>
-    <a class="ha-cta" href="https://app.housalert.com" target="_blank" rel="noopener">Get free alerts →</a>
-  </div>
 </div>
 
 <script>
@@ -362,84 +331,109 @@
         : "https://app.housalert.com");
 
   var citySelect = document.getElementById("ha-city-select");
-  var cardsEl = document.getElementById("ha-cards");
-  var loadingEl = document.getElementById("ha-loading");
-  var countEl = document.getElementById("ha-count");
-  var cityNameEl = document.getElementById("ha-city-name");
+  var cardsEl   = document.getElementById("ha-cards");
+  var countEl   = document.getElementById("ha-count");
+
+  var SOURCE_LABELS = {
+    raycooke:    "Ray Cooke",
+    propertypal: "PropertyPal",
+    sherryfitz:  "Sherry FitzGerald",
+    lisney:      "Lisney",
+    owenreilly:  "Owen Reilly",
+    cityhomes:   "CityHomes",
+    daft:        "Daft",
+    propertyie:  "Property.ie",
+    myhome:      "MyHome",
+    rentie:      "Rent.ie",
+    letie:       "Let.ie",
+  };
+
+  function sourceLabel(s) {
+    if (!s) return "";
+    return SOURCE_LABELS[s] || s.replace(/[-_]/g, " ").replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+  }
 
   function timeAgo(iso) {
     var diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
-    if (diff < 60) return "just now";
-    if (diff < 3600) return Math.floor(diff / 60) + "m ago";
+    if (diff < 60)    return "just now";
+    if (diff < 3600)  return Math.floor(diff / 60) + "m ago";
     if (diff < 86400) return Math.floor(diff / 3600) + "h ago";
     return Math.floor(diff / 86400) + "d ago";
+  }
+
+  function esc(str) {
+    return String(str)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+  }
+
+  var HEART_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+
+  var HOUSE_SVG = '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>';
+
+  function skeletons(n) {
+    var s = "";
+    for (var i = 0; i < n; i++) {
+      s += '<div class="ha-skeleton-card">'
+        + '<div class="ha-skeleton-img"></div>'
+        + '<div class="ha-skeleton-body">'
+        + '<div class="ha-skeleton-line" style="width:70%"></div>'
+        + '<div class="ha-skeleton-line" style="width:50%"></div>'
+        + '<div class="ha-skeleton-line" style="width:60%"></div>'
+        + '</div></div>';
+    }
+    return s;
   }
 
   function renderCards(listings, appBase) {
     if (!listings || listings.length === 0) {
       return '<div class="ha-empty">No listings found for this city yet — check back soon!</div>';
     }
-    return listings.map(function (l) {
-      var price = (l.price && l.price > 0)
-        ? "\u20ac" + l.price.toLocaleString("en-IE") + "<span class='ha-eur'>/mo</span>"
-        : "POA";
-      var pills = [];
-      if (l.bedrooms && l.bedrooms > 0) pills.push(l.bedrooms + (l.bedrooms === 1 ? " bed" : " beds"));
-      if (l.size_m2 && l.size_m2 > 0) pills.push(l.size_m2 + " m\u00B2");
-      var pillsHtml = pills.map(function (p) { return "<span class='ha-pill'>" + p + "</span>"; }).join("");
-      var imgStyle = l.imageUrl
-        ? "background-image:url(" + escHtml(l.imageUrl) + ");background-size:cover;background-position:center"
-        : "";
-      var imgContent = l.imageUrl ? "" : '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>';
+
+    return listings.map(function(l) {
+      var cardTitle = (l.displayTitle && l.displayTitle !== l.city) ? l.displayTitle : (l.title || l.city);
+      var imgStyle  = l.imageUrl ? "background-image:url(" + l.imageUrl + ")" : "";
+      var metaLine  = timeAgo(l.foundAt) + (l.source ? " &middot; " + esc(sourceLabel(l.source)) : "");
+
+      var pills = "";
+      if (l.location) pills += "<span class='ha-pill ha-pill-loc'>" + esc(l.location) + "</span>";
+      if (l.price && l.price > 0) pills += "<span class='ha-pill ha-pill-price'>\u20ac" + l.price.toLocaleString("en-IE") + "/mo</span>";
+      if (l.bedrooms && l.bedrooms > 0) pills += "<span class='ha-pill ha-pill-bed'>" + l.bedrooms + (l.bedrooms === 1 ? " bed" : " beds") + "</span>";
+
       var href = l.listingUrl || (appBase + "/listing/" + l.id);
-      return [
-        "<a class='ha-card' href='" + escHtml(href) + "' target='_blank' rel='noopener'>",
-        "<div class='ha-card-img-placeholder' style='" + imgStyle + "'>",
-        imgContent,
-        "</div>",
-        "<div class='ha-card-body'>",
-        "<div class='ha-card-price'>" + price + "</div>",
-        pillsHtml ? "<div class='ha-card-meta'>" + pillsHtml + "</div>" : "",
-        "<div class='ha-card-location'>" + escHtml(l.location || "") + "</div>",
-        "<div class='ha-card-age'>" + timeAgo(l.foundAt) + "</div>",
-        "</div>",
-        "</a>"
-      ].join("");
+
+      return "<a class='ha-card' href='" + esc(href) + "' target='_blank' rel='noopener'>"
+        + "<div class='ha-card-img-wrap'>"
+        + (imgStyle ? "<div class='ha-img-bg' style='" + imgStyle + "'></div>" : "")
+        + "<div class='ha-img-placeholder'>" + HOUSE_SVG + "</div>"
+        + "<div class='ha-heart'>" + HEART_SVG + "</div>"
+        + "</div>"
+        + "<div class='ha-card-body'>"
+        + "<div class='ha-card-title'>" + esc(cardTitle) + "</div>"
+        + "<div class='ha-card-meta'>" + metaLine + "</div>"
+        + (pills ? "<div class='ha-pills'>" + pills + "</div>" : "")
+        + "</div>"
+        + "</a>";
     }).join("");
   }
 
-  function escHtml(str) {
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#39;");
-  }
-
   function load(city) {
-    cardsEl.innerHTML = '<div class="ha-loading">' + [1,2,3,4].map(function() {
-      return '<div class="ha-skeleton-card"><div class="ha-skeleton-img"></div><div class="ha-skeleton-body"><div class="ha-skeleton-line" style="width:60%"></div><div class="ha-skeleton-line" style="width:80%"></div><div class="ha-skeleton-line" style="width:50%"></div></div></div>';
-    }).join("") + "</div>";
+    cardsEl.innerHTML = skeletons(6);
     countEl.textContent = "—";
-    cityNameEl.textContent = city;
 
     fetch(API_BASE + "/api/public/latest-listings?city=" + encodeURIComponent(city) + "&limit=10")
-      .then(function (r) { return r.json(); })
-      .then(function (data) {
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
         countEl.textContent = data.countLast24h != null ? data.countLast24h : "?";
-        cityNameEl.textContent = data.city || city;
         cardsEl.innerHTML = renderCards(data.listings, API_BASE);
       })
-      .catch(function () {
+      .catch(function() {
         countEl.textContent = "?";
-        cardsEl.innerHTML = '<div class="ha-empty">Unable to load listings right now. Please try again shortly.</div>';
+        cardsEl.innerHTML = '<div class="ha-empty">Unable to load listings right now.</div>';
       });
   }
 
-  citySelect.addEventListener("change", function () {
-    load(this.value);
-  });
+  citySelect.addEventListener("change", function() { load(this.value); });
 
   load("Dublin");
 })();

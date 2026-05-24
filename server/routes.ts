@@ -1858,9 +1858,24 @@ export async function registerRoutes(
 
       if (listingsRes.error) return res.status(500).json({ error: listingsRes.error.message });
 
+      // Widget-only title: strip leading house numbers from raw source title.
+      // Does NOT affect the app or emails — only the public widget API response.
+      function widgetDisplayTitle(rawTitle: string | null, city: string): string {
+        if (!rawTitle) return city;
+        let t = rawTitle.trim();
+        // Strip "Apartment 68 / Apt. 4B / Unit 2 / Flat 3 / No. 5 / Studio 1" prefix
+        t = t.replace(/^(apartment|apt\.?|unit|flat|no\.?|studio)\s+[\w-]+\s+/i, "");
+        // Strip leading house number like "138 ", "18A ", "12-14 "
+        t = t.replace(/^\d+[a-zA-Z]?(?:-\d+[a-zA-Z]?)?\s+/, "");
+        // Strip trailing ", Dublin 8" / ", Cork" / ", D08" etc.
+        t = t.replace(/,\s*(D\d{2}[A-Z\d]*|Dublin\s*\d*|Cork|Galway|Limerick|Waterford|Drogheda|Dundalk|Swords|Bray|Kilkenny)\s*$/i, "").trim();
+        return t || city;
+      }
+
       const listings = (listingsRes.data ?? []).map((l: any) => ({
         id: l.id,
         title: getDisplayTitle(l, false),
+        displayTitle: widgetDisplayTitle(l.title, l.city),
         price: l.price > 0 ? l.price : null,
         bedrooms: l.bedrooms > 0 ? l.bedrooms : null,
         size_m2: l.size_m2 > 0 ? l.size_m2 : null,
@@ -9322,10 +9337,10 @@ export async function registerRoutes(
            COUNT(*) AS runs,
            COUNT(*) FILTER (WHERE status = 'success') AS success_runs,
            COUNT(*) FILTER (WHERE status = 'failed') AS failed_runs,
-           COUNT(*) FILTER (WHERE duration_sec < 30) AS fast_lane_runs,
-           COUNT(*) FILTER (WHERE duration_sec >= 30) AS deep_scan_runs,
-           ROUND(AVG(duration_sec) FILTER (WHERE duration_sec >= 30))::int AS avg_deep_scan_sec,
-           ROUND(AVG(duration_sec) FILTER (WHERE duration_sec < 30))::int AS avg_fast_lane_sec,
+           COUNT(*) FILTER (WHERE fast_lane = TRUE) AS fast_lane_runs,
+           COUNT(*) FILTER (WHERE fast_lane IS NOT TRUE) AS deep_scan_runs,
+           ROUND(AVG(duration_sec) FILTER (WHERE fast_lane IS NOT TRUE))::int AS avg_deep_scan_sec,
+           ROUND(AVG(duration_sec) FILTER (WHERE fast_lane = TRUE))::int AS avg_fast_lane_sec,
            SUM(total_found) AS total_found,
            SUM(total_inserted) AS total_inserted,
            SUM(total_matches) AS total_matches,
