@@ -55,6 +55,7 @@ VITE_USE_MAPBOX_MAPS = "true"
 VITE_USE_MAPBOX_GEOCODER = "false"
 RESEND_FROM_EMAIL = "alerts@housalert.com"
 RESEND_REPLY_TO = "no-reply@housalert.com"
+IRELAND_CITIES = "Dublin,Cork,Galway,Limerick,Waterford,Drogheda,Dundalk,Swords,Bray,Kilkenny"
 
 [postMerge]
 path = "scripts/post-merge.sh"
