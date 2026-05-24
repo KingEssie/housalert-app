@@ -1,0 +1,184 @@
+Build a lightweight embeddable “Latest Rentals by City” widget for the Duda homepage.
+
+Context:
+The public marketing website runs on Duda.
+HousAlert backend/API runs separately on Replit.
+
+Goal:
+Create a lightweight public API + embeddable widget that can be inserted into Duda via HTML/embed block.
+
+The widget should show:
+- a city dropdown
+- latest rental listings for that city
+- count of rentals found in the last 24h
+- horizontally scrollable cards
+
+IMPORTANT:
+Do NOT build this inside the main app frontend.
+This should work as:
+- standalone embeddable widget
+- powered by HousAlert API
+- easy to paste into Duda HTML/embed blocks
+
+Do NOT touch:
+- service worker
+- push notifications
+- VAPID/FCM
+- Stripe/paywall
+- matching pipeline
+- Germany infrastructure
+- ingestion scheduler
+
+==================================================
+1. Public listings API
+==================================================
+
+Create or reuse a PUBLIC read-only endpoint:
+
+Example:
+GET /api/public/latest-listings?city=Dublin&limit=10
+
+Requirements:
+- city param
+- limit param
+- default city = Dublin
+- only active/public listings
+- newest first
+- lightweight response
+
+Return:
+- city
+- countLast24h
+- listings:
+  - id
+  - title
+  - price
+  - bedrooms
+  - size if available
+  - location
+  - imageUrl
+  - source
+  - foundAt
+  - internal listing/apply URL if safe
+
+Do NOT expose:
+- private user data
+- admin fields
+- internal tracing/debug info
+
+==================================================
+2. Embeddable widget
+==================================================
+
+Create:
+- standalone HTML
+- lightweight CSS
+- lightweight vanilla JS
+
+No React app mount required unless already trivial.
+
+The widget should:
+- render via fetch() from the public API
+- work inside Duda custom HTML/embed block
+- support mobile
+- support horizontal scrolling cards
+
+==================================================
+3. Widget behavior
+==================================================
+
+Top section:
+"Over the last 24 hours, HousAlert found"
+"[X] rental homes in [City]"
+
+Dropdown cities:
+- Dublin
+- Cork
+- Galway
+- Limerick
+- Waterford
+- Drogheda
+- Dundalk
+- Swords
+- Bray
+- Kilkenny
+
+Changing city:
+- refetches listings
+- updates count
+- rerenders cards
+
+==================================================
+4. Listing cards
+==================================================
+
+Each card should show:
+- image
+- price
+- bedrooms
+- size if available
+- short location/title
+
+Preferred click behavior:
+- internal HousAlert listing/apply page
+NOT direct source URLs.
+
+==================================================
+5. Styling
+==================================================
+
+Modern/minimal style.
+Do NOT copy Rentbird exactly.
+
+Should feel:
+- trustworthy
+- premium
+- fast
+- mobile-first
+
+==================================================
+6. Duda compatibility
+==================================================
+
+IMPORTANT:
+Output should be easy to paste into:
+Duda → HTML Embed block
+
+Prefer:
+- single JS bundle or snippet
+- minimal setup
+- no build tooling required in Duda
+
+==================================================
+7. Performance
+==================================================
+
+Keep lightweight:
+- limit cards
+- lazy-load images
+- small payloads
+- no huge libraries
+
+==================================================
+8. Verification
+==================================================
+
+Verify:
+- widget works standalone
+- widget works via embed
+- city switching works
+- empty states work
+- mobile works
+- no push/SW changes
+
+==================================================
+9. Final report
+==================================================
+
+Report:
+- endpoint created
+- widget files created
+- embed instructions for Duda
+- sample embed snippet
+- sample API response
+- how countLast24h is calculated

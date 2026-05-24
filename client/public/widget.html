@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HousAlert – Latest Rentals</title>
+<style>
+  :root {
+    --ha-accent: #1a56db;
+    --ha-accent-hover: #1e429f;
+    --ha-bg: #ffffff;
+    --ha-surface: #f8fafc;
+    --ha-border: #e2e8f0;
+    --ha-text: #0f172a;
+    --ha-muted: #64748b;
+    --ha-badge: #eff6ff;
+    --ha-badge-text: #1e40af;
+    --ha-radius: 14px;
+    --ha-card-w: 240px;
+    --ha-shadow: 0 1px 4px rgba(0,0,0,.07), 0 4px 16px rgba(0,0,0,.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  #ha-widget {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    color: var(--ha-text);
+    background: var(--ha-bg);
+    border-radius: var(--ha-radius);
+    border: 1px solid var(--ha-border);
+    padding: 24px 20px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+
+  .ha-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .ha-headline {
+    flex: 1;
+    min-width: 180px;
+  }
+
+  .ha-eyebrow {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ha-accent);
+    margin-bottom: 4px;
+  }
+
+  .ha-count-line {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--ha-text);
+  }
+
+  .ha-count-line .ha-num {
+    color: var(--ha-accent);
+    display: inline-block;
+    min-width: 28px;
+  }
+
+  .ha-select-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .ha-select-wrap select {
+    appearance: none;
+    -webkit-appearance: none;
+    background: var(--ha-surface);
+    border: 1.5px solid var(--ha-border);
+    border-radius: 8px;
+    padding: 9px 36px 9px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ha-text);
+    cursor: pointer;
+    outline: none;
+    transition: border-color .15s;
+  }
+
+  .ha-select-wrap select:hover,
+  .ha-select-wrap select:focus {
+    border-color: var(--ha-accent);
+  }
+
+  .ha-select-wrap::after {
+    content: "";
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid var(--ha-muted);
+    pointer-events: none;
+  }
+
+  .ha-scroll-container {
+    position: relative;
+  }
+
+  .ha-cards {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--ha-border) transparent;
+  }
+
+  .ha-cards::-webkit-scrollbar {
+    height: 4px;
+  }
+  .ha-cards::-webkit-scrollbar-track { background: transparent; }
+  .ha-cards::-webkit-scrollbar-thumb {
+    background: var(--ha-border);
+    border-radius: 2px;
+  }
+
+  .ha-card {
+    flex: 0 0 var(--ha-card-w);
+    scroll-snap-align: start;
+    background: var(--ha-surface);
+    border: 1px solid var(--ha-border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--ha-shadow);
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: transform .15s, box-shadow .15s;
+  }
+
+  .ha-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,.1), 0 8px 28px rgba(0,0,0,.06);
+  }
+
+  .ha-card-img {
+    width: 100%;
+    height: 144px;
+    object-fit: cover;
+    background: var(--ha-border);
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .ha-card-img-placeholder {
+    width: 100%;
+    height: 144px;
+    background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .ha-card-img-placeholder svg {
+    opacity: .25;
+  }
+
+  .ha-card-body {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .ha-card-price {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ha-text);
+  }
+
+  .ha-card-price .ha-eur { font-weight: 400; font-size: 13px; color: var(--ha-muted); }
+
+  .ha-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .ha-pill {
+    font-size: 11.5px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: var(--ha-badge);
+    color: var(--ha-badge-text);
+    white-space: nowrap;
+  }
+
+  .ha-card-location {
+    font-size: 12.5px;
+    color: var(--ha-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: auto;
+  }
+
+  .ha-card-age {
+    font-size: 11px;
+    color: var(--ha-muted);
+    margin-top: 2px;
+  }
+
+  .ha-empty {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--ha-muted);
+    font-size: 14px;
+  }
+
+  .ha-loading {
+    display: flex;
+    gap: 14px;
+    overflow: hidden;
+  }
+
+  .ha-skeleton-card {
+    flex: 0 0 var(--ha-card-w);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--ha-border);
+  }
+
+  .ha-skeleton-img {
+    width: 100%;
+    height: 144px;
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: ha-shimmer 1.4s ease-in-out infinite;
+  }
+
+  .ha-skeleton-body { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+
+  .ha-skeleton-line {
+    height: 13px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: ha-shimmer 1.4s ease-in-out infinite;
+  }
+
+  @keyframes ha-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .ha-footer {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .ha-powered {
+    font-size: 11.5px;
+    color: var(--ha-muted);
+  }
+
+  .ha-powered a {
+    color: var(--ha-accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .ha-cta {
+    display: inline-block;
+    background: var(--ha-accent);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background .15s;
+  }
+
+  .ha-cta:hover { background: var(--ha-accent-hover); }
+
+  @media (max-width: 480px) {
+    #ha-widget { padding: 16px 14px 16px; border-radius: 12px; }
+    .ha-count-line { font-size: 18px; }
+    :root { --ha-card-w: 200px; }
+    .ha-card-img, .ha-card-img-placeholder { height: 120px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="ha-widget">
+  <div class="ha-header">
+    <div class="ha-headline">
+      <div class="ha-eyebrow">Live rental listings</div>
+      <div class="ha-count-line" id="ha-count-line">
+        Over the last 24h, HousAlert found<br>
+        <span class="ha-num" id="ha-count">—</span> rental homes in <span id="ha-city-name">Dublin</span>
+      </div>
+    </div>
+    <div class="ha-select-wrap">
+      <select id="ha-city-select" aria-label="Select city">
+        <option value="Dublin">Dublin</option>
+        <option value="Cork">Cork</option>
+        <option value="Galway">Galway</option>
+        <option value="Limerick">Limerick</option>
+        <option value="Waterford">Waterford</option>
+        <option value="Drogheda">Drogheda</option>
+        <option value="Dundalk">Dundalk</option>
+        <option value="Swords">Swords</option>
+        <option value="Bray">Bray</option>
+        <option value="Kilkenny">Kilkenny</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="ha-scroll-container">
+    <div class="ha-cards" id="ha-cards">
+      <div class="ha-loading" id="ha-loading">
+        <div class="ha-skeleton-card"><div class="ha-skeleton-img"></div><div class="ha-skeleton-body"><div class="ha-skeleton-line" style="width:60%"></div><div class="ha-skeleton-line" style="width:80%"></div><div class="ha-skeleton-line" style="width:50%"></div></div></div>
+        <div class="ha-skeleton-card"><div class="ha-skeleton-img"></div><div class="ha-skeleton-body"><div class="ha-skeleton-line" style="width:55%"></div><div class="ha-skeleton-line" style="width:75%"></div><div class="ha-skeleton-line" style="width:45%"></div></div></div>
+        <div class="ha-skeleton-card"><div class="ha-skeleton-img"></div><div class="ha-skeleton-body"><div class="ha-skeleton-line" style="width:65%"></div><div class="ha-skeleton-line" style="width:70%"></div><div class="ha-skeleton-line" style="width:55%"></div></div></div>
+        <div class="ha-skeleton-card"><div class="ha-skeleton-img"></div><div class="ha-skeleton-body"><div class="ha-skeleton-line" style="width:50%"></div><div class="ha-skeleton-line" style="width:80%"></div><div class="ha-skeleton-line" style="width:40%"></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ha-footer">
+    <div class="ha-powered">Powered by <a href="https://app.housalert.com" target="_blank" rel="noopener">HousAlert</a></div>
+    <a class="ha-cta" href="https://app.housalert.com" target="_blank" rel="noopener">Get free alerts →</a>
+  </div>
+</div>
+
+<script>
+(function () {
+  var widgetEl = document.getElementById("ha-widget");
+  var API_BASE = (widgetEl && widgetEl.getAttribute("data-api"))
+    || (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+        ? window.location.origin
+        : "https://app.housalert.com");
+
+  var citySelect = document.getElementById("ha-city-select");
+  var cardsEl = document.getElementById("ha-cards");
+  var loadingEl = document.getElementById("ha-loading");
+  var countEl = document.getElementById("ha-count");
+  var cityNameEl = document.getElementById("ha-city-name");
+
+  function timeAgo(iso) {
+    var diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+    if (diff < 60) return "just now";
+    if (diff < 3600) return Math.floor(diff / 60) + "m ago";
+    if (diff < 86400) return Math.floor(diff / 3600) + "h ago";
+    return Math.floor(diff / 86400) + "d ago";
+  }
+
+  function renderCards(listings, appBase) {
+    if (!listings || listings.length === 0) {
+      return '<div class="ha-empty">No listings found for this city yet — check back soon!</div>';
+    }
+    return listings.map(function (l) {
+      var price = (l.price && l.price > 0)
+        ? "\u20ac" + l.price.toLocaleString("en-IE") + "<span class='ha-eur'>/mo</span>"
+        : "POA";
+      var pills = [];
+      if (l.bedrooms && l.bedrooms > 0) pills.push(l.bedrooms + (l.bedrooms === 1 ? " bed" : " beds"));
+      if (l.size_m2 && l.size_m2 > 0) pills.push(l.size_m2 + " m\u00B2");
+      var pillsHtml = pills.map(function (p) { return "<span class='ha-pill'>" + p + "</span>"; }).join("");
+      var imgStyle = l.imageUrl
+        ? "background-image:url(" + escHtml(l.imageUrl) + ");background-size:cover;background-position:center"
+        : "";
+      var imgContent = l.imageUrl ? "" : '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>';
+      var href = l.listingUrl || (appBase + "/listing/" + l.id);
+      return [
+        "<a class='ha-card' href='" + escHtml(href) + "' target='_blank' rel='noopener'>",
+        "<div class='ha-card-img-placeholder' style='" + imgStyle + "'>",
+        imgContent,
+        "</div>",
+        "<div class='ha-card-body'>",
+        "<div class='ha-card-price'>" + price + "</div>",
+        pillsHtml ? "<div class='ha-card-meta'>" + pillsHtml + "</div>" : "",
+        "<div class='ha-card-location'>" + escHtml(l.location || "") + "</div>",
+        "<div class='ha-card-age'>" + timeAgo(l.foundAt) + "</div>",
+        "</div>",
+        "</a>"
+      ].join("");
+    }).join("");
+  }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function load(city) {
+    cardsEl.innerHTML = '<div class="ha-loading">' + [1,2,3,4].map(function() {
+      return '<div class="ha-skeleton-card"><div class="ha-skeleton-img"></div><div class="ha-skeleton-body"><div class="ha-skeleton-line" style="width:60%"></div><div class="ha-skeleton-line" style="width:80%"></div><div class="ha-skeleton-line" style="width:50%"></div></div></div>';
+    }).join("") + "</div>";
+    countEl.textContent = "—";
+    cityNameEl.textContent = city;
+
+    fetch(API_BASE + "/api/public/latest-listings?city=" + encodeURIComponent(city) + "&limit=10")
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        countEl.textContent = data.countLast24h != null ? data.countLast24h : "?";
+        cityNameEl.textContent = data.city || city;
+        cardsEl.innerHTML = renderCards(data.listings, API_BASE);
+      })
+      .catch(function () {
+        countEl.textContent = "?";
+        cardsEl.innerHTML = '<div class="ha-empty">Unable to load listings right now. Please try again shortly.</div>';
+      });
+  }
+
+  citySelect.addEventListener("change", function () {
+    load(this.value);
+  });
+
+  load("Dublin");
+})();
+</script>
+
+</body>
+</html>
