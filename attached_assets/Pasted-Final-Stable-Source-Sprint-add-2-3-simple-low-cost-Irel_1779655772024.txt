@@ -1,0 +1,154 @@
+Final Stable Source Sprint — add 2–3 simple low-cost Ireland agency sources
+
+Context:
+HousAlert currently has 5 stable low-cost live Ireland sources:
+1. Daft.ie
+2. PropertyPal
+3. Lisney
+4. CityHomes
+5. SherryFitz
+
+Goal:
+Add 2–3 more stable agency sources, but ONLY if they meet these rules:
+- low maintenance
+- simple HTML
+- direct fetch
+- low cost
+- no JS rendering
+- no browser automation
+
+DO NOT touch:
+- service worker
+- push notifications
+- VAPID/FCM
+- Stripe/paywall
+- Germany infrastructure
+- matching architecture
+- notification traces
+- stable ingestion systems
+
+DO NOT add:
+- Playwright
+- Puppeteer
+- render=true
+- heavy dependencies
+- new scraper framework
+- large refactors
+
+==================================================
+PHASE 1 — Probe candidates
+==================================================
+
+Probe these candidates:
+
+- Owen Reilly
+- Allen & Jacobs
+- Ray Cooke
+- DNG rentals
+- Hooke & MacDonald
+- Savills rentals
+- Wyse rentals
+- Hunters Estate Agent rentals
+- Brock Delappe
+- Casey Kennedy
+- Be Lettings
+- Murphy Mullan
+
+For each candidate, report:
+- HTTP status
+- direct fetch works?
+- listing cards visible in raw HTML?
+- prices visible?
+- listing URLs visible?
+- rental/sale distinction clear?
+- anti-bot issues?
+- scrapeability score 1–5
+
+Reject immediately if:
+- JS rendering required
+- cookie/session wall
+- aggressive WAF
+- no prices in HTML
+- no stable listing URLs
+
+==================================================
+PHASE 2 — Select only 2–3 best sources
+==================================================
+
+Pick the strongest 2–3 only.
+
+Selection priorities:
+1. simple HTML
+2. direct fetch
+3. stable selectors
+4. Dublin rental relevance
+5. low maintenance
+
+==================================================
+PHASE 3 — Implement selected sources
+==================================================
+
+For each selected source, create:
+
+server/sources/ireland/<source>/
+
+Requirements:
+- Dublin/Ireland rentals only
+- normalized SourceListing output
+- stable externalId
+- title
+- price
+- location
+- absolute URL
+- imageUrl if available
+- bedrooms if available
+- coordinates if available
+
+Use existing patterns from:
+- Daft
+- PropertyPal
+- Lisney
+- CityHomes
+- SherryFitz
+
+==================================================
+PHASE 4 — Integrate
+==================================================
+
+Wire selected sources into:
+- irelandSources registry
+- Ireland scheduler
+- source health
+- ingestion logs
+- insertAndMatchListings
+
+Do not create any parallel system.
+
+==================================================
+PHASE 5 — Test
+==================================================
+
+For each implemented source:
+- HTTP status
+- raw candidates
+- normalized count
+- 1–2 sample listings
+
+Confirm:
+- no push/SW changes
+- disabled expensive sources remain disabled
+- existing 5 sources still active
+
+==================================================
+PHASE 6 — Report
+==================================================
+
+Report:
+- all candidates tested
+- scores
+- selected sources
+- rejected sources and why
+- files changed
+- listing counts
+- estimated total listings per cycle
+- whether we reached 7–8 stable sources
