@@ -11,4 +11,10 @@ export interface SourceListing {
   latitude?: number;
   longitude?: number;
   createdAt?: Date;
+  /**
+   * Optional city override.  When set by the fetcher (e.g. SherryFitz
+   * detecting city from URL), the ingester uses this value instead of
+   * the default city it was called with.
+   */
+  city?: string;
 }

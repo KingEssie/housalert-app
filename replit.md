@@ -21,6 +21,7 @@ A mobile-first rental alert application for the German market, allowing users to
 - `GOOGLE_PLACES_API_KEY`: Google Places API key (optional, falls back to Nominatim)
 - `ADMIN_EMAILS`: Comma-separated list of admin emails for portal access.
 - `APP_PUBLIC_BASE_URL`: Base URL for the application.
+- `IRELAND_CITIES`: Comma-separated cities to ingest for multi-city sources (PropertyPal, SherryFitz). Default: `Dublin,Cork,Galway,Limerick,Waterford`. Dublin is always included first regardless of this value.
 
 ## Stack
 

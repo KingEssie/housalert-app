@@ -1,0 +1,190 @@
+HousAlert — Top 10 Ireland Cities Expansion
+
+Context:
+HousAlert now has 7 stable low-cost Ireland sources:
+- Daft.ie
+- PropertyPal
+- Lisney
+- Owen Reilly
+- CityHomes
+- SherryFitz
+- Ray Cooke
+
+Current focus:
+Expand from Dublin-only to the Top 10 Ireland rental cities/areas.
+
+Goal:
+Support top Irish cities/areas in onboarding, search profiles, source queries, matching, and future SEO pages.
+
+IMPORTANT:
+Do NOT touch:
+- service worker
+- push notifications
+- VAPID/FCM
+- Stripe/paywall
+- notification traces
+- Germany dormant infrastructure
+- stable ingestion architecture
+
+Do NOT add:
+- new scraper framework
+- browser automation
+- render=true
+- heavy dependencies
+- large refactors
+
+==================================================
+1. Define Top 10 Ireland cities/areas
+==================================================
+
+Use this initial list unless the existing config already has a better one:
+
+1. Dublin
+2. Cork
+3. Galway
+4. Limerick
+5. Waterford
+6. Drogheda
+7. Dundalk
+8. Swords
+9. Bray
+10. Kilkenny
+
+Requirements:
+- Dublin remains default
+- Ireland remains default country
+- EUR remains currency
+- English remains language
+
+==================================================
+2. Update market config
+==================================================
+
+Update the central market/city config so the top 10 Ireland cities are available in:
+
+- onboarding
+- search profile creation
+- city selectors
+- city presets
+- admin/source filtering if applicable
+
+Do not show Germany cities when ENABLE_GERMANY=false.
+
+==================================================
+3. City aliases and normalization
+==================================================
+
+Add lightweight aliases where useful.
+
+Examples:
+- Dublin City → Dublin
+- Cork City → Cork
+- Galway City → Galway
+- Limerick City → Limerick
+- Waterford City → Waterford
+
+Keep it simple.
+Do NOT build a complex geocoder.
+
+==================================================
+4. Source city support audit
+==================================================
+
+For each active Ireland source, check whether it supports more cities than Dublin.
+
+Active sources:
+- Daft
+- PropertyPal
+- Lisney
+- Owen Reilly
+- CityHomes
+- SherryFitz
+- Ray Cooke
+
+For each source, report:
+- supports Dublin only?
+- supports national Ireland listings?
+- supports city query URLs?
+- which top 10 cities are realistically covered?
+- whether adding city parameter is easy or risky
+
+Do not force city expansion into a source if it would break it.
+
+==================================================
+5. Implement safe city expansion
+==================================================
+
+Only expand source queries where safe.
+
+Rules:
+- keep Dublin working exactly as before
+- no risky URL guessing in production
+- no render=true
+- no expensive proxy changes
+- no fake coverage
+- source should return [] cleanly for unsupported cities
+
+Preferred approach:
+- if a source is national, let it run once and filter/normalize city
+- if a source has city-specific URLs, add a small city URL map
+- if a source is agency/Dublin-only, keep it Dublin-only
+
+==================================================
+6. Search profile and matching
+==================================================
+
+Ensure users can create profiles for all top 10 cities.
+
+Requirements:
+- matching should work for the selected city
+- old Dublin profiles should remain unaffected
+- no DB migration unless absolutely required
+- no breaking existing user profiles
+
+==================================================
+7. UX copy
+==================================================
+
+Update user-facing copy lightly:
+- “Dublin rental alerts” can remain on homepage if homepage is Dublin-first
+- onboarding/search profile UI should say Ireland/top cities where appropriate
+- avoid claiming full national coverage if only some sources support some cities
+
+Preferred wording:
+- “Fast rental alerts across Ireland’s most competitive cities.”
+- “Starting with Dublin, Cork, Galway and more.”
+
+==================================================
+8. Admin/source health
+==================================================
+
+Ensure city-specific source health remains clear.
+
+Avoid bogus entries like:
+- German source + Dublin
+- Dublin-only source + Cork if unsupported
+
+==================================================
+9. Minimal verification
+==================================================
+
+Run lightweight checks:
+- app starts
+- onboarding shows top 10 Ireland cities
+- Dublin still default
+- existing 7 sources still ingest
+- unsupported cities do not crash ingestion
+- no push/SW changes
+
+==================================================
+10. Report back
+==================================================
+
+Report:
+- files changed
+- top 10 cities added
+- which sources support which cities
+- which sources remain Dublin-only
+- total estimated coverage impact
+- any known city/source limitations
+- confirmation existing Dublin ingestion remains stable

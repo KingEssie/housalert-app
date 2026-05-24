@@ -1,29 +1,26 @@
 /**
- * Sherry FitzGerald fetcher for Dublin rentals.
+ * Sherry FitzGerald fetcher — Ireland rental listings.
  *
- * Sherry FitzGerald (sherryfitz.ie) is one of Ireland's largest estate agents.
+ * Sherry FitzGerald is one of Ireland's largest estate agents with branches
+ * across Dublin, Cork, Galway and other major cities.
  * Their XML sitemap for rental listings is publicly accessible and updated
- * daily with <lastmod> timestamps — no JS rendering required.
+ * daily — no JS rendering required.
  *
  * Sitemap URL:
  *   https://www.sherryfitz.ie/sfdev/site/sitemaps/rent/sitemap.xml
- *   → 443 total entries, ~380 with /dublin/ in the URL.
+ *   → ~443 total entries covering Dublin and other Irish cities.
  *
  * URL structure:
- *   https://www.sherryfitz.ie/rent/TYPE/dublin/DISTRICT/SLUG
+ *   https://www.sherryfitz.ie/rent/TYPE/CITY/DISTRICT/SLUG
  *   e.g. /rent/apartment/dublin/ballsbridge/4-bed-apartment-haddington-road
+ *        /rent/apartment/cork/city-centre/2-bed-apartment-merchant-quay
  *
- * From the URL we can extract:
- *   - property type (apartment, house, studio, semi-detached-house, etc.)
- *   - Dublin district (ballsbridge, rathmines, ranelagh, etc.)
- *   - bed count (e.g. slug starts with "4-bed-")
- *   - listing title (from slug, human-readable address)
- *
+ * From the URL we extract: city, type, district, bed count, title.
  * Price is NOT available from the sitemap (individual pages are JS-rendered).
- * We take the top MAX_LISTINGS most-recently-modified Dublin entries so that
- * new listings surfaced by Sherry FitzGerald appear quickly.
  *
- * Direct Node.js fetch works. No proxy required.
+ * When called with a specific city (default "Dublin") the fetcher filters to
+ * that city's sitemap entries.  Dublin keeps the MAX_LISTINGS cap to avoid
+ * over-representing one city; other cities return all available entries.
  */
 import { log } from "../../../log";
 import type { SourceListing } from "../types";
@@ -37,14 +34,13 @@ const SITEMAP_URL =
 
 const LISTING_BASE = "https://www.sherryfitz.ie";
 
-/** Maximum number of Dublin listings to return per cycle (most recently modified). */
-const MAX_LISTINGS = parseInt(process.env.SHERRYFITZ_MAX_LISTINGS || "60", 10);
+const MAX_DUBLIN_LISTINGS = parseInt(process.env.SHERRYFITZ_MAX_LISTINGS || "60", 10);
 
 export interface SherryFitzFetchResult {
   method:          "direct";
   status:          number | null;
   rawCount:        number;
-  dublinCount:     number;
+  cityCount:       number;
   normalizedCount: number;
   listings:        SourceListing[];
   error?:          string;
@@ -88,7 +84,6 @@ interface SitemapEntry {
 
 function parseSitemap(xml: string): SitemapEntry[] {
   const entries: SitemapEntry[] = [];
-  // Match <url>...<loc>URL</loc>...<lastmod>DATE</lastmod>...</url> blocks
   const urlBlockRe = /<url>([\s\S]*?)<\/url>/g;
   let blockMatch: RegExpExecArray | null;
 
@@ -97,7 +92,6 @@ function parseSitemap(xml: string): SitemapEntry[] {
     const locM  = block.match(/<loc>\s*([^<]+)\s*<\/loc>/);
     const lmM   = block.match(/<lastmod>\s*([^<]+)\s*<\/lastmod>/);
     if (!locM) continue;
-
     entries.push({
       url:     locM[1].trim(),
       lastmod: lmM ? lmM[1].trim() : "",
@@ -109,10 +103,6 @@ function parseSitemap(xml: string): SitemapEntry[] {
 
 // ── URL → listing data ────────────────────────────────────────────────────────
 
-/**
- * Capitalise each word, replace hyphens with spaces.
- * E.g. "ballsbridge" → "Ballsbridge", "city-centre" → "City Centre"
- */
 function toTitleCase(s: string): string {
   return s
     .replace(/-/g, " ")
@@ -122,19 +112,20 @@ function toTitleCase(s: string): string {
 /**
  * Parse a Sherry FitzGerald rental URL into listing fields.
  *
- * Path format: /rent/TYPE/dublin/DISTRICT/SLUG
+ * Path format: /rent/TYPE/CITY/DISTRICT/SLUG
  *
  * Indices after split on "/":
- *   [0] ""
- *   [1] "rent"
- *   [2] TYPE
- *   [3] "dublin"
- *   [4] DISTRICT
- *   [5] SLUG
+ *   [0] ""  → filtered
+ *   [0] "rent"
+ *   [1] TYPE
+ *   [2] CITY   (e.g. "dublin", "cork", "galway")
+ *   [3] DISTRICT
+ *   [4] SLUG
  */
 function parseListingFromUrl(
   fullUrl: string,
   lastmod: string,
+  expectedCitySlug: string,
 ): SourceListing | null {
   let pathname: string;
   try {
@@ -143,21 +134,19 @@ function parseListingFromUrl(
     return null;
   }
 
-  // Strip trailing slash, split
   const parts = pathname.replace(/\/$/, "").split("/").filter(Boolean);
-  // Expected: ["rent", TYPE, "dublin", DISTRICT, SLUG]
-  if (parts.length < 5 || parts[0] !== "rent" || parts[2] !== "dublin") return null;
+  // Expected: ["rent", TYPE, CITY, DISTRICT, SLUG]
+  if (parts.length < 5 || parts[0] !== "rent") return null;
 
-  const propertyType = parts[1]; // e.g. "apartment", "house", "studio"
-  const district     = parts[3]; // e.g. "ballsbridge", "rathmines"
-  const slug         = parts[4]; // address-based slug
+  const urlCitySlug  = parts[2]; // e.g. "dublin", "cork"
+  if (urlCitySlug !== expectedCitySlug) return null;
 
-  // ── External ID ───────────────────────────────────────────────────────────
-  // Use the 3 path segments after /rent/ as a stable unique key
-  const externalId = `${propertyType}/${district}/${slug}`;
+  const propertyType = parts[1];
+  const district     = parts[3];
+  const slug         = parts[4];
 
-  // ── Bedrooms ──────────────────────────────────────────────────────────────
-  // Many slugs embed bed count: "4-bed-apartment-...", "studio-...", "1-bed-..."
+  const externalId = `${propertyType}/${urlCitySlug}/${district}/${slug}`;
+
   let bedrooms: number | undefined;
   const bedsMatch = slug.match(/^(\d+)-bed/i);
   if (bedsMatch) {
@@ -166,11 +155,8 @@ function parseListingFromUrl(
     bedrooms = 0;
   }
 
-  // ── Title ─────────────────────────────────────────────────────────────────
-  // Build a human-readable title from the slug, stripping bed prefix if already noted
   let addressSlug = slug;
   if (bedsMatch) {
-    // Strip "N-bed-TYPE-" prefix from address slug so we don't duplicate info
     addressSlug = slug.replace(/^\d+-bed-[a-z-]+-/, "").replace(/^\d+-bed-/, "");
   }
   const addressStr  = toTitleCase(addressSlug);
@@ -186,10 +172,11 @@ function parseListingFromUrl(
     title = `${typeStr} - ${addressStr}`;
   }
 
-  // ── Location ──────────────────────────────────────────────────────────────
   const location = districtStr;
 
-  // ── createdAt (use lastmod as proxy) ─────────────────────────────────────
+  // Canonical city name from slug (e.g. "cork" → "Cork")
+  const city = toTitleCase(urlCitySlug);
+
   let createdAt: Date | undefined;
   if (lastmod) {
     const d = new Date(lastmod);
@@ -200,10 +187,11 @@ function parseListingFromUrl(
     source:     SOURCE,
     externalId,
     title,
-    price:      undefined,   // individual listing pages are JS-rendered; no price from sitemap
+    price:      undefined,
     location,
+    city,
     url:        fullUrl,
-    imageUrl:   undefined,   // not in sitemap
+    imageUrl:   undefined,
     bedrooms,
     createdAt,
   };
@@ -211,59 +199,63 @@ function parseListingFromUrl(
 
 // ── Main fetch ────────────────────────────────────────────────────────────────
 
-async function doFetch(): Promise<SherryFitzFetchResult> {
+async function doFetch(city: string): Promise<SherryFitzFetchResult> {
+  const citySlug = city.toLowerCase().replace(/\s+/g, "-");
+
   log(`[${SOURCE}] Fetching sitemap → ${SITEMAP_URL}`, SOURCE);
 
   const { body, status, error } = await doHttpGet(SITEMAP_URL);
 
   if (!body) {
     log(`[${SOURCE}] HTTP ${status}${error ? ` (${error})` : ""} — no data`, SOURCE);
-    return { method: "direct", status, rawCount: 0, dublinCount: 0, normalizedCount: 0, listings: [], error };
+    return { method: "direct", status, rawCount: 0, cityCount: 0, normalizedCount: 0, listings: [], error };
   }
 
-  // Sanity-check: must look like a sitemap
   if (!body.includes("<urlset") && !body.includes("<loc>")) {
     log(`[${SOURCE}] Response does not look like a sitemap — discarding`, SOURCE);
-    return { method: "direct", status, rawCount: 0, dublinCount: 0, normalizedCount: 0, listings: [] };
+    return { method: "direct", status, rawCount: 0, cityCount: 0, normalizedCount: 0, listings: [] };
   }
 
-  const all     = parseSitemap(body);
+  const all      = parseSitemap(body);
   const rawCount = all.length;
 
-  // Filter to Dublin listings
-  const dublinEntries = all.filter(e => e.url.includes("/dublin/"));
-  const dublinCount   = dublinEntries.length;
+  // Filter to this city's listings
+  const cityEntries = all.filter(e => e.url.includes(`/${citySlug}/`));
+  const cityCount   = cityEntries.length;
 
-  log(`[${SOURCE}] Sitemap: ${rawCount} total, ${dublinCount} Dublin entries`, SOURCE);
+  log(`[${SOURCE}] Sitemap: ${rawCount} total, ${cityCount} ${city} entries`, SOURCE);
 
-  if (dublinCount === 0) {
-    return { method: "direct", status, rawCount, dublinCount: 0, normalizedCount: 0, listings: [] };
+  if (cityCount === 0) {
+    return { method: "direct", status, rawCount, cityCount: 0, normalizedCount: 0, listings: [] };
   }
 
-  // Sort by lastmod descending (newest changes first) so we pick up new listings
-  dublinEntries.sort((a, b) => {
+  // Sort by lastmod descending (newest changes first)
+  cityEntries.sort((a, b) => {
     if (!a.lastmod && !b.lastmod) return 0;
     if (!a.lastmod) return 1;
     if (!b.lastmod) return -1;
     return b.lastmod.localeCompare(a.lastmod);
   });
 
-  // Take the top MAX_LISTINGS most recently modified
-  const candidates = dublinEntries.slice(0, MAX_LISTINGS);
+  // Dublin has a cap to avoid over-representing one city; other cities return all.
+  const candidates =
+    citySlug === "dublin"
+      ? cityEntries.slice(0, MAX_DUBLIN_LISTINGS)
+      : cityEntries;
 
   const listings: SourceListing[] = [];
   const seenIds  = new Set<string>();
 
   for (const entry of candidates) {
-    const listing = parseListingFromUrl(entry.url, entry.lastmod);
-    if (!listing)                     continue;
+    const listing = parseListingFromUrl(entry.url, entry.lastmod, citySlug);
+    if (!listing)                        continue;
     if (seenIds.has(listing.externalId)) continue;
     seenIds.add(listing.externalId);
     listings.push(listing);
   }
 
   log(
-    `[${SOURCE}] Complete: raw=${rawCount} dublin=${dublinCount} sampled=${candidates.length} normalized=${listings.length}`,
+    `[${SOURCE}] Complete: raw=${rawCount} ${city}=${cityCount} sampled=${candidates.length} normalized=${listings.length}`,
     SOURCE,
   );
 
@@ -271,16 +263,16 @@ async function doFetch(): Promise<SherryFitzFetchResult> {
     method:          "direct",
     status,
     rawCount,
-    dublinCount,
+    cityCount,
     normalizedCount: listings.length,
     listings,
   };
 }
 
-export async function fetchListings(): Promise<SourceListing[]> {
-  return (await doFetch()).listings;
+export async function fetchListings(city = "Dublin"): Promise<SourceListing[]> {
+  return (await doFetch(city)).listings;
 }
 
-export async function testFetch(): Promise<SherryFitzFetchResult> {
-  return doFetch();
+export async function testFetch(city = "Dublin"): Promise<SherryFitzFetchResult> {
+  return doFetch(city);
 }

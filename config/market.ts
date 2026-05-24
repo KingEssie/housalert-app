@@ -5,19 +5,19 @@
 
 export const defaultCountry = "IE";
 
-// Ireland/Dublin cities — shown as preset options in onboarding city picker.
+// Ireland cities — Top 10 rental cities shown as presets in onboarding.
 // The first 5 entries appear as quick-tap buttons (TOP_CITIES in city.tsx).
 export const defaultCities = [
-  { name: "Dublin",  lat: 53.3498, lng: -6.2603 },
-  { name: "Cork",    lat: 51.8985, lng: -8.4756 },
-  { name: "Galway",  lat: 53.2743, lng: -9.0514 },
-  { name: "Limerick", lat: 52.6638, lng: -8.6267 },
+  { name: "Dublin",    lat: 53.3498, lng: -6.2603 },
+  { name: "Cork",      lat: 51.8985, lng: -8.4756 },
+  { name: "Galway",    lat: 53.2743, lng: -9.0514 },
+  { name: "Limerick",  lat: 52.6638, lng: -8.6267 },
   { name: "Waterford", lat: 52.2593, lng: -7.1101 },
-  { name: "Kilkenny", lat: 52.6541, lng: -7.2448 },
-  { name: "Wexford",  lat: 52.3369, lng: -6.4633 },
-  { name: "Drogheda", lat: 53.7186, lng: -6.3561 },
-  { name: "Dundalk",  lat: 54.0001, lng: -6.4003 },
-  { name: "Swords",   lat: 53.4597, lng: -6.2181 },
+  { name: "Drogheda",  lat: 53.7186, lng: -6.3561 },
+  { name: "Dundalk",   lat: 54.0001, lng: -6.4003 },
+  { name: "Swords",    lat: 53.4597, lng: -6.2181 },
+  { name: "Bray",      lat: 53.2027, lng: -6.1005 },
+  { name: "Kilkenny",  lat: 52.6541, lng: -7.2448 },
 ];
 
 // ─── Germany cities (kept for re-enable — not shown in UI when ENABLE_GERMANY=false) ───
@@ -57,19 +57,25 @@ export const germanCities = [
 export const defaultCityNames = defaultCities.map((c) => c.name);
 
 export const cityDistricts: Record<string, string[]> = {
-  Dublin: ["Dublin 1", "Dublin 2", "Dublin 4", "Dublin 6", "Dublin 7", "Dublin 8", "Dublin 9", "Dublin 12", "Rathmines", "Ranelagh", "Drumcondra", "Clontarf"],
-  Cork: ["Cork City Centre", "Ballincollig", "Douglas", "Carrigaline", "Bishopstown"],
-  Galway: ["Galway City Centre", "Salthill", "Knocknacarra", "Renmore", "Doughiska"],
-  Limerick: ["Limerick City Centre", "Castletroy", "Raheen", "Dooradoyle"],
+  Dublin:    ["Dublin 1", "Dublin 2", "Dublin 4", "Dublin 6", "Dublin 7", "Dublin 8", "Dublin 9", "Dublin 12", "Rathmines", "Ranelagh", "Drumcondra", "Clontarf"],
+  Cork:      ["Cork City Centre", "Ballincollig", "Douglas", "Carrigaline", "Bishopstown"],
+  Galway:    ["Galway City Centre", "Salthill", "Knocknacarra", "Renmore", "Doughiska"],
+  Limerick:  ["Limerick City Centre", "Castletroy", "Raheen", "Dooradoyle"],
+  Waterford: ["Waterford City Centre", "Tramore", "Dunmore East"],
+  Drogheda:  ["Drogheda Town Centre", "Moneymore", "Bryanstown"],
+  Dundalk:   ["Dundalk Town Centre", "Blackrock", "Muirhevnamor"],
+  Swords:    ["Swords Village", "Malahide", "Kinsealy"],
+  Bray:      ["Bray Town Centre", "Shankill", "Greystones"],
+  Kilkenny:  ["Kilkenny City Centre", "Callan", "Thomastown"],
   // ─── Germany districts (kept for re-enable) ───
-  Berlin: ["Mitte", "Kreuzberg", "Prenzlauer Berg", "Friedrichshain", "Neukölln", "Charlottenburg", "Schöneberg", "Wedding", "Moabit", "Tempelhof"],
-  Hamburg: ["Altona", "Eimsbüttel", "Hamburg-Mitte", "Hamburg-Nord", "Wandsbek", "Bergedorf", "Harburg", "St. Pauli"],
-  München: ["Schwabing", "Maxvorstadt", "Haidhausen", "Sendling", "Bogenhausen", "Lehel", "Neuhausen", "Giesing"],
-  Köln: ["Innenstadt", "Ehrenfeld", "Nippes", "Lindenthal", "Deutz", "Sülz", "Mülheim", "Kalk"],
+  Berlin:    ["Mitte", "Kreuzberg", "Prenzlauer Berg", "Friedrichshain", "Neukölln", "Charlottenburg", "Schöneberg", "Wedding", "Moabit", "Tempelhof"],
+  Hamburg:   ["Altona", "Eimsbüttel", "Hamburg-Mitte", "Hamburg-Nord", "Wandsbek", "Bergedorf", "Harburg", "St. Pauli"],
+  München:   ["Schwabing", "Maxvorstadt", "Haidhausen", "Sendling", "Bogenhausen", "Lehel", "Neuhausen", "Giesing"],
+  Köln:      ["Innenstadt", "Ehrenfeld", "Nippes", "Lindenthal", "Deutz", "Sülz", "Mülheim", "Kalk"],
   Frankfurt: ["Innenstadt", "Sachsenhausen", "Nordend", "Bornheim", "Bockenheim", "Westend", "Ostend", "Gallus"],
   Düsseldorf: ["Altstadt", "Bilk", "Pempelfort", "Flingern", "Oberkassel", "Friedrichstadt", "Derendorf", "Unterbilk"],
   Stuttgart: ["Mitte", "West", "Süd", "Ost", "Nord", "Bad Cannstatt", "Vaihingen", "Degerloch"],
-  Leipzig: ["Zentrum", "Plagwitz", "Connewitz", "Schleußig", "Südvorstadt", "Gohlis", "Lindenau", "Reudnitz"],
+  Leipzig:   ["Zentrum", "Plagwitz", "Connewitz", "Schleußig", "Südvorstadt", "Gohlis", "Lindenau", "Reudnitz"],
 };
 
 export const defaultSearchProfile = {
@@ -80,3 +86,27 @@ export const defaultSearchProfile = {
 };
 
 export const dateLocale = "en-IE";
+
+// ─── City aliases for normalization ──────────────────────────────────────────
+// Maps common variants → canonical display name.
+export const cityAliases: Record<string, string> = {
+  "dublin city":    "Dublin",
+  "dublin city centre": "Dublin",
+  "cork city":      "Cork",
+  "cork city centre": "Cork",
+  "galway city":    "Galway",
+  "galway city centre": "Galway",
+  "limerick city":  "Limerick",
+  "waterford city": "Waterford",
+  "co. dublin":     "Dublin",
+  "county dublin":  "Dublin",
+};
+
+/**
+ * Normalise a free-text city name to one of the canonical defaultCities names.
+ * Returns the original string unchanged if no alias matches.
+ */
+export function normalizeCity(raw: string): string {
+  const lower = raw.trim().toLowerCase();
+  return cityAliases[lower] ?? raw.trim();
+}

@@ -11,10 +11,6 @@ import { execFile } from "child_process";
 const SOURCE_ENV = "PROPERTYPAL_PROXY_URL";
 const LISTING_BASE = "https://www.propertypal.com";
 
-const BASE_URL =
-  process.env.PROPERTYPAL_DUBLIN_RENT_URL ||
-  "https://www.propertypal.com/property-to-rent/dublin";
-
 // PropertyPal blocks requests that include Sec-Fetch-* headers or a Windows
 // user-agent. Use a minimal Mac-based browser header set.
 const PP_HEADERS: Record<string, string> = {
@@ -29,6 +25,18 @@ const PP_HEADERS: Record<string, string> = {
   "Pragma":          "no-cache",
   "Referer":         "https://www.propertypal.com/",
 };
+
+/**
+ * Build the PropertyPal search URL for a given city.
+ * For Dublin the PROPERTYPAL_DUBLIN_RENT_URL env var can override the URL.
+ */
+function getCityUrl(city: string): string {
+  const slug = city.toLowerCase().replace(/\s+/g, "-");
+  if (slug === "dublin" && process.env.PROPERTYPAL_DUBLIN_RENT_URL) {
+    return process.env.PROPERTYPAL_DUBLIN_RENT_URL;
+  }
+  return `${LISTING_BASE}/property-to-rent/${slug}`;
+}
 
 export interface PropertyPalFetchResult {
   method: "direct" | "proxy";
@@ -59,7 +67,7 @@ function isRentalListing(prop: any): boolean {
 
 // ── Extraction ────────────────────────────────────────────────────────────────
 
-function extractListings(html: string): { rawCount: number; listings: SourceListing[] } {
+function extractListings(html: string, city: string): { rawCount: number; listings: SourceListing[] } {
   const { json, isCloudflare } = extractNextData(html);
 
   if (!json) {
@@ -74,8 +82,6 @@ function extractListings(html: string): { rawCount: number; listings: SourceList
 
   const pageProps = json?.props?.pageProps ?? {};
 
-  // Confirmed shape: pageProps.initialState.properties.data.results
-  // (data is a plain object: { results: [...], endReached, page, loading })
   const rawListings: any[] =
     pageProps?.initialState?.properties?.data?.results ??
     pageProps?.initialState?.properties?.results ??
@@ -107,20 +113,12 @@ function extractListings(html: string): { rawCount: number; listings: SourceList
   for (const prop of rawListings) {
     if (!prop) continue;
 
-    // ── Guards ──────────────────────────────────────────────────────────────
     if (!isRepublicOfIreland(prop)) { skippedNI++;   continue; }
     if (!isRentalListing(prop))     { skippedSale++; continue; }
 
-    // ── External ID ─────────────────────────────────────────────────────────
-    // `id` is the property listing ID; `pathId` is the URL identifier.
-    // Use `id` as our stable dedup key (it's the canonical property record ID).
     const id = prop.id != null ? String(prop.id) : null;
     if (!id) continue;
 
-    // ── URL ─────────────────────────────────────────────────────────────────
-    // shareURL is the cleanest: "https://www.propertypal.com/1077585"
-    // path is the full slug:    "/the-crescent.../1077585"
-    // pathId is the numeric ID in the slug
     const url: string =
       prop.shareURL ||
       (prop.path
@@ -129,37 +127,29 @@ function extractListings(html: string): { rawCount: number; listings: SourceList
         ? `${LISTING_BASE}/${prop.pathId}`
         : `${LISTING_BASE}/${id}`);
 
-    // ── Title ───────────────────────────────────────────────────────────────
     const title: string =
       prop.displayAddress ||
       prop.displayAddressLine1 ||
       [prop.addressLine1, prop.town].filter(Boolean).join(", ") ||
-      "Dublin Rental";
+      `${city} Rental`;
 
-    // ── Price ───────────────────────────────────────────────────────────────
-    // price.price is already numeric (e.g. 2300); price.rentFrequency = "PER_MONTH"
     let price: number | undefined;
     if (typeof prop.price?.price === "number" && prop.price.price > 50) {
       price = prop.price.price;
     }
 
-    // ── Bedrooms ────────────────────────────────────────────────────────────
     const bedrooms: number | undefined =
       typeof prop.numBedrooms === "number" ? prop.numBedrooms : undefined;
 
-    // ── Image ───────────────────────────────────────────────────────────────
     const images: any[] = prop.images ?? prop.photos ?? [];
     const imageUrl: string | undefined =
       images[0]?.url ||
       images[0]?.urls?.["880x645:FILL_CROP"] ||
       undefined;
 
-    // ── Location ────────────────────────────────────────────────────────────
     const location: string | undefined =
       prop.town || prop.region || undefined;
 
-    // ── Coordinates ─────────────────────────────────────────────────────────
-    // coordinate: { latitude: 53.249161, longitude: -6.180076 }
     let latitude: number | undefined;
     let longitude: number | undefined;
     const coord = prop.coordinate ?? prop.geo ?? null;
@@ -172,7 +162,6 @@ function extractListings(html: string): { rawCount: number; listings: SourceList
       }
     }
 
-    // ── Listed date ─────────────────────────────────────────────────────────
     const rawDate = prop.dateAvailableFrom || prop.listingTime?.timeText || null;
     const createdAt = rawDate ? new Date(rawDate) : undefined;
 
@@ -184,6 +173,7 @@ function extractListings(html: string): { rawCount: number; listings: SourceList
       title,
       price,
       location,
+      city,
       url,
       imageUrl,
       bedrooms,
@@ -206,14 +196,6 @@ function extractListings(html: string): { rawCount: number; listings: SourceList
 // and blocked with 403.  curl uses HTTP/1.1 TLS negotiation and returns 200
 // from the same IP — proven on the Replit host.
 //
-// We use execFile('curl') as the HTTP client for this source only. It's:
-//   • lightweight (curl ships with every Linux/macOS system)
-//   • no new npm dependencies
-//   • proven to return 200 from Replit's IP
-//
-// If a PROPERTYPAL_PROXY_URL is configured AND it supports curl-style -x usage,
-// we pass it as a proxy; otherwise we make a direct curl call.
-//
 function fetchViaCurl(
   url: string,
   timeoutSec: number,
@@ -222,10 +204,10 @@ function fetchViaCurl(
   return new Promise((resolve, reject) => {
     const args: string[] = [
       "--silent",
-      "--location",           // follow redirects
+      "--location",
       "--max-redirs", "5",
       "--max-time", String(timeoutSec),
-      "--compressed",         // accept gzip/br
+      "--compressed",
       "--write-out", "\n__HTTP_STATUS__:%{http_code}",
       "-H", `User-Agent: ${PP_HEADERS["User-Agent"]}`,
       "-H", `Accept: ${PP_HEADERS["Accept"]}`,
@@ -234,7 +216,6 @@ function fetchViaCurl(
       "-H", "Cache-Control: no-cache",
     ];
 
-    // Wire in proxy if set (curl -x supports socks5 and http proxies)
     if (proxyUrl) {
       args.push("-x", proxyUrl);
     }
@@ -261,34 +242,24 @@ function fetchViaCurl(
 
 // ── Fetch ─────────────────────────────────────────────────────────────────────
 
-/**
- * Resolve a curl-compatible proxy URL for PropertyPal.
- *
- * PropertyPal doesn't need a proxy from Replit's IP (direct curl → 200).
- * The DAFT_PROXY_URL fallback is a ScraperAPI URL-prefix API
- * ("https://api.scraperapi.com/?api_key=KEY&url="), NOT a curl -x proxy.
- * We only honour PROPERTYPAL_PROXY_URL if it's explicitly set AND looks like
- * a real proxy server (http(s)://host:port or socks5://host:port).
- */
 function resolveCurlProxy(): string | undefined {
   const raw = (process.env.PROPERTYPAL_PROXY_URL || "").replace(/\s+/g, "");
   if (!raw) return undefined;
-  // Accept http(s)://host... or socks5://host... — real curl proxy formats
   if (/^(https?:\/\/[^/]+:\d+|socks5:\/\/)/i.test(raw)) return raw;
-  // ScraperAPI-style URL-prefix: pass as ScraperAPI URL param instead
   if (raw.includes("scraperapi.com") || raw.includes("{url}") || /[=&?]$/.test(raw)) {
     log("[propertypal] PROPERTYPAL_PROXY_URL looks like a URL-prefix API (not a curl proxy) — ignoring for curl", "propertypal");
   }
   return undefined;
 }
 
-async function doFetch(): Promise<PropertyPalFetchResult> {
+async function doFetch(city: string): Promise<PropertyPalFetchResult> {
   const proxyConfigured = isProxyConfigured(SOURCE_ENV);
   const curlProxy = resolveCurlProxy();
   const method: "direct" | "proxy" = curlProxy ? "proxy" : "direct";
+  const url = getCityUrl(city);
 
   log(
-    `[propertypal] Fetching via curl/${method}${curlProxy ? ` (proxy: ${curlProxy.slice(0, 40)}…)` : ""} → ${BASE_URL}`,
+    `[propertypal] Fetching via curl/${method}${curlProxy ? ` (proxy: ${curlProxy.slice(0, 40)}…)` : ""} → ${url}`,
     "propertypal"
   );
 
@@ -296,7 +267,7 @@ async function doFetch(): Promise<PropertyPalFetchResult> {
 
   try {
     const timeoutSec = Math.floor(FETCH_TIMEOUT_MS / 1000);
-    const { html, status: s } = await fetchViaCurl(BASE_URL, timeoutSec, curlProxy);
+    const { html, status: s } = await fetchViaCurl(url, timeoutSec, curlProxy);
     status = s;
 
     if (status === 403 || status === 503) {
@@ -309,7 +280,7 @@ async function doFetch(): Promise<PropertyPalFetchResult> {
       return { method, proxyConfigured, status, rawCount: 0, normalizedCount: 0, listings: [] };
     }
 
-    const { rawCount, listings } = extractListings(html);
+    const { rawCount, listings } = extractListings(html, city);
     log(
       `[propertypal] HTTP ${status} (curl/${method}) — raw=${rawCount} normalized=${listings.length}`,
       "propertypal"
@@ -322,10 +293,10 @@ async function doFetch(): Promise<PropertyPalFetchResult> {
   }
 }
 
-export async function fetchListings(): Promise<SourceListing[]> {
-  return (await doFetch()).listings;
+export async function fetchListings(city = "Dublin"): Promise<SourceListing[]> {
+  return (await doFetch(city)).listings;
 }
 
-export async function testFetch(): Promise<PropertyPalFetchResult> {
-  return doFetch();
+export async function testFetch(city = "Dublin"): Promise<PropertyPalFetchResult> {
+  return doFetch(city);
 }
