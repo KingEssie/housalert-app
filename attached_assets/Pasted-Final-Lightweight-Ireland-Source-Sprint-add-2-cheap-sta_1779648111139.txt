@@ -1,0 +1,179 @@
+Final Lightweight Ireland Source Sprint — add 2 cheap/stable agency sources
+
+Context:
+HousAlert now has 3 working low-cost Dublin sources:
+- Daft.ie ✅
+- PropertyPal ✅
+- Lisney ✅
+
+Expensive render=true sources were intentionally disabled:
+- Rent.ie
+- MyHome.ie
+- Let.ie
+
+Goal:
+Add 2 additional LOW-MAINTENANCE agency sources to improve Dublin coverage before launch.
+
+IMPORTANT:
+Prioritize:
+- low scraping cost
+- SSR/static HTML
+- stable structure
+- low maintenance
+- direct fetches
+
+Do NOT touch:
+- service worker
+- push notifications
+- VAPID/FCM
+- Stripe/paywall
+- Germany infrastructure
+- matching architecture
+- notification traces
+- stable ingestion pipeline
+
+Do NOT add:
+- browser automation
+- Playwright
+- Puppeteer
+- render=true
+- heavy dependencies
+- new frameworks
+
+==================================================
+1. CHOOSE THE BEST 2 SOURCES
+==================================================
+
+Use the previous discovery results and select the TWO most promising agency sources from:
+
+- Allen & Jacobs
+- Owen Reilly
+- Ray Cooke
+- DNG rentals
+- Savills rentals
+- Sherry FitzGerald rentals
+- Hooke & MacDonald
+
+Selection criteria:
+- listings visible in raw HTML
+- direct fetch works
+- prices visible
+- listing URLs visible
+- rental listings distinguishable from sales
+- low anti-bot risk
+- low maintenance
+
+Do NOT choose sources requiring JS rendering.
+
+==================================================
+2. IMPLEMENT SOURCE #1
+==================================================
+
+Create:
+
+server/sources/ireland/<source1>/
+
+Requirements:
+- Dublin rentals only
+- normalized SourceListing output
+- stable external IDs
+- title
+- price
+- location
+- absolute URL
+- imageUrl if available
+- bedrooms if available
+- coordinates if available
+
+Use lightweight HTML parsing only.
+
+==================================================
+3. IMPLEMENT SOURCE #2
+==================================================
+
+Same requirements as source #1.
+
+==================================================
+4. CONNECT TO EXISTING PIPELINE
+==================================================
+
+Wire both sources into:
+- irelandSources registry
+- Ireland scheduler
+- insertAndMatchListings
+- source health
+- ingestion logs
+
+Reuse existing patterns from:
+- Daft
+- PropertyPal
+- Lisney
+
+Do NOT create parallel systems.
+
+==================================================
+5. SCHEDULER + SAFETY
+==================================================
+
+Requirements:
+- safe error handling
+- no crash loops
+- clear logging
+- conservative intervals
+- skip invalid listings safely
+
+==================================================
+6. DEDUPE SAFETY
+==================================================
+
+Use existing:
+(source, source_id)
+
+dedupe behavior only.
+
+No complex cross-source dedupe engine.
+
+==================================================
+7. MANUAL TESTS
+==================================================
+
+If useful, add lightweight test scripts:
+
+server/scripts/test-<source>.ts
+
+Output:
+- HTTP status
+- raw candidates
+- normalized count
+- 1–2 sample listings
+
+Do not print secrets or huge HTML.
+
+==================================================
+8. MINIMAL VERIFICATION
+==================================================
+
+Run:
+- server start
+- source test scripts
+- build/TS check if available
+
+Confirm:
+- Daft still works
+- PropertyPal still works
+- Lisney still works
+- disabled sources remain disabled
+- no push/SW changes
+
+==================================================
+9. REPORT BACK
+==================================================
+
+Report:
+- which 2 sources were selected and why
+- files created/modified
+- listing counts
+- sample listings
+- anti-bot risks
+- estimated total Dublin coverage now
+- whether the app is close to launch-ready from a listings perspective

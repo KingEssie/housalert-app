@@ -8888,15 +8888,35 @@ export async function registerRoutes(
       ]);
 
       const matches = matchRows.rows;
-      const suppressed   = matches.filter((m: any) => m.suppression_reason).length;
-      const emailSent    = matches.filter((m: any) => m.email_sent && !m.suppression_reason?.includes("email")).length;
-      const pushSent     = matches.filter((m: any) => m.push_sent  && !m.suppression_reason?.includes("push") && m.suppression_reason !== "all_channels_disabled" && m.suppression_reason !== "no_subscription" && m.suppression_reason !== "stale_listing_gt_2h").length;
+
+      // Suppression reasons that indicate "marked sent to stop re-processing" — no real notification went out
+      const PUSH_MARK_AS_SENT_REASONS = new Set([
+        "push_disabled", "all_channels_disabled", "no_subscription",
+        "stale_listing_gt_2h", "email_cap_exceeded",
+      ]);
+      const EMAIL_MARK_AS_SENT_REASONS = new Set([
+        "email_disabled", "all_channels_disabled", "no_subscription",
+        "stale_listing_gt_2h",
+      ]);
+
+      const suppressed             = matches.filter((m: any) => m.suppression_reason).length;
+      const realEmailSent          = matches.filter((m: any) => m.email_sent && (!m.suppression_reason || !EMAIL_MARK_AS_SENT_REASONS.has(m.suppression_reason))).length;
+      const realPushSent           = matches.filter((m: any) => m.push_sent  && (!m.suppression_reason || !PUSH_MARK_AS_SENT_REASONS.has(m.suppression_reason))).length;
+      const pushMarkedSent         = matches.filter((m: any) => m.push_sent  && m.suppression_reason && PUSH_MARK_AS_SENT_REASONS.has(m.suppression_reason)).length;
+      const emailMarkedSent        = matches.filter((m: any) => m.email_sent && m.suppression_reason && EMAIL_MARK_AS_SENT_REASONS.has(m.suppression_reason)).length;
 
       res.json({
         user: { id: resolvedUserId, email: resolvedEmail },
         notification_settings: notifRes.data || null,
         subscription: subRes.data || null,
-        summary: { total: matches.length, suppressed, email_sent: emailSent, push_sent: pushSent },
+        summary: {
+          total: matches.length,
+          suppressed,
+          email_sent: realEmailSent,
+          push_sent: realPushSent,
+          push_marked_sent: pushMarkedSent,
+          email_marked_sent: emailMarkedSent,
+        },
         matches,
       });
     } catch (err: any) {
@@ -8911,46 +8931,32 @@ export async function registerRoutes(
     try {
       let rows = await getSourceHealthSummary();
 
-      // Fallback: synthesise health rows from recent ingestion_runs when the
-      // source_health table is empty (e.g. first boot before any upsert runs).
+      // If table is empty, run a backfill from ingestion_runs first (force=true).
       if (rows.length === 0) {
         try {
-          const { rows: runRows } = await pgPool.query(
-            `SELECT source_reports, started_at, finished_at, duration_sec, status
-             FROM ingestion_runs
-             ORDER BY started_at DESC LIMIT 5`
-          );
-          const latest = runRows[0];
-          if (latest?.source_reports?.length) {
-            rows = (latest.source_reports as any[]).map((sr: any) => ({
-              id: 0,
-              source_name: sr.name || sr.source || "unknown",
-              city: sr.city || "",
-              last_started_at: latest.started_at,
-              last_success_at: sr.errors === 0 ? latest.started_at : null,
-              last_failure_at: sr.errors > 0 ? latest.started_at : null,
-              duration_ms: sr.durationMs ?? 0,
-              found_count: sr.found ?? 0,
-              inserted_count: sr.inserted ?? 0,
-              duplicate_count: sr.duplicates ?? 0,
-              error_count: sr.errors ?? 0,
-              last_error: sr.errorMessage ?? null,
-              status: sr.errors === 0 && sr.found > 0 ? "healthy" : "degraded",
-              consecutive_failures: sr.errors > 0 ? 1 : 0,
-              consecutive_zeros: sr.found === 0 ? 1 : 0,
-              total_runs: 1,
-              updated_at: latest.finished_at || latest.started_at,
-              _from_ingestion_run: true,
-            }));
-          }
-        } catch (fbErr: any) {
-          log(`[admin] source-health fallback error: ${fbErr.message}`);
+          const { backfillSourceHealthFromRuns: bfFn } = await import("./monitoring/source-health");
+          await bfFn(true);
+          rows = await getSourceHealthSummary();
+        } catch (bfErr: any) {
+          log(`[admin] source-health backfill error: ${bfErr.message}`);
         }
       }
 
-      res.json({ sources: rows });
+      res.json({ sources: rows, _from_ingestion_run: rows.length === 0 });
     } catch (err: any) {
       log(`[admin] source-health error: ${err.message}`);
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.post("/api/admin/portal/source-health/backfill", requireAdmin, async (_req, res) => {
+    try {
+      const { backfillSourceHealthFromRuns: bfFn } = await import("./monitoring/source-health");
+      const result = await bfFn(true);
+      const rows = await getSourceHealthSummary();
+      res.json({ success: true, runs_processed: result.processed, rows_now: rows.length });
+    } catch (err: any) {
+      log(`[admin] source-health backfill error: ${err.message}`);
       res.status(500).json({ error: err.message });
     }
   });

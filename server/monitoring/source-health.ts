@@ -182,10 +182,12 @@ export async function getSourceHealthSummary(): Promise<SourceHealthRow[]> {
   return rows;
 }
 
-export async function backfillSourceHealthFromRuns(): Promise<void> {
+export async function backfillSourceHealthFromRuns(force = false): Promise<{ processed: number }> {
   try {
-    const { rows: countRows } = await pool.query("SELECT COUNT(*) AS cnt FROM source_health");
-    if (parseInt(countRows[0]?.cnt ?? "1", 10) > 0) return;
+    if (!force) {
+      const { rows: countRows } = await pool.query("SELECT COUNT(*) AS cnt FROM source_health");
+      if (parseInt(countRows[0]?.cnt ?? "1", 10) > 0) return { processed: 0 };
+    }
 
     const { rows: runRows } = await pool.query(
       `SELECT source_reports, started_at
@@ -193,19 +195,23 @@ export async function backfillSourceHealthFromRuns(): Promise<void> {
        WHERE source_reports IS NOT NULL
          AND started_at IS NOT NULL
        ORDER BY started_at ASC
-       LIMIT 100`
+       LIMIT 200`
     );
-    if (runRows.length === 0) return;
+    if (runRows.length === 0) return { processed: 0 };
 
-    log(`[source-health] backfilling from ${runRows.length} ingestion runs`);
+    log(`[source-health] backfilling from ${runRows.length} ingestion runs (force=${force})`);
+    let processed = 0;
     for (const run of runRows) {
       if (!Array.isArray(run.source_reports) || run.source_reports.length === 0) continue;
       const report = { sources: run.source_reports };
       await upsertSourceHealth(report as import("../ingesters").IngestionReport, new Date(run.started_at));
+      processed++;
     }
-    log(`[source-health] backfill complete`);
+    log(`[source-health] backfill complete — processed ${processed} runs`);
+    return { processed };
   } catch (err: any) {
     log(`[source-health] backfill error: ${err.message}`);
+    return { processed: 0 };
   }
 }
 

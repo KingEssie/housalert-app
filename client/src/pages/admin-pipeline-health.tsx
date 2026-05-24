@@ -158,10 +158,19 @@ function OverviewTab() {
 // ─── Source Health Tab ─────────────────────────────────────────────────────────
 
 function SourceHealthTab() {
+  const qc = useQueryClient();
   const { data, isLoading, refetch, isFetching } = useQuery({
     queryKey: ["/api/admin/portal/source-health"],
     queryFn: () => adminFetch("/api/admin/portal/source-health"),
     staleTime: 30000,
+  });
+  const backfillMut = useMutation({
+    mutationFn: () => adminFetch("/api/admin/portal/source-health/backfill", { method: "POST" }),
+    onSuccess: (result) => {
+      qc.invalidateQueries({ queryKey: ["/api/admin/portal/source-health"] });
+      alert(`Backfill complete: ${result.runs_processed} ingestion runs processed → ${result.rows_now} source rows now in table.`);
+    },
+    onError: (err: Error) => alert(`Backfill failed: ${err.message}`),
   });
   const sources = data?.sources ?? [];
   const activeSources   = sources.filter((s: any) => s.status !== "disabled");
@@ -234,9 +243,16 @@ function SourceHealthTab() {
           {activeSources.length} active source×city pairs
           {disabledSources.length > 0 && <span className="text-gray-400"> · {disabledSources.length} disabled</span>}
         </p>
-        <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching}>
-          <RefreshCw className={`w-3 h-3 mr-1 ${isFetching ? "animate-spin" : ""}`} /> Refresh
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => backfillMut.mutate()} disabled={backfillMut.isPending || isFetching}
+            title="Re-process all ingestion_runs to rebuild source_health rows (idempotent)">
+            <Database className={`w-3 h-3 mr-1 ${backfillMut.isPending ? "animate-pulse" : ""}`} />
+            {backfillMut.isPending ? "Backfilling…" : "Force Backfill"}
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching}>
+            <RefreshCw className={`w-3 h-3 mr-1 ${isFetching ? "animate-spin" : ""}`} /> Refresh
+          </Button>
+        </div>
       </div>
 
       {isLoading ? (
@@ -1111,25 +1127,41 @@ function NotifTraceSummary({ data }: { data: any }) {
   }
   const suppressionEntries = Object.entries(suppressionCounts).sort((a, b) => b[1] - a[1]);
 
-  // Determine if push_sent=true exists alongside suppression (mark-as-sent pattern)
-  const suppressedWithPushSent = matches.filter((m: any) => m.suppression_reason && m.push_sent).length;
-  const suppressedWithEmailSent = matches.filter((m: any) => m.suppression_reason && m.email_sent).length;
+  const pushMarkedSent  = s.push_marked_sent  ?? 0;
+  const emailMarkedSent = s.email_marked_sent ?? 0;
+  const hasMasPattern   = pushMarkedSent > 0 || emailMarkedSent > 0;
+
+  const kpis = [
+    { label: "Total matches", value: s.total ?? 0, color: "text-gray-800" },
+    { label: "Email sent (real)", value: s.email_sent ?? 0, color: "text-green-700" },
+    { label: "Push sent (real)", value: s.push_sent ?? 0, color: "text-blue-700" },
+    { label: "Suppressed", value: s.suppressed ?? 0, color: s.suppressed > 0 ? "text-amber-700" : "text-gray-400" },
+  ];
 
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-        {[
-          ["User", data.user?.email ?? data.user?.id?.slice(0, 12)],
-          ["Total matches", s.total ?? 0],
-          ["Email sent", s.email_sent ?? 0],
-          ["Suppressed", s.suppressed ?? 0],
-        ].map(([l, v]) => (
-          <div key={l as string} className="border rounded-lg p-3 bg-white">
-            <div className="text-xs text-gray-400">{l}</div>
-            <div className="font-semibold text-gray-800">{v}</div>
+        {kpis.map(({ label, value, color }) => (
+          <div key={label} className="border rounded-lg p-3 bg-white">
+            <div className="text-xs text-gray-400">{label}</div>
+            <div className={`font-semibold text-lg ${color}`}>{value}</div>
           </div>
         ))}
       </div>
+
+      {hasMasPattern && (
+        <div className="border rounded-xl p-3 bg-blue-50 border-blue-200 text-xs text-blue-700 flex items-start gap-2">
+          <Info className="w-3.5 h-3.5 mt-0.5 shrink-0 text-blue-500" />
+          <div>
+            <span className="font-semibold">Mark-as-sent (no real notification):</span>{" "}
+            {emailMarkedSent > 0 && <span>{emailMarkedSent} email </span>}
+            {pushMarkedSent > 0 && <span>{pushMarkedSent} push </span>}
+            — when a match is <em>suppressed</em>, the system sets both flags to{" "}
+            <code className="bg-blue-100 px-1 rounded">true</code> to prevent re-processing on the next ingest cycle.
+            No actual notification was delivered.
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-wrap gap-3 text-xs">
         {settings && (
@@ -1163,14 +1195,6 @@ function NotifTraceSummary({ data }: { data: any }) {
               );
             })}
           </div>
-          {(suppressedWithPushSent > 0 || suppressedWithEmailSent > 0) && (
-            <div className="text-xs text-amber-600 mt-1 border-t border-amber-200 pt-2">
-              <span className="font-semibold">ℹ️ push_sent / email_sent = true on suppressed rows</span> — this is intentional.
-              When a match is suppressed the system marks both flags true to prevent the notification buffer from
-              re-processing the same listing on the next ingest cycle. No actual notification was delivered.
-              Affected: {suppressedWithEmailSent} email, {suppressedWithPushSent} push.
-            </div>
-          )}
         </div>
       )}
     </div>
