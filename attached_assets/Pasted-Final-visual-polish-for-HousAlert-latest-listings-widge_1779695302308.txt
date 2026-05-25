@@ -1,0 +1,256 @@
+Final visual polish for HousAlert latest listings widget
+
+Context:
+The widget is already live and functional.
+We are now ONLY doing visual polish to match the approved premium SaaS / Rentbird-style design.
+
+Only edit:
+client/public/widget.html
+
+DO NOT TOUCH:
+- push notifications
+- service workers
+- Stripe
+- ingestion
+- matching
+- Germany infrastructure
+- app pages
+- emails
+- APIs
+
+==================================================
+IMPORTANT DESIGN DIRECTION
+==================================================
+
+The current version is close, but still feels:
+- too bold
+- too cramped
+- too “component-like”
+
+We want:
+- premium
+- calm
+- spacious
+- startup/SaaS feel
+- closer to Rentbird visual hierarchy
+
+==================================================
+1. TITLE / HEADLINE
+==================================================
+
+KEEP everything on ONE centered line block.
+
+DO NOT split into separate rows anymore.
+
+Correct structure:
+
+OVER THE LAST 24H, HOUSALERT FOUND
+127 RENTAL HOMES IN DUBLIN ▼
+
+Important:
+- “DUBLIN ▼” stays inline on the same line as:
+  “127 RENTAL HOMES IN”
+- the entire heading block is centered
+- visually balanced
+- premium spacing
+
+==================================================
+2. TYPOGRAPHY
+==================================================
+
+Use Montserrat everywhere in the widget.
+
+Import Google Font if needed.
+
+Headline:
+- slightly LESS bold than current
+- larger than current
+- cleaner spacing
+- more elegant
+- line-height improved
+- letter spacing slightly improved
+- dark navy/black color
+
+Current issue:
+The title is too aggressive/heavy.
+
+We want:
+- modern SaaS
+- calm premium feel
+
+The number:
+127
+
+must also be black/dark navy.
+NOT blue.
+
+==================================================
+3. DROPDOWN
+==================================================
+
+The dropdown still looks disconnected.
+
+Fix:
+- dropdown text EXACT same size as title text
+- same font-weight
+- same color
+- same line-height
+- same typography
+
+It should visually feel like:
+DUBLIN ▼
+
+is simply part of the heading.
+
+NOT a small select input.
+
+Keep subtle underline.
+
+Dropdown color:
+dark navy/black.
+NOT blue.
+
+==================================================
+4. CARD LAYOUT
+==================================================
+
+The cards still have too much vertical spacing.
+
+Reduce spacing between:
+- street title
+- time ago
+- pills
+
+Cards should feel tighter and more app-like.
+
+We want:
+compact premium mobile app cards.
+
+==================================================
+5. CARD STYLING
+==================================================
+
+Keep:
+- light lavender/purple background
+- rounded corners
+- subtle shadow
+
+Improve:
+- slightly softer shadow
+- cleaner spacing
+- slightly more elegant proportions
+
+==================================================
+6. IMAGE
+==================================================
+
+Image should remain:
+- taller
+- premium
+- closer to app listing cards
+
+Keep:
+- rounded top corners
+- object-fit cover
+
+==================================================
+7. PILLS
+==================================================
+
+This is the biggest remaining issue.
+
+We want EXACTLY 3 pills:
+1. bedrooms
+2. size
+3. price
+
+Requirements:
+- ALL fully rounded
+- ALL same height
+- ALL aligned perfectly
+- ALL on one row
+- spacing between pills tighter
+- visually grouped together
+
+Bedrooms + size:
+- small purple icons
+- black outline border
+
+Price:
+- NO icon
+- bold black text
+- NO /mo
+- same pill height as others
+- same rounded style
+- white/light background
+- black outline
+
+Current issue:
+The pills feel disconnected and oversized.
+
+Fix:
+Make them smaller, tighter, cleaner.
+
+==================================================
+8. CARD CONTENT
+==================================================
+
+Keep:
+- bold street name
+- only time ago
+- no source
+- no city pill
+- no heart icon
+
+Cards must NOT be clickable.
+
+==================================================
+9. MOBILE
+==================================================
+
+On mobile:
+- entire widget centered
+- title perfectly centered
+- card centered
+- carousel elegant
+- 1 main card visible
+- feels premium
+
+==================================================
+10. DESKTOP
+==================================================
+
+Desktop:
+- maximum 5 cards visible
+- centered
+- elegant spacing
+- no 6th/7th visible
+
+==================================================
+11. FINAL GOAL
+==================================================
+
+The widget should feel like:
+- a funded startup landing page
+- premium proptech
+- polished SaaS
+- calm and modern
+
+NOT:
+- generic frontend component
+- busy marketplace UI
+
+==================================================
+12. VERIFY
+==================================================
+
+Verify:
+- dropdown typography identical to heading
+- count text black
+- heading centered
+- inline dropdown retained
+- cards more compact
+- pills tighter and aligned
+- 5 cards max desktop
+- centered mobile card
+- no app/push/email/API changes

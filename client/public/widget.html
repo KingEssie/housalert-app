@@ -6,13 +6,13 @@
 <title>HousAlert – Latest Rentals</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --ha-text:        #0f172a;
     --ha-muted:       #64748b;
     --ha-card-bg:     #f0ebff;
-    --ha-card-shadow: 0 1px 4px rgba(0,0,0,.07), 0 6px 18px rgba(0,0,0,.07);
+    --ha-card-shadow: 0 1px 3px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.06);
     --ha-radius:      14px;
     --ha-img-h:       190px;
     --ha-icon-color:  #7c3aed;
@@ -33,13 +33,13 @@
   /* ── Heading ──────────────────────────────────────────── */
 
   .ha-headline {
-    font-size: clamp(17px, 2.2vw, 28px);
-    font-weight: 800;
-    line-height: 1.35;
-    letter-spacing: .04em;
+    font-size: clamp(19px, 2.5vw, 33px);
+    font-weight: 700;
+    line-height: 1.45;
+    letter-spacing: .06em;
     text-transform: uppercase;
     color: var(--ha-text);
-    margin-bottom: 22px;
+    margin-bottom: 30px;
     text-align: center;
   }
 
@@ -196,15 +196,15 @@
 
   /* Card body */
   .ha-card-body {
-    padding: 9px 11px 12px;
+    padding: 10px 12px 13px;
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 2px;
     flex: 1;
   }
 
   .ha-card-title {
-    font-size: 12.5px;
+    font-size: 13px;
     font-weight: 700;
     line-height: 1.3;
     color: var(--ha-text);
@@ -220,35 +220,37 @@
     font-weight: 500;
   }
 
-  /* Pills — outlined, no background fill */
+  /* Pills — outlined, compact */
   .ha-pills {
     display: flex;
     flex-wrap: nowrap;
-    gap: 5px;
-    margin-top: 7px;
+    gap: 4px;
+    margin-top: 8px;
     overflow: hidden;
+    align-items: center;
   }
 
   .ha-pill {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    font-size: 11px;
+    gap: 3px;
+    font-size: 10.5px;
     font-weight: 600;
-    padding: 3px 8px;
+    padding: 2px 7px;
     border-radius: 20px;
     border: 1.5px solid var(--ha-text);
     background: #fff;
     white-space: nowrap;
     flex-shrink: 0;
     color: var(--ha-text);
+    line-height: 1.4;
   }
 
   /* Icons inside bed/size pills use purple */
   .ha-pill-icon svg { color: var(--ha-icon-color); flex-shrink: 0; }
 
   /* Price: bold, no icon */
-  .ha-pill-price { font-weight: 800; }
+  .ha-pill-price { font-weight: 700; }
 
   /* ── Skeleton ─────────────────────────────────────────── */
 
