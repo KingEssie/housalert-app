@@ -1,0 +1,129 @@
+Build the Waterford SEO city listings page based on the approved Dublin implementation.
+
+Context:
+The Dublin implementation is approved and working:
+https://app.housalert.com/dublin-listings.html
+
+Galway is already added.
+Now create the Waterford version with the exact same setup and styling.
+
+DO NOT redesign anything.
+Reuse the Dublin implementation exactly.
+
+DO NOT touch:
+- homepage widget
+- app UI
+- push notifications
+- ingestion scheduler
+- matching
+- Stripe
+- service worker
+- emails
+
+==================================================
+1. Create Waterford listings page
+==================================================
+
+Create:
+
+client/public/waterford-listings.html
+
+Based on:
+client/public/dublin-listings.html
+
+Use:
+GET /api/public/city-listings?city=Waterford&limit=50
+
+==================================================
+2. Preserve all approved styling
+==================================================
+
+Keep EXACTLY:
+- 3 listings per row desktop
+- 1 listing per row mobile
+- lavender cards
+- rounded corners
+- subtle shadows
+- same spacing
+- same pills
+- same typography
+- same image sizing
+- same responsive behavior
+
+Cards remain:
+- non-clickable
+- no timestamps
+- no source names
+- no source URLs
+- no heart icon
+
+==================================================
+3. Public listing rules
+==================================================
+
+Keep:
+- latest 50 listings
+- newest first
+- 24h delayed public preview
+- no realtime leakage
+
+Fields only:
+- id
+- displayTitle
+- price
+- bedrooms
+- size_m2
+- imageUrl
+
+==================================================
+4. Static public route
+==================================================
+
+Ensure:
+https://app.housalert.com/waterford-listings.html
+
+returns:
+- 200 OK
+- iframe embeddable
+- not blocked by SPA fallback
+- not blocked by X-Frame-Options
+
+==================================================
+5. Duda iframe snippet
+==================================================
+
+Provide:
+
+<iframe
+  src="https://app.housalert.com/waterford-listings.html"
+  style="width:100%;height:5500px;border:none;"
+  scrolling="no"
+  loading="lazy"
+  title="Waterford Rental Listings">
+</iframe>
+
+Adjust only if required.
+
+==================================================
+6. Verification
+==================================================
+
+Verify:
+- Waterford listings exist
+- latest 50 delayed listings only
+- desktop 3-column grid
+- mobile 1-column grid
+- no clipping
+- same UI as Dublin
+- no timestamps
+- no source data
+
+==================================================
+7. Report back
+==================================================
+
+Report:
+- files created
+- final URL
+- number of Waterford listings available
+- final iframe snippet
