@@ -1,0 +1,145 @@
+Build the Cork SEO city listings page based on the completed Dublin implementation.
+
+Context:
+The Dublin city listings page is now approved and live.
+
+Reference implementation:
+- /api/public/city-listings
+- client/public/dublin-listings.html
+
+We now want the exact same system for Cork.
+
+DO NOT redesign anything.
+Reuse the exact same UI/styles/layout/components behavior as Dublin.
+
+DO NOT touch:
+- homepage widget
+- app UI
+- push notifications
+- Stripe
+- ingestion scheduler
+- matching
+- service worker
+- emails
+
+==================================================
+1. Create Cork city listings page
+==================================================
+
+Create:
+
+client/public/cork-listings.html
+
+It should be a copy/adaptation of:
+client/public/dublin-listings.html
+
+Behavior:
+- fetch Cork listings only
+- use same API endpoint
+- use city=Cork
+- limit=50
+
+Example:
+GET /api/public/city-listings?city=Cork&limit=50
+
+==================================================
+2. Preserve all approved Dublin styling
+==================================================
+
+Keep EXACTLY:
+- 3 listings per row desktop
+- 1 listing per row mobile
+- lavender cards
+- rounded corners
+- subtle shadows
+- same spacing
+- same pills
+- same fonts
+- same responsive behavior
+- same image sizes
+- same iframe-safe behavior
+
+Cards remain:
+- non-clickable
+- no timestamps
+- no source names
+- no source URLs
+- no heart icon
+
+==================================================
+3. Public listing rules
+==================================================
+
+Keep same public-safe logic:
+- latest 50 listings
+- newest first
+- still delayed by 24h
+- no realtime data leakage
+
+Public fields only:
+- id
+- displayTitle
+- price
+- bedrooms
+- size_m2
+- imageUrl
+
+==================================================
+4. Static public route
+==================================================
+
+Ensure:
+https://app.housalert.com/cork-listings.html
+
+returns:
+- 200 OK
+- embeddable in iframe
+- not blocked by SPA fallback
+- not blocked by X-Frame-Options
+
+If needed:
+- add explicit static route
+- add iframe header exception like Dublin/widget.html
+
+==================================================
+5. Duda embed snippet
+==================================================
+
+Provide final iframe snippet.
+
+Expected:
+
+<iframe
+  src="https://app.housalert.com/cork-listings.html"
+  style="width:100%;height:5500px;border:none;"
+  scrolling="no"
+  loading="lazy"
+  title="Cork Rental Listings">
+</iframe>
+
+Adjust only if needed.
+
+==================================================
+6. Verification
+==================================================
+
+Verify:
+- Cork listings only
+- 50 listings returned max
+- 24h delay still active
+- desktop = 3 columns
+- mobile = 1 column
+- no clipping
+- no timestamps
+- no source data
+- same UI as Dublin
+
+==================================================
+7. Report back
+==================================================
+
+Report:
+- files created/changed
+- number of Cork listings available
+- final URL
+- final iframe snippet

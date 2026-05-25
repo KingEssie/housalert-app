@@ -1941,12 +1941,23 @@ export async function registerRoutes(
   });
 
   // -----------------------------------------------------------------------
-  // Serve the standalone Dublin city-page embeddable grid.
+  // Serve standalone city-page embeddable grids.
   // -----------------------------------------------------------------------
   app.get("/dublin-listings.html", (_req, res) => {
     const candidates = [
       path.resolve(process.cwd(), "dist", "public", "dublin-listings.html"),
       path.resolve(process.cwd(), "client", "public", "dublin-listings.html"),
+    ];
+    const found = candidates.find((p) => fs.existsSync(p));
+    if (!found) return res.status(404).send("Page not found");
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.sendFile(found);
+  });
+
+  app.get("/cork-listings.html", (_req, res) => {
+    const candidates = [
+      path.resolve(process.cwd(), "dist", "public", "cork-listings.html"),
+      path.resolve(process.cwd(), "client", "public", "cork-listings.html"),
     ];
     const found = candidates.find((p) => fs.existsSync(p));
     if (!found) return res.status(404).send("Page not found");

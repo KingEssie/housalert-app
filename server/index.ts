@@ -59,6 +59,7 @@ app.use((req, res, next) => {
     req.path === "/onboarding-embed" ||
     req.path === "/widget.html" ||
     req.path === "/dublin-listings.html" ||
+    req.path === "/cork-listings.html" ||
     req.path.startsWith("/api/onboarding-drafts") ||
     req.path.startsWith("/onboarding/");
 
