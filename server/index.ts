@@ -69,6 +69,7 @@ app.use((req, res, next) => {
     req.path === "/drogheda-listings.html" ||
     req.path === "/bray-listings.html" ||
     req.path === "/athlone-listings.html" ||
+    req.path === "/swords-listings.html" ||
     req.path.startsWith("/api/onboarding-drafts") ||
     req.path.startsWith("/onboarding/");
 
