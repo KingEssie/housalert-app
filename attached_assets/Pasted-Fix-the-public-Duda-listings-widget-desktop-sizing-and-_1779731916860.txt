@@ -1,0 +1,157 @@
+Fix the public Duda listings widget desktop sizing and card clipping.
+
+Context:
+The widget is live at:
+https://app.housalert.com/widget.html
+
+The mobile version is mostly good.
+The desktop/web version still has issues:
+- headline is much too large on desktop
+- listing cards are clipped at the bottom inside the iframe/widget
+- need more spacing between address/title and pills
+- current styles should otherwise stay the same
+
+Only update:
+client/public/widget.html
+
+DO NOT touch:
+- backend/API/routes
+- ingestion
+- matching
+- push notifications
+- service worker
+- Stripe
+- emails
+- app UI
+
+==================================================
+1. Desktop headline size
+==================================================
+
+Problem:
+The widget headline looks good on mobile, but is far too large on desktop.
+
+Fix:
+Use responsive CSS so:
+- mobile keeps roughly the current heading size
+- desktop heading becomes significantly smaller
+
+Desktop target:
+- similar visual scale to the section title below the widget on the Duda page
+- premium but not overpowering
+- centered
+- Montserrat
+- uppercase
+- dark navy/black
+
+Suggested CSS:
+Use media queries instead of one clamp that makes desktop too large.
+
+Example:
+- mobile: keep current size
+- desktop >= 900px: reduce headline font-size by around 25–35%
+- desktop line-height around 1.15–1.2
+- keep font-weight around 600
+
+Do not make mobile smaller.
+
+==================================================
+2. Prevent card bottom clipping
+==================================================
+
+Problem:
+On the Duda page, the bottom of the listing cards is cut off even when the Duda section is enlarged.
+
+Fix inside widget.html:
+- ensure the widget root/body/container has enough internal bottom padding
+- ensure carousel/card wrapper does not use overflow hidden vertically
+- keep horizontal overflow for carousel if needed
+- avoid fixed heights that clip card shadows/pills
+- if iframe height recommendation needs to change, report it
+
+Important:
+The full card including:
+- image
+- title
+- all pills
+- shadow
+- bottom padding
+
+must be visible.
+
+==================================================
+3. Card spacing
+==================================================
+
+Problem:
+Need more spacing between address/title and detail pills.
+
+Fix:
+- add a bit more vertical spacing after the address/title
+- keep the card clean, not too tall
+- do not re-add timestamps
+- no source text
+
+Card should show only:
+- image
+- street/title
+- detail pills
+
+==================================================
+4. Keep current card styling
+==================================================
+
+Do NOT redesign.
+
+Keep:
+- light lavender card background
+- rounded corners
+- subtle shadow
+- no timestamps
+- no source
+- no clickable links
+- no heart icon
+- pills style
+- arrows and dots
+- 5 cards max on desktop
+- 1 centered card on mobile
+
+==================================================
+5. Duda iframe snippet
+==================================================
+
+After changes, provide the final recommended iframe snippet.
+
+If needed, increase height.
+
+Preferred format:
+
+<iframe
+  src="https://app.housalert.com/widget.html"
+  style="width:100%;height:XXXpx;border:none;overflow:hidden;"
+  scrolling="no"
+  loading="lazy"
+  title="Latest Rental Homes">
+</iframe>
+
+Pick XXX based on the actual required height.
+
+==================================================
+6. Verification
+==================================================
+
+Verify:
+- desktop headline is much smaller than before
+- mobile headline remains good
+- cards are not clipped at the bottom
+- card shadows/pills are fully visible
+- more spacing exists between title and pills
+- desktop still shows max 5 cards
+- mobile still shows 1 centered card
+- no backend/API/app/email/push/SW changes
+
+Report:
+- files changed
+- exact headline CSS changes
+- clipping fix
+- final iframe snippet
