@@ -1,0 +1,286 @@
+Update ONLY client/public/widget.html.
+
+Do NOT touch:
+- backend
+- API response format
+- routes
+- notifications
+- auth
+- matching
+- service worker
+- app UI
+
+This task is ONLY a visual redesign of the public website embed widget.
+
+GOAL:
+Make the widget look EXACTLY like the latest approved design:
+- cleaner
+- more premium
+- more minimal
+- centered
+- balanced spacing
+- smaller images
+- bigger headline
+- modern Montserrat typography
+- app-inspired cards
+
+==================================================
+HEADLINE / TITLE
+==================================================
+
+Replace the current title layout with this EXACT structure:
+
+IN THE LAST 24 HOURS, HOUSALERT FOUND
+127 RENTAL PROPERTIES IN [DROPDOWN]
+
+Requirements:
+- fully centered
+- ALL CAPS
+- Montserrat font
+- dark navy text (#0f172a)
+- second line centered directly underneath
+- dropdown inline at end of sentence
+- dropdown same font-size as rest of sentence
+- dropdown same color as title
+- dropdown NOT blue
+- dropdown underline dark navy
+- font-weight lighter than current version
+- cleaner premium spacing
+
+Desktop:
+- first line font-size: ~64px
+- second line font-size: ~58px
+- font-weight: 600
+- line-height tight and premium
+
+Tablet:
+- scale down smoothly
+
+Mobile:
+- centered
+- no weird wrapping
+- maintain hierarchy
+- headline still large and impactful
+
+IMPORTANT:
+Everything must remain centered perfectly.
+
+==================================================
+CARD LAYOUT
+==================================================
+
+The current cards are too tall and the images are too dominant.
+
+Adjust cards to match premium modern marketplace style.
+
+Desktop:
+- exactly 5 visible cards
+- equal widths
+- clean horizontal slider
+
+Tablet:
+- ~3 cards visible
+
+Mobile:
+- 1 centered card
+- neighboring cards slightly peeking
+- smooth snapping carousel
+
+==================================================
+CARD DESIGN
+==================================================
+
+Card background:
+- very light purple (#f3eefc style)
+- rounded corners
+- subtle shadow
+
+Remove:
+- heart/favorite icon
+- source name
+- location pill
+- clickable links
+- hover transforms
+- any CTA button
+- powered by text
+
+Cards must NOT link anywhere.
+
+==================================================
+IMAGE
+==================================================
+
+Current images are too large.
+
+Reduce image height significantly.
+
+Desktop:
+- image height around 180-200px max
+
+Mobile:
+- image around 190px height
+
+Requirements:
+- border radius only top corners
+- object-fit: cover
+- cleaner proportions
+- more room for text/details
+
+==================================================
+ADDRESS / TITLE
+==================================================
+
+ONLY show street name.
+
+Examples:
+GOOD:
+- Canon Court
+- Brandon Road
+- Crumlin Road
+
+BAD:
+- Dublin 8, Dublin
+- Stanford Green, Crumlin, Dublin 12
+
+Strip:
+- city names
+- postal zones
+- county
+- apartment numbers
+- prefixes/suffixes
+
+Typography:
+- larger than current
+- font-weight: 700
+- dark navy
+- tighter spacing
+
+==================================================
+TIME AGO
+==================================================
+
+Show:
+- 10h ago
+
+Style:
+- black/dark navy
+- smaller than title
+- medium weight
+- tighter spacing underneath address
+
+Reduce spacing between:
+- address
+- time
+- pills row
+
+==================================================
+PILLS ROW
+==================================================
+
+This is IMPORTANT.
+
+Show EXACTLY 3 pills in ONE horizontal row:
+1. bedrooms
+2. size m²
+3. price
+
+Layout:
+- always on one line
+- equal spacing
+- fully rounded pills
+- premium minimal style
+
+Pill styling:
+- white background
+- black border
+- fully rounded
+- subtle padding
+- black text
+
+Icons:
+- outline black
+- inside accent light purple
+- minimal clean SVG style
+
+Price pill:
+- NO icon
+- bold black text
+- no /mo
+- example:
+  €2,600
+
+Bedrooms pill:
+- bed icon + number
+
+Size pill:
+- ruler/size icon + 65m²
+
+If data missing:
+- gracefully hide ONLY that pill
+- keep layout balanced
+
+==================================================
+CAROUSEL CONTROLS
+==================================================
+
+Keep:
+- left/right arrows
+- pagination dots
+
+Style:
+- minimal
+- soft shadows
+- modern white circles
+
+==================================================
+GENERAL DESIGN
+==================================================
+
+Overall feel should be:
+- premium
+- Scandinavian/minimal
+- like a modern proptech startup
+- closer to Rentbird quality
+- polished
+- spacious
+- balanced
+
+Widget must remain:
+- iframe-safe
+- responsive
+- self-contained
+- no external dependencies besides optional Google Font import
+
+==================================================
+TECHNICAL
+==================================================
+
+Keep:
+- existing API endpoint
+- existing city switching logic
+- existing fetch behavior
+- existing carousel logic
+
+Only refactor:
+- HTML structure
+- CSS
+- front-end rendering markup
+
+==================================================
+AFTER IMPLEMENTATION
+==================================================
+
+Verify:
+- desktop = exactly 5 cards visible
+- mobile = centered single card
+- images smaller
+- pills stay on one row
+- dropdown same size as title
+- headline fully centered
+- no blue dropdown text
+- cards not clickable
+- no source names
+- no city names in card title
+- spacing tightened between title/time/pills
+
+Then redeploy normally.

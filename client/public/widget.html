@@ -11,11 +11,11 @@
   :root {
     --ha-text:        #0f172a;
     --ha-muted:       #64748b;
-    --ha-card-bg:     #f0ebff;
+    --ha-card-bg:     #f3eefc;
     --ha-card-shadow: 0 1px 3px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.06);
     --ha-radius:      14px;
     --ha-img-h:       190px;
-    --ha-icon-color:  #7c3aed;
+    --ha-icon:        #7c3aed;
     --ha-gap:         14px;
   }
 
@@ -30,59 +30,71 @@
     width: 100%;
   }
 
-  /* ── Heading ──────────────────────────────────────────── */
+  /* ── Headline ─────────────────────────────────────────── */
 
   .ha-headline {
-    font-size: clamp(19px, 2.5vw, 33px);
-    font-weight: 700;
-    line-height: 1.45;
-    letter-spacing: .06em;
+    text-align: center;
     text-transform: uppercase;
     color: var(--ha-text);
-    margin-bottom: 30px;
-    text-align: center;
+    margin-bottom: 36px;
+    letter-spacing: .05em;
   }
 
-  /* Count: black, not blue */
+  .ha-hl1 {
+    font-size: clamp(22px, 4.8vw, 62px);
+    font-weight: 600;
+    line-height: 1.15;
+    display: block;
+  }
+
+  .ha-hl2 {
+    font-size: clamp(20px, 4.3vw, 56px);
+    font-weight: 600;
+    line-height: 1.2;
+    display: block;
+    margin-top: .15em;
+  }
+
+  /* Count stays same dark color */
   .ha-num { color: var(--ha-text); }
 
-  /* City select — same size/weight/color as heading text */
-  .ha-city-select-wrap {
+  /* City dropdown — inherits heading exactly */
+  .ha-city-wrap {
     display: inline-block;
     position: relative;
     vertical-align: baseline;
-    margin-left: 5px;
+    margin-left: .18em;
   }
 
-  .ha-city-select-wrap select {
+  .ha-city-wrap select {
     appearance: none;
     -webkit-appearance: none;
     background: transparent;
     border: none;
     border-bottom: 2.5px solid var(--ha-text);
     border-radius: 0;
-    padding: 0 22px 1px 0;
+    padding: 0 .9em 2px 0;
     font-family: inherit;
     font-size: inherit;
     font-weight: inherit;
     letter-spacing: inherit;
     text-transform: inherit;
+    line-height: inherit;
     color: var(--ha-text);
     cursor: pointer;
     outline: none;
-    line-height: inherit;
   }
 
-  .ha-city-select-wrap::after {
+  .ha-city-wrap::after {
     content: "";
     position: absolute;
-    right: 2px;
+    right: .1em;
     top: 50%;
-    transform: translateY(-56%);
+    transform: translateY(-52%);
     width: 0; height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-top: 7px solid var(--ha-text);
+    border-left: .3em solid transparent;
+    border-right: .3em solid transparent;
+    border-top: .38em solid var(--ha-text);
     pointer-events: none;
   }
 
@@ -90,7 +102,7 @@
 
   .ha-carousel-wrap {
     position: relative;
-    margin: 0 22px;
+    margin: 0 24px;
   }
 
   .ha-nav-btn {
@@ -98,12 +110,11 @@
     top: calc(var(--ha-img-h) / 2);
     transform: translateY(-50%);
     z-index: 10;
-    width: 36px;
-    height: 36px;
+    width: 38px; height: 38px;
     border-radius: 50%;
     background: #fff;
-    border: 1px solid #dde1e8;
-    box-shadow: 0 2px 8px rgba(0,0,0,.14);
+    border: 1px solid #e2e4ea;
+    box-shadow: 0 2px 8px rgba(0,0,0,.13);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -112,13 +123,13 @@
     padding: 0;
     transition: box-shadow .15s;
   }
-  .ha-nav-btn:hover { box-shadow: 0 4px 14px rgba(0,0,0,.2); }
-  .ha-nav-btn:disabled { opacity: .3; cursor: default; box-shadow: none; }
+  .ha-nav-btn:hover  { box-shadow: 0 4px 16px rgba(0,0,0,.18); }
+  .ha-nav-btn:disabled { opacity: .28; cursor: default; box-shadow: none; }
 
-  .ha-nav-prev { left: -22px; }
-  .ha-nav-next { right: -22px; }
+  .ha-nav-prev { left: -24px; }
+  .ha-nav-next { right: -24px; }
 
-  /* ── Scroll strip ─────────────────────────────────────── */
+  /* ── Cards strip ──────────────────────────────────────── */
 
   .ha-cards {
     display: flex;
@@ -138,7 +149,7 @@
     display: flex;
     justify-content: center;
     gap: 8px;
-    margin-top: 14px;
+    margin-top: 16px;
     min-height: 16px;
   }
 
@@ -168,7 +179,7 @@
     user-select: none;
   }
 
-  /* Image */
+  /* Image — rounded top corners only */
   .ha-img-wrap {
     width: 100%;
     height: var(--ha-img-h);
@@ -176,6 +187,7 @@
     background: #ddd0f8;
     position: relative;
     flex-shrink: 0;
+    border-radius: var(--ha-radius) var(--ha-radius) 0 0;
   }
 
   .ha-img-bg {
@@ -191,7 +203,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: .35;
+    opacity: .3;
   }
 
   /* Card body */
@@ -206,12 +218,11 @@
   .ha-card-title {
     font-size: 13px;
     font-weight: 700;
-    line-height: 1.3;
+    line-height: 1.28;
     color: var(--ha-text);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .ha-card-meta {
@@ -220,7 +231,7 @@
     font-weight: 500;
   }
 
-  /* Pills — outlined, compact */
+  /* Pills */
   .ha-pills {
     display: flex;
     flex-wrap: nowrap;
@@ -246,11 +257,8 @@
     line-height: 1.4;
   }
 
-  /* Icons inside bed/size pills use purple */
-  .ha-pill-icon svg { color: var(--ha-icon-color); flex-shrink: 0; }
-
-  /* Price: bold, no icon */
-  .ha-pill-price { font-weight: 700; }
+  .ha-pill-icon svg { color: var(--ha-icon); flex-shrink: 0; }
+  .ha-pill-price    { font-weight: 700; }
 
   /* ── Skeleton ─────────────────────────────────────────── */
 
@@ -270,7 +278,7 @@
     animation: ha-shimmer 1.5s ease-in-out infinite;
   }
 
-  .ha-sk-body { padding: 9px 11px; display: flex; flex-direction: column; gap: 8px; }
+  .ha-sk-body { padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
 
   .ha-sk-line {
     height: 10px;
@@ -298,24 +306,22 @@
     .ha-card, .ha-sk { flex: 0 0 calc(33.333% - 10px); }
   }
 
-  /* ── Mobile: 1 centered card ──────────────────────────── */
+  /* ── Mobile ───────────────────────────────────────────── */
   @media (max-width: 540px) {
-    :root { --ha-img-h: 150px; }
+    :root { --ha-img-h: 160px; }
 
-    .ha-headline { font-size: clamp(14px, 4.6vw, 20px); }
-
-    .ha-carousel-wrap { margin: 0 14px; }
-    .ha-nav-prev { left: -18px; }
-    .ha-nav-next { right: -18px; }
+    .ha-carousel-wrap { margin: 0 16px; }
+    .ha-nav-prev { left: -20px; }
+    .ha-nav-next { right: -20px; }
 
     .ha-cards {
-      padding-left: 5vw;
-      padding-right: 5vw;
-      scroll-padding-inline: 5vw;
+      padding-left: 6vw;
+      padding-right: 6vw;
+      scroll-padding-inline: 6vw;
     }
 
     .ha-card, .ha-sk {
-      flex: 0 0 88vw;
+      flex: 0 0 85vw;
       scroll-snap-align: center;
     }
   }
@@ -325,21 +331,24 @@
 <div id="ha-widget">
 
   <div class="ha-headline">
-    OVER THE LAST 24H, HOUSALERT FOUND<br>
-    <span class="ha-num" id="ha-count">—</span> RENTAL HOMES IN
-    <span class="ha-city-select-wrap">
-      <select id="ha-city-select" aria-label="Select city">
-        <option value="Dublin">Dublin</option>
-        <option value="Cork">Cork</option>
-        <option value="Galway">Galway</option>
-        <option value="Limerick">Limerick</option>
-        <option value="Waterford">Waterford</option>
-        <option value="Drogheda">Drogheda</option>
-        <option value="Dundalk">Dundalk</option>
-        <option value="Swords">Swords</option>
-        <option value="Bray">Bray</option>
-        <option value="Kilkenny">Kilkenny</option>
-      </select>
+    <span class="ha-hl1">IN THE LAST 24 HOURS,<br>HOUSALERT FOUND</span>
+    <span class="ha-hl2">
+      <span class="ha-num" id="ha-count">—</span> RENTAL PROPERTIES IN
+      <span class="ha-city-wrap">
+        <span id="ha-city-mirror" aria-hidden="true" style="position:absolute;visibility:hidden;white-space:pre;pointer-events:none;"></span>
+        <select id="ha-city-select" aria-label="Select city">
+          <option value="Dublin">Dublin</option>
+          <option value="Cork">Cork</option>
+          <option value="Galway">Galway</option>
+          <option value="Limerick">Limerick</option>
+          <option value="Waterford">Waterford</option>
+          <option value="Drogheda">Drogheda</option>
+          <option value="Dundalk">Dundalk</option>
+          <option value="Swords">Swords</option>
+          <option value="Bray">Bray</option>
+          <option value="Kilkenny">Kilkenny</option>
+        </select>
+      </span>
     </span>
   </div>
 
@@ -364,33 +373,60 @@
     || (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
         ? window.location.origin : "https://app.housalert.com");
 
-  var citySelect = document.getElementById("ha-city-select");
-  var cardsEl    = document.getElementById("ha-cards");
-  var countEl    = document.getElementById("ha-count");
-  var dotsEl     = document.getElementById("ha-dots");
-  var prevBtn    = document.getElementById("ha-prev");
-  var nextBtn    = document.getElementById("ha-next");
+  var citySelect  = document.getElementById("ha-city-select");
+  var cityMirror  = document.getElementById("ha-city-mirror");
+  var cardsEl     = document.getElementById("ha-cards");
+  var countEl     = document.getElementById("ha-count");
+  var dotsEl      = document.getElementById("ha-dots");
+  var prevBtn     = document.getElementById("ha-prev");
+  var nextBtn     = document.getElementById("ha-next");
 
-  var BED_ICON  = '<span class="ha-pill-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg></span>';
-  var SIZE_ICON = '<span class="ha-pill-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span>';
-  var HOUSE_SVG = '<svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#9f7aea" stroke-width="1.5" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>';
+  /* Size the city <select> to match the current option's text width */
+  function resizeCitySelect() {
+    var text = citySelect.options[citySelect.selectedIndex]
+      ? citySelect.options[citySelect.selectedIndex].text : "Dublin";
+    var cs = window.getComputedStyle(citySelect);
+    cityMirror.style.fontFamily    = cs.fontFamily;
+    cityMirror.style.fontSize      = cs.fontSize;
+    cityMirror.style.fontWeight    = cs.fontWeight;
+    cityMirror.style.letterSpacing = cs.letterSpacing;
+    cityMirror.style.textTransform = cs.textTransform;
+    cityMirror.textContent = text.toUpperCase();
+    citySelect.style.width = (cityMirror.offsetWidth + 36) + "px";
+  }
+  /* Run after fonts likely loaded */
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(resizeCitySelect);
+  } else {
+    setTimeout(resizeCitySelect, 300);
+  }
+  window.addEventListener("resize", resizeCitySelect);
+
+  var BED_ICON  = '<span class="ha-pill-icon"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg></span>';
+  var SIZE_ICON = '<span class="ha-pill-icon"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span>';
+  var HOUSE_SVG = '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#9f7aea" stroke-width="1.5" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>';
 
   var totalCards = 0;
   var cardW = 0;
+
+  /* Strip display title to street name only (before first comma) */
+  function shortTitle(displayTitle, city) {
+    if (!displayTitle || displayTitle === city) return city || "Rental Property";
+    var first = displayTitle.split(",")[0].trim();
+    return first.length > 2 ? first : displayTitle;
+  }
 
   function getVisible() {
     return window.innerWidth <= 540 ? 1 : window.innerWidth <= 860 ? 3 : 5;
   }
 
-  function scrollStep() {
-    return cardW + 14; /* card width + gap */
-  }
+  function scrollStep() { return cardW + 14; }
 
   function updateNav() {
     var sl = cardsEl.scrollLeft;
-    var maxScroll = cardsEl.scrollWidth - cardsEl.clientWidth;
+    var maxSl = cardsEl.scrollWidth - cardsEl.clientWidth;
     prevBtn.disabled = sl <= 2;
-    nextBtn.disabled = sl >= maxScroll - 2;
+    nextBtn.disabled = sl >= maxSl - 2;
   }
 
   function buildDots() {
@@ -416,12 +452,8 @@
   function onScroll() { updateNav(); buildDots(); }
 
   cardsEl.addEventListener("scroll", onScroll, { passive: true });
-  prevBtn.addEventListener("click", function () {
-    cardsEl.scrollBy({ left: -scrollStep(), behavior: "smooth" });
-  });
-  nextBtn.addEventListener("click", function () {
-    cardsEl.scrollBy({ left: scrollStep(), behavior: "smooth" });
-  });
+  prevBtn.addEventListener("click", function () { cardsEl.scrollBy({ left: -scrollStep(), behavior: "smooth" }); });
+  nextBtn.addEventListener("click", function () { cardsEl.scrollBy({ left:  scrollStep(), behavior: "smooth" }); });
   window.addEventListener("resize", function () {
     var c = cardsEl.querySelector(".ha-card");
     cardW = c ? c.offsetWidth : cardW;
@@ -446,9 +478,9 @@
     for (var i = 0; i < n; i++) {
       s += '<div class="ha-sk"><div class="ha-sk-img"></div>'
         + '<div class="ha-sk-body">'
-        + '<div class="ha-sk-line" style="width:63%"></div>'
-        + '<div class="ha-sk-line" style="width:38%"></div>'
-        + '<div class="ha-sk-line" style="width:75%"></div>'
+        + '<div class="ha-sk-line" style="width:62%"></div>'
+        + '<div class="ha-sk-line" style="width:36%"></div>'
+        + '<div class="ha-sk-line" style="width:78%"></div>'
         + '</div></div>';
     }
     return s;
@@ -463,8 +495,7 @@
     totalCards = items.length;
 
     return items.map(function (l) {
-      var title = (l.displayTitle && l.displayTitle !== l.city)
-        ? l.displayTitle : (l.title || l.city || "Rental Property");
+      var title    = shortTitle(l.displayTitle, l.city);
       var imgStyle = l.imageUrl ? "background-image:url(" + l.imageUrl + ")" : "";
 
       var pills = "";
