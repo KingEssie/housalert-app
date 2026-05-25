@@ -1,0 +1,175 @@
+Update ONLY client/public/widget.html.
+
+Do NOT touch:
+- backend/API/routes
+- ingestion
+- matching
+- push notifications
+- service worker
+- Stripe
+- emails
+- app UI
+
+This is ONLY a visual/widget rendering fix.
+
+Goal:
+Make the public Duda listings widget match the latest desired design.
+
+==================================================
+1. HEADLINE
+==================================================
+
+Current issue:
+The heading breaks after “FOUND”, making:
+“127 RENTAL PROPERTIES IN DUBLIN” start as a separate block.
+
+Fix:
+The heading should read as one centered sentence block, wrapping naturally over max 3 lines, but NEVER force a break after “FOUND”.
+
+Exact text:
+IN THE LAST 24 HOURS, HOUSALERT FOUND 127 RENTAL PROPERTIES IN [DUBLIN ▼]
+
+Requirements:
+- Montserrat font.
+- All caps.
+- Fully centered.
+- Increase headline size by about 15–20%.
+- Slightly less bold than current.
+- Font weight around 600.
+- Dark navy/black #0f172a.
+- Count number must be black, not blue.
+- Dropdown must be inline with the sentence.
+- Dropdown text must be same size, weight, color, and letter-spacing as heading.
+- Dropdown underline dark navy.
+- Do NOT make dropdown look like a small select input.
+
+Suggested:
+Use one heading wrapper with inline spans:
+“IN THE LAST 24 HOURS, HOUSALERT FOUND 127 RENTAL PROPERTIES IN ”
+then inline select/dropdown.
+
+==================================================
+2. CARD TITLE
+==================================================
+
+Current issue:
+Street name is too small.
+
+Fix:
+- Increase street/title font size by 15–20%.
+- Font weight 700.
+- Only show street name.
+- Remove city, county, postal zone, house number, and extra suffixes where possible.
+
+Examples:
+“Stanford Green, Crumlin, Dublin 12.” → “Stanford Green”
+“Canon Court, Bride Street” → “Canon Court”
+“Dublin 8, Dublin” → fallback to “Dublin 8” only if no street exists.
+
+==================================================
+3. TIME TEXT
+==================================================
+
+Current issue:
+Time is too grey.
+
+Fix:
+- “10h ago” should be black/dark navy.
+- Smaller than street title.
+- Reduce spacing below it.
+
+==================================================
+4. DETAILS PILLS
+==================================================
+
+Current issue:
+Only price is showing; bedrooms and size pills are missing.
+
+Fix:
+Render up to exactly 3 pills in one row:
+1. Bedrooms
+2. Size m²
+3. Price
+
+Requirements:
+- All pills fully rounded.
+- White background.
+- Black/dark border.
+- Text black.
+- Icons purple for bedrooms and size.
+- Price has NO icon.
+- Price is bold.
+- Price has NO “/mo”.
+- Pills should be larger than current, but still fit on one line.
+- Tight spacing between pills.
+- If bedrooms missing, hide bedrooms pill.
+- If size missing, hide size pill.
+- Price should always show if available.
+
+Important:
+If API uses bedroom fields named bedrooms, beds, bedroom_count, size_m2, size, area, etc., map them defensively so pills appear whenever data exists.
+
+==================================================
+5. CARD SPACING
+==================================================
+
+Reduce spacing between:
+- street/title
+- time ago
+- pills row
+
+Card should feel compact and premium.
+
+Keep:
+- light lavender background.
+- rounded corners.
+- subtle shadow.
+- card not clickable.
+- no heart icon.
+- no source name.
+- no location/city pill.
+
+==================================================
+6. IMAGE SIZE
+==================================================
+
+Keep image smaller than the earlier oversized version.
+
+Suggested:
+Desktop image height: around 170–185px.
+Mobile image height: around 190px.
+
+Use object-fit: cover.
+
+==================================================
+7. CAROUSEL
+==================================================
+
+Desktop:
+- exactly 5 cards visible max.
+
+Mobile:
+- 1 centered card.
+- partial next/previous card may peek.
+- arrows and dots remain.
+
+==================================================
+8. VERIFY
+==================================================
+
+Verify:
+- headline centered and not forced to break after FOUND.
+- dropdown inline and same size as heading.
+- count is black.
+- title larger.
+- time black.
+- bedrooms/size/price pills appear when data exists.
+- price has no icon and no /mo.
+- cards are not clickable.
+- no backend/push/email/app changes.
+
+Report:
+- files changed
+- what CSS/JS was changed
+- whether bedroom/size data was available in current API response
+- final Duda iframe snippet if height changed
