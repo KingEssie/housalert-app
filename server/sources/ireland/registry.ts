@@ -32,7 +32,7 @@ export interface IrelandSource {
 
 export const irelandSources: IrelandSource[] = [
   // ── National aggregators / portals (multi-city capable) ──────────────────
-  { name: "daft",       fetchListings: fetchDaft,       dublinOnly: true },
+  { name: "daft",       fetchListings: fetchDaft },
   { name: "propertyie", fetchListings: fetchPropertyie, dublinOnly: true },
   { name: "propertypal",fetchListings: fetchPropertyPal },
   { name: "sherryfitz", fetchListings: fetchSherryFitz },

@@ -11,9 +11,23 @@ import {
 } from "../proxy";
 
 const SOURCE_ENV = "DAFT_PROXY_URL";
-const BASE_URL   =
-  process.env.DAFT_DUBLIN_RENT_URL ||
-  "https://www.daft.ie/property-for-rent/dublin-city";
+
+// City → Daft URL slug mapping.  Allows per-city env-var override, e.g.
+// DAFT_DUBLIN_RENT_URL or DAFT_CORK_RENT_URL.
+const CITY_SLUGS: Record<string, string> = {
+  Dublin:   "dublin-city",
+  Cork:     "cork-city",
+  Galway:   "galway-city",
+  Limerick: "limerick-city",
+  Waterford:"waterford-city",
+};
+
+function buildDaftUrl(city: string): string {
+  const envKey = `DAFT_${city.toUpperCase().replace(/\s+/g, "_")}_RENT_URL`;
+  if (process.env[envKey]) return process.env[envKey]!;
+  const slug = CITY_SLUGS[city] ?? city.toLowerCase().replace(/\s+/g, "-");
+  return `https://www.daft.ie/property-for-rent/${slug}`;
+}
 
 export interface DaftFetchResult {
   method: "direct" | "proxy";
@@ -25,15 +39,15 @@ export interface DaftFetchResult {
   error?: string;
 }
 
-function extractListings(html: string): { rawCount: number; listings: SourceListing[] } {
+function extractListings(html: string, city: string): { rawCount: number; listings: SourceListing[] } {
   const { json, isCloudflare } = extractNextData(html);
 
   if (!json) {
     if (isCloudflare) {
-      log("[daft] Cloudflare challenge page detected — skipping this cycle", "daft");
+      log(`[daft/${city}] Cloudflare challenge page detected — skipping this cycle`, "daft");
     } else {
       const snippet = html.slice(0, 200).replace(/\s+/g, " ").trim();
-      log(`[daft] No __NEXT_DATA__ in response (snippet: ${snippet})`, "daft");
+      log(`[daft/${city}] No __NEXT_DATA__ in response (snippet: ${snippet})`, "daft");
     }
     return { rawCount: 0, listings: [] };
   }
@@ -49,10 +63,11 @@ function extractListings(html: string): { rawCount: number; listings: SourceList
   const rawCount = Array.isArray(rawListings) ? rawListings.length : 0;
   if (rawCount === 0) {
     const keys = Object.keys(pageProps).join(", ") || "(empty)";
-    log(`[daft] __NEXT_DATA__ found but no listings array (pageProps keys: ${keys})`, "daft");
+    log(`[daft/${city}] __NEXT_DATA__ found but no listings array (pageProps keys: ${keys})`, "daft");
     return { rawCount: 0, listings: [] };
   }
 
+  const citySlug = CITY_SLUGS[city] ?? city.toLowerCase().replace(/\s+/g, "-");
   const results: SourceListing[] = [];
   for (const entry of rawListings) {
     const l = entry?.listing ?? entry;
@@ -63,9 +78,9 @@ function extractListings(html: string): { rawCount: number; listings: SourceList
     const seoPath: string = l.seoFriendlyPath || l.listingPage || "";
     const url = seoPath
       ? `https://www.daft.ie${seoPath.startsWith("/") ? seoPath : "/" + seoPath}`
-      : `https://www.daft.ie/property-for-rent/dublin/${id}`;
+      : `https://www.daft.ie/property-for-rent/${citySlug}/${id}`;
 
-    const title: string = l.header || l.title || l.propertyType || "Dublin Rental";
+    const title: string = l.header || l.title || l.propertyType || `${city} Rental`;
     const price    = l.price ? parsePrice(l.price) : undefined;
     const bedrooms = (l.numBedrooms || l.bedrooms) ? parseBedrooms(l.numBedrooms || l.bedrooms) : undefined;
 
@@ -108,12 +123,13 @@ function extractListings(html: string): { rawCount: number; listings: SourceList
   return { rawCount, listings: results };
 }
 
-async function doFetch(): Promise<DaftFetchResult> {
+async function doFetch(city = "Dublin"): Promise<DaftFetchResult> {
+  const targetUrl = buildDaftUrl(city);
   const proxyConfigured = isProxyConfigured(SOURCE_ENV);
-  const { fetchUrl, method, proxyUrl } = buildProxyUrl(BASE_URL, SOURCE_ENV);
+  const { fetchUrl, method, proxyUrl } = buildProxyUrl(targetUrl, SOURCE_ENV);
 
   log(
-    `[daft] Fetching via ${method}${proxyUrl ? ` (proxy: ${proxyUrl.slice(0, 40)}…)` : ""} → ${BASE_URL}`,
+    `[daft/${city}] Fetching via ${method}${proxyUrl ? ` (proxy: ${proxyUrl.slice(0, 40)}…)` : ""} → ${targetUrl}`,
     "daft"
   );
 
@@ -132,30 +148,30 @@ async function doFetch(): Promise<DaftFetchResult> {
 
     if (res.status === 403 || res.status === 503) {
       const note = method === "proxy" ? " (proxy did not bypass CF)" : "";
-      log(`[daft] HTTP ${res.status} — Cloudflare block${note}, skipping`, "daft");
+      log(`[daft/${city}] HTTP ${res.status} — Cloudflare block${note}, skipping`, "daft");
       return { method, proxyConfigured, status, rawCount: 0, normalizedCount: 0, listings: [] };
     }
     if (!res.ok) {
-      log(`[daft] HTTP ${res.status} ${res.statusText} — skipping`, "daft");
+      log(`[daft/${city}] HTTP ${res.status} ${res.statusText} — skipping`, "daft");
       return { method, proxyConfigured, status, rawCount: 0, normalizedCount: 0, listings: [] };
     }
 
     const html = await res.text();
-    const { rawCount, listings } = extractListings(html);
-    log(`[daft] HTTP ${status} (${method}) — raw=${rawCount} normalized=${listings.length}`, "daft");
+    const { rawCount, listings } = extractListings(html, city);
+    log(`[daft/${city}] HTTP ${status} (${method}) — raw=${rawCount} normalized=${listings.length}`, "daft");
     return { method, proxyConfigured, status, rawCount, normalizedCount: listings.length, listings };
   } catch (err: any) {
     clearTimeout(timer);
     const msg = err.name === "AbortError" ? `Timed out after ${FETCH_TIMEOUT_MS / 1000}s` : `Fetch error: ${err.message}`;
-    log(`[daft] ${msg}`, "daft");
+    log(`[daft/${city}] ${msg}`, "daft");
     return { method, proxyConfigured, status, rawCount: 0, normalizedCount: 0, listings: [], error: msg };
   }
 }
 
-export async function fetchListings(): Promise<SourceListing[]> {
-  return (await doFetch()).listings;
+export async function fetchListings(city = "Dublin"): Promise<SourceListing[]> {
+  return (await doFetch(city)).listings;
 }
 
-export async function testFetch(): Promise<DaftFetchResult> {
-  return doFetch();
+export async function testFetch(city = "Dublin"): Promise<DaftFetchResult> {
+  return doFetch(city);
 }

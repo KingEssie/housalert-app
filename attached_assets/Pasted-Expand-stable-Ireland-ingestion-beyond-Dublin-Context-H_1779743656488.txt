@@ -1,0 +1,210 @@
+Expand stable Ireland ingestion beyond Dublin.
+
+Context:
+HousAlert is now launch-ready from a UI/SEO perspective:
+- homepage widget complete
+- top 10 SEO city pages complete
+- delayed public preview strategy complete
+- Dublin ingestion strong (~200 listings/cycle)
+- 7 stable sources live
+
+Current weakness:
+Outside Dublin, ingestion coverage is still thin.
+Most SEO city pages have low/no inventory because only limited multi-city ingestion exists.
+
+Goal:
+Expand stable ingestion coverage for:
+1. Cork
+2. Galway
+3. Limerick
+
+Focus ONLY on:
+- low maintenance
+- stable
+- scalable
+- low-cost ingestion
+- existing working sources first
+
+DO NOT touch:
+- homepage widget
+- app UI
+- push notifications
+- Stripe
+- service worker
+- matching
+- Germany infrastructure
+- SEO pages
+- delayed public API behavior
+
+==================================================
+1. Audit current multi-city ingestion
+==================================================
+
+Audit all current Ireland sources:
+
+- PropertyPal
+- SherryFitz
+- Lisney
+- Owen Reilly
+- CityHomes
+- Ray Cooke
+- Daft
+- PropertyIE
+
+For each source, report:
+- which cities currently return listings
+- average listing counts
+- whether source is Dublin-only or expandable
+- whether city URLs already exist
+- whether parsing logic already supports other cities
+- estimated maintenance risk
+
+Specifically analyze:
+- Cork
+- Galway
+- Limerick
+
+==================================================
+2. Expand existing multi-city sources first
+==================================================
+
+Priority:
+Use already-working sources before adding new ones.
+
+Focus on:
+- PropertyPal
+- SherryFitz
+
+Goals:
+- increase Cork coverage
+- increase Galway coverage
+- increase Limerick coverage
+
+Tasks:
+- verify city URL mappings
+- verify district/county path variants
+- improve city slug matching
+- improve sitemap filtering
+- add fallback URL patterns where needed
+
+Examples:
+- county-based paths
+- district-based paths
+- slug alias handling
+
+Do NOT add expensive JS rendering.
+
+==================================================
+3. Investigate low-maintenance regional sources
+==================================================
+
+ONLY if needed after step 2.
+
+Find:
+- simple HTML
+- WordPress
+- SSR
+- sitemap-based
+- direct fetch compatible
+
+for:
+- Cork
+- Galway
+- Limerick
+
+Requirements:
+- low maintenance
+- no browser automation
+- no Playwright
+- no expensive ScraperAPI render mode
+- no heavy anti-bot systems
+
+Good candidates:
+- local estate agencies
+- WordPress property sites
+- static listing pages
+- JSON/Next.js SSR pages
+
+Reject:
+- Cloudflare-heavy SPAs
+- JS-only listing apps
+- sites needing session/cookie bypasses
+
+==================================================
+4. Improve city normalization
+==================================================
+
+Ensure listings consistently normalize into:
+- Cork
+- Galway
+- Limerick
+
+Avoid fragmentation like:
+- County Cork
+- Cork City
+- Galway City
+- Limerick City
+
+All should normalize cleanly into the target city bucket.
+
+==================================================
+5. Improve inventory density
+==================================================
+
+Goal:
+Reach meaningful public inventory for:
+- Cork
+- Galway
+- Limerick
+
+Target:
+Enough delayed-preview listings so SEO pages feel alive and trustworthy.
+
+Approximate healthy targets:
+- Cork: 30–60+
+- Galway: 20–40+
+- Limerick: 20–40+
+
+Do NOT fake or duplicate listings.
+
+==================================================
+6. Preserve stability
+==================================================
+
+Protect:
+- scheduler stability
+- cycle duration
+- low API costs
+- low maintenance burden
+
+Keep:
+- no JS rendering
+- no browser automation
+- no premium scraping products unless already used
+- no changes to notification pipeline
+
+==================================================
+7. Verification
+==================================================
+
+Verify:
+- Cork listings increase
+- Galway listings increase
+- Limerick listings increase
+- ingestion cycles remain stable
+- no new scheduler crashes
+- source health dashboard healthy
+- public city pages now show meaningful inventory
+
+==================================================
+8. Report back
+==================================================
+
+Report:
+- source audit table
+- which sources expanded successfully
+- Cork/Galway/Limerick listing counts before vs after
+- new city URL patterns added
+- any sources rejected and why
+- scheduler timing impact
+- estimated maintenance/cost impact
