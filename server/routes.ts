@@ -1892,6 +1892,71 @@ export async function registerRoutes(
     res.sendStatus(204);
   });
 
+  // -----------------------------------------------------------------------
+  // Public city-page listings API — no auth, open CORS.
+  // Used by embeddable city-page grids (e.g. dublin-listings.html).
+  // Returns listings from last 30 days, respecting the 24h public delay.
+  // -----------------------------------------------------------------------
+  app.get("/api/public/city-listings", async (req, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Cache-Control", "public, max-age=120, stale-while-revalidate=300");
+    try {
+      const rawCity = ((req.query.city as string) || "Dublin").trim();
+      const city = rawCity || "Dublin";
+      const limit = Math.min(Math.max(parseInt(req.query.limit as string) || 30, 1), 60);
+
+      // Public delay: only listings at least 24h old
+      const delayedCutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+      // Rolling 30-day window
+      const thirtyDaysCutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+      const { data, error } = await supabase
+        .from("listings")
+        .select("id, title, street, district, price, size_m2, bedrooms, city, image_url, created_at")
+        .ilike("city", city)
+        .lte("created_at", delayedCutoff)
+        .gte("created_at", thirtyDaysCutoff)
+        .order("created_at", { ascending: false })
+        .limit(limit);
+
+      if (error) return res.status(500).json({ error: error.message });
+
+      const listings = (data ?? []).map((l: any) => ({
+        id: l.id,
+        displayTitle: getIrishDisplayTitle(l),
+        price: l.price > 0 ? l.price : null,
+        bedrooms: l.bedrooms > 0 ? l.bedrooms : null,
+        size_m2: l.size_m2 > 0 ? l.size_m2 : null,
+        imageUrl: l.image_url ?? null,
+      }));
+
+      return res.json({ city, listings });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.options("/api/public/city-listings", (_req, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    res.sendStatus(204);
+  });
+
+  // -----------------------------------------------------------------------
+  // Serve the standalone Dublin city-page embeddable grid.
+  // -----------------------------------------------------------------------
+  app.get("/dublin-listings.html", (_req, res) => {
+    const candidates = [
+      path.resolve(process.cwd(), "dist", "public", "dublin-listings.html"),
+      path.resolve(process.cwd(), "client", "public", "dublin-listings.html"),
+    ];
+    const found = candidates.find((p) => fs.existsSync(p));
+    if (!found) return res.status(404).send("Page not found");
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.sendFile(found);
+  });
+
   // Public endpoint — no auth required.
   // Accepts a normalized filter object, returns match counts for 3 time windows
   // and the best available preview listing (with/without image).

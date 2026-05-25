@@ -418,7 +418,7 @@
      Just pass it through; only strip a trailing dot for safety. */
   function shortTitle(displayTitle, city) {
     if (!displayTitle) return city || "Rental Property";
-    return displayTitle.replace(/\.$/, "").trim() || city || "Rental Property";
+    return decodeHtml(displayTitle).replace(/\.$/, "").trim() || city || "Rental Property";
   }
 
   function getVisible() {
@@ -465,6 +465,12 @@
     buildDots();
     updateNav();
   });
+
+  function decodeHtml(html) {
+    var ta = document.createElement("textarea");
+    ta.innerHTML = html;
+    return ta.value;
+  }
 
   function timeAgo(iso) {
     var diff = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);

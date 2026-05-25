@@ -1,0 +1,206 @@
+Build Dublin city page listings support for Duda/SEO.
+
+Context:
+The Duda homepage widget is now visually approved.
+It uses the public listings preview style:
+- delayed public listings
+- no timestamps
+- no source links
+- no clickable cards
+- light lavender cards
+- rounded cards
+- pills for bedrooms, size, price
+
+Now we want to create the Dublin city page listing section.
+
+Goal:
+Create a public embeddable listings section for the Dublin SEO city page.
+
+Requirements:
+- show only Dublin listings
+- show listings from the past month only
+- 3 listings per row on laptop/desktop
+- 1 listing per row on mobile
+- listing UI should match the approved embed card design
+- no timestamps
+- no source names
+- no source links
+- cards not clickable
+
+DO NOT touch:
+- push notifications
+- service worker
+- Stripe
+- matching
+- ingestion scheduler
+- emails
+- app realtime listings
+- Germany infrastructure
+
+==================================================
+1. Public API for city page listings
+==================================================
+
+Create or extend a public endpoint.
+
+Preferred:
+GET /api/public/city-listings?city=Dublin&limit=30
+
+Requirements:
+- city param, default Dublin
+- limit param, max maybe 60
+- only public-safe fields
+- only listings from the last 30 days
+- still respect public delay strategy:
+  created_at <= now() - interval '24 hours'
+- sort newest first within the allowed delayed window
+
+Fields returned:
+- id
+- displayTitle
+- price
+- bedrooms
+- size_m2
+- imageUrl
+
+Do NOT return:
+- source
+- source URL
+- listingUrl
+- foundAt/timestamps
+- admin/debug/private fields
+
+==================================================
+2. Create Dublin city embed/widget file
+==================================================
+
+Create a standalone embeddable HTML widget for city pages, for example:
+
+client/public/widgets/dublin-listings.html
+
+or:
+
+client/public/dublin-listings.html
+
+It should:
+- fetch /api/public/city-listings?city=Dublin&limit=30
+- render listing cards in a grid
+- use the same card styling as widget.html
+- use no framework
+- be iframe-safe for Duda
+
+==================================================
+3. Grid layout
+==================================================
+
+Desktop/laptop:
+- 3 cards per row
+
+Tablet:
+- 2 cards per row if needed
+
+Mobile:
+- 1 card per row
+
+Use CSS grid:
+grid-template-columns responsive:
+- min-width desktop: repeat(3, 1fr)
+- tablet: repeat(2, 1fr)
+- mobile: 1fr
+
+==================================================
+4. Card UI
+==================================================
+
+Cards must match the approved homepage widget card style:
+
+- light lavender background
+- rounded corners
+- subtle shadow
+- image on top
+- street/area title only
+- detail pills row:
+  1. bedrooms if available
+  2. size if available
+  3. price if available
+- fully rounded pills
+- bedrooms/size icons
+- no icon for price
+- price bold
+- no /mo
+- no timestamp
+- no source
+- no city/location pill
+- no heart icon
+- card not clickable
+
+==================================================
+5. Empty state
+==================================================
+
+If no listings:
+Show:
+"No preview listings available in Dublin yet."
+
+Do not mention realtime or last 24h.
+
+==================================================
+6. Static route / iframe support
+==================================================
+
+Ensure the new city listing HTML is publicly accessible, for example:
+
+https://app.housalert.com/dublin-listings.html
+
+It must:
+- return 200
+- not be caught by SPA fallback
+- be embeddable in Duda iframe
+- not blocked by X-Frame-Options
+
+If needed, add explicit route and frame exception like widget.html.
+
+==================================================
+7. Duda iframe snippet
+==================================================
+
+Report the final iframe snippet, for example:
+
+<iframe
+  src="https://app.housalert.com/dublin-listings.html"
+  style="width:100%;height:900px;border:none;overflow:hidden;"
+  scrolling="no"
+  loading="lazy"
+  title="Dublin Rental Listings">
+</iframe>
+
+Adjust height based on final layout.
+
+==================================================
+8. Verification
+==================================================
+
+Verify:
+- endpoint returns only Dublin
+- endpoint returns only listings from last 30 days
+- endpoint excludes listings newer than 24h
+- cards show 3 per row desktop
+- cards show 1 per row mobile
+- cards match homepage widget card UI
+- no timestamps
+- no source names
+- no source links
+- no click behavior
+- no app/push/email changes
+
+==================================================
+9. Report back
+==================================================
+
+Report:
+- files changed
+- endpoint created
+- route created
+- number of Dublin listings returned
+- sample listing payload
+- final Duda iframe snippet

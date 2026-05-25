@@ -58,6 +58,7 @@ app.use((req, res, next) => {
   const isEmbedRoute =
     req.path === "/onboarding-embed" ||
     req.path === "/widget.html" ||
+    req.path === "/dublin-listings.html" ||
     req.path.startsWith("/api/onboarding-drafts") ||
     req.path.startsWith("/onboarding/");
 
