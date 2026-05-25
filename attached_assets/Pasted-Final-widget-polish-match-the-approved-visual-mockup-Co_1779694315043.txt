@@ -1,0 +1,225 @@
+Final widget polish — match the approved visual mockup
+
+Context:
+The Duda latest listings widget is live at:
+https://app.housalert.com/widget.html
+
+The last Replit change improved the widget, but the final approved visual direction is:
+
+- centered Montserrat-style headline
+- dropdown same size/style as the rest of the title
+- 5 cards max on desktop
+- 1 centered card on mobile
+- compact card spacing
+- light purple card background
+- taller image
+- 3 detail pills on one row:
+  1. bedrooms
+  2. size
+  3. price
+- price pill bold black
+- no /mo
+- no price icon
+- fully rounded pills
+- no heart icon
+- no source text
+- no city/location pill
+- cards not clickable
+
+Only update:
+client/public/widget.html
+
+Do NOT touch:
+- service worker
+- push notifications
+- VAPID/FCM
+- Stripe/paywall
+- matching pipeline
+- ingestion scheduler
+- Germany infrastructure
+- emails
+- app listing detail UI
+
+==================================================
+1. Heading typography
+==================================================
+
+Make the heading match the approved mockup.
+
+Requirements:
+- Use Montserrat if available, otherwise import/use a safe Google Fonts Montserrat fallback inside widget.html.
+- Heading centered.
+- Heading uppercase.
+- Heading larger than current.
+- Heading bold enough, but not overly heavy.
+- Text color: dark navy/black.
+- Count number should be black, not blue.
+- Layout:
+
+OVER THE LAST 24H, HOUSALERT FOUND
+127 RENTAL HOMES IN
+DUBLIN ▼
+
+Important:
+- Only the city dropdown should be on the line below.
+- The dropdown text must be the SAME font-size, font-weight, line-height, letter-spacing, and color as the heading.
+- Dropdown should not look like a small form control.
+- Dropdown underline can remain.
+- Dropdown text must be black/dark navy, not blue.
+
+==================================================
+2. Desktop layout
+==================================================
+
+Desktop/laptop:
+- show max 5 cards visible.
+- cards centered in the widget.
+- not 6 or 7 visible.
+- carousel should still allow horizontal scrolling if more listings exist.
+- full section width is okay, but card width must enforce 5 visible max.
+
+==================================================
+3. Mobile layout
+==================================================
+
+Mobile:
+- heading centered.
+- one card centered.
+- horizontal swipe still works.
+- card should not start hard-left.
+- card width around 82–90vw.
+- card visually centered like the approved mockup.
+
+==================================================
+4. Card background and image
+==================================================
+
+Cards:
+- use a very light purple/lavender background similar to the app cards.
+- rounded corners.
+- subtle shadow.
+- no heart icon.
+- not clickable.
+- no link behavior.
+- cursor default.
+
+Image:
+- taller than current.
+- rounded top corners.
+- object-fit cover.
+- should feel closer to app listing cards.
+
+==================================================
+5. Card content spacing
+==================================================
+
+Reduce vertical whitespace inside the card.
+
+Specifically reduce spacing between:
+- street/title
+- time ago
+- pills row
+
+Street/title:
+- bold.
+- street/area only where possible.
+- no house number where possible.
+
+Time:
+- show only time ago.
+- no source name.
+
+==================================================
+6. Detail pills
+==================================================
+
+Show exactly these detail pills, left to right, on one row where data exists:
+
+1. Bedrooms
+2. Size
+3. Price
+
+Requirements:
+- fully rounded pill borders.
+- black outline border.
+- white or very light background.
+- icons for bedrooms and size only.
+- icons may be purple inside.
+- price has NO icon.
+- price text bold black.
+- remove “/mo”.
+- all three should fit on one row.
+- if size is missing, hide size pill.
+- if bedrooms is missing, hide bedroom pill.
+- price should always show if available.
+
+Do NOT show:
+- city/location pill
+- source name
+- heart icon
+- direct source link
+- price tag icon
+
+==================================================
+7. Data formatting
+==================================================
+
+For the widget only:
+- continue using displayTitle where available.
+- remove leading house numbers where possible.
+- do not change app or email formatting.
+- do not change listing detail pages.
+
+==================================================
+8. Iframe snippet
+==================================================
+
+After changes, report the final recommended Duda iframe snippet.
+
+Expected:
+
+<iframe
+  src="https://app.housalert.com/widget.html"
+  style="width:100%;height:420px;border:none;overflow:hidden;"
+  scrolling="no"
+  loading="lazy"
+  title="Latest Rental Homes">
+</iframe>
+
+Adjust height only if needed.
+
+==================================================
+9. Verification
+==================================================
+
+Verify:
+- widget.html loads directly.
+- Duda iframe still works.
+- heading is centered.
+- dropdown same size/style/color as title.
+- count number is black.
+- only dropdown is on its own line under the title.
+- desktop shows max 5 cards.
+- mobile shows 1 centered card.
+- card background is light purple/lavender.
+- image is taller.
+- no heart icon.
+- no source text.
+- no city/location pill.
+- cards are not clickable.
+- pills are bedrooms, size, price only.
+- pills are on one row.
+- price is bold black, no /mo, no icon.
+- no app/email/push/SW changes.
+
+==================================================
+10. Report back
+==================================================
+
+Report:
+- files changed
+- visual changes made
+- final iframe snippet
+- how missing bedroom/size data is handled
+- confirmation cards are not clickable
+- confirmation app/emails/push/SW unchanged
