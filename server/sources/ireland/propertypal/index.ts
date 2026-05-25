@@ -27,13 +27,33 @@ const PP_HEADERS: Record<string, string> = {
 };
 
 /**
+ * Cities whose PropertyPal city-level pages either 404 or have very thin
+ * inventory — map to a county-level URL that returns better coverage.
+ * County pages confirmed 200: county-louth, county-galway, county-limerick.
+ */
+const COUNTY_URL_OVERRIDES: Record<string, string> = {
+  "drogheda": "county-louth",
+  "galway":   "county-galway",
+  "limerick": "county-limerick",
+};
+
+/**
  * Build the PropertyPal search URL for a given city.
  * For Dublin the PROPERTYPAL_DUBLIN_RENT_URL env var can override the URL.
+ * For cities with thin/missing city-level pages, falls back to county-level.
  */
 function getCityUrl(city: string): string {
   const slug = city.toLowerCase().replace(/\s+/g, "-");
   if (slug === "dublin" && process.env.PROPERTYPAL_DUBLIN_RENT_URL) {
     return process.env.PROPERTYPAL_DUBLIN_RENT_URL;
+  }
+  const envKey = `PROPERTYPAL_${city.toUpperCase().replace(/\s+/g, "_")}_RENT_URL`;
+  if (process.env[envKey]) {
+    return `${LISTING_BASE}/property-to-rent/${process.env[envKey]}`;
+  }
+  const countySlug = COUNTY_URL_OVERRIDES[slug];
+  if (countySlug) {
+    return `${LISTING_BASE}/property-to-rent/${countySlug}`;
   }
   return `${LISTING_BASE}/property-to-rent/${slug}`;
 }

@@ -1,0 +1,159 @@
+Improve inventory density across all 10 Ireland launch cities.
+
+Context:
+HousAlert launch cities are now:
+
+- Dublin
+- Cork
+- Galway
+- Limerick
+- Waterford
+- Kilkenny
+- Swords
+- Bray
+- Drogheda
+- Dundalk
+
+SEO pages and delayed-preview embeds already exist.
+
+Goal:
+Ensure ALL 10 launch cities feel “alive” with meaningful listing inventory before launch.
+
+IMPORTANT:
+This is NOT about perfection.
+This is about minimum viable inventory density.
+
+DO NOT touch:
+- homepage widget
+- app UI
+- push notifications
+- Stripe
+- onboarding
+- service worker
+- emails
+- SEO page layouts
+
+==================================================
+1. Audit inventory density per city
+==================================================
+
+For each launch city, report:
+
+- total active listings available
+- listings returned by public delayed-preview endpoint
+- which sources contribute inventory
+- which sources are empty
+- average new listings/day if measurable
+
+Output a table like:
+
+City | Total Listings | Public Preview Count | Sources Contributing
+
+==================================================
+2. Prioritize weak cities
+==================================================
+
+Focus specifically on weak inventory cities:
+
+- Kilkenny
+- Swords
+- Bray
+- Drogheda
+- Dundalk
+- Waterford
+- Limerick
+
+Goal:
+Make every city page feel populated enough for launch.
+
+==================================================
+3. Improve existing source coverage first
+==================================================
+
+Before adding new sources:
+- maximize PropertyPal coverage
+- maximize SherryFitz coverage
+- improve city alias matching
+- improve county/district normalization
+
+Examples:
+- Bray -> Wicklow mapping
+- Drogheda -> Louth mapping
+- Swords -> Dublin district mapping
+
+Add explicit alias handling if needed.
+
+==================================================
+4. Add ONLY low-maintenance regional sources
+==================================================
+
+If a city is still weak:
+Find simple regional sources ONLY IF:
+
+- direct HTML
+- WordPress
+- sitemap based
+- SSR/Next.js JSON
+- low anti-bot
+- low maintenance
+
+Reject:
+- browser automation
+- Playwright
+- JS rendering
+- expensive ScraperAPI render
+- unstable Cloudflare bypasses
+
+Target:
+1–2 small stable regional sources can be enough.
+
+==================================================
+5. Improve public city page experience
+==================================================
+
+Goal:
+Each city page should visually feel alive.
+
+Even:
+15–30 delayed preview listings
+can already feel legitimate.
+
+Do NOT fake listings.
+Do NOT duplicate listings.
+
+==================================================
+6. Protect platform stability
+==================================================
+
+Do NOT:
+- increase scheduler instability
+- create expensive scraping infra
+- add fragile sources
+- increase maintenance burden heavily
+
+Keep ingestion lean.
+
+==================================================
+7. Verification
+==================================================
+
+Verify:
+- all 10 cities return listings
+- delayed preview embeds populate
+- no city pages feel empty
+- ingestion cycle remains healthy
+- source health dashboard healthy
+- no new crashes/errors
+
+==================================================
+8. Report back
+==================================================
+
+Report:
+- before/after inventory table
+- which cities improved
+- which aliases/mappings added
+- which new sources added (if any)
+- scheduler timing impact
+- estimated maintenance impact
+- which cities are still weakest

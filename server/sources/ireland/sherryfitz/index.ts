@@ -110,17 +110,32 @@ function toTitleCase(s: string): string {
 }
 
 /**
+ * Known SherryFitz property type slugs used to distinguish between
+ * 5-part paths (/rent/TYPE/CITY/DISTRICT/SLUG) and
+ * 4-part paths (/rent/CITY/DISTRICT/SLUG — no explicit type).
+ */
+const KNOWN_PROPERTY_TYPES = new Set([
+  "apartment", "house", "bungalow", "duplex", "studio", "mews",
+  "detached-house", "semi-detached-house", "terraced-house",
+  "end-terrace-house", "mid-terrace-house", "room-double", "room-single",
+]);
+
+/**
  * Parse a Sherry FitzGerald rental URL into listing fields.
  *
- * Path format: /rent/TYPE/CITY/DISTRICT/SLUG
+ * SherryFitz uses two path formats:
  *
- * Indices after split on "/":
- *   [0] ""  → filtered
- *   [0] "rent"
- *   [1] TYPE
- *   [2] CITY   (e.g. "dublin", "cork", "galway")
- *   [3] DISTRICT
- *   [4] SLUG
+ *   5-part (standard):  /rent/TYPE/CITY/DISTRICT/SLUG
+ *   4-part (type-less): /rent/CITY/DISTRICT/SLUG
+ *
+ * Cities like Swords and Bray are often stored as districts under a county
+ * city (e.g. /rent/apartment/dublin/swords/... or /rent/semi-detached-house/wicklow/bray/...).
+ * Drogheda appears as /rent/house/meath/drogheda/...
+ * We accept a listing if either:
+ *   a) the URL city slug matches expectedCitySlug (direct city match), or
+ *   b) the district slug matches expectedCitySlug (city listed as district)
+ * In case (b) the canonical city is set to the expected city name regardless
+ * of what county the URL uses.
  */
 function parseListingFromUrl(
   fullUrl: string,
@@ -135,16 +150,37 @@ function parseListingFromUrl(
   }
 
   const parts = pathname.replace(/\/$/, "").split("/").filter(Boolean);
-  // Expected: ["rent", TYPE, CITY, DISTRICT, SLUG]
-  if (parts.length < 5 || parts[0] !== "rent") return null;
+  // Need at least: "rent" + city/type + district/city + slug  (4 segments)
+  if (parts.length < 4 || parts[0] !== "rent") return null;
 
-  const urlCitySlug  = parts[2]; // e.g. "dublin", "cork"
-  if (urlCitySlug !== expectedCitySlug) return null;
+  let propertyType: string;
+  let urlCitySlug:  string;
+  let district:     string;
+  let slug:         string;
 
-  const propertyType = parts[1];
-  const district     = parts[3];
-  const slug         = parts[4];
+  // Distinguish 5-part (/rent/TYPE/CITY/DISTRICT/SLUG) from
+  // 4-part (/rent/CITY/DISTRICT/SLUG) by testing parts[1] against known types.
+  if (parts.length >= 5 && KNOWN_PROPERTY_TYPES.has(parts[1])) {
+    propertyType = parts[1];
+    urlCitySlug  = parts[2];
+    district     = parts[3];
+    slug         = parts[4];
+  } else {
+    // 4-part format — no explicit type (parts[1] is city/county slug)
+    propertyType = "property";
+    urlCitySlug  = parts[1];
+    district     = parts[2];
+    slug         = parts[3];
+  }
 
+  // Accept by direct city match OR by district match (e.g. "swords" as a
+  // district under "dublin", "bray" under "wicklow", "drogheda" under "meath").
+  const matchesByCity     = urlCitySlug === expectedCitySlug;
+  const matchesByDistrict = district    === expectedCitySlug;
+  if (!matchesByCity && !matchesByDistrict) return null;
+
+  // Always canonicalise to the requested city so listings land in the right bucket.
+  const city       = matchesByCity ? toTitleCase(urlCitySlug) : toTitleCase(expectedCitySlug);
   const externalId = `${propertyType}/${urlCitySlug}/${district}/${slug}`;
 
   let bedrooms: number | undefined;
@@ -173,9 +209,6 @@ function parseListingFromUrl(
   }
 
   const location = districtStr;
-
-  // Canonical city name from slug (e.g. "cork" → "Cork")
-  const city = toTitleCase(urlCitySlug);
 
   let createdAt: Date | undefined;
   if (lastmod) {

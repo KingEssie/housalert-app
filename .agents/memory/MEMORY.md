@@ -11,3 +11,4 @@
 - [PropertyPal TLS fingerprint block](propertypal-curl.md) — Node.js fetch (undici/h2 ALPN) gets 403; curl gets 200 from same IP; use execFile('curl') for this source; PROPERTYPAL_PROXY_URL only works with real curl proxy format
 - [ingestion_runs fast_lane column](ingestion-runs-fast-lane.md) — use fast_lane=TRUE boolean, NOT duration_sec<30; all current runs are fast_lane=false (avg 596–813s); SLA SQL must use fast_lane boolean
 - [widget.html public API displayTitle](widget-display-title.md) — /api/public/latest-listings returns displayTitle (house-number stripped) via widgetDisplayTitle() defined inline in route handler; url() in JS must NOT use quotes inside when set in single-quoted style attribute
+- [SherryFitz URL formats and district-city matching](sherryfitz-url-formats.md) — sitemap uses 5-part and 4-part paths; Swords/Bray/Drogheda stored as districts under county cities; PropertyPal needs county-level URL overrides for thin/missing city pages
