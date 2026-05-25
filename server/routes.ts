@@ -1965,6 +1965,22 @@ export async function registerRoutes(
     res.sendFile(found);
   });
 
+  // City listing pages — Galway, Limerick, Waterford, Kilkenny, Sligo, Dundalk, Drogheda, Bray, Athlone
+  for (const citySlug of ["galway","limerick","waterford","kilkenny","sligo","dundalk","drogheda","bray","athlone"]) {
+    ((slug: string) => {
+      app.get(`/${slug}-listings.html`, (_req, res) => {
+        const candidates = [
+          path.resolve(process.cwd(), "dist", "public", `${slug}-listings.html`),
+          path.resolve(process.cwd(), "client", "public", `${slug}-listings.html`),
+        ];
+        const found = candidates.find((p) => fs.existsSync(p));
+        if (!found) return res.status(404).send("Page not found");
+        res.setHeader("Content-Type", "text/html; charset=utf-8");
+        res.sendFile(found);
+      });
+    })(citySlug);
+  }
+
   // Public endpoint — no auth required.
   // Accepts a normalized filter object, returns match counts for 3 time windows
   // and the best available preview listing (with/without image).

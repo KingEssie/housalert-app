@@ -60,6 +60,15 @@ app.use((req, res, next) => {
     req.path === "/widget.html" ||
     req.path === "/dublin-listings.html" ||
     req.path === "/cork-listings.html" ||
+    req.path === "/galway-listings.html" ||
+    req.path === "/limerick-listings.html" ||
+    req.path === "/waterford-listings.html" ||
+    req.path === "/kilkenny-listings.html" ||
+    req.path === "/sligo-listings.html" ||
+    req.path === "/dundalk-listings.html" ||
+    req.path === "/drogheda-listings.html" ||
+    req.path === "/bray-listings.html" ||
+    req.path === "/athlone-listings.html" ||
     req.path.startsWith("/api/onboarding-drafts") ||
     req.path.startsWith("/onboarding/");
 

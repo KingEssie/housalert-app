@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waterford Rental Listings – HousAlert</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ha-text:        #0f172a;
+    --ha-card-bg:     #f3eefc;
+    --ha-card-shadow: 0 1px 3px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.06);
+    --ha-radius:      14px;
+    --ha-img-h:       190px;
+    --ha-icon:        #7c3aed;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: transparent;
+    overflow-x: hidden;
+    height: auto;
+    overflow-y: visible;
+  }
+
+  #ha-grid-widget {
+    font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    color: var(--ha-text);
+    background: transparent;
+    padding: 0 0 48px;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  /* ── Grid ─────────────────────────────────────────────── */
+
+  .ha-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 4px 2px 8px;
+  }
+
+  @media (max-width: 860px) {
+    .ha-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  }
+
+  @media (max-width: 540px) {
+    .ha-grid { grid-template-columns: 1fr; gap: 14px; }
+  }
+
+  /* ── Card ─────────────────────────────────────────────── */
+
+  .ha-card {
+    background: var(--ha-card-bg);
+    border-radius: var(--ha-radius);
+    overflow: hidden;
+    box-shadow: var(--ha-card-shadow);
+    display: flex;
+    flex-direction: column;
+    cursor: default;
+    user-select: none;
+  }
+
+  .ha-img-wrap {
+    width: 100%;
+    height: var(--ha-img-h);
+    overflow: hidden;
+    background: #ddd0f8;
+    position: relative;
+    flex-shrink: 0;
+    border-radius: var(--ha-radius) var(--ha-radius) 0 0;
+  }
+
+  .ha-img-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .ha-img-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: .3;
+  }
+
+  .ha-card-body {
+    padding: 10px 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    flex: 1;
+  }
+
+  .ha-card-title {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--ha-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 9px;
+  }
+
+  /* Pills */
+  .ha-pills {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 5px;
+    overflow: hidden;
+    align-items: center;
+  }
+
+  .ha-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 999px;
+    border: 1.5px solid var(--ha-text);
+    background: #fff;
+    white-space: nowrap;
+    flex-shrink: 0;
+    color: var(--ha-text);
+    line-height: 1.4;
+  }
+
+  .ha-pill-icon svg { color: var(--ha-icon); flex-shrink: 0; }
+  .ha-pill-price    { font-weight: 800; }
+
+  /* ── Skeleton ─────────────────────────────────────────── */
+
+  .ha-sk {
+    border-radius: var(--ha-radius);
+    overflow: hidden;
+    background: var(--ha-card-bg);
+    box-shadow: var(--ha-card-shadow);
+  }
+
+  .ha-sk-img {
+    width: 100%;
+    height: var(--ha-img-h);
+    background: linear-gradient(90deg, #e9e0ff 25%, #d8caff 50%, #e9e0ff 75%);
+    background-size: 200% 100%;
+    animation: ha-shimmer 1.5s ease-in-out infinite;
+  }
+
+  .ha-sk-body { padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+
+  .ha-sk-line {
+    height: 10px;
+    border-radius: 5px;
+    background: linear-gradient(90deg, #e9e0ff 25%, #d8caff 50%, #e9e0ff 75%);
+    background-size: 200% 100%;
+    animation: ha-shimmer 1.5s ease-in-out infinite;
+  }
+
+  @keyframes ha-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .ha-empty {
+    padding: 60px 0;
+    text-align: center;
+    color: #64748b;
+    font-size: 14px;
+    grid-column: 1 / -1;
+  }
+</style>
+</head>
+<body>
+<div id="ha-grid-widget">
+  <div class="ha-grid" id="ha-grid"></div>
+</div>
+
+<script>
+(function () {
+  var gridEl = document.getElementById("ha-grid");
+  var API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
+    ? window.location.origin
+    : "https://app.housalert.com";
+
+  var BED_ICON  = '<span class="ha-pill-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg></span>';
+  var SIZE_ICON = '<span class="ha-pill-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></span>';
+  var HOUSE_SVG = '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#9f7aea" stroke-width="1.5" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>';
+
+  function decodeHtml(html) {
+    var ta = document.createElement("textarea");
+    ta.innerHTML = html;
+    return ta.value;
+  }
+
+  function esc(s) {
+    return String(s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function skeletons(n) {
+    var s = "";
+    for (var i = 0; i < n; i++) {
+      s += '<div class="ha-sk"><div class="ha-sk-img"></div>'
+        + '<div class="ha-sk-body">'
+        + '<div class="ha-sk-line" style="width:68%"></div>'
+        + '<div class="ha-sk-line" style="width:40%"></div>'
+        + '</div></div>';
+    }
+    return s;
+  }
+
+  function renderCards(listings) {
+    if (!listings || !listings.length) {
+      return '<div class="ha-empty">No preview listings available in Waterford yet.</div>';
+    }
+
+    return listings.map(function (l) {
+      var title    = decodeHtml(l.displayTitle || "Rental Property").replace(/\.$/, "").trim();
+      var imgStyle = l.imageUrl ? "background-image:url(" + l.imageUrl + ")" : "";
+      var beds  = l.bedrooms || 0;
+      var size  = l.size_m2  || 0;
+      var price = l.price    || 0;
+
+      var pills = "";
+      if (beds > 0)  pills += "<span class='ha-pill'>" + BED_ICON  + esc(beds) + "</span>";
+      if (size > 0)  pills += "<span class='ha-pill'>" + SIZE_ICON + esc(Math.round(size)) + " m\u00b2</span>";
+      if (price > 0) pills += "<span class='ha-pill ha-pill-price'>\u20ac" + Number(price).toLocaleString("en-IE") + "</span>";
+
+      return "<div class='ha-card'>"
+        + "<div class='ha-img-wrap'>"
+        + (imgStyle ? "<div class='ha-img-bg' style='" + imgStyle + "'></div>" : "")
+        + "<div class='ha-img-placeholder'>" + HOUSE_SVG + "</div>"
+        + "</div>"
+        + "<div class='ha-card-body'>"
+        + "<div class='ha-card-title'>" + esc(title) + "</div>"
+        + (pills ? "<div class='ha-pills'>" + pills + "</div>" : "")
+        + "</div></div>";
+    }).join("");
+  }
+
+  gridEl.innerHTML = skeletons(9);
+
+  fetch(API_BASE + "/api/public/city-listings?city=Waterford&limit=50")
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      gridEl.innerHTML = renderCards(data.listings);
+    })
+    .catch(function () {
+      gridEl.innerHTML = '<div class="ha-empty">Unable to load listings right now.</div>';
+    });
+})();
+</script>
+</body>
+</html>

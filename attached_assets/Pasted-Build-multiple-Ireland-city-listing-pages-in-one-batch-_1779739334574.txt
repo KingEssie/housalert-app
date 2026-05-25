@@ -1,0 +1,119 @@
+Build multiple Ireland city listing pages in one batch using the completed Dublin implementation as the template.
+
+Context:
+Dublin city listings page is approved and working:
+https://app.housalert.com/dublin-listings.html
+
+Cork currently has no listings because ingestion volume is not active there yet.
+
+We now want to generate multiple Irish city listing pages at once for cities that already have or are likely to have listings.
+
+DO NOT redesign anything.
+Reuse the exact Dublin implementation and styling.
+
+DO NOT touch:
+- homepage widget
+- app UI
+- push notifications
+- ingestion scheduler
+- matching
+- Stripe
+- service worker
+- emails
+
+==================================================
+1. Create city listing pages for:
+==================================================
+
+Generate:
+
+- galway-listings.html
+- limerick-listings.html
+- waterford-listings.html
+- kilkenny-listings.html
+- sligo-listings.html
+- dundalk-listings.html
+- drogheda-listings.html
+- bray-listings.html
+- athlone-listings.html
+
+All inside:
+client/public/
+
+==================================================
+2. Reuse Dublin implementation
+==================================================
+
+Each page should:
+- reuse same CSS
+- same layout
+- same pills
+- same responsive behavior
+- same API structure
+
+Only difference:
+city query parameter.
+
+Examples:
+city=Galway
+city=Limerick
+etc.
+
+==================================================
+3. Public listing rules
+==================================================
+
+Keep:
+- latest 50 listings
+- newest first
+- 24h delay
+- no timestamps
+- no source names
+- no source URLs
+- no clickable cards
+
+==================================================
+4. Grid layout
+==================================================
+
+Keep:
+- desktop: 3 columns
+- mobile: 1 column
+
+==================================================
+5. Static accessibility
+==================================================
+
+Ensure every page:
+- returns 200
+- bypasses SPA fallback if needed
+- is iframe embeddable
+- not blocked by X-Frame-Options
+
+==================================================
+6. Verification
+==================================================
+
+For each city:
+- test listing count
+- report whether listings exist
+- report how many listings were returned
+
+==================================================
+7. Final output
+==================================================
+
+Return:
+- all created URLs
+- which cities currently have listings
+- recommended Duda iframe snippet template
+
+Template:
+
+<iframe
+  src="https://app.housalert.com/CITY-listings.html"
+  style="width:100%;height:5500px;border:none;"
+  scrolling="no"
+  loading="lazy"
+  title="CITY Rental Listings">
+</iframe>
