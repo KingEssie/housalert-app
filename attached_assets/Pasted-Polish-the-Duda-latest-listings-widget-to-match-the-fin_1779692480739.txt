@@ -1,0 +1,139 @@
+Polish the Duda latest listings widget to match the final desired layout.
+
+Context:
+The widget is live at:
+https://app.housalert.com/widget.html
+
+It is embedded on the Duda homepage via iframe.
+
+Current issues:
+- Heading is left-aligned on mobile/desktop, but it should be centered.
+- Heading is too bold and not wide/clean enough.
+- Dropdown text is blue, but it should match the heading color: black/dark navy.
+- Too many cards are visible on laptop; max should be 5.
+- Mobile card is not centered enough.
+- Listing cards still show unwanted elements:
+  - heart icon
+  - source name
+  - city/location pill
+- Cards do not show the exact desired three detail pills.
+- Cards may still be clickable; they should NOT link to the source website.
+
+Goal:
+Make the widget match this final direction:
+
+1. Centered headline:
+OVER THE LAST 24H, HOUSALERT FOUND
+127 RENTAL HOMES IN [DUBLIN ▼]
+
+2. Heading:
+- fully centered
+- uppercase
+- larger
+- less bold than current
+- visually similar to a website H2
+- max width similar to the Rentbird example
+- dropdown inline where the city name appears
+- dropdown color should be same as rest of title: black/dark navy
+- dropdown underline can remain subtle
+
+3. Slider:
+Desktop/laptop:
+- show max 5 listing cards visible
+- centered in the section
+- full-width section, but cards should not shrink so much that 7 fit
+
+Mobile:
+- show 1 centered card
+- card should be centered like the app listing card
+- horizontal scroll/swipe remains smooth
+
+4. Card design:
+Match the HousAlert app listing card direction, but simplified for marketing preview.
+
+Each card should show:
+- image
+- title = street/area only, no house number where possible
+- time ago only
+- three detail pills on ONE row:
+  1. bedrooms
+  2. size
+  3. price
+- price pill text should be bold
+- small icons inside each pill:
+  - bed icon for bedrooms
+  - ruler/size icon for m2
+  - tag/price icon for price
+- fully rounded pill borders
+- clean white/light card
+- subtle shadow
+- rounded image/card corners
+
+Remove from cards:
+- heart/favorite icon
+- source name
+- city/location pill
+- direct clickable link behavior
+
+5. Click behavior:
+Cards should NOT link to the original source website.
+Cards should not be clickable at all for now.
+Do not expose source URLs in the widget UI.
+
+6. Data formatting:
+For the website widget only:
+- no house numbers in title where avoidable
+- no city-only fallback if better street/title exists
+- app and email behavior must remain unchanged
+
+If needed, continue using displayTitle/displayLocation fields from /api/public/latest-listings.
+Do not change email templates.
+Do not change app listing detail UI.
+
+7. Responsive sizing:
+Use CSS so:
+- desktop cards are roughly 18–20% width or equivalent so 5 fit
+- tablet can show 2–3 cards
+- mobile shows one centered card, around 82–90vw wide
+- details row should fit in one line; if size is missing, hide the size pill instead of wrapping badly
+- price should remain visible and bold
+
+8. Iframe height:
+Update final recommended Duda iframe snippet if height changes.
+Avoid vertical clipping.
+
+9. Do NOT touch:
+- service worker
+- push notifications
+- VAPID/FCM
+- Stripe/paywall
+- matching pipeline
+- ingestion scheduler
+- Germany infrastructure
+- emails
+- app listing detail UI
+
+10. Verification:
+Verify:
+- https://app.housalert.com/widget.html loads directly
+- Duda iframe still works
+- desktop shows max 5 cards visible
+- mobile shows 1 centered card
+- heading is centered
+- dropdown is inline and dark, not blue
+- cards are not clickable
+- heart icon removed
+- source removed
+- city/location pill removed
+- details row has only bedrooms, size, price
+- price is bold
+- app/emails unchanged
+- no push/SW changes
+
+11. Report back:
+- files changed
+- final iframe snippet
+- visual changes made
+- how card click behavior was disabled
+- how title formatting works
+- any limitations if bedrooms/size data is missing
