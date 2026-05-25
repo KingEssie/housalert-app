@@ -69,6 +69,23 @@ function extractListings(html: string): { rawCount: number; listings: SourceList
     const price    = l.price ? parsePrice(l.price) : undefined;
     const bedrooms = (l.numBedrooms || l.bedrooms) ? parseBedrooms(l.numBedrooms || l.bedrooms) : undefined;
 
+    // Floor area — Daft __NEXT_DATA__ may include floorArea as object or number
+    const size_m2: number | undefined = (() => {
+      const fa = l.floorArea ?? l.floor_area ?? l.size ?? l.area;
+      if (typeof fa === "number") return fa > 0 ? Math.round(fa) : undefined;
+      if (fa && typeof fa === "object") {
+        const v = fa.value ?? fa.size ?? fa.sqm ?? fa.area;
+        const u = (fa.unit ?? fa.unitType ?? "").toString().toLowerCase();
+        if (typeof v === "number" && v > 0) {
+          if (u.includes("ft") || u.includes("foot") || u.includes("feet")) {
+            return Math.round(v * 0.0929);
+          }
+          return Math.round(v);
+        }
+      }
+      return undefined;
+    })();
+
     const images: any[] = l.media?.images ?? l.photos ?? [];
     const imageUrl: string | undefined =
       images[0]?.size600x600 || images[0]?.size720x480 || images[0]?.size360x240 || images[0]?.url || undefined;
@@ -85,7 +102,7 @@ function extractListings(html: string): { rawCount: number; listings: SourceList
     }
 
     if (!title || !url) continue;
-    results.push({ source: "daft", externalId: id, title, price, location, url, imageUrl, bedrooms, createdAt, latitude, longitude });
+    results.push({ source: "daft", externalId: id, title, price, location, url, imageUrl, bedrooms, size_m2, createdAt, latitude, longitude });
   }
 
   return { rawCount, listings: results };

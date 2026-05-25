@@ -122,6 +122,26 @@ function extractFromHtml(html: string): SourceListing[] {
     const priceRaw  = fieldContents.find((f) => /^€[\d,]+$/.test(f.trim()));
     const price     = priceRaw ? parsePrice(priceRaw) : undefined;
 
+    // ── Bedrooms: field matching "N Bed", "N Bedroom(s)", or "Studio" ─────────
+    // JetEngine may render a bed-count field in the grid card.
+    let bedrooms: number | undefined;
+    const bedsField = fieldContents.find(
+      (f) => /^\d+\s*(?:bed|bedroom)/i.test(f.trim()) || /^studio$/i.test(f.trim())
+    );
+    if (bedsField) {
+      if (/^studio$/i.test(bedsField.trim())) {
+        bedrooms = 0;
+      } else {
+        const bm = bedsField.match(/^(\d+)/);
+        if (bm) bedrooms = parseInt(bm[1], 10);
+      }
+    }
+    // Fallback: scan the whole block for "N Bed" pattern
+    if (bedrooms === undefined) {
+      const blockBeds = block.match(/\b(\d)\s*[Bb]ed(?:room)?s?\b/);
+      if (blockBeds) bedrooms = parseInt(blockBeds[1], 10);
+    }
+
     // ── Image ─────────────────────────────────────────────────────────────────
     // First <img> sourced from raycooke.ie wp-content uploads
     const imgMatch  = block.match(
@@ -140,6 +160,7 @@ function extractFromHtml(html: string): SourceListing[] {
       location,
       url,
       imageUrl,
+      bedrooms,
     });
   }
 

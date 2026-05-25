@@ -141,6 +141,26 @@ function extractListings(html: string, city: string): { rawCount: number; listin
     const bedrooms: number | undefined =
       typeof prop.numBedrooms === "number" ? prop.numBedrooms : undefined;
 
+    // Floor area — try several field shapes PropertyPal has used
+    const size_m2: number | undefined = (() => {
+      const fa =
+        prop.floorArea ?? prop.floorAreaValue ?? prop.floorSize ??
+        prop.area ?? prop.sizeInSqFt ?? prop.size;
+      if (typeof fa === "number") return fa > 0 ? Math.round(fa) : undefined;
+      if (fa && typeof fa === "object") {
+        const v = fa.value ?? fa.size ?? fa.sqm ?? fa.area ?? fa.amount;
+        const u = (fa.unit ?? fa.unitType ?? "").toString().toLowerCase();
+        if (typeof v === "number" && v > 0) {
+          // Convert sq ft to m² if needed
+          if (u.includes("ft") || u.includes("foot") || u.includes("feet")) {
+            return Math.round(v * 0.0929);
+          }
+          return Math.round(v);
+        }
+      }
+      return undefined;
+    })();
+
     const images: any[] = prop.images ?? prop.photos ?? [];
     const imageUrl: string | undefined =
       images[0]?.url ||
@@ -177,6 +197,7 @@ function extractListings(html: string, city: string): { rawCount: number; listin
       url,
       imageUrl,
       bedrooms,
+      size_m2,
       createdAt,
       latitude,
       longitude,

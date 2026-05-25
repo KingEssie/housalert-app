@@ -194,23 +194,23 @@ export function ListingCardFull({
         <div className="flex flex-nowrap gap-1.5 mt-0.5 overflow-hidden" data-testid={`detail-meta-${match.listing_id}`}>
           {address && (
             <span
-              className="inline-flex items-center gap-[4px] text-[13px] font-medium min-w-0 shrink"
+              className="inline-flex items-center gap-[5px] text-[14px] font-medium min-w-0 shrink"
               style={matchVariant ? {
                 backgroundColor: "#ffffff",
                 border: "1px solid #111111",
                 borderRadius: "9999px",
                 color: "#111111",
-                padding: "4px 10px 4px 7px",
+                padding: "5px 12px 5px 8px",
               } : {
                 backgroundColor: "rgb(var(--ha-surface))",
                 borderRadius: "6px",
                 color: "rgb(var(--ha-text))",
-                padding: "5px 8px",
+                padding: "6px 10px",
               }}
               data-testid={`detail-city-${match.listing_id}`}
             >
               <MapPin
-                className="w-[17px] h-[17px] flex-shrink-0"
+                className="w-[18px] h-[18px] flex-shrink-0"
                 fill={matchVariant ? "#bbadfb" : "none"}
                 stroke={matchVariant ? "#111111" : "rgb(var(--ha-text-muted))"}
                 strokeWidth={matchVariant ? 2.2 : 1.7}
@@ -220,22 +220,22 @@ export function ListingCardFull({
           )}
           {hasBedrooms && (
             <span
-              className="inline-flex items-center gap-[4px] text-[13px] font-medium shrink-0"
+              className="inline-flex items-center gap-[5px] text-[14px] font-medium shrink-0"
               style={matchVariant ? {
                 backgroundColor: "#ffffff",
                 border: "1px solid #111111",
                 borderRadius: "9999px",
                 color: "#111111",
-                padding: "4px 10px 4px 7px",
+                padding: "5px 12px 5px 8px",
               } : {
                 backgroundColor: "rgb(var(--ha-surface))",
                 borderRadius: "6px",
                 color: "rgb(var(--ha-text))",
-                padding: "5px 8px",
+                padding: "6px 10px",
               }}
             >
               <BedDouble
-                className="w-[17px] h-[17px] flex-shrink-0"
+                className="w-[18px] h-[18px] flex-shrink-0"
                 fill={matchVariant ? "#bbadfb" : "none"}
                 stroke={matchVariant ? "#111111" : "rgb(var(--ha-text-muted))"}
                 strokeWidth={matchVariant ? 2.2 : 1.7}
@@ -245,22 +245,22 @@ export function ListingCardFull({
           )}
           {hasSize && (
             <span
-              className="inline-flex items-center gap-[4px] text-[13px] font-medium shrink-0"
+              className="inline-flex items-center gap-[5px] text-[14px] font-medium shrink-0"
               style={matchVariant ? {
                 backgroundColor: "#ffffff",
                 border: "1px solid #111111",
                 borderRadius: "9999px",
                 color: "#111111",
-                padding: "4px 10px 4px 7px",
+                padding: "5px 12px 5px 8px",
               } : {
                 backgroundColor: "rgb(var(--ha-surface))",
                 borderRadius: "6px",
                 color: "rgb(var(--ha-text))",
-                padding: "5px 8px",
+                padding: "6px 10px",
               }}
             >
               <Maximize2
-                className="w-[17px] h-[17px] flex-shrink-0"
+                className="w-[18px] h-[18px] flex-shrink-0"
                 fill={matchVariant ? "#bbadfb" : "none"}
                 stroke={matchVariant ? "#111111" : "rgb(var(--ha-text-muted))"}
                 strokeWidth={matchVariant ? 2.2 : 1.7}
@@ -270,23 +270,23 @@ export function ListingCardFull({
           )}
           {match.price > 0 && (
             <span
-              className="inline-flex items-center gap-[4px] text-[13px] font-semibold shrink-0"
+              className="inline-flex items-center gap-[5px] text-[14px] font-semibold shrink-0"
               style={matchVariant ? {
                 backgroundColor: "#ffffff",
                 border: "1px solid #111111",
                 borderRadius: "9999px",
                 color: "#111111",
-                padding: "4px 10px 4px 7px",
+                padding: "5px 12px 5px 8px",
               } : {
                 backgroundColor: "rgb(var(--ha-surface))",
                 borderRadius: "6px",
                 color: "rgb(var(--ha-text))",
-                padding: "5px 8px",
+                padding: "6px 10px",
               }}
               data-testid={`badge-price-${match.listing_id}`}
             >
               <Tag
-                className="w-[17px] h-[17px] flex-shrink-0"
+                className="w-[18px] h-[18px] flex-shrink-0"
                 fill={matchVariant ? "#bbadfb" : "none"}
                 stroke={matchVariant ? "#111111" : "rgb(var(--ha-text-muted))"}
                 strokeWidth={matchVariant ? 2.2 : 1.7}

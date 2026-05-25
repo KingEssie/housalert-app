@@ -354,10 +354,10 @@ export default function ListingDetailPage() {
           </span>
         </div>
 
-        <div className="flex items-center gap-4 mt-5 text-[13px] text-ha-text-secondary">
+        <div className="flex items-center gap-4 mt-5 text-[14px] text-ha-text-secondary">
           {detailItems.map((item, i) => (
             <div key={i} className="flex items-center gap-1.5">
-              <item.icon className="w-4 h-4 text-ha-text-secondary" />
+              <item.icon className="w-[18px] h-[18px] text-ha-text-secondary" />
               <span className={`font-semibold ${item.color || "text-ha-text"} capitalize`} data-testid={`text-detail-${i}`}>
                 {item.value}
               </span>

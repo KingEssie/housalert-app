@@ -1,0 +1,168 @@
+Fix listing detail completeness + pill sizing across widget and app.
+
+Context:
+HousAlert now uses getIrishDisplayTitle() for app + widget titles. That part is mostly fixed.
+
+Current remaining issues:
+1. Ray Cooke listings miss bedrooms and size.
+2. PropertyPal listings often miss size.
+3. Other sources may also miss bedrooms/size.
+4. Widget headline/dropdown font is still too small.
+5. Detail pills in the widget are too small.
+6. Detail pills in the app are also too small in:
+   - Matches
+   - Favorites
+   - Listing detail screen
+
+Goal:
+Before moving forward, fully audit and fix bedrooms/size/price display completeness and make pills larger across widget + app.
+
+DO NOT touch:
+- push notifications
+- service worker
+- Stripe
+- matching logic
+- email templates
+- Germany infrastructure
+- scheduler intervals
+
+==================================================
+1. Audit source data completeness
+==================================================
+
+Audit all active Ireland sources:
+
+- Daft
+- PropertyPal
+- Lisney
+- Owen Reilly
+- CityHomes
+- SherryFitz
+- Ray Cooke
+
+For each source, report:
+- how many recent listings have bedrooms
+- how many recent listings have size_m2
+- how many recent listings have price
+- which parser fields currently populate those values
+- whether missing values are unavailable on the source page or parser bug
+
+Specifically investigate:
+- Ray Cooke: bedrooms and size missing
+- PropertyPal: size missing
+
+==================================================
+2. Fix scraper parsers where possible
+==================================================
+
+If bedroom/size data exists in source HTML/JSON, update the parser to extract it.
+
+Ray Cooke:
+- inspect listing cards/detail data
+- extract bedrooms where available
+- extract size_m2 where available
+- normalize numeric values
+
+PropertyPal:
+- inspect __NEXT_DATA__ / initialState listing objects
+- extract size_m2 / area if available
+- normalize numeric value
+
+For all sources:
+- use defensive mapping
+- skip bad values
+- do not fake values
+- do not infer size unless clearly present
+
+==================================================
+3. Fix public API field mapping
+==================================================
+
+Ensure /api/public/latest-listings returns:
+- bedrooms
+- size_m2
+- price
+- displayTitle
+
+Use defensive field mapping:
+- bedrooms, beds, bedroom_count
+- size_m2, area_m2, size, floor_area, living_area
+- price, rent, monthly_price
+
+Do not expose private/debug fields.
+
+==================================================
+4. Fix widget headline sizing
+==================================================
+
+In client/public/widget.html:
+- increase headline font size by another 10–15%
+- dropdown must match heading size exactly
+- dropdown must match heading weight/color/letter-spacing
+- count must stay black
+- headline remains centered
+- keep text flowing naturally over max 3 lines
+- do not force break after FOUND
+
+==================================================
+5. Make widget detail pills larger
+==================================================
+
+In widget listing cards:
+- increase pill height
+- increase pill font size
+- increase icon size slightly
+- keep all pills on one row where possible
+- price pill bold black
+- price no /mo
+- price no icon
+- bedrooms and size icons purple/black style
+- fully rounded border
+
+==================================================
+6. Make app detail pills larger
+==================================================
+
+Find shared app pill/card components used in:
+- Matches list
+- Favorites list
+- Listing detail screen
+
+Increase pill size slightly:
+- larger font
+- more padding
+- larger icons
+- still fully rounded
+- preserve layout and mobile responsiveness
+
+Do not redesign the whole app card.
+Only make the detail pills a clear step larger and more readable.
+
+==================================================
+7. Verify app + widget consistency
+==================================================
+
+Verify:
+- Ray Cooke listings show bedrooms/size if source data exists
+- PropertyPal listings show size if source data exists
+- Widget shows bedrooms, size, price when available
+- App matches show larger pills
+- Favorites show larger pills
+- Detail screen shows larger pills
+- Title normalization still works
+- Emails unchanged
+- Push/SW unchanged
+
+==================================================
+8. Report back
+==================================================
+
+Report:
+- source completeness table before/after
+- Ray Cooke fix details
+- PropertyPal fix details
+- any sources where size/bedrooms are genuinely unavailable
+- files changed
+- examples of 3 listings now showing bedrooms/size/price
+- confirmation widget headline/dropdown size increased
+- confirmation app pills increased
