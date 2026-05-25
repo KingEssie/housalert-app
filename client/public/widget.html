@@ -413,14 +413,11 @@
   var totalCards = 0;
   var cardW = 0;
 
-  /* Strip title to street name only — before first comma, strip trailing dots */
+  /* Server already normalises the title via getIrishDisplayTitle().
+     Just pass it through; only strip a trailing dot for safety. */
   function shortTitle(displayTitle, city) {
     if (!displayTitle) return city || "Rental Property";
-    var t = displayTitle.replace(/\.$/, "").trim();
-    var parts = t.split(",");
-    var first = parts[0].trim();
-    if (first.length <= 2) return t;
-    return first;
+    return displayTitle.replace(/\.$/, "").trim() || city || "Rental Property";
   }
 
   function getVisible() {

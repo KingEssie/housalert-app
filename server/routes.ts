@@ -31,6 +31,7 @@ import fs from "fs";
 import path from "path";
 import { log } from "./log";
 import { getDisplayTitle } from "../shared/display-title";
+import { getIrishDisplayTitle } from "../shared/listing-display";
 import { validateBuddyUnsubscribeToken, sendBuddyInvitationEmail, sendBuddyCollaborationEmail, sendBuddyRevokedEmail, sendBuddyRevokedOwnerEmail } from "./email";
 import {
   inviteBuddy, acceptInvite, revokeBuddy, revokeBuddyAsBuddy,
@@ -761,7 +762,7 @@ export async function registerRoutes(
           match_label,
           match_reasons,
           hybrid_filters,
-          display_title: getDisplayTitle(l, true),
+          display_title: getIrishDisplayTitle(l),
           street: l.street ?? null,
           in_latest_email: false,
           canonical_viewed: false,
@@ -1669,7 +1670,7 @@ export async function registerRoutes(
         return res.json((fallbackRows ?? []).map((l: any) => ({
           listing_id: l.id,
           title: l.title,
-          display_title: getDisplayTitle(l, false),
+          display_title: getIrishDisplayTitle(l),
           street: l.street ?? null,
           price: l.price,
           size_m2: l.size_m2,
@@ -1709,7 +1710,7 @@ export async function registerRoutes(
           return {
             listing_id: id,
             title: l.title,
-            display_title: getDisplayTitle(l, false),
+            display_title: getIrishDisplayTitle(l),
             street: l.street ?? null,
             price: l.price,
             size_m2: l.size_m2,
@@ -1752,7 +1753,7 @@ export async function registerRoutes(
           const l = listingMap[r.listing_id];
           return {
             title: l.title,
-            display_title: getDisplayTitle(l, false),
+            display_title: getIrishDisplayTitle(l),
             street: l.street ?? null,
             price: l.price,
             size_m2: l.size_m2,
@@ -1858,24 +1859,10 @@ export async function registerRoutes(
 
       if (listingsRes.error) return res.status(500).json({ error: listingsRes.error.message });
 
-      // Widget-only title: strip leading house numbers from raw source title.
-      // Does NOT affect the app or emails — only the public widget API response.
-      function widgetDisplayTitle(rawTitle: string | null, city: string): string {
-        if (!rawTitle) return city;
-        let t = rawTitle.trim();
-        // Strip "Apartment 68 / Apt. 4B / Unit 2 / Flat 3 / No. 5 / Studio 1" prefix
-        t = t.replace(/^(apartment|apt\.?|unit|flat|no\.?|studio)\s+[\w-]+\s+/i, "");
-        // Strip leading house number like "138 ", "18A ", "12-14 "
-        t = t.replace(/^\d+[a-zA-Z]?(?:-\d+[a-zA-Z]?)?\s+/, "");
-        // Strip trailing ", Dublin 8" / ", Cork" / ", D08" etc.
-        t = t.replace(/,\s*(D\d{2}[A-Z\d]*|Dublin\s*\d*|Cork|Galway|Limerick|Waterford|Drogheda|Dundalk|Swords|Bray|Kilkenny)\s*$/i, "").trim();
-        return t || city;
-      }
-
       const listings = (listingsRes.data ?? []).map((l: any) => ({
         id: l.id,
-        title: getDisplayTitle(l, false),
-        displayTitle: widgetDisplayTitle(l.title, l.city),
+        title: getIrishDisplayTitle(l),
+        displayTitle: getIrishDisplayTitle(l),
         price: l.price > 0 ? l.price : null,
         bedrooms: l.bedrooms > 0 ? l.bedrooms : null,
         size_m2: l.size_m2 > 0 ? l.size_m2 : null,
@@ -2104,7 +2091,7 @@ export async function registerRoutes(
           match_label,
           match_reasons,
           hybrid_filters,
-          display_title: getDisplayTitle(l, isActiveSub),
+          display_title: getIrishDisplayTitle(l),
           street: l.street ?? null,
           in_latest_email: emailedIdSet.has(m.listing_id),
         };
@@ -2296,7 +2283,7 @@ export async function registerRoutes(
         .map((l: any) => ({
           listing_id: l.id,
           title: l.title,
-          display_title: getDisplayTitle(l, isActiveSub),
+          display_title: getIrishDisplayTitle(l),
           street: l.street ?? null,
           price: l.price,
           size_m2: l.size_m2,
@@ -2471,7 +2458,7 @@ export async function registerRoutes(
 
       return res.json({
         ...data,
-        display_title: getDisplayTitle(data, isActiveSub),
+        display_title: getIrishDisplayTitle(data),
         published_at: publishedAt,
         source_published_at: sourcePublishedAt,
         first_seen_at: firstSeenAt,

@@ -1,0 +1,188 @@
+Fix listing display consistency between the app cards and the public Duda widget.
+
+Context:
+The public Duda widget and the app are showing inconsistent listing data.
+
+Examples:
+- The website/widget can show a better street title like “Mary Street” or “The Rise”.
+- The app sometimes still shows generic location titles like “Dublin 24, Dublin” or “Blackrock, Dublin”.
+- The app sometimes shows bedrooms, but the widget does not.
+- The widget should show 3 pills where available: bedrooms, size m², price.
+- Emails should NOT be changed in this task.
+
+Goal:
+Create consistent listing display normalization for:
+1. app listing cards
+2. public latest-listings API
+3. Duda widget
+
+Do NOT touch:
+- push notifications
+- service worker
+- Stripe
+- matching pipeline
+- ingestion scheduler
+- email templates
+- Germany infrastructure
+
+==================================================
+1. Audit current fields
+==================================================
+
+Inspect:
+- app listing card component
+- public API endpoint /api/public/latest-listings
+- widget.html rendering
+- listing database/select fields
+- source normalized fields
+
+Find exactly which fields exist for:
+- raw title
+- address/location
+- street
+- city
+- bedrooms
+- beds
+- size_m2
+- area
+- price
+
+Report if the app and widget are reading different fields.
+
+==================================================
+2. Create shared display helper
+==================================================
+
+Create a shared helper if appropriate, for example:
+
+shared/listing-display.ts
+
+It should expose functions like:
+
+- getListingDisplayTitle(listing)
+- getListingDisplayLocation(listing)
+- getListingBedrooms(listing)
+- getListingSizeM2(listing)
+- getListingPrice(listing)
+
+Rules for display title:
+- Prefer real street/area name.
+- Remove leading house numbers.
+- Remove apartment/unit prefixes where possible.
+- Remove city/county/postal suffixes where possible.
+- Avoid generic titles like:
+  “Dublin 8, Dublin”
+  “Dublin 24, Dublin”
+  “Blackrock, Dublin”
+  if a better street/source title exists.
+- If no better value exists, fallback safely.
+
+Examples:
+- “138 Southmede, Ballinteer Road, Dundrum” → “Southmede, Ballinteer Road”
+- “18 Newmarket Square, Dublin 8” → “Newmarket Square”
+- “Apartment 68 The Plaza Shangan Road, Dublin” → “The Plaza Shangan Road”
+- “Stanford Green, Crumlin, Dublin 12” → “Stanford Green”
+- “Mary Street” → “Mary Street”
+- “The Rise” → “The Rise”
+
+Important:
+Do NOT change email templates in this task.
+
+==================================================
+3. Fix public latest-listings API
+==================================================
+
+Update /api/public/latest-listings so each listing returns consistent display fields:
+
+- displayTitle
+- displayLocation if useful
+- bedrooms
+- size_m2
+- price
+
+Bedrooms mapping should be defensive:
+- bedrooms
+- beds
+- bedroom_count
+- rooms if currently used that way
+
+Size mapping should be defensive:
+- size_m2
+- area_m2
+- size
+- living_area if present
+
+Do not expose private/admin/debug fields.
+
+==================================================
+4. Fix app listing cards
+==================================================
+
+Update app listing cards so they use the same displayTitle logic.
+
+Goal:
+The app should stop showing generic titles like:
+- Dublin 24, Dublin
+- Blackrock, Dublin
+
+when a better street/title exists.
+
+Do not change listing detail page unless it shares the same card component safely.
+
+==================================================
+5. Fix widget rendering
+==================================================
+
+Update client/public/widget.html to use the normalized API fields.
+
+Widget card should show:
+- displayTitle only
+- time ago
+- pills row:
+  1. bedrooms if available
+  2. size_m2 if available
+  3. price if available
+
+Widget should NOT show:
+- source
+- city/location pill
+- house number
+- clickable source links
+
+==================================================
+6. Preserve current visual direction
+==================================================
+
+Keep the widget’s current visual direction:
+- centered headline
+- Montserrat
+- light lavender card background
+- no heart icon
+- no source text
+- cards not clickable
+- carousel working
+
+Only adjust display data and pill visibility if needed.
+
+==================================================
+7. Verification
+==================================================
+
+Verify:
+- app listing card shows better street/area title.
+- widget shows same displayTitle logic.
+- bedrooms appears in widget when app has bedrooms.
+- size appears in widget when data exists.
+- price appears without /mo.
+- no email template changes.
+- no push/service worker changes.
+- no ingestion/matching changes.
+
+Report:
+- fields audited
+- helper created/changed
+- app files changed
+- API files changed
+- widget files changed
+- examples before/after for at least 3 listings
+- any sources that genuinely lack bedrooms or size data
