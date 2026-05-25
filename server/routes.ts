@@ -1843,18 +1843,23 @@ export async function registerRoutes(
       const limit = Math.min(Math.max(parseInt(req.query.limit as string) || 10, 1), 20);
       const baseUrl = (process.env.APP_PUBLIC_BASE_URL || `${req.protocol}://${req.headers.host}`).replace(/\/$/, "");
 
+      // Public widget shows delayed-preview inventory only — listings must be
+      // at least 24 hours old.  App listings and alerts remain realtime.
+      const delayedCutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+
       const [listingsRes, countRes] = await Promise.all([
         supabase
           .from("listings")
           .select("id, title, street, district, price, size_m2, bedrooms, city, source, image_url, created_at")
           .ilike("city", city)
+          .lte("created_at", delayedCutoff)
           .order("created_at", { ascending: false })
           .limit(limit),
         supabase
           .from("listings")
           .select("id", { count: "exact", head: true })
           .ilike("city", city)
-          .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()),
+          .lte("created_at", delayedCutoff),
       ]);
 
       if (listingsRes.error) return res.status(500).json({ error: listingsRes.error.message });
@@ -1868,14 +1873,11 @@ export async function registerRoutes(
         size_m2: l.size_m2 > 0 ? l.size_m2 : null,
         location: l.district ? `${l.district}, ${l.city}` : l.city,
         imageUrl: l.image_url ?? null,
-        source: l.source,
-        foundAt: l.created_at,
-        listingUrl: `${baseUrl}/listing/${l.id}`,
       }));
 
       return res.json({
         city,
-        countLast24h: countRes.count ?? 0,
+        countRecentPreview: countRes.count ?? 0,
         listings,
       });
     } catch (err: any) {

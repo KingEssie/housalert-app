@@ -1,0 +1,176 @@
+Finalize public listings widget as delayed preview inventory.
+
+Context:
+The existing Duda homepage widget is good visually and should be kept mostly as-is.
+
+Before building SEO city pages, we need the public widget/API strategy finalized:
+- public website listings should be delayed preview inventory
+- app/alerts remain realtime
+- public widget should NOT show timestamps
+
+Goal:
+Update the existing public widget + public latest-listings API so the widget shows delayed listings only, with no timestamp/freshness text.
+
+Only change what is needed.
+
+DO NOT touch:
+- push notifications
+- service worker
+- Stripe
+- matching
+- ingestion scheduler
+- emails
+- app listing UI
+- Germany infrastructure
+
+==================================================
+1. Add 24h delay to public listings API
+==================================================
+
+Update:
+GET /api/public/latest-listings
+
+Public API should only return listings where:
+created_at <= now() - interval '24 hours'
+
+or the equivalent using the correct listing timestamp field.
+
+Important:
+- This delay applies ONLY to public website/widget/API.
+- Do NOT delay app listings.
+- Do NOT delay user alerts.
+- Do NOT delay emails/push.
+- Do NOT change matching behavior.
+
+If a listing is newer than 24h:
+- it should not appear in the public widget/API yet.
+
+==================================================
+2. Adjust countLast24h behavior
+==================================================
+
+Because public listings are now delayed, do NOT show “found in the last 24h” if that would imply realtime freshness.
+
+Update the public API response if needed.
+
+Better options:
+- countDelayedPreview
+- countRecentPreview
+- or keep countLast24h internally but do not display it as realtime freshness.
+
+For the widget, the heading should no longer imply fresh/realtime last 24h data.
+
+==================================================
+3. Update widget heading copy
+==================================================
+
+Remove realtime wording.
+
+Replace the current heading:
+
+IN THE LAST 24 HOURS, HOUSALERT FOUND 127 RENTAL PROPERTIES IN DUBLIN
+
+with something like:
+
+RECENT RENTAL PROPERTIES FOUND BY HOUSALERT IN [DUBLIN ▼]
+
+or:
+
+RENTAL PROPERTIES RECENTLY FOUND BY HOUSALERT IN [DUBLIN ▼]
+
+Requirements:
+- no “last 24 hours”
+- no exact timestamp implication
+- dropdown remains inline
+- centered
+- Montserrat
+- black/dark navy
+- same current premium styling direction
+
+Keep it concise and premium.
+
+==================================================
+4. Remove timestamps from cards
+==================================================
+
+Remove:
+- “10h ago”
+- “2d ago”
+- any relative time
+- any found/published/placed timestamp
+
+Cards should show only:
+- image
+- displayTitle/street
+- detail pills:
+  - bedrooms if available
+  - size if available
+  - price if available
+
+Do not show:
+- source name
+- source URL
+- clickable link
+- city/location pill
+- heart icon
+- CTA button
+
+==================================================
+5. Keep existing visual design
+==================================================
+
+Do NOT redesign the widget from scratch.
+
+Keep:
+- current card layout direction
+- light lavender cards
+- rounded corners
+- carousel
+- centered heading
+- max 5 cards on desktop
+- 1 centered card on mobile
+- larger headline/pills from previous polish
+
+Only adjust:
+- public API delay
+- heading copy
+- remove timestamps
+
+==================================================
+6. Empty states
+==================================================
+
+If a city has no delayed preview listings yet, show a calm empty state:
+
+“No preview listings available in [City] yet.”
+
+Do NOT say:
+- “No realtime listings”
+- “No listings found in the last 24h”
+
+==================================================
+7. Verification
+==================================================
+
+Verify:
+- /api/public/latest-listings excludes listings newer than 24h
+- app listings still show realtime/new listings
+- alerts still send realtime
+- widget loads normally
+- widget has no timestamps
+- heading no longer says “last 24 hours”
+- cards are not clickable
+- no source URLs shown
+- no push/SW/email changes
+
+==================================================
+8. Report back
+==================================================
+
+Report:
+- files changed
+- exact delay logic used
+- final heading copy
+- sample API result proving listings are older than 24h
+- confirmation app/alerts remain realtime
+- final Duda iframe snippet if unchanged

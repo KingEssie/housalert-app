@@ -209,13 +209,6 @@
     margin-bottom: 2px;
   }
 
-  .ha-card-meta {
-    font-size: 10.5px;
-    color: var(--ha-text);
-    font-weight: 500;
-    margin-bottom: 7px;
-  }
-
   /* Pills */
   .ha-pills {
     display: flex;
@@ -315,8 +308,7 @@
 <div id="ha-widget">
 
   <div class="ha-headline">
-    IN THE LAST 24 HOURS, HOUSALERT FOUND
-    <span id="ha-count">—</span> RENTAL PROPERTIES IN&nbsp;<span class="ha-city-wrap">
+    RENTAL PROPERTIES RECENTLY FOUND BY HOUSALERT IN&nbsp;<span class="ha-city-wrap">
       <span id="ha-city-mirror" aria-hidden="true" style="position:fixed;left:-9999px;top:0;visibility:hidden;white-space:pre;pointer-events:none;"></span>
       <select id="ha-city-select" aria-label="Select city">
         <option value="Dublin">Dublin</option>
@@ -357,7 +349,6 @@
   var citySelect = document.getElementById("ha-city-select");
   var cityMirror = document.getElementById("ha-city-mirror");
   var cardsEl    = document.getElementById("ha-cards");
-  var countEl    = document.getElementById("ha-count");
   var dotsEl     = document.getElementById("ha-dots");
   var prevBtn    = document.getElementById("ha-prev");
   var nextBtn    = document.getElementById("ha-next");
@@ -495,7 +486,7 @@
   function renderCards(listings) {
     if (!listings || !listings.length) {
       dotsEl.innerHTML = "";
-      return '<div class="ha-empty">No listings found for this city yet — check back soon!</div>';
+      return '<div class="ha-empty">No preview listings available in this city yet.</div>';
     }
     var items = listings.slice(0, 8);
     totalCards = items.length;
@@ -528,7 +519,6 @@
         + "</div>"
         + "<div class='ha-card-body'>"
         + "<div class='ha-card-title'>" + esc(title) + "</div>"
-        + "<div class='ha-card-meta'>" + esc(timeAgo(l.foundAt)) + "</div>"
         + (pills ? "<div class='ha-pills'>" + pills + "</div>" : "")
         + "</div></div>";
     }).join("");
@@ -539,14 +529,12 @@
     dotsEl.innerHTML  = "";
     prevBtn.disabled  = true;
     nextBtn.disabled  = false;
-    countEl.textContent = "\u2014";
 
     fetch(API_BASE + "/api/public/latest-listings?city=" + encodeURIComponent(city) + "&limit=8")
       .then(function (r) { return r.json(); })
       .then(function (data) {
-        countEl.textContent = data.countLast24h != null ? data.countLast24h : "?";
-        cardsEl.innerHTML   = renderCards(data.listings);
-        cardsEl.scrollLeft  = 0;
+        cardsEl.innerHTML = renderCards(data.listings);
+        cardsEl.scrollLeft = 0;
         requestAnimationFrame(function () {
           var c = cardsEl.querySelector(".ha-card");
           cardW = c ? c.offsetWidth : 200;
@@ -556,9 +544,8 @@
         });
       })
       .catch(function () {
-        countEl.textContent = "?";
-        cardsEl.innerHTML   = '<div class="ha-empty">Unable to load listings right now.</div>';
-        dotsEl.innerHTML    = "";
+        cardsEl.innerHTML = '<div class="ha-empty">Unable to load listings right now.</div>';
+        dotsEl.innerHTML  = "";
       });
   }
 
