@@ -18,14 +18,21 @@
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { background: transparent; overflow-x: hidden; }
+  html, body {
+    background: transparent;
+    overflow-x: hidden;
+    height: auto;
+    overflow-y: visible;
+  }
 
   #ha-grid-widget {
     font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
     color: var(--ha-text);
     background: transparent;
-    padding: 0 0 32px;
+    padding: 0 0 48px;
     width: 100%;
+    height: auto;
+    overflow: visible;
   }
 
   /* ── Grid ─────────────────────────────────────────────── */
@@ -243,7 +250,7 @@
 
   gridEl.innerHTML = skeletons(9);
 
-  fetch(API_BASE + "/api/public/city-listings?city=Dublin&limit=30")
+  fetch(API_BASE + "/api/public/city-listings?city=Dublin&limit=50")
     .then(function (r) { return r.json(); })
     .then(function (data) {
       gridEl.innerHTML = renderCards(data.listings);

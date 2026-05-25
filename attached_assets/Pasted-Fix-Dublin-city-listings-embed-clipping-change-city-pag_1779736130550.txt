@@ -1,0 +1,127 @@
+Fix Dublin city listings embed clipping + change city page listings to latest 50.
+
+Context:
+We are building the Dublin SEO city page listings embed.
+The current city listings grid works, but:
+1. On desktop and mobile, the bottom listings are cut off / hidden.
+2. We no longer want “listings from the last month”.
+3. We want the latest 50 public preview listings instead.
+
+Only update the city listings embed/API.
+Do NOT touch:
+- homepage carousel widget unless shared CSS is causing the clipping
+- push notifications
+- service worker
+- Stripe
+- matching
+- ingestion
+- emails
+- app UI
+
+==================================================
+1. Change city listings API behavior
+==================================================
+
+Update the city page public listings endpoint, likely:
+
+GET /api/public/city-listings?city=Dublin&limit=50
+
+New behavior:
+- return latest 50 listings for the selected city
+- still respect public delay:
+  created_at <= now() - interval '24 hours'
+- remove the “last 30 days” filter
+- sort newest first
+- default limit = 50
+- max limit = 50 or 60
+
+Public-safe fields only:
+- id
+- displayTitle
+- price
+- bedrooms
+- size_m2
+- imageUrl
+
+Do NOT return:
+- timestamps
+- source
+- source URLs
+- listing URLs
+- admin/debug fields
+
+==================================================
+2. Fix clipping in city listings embed
+==================================================
+
+Problem:
+The bottom rows/cards are cut off in Duda on both desktop and mobile.
+
+Fix:
+- remove any fixed height inside the city listings HTML/CSS
+- ensure html/body/root/container use natural height
+- avoid overflow:hidden on vertical axis
+- ensure cards/grid can expand vertically
+- add enough bottom padding after the last row
+- if using iframe, provide the correct recommended height
+
+Important:
+For a 50-listing grid:
+- iframe height must be much larger than carousel widget
+- desktop: 3 columns means ~17 rows
+- mobile: 1 column means 50 rows, so iframe height must be very tall OR the iframe must allow internal scrolling
+
+Preferred options:
+A. For Duda SEO page, use a tall iframe with scrolling="yes" or auto internal scroll.
+B. Better: provide raw embed code if possible so Duda page height expands naturally.
+
+Choose the most reliable Duda-compatible approach.
+
+==================================================
+3. Recommended Duda embed
+==================================================
+
+If using iframe:
+- do NOT set overflow:hidden if content is taller than iframe
+- either:
+  scrolling="yes"
+  OR set a very tall height
+
+For desktop grid, recommend a height that fully shows 50 listings if possible.
+For mobile, internal scrolling may be better.
+
+Report the final recommended snippet.
+
+==================================================
+4. Preserve card design
+==================================================
+
+Keep same card UI as approved:
+- 3 cards per row on desktop
+- 1 card per row on mobile
+- light lavender cards
+- rounded image/card corners
+- pills for bedrooms, size, price
+- no timestamp
+- no source
+- no clickable links
+
+==================================================
+5. Verification
+==================================================
+
+Verify:
+- Dublin returns latest 50 delayed preview listings
+- no last-30-days filter remains
+- desktop shows full grid or scrolls properly
+- mobile shows full grid or scrolls properly
+- no bottom cards are clipped
+- cards remain non-clickable
+- no app/email/push changes
+
+Report:
+- endpoint changed
+- filters used
+- number of listings returned
+- final Duda iframe/raw embed snippet
+- how clipping was fixed

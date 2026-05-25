@@ -1903,19 +1903,16 @@ export async function registerRoutes(
     try {
       const rawCity = ((req.query.city as string) || "Dublin").trim();
       const city = rawCity || "Dublin";
-      const limit = Math.min(Math.max(parseInt(req.query.limit as string) || 30, 1), 60);
+      const limit = Math.min(Math.max(parseInt(req.query.limit as string) || 50, 1), 50);
 
-      // Public delay: only listings at least 24h old
+      // Public delay: only listings at least 24h old — no rolling date cap
       const delayedCutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-      // Rolling 30-day window
-      const thirtyDaysCutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
       const { data, error } = await supabase
         .from("listings")
         .select("id, title, street, district, price, size_m2, bedrooms, city, image_url, created_at")
         .ilike("city", city)
         .lte("created_at", delayedCutoff)
-        .gte("created_at", thirtyDaysCutoff)
         .order("created_at", { ascending: false })
         .limit(limit);
 
