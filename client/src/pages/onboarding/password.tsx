@@ -14,7 +14,7 @@ import { OnboardingFlowLayout } from "@/components/onboarding-flow-layout";
 import { validatePassword, isPasswordValid } from "@/lib/password-validation";
 import { PasswordRules } from "@/components/password-rules";
 import { useQuery } from "@tanstack/react-query";
-import { isValidImageUrl } from "@/components/listing-fallback";
+import { isValidImageUrl, LISTING_IMAGE_FALLBACK } from "@/components/listing-fallback";
 import {
   normalizeOnboardingParams,
   matchEstimateQueryKey,
@@ -76,7 +76,7 @@ export default function OnboardingPassword() {
   const previewListing: PreviewListingResult | null = estimate?.latestListingWithImage ?? null;
   const previewImageSrc = isValidImageUrl(previewListing?.image_url)
     ? previewListing!.image_url!
-    : "/listing-placeholder.png";
+    : LISTING_IMAGE_FALLBACK;
 
   // Match count for the info card — real 30-day count, fallback to display value
   const matchCount30 = estimate?.matchesLast30Days ?? null;
@@ -431,7 +431,10 @@ export default function OnboardingPassword() {
                       className="w-full h-full object-cover"
                       draggable={false}
                       onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).src = "/listing-placeholder.png";
+                        const img = e.currentTarget as HTMLImageElement;
+                        if (img.src !== window.location.origin + LISTING_IMAGE_FALLBACK) {
+                          img.src = LISTING_IMAGE_FALLBACK;
+                        }
                       }}
                     />
                     {/* Upgrade badge — top-right overlay inside image */}

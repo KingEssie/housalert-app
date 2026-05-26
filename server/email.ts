@@ -254,11 +254,7 @@ function listingCard(listing: ListingInfo, showButton = false, cardNumber?: numb
 
   const fallbackImageHtml = `<tr><td style="padding:0;line-height:0;font-size:0;">
         <a href="${escapeHtml(linkTarget)}" target="_blank" style="text-decoration:none;">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#EDF2F7;">
-            <tr><td align="center" style="padding:20px 0;">
-              <img src="${baseUrl}/listing-placeholder.png" alt="" width="160" style="display:block;width:160px;height:auto;margin:0 auto;" />
-            </td></tr>
-          </table>
+          <img src="${baseUrl}/assets/listing-fallback-house.png" alt="" width="100%" style="display:block;width:100%;height:auto;max-height:220px;object-fit:cover;" />
         </a>
       </td></tr>`;
 

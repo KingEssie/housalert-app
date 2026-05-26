@@ -1,0 +1,175 @@
+Use the blurred house illustration as the global fallback image for listings without photos.
+
+Context:
+We have a new blurred house illustration that should be used ONLY when a rental listing has no image/photo.
+
+Important distinction:
+This is NOT for empty pages like “No matches yet”.
+This is ONLY for listing cards/details/emails/widgets where a specific listing has missing/empty/broken imageUrl.
+
+Goal:
+If a listing has no image, every surface should show the same blurred house fallback image.
+
+Surfaces:
+- app Matches cards
+- app Favorites cards
+- app Listing detail page
+- public homepage widget
+- public city listing embeds
+- emails containing listing cards
+- any other listing preview/card UI
+- admin listing previews if applicable
+
+DO NOT touch:
+- ingestion
+- matching
+- push notifications
+- Stripe
+- service worker
+- city filtering
+- SEO page layout
+- business logic
+
+==================================================
+1. Add shared fallback image asset
+==================================================
+
+Add the blurred house image as:
+
+client/public/assets/listing-fallback-house.png
+
+or the existing public assets folder if the project uses a different convention.
+
+Use a stable public URL such as:
+
+/assets/listing-fallback-house.png
+
+Optimize/compress if needed.
+
+==================================================
+2. Create shared image fallback constant/helper
+==================================================
+
+Create or update a shared constant/helper:
+
+LISTING_IMAGE_FALLBACK = "/assets/listing-fallback-house.png"
+
+Use this anywhere listing imageUrl can be missing.
+
+==================================================
+3. App image fallback
+==================================================
+
+Update listing image rendering in:
+- Matches listing cards
+- Favorites listing cards
+- Listing detail screen
+- any shared ListingCard component
+
+Logic:
+- if imageUrl is null/undefined/empty → fallback image
+- if image fails to load → fallback image via onError
+- avoid infinite onError loop
+
+Keep existing styling:
+- object-fit: cover
+- rounded corners
+- same card layout
+
+==================================================
+4. Public widget fallback
+==================================================
+
+Update:
+client/public/widget.html
+
+For each listing card:
+- use fallback if imageUrl missing
+- use fallback if image fails to load
+
+Do not change layout/design.
+
+==================================================
+5. City page embed fallback
+==================================================
+
+Update all city listing embed HTML files or shared city listing template:
+- dublin-listings.html
+- cork-listings.html
+- galway-listings.html
+- limerick-listings.html
+- waterford-listings.html
+- kilkenny-listings.html
+- swords-listings.html
+- bray-listings.html
+- drogheda-listings.html
+- dundalk-listings.html
+
+Logic:
+- missing imageUrl → fallback
+- broken image → fallback
+
+Do not change grid layout/design.
+
+==================================================
+6. Email listing image fallback
+==================================================
+
+Update email templates that render listing images.
+
+Logic:
+- if listing image is missing/empty → use absolute fallback URL
+
+Important:
+Emails need absolute image URL, for example:
+
+https://app.housalert.com/assets/listing-fallback-house.png
+
+Do not use relative URLs in emails.
+
+Do not change email copy/layout beyond image fallback.
+
+==================================================
+7. API optional normalization
+==================================================
+
+Optional but preferred:
+Public APIs may return imageUrl as fallback already if missing, but do not rely only on API.
+
+Still add frontend onError fallback because external images can break.
+
+Do NOT overwrite original listing imageUrl in the database.
+
+==================================================
+8. Verification
+==================================================
+
+Verify with a test listing that has:
+- imageUrl = null
+- imageUrl = ""
+- broken image URL
+
+Confirm fallback appears in:
+- app Matches card
+- app Favorites card
+- Listing detail
+- public widget
+- Dublin city listings embed
+- email preview/template
+
+Confirm:
+- no layout changes
+- no business logic changes
+- no DB mutation replacing original image URLs
+
+==================================================
+9. Report back
+==================================================
+
+Report:
+- asset path
+- files changed
+- surfaces updated
+- how missing images are handled
+- how broken image onError is handled
+- email absolute URL used

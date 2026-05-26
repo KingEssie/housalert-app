@@ -617,7 +617,7 @@ function ListingsTab() {
               </div>
               {detail.image_url && (
                 <div className="mb-4 rounded-xl overflow-hidden bg-ha-hover-bg">
-                  <img src={detail.image_url} alt="" className="w-full h-48 object-cover" onError={e => (e.target as any).style.display = "none"} />
+                  <img src={detail.image_url} alt="" className="w-full h-48 object-cover" onError={e => { const img = e.target as HTMLImageElement; if (img.src !== window.location.origin + "/assets/listing-fallback-house.png") img.src = "/assets/listing-fallback-house.png"; }} />
                 </div>
               )}
               <div className="space-y-2.5 text-[13px]">
@@ -713,11 +713,12 @@ function ListingsTab() {
               ) : (
                 <div className="flex items-start gap-3">
                   <div className="w-12 h-12 rounded-lg bg-ha-hover-bg flex-shrink-0 overflow-hidden">
-                    {l.image_url ? (
-                      <img src={l.image_url} alt="" className="w-full h-full object-cover" onError={e => { (e.target as any).style.display = "none"; }} />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center"><Image className="w-5 h-5 text-ha-border-input" /></div>
-                    )}
+                    <img
+                      src={l.image_url || "/assets/listing-fallback-house.png"}
+                      alt=""
+                      className="w-full h-full object-cover"
+                      onError={e => { const img = e.target as HTMLImageElement; if (img.src !== window.location.origin + "/assets/listing-fallback-house.png") img.src = "/assets/listing-fallback-house.png"; }}
+                    />
                   </div>
                   <div className="flex-1 min-w-0 cursor-pointer" onClick={() => openDetail(l.id)}>
                     <div className="flex items-center gap-1.5">
@@ -3885,7 +3886,7 @@ function RealtimeSlaTab() {
             </table>
           </div>
           <p className="text-[11px] text-gray-400 mt-1.5 px-1">
-            ⚡ Fast-lane = runs under 30s (real-time ticker). Deep-scan = full 5-min ingest cycles.
+            ⚡ Fast-lane = real-time ticker runs (fast_lane=true flag). Deep-scan = full periodic ingest cycles.
           </p>
         </div>
       )}

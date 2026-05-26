@@ -226,7 +226,9 @@
 
     return listings.map(function (l) {
       var title    = decodeHtml(l.displayTitle || "Rental Property").replace(/\.$/, "").trim();
-      var imgStyle = l.imageUrl ? "background-image:url(" + l.imageUrl + ")" : "";
+      var FALLBACK_IMG = "/assets/listing-fallback-house.png";
+      var bgUrl = (l.imageUrl || "").trim() || FALLBACK_IMG;
+      var imgStyle = "background-image:url(" + bgUrl.replace(/'/g, "%27") + ")";
       var beds  = l.bedrooms || 0;
       var size  = l.size_m2  || 0;
       var price = l.price    || 0;
@@ -238,8 +240,7 @@
 
       return "<div class='ha-card'>"
         + "<div class='ha-img-wrap'>"
-        + (imgStyle ? "<div class='ha-img-bg' style='" + imgStyle + "'></div>" : "")
-        + "<div class='ha-img-placeholder'>" + HOUSE_SVG + "</div>"
+        + "<div class='ha-img-bg' style='" + imgStyle + "'></div>"
         + "</div>"
         + "<div class='ha-card-body'>"
         + "<div class='ha-card-title'>" + esc(title) + "</div>"
