@@ -1,0 +1,168 @@
+Verify end-to-end matching for all 10 Ireland launch cities.
+
+Context:
+This is NOT about public city pages or 24h delayed previews.
+This is about the actual app/realtime flow:
+ingestion → city normalization → stored listing city → user search profile filters → matching → user_matches → notifications eligibility.
+
+Launch cities:
+- Dublin
+- Cork
+- Galway
+- Limerick
+- Waterford
+- Kilkenny
+- Swords
+- Bray
+- Drogheda
+- Dundalk
+
+Goal:
+Prove that if a customer creates an alert/search profile for any of these cities, matching works correctly and only relevant listings for that city are matched.
+
+DO NOT touch:
+- public city pages
+- public delayed preview API
+- Duda widgets
+- service worker
+- push notification delivery code
+- Stripe
+- emails
+- Germany infrastructure
+
+==================================================
+1. Verify DB city normalization
+==================================================
+
+For each launch city, query stored listings.
+
+Report:
+- total listings in DB for that city
+- newest listing date
+- sources contributing
+- examples of 2 listings
+
+Confirm canonical city values are exactly:
+Dublin, Cork, Galway, Limerick, Waterford, Kilkenny, Swords, Bray, Drogheda, Dundalk
+
+Fix only if city values are fragmented/wrong, e.g.:
+- Cork City instead of Cork
+- Galway City instead of Galway
+- County Louth instead of Drogheda
+- Wicklow instead of Bray
+- Dublin instead of Swords
+
+==================================================
+2. Verify search profile city filtering
+==================================================
+
+Inspect the matching logic and search profile filters.
+
+Confirm:
+- a profile for Dundalk matches Dundalk listings
+- a profile for Bray matches Bray listings
+- a profile for Swords matches Swords listings
+- a profile for Dublin does NOT incorrectly match Swords unless intentionally configured
+- county/district source paths are normalized before matching
+
+Report exactly which listing field matching uses:
+- city
+- location
+- normalized_city
+- search profile city
+- any aliases
+
+==================================================
+3. Create safe test profiles/users if needed
+==================================================
+
+If there is an existing test user/test harness, use it.
+
+Create or use test profiles for all 10 cities with broad filters:
+- max rent high enough
+- bedrooms flexible
+- size flexible
+- alerts enabled
+- subscription state suitable for matching if needed
+
+Do NOT send real notifications to real users.
+If needed:
+- use dry-run mode
+- disable delivery
+- or use a test user only
+
+==================================================
+4. Run matching simulation / dry run
+==================================================
+
+For each city:
+- pick 1–3 real listings from DB
+- run them through the matching logic against that city’s test profile
+- confirm a match is produced
+- confirm profiles for other cities do not incorrectly match it
+
+Output:
+
+City | Listing ID | Source | Matched Correct City Profile? | Incorrect Cross-city Matches? | Status
+
+==================================================
+5. Verify price/bedroom/size filters
+==================================================
+
+For a few sample cities, test filter boundaries:
+
+- max rent below listing price → should NOT match
+- max rent above listing price → should match
+- bedrooms requirement above listing bedrooms → should NOT match if bedrooms known
+- bedrooms requirement equal/below listing bedrooms → should match
+- if bedrooms unknown, confirm expected behavior
+
+Report current behavior for unknown bedrooms/size:
+- does unknown pass?
+- does unknown fail?
+- is that intentional?
+
+Do not change behavior unless there is an obvious bug.
+
+==================================================
+6. Verify actual user_matches path
+==================================================
+
+Confirm that when a match occurs:
+- user_matches row is created or would be created in dry-run
+- suppression logic does not incorrectly suppress city-based matches
+- notification trace would show the city listing correctly
+
+Do not send real push/email unless using a dedicated test user and explicitly safe.
+
+==================================================
+7. Fix only clear bugs
+==================================================
+
+Examples of bugs to fix:
+- Swords stored as Dublin and matching Dublin profiles incorrectly
+- Bray stored as Wicklow and not matching Bray profiles
+- Drogheda stored as Louth and not matching Drogheda profiles
+- city selector values not matching DB canonical city names
+- matching logic using raw location instead of normalized city
+
+Do NOT refactor the full matching engine.
+
+==================================================
+8. Final launch readiness report
+==================================================
+
+Return a table:
+
+City | DB Listings | Sources | Profile City Match Works | Filters Work | Cross-city Leakage | Status
+
+Status:
+- Ready
+- Needs Fix
+- Insufficient Data
+
+Also report:
+- bugs found
+- bugs fixed
+- any remaining risk
+- whether all 10 cities are safe for customer alerts
